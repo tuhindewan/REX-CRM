@@ -1,5 +1,7 @@
 <?php
 
+
+use MRM\REST\MRM_API_Register;
 /**
  * The file that defines the core plugin class
  *
@@ -76,6 +78,7 @@ class Mrm {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->init_rest_api();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -100,27 +103,10 @@ class Mrm {
 	private function load_dependencies() {
 
 		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-mrm-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-mrm-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-mrm-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-mrm-public.php';
+         * The class responsible for auto loading all files of the
+         * core plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
 
 		$this->loader = new Mrm_Loader();
 
@@ -142,6 +128,29 @@ class Mrm {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
+
+
+	/**
+	 * Trigger init hook for rest api initialization
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function init_rest_api() {
+        $this->loader->add_action( 'init', $this, 'load_rest_api' );
+    }
+
+
+	/**
+	 * Trigger rest_api_init hook
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function load_rest_api() {
+        MRM_API_Register::getInstance()->init();
+    }
+
 
 	/**
 	 * Register all of the hooks related to the admin area functionality

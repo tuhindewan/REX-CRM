@@ -96,7 +96,7 @@ class Mrm_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/mrm-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'asset/dist/main.js', array( 'jquery', 'wp-element' ), $this->version, true );
 
 	}
 
