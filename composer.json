@@ -1,0 +1,18 @@
+{
+  "name": "coderex/code-rex-crm",
+  "description": "WordPress plugin development using React JS as frontend library",
+  "authors": [
+    {
+      "name": "Tuhin",
+      "email": "tohin@coderex.co"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "classmap": [
+      "includes/",
+      "admin/",
+      "public/"
+    ]
+  }
+}
