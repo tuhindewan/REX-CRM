@@ -28,7 +28,7 @@ class MRM_List_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'list';
+    protected $rest_base = 'lists';
 
 
     /**
@@ -49,14 +49,15 @@ class MRM_List_API_Route{
      */
     public function register_routes()
     {
-        $this->mrm_list = MRM_List_Controller::getInstance();
+        $this->mrm_list = MRM_List_Controller::get_instance();
         
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/create/', [
+       
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->mrm_list ,
-                    'mrm_list_create'
+                    'mrm_create_list'
                 ],
                  'permission_callback' => [
                     $this->mrm_list ,
@@ -64,6 +65,19 @@ class MRM_List_API_Route{
                  ] ,
             ],
         ]);
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+          [
+              'methods' => \WP_REST_Server::READABLE,
+              'callback' => [
+                  $this->mrm_list ,
+                  'mrm_get_list'
+              ],
+               'permission_callback' => [
+                  $this->mrm_list ,
+                   'mrm_list_create_permissions_check'
+               ] ,
+          ],
+      ]);
     }
 
 }
