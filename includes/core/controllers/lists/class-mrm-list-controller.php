@@ -16,7 +16,7 @@ use WP_REST_Request;
 class MRM_List_Controller {
     
     use Singleton;
-
+   
     public function __construct()
     {
         
