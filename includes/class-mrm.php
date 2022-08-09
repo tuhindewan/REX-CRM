@@ -1,5 +1,7 @@
 <?php
 
+
+use MRM\REST\MRM_API_Register;
 /**
  * The file that defines the core plugin class
  *
@@ -76,6 +78,7 @@ class Mrm {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->init_rest_api();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -125,6 +128,29 @@ class Mrm {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
+
+
+	/**
+	 * Trigger init hook for rest api initialization
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function init_rest_api() {
+        $this->loader->add_action( 'init', $this, 'load_rest_api' );
+    }
+
+
+	/**
+	 * Trigger rest_api_init hook
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function load_rest_api() {
+        MRM_API_Register::getInstance()->init();
+    }
+
 
 	/**
 	 * Register all of the hooks related to the admin area functionality

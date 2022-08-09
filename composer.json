@@ -11,6 +11,7 @@
   "autoload": {
     "classmap": [
       "includes/",
+      "includes/core",
       "admin/",
       "public/"
     ]
