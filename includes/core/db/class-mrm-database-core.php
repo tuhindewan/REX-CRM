@@ -38,6 +38,7 @@ class MRM_Database_Core {
     protected function load_db_classes()
     {
         foreach ($this->get_db_namespaces() as $namespace => $tables) {
+            error_log(print_r($tables, 1));
             foreach ($tables as $table_name => $table_class) {
                 $table_class_name = "MRM\\DB\\Tables\\".$table_class;
                 $this->routes[ $namespace ][ $table_name ] = new $table_class_name();
@@ -69,9 +70,14 @@ class MRM_Database_Core {
     protected function get_tables()
     {
         return apply_filters( 'mrm/database_tables', array(
-			'categories'    => 'MRM_Contact_Groups_Table',
-            'contacts'      => 'MRM_Contacts_Table',
-            // 'contact_info'  => 'MRM_Contact_Info'
+			'categories'            => 'MRM_Contact_Groups_Table',
+            'contacts'              => 'MRM_Contacts_Table',
+            'contact_info'          => 'MRM_Contact_Info_Table',
+            'contact_meta'          => 'MRM_Contact_Meta_Table',
+            'contact_note'          => 'MRM_Contact_Note_Table',
+            'contact_group_pivot'   => 'MRM_Contact_Group_Pivot_Table',
+            'interactions'          => 'MRM_Interactions_Table',
+            'emails'                => 'MRM_Emails_Table'  
 		));
     }
 
