@@ -93,7 +93,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
     }
 
     /**
-     * Function used to handle get requests
+     * Function used to handle paginated get requests
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
@@ -111,11 +111,11 @@ class MRM_List_Controller extends MRM_Base_Controller{
       $data = $this->model->mrm_get_lists($offset, $limit);
       
       if(isset($data)) {
-        $result = $this -> get_success_response("Update successfull", 201, $data);
+        $result = $this -> get_success_response("Query successfull", 201, $data);
       } else {
-        $result = $this -> get_error_response(400, "Failed to Update");
+        $result = $this -> get_error_response(400, "Failed to Get Data");
       }
-      return rest_ensure_response($result);
+      return $result;
     }
 
     /**
@@ -140,10 +140,10 @@ class MRM_List_Controller extends MRM_Base_Controller{
        $data = $this->model->mrm_get_list($id);
  
        $result = null;
-       if($data) {
+       if(isset($data)) {
          $result = $this -> get_success_response("Query Successfull", 200, $data);
        } else {
-         $result = $this -> get_error_response("Failed to Update", 400);
+         $result = $this -> get_error_response("Failed to Get Data", 400);
        }
        return $result;
     }
@@ -155,11 +155,83 @@ class MRM_List_Controller extends MRM_Base_Controller{
      */
 
     public function mrm_delete_list(WP_REST_Request $request){
-      $queryParams = $request->get_query_params();
+      //get an instance of the model
+      $this->model = MRM_List_Model::get_instance();
+
+      // get url parameters
+      $urlParams = $request->get_url_params();
+      
+      // get json body as an array
       $body = $request->get_json_params();
-      error_log(print_r($body, 1));
-      return rest_ensure_response($request);
+
+
+      $id = $urlParams['id'];
+
+      $success = $this->model->mrm_delete_list($id);
+
+      $result = null;
+      if($success) {
+        $result = $this -> get_success_response("Delete Successfull", 200);
+      } else {
+        $result = $this -> get_error_response("Failed to Delete", 400);
+      }
+      return $result;
     }
+
+    /**
+     * Function used to handle delete requests
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function mrm_delete_lists(WP_REST_Request $request){
+      //get an instance of the model
+      $this->model = MRM_List_Model::get_instance();
+
+      // get url parameters
+      $urlParams = $request->get_url_params();
+      
+      // get json body as an array
+      $body = $request->get_json_params();
+
+      $listOfIDS = $body['list_ids'];
+      $success = $this->model->mrm_delete_lists($listOfIDS);
+      $result = null;
+      if($success) {
+        $result = $this -> get_success_response("Delete Successfull", 200);
+      } else {
+        $result = $this -> get_error_response("Failed to Delete", 400);
+      }
+      return $result;
+    }
+
+    /**
+     * Function used to handle search requests
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function mrm_search_lists(WP_REST_Request $request){
+      $this->model = MRM_List_Model::get_instance();
+      // get json body as an array
+      $body = $request->get_json_params();
+      $queryParams = $request->get_query_params();
+      $title = $queryParams['title'];
+      $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
+      $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
+      $offset = ($page - 1) * $perPage;
+      $limit = $perPage;
+    
+      $data = $this->model->mrm_search_lists($title, $offset, $limit);
+      
+      if(isset($data)) {
+        $result = $this -> get_success_response("Search successfull", 201, $data);
+      } else {
+        $result = $this -> get_error_response(400, "Failed to Get Data");
+      }
+      return $result;
+    }
+
 
     /**
      * Function used check whether the given user has permission to acces the endpoing
