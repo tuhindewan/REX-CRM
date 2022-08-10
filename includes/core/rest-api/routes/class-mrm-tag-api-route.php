@@ -50,92 +50,95 @@ class MRM_Tag_API_Route{
     public function register_routes()
     {
         $this->mrm_tag = MRM_Tag_Controller::get_instance();
-        // MRM_Tag_Controller::get_instance()->init();
-
+        /**
+         * Create tag
+         * @since 1.0.0
+         */
         register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->mrm_tag ,
-                    'mrm_create_tag'
+                    'create_tag'
                 ],
                  'permission_callback' => [
                     $this->mrm_tag ,
-                     'mrm_create_tag_permissions_check'
+                     'create_tag_permissions_check'
                 ],
             ],
         ]);
-
+        /**
+         * Update tag
+         * @since 1.0.0
+         */
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>\d+)', [
             [
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->mrm_tag ,
-                    'mrm_update_tag'
+                    'update_tag'
                 ],
                  'permission_callback' => [
                     $this->mrm_tag ,
-                     'mrm_update_tag_permissions_check'
+                     'update_tag_permissions_check'
                 ],
             ],
         ]);
-
+        /**
+         * Delete a tag
+         * @since 1.0.0
+         */
         register_rest_route( $this->namespace, '/' . $this->rest_base . '/(?P<id>\d+)', [
             [
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->mrm_tag ,
-                    'mrm_delete_tag'
+                    'delete_tag'
                 ],
                 'permission_callback' => [
                     $this->mrm_tag , 
-                    'mrm_delete_tag_permissions_check'
+                    'delete_tag_permissions_check'
                 ], 
             ],
         ]);
-        
+        /**
+         * Delete multiple tags
+         * @since 1.0.0
+         */
+        register_rest_route( $this->namespace, '/' . $this->rest_base . '/', [
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->mrm_tag ,
+                    'delete_multiple_tags'
+                ],
+                'permission_callback' => [
+                    $this->mrm_tag , 
+                    'delete_multiple_tags_permissions_check'
+                ], 
+            ],
+        ]);
+        /**
+         * Get all tags
+         * @since 1.0.0
+         */
         register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->mrm_tag ,
-                    'mrm_get_all_tags'
+                    'get_all_tags'
                 ],
                  'permission_callback' => [
                     $this->mrm_tag ,
-                     'mrm_get_all_tags_permissions_check'
+                     'get_all_tags_permissions_check'
                 ],
             ],
         ]);
-
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>\d+)', [
-            [
-                'methods' => \WP_REST_Server::READABLE,
-                'callback' => [
-                    $this->mrm_tag ,
-                    'mrm_get_single_tag'
-                ],
-                 'permission_callback' => [
-                    $this->mrm_tag ,
-                     'mrm_get_single_tag_permissions_check'
-                ],
-            ],
-        ]);
-
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/search/', [
-            [
-                'methods' => \WP_REST_Server::READABLE,
-                'callback' => [
-                    $this->mrm_tag ,
-                    'mrm_get_single_tag'
-                ],
-                 'permission_callback' => [
-                    $this->mrm_tag ,
-                     'mrm_get_single_tag_permissions_check'
-                ],
-            ],
-        ]);
-
+        /**
+         * Search tag results
+         * @since 1.0.0
+         */
         register_rest_route($this->namespace, '/' . $this->rest_base . '/search/', [
 			[
 				'methods'             => \WP_REST_Server::READABLE,

@@ -1,6 +1,6 @@
 <?php
 
-namespace MRM\Data\Lists;
+namespace MRM\Data;
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]

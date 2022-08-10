@@ -35,10 +35,10 @@ class MRM_Tag_Controller {
      * @return JSON
      * @since 1.0.0
      */
-    public function mrm_create_tag(WP_REST_Request $request){
+    public function create_tag(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
         $body = $request->get_json_params();
-        $this->mrm_tag_model->insert_tag($body);
+        $this->mrm_tag_model->insert_tag_model($body);
     }
 
     /**
@@ -47,7 +47,7 @@ class MRM_Tag_Controller {
      * @return bool
      * @since 1.0.0
      */
-    public function mrm_create_tag_permissions_check(){
+    public function create_tag_permissions_check(){
         return true;
     }
 
@@ -59,11 +59,11 @@ class MRM_Tag_Controller {
      * @return JSON
      * @since 1.0.0
      */
-    public function mrm_update_tag(WP_REST_Request $request){
+    public function update_tag(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
         $id = $request['id'];
         $body = $request->get_json_params();
-        $this->mrm_tag_model->update_tag($id, $body);
+        $this->mrm_tag_model->update_tag_model($id, $body);
     }
 
     /**
@@ -72,7 +72,7 @@ class MRM_Tag_Controller {
      * @return bool
      * @since 1.0.0
      */
-    public function mrm_update_tag_permissions_check(){
+    public function update_tag_permissions_check(){
         return true;
     }
    
@@ -84,11 +84,11 @@ class MRM_Tag_Controller {
      * @return void
      * @since 1.0.0
      */
-    public function mrm_delete_tag(WP_REST_Request $request){
+    public function delete_tag(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
         $id = $request['id'];
         $body = $request->get_json_params();
-        $this->mrm_tag_model->delete_tag($id, $body);
+        $this->mrm_tag_model->delete_tag_model($id, $body);
     }
 
     /**
@@ -97,7 +97,33 @@ class MRM_Tag_Controller {
      * @return bool
      * @since 1.0.0
      */
-    public function mrm_delete_tag_permissions_check(){
+    public function delete_tag_permissions_check(){
+        return true;
+    }
+
+
+    /**
+     * Delete multiple tags
+     * 
+     * @param request
+     * @return void
+     * @since 1.0.0
+     */
+    public function delete_multiple_tags(WP_REST_Request $request){
+        $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+
+        $idArray = $request->get_json_params();
+        
+        $this->mrm_tag_model->delete_multiple_tags_model($idArray);
+    }
+
+    /**
+     *  Delete multiple permission for tag
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function delete_multiple_tags_permissions_check(){
         return true;
     }
 
@@ -108,11 +134,20 @@ class MRM_Tag_Controller {
      * @return JSON
      * @since 1.0.0
      */
-    public function mrm_get_all_tags(WP_REST_Request $request){
+    public function get_all_tags(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
 
-        $result = $this->mrm_tag_model->get_all_tags($request);
+        $queryParams = $request->get_query_params();
 
+        $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
+
+        $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
+        $offset = ($page - 1) * $perPage;
+        $limit = $perPage;
+        $result = null;
+
+        $result = $this->mrm_tag_model->get_all_tags_model($offset, $limit);
+      
         return rest_ensure_response($result);
     }
 
@@ -122,30 +157,10 @@ class MRM_Tag_Controller {
      * @return bool
      * @since 1.0.0
      */
-    public function mrm_get_all_tags_permissions_check(){
+    public function get_all_tags_permissions_check(){
         return true;
     }
 
-    /**
-     * Get all tags request for tags
-     * 
-     * @param request
-     * @return JSON
-     * @since 1.0.0
-     */
-    public function mrm_get_single_tag(WP_REST_Request $request){
-        return rest_ensure_response($request);
-    }
-
-    /**
-     * Get tag permission for tags
-     * 
-     * @return bool
-     * @since 1.0.0
-     */
-    public function mrm_get_single_tag_permissions_check(){
-        return true;
-    }
 
     /**
      * Get all tags request for tags

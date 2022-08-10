@@ -26,7 +26,7 @@ class MRM_Tag_Model {
      * @return void
      * @since 1.0.0
      */
-    public function insert_tag($body){
+    public function insert_tag_model($body){
         global $wpdb;
         
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -56,7 +56,7 @@ class MRM_Tag_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function update_tag($id, $body){
+    public function update_tag_model($id, $body){
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -82,12 +82,28 @@ class MRM_Tag_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function delete_tag($id, $body){
+    public function delete_tag_model($id, $body){
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         $wpdb->delete( $table, array( 'id' => $id ) );
+    }
+
+    /**
+     * SQL query to delete a multiple tags
+     * 
+     * @param array
+     * @return void
+     * @since 1.0.0
+     */
+    public function delete_multiple_tags_model($ids){
+        global $wpdb;
+
+        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        $idListString = implode(",",$ids);
+        $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
     }
 
     /**
@@ -97,32 +113,24 @@ class MRM_Tag_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function get_all_tags($request){
+    public function get_all_tags_model($offset, $limit){
         global $wpdb;
-        $items_per_page = $request['items_per_page'];
-        $page = isset( $_GET['cpage'] ) ? abs( (int) $_GET['cpage'] ) : 1;
-        $offset = ( $page * $items_per_page ) - $items_per_page;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
-        $query = 'SELECT * FROM '.$table;
-
-        $total_query = "SELECT COUNT(1) FROM (${query}) AS combined_table";
-        $total = $wpdb->get_var( $total_query );
-
-        $results = $wpdb->get_results( $query.' ORDER BY id DESC LIMIT '. $offset.', '. $items_per_page, OBJECT );
-
-
-        paginate_links( array(
-            'base' => add_query_arg( 'cpage', '%#%' ),
-            'format' => '',
-            'prev_text' => __('&laquo;'),
-            'next_text' => __('&raquo;'),
-            'total' => ceil($total / $items_per_page),
-            'current' => $page
-        ));
-
-        return $results;
+        $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d LIMIT %d, %d ",array('1', $offset, $limit));
+        $data = $wpdb->get_results($sql);
+        $dataJson = json_decode(json_encode($data));
+        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d",array('1'));
+        $sqlCountData = $wpdb->get_results($sqlCount);
+        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+            
+        $count = (int) $sqlCountDataJson['0']['total'];
+        $totalPages = intdiv($count, $limit) + 1;
+        return array(
+            'data'=> $dataJson,
+            'total_pages' => $totalPages
+        );
     }
 
 }
