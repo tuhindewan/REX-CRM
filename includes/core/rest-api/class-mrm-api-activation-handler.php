@@ -21,7 +21,7 @@ class MRM_API_Activation_Handler implements MRM_Activation_Handler {
      * @return void
      */
     public static function handle(){
-        MRM_API_Register::getInstance()->init();
+        MRM_API_Register::get_instance()->init();
     }
     
 }

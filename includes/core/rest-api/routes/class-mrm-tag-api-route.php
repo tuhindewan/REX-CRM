@@ -49,7 +49,8 @@ class MRM_Tag_API_Route{
      */
     public function register_routes()
     {
-        $this->mrm_tag = MRM_Tag_Controller::getInstance();
+        $this->mrm_tag = MRM_Tag_Controller::get_instance();
+        // MRM_Tag_Controller::get_instance()->init();
 
         register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
             [
@@ -120,6 +121,34 @@ class MRM_Tag_API_Route{
                 ],
             ],
         ]);
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/search/', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->mrm_tag ,
+                    'mrm_get_single_tag'
+                ],
+                 'permission_callback' => [
+                    $this->mrm_tag ,
+                     'mrm_get_single_tag_permissions_check'
+                ],
+            ],
+        ]);
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/search/', [
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ 
+                    $this->mrm_tag, 
+                    'get_tag_search_result' 
+                ],
+				'permission_callback' => [ 
+                    $this->mrm_tag, 
+                     'get_tag_search_result_permission_check' 
+                ],
+            ]
+		]);
         
     }
 

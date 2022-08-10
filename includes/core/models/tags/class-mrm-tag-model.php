@@ -3,7 +3,6 @@
 namespace MRM\Models\Tags;
 
 use MRM\Traits\Singleton;
-use WP_REST_Request;
 
 /**
  * @author [MRM Team]
@@ -16,7 +15,40 @@ use WP_REST_Request;
 class MRM_Tag_Model {
 
     use Singleton;
+
    
+    /**
+     * SQL query to create a new tag
+     * 
+     * @param object
+     * @return JSON
+     * @since 1.0.0
+     */
+    public function insert_tag($request){
+        global $wpdb;
+        
+        $table = $wpdb->prefix.'tags';
+        $data = array(
+            'id'          => $request->id,
+            'title'       => $request->title,
+            'slug'        => $request->slug
+        );
+        $format = array(
+            '%d',
+            '%s',
+            '%s'
+        );
+        $wpdb->insert($table,$data,$format);
+    }
+
+
+    /**
+     * SQL query to update a tag
+     * 
+     * @param object
+     * @return JSON
+     * @since 1.0.0
+     */
     
 
 }

@@ -2,6 +2,7 @@
 
 namespace MRM\Controllers\Tags;
 
+use MRM\Models\Tags\MRM_Tag_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -13,19 +14,44 @@ use WP_REST_Request;
  * @desc [Handle List Module related API callbacks]
  */
 
+
 class MRM_Tag_Controller {
     
     use Singleton;
 
+    /**
+     * MRM_Tags class object
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    protected $mrm_tag_model;
+
 
     /**
-     * Create a new tag
+     * Get instance for MRM_Tag_Model class
      * 
+     * @return void
+     * @since 1.0.0
+     */
+    // public static function get_instance(){
+    //     $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+    //     error_log(print_r($this->mrm_tag_model, 1));
+    // }
+
+
+
+    /**
+     * Get and send response to create a new tag
+     * 
+     * @param request
      * @return JSON
      * @since 1.0.0
      */
     public function mrm_create_tag(WP_REST_Request $request){
-        return rest_ensure_response($request);
+        $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+        $body = $request->get_json_params();
+        $this->mrm_tag_model->insert_tag($body);
     }
 
     /**
@@ -42,11 +68,12 @@ class MRM_Tag_Controller {
     /**
      * Update a tag
      * 
+     * @param request
      * @return JSON
      * @since 1.0.0
      */
     public function mrm_update_tag(WP_REST_Request $request){
-        return rest_ensure_response($request);
+        //$id = $request['id'];
     }
 
     /**
@@ -63,6 +90,7 @@ class MRM_Tag_Controller {
     /**
      * Delete request for tags
      * 
+     * @param request
      * @return void
      * @since 1.0.0
      */
@@ -83,6 +111,7 @@ class MRM_Tag_Controller {
     /**
      * Get all tags request for tags
      * 
+     * @param request
      * @return JSON
      * @since 1.0.0
      */
@@ -103,6 +132,7 @@ class MRM_Tag_Controller {
     /**
      * Get all tags request for tags
      * 
+     * @param request
      * @return JSON
      * @since 1.0.0
      */
@@ -117,6 +147,27 @@ class MRM_Tag_Controller {
      * @since 1.0.0
      */
     public function mrm_get_single_tag_permissions_check(){
+        return true;
+    }
+
+    /**
+     * Get all tags request for tags
+     * 
+     * @param request
+     * @return JSON
+     * @since 1.0.0
+     */
+    public function get_tag_search_result(WP_REST_Request $request){
+        return rest_ensure_response($request);
+    }
+
+    /**
+     * Get tag permission for tags
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function get_tag_search_result_permissions_check(){
         return true;
     }
 

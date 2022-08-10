@@ -49,7 +49,7 @@ class MRM_List_API_Route{
      */
     public function register_routes()
     {
-        $this->mrm_list = MRM_List_Controller::getInstance();
+        $this->mrm_list = MRM_List_Controller::get_instance();
         
         register_rest_route($this->namespace, '/' . $this->rest_base . '/create/', [
             [
