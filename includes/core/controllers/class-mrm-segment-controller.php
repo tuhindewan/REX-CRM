@@ -87,4 +87,11 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
     }
 
+
+
+    public function get_segments(WP_REST_Request $request)
+    {
+        error_log(print_r($request, 1));
+    }
+
 }
