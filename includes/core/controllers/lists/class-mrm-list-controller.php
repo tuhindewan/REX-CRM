@@ -3,6 +3,7 @@
 namespace MRM\Controllers\Lists;
 
 use MRM\Models\Lists\MRM_List_Model;
+use MRM\Data\Lists\MRM_List_Data;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -18,7 +19,16 @@ class MRM_List_Controller {
     
     use Singleton;
     
-    public $model = MRM_List_Model::get_instance();
+    /**
+     * holds the model instance for database related queries
+     * @var MRM_List_Model
+     * @since 1.0.0 
+     */
+
+    public $model;
+    
+    
+    
     /**
      * Function used to handle create requests
      * @return WP_REST_RESPONSE
@@ -26,9 +36,13 @@ class MRM_List_Controller {
      */
 
     public function mrm_create_list(WP_REST_Request $request){
+      $this->model = MRM_List_Model::getInstance();
+      $result = $this->model->mrm_insert_list("hello");
+      error_log(print_r($result, 1));
       $queryParams = $request->get_query_params();
       $body = $request->get_json_params();
       error_log(print_r($body, 1));
+      error_log(print_r($this->model, 1));
       return rest_ensure_response($request);
     }
 
@@ -38,6 +52,7 @@ class MRM_List_Controller {
      * @since 1.0.0 
      */
     public function mrm_update_list(WP_REST_Request $request){
+      
       $queryParams = $request->get_query_params();
       $body = $request->get_json_params();
       error_log(print_r($body, 1));
@@ -83,7 +98,12 @@ class MRM_List_Controller {
       return rest_ensure_response($request);
     }
 
-    public function mrm_list_permissions_check(){
+    /**
+     * Function used check whether the given user has permission to acces the endpoing
+     * @return boolean
+     * @since 1.0.0 
+     */
+    public function mrm_lists_permissions_check(){
         return true;
     }
 }
