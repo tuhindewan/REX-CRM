@@ -52,6 +52,7 @@ class MRM_Tag_Controller {
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
         $body = $request->get_json_params();
         $this->mrm_tag_model->insert_tag($body);
+        return rest_ensure_response("Success");
     }
 
     /**
@@ -77,8 +78,6 @@ class MRM_Tag_Controller {
         $id = $request['id'];
         $body = $request->get_json_params();
         $this->mrm_tag_model->update_tag($id, $body);
-        
-        return rest_ensure_response($body);
     }
 
     /**
@@ -100,7 +99,10 @@ class MRM_Tag_Controller {
      * @since 1.0.0
      */
     public function mrm_delete_tag(WP_REST_Request $request){
-        return rest_ensure_response($request);
+       $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+        $id = $request['id'];
+        $body = $request->get_json_params();
+        $this->mrm_tag_model->delete_tag($id, $body);
     }
 
     /**
