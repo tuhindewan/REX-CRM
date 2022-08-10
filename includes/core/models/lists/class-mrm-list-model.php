@@ -15,8 +15,7 @@ use MRM\Traits\Singleton;
 
 class MRM_List_Model {
     
-  use Singleton; 
-  
+  use Singleton;
 
   /**
    * Inserts a new list into db
@@ -27,6 +26,12 @@ class MRM_List_Model {
 
   public function mrm_insert_list($list){
     global $wpdb;
+    $table_name = $wpdb->prefix. 'mrm_contact_groups';
+    $wpdb.insert($table_name, array(
+      'title' => $list['title'],
+      'type' => 2,
+      
+    ))
     return true;
   }
 

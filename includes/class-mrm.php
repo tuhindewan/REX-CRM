@@ -148,7 +148,7 @@ class Mrm {
 	 * @since 1.0.0
 	 */
 	public function load_rest_api() {
-        MRM_API_Register::getInstance()->init();
+        MRM_API_Register::get_instance()->init();
     }
 
 
