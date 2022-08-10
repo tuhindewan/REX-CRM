@@ -66,6 +66,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
+
     public function mrm_update_list(WP_REST_Request $request){
       //get an instance of the model
       $this->model = MRM_List_Model::get_instance();
@@ -98,15 +99,23 @@ class MRM_List_Controller extends MRM_Base_Controller{
      */
 
     public function mrm_get_lists(WP_REST_Request $request){
+      $this->model = MRM_List_Model::get_instance();
+      // get json body as an array
+      $body = $request->get_json_params();
       $queryParams = $request->get_query_params();
       $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
+      $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
+      $offset = ($page - 1) * $perPage;
+      $limit = $perPage;
       $result = null;
-      // if($success) {
-      //   $result = $this -> get_success_response("Update successfull", 201);
-      // } else {
-      //   $result = $this -> get_error_response(400, "Failed to Update");
-      // }
-      // return rest_ensure_response($request);
+      $data = $this->model->mrm_get_lists($offset, $limit);
+      
+      if(isset($data)) {
+        $result = $this -> get_success_response("Update successfull", 201, $data);
+      } else {
+        $result = $this -> get_error_response(400, "Failed to Update");
+      }
+      return rest_ensure_response($result);
     }
 
     /**

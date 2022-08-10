@@ -7,11 +7,12 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 abstract class MRM_Base_Controller {
-  public function get_success_response(string $msg = "Successfully performed operation", int $status = 200 ) {
+  public function get_success_response(string $msg = "Successfully performed operation", int $status = 200, $data = NULL ) {
     return new WP_REST_Response(
       array(
         'success' => true,
-        'msg' => $msg 
+        'msg' => $msg,
+        'data' => $data 
       ),
       $status
     );
