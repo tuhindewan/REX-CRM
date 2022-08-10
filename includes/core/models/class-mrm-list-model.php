@@ -77,7 +77,7 @@ class MRM_List_Model {
   public function mrm_get_lists($offset, $limit){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    $now = date('Y-m-d H:i:s');
+    
     try {
       $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE type = %d LIMIT %d, %d ",array('2', $offset, $limit));
       $data = $wpdb->get_results($sql);
@@ -93,6 +93,30 @@ class MRM_List_Model {
         'data'=> $dataJson,
         'total_pages' => $totalPages
       );
+    } catch(Exception $e) {
+      error_log(print_r($e, 1));
+      return NULL;
+    }
+    
+    return NULL;
+  }
+
+   /**
+   * Returns a single list
+   * @param id the id of the list to get
+   * @return array an array of results if successfull, NULL otherwise
+   * @since 1.0.0 
+   */
+  public function mrm_get_list($id){
+    global $wpdb;
+    $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+    $now = date('Y-m-d H:i:s');
+    try {
+      $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d && type = %d",array($id, '2'));
+      $data = $wpdb->get_results($sql);
+      $dataJson = json_decode(json_encode($data));
+
+      return $dataJson;
     } catch(Exception $e) {
       error_log(print_r($e, 1));
       return NULL;

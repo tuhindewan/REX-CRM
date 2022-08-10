@@ -125,10 +125,27 @@ class MRM_List_Controller extends MRM_Base_Controller{
      */
 
     public function mrm_get_list(WP_REST_Request $request){
-      $queryParams = $request->get_query_params();
-      $body = $request->get_json_params();
-      error_log(print_r($body, 1));
-      return rest_ensure_response($request);
+       //get an instance of the model
+       $this->model = MRM_List_Model::get_instance();
+
+       // get url parameters
+       $urlParams = $request->get_url_params();
+       
+       // get json body as an array
+       $body = $request->get_json_params();
+ 
+ 
+       $id = $urlParams['id'];
+ 
+       $data = $this->model->mrm_get_list($id);
+ 
+       $result = null;
+       if($data) {
+         $result = $this -> get_success_response("Query Successfull", 200, $data);
+       } else {
+         $result = $this -> get_error_response("Failed to Update", 400);
+       }
+       return $result;
     }
 
     /**
