@@ -15,6 +15,14 @@ require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 class MRM_Contacts_Table {
 
     /**
+     * Table name
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    public static $mrm_table = 'mrm_contacts';
+
+    /**
      * Create the table.
      *
      * @return void
@@ -26,7 +34,7 @@ class MRM_Contacts_Table {
 
         $charsetCollate = $wpdb->get_charset_collate();
 
-        $table = $wpdb->prefix .'mrm_contacts';
+        $table = $wpdb->prefix . self::$mrm_table;
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
             $sql = "CREATE TABLE {$table} (
