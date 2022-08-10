@@ -3,6 +3,7 @@
 namespace MRM\Controllers\Lists;
 
 use Exception;
+use MRM\Controllers\MRM_Base_Controller;
 use MRM\Models\Lists\MRM_List_Model;
 use MRM\Data\Lists\MRM_List_Data;
 use MRM\Traits\Singleton;
@@ -16,7 +17,7 @@ use WP_REST_Request;
  * @desc [Handle List Module related API callbacks]
  */
 
-class MRM_List_Controller {
+class MRM_List_Controller extends MRM_Base_Controller{
     
     use Singleton;
     
@@ -37,18 +38,27 @@ class MRM_List_Controller {
      */
 
     public function mrm_create_list(WP_REST_Request $request){
+      //instantiate the model
       $this->model = MRM_List_Model::get_instance();
-      try {
-        $result = $this->model->mrm_insert_list("hello");
-      } catch(Exception $e) {
 
-      }
-      error_log(print_r($result, 1));
-      $queryParams = $request->get_query_params();
+      //get the list body
       $body = $request->get_json_params();
-      error_log(print_r($body, 1));
-      error_log(print_r($this->model, 1));
-      return rest_ensure_response($request);
+
+      try {
+        $list = new MRM_List_Data($body['title']);
+      } catch(Exception $e) {
+        return $this->get_error_response('Invalid Data', 400);
+      }
+      
+      $success = $this->model->mrm_insert_list($list);
+      
+      $result = null;
+      if($success) {
+        $result = $this -> get_success_response("Insertion successfull", 201);
+      } else {
+        $result = $this -> get_error_response(400, "Failed to Insert");
+      }
+      return $result;
     }
 
     /**

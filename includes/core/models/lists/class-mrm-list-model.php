@@ -2,7 +2,9 @@
 
 namespace MRM\Models\Lists;
 
+use Exception;
 use MRM\Data\Lists\MRM_List_Data;
+use MRM\DB\Tables\MRM_Contact_Groups_Table;
 use MRM\Traits\Singleton;
 
 /**
@@ -24,14 +26,20 @@ class MRM_List_Model {
    * @since 1.0.0 
    */
 
-  public function mrm_insert_list($list){
+  public function mrm_insert_list(MRM_List_Data $list){
     global $wpdb;
-    $table_name = $wpdb->prefix. 'mrm_contact_groups';
-    $wpdb.insert($table_name, array(
-      'title' => $list['title'],
+    $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+    $now = date('Y-m-d H:i:s');
+    try {
+      $wpdb->insert($table_name, array(
+      'title' => $list->get_title(),
       'type' => 2,
-      
-    ))
+      'created_at' => $now,
+      'updated_at' => $now));
+    } catch(Exception $e) {
+      error_log(print_r($e, 1));
+      return false;
+    }
     return true;
   }
 
@@ -42,20 +50,24 @@ class MRM_List_Model {
    * @return boolean
    * @since 1.0.0 
    */
-
-  /**
-   * Updates an existing list with new data
-   * @param offset the list index to start from in the database
-   * @param limit the list index to 
-   * @return boolean
-   * @since 1.0.0 
-   */
-
-  public function mrm_get_lists($offset, $limit){
+  public function mrm_update_list($id, $list){
     global $wpdb;
+    $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+    $now = date('Y-m-d H:i:s');
+    try {
+      $wpdb->insert($table_name, array(
+      'title' => $list->get_title(),
+      'type' => 2,
+      'created_at' => $now,
+      'updated_at' => $now));
+    } catch(Exception $e) {
+      error_log(print_r($e, 1));
+      return false;
+    }
     return true;
   }
-  public function mrm_update_list($id, $list){
+
+  public function mrm_get_lists($offset, $limit){
     global $wpdb;
     return true;
   }

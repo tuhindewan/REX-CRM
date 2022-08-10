@@ -10,8 +10,17 @@ namespace MRM\Data\Lists;
  */
 
 class MRM_List_Data {
-  public $list_title;
+  private $list_title;
   public function __construct($title) {
     $this->list_title = $title;
+  }
+
+  /**
+   * Getter Function title
+   * @return string title of the list
+   * @since 1.0.0 
+   */
+  public function get_title() {
+    return $this->list_title;
   }
 }
