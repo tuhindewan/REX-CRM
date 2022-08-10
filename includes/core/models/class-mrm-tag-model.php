@@ -109,7 +109,7 @@ class MRM_Tag_Model {
     /**
      * SQL query to get all tags with pagination
      * 
-     * @param object
+     * @param int,int
      * @return JSON
      * @since 1.0.0
      */
@@ -127,6 +127,34 @@ class MRM_Tag_Model {
             
         $count = (int) $sqlCountDataJson['0']['total'];
         $totalPages = intdiv($count, $limit) + 1;
+        return array(
+            'data'=> $dataJson,
+            'total_pages' => $totalPages
+        );
+    }
+
+    /**
+     * SQL query to searc
+     * 
+     * @param string,int,int
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_tag_search_model($searchTitle, $offset, $limit){
+        global $wpdb;
+
+        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('1', "%{$searchTitle}%", $offset, $limit));
+        $data = $wpdb->get_results($sql);
+        $dataJson = json_decode(json_encode($data));
+        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d AND title LIKE %s",array('1', "%{$searchTitle}%"));
+        $sqlCountData = $wpdb->get_results($sqlCount);
+        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+            
+        $count = (int) $sqlCountDataJson['0']['total'];
+        $totalPages = intdiv($count, $limit) + 1;
+
         return array(
             'data'=> $dataJson,
             'total_pages' => $totalPages

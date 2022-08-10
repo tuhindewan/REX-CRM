@@ -144,7 +144,6 @@ class MRM_Tag_Controller {
         $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
         $offset = ($page - 1) * $perPage;
         $limit = $perPage;
-        $result = null;
 
         $result = $this->mrm_tag_model->get_all_tags_model($offset, $limit);
       
@@ -170,7 +169,22 @@ class MRM_Tag_Controller {
      * @since 1.0.0
      */
     public function get_tag_search_result(WP_REST_Request $request){
-        return rest_ensure_response($request);
+        $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+        
+        $queryParams = $request->get_query_params();
+
+        $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
+
+        $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
+
+        $searchTitle = $queryParams['title'];
+
+        $offset = ($page - 1) * $perPage;
+        $limit = $perPage;
+
+        $result = $this->mrm_tag_model->get_tag_search_model($searchTitle, $offset, $limit);
+      
+        return rest_ensure_response($result);
     }
 
     /**

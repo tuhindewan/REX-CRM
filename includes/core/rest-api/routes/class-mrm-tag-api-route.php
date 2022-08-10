@@ -148,7 +148,7 @@ class MRM_Tag_API_Route{
                 ],
 				'permission_callback' => [ 
                     $this->mrm_tag, 
-                     'get_tag_search_result_permission_check' 
+                     'get_tag_search_result_permissions_check' 
                 ],
             ]
 		]);
