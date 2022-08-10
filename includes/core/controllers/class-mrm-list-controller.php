@@ -37,7 +37,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_create_list(WP_REST_Request $request){
+    public function create_list(WP_REST_Request $request){
       //instantiate the model
       $this->model = MRM_List_Model::get_instance();
 
@@ -50,7 +50,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
         return $this->get_error_response('Invalid Data', 400);
       }
       
-      $success = $this->model->mrm_insert_list($list);
+      $success = $this->model->insert_list($list);
       
       $result = null;
       if($success) {
@@ -67,7 +67,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_update_list(WP_REST_Request $request){
+    public function update_list(WP_REST_Request $request){
       //get an instance of the model
       $this->model = MRM_List_Model::get_instance();
 
@@ -81,7 +81,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
       $id = $urlParams['id'];
       $list = new MRM_List_Data($body['title']);
 
-      $success = $this->model->mrm_update_list($id, $list);
+      $success = $this->model->update_list($id, $list);
 
       $result = null;
       if($success) {
@@ -98,7 +98,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_get_lists(WP_REST_Request $request){
+    public function get_lists(WP_REST_Request $request){
       $this->model = MRM_List_Model::get_instance();
       // get json body as an array
       $body = $request->get_json_params();
@@ -108,7 +108,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
       $offset = ($page - 1) * $perPage;
       $limit = $perPage;
       $result = null;
-      $data = $this->model->mrm_get_lists($offset, $limit);
+      $data = $this->model->get_lists($offset, $limit);
       
       if(isset($data)) {
         $result = $this -> get_success_response("Query successfull", 201, $data);
@@ -124,7 +124,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_get_list(WP_REST_Request $request){
+    public function get_list(WP_REST_Request $request){
        //get an instance of the model
        $this->model = MRM_List_Model::get_instance();
 
@@ -137,7 +137,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
  
        $id = $urlParams['id'];
  
-       $data = $this->model->mrm_get_list($id);
+       $data = $this->model->get_list($id);
  
        $result = null;
        if(isset($data)) {
@@ -154,7 +154,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_delete_list(WP_REST_Request $request){
+    public function delete_list(WP_REST_Request $request){
       //get an instance of the model
       $this->model = MRM_List_Model::get_instance();
 
@@ -167,7 +167,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
       $id = $urlParams['id'];
 
-      $success = $this->model->mrm_delete_list($id);
+      $success = $this->model->delete_list($id);
 
       $result = null;
       if($success) {
@@ -184,7 +184,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_delete_lists(WP_REST_Request $request){
+    public function delete_lists(WP_REST_Request $request){
       //get an instance of the model
       $this->model = MRM_List_Model::get_instance();
 
@@ -195,7 +195,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
       $body = $request->get_json_params();
 
       $listOfIDS = $body['list_ids'];
-      $success = $this->model->mrm_delete_lists($listOfIDS);
+      $success = $this->model->delete_lists($listOfIDS);
       $result = null;
       if($success) {
         $result = $this -> get_success_response("Delete Successfull", 200);
@@ -211,7 +211,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function mrm_search_lists(WP_REST_Request $request){
+    public function search_lists(WP_REST_Request $request){
       $this->model = MRM_List_Model::get_instance();
       // get json body as an array
       $body = $request->get_json_params();
@@ -222,7 +222,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
       $offset = ($page - 1) * $perPage;
       $limit = $perPage;
     
-      $data = $this->model->mrm_search_lists($title, $offset, $limit);
+      $data = $this->model->search_lists($title, $offset, $limit);
       
       if(isset($data)) {
         $result = $this -> get_success_response("Search successfull", 201, $data);
@@ -238,7 +238,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @return boolean
      * @since 1.0.0 
      */
-    public function mrm_lists_permissions_check(){
+    public function lists_permissions_check(){
         return true;
     }
 }

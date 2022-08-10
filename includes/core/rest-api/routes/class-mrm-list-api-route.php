@@ -37,7 +37,7 @@ class MRM_List_API_Route{
      * @var object
      * @since 1.0.0
      */
-    protected $mrm_list;
+    protected $controller;
 
     
 
@@ -48,7 +48,7 @@ class MRM_List_API_Route{
      * @since 1.0.0
      */
     public function register_routes(){
-      $this->mrm_list = MRM_List_Controller::get_instance();
+      $this->controller = MRM_List_Controller::get_instance();
     
       /**
      * List create endpoint
@@ -61,12 +61,12 @@ class MRM_List_API_Route{
           [
               'methods' => \WP_REST_Server::CREATABLE,
               'callback' => [
-                  $this->mrm_list ,
-                  'mrm_create_list'
+                  $this->controller ,
+                  'create_list'
               ],
                 'permission_callback' => [
-                  $this->mrm_list ,
-                  'mrm_lists_permissions_check'
+                  $this->controller ,
+                  'lists_permissions_check'
                 ] ,
           ],
       ]);
@@ -81,13 +81,13 @@ class MRM_List_API_Route{
         [
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [
-                $this->mrm_list ,
-                'mrm_get_lists'
+                $this->controller ,
+                'get_lists'
             ],
               'permission_callback' => [
-                $this->mrm_list ,
-                'mrm_lists_permissions_check'
-              ] ,
+                $this->controller ,
+                'lists_permissions_check'
+              ],
         ],
       ]);
 
@@ -101,12 +101,12 @@ class MRM_List_API_Route{
         [
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [
-                $this->mrm_list ,
-                'mrm_get_list'
+                $this->controller ,
+                'get_list'
             ],
               'permission_callback' => [
-                $this->mrm_list ,
-                'mrm_lists_permissions_check'
+                $this->controller ,
+                'lists_permissions_check'
               ] ,
         ],
       ]);
@@ -122,12 +122,12 @@ class MRM_List_API_Route{
         [
             'methods' => \WP_REST_Server::EDITABLE,
             'callback' => [
-                $this->mrm_list ,
-                'mrm_update_list'
+                $this->controller ,
+                'update_list'
             ],
               'permission_callback' => [
-                $this->mrm_list ,
-                'mrm_lists_permissions_check'
+                $this->controller ,
+                'lists_permissions_check'
               ] ,
         ],
       ]);
@@ -142,12 +142,12 @@ class MRM_List_API_Route{
         [
             'methods' => \WP_REST_Server::DELETABLE,
             'callback' => [
-                $this->mrm_list ,
-                'mrm_delete_list'
+                $this->controller ,
+                'delete_list'
             ],
               'permission_callback' => [
-                $this->mrm_list,
-                'mrm_lists_permissions_check'
+                $this->controller,
+                'lists_permissions_check'
               ] ,
         ],
       ]);
@@ -162,12 +162,12 @@ class MRM_List_API_Route{
       [
           'methods' => \WP_REST_Server::DELETABLE,
           'callback' => [
-              $this->mrm_list ,
-              'mrm_delete_lists'
+              $this->controller ,
+              'delete_lists'
           ],
             'permission_callback' => [
-              $this->mrm_list,
-              'mrm_lists_permissions_check'
+              $this->controller,
+              'lists_permissions_check'
             ] ,
       ],
       ]);
@@ -182,12 +182,12 @@ class MRM_List_API_Route{
       [
           'methods' => \WP_REST_Server::READABLE,
           'callback' => [
-              $this->mrm_list ,
-              'mrm_search_lists'
+              $this->controller ,
+              'search_lists'
           ],
             'permission_callback' => [
-              $this->mrm_list,
-              'mrm_lists_permissions_check'
+              $this->controller,
+              'lists_permissions_check'
             ] ,
       ],
       ]);

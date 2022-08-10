@@ -1,7 +1,6 @@
 <?php
 
 namespace MRM\Models;
-
 use Exception;
 use MRM\Data\MRM_List_Data;
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
@@ -26,17 +25,15 @@ class MRM_List_Model {
    * @since 1.0.0 
    */
 
-  public function mrm_insert_list(MRM_List_Data $list){
+  public function insert_list(MRM_List_Data $list){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    $now = date('Y-m-d H:i:s');
     try {
       $wpdb->insert($table_name, array(
       'title' => $list->get_title(),
       'type' => 2,
-      'created_at' => $now));
+      'created_at' => current_time('mysql')));
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
       return false;
     }
     return true;
@@ -49,19 +46,18 @@ class MRM_List_Model {
    * @return boolean
    * @since 1.0.0 
    */
-  public function mrm_update_list($id, MRM_List_Data $list){
+  public function update_list($id, MRM_List_Data $list){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    $now = date('Y-m-d H:i:s');
+  
     try {
       $wpdb->update($table_name, array(
       'title' => $list->get_title(),
       'type' => 2,
-      'updated_at' => $now), array(
+      'updated_at' => current_time('mysql')), array(
         'id' => $id
       ));
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
       return false;
     }
     return true;
@@ -74,7 +70,7 @@ class MRM_List_Model {
    * @return array an array of results if successfull, NULL otherwise
    * @since 1.0.0 
    */
-  public function mrm_get_lists($offset, $limit){
+  public function get_lists($offset, $limit){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     
@@ -94,7 +90,7 @@ class MRM_List_Model {
         'total_pages' => $totalPages
       );
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
+    
       return NULL;
     }
     
@@ -107,18 +103,15 @@ class MRM_List_Model {
    * @return array an array of results if successfull, NULL otherwise
    * @since 1.0.0 
    */
-  public function mrm_get_list($id){
+  public function get_list($id){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    $now = date('Y-m-d H:i:s');
     try {
       $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE ID = %d AND type = %d",array($id, '2'));
       $data = $wpdb->get_results($sql);
       $dataJson = json_decode(json_encode($data));
-
       return $dataJson;
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
       return NULL;
     }
     
@@ -132,24 +125,24 @@ class MRM_List_Model {
    * @since 1.0.0 
    */
 
-  public function mrm_delete_list($id){
+  public function delete_list($id){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     try {
       $wpdb->delete($table_name, array('ID' => $id));
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
       return false;
     }
     return true;
   }
+
   /**
    * Deletes multiple lists
    * @param array the list of ids to be deleted
    * @return boolean
    * @since 1.0.0 
    */
-  public function mrm_delete_lists($ids){
+  public function delete_lists($ids){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     try {
@@ -157,7 +150,6 @@ class MRM_List_Model {
         $wpdb->delete($table_name, array('ID' => $id));
       }
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
       return false;
     }
     return true;
@@ -169,7 +161,7 @@ class MRM_List_Model {
    * @return array an array of results if successfull, NULL otherwise
    * @since 1.0.0 
    */
-  public function mrm_search_lists($title, $offset, $limit){
+  public function search_lists($title, $offset, $limit){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     
@@ -189,7 +181,6 @@ class MRM_List_Model {
         'total_pages' => $totalPages
       );
     } catch(Exception $e) {
-      error_log(print_r($e, 1));
       return NULL;
     }
     
