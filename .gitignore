@@ -75,3 +75,9 @@ __tests/_data
 codeception.yml
 .env.local
 .env
+.phpcs.xml.dist
+.travis.yml
+Dockerfile
+bin/
+docker-compose.yml
+phpunit.xml.dist

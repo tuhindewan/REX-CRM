@@ -2,6 +2,7 @@
 
 namespace MRM\REST\Routes;
 
+use MRM\Controllers\MRM_Segment_Controller;
 
 /**
  * @author [MRM Team]
@@ -31,15 +32,14 @@ class MRM_Segment_API_Route{
 
 
     /**
-     * MRM_Segment class object
+     * MRM_Segment_Controller class object
      * 
      * @var object
      * @since 1.0.0
      */
-    protected $mrm_segment;
+    protected $controller;
 
     
-
     /**
      * Register API endpoints routes for segment module
      * 
@@ -48,6 +48,27 @@ class MRM_Segment_API_Route{
      */
     public function register_routes()
     {
+        $this->controller = MRM_Segment_Controller::get_instance();
+
+        /**
+         * Segment create endpoint
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'segment_create'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'segment_create_permissions_check'
+                ] ,
+            ],
+        ]);
         
     }
 
