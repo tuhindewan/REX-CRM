@@ -73,7 +73,12 @@ class MRM_Tag_Controller {
      * @since 1.0.0
      */
     public function mrm_update_tag(WP_REST_Request $request){
-        //$id = $request['id'];
+        $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+        $id = $request['id'];
+        $body = $request->get_json_params();
+        $this->mrm_tag_model->update_tag($id, $body);
+        
+        return rest_ensure_response($body);
     }
 
     /**

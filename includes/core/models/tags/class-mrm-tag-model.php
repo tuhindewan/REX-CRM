@@ -21,17 +21,17 @@ class MRM_Tag_Model {
      * SQL query to create a new tag
      * 
      * @param object
-     * @return JSON
+     * @return void
      * @since 1.0.0
      */
-    public function insert_tag($request){
+    public function insert_tag($body){
         global $wpdb;
         
         $table = $wpdb->prefix.'tags';
         $data = array(
-            'id'          => $request->id,
-            'title'       => $request->title,
-            'slug'        => $request->slug
+            'id'          => $body->id,
+            'title'       => $body->title,
+            'slug'        => $body->slug
         );
         $format = array(
             '%d',
@@ -45,10 +45,29 @@ class MRM_Tag_Model {
     /**
      * SQL query to update a tag
      * 
-     * @param object
+     * @param int, object
      * @return JSON
      * @since 1.0.0
      */
-    
+    public function update_tag($id, $body){
+        global $wpdb;
+
+        $table = $wpdb->prefix.'tags';
+        $data = array(
+            'id'          => $body->id,
+            'title'       => $body->title,
+            'slug'        => $body->slug
+        );
+        $where = array(
+            'id'     =>  $id
+        );
+        $format = array(
+            '%d',
+            '%s',
+            '%s'
+        );
+        $wpdb->update( $table , $data, $where, $format );
+    }
+
 
 }
