@@ -14,6 +14,16 @@ require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 class MRM_Contact_Groups_Table {
 
+
+    /**
+     * Table name
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    public static $mrm_table = 'mrm_contact_groups';
+
+
     /**
      * Create the table.
      *
@@ -26,7 +36,7 @@ class MRM_Contact_Groups_Table {
 
         $charsetCollate = $wpdb->get_charset_collate();
 
-        $table = $wpdb->prefix .'mrm_contact_groups';
+        $table = $wpdb->prefix . self::$mrm_table;
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
             $sql = "CREATE TABLE {$table} (

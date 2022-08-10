@@ -69,7 +69,9 @@ class MRM_Database_Core {
     protected function get_tables()
     {
         return apply_filters( 'mrm/database_tables', array(
-			'categories'                 => 'MRM_Contact_Groups_Table',
+			'categories'    => 'MRM_Contact_Groups_Table',
+            'contacts'      => 'MRM_Contacts_Table',
+            // 'contact_info'  => 'MRM_Contact_Info'
 		));
     }
 
