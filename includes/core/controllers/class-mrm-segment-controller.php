@@ -30,14 +30,14 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
 
     /**
-     * Create a new segment 
+     * Create a new segment or update a existing segment
      * 
      * @param WP_REST_Request $request
      * 
      * @return array
      * @since 1.0.0
      */
-    public function segment_create(WP_REST_Request $request)
+    public function create_or_update_segment(WP_REST_Request $request)
     {
         $this->model = MRM_Segment_Model::get_instance();
         
@@ -66,27 +66,25 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 			return $this->get_error_response( $response, $this->response_code );
 		}
 
-        // Segment object create and insert to database
+        // Segment object create and insert or update to database
         try {
             $segment = new MRM_Segment($params);
-            $success = $this->model->insert($segment);
+
+            if(isset($params['segment_id'])){
+                $success = $this->model->update($segment, $params['segment_id']);
+            }else{
+                $success = $this->model->insert($segment);
+            }
 
             if($success) {
                 return $this->get_success_response("Insertion successfull", 201);
             } else {
                 return $this->get_error_response('Failed to insert', 400);
             }
-          } catch(Exception $e) {
+        } catch(Exception $e) {
                 return $this->get_error_response('Segment is not valid', 400);
-          }
+        }
 
-
-    }
-
-
-    public function segment_create_permissions_check()
-    {
-        return true;
     }
 
 }

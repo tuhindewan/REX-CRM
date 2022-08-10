@@ -28,7 +28,7 @@ class MRM_Segment_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'segment';
+    protected $rest_base = 'segments';
 
 
     /**
@@ -61,11 +61,32 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'segment_create'
+                    'create_or_update_segment'
                 ],
                 'permission_callback' => [
                     $this->controller ,
-                    'segment_create_permissions_check'
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
+
+
+        /**
+         * Segment update endpoint
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<segment_id>[\d]+)', [
+            [
+                'methods' => \WP_REST_Server::EDITABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_or_update_segment'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
                 ] ,
             ],
         ]);

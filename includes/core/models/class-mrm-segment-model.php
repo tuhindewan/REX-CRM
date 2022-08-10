@@ -42,6 +42,35 @@ class MRM_Segment_Model{
         } catch(\Exception $e) {
             return false;
         }
-            return true;
+        return true;
+    }
+
+
+    /**
+     * Update segment information to database
+     * 
+     * @param MRM_Segment $segment
+     * @param $id 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function update(MRM_Segment $segment, $id)
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        try {
+            $wpdb->update($table_name, array(
+                'title' => $segment->get_title(),
+                'type' => 3,
+                'data'  => $segment->get_data(),
+                'updated_at' => current_time('mysql')), array(
+                  'id' => $id
+                ));
+        } catch(\Exception $e) {
+            return false;
+        }
+        return true;
     }
 }
