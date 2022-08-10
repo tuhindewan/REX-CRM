@@ -74,7 +74,8 @@ class MRM_API_Register {
     protected function get_routes()
     {
         return apply_filters( 'mrm/rest_api_routes', array(
-			'lists'                 => 'MRM_List_API_Route',
+			'lists'         =>  'MRM_List_API_Route',
+            'segments'      =>  'MRM_Segment_API_Route'
 		));
     }
     

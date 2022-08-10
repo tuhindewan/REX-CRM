@@ -38,7 +38,6 @@ class MRM_Database_Core {
     protected function load_db_classes()
     {
         foreach ($this->get_db_namespaces() as $namespace => $tables) {
-            error_log(print_r($tables, 1));
             foreach ($tables as $table_name => $table_class) {
                 $table_class_name = "MRM\\DB\\Tables\\".$table_class;
                 $this->routes[ $namespace ][ $table_name ] = new $table_class_name();
