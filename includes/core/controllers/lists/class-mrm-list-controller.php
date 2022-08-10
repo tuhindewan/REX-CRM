@@ -2,6 +2,10 @@
 
 namespace MRM\Controllers\Lists;
 
+use Exception;
+use MRM\Controllers\MRM_Base_Controller;
+use MRM\Models\Lists\MRM_List_Model;
+use MRM\Data\Lists\MRM_List_Data;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -13,20 +17,108 @@ use WP_REST_Request;
  * @desc [Handle List Module related API callbacks]
  */
 
-class MRM_List_Controller {
+class MRM_List_Controller extends MRM_Base_Controller{
     
     use Singleton;
-   
-    public function __construct()
-    {
-        
+    
+    /**
+     * holds the model instance for database related queries
+     * @var MRM_List_Model
+     * @since 1.0.0 
+     */
+
+    public $model;
+    
+    
+    
+    /**
+     * Function used to handle create requests
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function mrm_create_list(WP_REST_Request $request){
+      //instantiate the model
+      $this->model = MRM_List_Model::get_instance();
+
+      //get the list body
+      $body = $request->get_json_params();
+
+      try {
+        $list = new MRM_List_Data($body['title']);
+      } catch(Exception $e) {
+        return $this->get_error_response('Invalid Data', 400);
+      }
+      
+      $success = $this->model->mrm_insert_list($list);
+      
+      $result = null;
+      if($success) {
+        $result = $this -> get_success_response("Insertion successfull", 201);
+      } else {
+        $result = $this -> get_error_response(400, "Failed to Insert");
+      }
+      return $result;
     }
 
-    public function mrm_list_create(WP_REST_Request $request){
-        return rest_ensure_response($request);
+    /**
+     * Function used to handle update requests
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+    public function mrm_update_list(WP_REST_Request $request){
+      
+      $queryParams = $request->get_query_params();
+      $body = $request->get_json_params();
+      error_log(print_r($body, 1));
+      return rest_ensure_response($request);
     }
 
-    public function mrm_list_create_permissions_check(){
+    /**
+     * Function used to handle get requests
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function mrm_get_lists(WP_REST_Request $request){
+      $queryParams = $request->get_query_params();
+      $body = $request->get_json_params();
+      error_log(print_r($body, 1));
+      return rest_ensure_response($request);
+    }
+
+    /**
+     * Function used to handle a single get request
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function mrm_get_list(WP_REST_Request $request){
+      $queryParams = $request->get_query_params();
+      $body = $request->get_json_params();
+      error_log(print_r($body, 1));
+      return rest_ensure_response($request);
+    }
+
+    /**
+     * Function used to handle delete requests
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function mrm_delete_list(WP_REST_Request $request){
+      $queryParams = $request->get_query_params();
+      $body = $request->get_json_params();
+      error_log(print_r($body, 1));
+      return rest_ensure_response($request);
+    }
+
+    /**
+     * Function used check whether the given user has permission to acces the endpoing
+     * @return boolean
+     * @since 1.0.0 
+     */
+    public function mrm_lists_permissions_check(){
         return true;
     }
 }

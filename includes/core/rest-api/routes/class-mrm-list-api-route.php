@@ -28,7 +28,7 @@ class MRM_List_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'list';
+    protected $rest_base = 'lists';
 
 
     /**
@@ -49,21 +49,109 @@ class MRM_List_API_Route{
      */
     public function register_routes()
     {
-        $this->mrm_list = MRM_List_Controller::get_instance();
-        
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/create/', [
-            [
-                'methods' => \WP_REST_Server::CREATABLE,
-                'callback' => [
-                    $this->mrm_list ,
-                    'mrm_list_create'
-                ],
-                 'permission_callback' => [
-                    $this->mrm_list ,
-                     'mrm_list_create_permissions_check'
-                 ] ,
+      $this->mrm_list = MRM_List_Controller::get_instance();
+    
+      /**
+     * List create endpoint
+     * 
+     * @return void
+     * @since 1.0.0
+     */  
+       
+      register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+          [
+              'methods' => \WP_REST_Server::CREATABLE,
+              'callback' => [
+                  $this->mrm_list ,
+                  'mrm_create_list'
+              ],
+                'permission_callback' => [
+                  $this->mrm_list ,
+                  'mrm_lists_permissions_check'
+                ] ,
+          ],
+      ]);
+
+      /**
+     * List get endpoint with pagination
+     * 
+     * @return void
+     * @since 1.0.0
+     */  
+      register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+        [
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [
+                $this->mrm_list ,
+                'mrm_get_list'
             ],
-        ]);
+              'permission_callback' => [
+                $this->mrm_list ,
+                'mrm_lists_permissions_check'
+              ] ,
+        ],
+      ]);
+
+      /**
+     * List get a single list endpoint
+     * 
+     * @return void
+     * @since 1.0.0
+     */  
+    register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
+      [
+          'methods' => \WP_REST_Server::READABLE,
+          'callback' => [
+              $this->mrm_list ,
+              'mrm_get_list'
+          ],
+            'permission_callback' => [
+              $this->mrm_list ,
+              'mrm_lists_permissions_check'
+            ] ,
+      ],
+    ]);
+
+
+      /**
+     * List update endpoint
+     * 
+     * @return void
+     * @since 1.0.0
+     */  
+      register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
+        [
+            'methods' => \WP_REST_Server::EDITABLE,
+            'callback' => [
+                $this->mrm_list ,
+                'mrm_update_list'
+            ],
+              'permission_callback' => [
+                $this->mrm_list ,
+                'mrm_lists_permissions_check'
+              ] ,
+        ],
+      ]);
+
+      /**
+     * List delete endpoint
+     * 
+     * @return void
+     * @since 1.0.0
+     */  
+      register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
+        [
+            'methods' => \WP_REST_Server::DELETABLE,
+            'callback' => [
+                $this->mrm_list ,
+                'mrm_delete_list'
+            ],
+              'permission_callback' => [
+                $this->mrm_list,
+                'mrm_lists_permissions_check'
+              ] ,
+        ],
+      ]);
     }
 
 }

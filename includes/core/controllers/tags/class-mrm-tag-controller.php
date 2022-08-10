@@ -29,19 +29,6 @@ class MRM_Tag_Controller {
 
 
     /**
-     * Get instance for MRM_Tag_Model class
-     * 
-     * @return void
-     * @since 1.0.0
-     */
-    // public static function get_instance(){
-    //     $this->mrm_tag_model = MRM_Tag_Model::get_instance();
-    //     error_log(print_r($this->mrm_tag_model, 1));
-    // }
-
-
-
-    /**
      * Get and send response to create a new tag
      * 
      * @param request

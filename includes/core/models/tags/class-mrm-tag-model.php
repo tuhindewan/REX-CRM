@@ -76,7 +76,7 @@ class MRM_Tag_Model {
     }
 
     /**
-     * SQL query to update a tag
+     * SQL query to delete a tag
      * 
      * @param int, object
      * @return JSON
@@ -85,21 +85,9 @@ class MRM_Tag_Model {
     public function delete_tag($id, $body){
         global $wpdb;
 
-        $table = $wpdb->prefix.'tags';
-        $data = array(
-            'id'          => $body->id,
-            'title'       => $body->title,
-            'slug'        => $body->slug
-        );
-        $where = array(
-            'id'     =>  $id
-        );
-        $format = array(
-            '%d',
-            '%s',
-            '%s'
-        );
-        $wpdb->update( $table , $data, $where, $format );
+        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        $wpdb->delete( $table, array( 'id' => $id ) );
     }
 
 }
