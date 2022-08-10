@@ -90,4 +90,39 @@ class MRM_Tag_Model {
         $wpdb->delete( $table, array( 'id' => $id ) );
     }
 
+    /**
+     * SQL query to get all tags with pagination
+     * 
+     * @param object
+     * @return JSON
+     * @since 1.0.0
+     */
+    public function get_all_tags($request){
+        global $wpdb;
+        $items_per_page = $request['items_per_page'];
+        $page = isset( $_GET['cpage'] ) ? abs( (int) $_GET['cpage'] ) : 1;
+        $offset = ( $page * $items_per_page ) - $items_per_page;
+
+        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        $query = 'SELECT * FROM '.$table;
+
+        $total_query = "SELECT COUNT(1) FROM (${query}) AS combined_table";
+        $total = $wpdb->get_var( $total_query );
+
+        $results = $wpdb->get_results( $query.' ORDER BY id DESC LIMIT '. $offset.', '. $items_per_page, OBJECT );
+
+
+        paginate_links( array(
+            'base' => add_query_arg( 'cpage', '%#%' ),
+            'format' => '',
+            'prev_text' => __('&laquo;'),
+            'next_text' => __('&raquo;'),
+            'total' => ceil($total / $items_per_page),
+            'current' => $page
+        ));
+
+        return $results;
+    }
+
 }
