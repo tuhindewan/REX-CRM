@@ -1,11 +1,11 @@
 <?php
 
-namespace MRM\Controllers\Lists;
+namespace MRM\Controllers;
 
 use Exception;
 use MRM\Controllers\MRM_Base_Controller;
-use MRM\Models\Lists\MRM_List_Model;
-use MRM\Data\Lists\MRM_List_Data;
+use MRM\Models\MRM_List_Model;
+use MRM\Data\MRM_List_Data;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -86,7 +86,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
       if($success) {
         $result = $this -> get_success_response("Update successfull", 201);
       } else {
-        $result = $this -> get_error_response(400, "Failed to Update");
+        $result = $this -> get_error_response("Failed to Update", 400);
       }
       return $result;
     }
@@ -99,9 +99,14 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
     public function mrm_get_lists(WP_REST_Request $request){
       $queryParams = $request->get_query_params();
-      $body = $request->get_json_params();
-      error_log(print_r($body, 1));
-      return rest_ensure_response($request);
+      $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
+      $result = null;
+      // if($success) {
+      //   $result = $this -> get_success_response("Update successfull", 201);
+      // } else {
+      //   $result = $this -> get_error_response(400, "Failed to Update");
+      // }
+      // return rest_ensure_response($request);
     }
 
     /**

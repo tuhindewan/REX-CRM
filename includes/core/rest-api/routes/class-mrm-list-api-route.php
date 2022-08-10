@@ -2,7 +2,7 @@
 
 namespace MRM\REST\Routes;
 
-use MRM\Controllers\Lists\MRM_List_Controller;
+use MRM\Controllers\MRM_List_Controller;
 
 /**
  * @author [MRM Team]

@@ -1,9 +1,9 @@
 <?php
 
-namespace MRM\Models\Lists;
+namespace MRM\Models;
 
 use Exception;
-use MRM\Data\Lists\MRM_List_Data;
+use MRM\Data\MRM_List_Data;
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
 use MRM\Traits\Singleton;
 
@@ -78,7 +78,7 @@ class MRM_List_Model {
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     $now = date('Y-m-d H:i:s');
-
+    
     return true;
   }
 
