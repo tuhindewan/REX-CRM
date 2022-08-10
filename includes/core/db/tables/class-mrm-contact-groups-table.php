@@ -38,19 +38,17 @@ class MRM_Contact_Groups_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE {$table} (
-                `id` BIGINT(20) unsigned NOT NULL auto_increment,
-                `title` VARCHAR(255) NOT NULL,
-                `type` TINYINT(2) unsigned NOT NULL, -- 1 -> tags, 2 -> lists, 3 -> segments
-                `data` longtext, 
-                `created_at` TIMESTAMP,
-                `updated_at` TIMESTAMP,
-               PRIMARY KEY (`id`),
-               KEY `type` (`type`)
-             ) $charsetCollate;";
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            `id` BIGINT(20) unsigned NOT NULL auto_increment,
+            `title` VARCHAR(255) NOT NULL,
+            `type` TINYINT(2) unsigned NOT NULL COMMENT '1 - tags, 2 - lists, 3 - segments',
+            `data` longtext, 
+            `created_at` TIMESTAMP,
+            `updated_at` TIMESTAMP,
+           PRIMARY KEY (`id`),
+           KEY `type` (`type`)
+         ) $charsetCollate;";
 
-            dbDelta($sql);
-        }
+        dbDelta($sql);
     }
 }

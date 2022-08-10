@@ -36,25 +36,23 @@ class MRM_Contact_Info_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE {$table} (
-                `id` BIGINT unsigned NOT NULL auto_increment,
-                `contact_id` BIGINT unsigned NOT NULL,
-                `timezone` VARCHAR(192) NULL,
-                `address_line_1` VARCHAR(192) NULL,
-                `address_line_2` VARCHAR(192) NULL,
-                `postal_code` VARCHAR(192) NULL,
-                `city` VARCHAR(192) NULL,
-                `state` VARCHAR(192) NULL,
-                `country` VARCHAR(192) NULL,
-                `phone` VARCHAR(50) NULL,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                PRIMARY KEY (`id`),
-                KEY `contact_id` (`contact_id`)
-             ) $charsetCollate;";
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            `id` BIGINT unsigned NOT NULL auto_increment,
+            `contact_id` BIGINT unsigned NOT NULL,
+            `timezone` VARCHAR(192) NULL,
+            `address_line_1` VARCHAR(192) NULL,
+            `address_line_2` VARCHAR(192) NULL,
+            `postal_code` VARCHAR(192) NULL,
+            `city` VARCHAR(192) NULL,
+            `state` VARCHAR(192) NULL,
+            `country` VARCHAR(192) NULL,
+            `phone` VARCHAR(50) NULL,
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL,
+            PRIMARY KEY (`id`),
+            KEY `contact_id` (`contact_id`)
+         ) $charsetCollate;";
 
-            dbDelta($sql);
-        }
+        dbDelta($sql);
     }
 }

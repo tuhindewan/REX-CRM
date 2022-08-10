@@ -36,23 +36,21 @@ class MRM_Contact_Note_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE {$table} (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `contact_id` BIGINT(20) UNSIGNED NOT NULL,
-                `type` VARCHAR(255) NOT NULL,
-                `title` VARCHAR(255),
-                `description` longtext,
-                `created_by` BIGINT(20),
-                `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
-                `is_public` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                PRIMARY KEY (`id`),
-                KEY `contact_id` (`contact_id`)
-             ) $charsetCollate;";
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `contact_id` BIGINT(20) UNSIGNED NOT NULL,
+            `type` VARCHAR(255) NOT NULL,
+            `title` VARCHAR(255),
+            `description` longtext,
+            `created_by` BIGINT(20),
+            `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+            `is_public` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL,
+            PRIMARY KEY (`id`),
+            KEY `contact_id` (`contact_id`)
+         ) $charsetCollate;";
 
-            dbDelta($sql);
-        }
+        dbDelta($sql);
     }
 }

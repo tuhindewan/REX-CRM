@@ -36,22 +36,19 @@ class MRM_Emails_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `track_id` BIGINT(20) unsigned NOT NULL,
+            `subject` VARCHAR(255) NOT NULL,
+            `preview_text` VARCHAR(255) NOT NULL,
+            `body` longtext,
+            `template_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Template ID',
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL,
+            PRIMARY KEY (`id`),
+            KEY `track_id` (`track_id`)
+         ) $charsetCollate;";
 
-            $sql = "CREATE TABLE {$table} (
-                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `track_id` BIGINT(20) unsigned NOT NULL,
-                `subject` VARCHAR(255) NOT NULL,
-                `preview_text` VARCHAR(255) NOT NULL,
-                `body` longtext,
-                `template_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Template ID',
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                PRIMARY KEY (`id`),
-                KEY `track_id` (`track_id`)
-             ) $charsetCollate;";
-
-            dbDelta($sql);
-        }
+        dbDelta($sql);
     }
 }

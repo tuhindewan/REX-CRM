@@ -36,18 +36,16 @@ class MRM_Contact_Group_Pivot_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE {$table} (
-                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `contact_id` BIGINT UNSIGNED NOT NULL,
-                `group_id` BIGINT UNSIGNED NOT NULL COMMENT 'list_id or tag_id or segment_id',
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                INDEX `contact_id_pivot_index` (`contact_id` ASC),
-                INDEX `group_id_pivot_index` (`group_id` ASC)
-             ) $charsetCollate;";
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            `contact_id` BIGINT UNSIGNED NOT NULL,
+            `group_id` BIGINT UNSIGNED NOT NULL COMMENT 'list_id or tag_id or segment_id',
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL,
+            INDEX `contact_id_pivot_index` (`contact_id` ASC),
+            INDEX `group_id_pivot_index` (`group_id` ASC)
+         ) $charsetCollate;";
 
-            dbDelta($sql);
-        }
+        dbDelta($sql);
     }
 }
