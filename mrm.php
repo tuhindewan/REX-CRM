@@ -60,7 +60,6 @@ function mrm_admin_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'admin/templates/app.php';
 }
 
-
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-mrm-activator.php
