@@ -6,9 +6,11 @@ use MRM\Data\MRM_Contact;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use MRM\Data\MRM_List_Data;
 use MRM\Models\MRM_Contact_Model;
 use MRM\Models\MRM_Tag_Model;
 use MRM\Data\MRM_Tag;
+use MRM\Models\MRM_List_Model;
 use MRM\Models\MRM_Model_Common;
 
 /**
@@ -84,6 +86,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 $this->set_tags_to_contact( $params['tags'], $contact_id );
             }
 
+            if(isset($params['lists'])){
+                $this->set_lists_to_contact( $params['lists'], $contact_id );
+            }
+            error_log(print_r($contact_id, 1));
+
             if($contact_id) {
                 return $this->get_success_response(__( 'Insertion successfull', 'mrm' ), 201);
             } else {
@@ -119,14 +126,51 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             }
 
             return array(
-                'tag_id'    => $tag['id'],
-                'contact_id'    => $contact_id
+                'group_id'    =>  $tag['id'],
+                'contact_id'  =>  $contact_id
             );
             
 
         }, $tags);
         
-        MRM_Model_Common::add_tags_to_contact( $pivot_ids );
+        MRM_Model_Common::add_groups_to_contact( $pivot_ids );
         
     }
+
+
+    /**
+     * Add lists to new contact
+     * 
+     * @param array $lists
+     * @param int $contact_id
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function set_lists_to_contact( $lists, $contact_id )
+    {
+        $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
+
+            // Create new tag if not exist
+            if( 0 == $list['id'] ){
+                $new_list = new MRM_List_Data($list['title']);
+                $new_list_id = MRM_List_Model::get_instance()->insert_list( $new_list );
+            }
+
+            if(isset($new_list_id)){
+                $list['id'] = $new_list_id;
+            }
+
+            return array(
+                'group_id'    =>  $list['id'],
+                'contact_id'  =>  $contact_id
+            );
+            
+
+        }, $lists);
+        
+        MRM_Model_Common::add_groups_to_contact( $pivot_ids );
+        
+    }
+
 }

@@ -159,7 +159,7 @@ class MRM_Model_Common {
      * @return void
      * @since 1.0.0
      */
-    public static function add_tags_to_contact( $pivot_ids )
+    public static function add_groups_to_contact( $pivot_ids )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
@@ -167,7 +167,7 @@ class MRM_Model_Common {
         foreach($pivot_ids as $id) {
             $wpdb->insert($table_name, array(
                 'contact_id' => $id['contact_id'],
-                'group_id' => $id['tag_id'],
+                'group_id' => $id['group_id'],
                 'created_at' => current_time('mysql')
             ));
         }

@@ -18,14 +18,16 @@ class MRM_List_Model {
     
   use Singleton;
 
+
   /**
    * Inserts a new list into db
+   * 
    * @param list a new instace of list that gets inserted
    * @return boolean
+   * 
    * @since 1.0.0 
-   */
-
-  public function insert_list(MRM_List_Data $list){
+  */
+  public function insert_list( MRM_List_Data $list ){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     try {
@@ -36,7 +38,7 @@ class MRM_List_Model {
     } catch(Exception $e) {
       return false;
     }
-    return true;
+    return $wpdb->insert_id;
   }
 
   /**
