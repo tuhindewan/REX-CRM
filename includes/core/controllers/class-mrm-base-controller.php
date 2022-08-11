@@ -19,7 +19,7 @@ abstract class MRM_Base_Controller {
      * @var integer
      * @since 1.0.0
      */
-  	public $response_code = 200;
+  	private $response_code = 200;
   
 
 	/**
@@ -32,14 +32,11 @@ abstract class MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */  
-	public function get_success_response( $message = '', $code = 0, $wp_error = null ) {
+	public function get_success_response( $message = '', $code = 0, $data = null ) {
 		return array(
 			'code'    => $code,
 			'message' => $message,
-			'data'  => [
-				"status" => $code,
-				"error_code"  => []
-			],
+			'data'  => $data,
 		);
 	}
 
@@ -57,7 +54,7 @@ abstract class MRM_Base_Controller {
 	public function get_error_response( $message = '', $code = 0, $wp_error = null  ) {
 		if ( 0 !== absint( $code ) ) {
 			$this->response_code = $code;
-		} else if ( empty( $this->response_code ) ) {
+		} else if ( empty( $code ) ) {
 			$this->response_code = 500;
 		}
 

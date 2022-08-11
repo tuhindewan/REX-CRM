@@ -52,18 +52,16 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         $title = sanitize_text_field($params['title']);
 
         if ( empty( $title ) ) {
-			$this->response_code = 400;
 			$response            = __( 'Title is mandatory', 'mrm' );
 
-			return $this->get_error_response( $response,  $this->response_code);
+			return $this->get_error_response( $response,  400);
 		}
 
         // Segment filters validation
         if ( empty( $params['data'] ) || ( is_array( $params['data'] ) && empty( $params['data']['filters'] ) ) ) {
-			$this->response_code = 400;
 			$response            = __( 'Filters are mandatory.', 'mrm' );
 
-			return $this->get_error_response( $response, $this->response_code );
+			return $this->get_error_response( $response, 400 );
 		}
 
         // Segment object create and insert or update to database
@@ -77,12 +75,12 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
             }
 
             if($success) {
-                return $this->get_success_response("Insertion successfull", 201);
+                return $this->get_success_response(__( 'Insertion successfull', 'mrm' ), 201);
             } else {
-                return $this->get_error_response('Failed to insert', 400);
+                return $this->get_error_response(__( 'Insertion Failed', 'mrm' ), 400);
             }
         } catch(Exception $e) {
-                return $this->get_error_response('Segment is not valid', 400);
+                return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 400);
         }
 
     }
