@@ -44,9 +44,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         
         // Get values from API
         $query_params   = $request->get_query_params();
-        $query_params   = is_array( $query_params ) ? $query_params : array();
         $request_params = $request->get_params();
-        $request_params = is_array( $request_params ) ? $request_params : array();
         $params         = array_replace( $query_params, $request_params );
 
         // Segment Title validation
@@ -102,9 +100,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
         // Get values from API
         $query_params   = $request->get_query_params();
-        $query_params   = is_array( $query_params ) ? $query_params : array();
         $request_params = $request->get_params();
-        $request_params = is_array( $request_params ) ? $request_params : array();
         $params         = array_replace( $query_params, $request_params );
 
         $page = isset($params['page']) ? $params['page'] : 1;

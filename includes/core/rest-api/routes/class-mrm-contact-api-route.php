@@ -51,7 +51,25 @@ class MRM_Contact_API_Route {
     {
         $this->controller = MRM_Contact_Controller::get_instance();
         
-        
+        /**
+         * Contact create endpoint
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_or_update_contact'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
     }
 
 }

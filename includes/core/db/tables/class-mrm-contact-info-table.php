@@ -47,7 +47,6 @@ class MRM_Contact_Info_Table {
                 `city` VARCHAR(192) NULL,
                 `state` VARCHAR(192) NULL,
                 `country` VARCHAR(192) NULL,
-                `phone` VARCHAR(50) NULL,
                 `created_at` TIMESTAMP NULL,
                 `updated_at` TIMESTAMP NULL,
                 PRIMARY KEY (`id`),
