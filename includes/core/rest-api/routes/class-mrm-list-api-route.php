@@ -52,212 +52,89 @@ class MRM_List_API_Route{
     
         /**
          * List create endpoint
-         * Get lists endpoint
+         * Get and search lists endpoint
          * 
          * @return void
          * @since 1.0.0
         */  
        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
-        [
-            'methods' => \WP_REST_Server::CREATABLE,
-            'callback' => [
-                $this->controller ,
-                'create_or_update_list'
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_or_update_list'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ] ,
-        ],
-        [
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => [
-                $this->controller ,
-                'get_lists'
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_lists'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ] ,
-        ],
-        [
-            'methods' => \WP_REST_Server::DELETABLE,
-            'callback' => [
-                $this->controller ,
-                'delete_lists'
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_lists'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ] ,
-        ],
-    ]);
-    /**
-         * Segment update endpoint
-         * Segment delete endpoint
-         * 
+        ]);
+        /**
+         * List update endpoint
+         * List delete endpoint
+         * List get endpoint
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
-        [
-            'methods' => \WP_REST_Server::EDITABLE,
-            'callback' => [
-                $this->controller ,
-                'create_or_update_list'
+        
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
+            [
+                'methods' => \WP_REST_Server::EDITABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_or_update_list'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ] ,
-        ],
-        [
-            'methods' => \WP_REST_Server::DELETABLE,
-            'callback' => [
-                $this->controller ,
-                'delete_list'
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_list'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ] ,
-        ],
-    ]);
-       
-    //   register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
-    //       [
-    //           'methods' => \WP_REST_Server::CREATABLE,
-    //           'callback' => [
-    //               $this->controller ,
-    //               'create_list'
-    //           ],
-    //             'permission_callback' => [
-    //               $this->controller ,
-    //               'lists_permissions_check'
-    //             ] ,
-    //       ],
-    //   ]);
-
-    //   /**
-    //  * List get endpoint with pagination
-    //  * 
-    //  * @return void
-    //  * @since 1.0.0
-    //  */  
-    //   register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
-    //     [
-    //         'methods' => \WP_REST_Server::READABLE,
-    //         'callback' => [
-    //             $this->controller ,
-    //             'get_lists'
-    //         ],
-    //           'permission_callback' => [
-    //             $this->controller ,
-    //             'lists_permissions_check'
-    //           ],
-    //     ],
-    //   ]);
-
-    //   /**
-    //     * List get a single list endpoint
-    //     * 
-    //     * @return void
-    //     * @since 1.0.0
-    //   */  
-    //   register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
-    //     [
-    //         'methods' => \WP_REST_Server::READABLE,
-    //         'callback' => [
-    //             $this->controller ,
-    //             'get_list'
-    //         ],
-    //           'permission_callback' => [
-    //             $this->controller ,
-    //             'lists_permissions_check'
-    //           ] ,
-    //     ],
-    //   ]);
-
-
-    //   /**
-    //  * List update endpoint
-    //  * 
-    //  * @return void
-    //  * @since 1.0.0
-    //  */  
-    //   register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
-    //     [
-    //         'methods' => \WP_REST_Server::EDITABLE,
-    //         'callback' => [
-    //             $this->controller ,
-    //             'update_list'
-    //         ],
-    //           'permission_callback' => [
-    //             $this->controller ,
-    //             'lists_permissions_check'
-    //           ] ,
-    //     ],
-    //   ]);
-
-    //   /**
-    //    * List delete endpoint
-    //    * 
-    //    * @return void
-    //    * @since 1.0.0
-    //   */  
-    //   register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
-    //     [
-    //         'methods' => \WP_REST_Server::DELETABLE,
-    //         'callback' => [
-    //             $this->controller ,
-    //             'delete_list'
-    //         ],
-    //           'permission_callback' => [
-    //             $this->controller,
-    //             'lists_permissions_check'
-    //           ] ,
-    //     ],
-    //   ]);
-
-    //   /**
-    //    * List delete multiple endpoint
-    //    * 
-    //    * @return void
-    //    * @since 1.0.0
-    //   */  
-    //  register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
-    //   [
-    //       'methods' => \WP_REST_Server::DELETABLE,
-    //       'callback' => [
-    //           $this->controller ,
-    //           'delete_lists'
-    //       ],
-    //         'permission_callback' => [
-    //           $this->controller,
-    //           'lists_permissions_check'
-    //         ] ,
-    //   ],
-    //   ]);
-
-    //   /**
-    //    * List search by title endpoint
-    //    * 
-    //    * @return void
-    //    * @since 1.0.0
-    //   */  
-    //  register_rest_route($this->namespace, '/' . $this->rest_base . '/search', [
-    //   [
-    //       'methods' => \WP_REST_Server::READABLE,
-    //       'callback' => [
-    //           $this->controller ,
-    //           'search_lists'
-    //       ],
-    //         'permission_callback' => [
-    //           $this->controller,
-    //           'lists_permissions_check'
-    //         ] ,
-    //   ],
-    //   ]);
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_list'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
     }
 
 }

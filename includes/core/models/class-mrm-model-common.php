@@ -99,13 +99,14 @@ class MRM_Model_Common {
      * @return array
      * @since 1.0.0
      */
-    public static function get_groups($type ,$offset = 0, $limit = 10, $search = '')
+    public static function get_groups($type ,$offset, $limit, $search = '')
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         // Search segments by title
 		if ( ! empty( $search ) ) {
+            error_log(print_r("getting",1));
 			try {
                 $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array($type, "%{$search}%", $offset, $limit) );
                 $data = $wpdb->get_results( $sql );
@@ -129,6 +130,7 @@ class MRM_Model_Common {
 
         // Return segments for list view
         try {
+            error_log(print_r("searching",1));
             $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d LIMIT %d, %d ",array($type, $offset, $limit) );
             $data = $wpdb->get_results( $sql );
             $dataJson = json_decode(json_encode( $data ));

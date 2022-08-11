@@ -80,7 +80,6 @@ class MRM_List_Model {
       $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d",array('2'));
       $sqlCountData = $wpdb->get_results($sqlCount);
       $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-      
       $count = (int) $sqlCountDataJson['0']['total'];
       $totalPages = ceil(intdiv($count, $limit));
 
@@ -116,74 +115,4 @@ class MRM_List_Model {
     
     return NULL;
   }
-
-  /**
-   * Deletes a list
-   * @param id the list id to be deleted
-   * @return boolean
-   * @since 1.0.0 
-   */
-
-  public function delete_list($id){
-    global $wpdb;
-    $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    try {
-      $wpdb->delete($table_name, array('ID' => $id));
-    } catch(Exception $e) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Deletes multiple lists
-   * @param array the list of ids to be deleted
-   * @return boolean
-   * @since 1.0.0 
-   */
-  public function delete_lists($ids){
-    global $wpdb;
-    $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    try {
-      foreach ($ids as $id) {
-        $wpdb->delete($table_name, array('ID' => $id));
-      }
-    } catch(Exception $e) {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Searches lists by title
-   * @param title the start of the list data
-   * @return array an array of results if successfull, NULL otherwise
-   * @since 1.0.0 
-   */
-  public function search_lists($title, $offset, $limit){
-    global $wpdb;
-    $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-    
-    try {
-      $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('2', "%{$title}%", $offset, $limit));
-      $data = $wpdb->get_results($sql);
-      $dataJson = json_decode(json_encode($data));
-      $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d AND title LIKE %s",array('2', "%{$title}%"));
-      $sqlCountData = $wpdb->get_results($sqlCount);
-      $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-      
-      $count = (int) $sqlCountDataJson['0']['total'];
-      $totalPages = ceil(intdiv($count, $limit));
-
-      return array(
-        'data'=> $dataJson,
-        'total_pages' => $totalPages
-      );
-    } catch(Exception $e) {
-      return NULL;
-    }
-    
-    return NULL;
-  }
-   
 }
