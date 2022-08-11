@@ -3,9 +3,11 @@
 namespace MRM\Controllers\Tags;
 
 use MRM\Models\Tags\MRM_Tag_Model;
+use MRM\Data\MRM_Tag;
 use MRM\Controllers\MRM_Base_Controller;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
+use Exception;
 
 /**
  * @author [MRM Team]
@@ -16,7 +18,7 @@ use WP_REST_Request;
  */
 
 
-class MRM_Tag_Controller {
+class MRM_Tag_Controller extends MRM_Base_Controller {
     
     use Singleton;
 
@@ -39,7 +41,21 @@ class MRM_Tag_Controller {
     public function create_tag(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
         $body = $request->get_json_params();
-        $this->mrm_tag_model->insert_tag_model($body);
+
+        try {
+            $tag = new MRM_Tag($body['title']);
+        } catch(Exception $e) {
+            return $this->get_error_response('Invalid Data', 400);
+        }
+        $success = $this->mrm_tag_model->insert_tag_model($tag);
+
+        $result = null;
+        if($success) {
+            $result = $this -> get_success_response("Insertion successfull", 201);
+        } else {
+            $result = $this -> get_error_response("Failed to Insert", 400);
+        }
+        return $result;
     }
 
     /**
@@ -61,10 +77,28 @@ class MRM_Tag_Controller {
      * @since 1.0.0
      */
     public function update_tag(WP_REST_Request $request){
+        //get an instance of the model
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
-        $id = $request['id'];
+
+        // get url parameters
+        $urlParams = $request->get_url_params();
+        
+        // get json body as an array
         $body = $request->get_json_params();
-        $this->mrm_tag_model->update_tag_model($id, $body);
+
+
+        $id = $urlParams['id'];
+        $list = new MRM_Tag($body['title']);
+
+        $success = $this->model->update_tag_model($id, $list);
+
+        $result = null;
+        if($success) {
+            $result = $this -> get_success_response("Update successfull", 201);
+        } else {
+            $result = $this -> get_error_response("Failed to Update", 400);
+        }
+        return $result;
     }
 
     /**
@@ -87,9 +121,18 @@ class MRM_Tag_Controller {
      */
     public function delete_tag(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
+
         $id = $request['id'];
-        $body = $request->get_json_params();
-        $this->mrm_tag_model->delete_tag_model($id, $body);
+
+        $success = $this->mrm_tag_model->delete_tag_model($id);
+
+        $result = null;
+        if($success) {
+            $result = $this -> get_success_response("Delete Successfull", 200);
+        } else {
+            $result = $this -> get_error_response("Failed to Delete", 400);
+        }
+        return $result;
     }
 
     /**
@@ -113,9 +156,17 @@ class MRM_Tag_Controller {
     public function delete_multiple_tags(WP_REST_Request $request){
         $this->mrm_tag_model = MRM_Tag_Model::get_instance();
 
-        $idArray = $request->get_json_params();
+        $body = $request->get_json_params();
         
-        $this->mrm_tag_model->delete_multiple_tags_model($idArray);
+        $success = $this->mrm_tag_model->delete_multiple_tags_model($body['tag_ids']);
+
+        $result = null;
+        if($success) {
+            $result = $this -> get_success_response("Delete Successfull", 200);
+        } else {
+            $result = $this -> get_error_response("Failed to Delete", 400);
+        }
+        return $result;
     }
 
     /**
@@ -146,9 +197,15 @@ class MRM_Tag_Controller {
         $offset = ($page - 1) * $perPage;
         $limit = $perPage;
 
-        $result = $this->mrm_tag_model->get_all_tags_model($offset, $limit);
-      
-        return rest_ensure_response($result);
+        $result = null;
+        $data = $this->mrm_tag_model->get_all_tags_model($offset, $limit);
+        
+        if(isset($data)) {
+            $result = $this -> get_success_response("Query successfull", 201, $data);
+        } else {
+            $result = $this -> get_error_response(400, "Failed to Get Data");
+        }
+        return $result;
     }
 
     /**
@@ -168,7 +225,7 @@ class MRM_Tag_Controller {
      */
 
     public function get_single_tag(WP_REST_Request $request){
-        $this->model = MRM_Tag_Model::get_instance();
+        $this->mrm_tag_model = MRM_Tag_Model::get_instance();
  
         // get url parameters
         $urlParams = $request->get_url_params();
@@ -176,9 +233,16 @@ class MRM_Tag_Controller {
   
         $id = $urlParams['id'];
   
-        $data = $this->model->get_single_tag_model($id);
+        $data = $this->mrm_tag_model->get_single_tag_model($id);
 
-        return $data;
+        $result = null;
+        if(isset($data)) {
+            $result = $this -> get_success_response("Query Successfull", 200, $data);
+        } else {
+            $result = $this -> get_error_response("Failed to Get Data", 400);
+        }
+        return $result;
+
      }
 
     /**
@@ -213,9 +277,14 @@ class MRM_Tag_Controller {
         $offset = ($page - 1) * $perPage;
         $limit = $perPage;
 
-        $result = $this->mrm_tag_model->get_tag_search_model($searchTitle, $offset, $limit);
+        $data = $this->mrm_tag_model->get_tag_search_model($searchTitle, $offset, $limit);
       
-        return rest_ensure_response($result);
+        if(isset($data)) {
+            $result = $this -> get_success_response("Search successfull", 201, $data);
+        } else {
+            $result = $this -> get_error_response(400, "Failed to Get Data");
+        }
+        return $result;
     }
 
     /**

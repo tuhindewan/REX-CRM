@@ -3,6 +3,7 @@
 namespace MRM\Models\Tags;
 
 use Exception;
+use MRM\Data\MRM_Tag;
 use MRM\Traits\Singleton;
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
 
@@ -26,26 +27,22 @@ class MRM_Tag_Model {
      * @return void
      * @since 1.0.0
      */
-    public function insert_tag_model($body){
+    public function insert_tag_model(MRM_Tag $tag){
         global $wpdb;
         
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
         $now = date('Y-m-d H:i:s');
 
-        $data  = array(
-            'title'       => $body['title'],
-            'type'        => 1,
-            'data'        => $body['data'],
-            'created_at'  => $body['created_at'],
-            'updated_at'  => $now
-        );
         try {
-            $wpdb->insert($table,$data);
+            $wpdb->insert($table, array(
+            'title' => $tag->get_title(),
+            'type' => 1,
+            'created_at' => current_time('mysql')
+        ));
         } catch(Exception $e) {
-            error_log(print_r($e, 1));
+            return false;
         }
-
-        return $data;
+        return true;
     }
 
 
@@ -56,28 +53,23 @@ class MRM_Tag_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function update_tag_model($id, $body){
+    public function update_tag_model($id, MRM_Tag $tag){
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
         $now = date('Y-m-d H:i:s');
         
-        $data  = array(
-            'title'       => $body['title'],
-            'type'        => 1,
-            'data'        => $body['data'],
-            'created_at'  => $body['created_at'],
-            'updated_at'  => $now
-        );
-        $where = array(
-            'id'     =>  $id
-        );
-
         try {
-            $wpdb->update( $table , $data, $where );
-        } catch(Exception $e) {
-            error_log(print_r($e, 1));
-        }
+            $wpdb->update($table, array(
+            'title' => $tag->get_title(),
+            'type' => 1,
+            'updated_at' => current_time('mysql')), array(
+              'id' => $id
+            ));
+          } catch(Exception $e) {
+            return false;
+          }
+          return true;
         
     }
 
@@ -88,16 +80,15 @@ class MRM_Tag_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function delete_tag_model($id, $body){
+    public function delete_tag_model($id){
         global $wpdb;
-
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-
         try {
-            $wpdb->delete( $table, array( 'id' => $id ) );
+            $wpdb->delete($table, array('ID' => $id));
         } catch(Exception $e) {
-            error_log(print_r($e, 1));
+            return false;
         }
+        return true;
     }
 
     /**
@@ -112,8 +103,13 @@ class MRM_Tag_Model {
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
-        $idListString = implode(",",$ids);
-        $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
+        try {
+            $idListString = implode(",",$ids);
+            $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
+        } catch(Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -127,20 +123,27 @@ class MRM_Tag_Model {
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        
+        try {
+            $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d LIMIT %d, %d ",array('1', $offset, $limit));
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data));
+            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d",array('1'));
+            $sqlCountData = $wpdb->get_results($sqlCount);
+            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+                
+            $count = (int) $sqlCountDataJson['0']['total'];
+            $totalPages = intdiv($count, $limit) + 1;
 
-        $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d LIMIT %d, %d ",array('1', $offset, $limit));
-        $data = $wpdb->get_results($sql);
-        $dataJson = json_decode(json_encode($data));
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d",array('1'));
-        $sqlCountData = $wpdb->get_results($sqlCount);
-        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-            
-        $count = (int) $sqlCountDataJson['0']['total'];
-        $totalPages = intdiv($count, $limit) + 1;
-        return array(
-            'data'=> $dataJson,
-            'total_pages' => $totalPages
-        );
+            return array(
+                'data'=> $dataJson,
+                'total_pages' => $totalPages
+            );
+        } catch(Exception $e) {
+            return NULL;
+        }
+        
+        return NULL;
     }
 
      /**
@@ -175,21 +178,27 @@ class MRM_Tag_Model {
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-
-        $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('1', "%{$searchTitle}%", $offset, $limit));
-        $data = $wpdb->get_results($sql);
-        $dataJson = json_decode(json_encode($data));
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d AND title LIKE %s",array('1', "%{$searchTitle}%"));
-        $sqlCountData = $wpdb->get_results($sqlCount);
-        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-            
-        $count = (int) $sqlCountDataJson['0']['total'];
-        $totalPages = intdiv($count, $limit) + 1;
+        
+        try {
+            $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('1', "%{$searchTitle}%", $offset, $limit));
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data));
+            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d AND title LIKE %s",array('1', "%{$searchTitle}%"));
+            $sqlCountData = $wpdb->get_results($sqlCount);
+            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+                
+            $count = (int) $sqlCountDataJson['0']['total'];
+            $totalPages = intdiv($count, $limit) + 1;
 
         return array(
             'data'=> $dataJson,
             'total_pages' => $totalPages
         );
+        } catch(Exception $e) {
+            return NULL;
+        }
+          
+        return NULL;
     }
 
 }
