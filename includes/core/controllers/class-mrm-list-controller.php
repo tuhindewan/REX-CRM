@@ -32,33 +32,43 @@ class MRM_List_Controller extends MRM_Base_Controller{
     
     
     /**
-     * Function used to handle create requests
+     * Function used to handle create  or updaterequests
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
 
-    public function create_list(WP_REST_Request $request){
-      //instantiate the model
-      $this->model = MRM_List_Model::get_instance();
+    public function create_or_update_list(WP_REST_Request $request){
+        //instantiate the model
+        $this->model = MRM_List_Model::get_instance();
+        // get query paramaters 
+        $queryParams   = $request->get_query_params();
+        // get url parameters
+        $urlParams   = $request->get_url_params();  
+        //get the list body
+        $body = $request->get_json_params();
+        $id = $urlParams['id'];
+        $title = sanitize_text_field($body['title']);
+        if (empty($title)) {
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+        }
+            
+        try {
+            $list = new MRM_List($title);
+            if(isset($id)) {
+                $success = $this->model->update_list($id, $list);
+            } else {
+                $success = $this->model->insert_list($list);
+            }
 
-      //get the list body
-      $body = $request->get_json_params();
+            if($success) {
+                return $this -> get_success_response("Insertion successfull", 201);
+            } else {
+                return $this -> get_error_response("Failed to Insert", 400);
+            }
 
-      try {
-        $list = new MRM_List($body['title']);
-      } catch(Exception $e) {
-        return $this->get_error_response('Invalid Data', 400);
-      }
-      
-      $success = $this->model->insert_list($list);
-      
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Insertion successfull", 201);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Insert");
-      }
-      return $result;
+        } catch(Exception $e) {
+            return $this -> get_error_response("Failed to Insert", 400);
+        }   
     }
 
     /**
