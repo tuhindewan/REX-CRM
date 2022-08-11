@@ -9,7 +9,7 @@ namespace MRM\Data;
  * @desc [Handle representation of a single List]
  */
 
-class MRM_List_Data {
+class MRM_List {
   private $list_title;
   public function __construct($title) {
     $this->list_title = $title;

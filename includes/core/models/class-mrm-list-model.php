@@ -2,7 +2,7 @@
 
 namespace MRM\Models;
 use Exception;
-use MRM\Data\MRM_List_Data;
+use MRM\Data\MRM_List;
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
 use MRM\Traits\Singleton;
 
@@ -25,7 +25,7 @@ class MRM_List_Model {
    * @since 1.0.0 
    */
 
-  public function insert_list(MRM_List_Data $list){
+  public function insert_list(MRM_List $list){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
     try {
@@ -46,10 +46,9 @@ class MRM_List_Model {
    * @return boolean
    * @since 1.0.0 
    */
-  public function update_list($id, MRM_List_Data $list){
+  public function update_list($id, MRM_List $list){
     global $wpdb;
     $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-  
     try {
       $wpdb->update($table_name, array(
       'title' => $list->get_title(),

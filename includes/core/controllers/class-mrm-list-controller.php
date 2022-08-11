@@ -5,7 +5,7 @@ namespace MRM\Controllers;
 use Exception;
 use MRM\Controllers\MRM_Base_Controller;
 use MRM\Models\MRM_List_Model;
-use MRM\Data\MRM_List_Data;
+use MRM\Data\MRM_List;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -45,7 +45,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
       $body = $request->get_json_params();
 
       try {
-        $list = new MRM_List_Data($body['title']);
+        $list = new MRM_List($body['title']);
       } catch(Exception $e) {
         return $this->get_error_response('Invalid Data', 400);
       }
@@ -79,7 +79,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
 
       $id = $urlParams['id'];
-      $list = new MRM_List_Data($body['title']);
+      $list = new MRM_List($body['title']);
 
       $success = $this->model->update_list($id, $list);
 
