@@ -46,8 +46,6 @@ variables:
 test:php7:
   image: php:7
   stage: test
-  only:
-    - glcicd # Limit this job to the develop branch
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
@@ -61,9 +59,7 @@ test:php7:multisite:
     WP_MULTISITE: "1"
   image: php:7
   stage: test
-  only:
-    - glcicd # Limit this job to the develop branch
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_REF_NAME == "glcicd" && $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clove --colors=never
