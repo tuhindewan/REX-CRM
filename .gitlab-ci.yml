@@ -1,5 +1,5 @@
 stages:
-  - test
+  - testing
   - deploy
 
 # Select what we should cache
@@ -48,6 +48,8 @@ test:php7:
   stage: test
   only:
     - glcicd # Limit this job to the develop branch
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors=never
 
@@ -61,5 +63,7 @@ test:php7:multisite:
   stage: test
   only:
     - glcicd # Limit this job to the develop branch
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clove --colors=never
