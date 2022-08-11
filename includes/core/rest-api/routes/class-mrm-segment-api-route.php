@@ -79,7 +79,18 @@ class MRM_Segment_API_Route{
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
-            ]
+            ],
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_segments'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
         ]);
 
 

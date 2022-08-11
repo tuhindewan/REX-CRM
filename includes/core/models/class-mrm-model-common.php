@@ -61,5 +61,30 @@ class MRM_Model_Common {
 
     }
 
+
+    /**
+     * Delete multiple groups from the database
+     * 
+     * @param mixed $ids multiple group ids (tag_id, list_id, segment_id)
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function delete_groups($ids)
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        try {
+            foreach ($ids as $id) {
+              $wpdb->delete($table_name, array('id' => $id));
+            }
+        } catch(\Exception $e) {
+            return false;
+        }
+        return true;
+
+    }
+
 }
 

@@ -160,4 +160,30 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
     }
 
+
+    /**
+     * Delete multiple groups
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function delete_segments( WP_REST_Request $request )
+    {
+        $this->model = MRM_Segment_Model::get_instance();
+
+        // get json body as an array
+        $body = $request->get_json_params();
+
+        $success = MRM_Model_Common::delete_groups($body['segment_ids']);
+
+        if($success) {
+            return $this->get_success_response(__( 'Segments Delete Successfull', 'mrm' ), 200);
+        } else {
+            return $this -> get_error_response(__( 'Failed to Delete', 'mrm' ), 400);
+        }
+
+    }
+
 }
