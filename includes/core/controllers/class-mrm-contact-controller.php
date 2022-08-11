@@ -8,6 +8,8 @@ use WP_REST_Request;
 use Exception;
 use MRM\Models\MRM_Contact_Model;
 use MRM\Models\MRM_Tag_Model;
+use MRM\Data\MRM_Tag;
+use MRM\Models\MRM_Model_Common;
 
 /**
  * @author [MRM Team]
@@ -79,7 +81,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $contact_id = $this->model->insert($contact);
         
             if(isset($params['tags'])){
-                $this->set_tags( $params['tags'], $contact_id );
+                $this->set_tags_to_contact( $params['tags'], $contact_id );
             }
 
             if($contact_id) {
@@ -93,24 +95,38 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     }
 
 
-    public function set_tags( $tags, $contact_id )
+    /**
+     * Add tags to new contact
+     * 
+     * @param array $tags
+     * @param int $contact_id
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function set_tags_to_contact( $tags, $contact_id )
     {
-        $tag_ids = array_map(function ($tag) use($contact_id) {
-            // if( 0 == $tag['id'] ){
-            //     $new_tag_id = MRM_Tag_Model::get_instance()->insert($tag['title']);
-            // }
+        $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
 
-            // $new_tag = array(
-            //     'tag_id'    => $new_tag_id,
-            //     'contact_id'    => $contact_id
-            // );
+            // Create new tag if not exist
+            if( 0 == $tag['id'] ){
+                $new_tag = new MRM_Tag($tag['title']);
+                $new_tag_id = MRM_Tag_Model::get_instance()->insert( $new_tag );
+            }
 
-            $old_tag = array(
+            if(isset($new_tag_id)){
+                $tag['id'] = $new_tag_id;
+            }
+
+            return array(
                 'tag_id'    => $tag['id'],
                 'contact_id'    => $contact_id
             );
-            return $old_tag;
+            
 
-        }, $tags);      
+        }, $tags);
+        
+        MRM_Model_Common::add_tags_to_contact( $pivot_ids );
+        
     }
 }
