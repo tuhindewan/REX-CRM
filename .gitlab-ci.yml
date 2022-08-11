@@ -45,7 +45,7 @@ variables:
 # We test PHP7
 test:php7:
   image: php:7
-  stage: test
+  stage: testing
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
@@ -58,7 +58,7 @@ test:php7:multisite:
     WP_VERSION: latest
     WP_MULTISITE: "1"
   image: php:7
-  stage: test
+  stage: testing
   rules:
     - if: $CI_COMMIT_REF_NAME == "glcicd" && $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
