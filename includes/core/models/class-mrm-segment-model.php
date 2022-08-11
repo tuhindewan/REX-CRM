@@ -11,7 +11,7 @@ use MRM\DB\Tables\MRM_Contact_Groups_Table;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle List Module database related operations]
+ * @desc [Handle Segment Module database related operations]
  */
 
 class MRM_Segment_Model{
