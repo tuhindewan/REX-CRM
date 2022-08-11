@@ -6,7 +6,7 @@ use MRM\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Data\MRM_Segment;
 use Exception;
-use MRM\Models\Common\MRM_Model_Common;
+use MRM\Models\MRM_Model_Common;
 use MRM\Models\MRM_Segment_Model;
 
 /**

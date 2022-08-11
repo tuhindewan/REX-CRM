@@ -1,6 +1,6 @@
 <?php
 
-namespace MRM\Models\Tags;
+namespace MRM\Models;
 
 use Exception;
 use MRM\Data\MRM_Tag;
@@ -27,11 +27,10 @@ class MRM_Tag_Model {
      * @return void
      * @since 1.0.0
      */
-    public function insert_tag_model(MRM_Tag $tag){
+    public function insert(MRM_Tag $tag){
         global $wpdb;
         
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-        $now = date('Y-m-d H:i:s');
 
         try {
             $wpdb->insert($table, array(
@@ -53,11 +52,10 @@ class MRM_Tag_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function update_tag_model($id, MRM_Tag $tag){
+    public function update(MRM_Tag $tag, $id){
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-        $now = date('Y-m-d H:i:s');
         
         try {
             $wpdb->update($table, array(
@@ -74,76 +72,59 @@ class MRM_Tag_Model {
     }
 
     /**
-     * SQL query to delete a tag
-     * 
-     * @param int, object
-     * @return JSON
-     * @since 1.0.0
-     */
-    public function delete_tag_model($id){
-        global $wpdb;
-        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-        try {
-            $wpdb->delete($table, array('ID' => $id));
-        } catch(Exception $e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * SQL query to delete a multiple tags
-     * 
-     * @param array
-     * @return void
-     * @since 1.0.0
-     */
-    public function delete_multiple_tags_model($ids){
-        global $wpdb;
-
-        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-
-        try {
-            $idListString = implode(",",$ids);
-            $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
-        } catch(Exception $e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * SQL query to get all tags with pagination
      * 
      * @param int,int
      * @return JSON
      * @since 1.0.0
      */
-    public function get_all_tags_model($offset, $limit){
+    public function get_tags($offset = 0, $limit = 10, $search = ''){
         global $wpdb;
 
-        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
         
+        // Search segments by title
+		if ( ! empty( $search ) ) {
+			try {
+                $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('1', "%{$search}%", $offset, $limit) );
+                $data = $wpdb->get_results( $sql );
+                $dataJson = json_decode(json_encode( $data ));
+                $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d AND title LIKE %s",array('1', "%{$search}%"));
+                $sqlCountData = $wpdb->get_results($sqlCount);
+                $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+                
+                $count = (int) $sqlCountDataJson['0']['total'];
+                $totalPages = ceil(intdiv($count, $limit));
+          
+                return array(
+                    'data'=> $dataJson,
+                    'total_pages' => $totalPages
+                );
+
+            } catch(\Exception $e) {
+                return NULL;
+            }
+		}
+
+        // Return segments for list view
         try {
-            $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d LIMIT %d, %d ",array('1', $offset, $limit));
-            $data = $wpdb->get_results($sql);
-            $dataJson = json_decode(json_encode($data));
-            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d",array('1'));
+            $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d LIMIT %d, %d ",array('1', $offset, $limit) );
+            $data = $wpdb->get_results( $sql );
+            $dataJson = json_decode(json_encode( $data ));
+            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d",array('1'));
             $sqlCountData = $wpdb->get_results($sqlCount);
             $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-                
+            
             $count = (int) $sqlCountDataJson['0']['total'];
-            $totalPages = intdiv($count, $limit) + 1;
-
+            $totalPages = ceil(intdiv($count, $limit));
+      
             return array(
                 'data'=> $dataJson,
                 'total_pages' => $totalPages
             );
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return NULL;
         }
-        
-        return NULL;
     }
 
      /**
@@ -160,44 +141,10 @@ class MRM_Tag_Model {
             $data = $wpdb->get_results($sql);
             $dataJson = json_decode(json_encode($data));
             return $dataJson;
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return NULL;
         }
         
-        return NULL;
-    }
-
-    /**
-     * SQL query to searc
-     * 
-     * @param string,int,int
-     * @return array
-     * @since 1.0.0
-     */
-    public function get_tag_search_model($searchTitle, $offset, $limit){
-        global $wpdb;
-
-        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-        
-        try {
-            $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('1', "%{$searchTitle}%", $offset, $limit));
-            $data = $wpdb->get_results($sql);
-            $dataJson = json_decode(json_encode($data));
-            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table} WHERE type = %d AND title LIKE %s",array('1', "%{$searchTitle}%"));
-            $sqlCountData = $wpdb->get_results($sqlCount);
-            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-                
-            $count = (int) $sqlCountDataJson['0']['total'];
-            $totalPages = intdiv($count, $limit) + 1;
-
-        return array(
-            'data'=> $dataJson,
-            'total_pages' => $totalPages
-        );
-        } catch(Exception $e) {
-            return NULL;
-        }
-          
         return NULL;
     }
 
