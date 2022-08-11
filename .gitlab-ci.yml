@@ -47,7 +47,7 @@ test:php7:
   image: php:7
   stage: testing
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "glcicd"'
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors=never
 
@@ -60,6 +60,6 @@ test:php7:multisite:
   image: php:7
   stage: testing
   rules:
-    - if: $CI_COMMIT_REF_NAME == "glcicd" && $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "glcicd"'
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clove --colors=never
