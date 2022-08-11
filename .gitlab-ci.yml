@@ -41,6 +41,10 @@ variables:
   MYSQL_ROOT_PASSWORD: mysql
   WP_VERSION: latest
   WP_MULTISITE: "0"
+  WORDPRESS_SITE_DIR: /var/www/html
+  WORDPRESS_PLUGIN_NAME: mrm
+  NODE_BIN_PATH: /usr/local/nvm/node/v14.15.3/bin
+  COMPOSER_BIN_PATH: /usr/local/bin/composer
 
 # We test PHP7
 test:php7:
@@ -63,3 +67,39 @@ test:php7:multisite:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "glcicd"'
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clove --colors=never
+
+
+# deploy to dev server
+deploy:
+  stage: deploy
+  image: kroniak/ssh-client
+  script:
+    - chmod og= $STAGE_ID_RSA
+    # prepare destination server - clean destination directory except for /wp-content/uploads
+    - ssh -i $STAGE_ID_RSA -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "
+      find $WORDPRESS_SITE_DIR -mindepth 1 ! -regex '^$WORDPRESS_SITE_DIR/wp-content/uploads\(/.*\)?' -delete  || true"
+
+    # install plugins
+#    - ssh -i $STAGE_ID_RSA -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "
+#      cd $WORDPRESS_SITE_DIR &&
+#      wp plugin install $WORDPRESS_PLUGINS"
+
+    # deploy updated theme code to destination server
+    - ssh -i $STAGE_ID_RSA -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "mkdir -p $WORDPRESS_SITE_DIR/wp-content/plugins/$WORDPRESS_PLUGIN_NAME"
+    - scp -r -i $STAGE_ID_RSA ./wp-content/themes/$WORDPRESS_PLUGIN_NAME $STAGE_SERVER_USER@$STAGE_SERVER_IP:$WORDPRESS_SITE_DIR/wp-content/plugins/
+
+    # build theme frontend JS/CSS assets on destination server
+    - ssh -i $STAGE_ID_RSA -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "
+      export PATH=$PATH:$NODE_BIN_PATH:$COMPOSER_BIN_PATH &&
+      cd $WORDPRESS_SITE_DIR/wp-content/plugins/$WORDPRESS_PLUGIN_NAME &&
+      composer install --no-dev &&
+      npm install --only=prod"
+
+    # enable deployed plugins
+    - ssh -i $STAGE_ID_RSA -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "
+      cd $WORDPRESS_SITE_DIR &&
+      wp theme activate $WORDPRESS_PLUGIN_NAME"
+
+    # ensure WordPress and plugins have permissions on content/themes/plugin dirs
+    - ssh -i $STAGE_ID_RSA -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "
+      chgrp -R www-data $WORDPRESS_SITE_DIR || true"
