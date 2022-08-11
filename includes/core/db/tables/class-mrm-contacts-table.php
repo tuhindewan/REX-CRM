@@ -9,7 +9,7 @@ require_once ABSPATH . 'wp-admin/includes/upgrade.php';
  * @email [support@rextheme.com]
  * @create date 2022-08-10 10:20:03
  * @modify date 2022-08-10 10:20:03
- * @desc [Create wp_mrm_contacts table inot database]
+ * @desc [Create wp_mrm_contacts table into database]
  */
 
 class MRM_Contacts_Table {

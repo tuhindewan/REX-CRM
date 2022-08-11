@@ -69,9 +69,14 @@ class MRM_Database_Core {
     protected function get_tables()
     {
         return apply_filters( 'mrm/database_tables', array(
-			'categories'    => 'MRM_Contact_Groups_Table',
-            'contacts'      => 'MRM_Contacts_Table',
-            // 'contact_info'  => 'MRM_Contact_Info'
+			'categories'            => 'MRM_Contact_Groups_Table',
+            'contacts'              => 'MRM_Contacts_Table',
+            'contact_info'          => 'MRM_Contact_Info_Table',
+            'contact_meta'          => 'MRM_Contact_Meta_Table',
+            'contact_note'          => 'MRM_Contact_Note_Table',
+            'contact_group_pivot'   => 'MRM_Contact_Group_Pivot_Table',
+            'interactions'          => 'MRM_Interactions_Table',
+            'emails'                => 'MRM_Emails_Table'  
 		));
     }
 
