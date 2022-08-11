@@ -7,7 +7,15 @@
       "email": "tohin@coderex.co"
     }
   ],
-  "require": {},
+  "require": {
+    "phpunit/phpunit": "^7"
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
+  "require-dev":{
+    "yoast/phpunit-polyfills" : "1.0.3"
+  },
   "autoload": {
     "classmap": [
       "includes/",
