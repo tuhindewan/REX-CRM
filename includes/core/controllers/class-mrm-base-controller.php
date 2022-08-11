@@ -33,11 +33,13 @@ abstract class MRM_Base_Controller {
      * @since 1.0.0
      */  
 	public function get_success_response( $message = '', $code = 0, $data = null ) {
-		return array(
+		$response =  array(
 			'code'    => $code,
 			'message' => $message,
 			'data'  => $data,
 		);
+
+		return rest_ensure_response($response);
 	}
 
 

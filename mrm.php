@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       MRM
  * Plugin URI:        https://rextheme.com/mrm/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
  * Version:           1.0.0
  * Author:            RexTheme
  * Author URI:        http://rextheme.com/

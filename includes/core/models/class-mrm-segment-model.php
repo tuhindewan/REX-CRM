@@ -73,4 +73,65 @@ class MRM_Segment_Model{
         }
         return true;
     }
+
+
+    /**
+     * Run SQL query to get segments from database
+     * 
+     * @param int $offset
+     * @param int $limit
+     * @param string $search
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_segments($offset = 0, $limit = 10, $search = '')
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        // Search segments by title
+		if ( ! empty( $search ) ) {
+			try {
+                $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array('3', "%{$search}%", $offset, $limit) );
+                $data = $wpdb->get_results( $sql );
+                $dataJson = json_decode(json_encode( $data ));
+                $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d AND title LIKE %s",array('3', "%{$search}%"));
+                $sqlCountData = $wpdb->get_results($sqlCount);
+                $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+                
+                $count = (int) $sqlCountDataJson['0']['total'];
+                $totalPages = ceil(intdiv($count, $limit));
+          
+                return array(
+                    'data'=> $dataJson,
+                    'total_pages' => $totalPages
+                );
+
+            } catch(\Exception $e) {
+                return NULL;
+            }
+		}
+
+        // Return segments for list view
+        try {
+            $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d LIMIT %d, %d ",array('3', $offset, $limit) );
+            $data = $wpdb->get_results( $sql );
+            $dataJson = json_decode(json_encode( $data ));
+            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d",array('3'));
+            $sqlCountData = $wpdb->get_results($sqlCount);
+            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+            
+            $count = (int) $sqlCountDataJson['0']['total'];
+            $totalPages = ceil(intdiv($count, $limit));
+      
+            return array(
+                'data'=> $dataJson,
+                'total_pages' => $totalPages
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+	
+    }
 }

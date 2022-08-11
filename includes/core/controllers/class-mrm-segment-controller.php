@@ -87,9 +87,41 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
 
 
+    /**
+     * Get segments for list views
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
     public function get_segments(WP_REST_Request $request)
     {
-        error_log(print_r($request, 1));
+        $this->model = MRM_Segment_Model::get_instance();
+
+        // Get values from API
+        $query_params   = $request->get_query_params();
+        $query_params   = is_array( $query_params ) ? $query_params : array();
+        $request_params = $request->get_params();
+        $request_params = is_array( $request_params ) ? $request_params : array();
+        $params         = array_replace( $query_params, $request_params );
+
+        $page = isset($params['page']) ? $params['page'] : 1;
+        $perPage = isset($params['per-page']) ? $params['per-page'] : 3;
+        $offset = ($page - 1) * $perPage;
+
+        // Segment Search keyword
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+
+        $data = $this->model->get_segments($offset, $perPage, $search);
+
+
+        if(isset($data)) {
+            return $this->get_success_response("Query successfull", 201, $data);
+        } else {
+            return $this->get_error_response(400, "Failed to Get Data");
+        }
+
     }
 
 }
