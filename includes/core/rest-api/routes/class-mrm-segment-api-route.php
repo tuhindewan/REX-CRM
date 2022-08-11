@@ -52,6 +52,7 @@ class MRM_Segment_API_Route{
 
         /**
          * Segment create endpoint
+         * Get segments endpoint
          * 
          * @return void
          * @since 1.0.0
@@ -84,6 +85,7 @@ class MRM_Segment_API_Route{
 
         /**
          * Segment update endpoint
+         * Segment delete endpoint
          * 
          * @return void
          * @since 1.0.0
@@ -94,6 +96,17 @@ class MRM_Segment_API_Route{
                 'callback' => [
                     $this->controller ,
                     'create_or_update_segment'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_segment'
                 ],
                 'permission_callback' => [
                     $this->controller ,

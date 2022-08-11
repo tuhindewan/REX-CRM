@@ -6,6 +6,7 @@ use MRM\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Data\MRM_Segment;
 use Exception;
+use MRM\Models\Common\MRM_Model_Common;
 use MRM\Models\MRM_Segment_Model;
 
 /**
@@ -95,7 +96,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function get_segments(WP_REST_Request $request)
+    public function get_segments( WP_REST_Request $request )
     {
         $this->model = MRM_Segment_Model::get_instance();
 
@@ -117,9 +118,44 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
 
         if(isset($data)) {
-            return $this->get_success_response("Query successfull", 201, $data);
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 201, $data);
         } else {
-            return $this->get_error_response(400, "Failed to Get Data");
+            return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+        }
+
+    }
+
+
+    /**
+     * Delete a segement 
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function delete_segment( WP_REST_Request $request )
+    {
+        $this->model = MRM_Segment_Model::get_instance();
+
+        // Get url parameters
+        $urlParams = $request->get_url_params();
+
+        // Segments avaiability check
+        $exist = MRM_Model_Common::is_group_exist($urlParams['segment_id']);
+
+        if ( !$exist ) {
+			$response = __( 'Segment not found', 'mrm' );
+
+			return $this->get_error_response( $response,  400);
+		}
+
+        $success = MRM_Model_Common::delete_group($urlParams['segment_id']);
+
+        if($success) {
+            return $this->get_success_response( __( 'Segment Delete Successfull', 'mrm' ), 200 );
+        } else {
+            return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
         }
 
     }
