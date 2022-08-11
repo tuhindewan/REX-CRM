@@ -96,22 +96,21 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     public function set_tags( $tags, $contact_id )
     {
         $tag_ids = array_map(function ($tag) use($contact_id) {
-            if( 0 == $tag['id'] ){
-                $new_tag_id = MRM_Tag_Model::get_instance()->insert($tag['title']);
-            }
+            // if( 0 == $tag['id'] ){
+            //     $new_tag_id = MRM_Tag_Model::get_instance()->insert($tag['title']);
+            // }
 
-            $new_tag = array(
-                'tag_id'    => $new_tag_id,
-                'contact_id'    => $contact_id
-            );
+            // $new_tag = array(
+            //     'tag_id'    => $new_tag_id,
+            //     'contact_id'    => $contact_id
+            // );
 
             $old_tag = array(
                 'tag_id'    => $tag['id'],
                 'contact_id'    => $contact_id
             );
-            $data = array_merge($new_tag, $old_tag);
-            error_log(print_r($data, 1));
+            return $old_tag;
 
-        }, $tags);        
+        }, $tags);      
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MRM\Models\Common;
+namespace MRM\Models;
 
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
 
@@ -73,12 +73,12 @@ class MRM_Model_Common {
     public static function delete_groups($ids)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
-            foreach ($ids as $id) {
-              $wpdb->delete($table_name, array('id' => $id));
-            }
+            $idListString = implode(",",$ids);
+            $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
         } catch(\Exception $e) {
             return false;
         }
