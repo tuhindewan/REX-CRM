@@ -58,6 +58,7 @@ assets/bower_components/*
 # NPM #
 ##########
 node_modules
+package-lock.json
 
 # Compiled Files and Build Dirs #
 ##########
@@ -75,3 +76,9 @@ __tests/_data
 codeception.yml
 .env.local
 .env
+.phpcs.xml.dist
+.travis.yml
+Dockerfile
+bin/
+docker-compose.yml
+phpunit.xml.dist

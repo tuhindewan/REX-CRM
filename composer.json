@@ -8,13 +8,11 @@
     }
   ],
   "require": {
-    "phpunit/phpunit": "^7"
+    "phpunit/phpunit": "^7",
+    "guzzlehttp/guzzle": "^7.4"
   },
   "scripts": {
     "phpunit": "phpunit"
-  },
-  "require-dev":{
-    "yoast/phpunit-polyfills" : "1.0.3"
   },
   "autoload": {
     "classmap": [
@@ -23,5 +21,8 @@
       "admin/",
       "public/"
     ]
+  },
+  "require-dev": {
+    "yoast/phpunit-polyfills": "^1.0"
   }
 }
