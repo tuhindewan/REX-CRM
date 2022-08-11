@@ -54,9 +54,9 @@ class MRM_Contact {
     private $status;
 
 
-    public function __construct($args)
+    public function __construct($email, $args)
     {
-        $this->email        = $args['email'];
+        $this->email        = $email;
         $this->first_name   = $args['first_name'];
         $this->last_name    = $args['last_name'];
         $this->phone        = $args['phone'];

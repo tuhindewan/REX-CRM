@@ -44,7 +44,7 @@ class MRM_Contact_Model{
         } catch(\Exception $e) {
             return false;
         }
-        return true;
+        return $wpdb->insert_id;;
     }
     
 }
