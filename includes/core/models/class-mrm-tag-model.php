@@ -72,7 +72,13 @@ class MRM_Tag_Model {
         $where = array(
             'id'     =>  $id
         );
-        $wpdb->update( $table , $data, $where );
+
+        try {
+            $wpdb->update( $table , $data, $where );
+        } catch(Exception $e) {
+            error_log(print_r($e, 1));
+        }
+        
     }
 
     /**
@@ -87,7 +93,11 @@ class MRM_Tag_Model {
 
         $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
-        $wpdb->delete( $table, array( 'id' => $id ) );
+        try {
+            $wpdb->delete( $table, array( 'id' => $id ) );
+        } catch(Exception $e) {
+            error_log(print_r($e, 1));
+        }
     }
 
     /**
@@ -131,6 +141,27 @@ class MRM_Tag_Model {
             'data'=> $dataJson,
             'total_pages' => $totalPages
         );
+    }
+
+     /**
+   * Returns a single tag
+   * @param id the id of the tag to get
+   * @return array an array of results if successfull, NULL otherwise
+   * @since 1.0.0 
+   */
+    public function get_single_tag_model($id){
+        global $wpdb;
+        $table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        try {
+            $sql = $wpdb->prepare("SELECT * FROM {$table} WHERE ID = %d AND type = %d",array($id, '1'));
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data));
+            return $dataJson;
+        } catch(Exception $e) {
+            return NULL;
+        }
+        
+        return NULL;
     }
 
     /**

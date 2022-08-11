@@ -3,6 +3,7 @@
 namespace MRM\Controllers\Tags;
 
 use MRM\Models\Tags\MRM_Tag_Model;
+use MRM\Controllers\MRM_Base_Controller;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -157,6 +158,36 @@ class MRM_Tag_Controller {
      * @since 1.0.0
      */
     public function get_all_tags_permissions_check(){
+        return true;
+    }
+
+    /**
+     * Function used to handle a single get request
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+
+    public function get_single_tag(WP_REST_Request $request){
+        $this->model = MRM_Tag_Model::get_instance();
+ 
+        // get url parameters
+        $urlParams = $request->get_url_params();
+  
+  
+        $id = $urlParams['id'];
+  
+        $data = $this->model->get_single_tag_model($id);
+
+        return $data;
+     }
+
+    /**
+     * Get single tag permission for tags
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function get_single_tag_permissions_check(){
         return true;
     }
 

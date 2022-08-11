@@ -135,6 +135,27 @@ class MRM_Tag_API_Route{
                 ],
             ],
         ]);
+
+        /**
+        * Tag get a single tag endpoint
+        * 
+        * @return void
+        * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->mrm_tag ,
+                    'get_single_tag'
+                ],
+                'permission_callback' => [
+                    $this->mrm_tag ,
+                    'get_single_tag_permissions_check'
+                ] ,
+            ],
+        ]);
+
         /**
          * Search tag results
          * @since 1.0.0
