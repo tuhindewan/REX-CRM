@@ -2,7 +2,7 @@
 
 namespace MRM\REST\Routes;
 
-use MRM\Controllers\MRM_Tag_Controller;
+use MRM\Controllers\MRM_Note_Controller;
 
 /**
  * @author [MRM Team]
@@ -12,7 +12,7 @@ use MRM\Controllers\MRM_Tag_Controller;
  * @desc [Handle List Module related API callbacks]
  */
 
-class MRM_Tag_API_Route{
+class MRM_Note_API_Route{
 
     /**
      * Endpoint namespace.
@@ -28,7 +28,7 @@ class MRM_Tag_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'tags';
+    protected $rest_base = 'notes';
 
 
     /**
@@ -42,84 +42,63 @@ class MRM_Tag_API_Route{
     
 
     /**
-     * Register API endpoints routes for tags module
+     * Register API endpoints routes for notes module
      * 
      * @return void
      * @since 1.0.0
      */
     public function register_routes()
     {
-        $this->controller = MRM_Tag_Controller::get_instance();
+        $this->controller = MRM_Note_Controller::get_instance();
 
 
         /**
-         * Tag create endpoint
-         * Get Tag endpoint
+         * Note create endpoint
+         * Get Note endpoint
          * 
          * @return void
          * @since 1.0.0
         */  
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+        register_rest_route($this->namespace, '/contact'. '/(?P<contact_id>[\d]+)' .'/'. $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_tag'
+                    'create_or_update_note'
                 ],
                 'permission_callback' => [
                     $this->controller ,
                     'rest_permissions_check'
-                ] ,
+                ]
             ],
             [
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_all_tags'
+                    'get_all_contact_notes'
                 ],
                 'permission_callback' => [
                     $this->controller ,
                     'rest_permissions_check'
-                ] ,
-            ],
-            [
-                'methods' => \WP_REST_Server::DELETABLE,
-                'callback' => [
-                    $this->controller ,
-                    'delete_multiple_tags'
-                ],
-                'permission_callback' => [
-                    $this->controller ,
-                    'rest_permissions_check'
-                ] ,
-            ],
+                ]
+            ]
+
         ]);
 
-
         /**
-         * Segment update endpoint
-         * Segment delete endpoint
+         * Note update endpoint
+         * Note delete endpoint
          * 
          * @return void
          * @since 1.0.0
         */  
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<tag_id>[\d]+)', [
+       register_rest_route($this->namespace, '/contact' .'/(?P<contact_id>[\d]+)'.'/'. $this->rest_base . '/(?P<note_id>[\d]+)', 
+       [
             [
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_tag'
-                ],
-                'permission_callback' => [
-                    $this->controller ,
-                    'rest_permissions_check'
-                ] ,
-            ],
-            [
-                'methods' => \WP_REST_Server::READABLE,
-                'callback' => [
-                    $this->controller ,
-                    'get_single_tag'
+                    'create_or_update_contact_note'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -130,15 +109,15 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_tag'
+                    'delete_contact_note'
                 ],
                 'permission_callback' => [
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
-            ],
+            ]
         ]);
-        
+
     }
 
 }

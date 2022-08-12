@@ -1,6 +1,6 @@
 <?php
 
-namespace MRM\Controllers\Tags;
+namespace MRM\Controllers;
 
 use MRM\Data\MRM_Tag;
 use MRM\Controllers\MRM_Base_Controller;
