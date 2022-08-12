@@ -77,10 +77,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }
 
         $this->contact_args = array(
-			'first_name'    =>  isset( $params['first_name'] )  ?   sanitize_text_field($params['first_name'])  : '',
-            'last_name'     =>  isset( $params['last_name'] )   ?   sanitize_text_field($params['last_name'])   : '',
-            'phone'         =>  isset( $params['phone'] )       ?   sanitize_text_field($params['phone'])       : '',
-            'status'        =>  isset( $params['status'] )      ?   sanitize_text_field($params['status'])      : '',
+			'first_name'    =>  isset( $params['first_name'] )  ?   sanitize_text_field($params['first_name'])  : NULL,
+            'last_name'     =>  isset( $params['last_name'] )   ?   sanitize_text_field($params['last_name'])   : NULL,
+            'phone'         =>  isset( $params['phone'] )       ?   sanitize_text_field($params['phone'])       : NULL,
+            'status'        =>  isset( $params['status'] )      ?   sanitize_text_field($params['status'])      : NULL,
+            'source'        =>  isset( $params['source'] )      ?   sanitize_text_field($params['source'])      : NULL,
 		);
 
         // Contact object create and insert or update to database

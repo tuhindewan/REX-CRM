@@ -12,22 +12,18 @@ namespace MRM\Common;
 
 class MRM_Common {
 
-    public static $response_code = 200;
 
-    public static function error_response( $message = '', $code = 0, $wp_error = null ) {
-		if ( 0 !== absint( $code ) ) {
-			self::$response_code = $code;
-		} else if ( empty( self::$response_code ) ) {
-			self::$response_code = 500;
-		}
-
-		$data = array();
-		if ( $wp_error instanceof \WP_Error ) {
-			$message = $wp_error->get_error_message();
-			$data    = $wp_error->get_error_data();
-		}
-
-		return new \WP_Error( self::$response_code, $message, array( 'status' => self::$response_code, 'error_data' => $data ) );
+    /**
+	 * Returns alphanumeric hash
+	 * 
+     * @param mixed $len=32
+     * 
+     * @return string
+	 * @since 1.0.0
+     */
+    public static function get_rand_hash($len=32)
+	{
+		return substr(md5(openssl_random_pseudo_bytes(20)),-$len);
 	}
 
 }

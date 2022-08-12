@@ -54,6 +54,15 @@ class MRM_Contact {
     private $status;
 
 
+    /**
+     * Contact source
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $source;
+
+
     public function __construct($email, $args)
     {
         $this->email        = $email;
@@ -61,6 +70,7 @@ class MRM_Contact {
         $this->last_name    = $args['last_name'];
         $this->phone        = $args['phone'];
         $this->status       = $args['status'];
+        $this->source       = $args['source'];
     }
 
 
@@ -120,6 +130,17 @@ class MRM_Contact {
     public function get_status()
     {
         return $this->status;
+    }
+
+    /**
+     * Return Contact source
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_source()
+    {
+        return $this->source;
     }
 
 

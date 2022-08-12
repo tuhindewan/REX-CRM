@@ -2,6 +2,7 @@
 
 namespace MRM\Models;
 
+use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;
 use MRM\DB\Tables\MRM_Contacts_Table;
 use MRM\Traits\Singleton;
@@ -40,6 +41,8 @@ class MRM_Contact_Model{
                 'last_name'     =>  $contact->get_last_name(),
                 'phone'         =>  $contact->get_phone(),
                 'status'        =>  $contact->get_status(),
+                'source'        =>  $contact->get_source(),
+                'hash'          =>  MRM_Common::get_rand_hash(),
                 'created_at'    =>  current_time('mysql')));
         } catch(\Exception $e) {
             return false;
@@ -64,7 +67,6 @@ class MRM_Contact_Model{
 
         $entity = array_key_first($fields);
         $value  = array_values($fields)[0];
-        error_log(print_r($entity, 1));
 
         try {
             $wpdb->update( 
