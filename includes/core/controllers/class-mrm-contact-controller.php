@@ -10,6 +10,8 @@ use MRM\Data\MRM_List;
 use MRM\Models\MRM_Contact_Model;
 use MRM\Data\MRM_Tag;
 use MRM\Models\MRM_Contact_Group_Model;
+use League\Csv\Reader;
+use League\Csv\Statement;
 
 /**
  * @author [MRM Team]
@@ -31,6 +33,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public $model;
+    private $new_uploaded_file = __DIR__.'/../../../tmp/new.csv';
 
 
     /**
@@ -183,5 +186,74 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         MRM_Contact_Group_Model::add_groups_to_contact( $pivot_ids );
         
     }
+    /**
+     * Export contacts controller
+     * 
+     * @param array $lists
+     * @param int $contact_id
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function export_contacts(WP_REST_Request $request) {
+        return $this->get_success_response(__('hello', 'mrm'), 200);
+    }
+    
+    /**
+     * Import controller contact
+     * 
+     * @param array $lists
+     * @param int $contact_id
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function import_contacts(WP_REST_Request $request) {
+        $permittedExtension = 'csv';
+        $permittedTypes = ['text/csv', 'text/plain'];
+
+        $files = $request->get_file_params();
+        $params = $request->get_params();
+        $headers = $request->get_headers();
+
+        try{
+            if (!empty($params) && !empty($params["map"])) {
+                $map = $params["map"];
+                $mapJson = json_decode($map, true);
+            } else {
+                throw new Exception(__("Mapping of fields is required", "mrm"));
+            }
+            if (!empty($files) && !empty($files["csv"])) {
+                $csv = $files['csv'];
+            } else {
+                throw new Exception(__("CSV file not uploaded.", "mrm"));
+            }
+
+            // save the file
+            move_uploaded_file( $csv['tmp_name'], $this->new_uploaded_file );
+            $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
+            $csv->setHeaderOffset(0);
+            $stmt = Statement::create()
+                ->offset(10)
+                ->limit(25);
+
+            $records = $stmt->process($csv);
+            foreach ($records as $record) {
+                //do something here
+            }
+
+
+        } catch (Exception $e) {
+            return $this -> get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+        
+        error_log(print_r($csv, 1));
+        error_log(print_r($mapJson, 1));
+        
+        error_log(print_r(__DIR__, 1));
+        // error_log(print_r($files2, 1));
+        return $this->get_success_response(__('Import Successful.', "mrm"), 200);
+    }
+
 
 }
