@@ -4,7 +4,10 @@ namespace MRM\Models;
 
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;
+use MRM\DB\Tables\MRM_Contact_Meta_Table;
+use MRM\DB\Tables\MRM_Contact_Note_Table;
 use MRM\DB\Tables\MRM_Contacts_Table;
+use MRM\DB\Tables\MRM_Interactions_Table;
 use MRM\Traits\Singleton;
 
 /**
@@ -105,6 +108,36 @@ class MRM_Contact_Model{
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Delete a contact
+     * 
+     * @param mixed $id contact id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function delete($id)
+    {
+        global $wpdb;
+        $table_name                     =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contact_meta_table             =   $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+        $contact_note_table             =   $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+        $contact_interaction_table      =   $wpdb->prefix . MRM_Interactions_Table::$mrm_table;
+
+        try {
+            $wpdb->delete($table_name, array('id' => $id));
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        $wpdb->delete($contact_meta_table,          array('contact_id' => $id));
+        $wpdb->delete($contact_note_table,          array('contact_id' => $id));
+        $wpdb->delete($contact_interaction_table,   array('contact_id' => $id));
+
+        return true;
     }
     
 }

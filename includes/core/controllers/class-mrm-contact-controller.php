@@ -184,4 +184,31 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         
     }
 
+
+    /**
+     * Delete a contact
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function delete_contact(WP_REST_Request $request)
+    {
+        $this->model = MRM_Contact_Model::get_instance();
+
+        // Get values from API
+        $query_params   =   $request->get_query_params();
+        $request_params =   $request->get_params();
+        $params         =   array_replace( $query_params, $request_params );
+
+        $success = $this->model->delete($params['contact_id']);
+
+        if($success) {
+            return $this->get_success_response( __( 'Contact Delete Successfull', 'mrm' ), 200 );
+        } else {
+            return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+        }
+    }
+
 }

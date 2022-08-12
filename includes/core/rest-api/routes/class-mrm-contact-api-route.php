@@ -71,7 +71,8 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact create endpoint
+         * Contact update endpoint
+         * Contact delete endpoint
          * 
          * @return void
          * @since 1.0.0
@@ -82,6 +83,17 @@ class MRM_Contact_API_Route {
                 'callback' => [
                     $this->controller ,
                     'create_or_update_contact'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_contact'
                 ],
                 'permission_callback' => [
                     $this->controller ,
