@@ -11,14 +11,6 @@ namespace MRM\Data;
 
 class MRM_Note {
     /**
-     * Contact_id
-     * 
-     * @var int
-     * @since 1.0.0
-     */
-    private $contact_id;
-
-    /**
      * Note_type
      * 
      * @var int
@@ -71,7 +63,6 @@ class MRM_Note {
 
     public function __construct($args)
     {
-        $this->contact_id        = $args['contact_id'];
         $this->note_type         = $args['type'];
         $this->note_title        = $args['title'];
         $this->note_description  = $args['description'];
@@ -79,17 +70,6 @@ class MRM_Note {
         $this->note_is_public    = $args['is_public'];
     }
 
-
-    /**
-     * Return contact id
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_note_contact_id()
-    {
-        return $this->contact_id;
-    }
 
     /**
      * Return note type

@@ -74,9 +74,9 @@ class MRM_Note_Controller extends MRM_Base_Controller {
             $note = new MRM_Note($params);
 
             if(isset($params['note_id'])){
-                $success = $this->model->update($note, $params['note_id']);
+                $success = $this->model->update($note, $params['contact_id'], $params['note_id']);
             }else{
-                $success = $this->model->insert($note);
+                $success = $this->model->insert($note, $params['contact_id']);
             }
 
             if($success) {

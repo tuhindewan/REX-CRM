@@ -26,14 +26,14 @@ class MRM_Note_Model {
      * @return void
      * @since 1.0.0
      */
-    public function insert(MRM_Note $note){
+    public function insert(MRM_Note $note, $contact_id){
         global $wpdb;
         
         $table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
 
         try {
             $wpdb->insert($table, array(
-                'contact_id'    => $note->get_note_contact_id(),
+                'contact_id'    => $contact_id,
                 'type'          => $note->get_note_type(),
                 'title'         => $note->get_note_title(),
                 'description'   => $note->get_note_description(),
@@ -57,14 +57,14 @@ class MRM_Note_Model {
      * @return JSON
      * @since 1.0.0
      */
-    public function update(MRM_Note $note, $id){
+    public function update(MRM_Note $note, $contact_id, $note_id){
         global $wpdb;
 
         $table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
         
         try {
             $wpdb->update($table, array(
-                'contact_id'    => $note->get_note_contact_id(),
+                'contact_id'    => $contact_id,
                 'type'          => $note->get_note_type(),
                 'title'         => $note->get_note_title(),
                 'description'   => $note->get_note_description(),
@@ -72,7 +72,7 @@ class MRM_Note_Model {
                 'status'        => $note->get_note_status(),
                 'is_public'     => $note->get_note_is_public(),
                 'updated_at' => current_time('mysql')), array(
-                    'id' => $id
+                    'id' => $note_id
             ));
           } catch(Exception $e) {
             return false;

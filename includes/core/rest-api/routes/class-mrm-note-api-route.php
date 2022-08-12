@@ -59,7 +59,7 @@ class MRM_Note_API_Route{
          * @return void
          * @since 1.0.0
         */  
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+        register_rest_route($this->namespace, '/contact'. '/(?P<contact_id>[\d]+)' .'/'. $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
@@ -80,7 +80,7 @@ class MRM_Note_API_Route{
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<note_id>[\d]+)', 
+       register_rest_route($this->namespace, '/contact' .'/(?P<contact_id>[\d]+)'.'/'. $this->rest_base . '/(?P<note_id>[\d]+)', 
        [
             [
                 'methods' => \WP_REST_Server::EDITABLE,
