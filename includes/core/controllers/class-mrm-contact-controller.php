@@ -59,7 +59,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $request_params =   $request->get_params();
         $params         =   array_replace( $query_params, $request_params );
 
-        error_log(print_r($params, 1));
         // Email address validation
         $email = isset($params['email']) ? sanitize_text_field($params['email']) : '';
 
@@ -86,8 +85,13 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         // Contact object create and insert or update to database
         try {
-            $contact = new MRM_Contact($email, $this->contact_args);
-            $contact_id = $this->model->insert($contact);
+
+            if( isset( $params['contact_id']) ){
+                $contact_id = $this->model->update( $params['contact_id'], $params['fields'] );
+            }else{
+                $contact = new MRM_Contact($email, $this->contact_args);
+                $contact_id = $this->model->insert($contact);
+            }
         
             if(isset($params['tags'])){
                 $this->set_tags_to_contact( $params['tags'], $contact_id );

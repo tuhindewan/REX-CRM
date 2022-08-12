@@ -25,7 +25,7 @@ class MRM_Contact_Model{
      * 
      * @param MRM_Contact $contact
      * 
-     * @return bool
+     * @return bool|int
      * @since 1.0.0
      */
     public function insert(MRM_Contact $contact)
@@ -45,6 +45,40 @@ class MRM_Contact_Model{
             return false;
         }
         return $wpdb->insert_id;;
+    }
+
+
+    /**
+     * Update a contact information
+     * 
+     * @param mixed $contact_id
+     * @param mixed $fields      Entity and value to update
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function update( $contact_id, $fields )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+
+        $entity = array_key_first($fields);
+        $value  = array_values($fields)[0];
+        error_log(print_r($entity, 1));
+
+        try {
+            $wpdb->update( 
+                $table_name, 
+                array( 
+                    $entity         =>  $value,
+                    'updated_at'    =>  current_time('mysql')
+                ), 
+                array( 'ID' => $contact_id )
+            );
+        }catch(\Exception $e){
+            return false;
+        }
+        return true;
     }
 
 
