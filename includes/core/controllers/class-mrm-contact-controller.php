@@ -59,6 +59,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $request_params =   $request->get_params();
         $params         =   array_replace( $query_params, $request_params );
 
+        error_log(print_r($params, 1));
         // Email address validation
         $email = isset($params['email']) ? sanitize_text_field($params['email']) : '';
 
@@ -68,11 +69,19 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 			return $this->get_error_response( $response,  400);
 		}
 
+        // Existing contact email address check
+        $exist = $this->model->is_contact_exist($email);
+        if($exist){
+            $response = __( 'Email address is already exist', 'mrm' );
+
+			return $this->get_error_response( $response,  400);
+        }
+
         $this->contact_args = array(
-			'first_name'    =>  isset( $params['first_name'] ) ? sanitize_text_field($params['first_name']) : '',
-            'last_name'     =>  isset( $params['last_name'] ) ? sanitize_text_field($params['last_name']) : '',
-            'phone'         =>  isset( $params['phone'] ) ? sanitize_text_field($params['phone']) : '',
-            'status'        =>  isset( $params['status'] ) ? sanitize_text_field($params['status']) : '',
+			'first_name'    =>  isset( $params['first_name'] )  ?   sanitize_text_field($params['first_name'])  : '',
+            'last_name'     =>  isset( $params['last_name'] )   ?   sanitize_text_field($params['last_name'])   : '',
+            'phone'         =>  isset( $params['phone'] )       ?   sanitize_text_field($params['phone'])       : '',
+            'status'        =>  isset( $params['status'] )      ?   sanitize_text_field($params['status'])      : '',
 		);
 
         // Contact object create and insert or update to database

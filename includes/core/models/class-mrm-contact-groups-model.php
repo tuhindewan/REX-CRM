@@ -25,7 +25,7 @@ class MRM_Contact_Group_Model{
      * 
      * @param $group Tag or List or Segment object 
      * 
-     * @return bool
+     * @return int|bool 
      * @since 1.0.0
      */
     public function insert( $group, $type )
