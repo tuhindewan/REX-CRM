@@ -3,7 +3,6 @@
 namespace MRM\REST\Routes;
 
 use MRM\Controllers\MRM_Contact_Controller;
-
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
@@ -60,6 +59,26 @@ class MRM_Contact_API_Route {
         register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_or_update_contact'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
+        /**
+         * Contact create endpoint
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)', [
+            [
+                'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
                     'create_or_update_contact'
