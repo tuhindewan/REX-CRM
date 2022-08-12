@@ -20,6 +20,29 @@ class MRM_Note_Model {
     use Singleton;
 
     /**
+     * Check existing tag, list or segment on database
+     * 
+     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_group_exist($id)
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+
+        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE id = %d",array($id));
+        $sqlCountData = $wpdb->get_results($sqlCount);
+        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+        $count = (int) $sqlCountDataJson['0']['total'];
+        if( $count ){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * SQL query to create a new note
      * 
      * @param object
@@ -80,5 +103,28 @@ class MRM_Note_Model {
           return true;
         
     }
+
+    /**
+     * Delete a group from the database
+     * 
+     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function delete_group($id)
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+
+        try {
+            $wpdb->delete($table_name, array('id' => $id));
+        } catch(\Exception $e) {
+            return false;
+        }
+        return true;
+
+    }
+
 
 }

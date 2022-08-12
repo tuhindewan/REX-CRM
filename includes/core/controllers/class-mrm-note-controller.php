@@ -3,6 +3,7 @@
 namespace MRM\Controllers;
 
 use MRM\Models\MRM_Note_Model;
+use MRM\Models\MRM_Model_Common;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
@@ -37,7 +38,7 @@ class MRM_Note_Controller extends MRM_Base_Controller {
      * @return JSON
      * @since 1.0.0
      */
-    public function create_or_update_note(WP_REST_Request $request){
+    public function create_or_update_contact_note(WP_REST_Request $request){
         $this->model = MRM_Note_Model::get_instance();
 
         
@@ -86,6 +87,40 @@ class MRM_Note_Controller extends MRM_Base_Controller {
             }
         } catch(Exception $e) {
                 return $this->get_error_response(__( 'Note is not valid', 'mrm' ), 400);
+        }
+    }
+
+
+    /**
+     * Delete notes for a contact
+     * 
+     * @param request
+     * @return void
+     * @since 1.0.0
+     */
+    public function delete_contact_note(WP_REST_Request $request){
+        $this->model = MRM_Note_Model::get_instance();
+
+        // Get url parameters
+        $urlParams = $request->get_url_params();
+
+        error_log(print_r($urlParams['note_id'],1));
+
+        // Segments avaiability check
+        $exist = MRM_Note_Model::is_group_exist($urlParams['note_id']);
+
+        if ( !$exist ) {
+			$response = __( 'Note not found', 'mrm' );
+
+			return $this->get_error_response( $response,  400);
+		}
+
+        $success = MRM_Note_Model::delete_group($urlParams['note_id']);
+
+        if($success) {
+            return $this->get_success_response( __( 'Note for a contact Delete Successfull', 'mrm' ), 200 );
+        } else {
+            return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
         }
     }
 
