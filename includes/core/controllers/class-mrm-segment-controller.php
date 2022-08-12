@@ -6,6 +6,7 @@ use MRM\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Data\MRM_Segment;
 use Exception;
+use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Models\MRM_Model_Common;
 use MRM\Models\MRM_Segment_Model;
 
@@ -40,7 +41,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      */
     public function create_or_update_segment(WP_REST_Request $request)
     {
-        $this->model = MRM_Segment_Model::get_instance();
+        $this->model = MRM_Contact_Group_Model::get_instance();
         
         // Get values from API
         $query_params   = $request->get_query_params();
@@ -68,9 +69,9 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
             $segment = new MRM_Segment($params);
 
             if(isset($params['segment_id'])){
-                $success = $this->model->update($segment, $params['segment_id']);
+                $success = $this->model->update($segment, $params['segment_id'], 3);
             }else{
-                $success = $this->model->insert($segment);
+                $success = $this->model->insert($segment, 3);
             }
 
             if($success) {
@@ -96,6 +97,8 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      */
     public function get_segments( WP_REST_Request $request )
     {
+        $this->model = MRM_Contact_Group_Model::get_instance();
+
         // Get values from API
         $query_params   = $request->get_query_params();
         $request_params = $request->get_params();
@@ -108,7 +111,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
 
-        $data = MRM_Model_Common::get_groups( 3, $offset, $perPage, $search );
+        $data = $this->model->get_groups( 3, $offset, $perPage, $search );
 
         if(isset($data)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $data );
