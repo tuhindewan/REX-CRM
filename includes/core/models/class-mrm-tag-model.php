@@ -106,7 +106,7 @@ class MRM_Tag_Model {
             }
 		}
 
-        // Return segments for list view
+        // Return tags for list view
         try {
             $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d LIMIT %d, %d ",array('1', $offset, $limit) );
             $data = $wpdb->get_results( $sql );

@@ -127,4 +127,61 @@ class MRM_Note_Model {
     }
 
 
+    /**
+     * SQL query to get all notes for a contact with pagination
+     * 
+     * @param int,int
+     * @return JSON
+     * @since 1.0.0
+     */
+    public function get_all_contact_notes($contact_id, $offset = 0, $limit = 10, $search = ''){
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+        
+        // Search notes by title
+		if ( ! empty( $search ) ) {
+			try {
+                $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE contact_id = %d AND title LIKE %s LIMIT %d, %d",array($contact_id , "%{$search}%", $offset, $limit) );
+                $data = $wpdb->get_results( $sql );
+                $dataJson = json_decode(json_encode( $data ));
+                $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE contact_id = %d AND title LIKE %s",array($contact_id, "%{$search}%"));
+                $sqlCountData = $wpdb->get_results($sqlCount);
+                $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+                
+                $count = (int) $sqlCountDataJson['0']['total'];
+                $totalPages = ceil(intdiv($count, $limit));
+          
+                return array(
+                    'data'=> $dataJson,
+                    'total_pages' => $totalPages
+                );
+
+            } catch(\Exception $e) {
+                return NULL;
+            }
+		}
+
+        // Return notes for a contact in list view
+        try {
+            $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE contact_id = %d LIMIT %d, %d ",array($contact_id, $offset, $limit) );
+            $data = $wpdb->get_results( $sql );
+            $dataJson = json_decode(json_encode( $data ));
+            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE contact_id = %d",array($contact_id));
+            $sqlCountData = $wpdb->get_results($sqlCount);
+            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+            
+            $count = (int) $sqlCountDataJson['0']['total'];
+            $totalPages = ceil(intdiv($count, $limit));
+      
+            return array(
+                'data'=> $dataJson,
+                'total_pages' => $totalPages
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+    }
+
+
 }

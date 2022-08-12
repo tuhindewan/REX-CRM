@@ -70,7 +70,19 @@ class MRM_Note_API_Route{
                     $this->controller ,
                     'rest_permissions_check'
                 ]
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_all_contact_notes'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
             ]
+
         ]);
 
         /**
