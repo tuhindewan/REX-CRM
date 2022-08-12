@@ -2,6 +2,7 @@
 
 namespace MRM\Models;
 
+use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use MRM\Traits\Singleton;
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
 
@@ -86,7 +87,7 @@ class MRM_Contact_Group_Model{
      * @return array
      * @since 1.0.0
      */
-    public static function get_groups($type ,$offset = 0, $limit = 10, $search = '')
+    public function get_groups($type ,$offset = 0, $limit = 10, $search = '')
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -134,6 +135,58 @@ class MRM_Contact_Group_Model{
             return NULL;
         }
 	
+    }
+
+
+    /**
+     * Delete a group from the database
+     * 
+     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function delete_group($id)
+    {
+        global $wpdb;
+        $table_name     =   $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $pivot_table    =   $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+
+        try {
+            $wpdb->delete($table_name, array('id' => $id));
+            $wpdb->delete($pivot_table, array('group_id' => $id));
+        } catch(\Exception $e) {
+            return false;
+        }
+        return true;
+
+    }
+
+
+    /**
+     * Delete multiple groups from the database
+     * 
+     * @param mixed $ids multiple group ids (tag_id, list_id, segment_id)
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function delete_groups($ids)
+    {
+        global $wpdb;
+
+        $table          =   $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $pivot_table    =   $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+
+        try {
+            $idListString = implode(",",$ids);
+            $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
+            $wpdb->query("DELETE FROM $pivot_table WHERE group_id IN ($idListString)");
+        } catch(\Exception $e) {
+            return false;
+        }
+        return true;
+
     }
     
 }

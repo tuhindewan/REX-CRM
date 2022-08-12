@@ -132,7 +132,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      */
     public function delete_segment( WP_REST_Request $request )
     {
-        $this->model = MRM_Segment_Model::get_instance();
+        $this->model = MRM_Contact_Group_Model::get_instance();
 
         // Get url parameters
         $urlParams = $request->get_url_params();
@@ -146,7 +146,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 			return $this->get_error_response( $response,  400);
 		}
 
-        $success = MRM_Model_Common::delete_group($urlParams['segment_id']);
+        $success = $this->model->delete_group($urlParams['segment_id']);
 
         if($success) {
             return $this->get_success_response( __( 'Segment Delete Successfull', 'mrm' ), 200 );
@@ -167,12 +167,12 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      */
     public function delete_segments( WP_REST_Request $request )
     {
-        $this->model = MRM_Segment_Model::get_instance();
+        $this->model = MRM_Contact_Group_Model::get_instance();
 
         // get json body as an array
         $body = $request->get_json_params();
 
-        $success = MRM_Model_Common::delete_groups($body['segment_ids']);
+        $success = $this->model->delete_groups($body['segment_ids']);
 
         if($success) {
             return $this->get_success_response(__( 'Segments Delete Successfull', 'mrm' ), 200);
