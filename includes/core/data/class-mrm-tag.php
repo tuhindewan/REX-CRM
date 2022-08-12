@@ -23,4 +23,15 @@ class MRM_Tag {
   public function get_title() {
     return $this->tag_title;
   }
+
+  /**
+     * Return tag data after serialization
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_data()
+    {
+        return null;
+    }
 }

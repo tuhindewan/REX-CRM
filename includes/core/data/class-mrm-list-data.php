@@ -1,6 +1,7 @@
 <?php
 
 namespace MRM\Data;
+
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
@@ -9,18 +10,43 @@ namespace MRM\Data;
  * @desc [Handle representation of a single List]
  */
 
-class MRM_List_Data {
-  private $list_title;
-  public function __construct($title) {
-    $this->list_title = $title;
-  }
+class MRM_List {
 
   /**
-   * Getter Function title
-   * @return string title of the list
-   * @since 1.0.0 
+   * List title
+   * @var string
+   * 
+   * @since 1.0.0
    */
-  public function get_title() {
-    return $this->list_title;
+  private $list_title;
+
+
+  public function __construct( $title ) {
+
+      $this->list_title = $title;
+
   }
+
+
+    /**
+     * Getter Function title
+     * @return string title of the list
+     * @since 1.0.0 
+     */
+    public function get_title() {
+
+        return $this->list_title;
+
+    }
+
+    /**
+     * Return segment data after serialization
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_data()
+    {
+        return null;
+    }
 }

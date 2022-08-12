@@ -21,9 +21,9 @@ class MRM_Contact_Group_Model{
 
 
     /**
-     * Insert segment information to database
+     * Insert group information to database
      * 
-     * @param $segment Tag or List or Segment object 
+     * @param $group Tag or List or Segment object 
      * 
      * @return bool
      * @since 1.0.0
@@ -42,30 +42,30 @@ class MRM_Contact_Group_Model{
         } catch(\Exception $e) {
             return false;
         }
-        return true;
+        return $wpdb->insert_id;
     }
 
 
     /**
-     * Update segment information to database
+     * Update group information to database
      * 
-     * @param object $segment       Tag or List or Segment object 
+     * @param object $group       Tag or List or Segment object 
      * @param int    $id            Tag or List or Segment id
      * @param int    $type          Tag or List or Segment type
      * 
      * @return bool
      * @since 1.0.0
      */
-    public function update( $segment, $id, $type )
+    public function update( $group, $id, $type )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
             $wpdb->update($table_name, array(
-                'title' => $segment->get_title(),
+                'title' => $group->get_title(),
                 'type' => $type,
-                'data'  => $segment->get_data(),
+                'data'  => $group->get_data(),
                 'updated_at' => current_time('mysql')), array(
                   'id' => $id
                 ));
@@ -185,8 +185,83 @@ class MRM_Contact_Group_Model{
         } catch(\Exception $e) {
             return false;
         }
+
         return true;
 
     }
+
+
+    /**
+     * Returns a single group data
+     * 
+     * @param int $id Tag, List or Segment ID
+     * 
+     * @return array an array of results if successfull, NULL otherwise
+     * @since 1.0.0 
+     */
+    public function get_group($id){
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        try {
+            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array($id));
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data));
+            return $dataJson;
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        return NULL;
+    }
+
+
+    /**
+     * Check existing tag, list or segment on database
+     * 
+     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_group_exist($id)
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE id = %d",array($id));
+        $sqlCountData = $wpdb->get_results($sqlCount);
+        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+        $count = (int) $sqlCountDataJson['0']['total'];
+        if( $count ){
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Run SQL query to insert contact and groups relation
+     * 
+     * @param array $pivot_ids
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public static function add_groups_to_contact( $pivot_ids )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+
+        foreach($pivot_ids as $id) {
+            $wpdb->insert($table_name, array(
+                'contact_id' => $id['contact_id'],
+                'group_id' => $id['group_id'],
+                'created_at' => current_time('mysql')
+            ));
+        }
+
+    } 
     
 }

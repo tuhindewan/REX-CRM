@@ -7,7 +7,6 @@ use WP_REST_Request;
 use MRM\Data\MRM_Segment;
 use Exception;
 use MRM\Models\MRM_Contact_Group_Model;
-use MRM\Models\MRM_Model_Common;
 
 /**
  * @author [MRM Team]
@@ -122,6 +121,33 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
 
     /**
+     * Get a specefic segment data
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_segment( WP_REST_Request $request )
+    {
+        $this->model = MRM_Contact_Group_Model::get_instance();
+
+        // Get values from API
+        $query_params   = $request->get_query_params();
+        $request_params = $request->get_params();
+        $params         = array_replace( $query_params, $request_params );
+
+        $data = $this->model->get_group($params['segment_id']);
+
+        if(isset($data)) {
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $data );
+        } else {
+            return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+        }
+    }
+
+
+    /**
      * Delete a segement 
      * 
      * @param WP_REST_Request $request
@@ -137,7 +163,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         $urlParams = $request->get_url_params();
 
         // Segments avaiability check
-        $exist = MRM_Model_Common::is_group_exist($urlParams['segment_id']);
+        $exist = $this->model->is_group_exist($urlParams['segment_id']);
 
         if ( !$exist ) {
 			$response = __( 'Segment not found', 'mrm' );

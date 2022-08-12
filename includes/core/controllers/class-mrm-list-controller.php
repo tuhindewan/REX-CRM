@@ -4,8 +4,8 @@ namespace MRM\Controllers;
 
 use Exception;
 use MRM\Controllers\MRM_Base_Controller;
-use MRM\Models\MRM_List_Model;
-use MRM\Data\MRM_List_Data;
+use MRM\Data\MRM_List;
+use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -22,100 +22,92 @@ class MRM_List_Controller extends MRM_Base_Controller{
     use Singleton;
     
     /**
-     * holds the model instance for database related queries
-     * @var MRM_List_Model
+     * Holds the model instance for database related queries
+     * 
+     * @var MRM_Contact_Group_Model
      * @since 1.0.0 
-     */
-
+    */
     public $model;
     
     
     
     /**
-     * Function used to handle create requests
+     * Function used to handle create  or updaterequests
+     * 
+     * @param WP_REST_Request $request
+     * 
      * @return WP_REST_RESPONSE
-     * @since 1.0.0 
+     * @since 1.0.0
      */
+    public function create_or_update_list(WP_REST_Request $request){
+        //instantiate the model
+        $this->model = MRM_Contact_Group_Model::get_instance();
+        
+        // get url parameters
+        $urlParams   = $request->get_url_params();
 
-    public function create_list(WP_REST_Request $request){
-      //instantiate the model
-      $this->model = MRM_List_Model::get_instance();
+        //get the list body
+        $body = $request->get_json_params();
+        $id = $urlParams['id'];
 
-      //get the list body
-      $body = $request->get_json_params();
+        $title = sanitize_text_field($body['title']);
+        if (empty($title)) {
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+        }
+            
+        try {
+            $list = new MRM_List($title);
+            if(isset($id)) {
+                $success = $this->model->update($list, $id, 2);
+            } else {
+                $success = $this->model->insert($list, 2);
+            }
 
-      try {
-        $list = new MRM_List_Data($body['title']);
-      } catch(Exception $e) {
-        return $this->get_error_response('Invalid Data', 400);
-      }
-      
-      $success = $this->model->insert_list($list);
-      
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Insertion successfull", 201);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Insert");
-      }
-      return $result;
+            if($success) {
+                return $this -> get_success_response(__( 'Insertion successful.', 'mrm' ), 201);
+            } else {
+                return $this -> get_error_response(__( 'Failed to Insert', 'mrm' ), 400);
+            }
+
+        } catch(Exception $e) {
+            return $this -> get_error_response(__( 'Query Error', 'mrm' ), 400);
+        }   
     }
 
     /**
-     * Function used to handle update requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function update_list(WP_REST_Request $request){
-      //get an instance of the model
-      $this->model = MRM_List_Model::get_instance();
-
-      // get url parameters
-      $urlParams = $request->get_url_params();
-      
-      // get json body as an array
-      $body = $request->get_json_params();
-
-
-      $id = $urlParams['id'];
-      $list = new MRM_List_Data($body['title']);
-
-      $success = $this->model->update_list($id, $list);
-
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Update successfull", 201);
-      } else {
-        $result = $this -> get_error_response("Failed to Update", 400);
-      }
-      return $result;
-    }
-
-    /**
-     * Function used to handle paginated get requests
+     * Function used to handle paginated get and search requests
+     * 
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
 
     public function get_lists(WP_REST_Request $request){
-      $this->model = MRM_List_Model::get_instance();
-      // get json body as an array
-      $body = $request->get_json_params();
-      $queryParams = $request->get_query_params();
-      $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
-      $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
-      $offset = ($page - 1) * $perPage;
-      $limit = $perPage;
-      $result = null;
-      $data = $this->model->get_lists($offset, $limit);
-      
-      if(isset($data)) {
-        $result = $this -> get_success_response("Query successfull", 201, $data);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Get Data");
-      }
-      return $result;
+
+        //instantiate the model
+        $this->model = MRM_Contact_Group_Model::get_instance();
+
+        $query_params   = $request->get_query_params();
+        $request_params = $request->get_params();
+        $params         = array_replace( $query_params, $request_params );
+
+        $queryParams = $request->get_query_params();
+        $page = isset($queryParams['page']) ? absint($queryParams['page']) : 1;
+        $perPage = isset($queryParams['per-page']) ? absint($queryParams['per-page']) : 3;
+        $offset = ($page - 1) * $perPage;
+
+        $search = $queryParams['search'];
+        $page = isset($params['page']) ? $params['page'] : 1;
+        $perPage = isset($params['per-page']) ? $params['per-page'] : 3;
+        $offset = ($page - 1) * $perPage;
+        $search = isset($queryParams['search']) ? sanitize_text_field( $queryParams['search'] ) : '';
+
+        $data = $this->model->get_groups( 2, $offset, $perPage, $search );
+
+        if(isset($data)) {
+            return $this -> get_success_response(__( 'Query Successful.', 'mrm' ), 201, $data);
+        } else {
+            return $this -> get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+        } 
     }
 
     /**
@@ -125,27 +117,22 @@ class MRM_List_Controller extends MRM_Base_Controller{
      */
 
     public function get_list(WP_REST_Request $request){
-       //get an instance of the model
-       $this->model = MRM_List_Model::get_instance();
 
-       // get url parameters
-       $urlParams = $request->get_url_params();
-       
-       // get json body as an array
-       $body = $request->get_json_params();
- 
- 
-       $id = $urlParams['id'];
- 
-       $data = $this->model->get_list($id);
- 
-       $result = null;
-       if(isset($data)) {
-         $result = $this -> get_success_response("Query Successfull", 200, $data);
-       } else {
-         $result = $this -> get_error_response("Failed to Get Data", 400);
-       }
-       return $result;
+        //instantiate the model
+        $this->model = MRM_Contact_Group_Model::get_instance();
+
+        // get url parameters
+        $urlParams = $request->get_url_params();
+        $id = $urlParams['id'];
+  
+        $data = $this->model->get_group($id);
+  
+        if(isset($data)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $data);
+        } else {
+            return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+        }
+
     }
 
     /**
@@ -156,26 +143,19 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
     public function delete_list(WP_REST_Request $request){
       //get an instance of the model
-      $this->model = MRM_List_Model::get_instance();
-
+      $this->model = MRM_Contact_Group_Model::get_instance();
       // get url parameters
       $urlParams = $request->get_url_params();
-      
-      // get json body as an array
-      $body = $request->get_json_params();
-
-
       $id = $urlParams['id'];
 
-      $success = $this->model->delete_list($id);
+      $success = $this->model->delete_group($id);
 
-      $result = null;
       if($success) {
-        $result = $this -> get_success_response("Delete Successfull", 200);
+        return $this -> get_success_response(__( 'Deleted Succesfully.', 'mrm' ), 200);
       } else {
-        $result = $this -> get_error_response("Failed to Delete", 400);
+        return $this -> get_error_response(__( 'Failed to delete.', 'mrm' ), 400);
       }
-      return $result;
+      
     }
 
     /**
@@ -185,60 +165,21 @@ class MRM_List_Controller extends MRM_Base_Controller{
      */
 
     public function delete_lists(WP_REST_Request $request){
-      //get an instance of the model
-      $this->model = MRM_List_Model::get_instance();
+        //get an instance of the model
+        $this->model = MRM_Contact_Group_Model::get_instance();
 
-      // get url parameters
-      $urlParams = $request->get_url_params();
-      
-      // get json body as an array
-      $body = $request->get_json_params();
+        // get json body as an array
+        $body = $request->get_json_params();
+        $listOfIDS = $body['list_ids'];
 
-      $listOfIDS = $body['list_ids'];
-      $success = $this->model->delete_lists($listOfIDS);
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Delete Successfull", 200);
-      } else {
-        $result = $this -> get_error_response("Failed to Delete", 400);
-      }
-      return $result;
+        $success = $this->model->delete_groups($listOfIDS);
+
+        if($success) {
+            return $this -> get_success_response(__( 'Deleted Successfully.', 'mrm' ), 200);
+        } else {
+            return $this -> get_error_response("Failed to Delete", 400);
+        }
+       
     }
-
-    /**
-     * Function used to handle search requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function search_lists(WP_REST_Request $request){
-      $this->model = MRM_List_Model::get_instance();
-      // get json body as an array
-      $body = $request->get_json_params();
-      $queryParams = $request->get_query_params();
-      $title = $queryParams['title'];
-      $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
-      $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
-      $offset = ($page - 1) * $perPage;
-      $limit = $perPage;
     
-      $data = $this->model->search_lists($title, $offset, $limit);
-      
-      if(isset($data)) {
-        $result = $this -> get_success_response("Search successfull", 201, $data);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Get Data");
-      }
-      return $result;
-    }
-
-
-    /**
-     * Function used check whether the given user has permission to acces the endpoing
-     * @return boolean
-     * @since 1.0.0 
-     */
-    public function lists_permissions_check(){
-        return true;
-    }
 }

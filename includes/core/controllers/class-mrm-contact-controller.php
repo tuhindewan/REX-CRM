@@ -6,12 +6,10 @@ use MRM\Data\MRM_Contact;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
-use MRM\Data\MRM_List_Data;
+use MRM\Data\MRM_List;
 use MRM\Models\MRM_Contact_Model;
-use MRM\Models\MRM_Tag_Model;
 use MRM\Data\MRM_Tag;
-use MRM\Models\MRM_List_Model;
-use MRM\Models\MRM_Model_Common;
+use MRM\Models\MRM_Contact_Group_Model;
 
 /**
  * @author [MRM Team]
@@ -89,7 +87,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             if(isset($params['lists'])){
                 $this->set_lists_to_contact( $params['lists'], $contact_id );
             }
-            error_log(print_r($contact_id, 1));
 
             if($contact_id) {
                 return $this->get_success_response(__( 'Insertion successfull', 'mrm' ), 201);
@@ -118,7 +115,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             // Create new tag if not exist
             if( 0 == $tag['id'] ){
                 $new_tag = new MRM_Tag($tag['title']);
-                $new_tag_id = MRM_Tag_Model::get_instance()->insert( $new_tag );
+                $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
             }
 
             if(isset($new_tag_id)){
@@ -133,7 +130,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         }, $tags);
         
-        MRM_Model_Common::add_groups_to_contact( $pivot_ids );
+        MRM_Contact_Group_Model::add_groups_to_contact( $pivot_ids );
         
     }
 
@@ -153,8 +150,8 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
             // Create new tag if not exist
             if( 0 == $list['id'] ){
-                $new_list = new MRM_List_Data($list['title']);
-                $new_list_id = MRM_List_Model::get_instance()->insert_list( $new_list );
+                $new_list = new MRM_List($list['title']);
+                $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
             }
 
             if(isset($new_list_id)){
@@ -169,7 +166,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         }, $lists);
         
-        MRM_Model_Common::add_groups_to_contact( $pivot_ids );
+        MRM_Contact_Group_Model::add_groups_to_contact( $pivot_ids );
         
     }
 
