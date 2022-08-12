@@ -3,7 +3,6 @@
 namespace MRM\REST\Routes;
 
 use MRM\Controllers\MRM_Segment_Controller;
-
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]

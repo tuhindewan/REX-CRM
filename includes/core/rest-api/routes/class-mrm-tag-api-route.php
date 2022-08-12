@@ -3,7 +3,6 @@
 namespace MRM\REST\Routes;
 
 use MRM\Controllers\MRM_Tag_Controller;
-
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]

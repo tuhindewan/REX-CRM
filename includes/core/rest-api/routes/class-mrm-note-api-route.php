@@ -64,7 +64,7 @@ class MRM_Note_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_note'
+                    'create_or_update_contact_note'
                 ],
                 'permission_callback' => [
                     $this->controller ,
