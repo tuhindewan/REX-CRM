@@ -139,5 +139,37 @@ class MRM_Contact_Model{
 
         return true;
     }
+
+
+    /**
+     * Delete multiple contacts
+     * 
+     * @param array $contact_ids contact id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function delete_contacts($contact_ids)
+    {
+        global $wpdb;
+        $table_name                     =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contact_meta_table             =   $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+        $contact_note_table             =   $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+        $contact_interaction_table      =   $wpdb->prefix . MRM_Interactions_Table::$mrm_table;
+
+        try {
+            $contact_ids = implode( ',', array_map( 'absint', $contact_ids ) );
+
+            $wpdb->query( "DELETE FROM $table_name WHERE id IN($contact_ids)" );
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        $wpdb->query( "DELETE FROM $contact_meta_table WHERE contact_id IN($contact_ids)" );
+        $wpdb->query( "DELETE FROM $contact_note_table WHERE contact_id IN($contact_ids)" );
+        $wpdb->query( "DELETE FROM $contact_interaction_table WHERE contact_id IN($contact_ids)" );
+
+        return true;
+    }
     
 }
