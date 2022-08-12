@@ -202,11 +202,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     
     /**
      * Saves the uploaded import file in filesystem
-     * sends both csv file headers and system contacts header to user
+     * sends both csv file attrs and system contacts attrs as an array to user
      * @param array $lists
      * @param int $contact_id
      * 
-     * @return void
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function import_contacts_get_attrs(WP_REST_Request $request) {
@@ -242,6 +242,46 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             return $this -> get_error_response(__($e->getMessage(), "mrm"), 400);
         }
         return $this->get_success_response(__('Import Successful.', "mrm"), 200, $data);
+    }
+
+    /**
+     * Saves the uploaded import file in filesystem
+     * sends both csv file attrs and system contacts attrs as an array to user
+     * @param array $lists
+     * @param int $contact_id
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts(WP_REST_Request $request) {
+        $body = $request->get_json_params();
+        try {
+            if(!isset($body) && empty($body["map"])) {
+                throw new Exception(__("Map attribute is required.", "mrm"));
+            }
+            $mapJson = json_decode(json_encode($body["map"]));
+            $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
+            $csv->setHeaderOffset(0);
+            $csvContacts = $csv->getRecords();
+            
+            foreach($csvContacts as $csvContact) {
+                // each contact
+                
+                foreach($mapJson as $map) {
+                    $mapArr = json_decode(json_encode($map), true);
+                    $source = $mapArr["source"];
+                    $target = $mapArr["target"];
+
+                }
+                
+            }
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+        if(isset($body["map"])) {
+
+        }
+        return $this->get_success_response(__("Import successful", "mrm"), 200);
     }
 
 

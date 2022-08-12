@@ -13,6 +13,9 @@ use MRM\DB\Tables\MRM_Contact_Info_Table;
  */
 
 class MRM_Constants{
+    /**
+     * Contact attrs available for mapping
+     */
     public static $contacts_attrs = array(
         "first_name",		
         "last_name",
