@@ -13,18 +13,20 @@ use MRM\DB\Tables\MRM_Contact_Info_Table;
  */
 
 class MRM_Constants{
-    public static $contacts_attrs_table = MRM_Contacts_Table::$mrm_table;
-
     public static $contacts_attrs = array(
         "first_name",		
         "last_name",
         "email",
-        "contact_owner",
-        "scores",
         "source",
         "status",
         "stage",
         "last_activity",
-        "date_of_birth"
+        "date_of_birth",
+        "address_line_1",	
+        "address_line_2",
+        "postal_code",
+        "city",	
+        "state",
+        "country"
     );
 }

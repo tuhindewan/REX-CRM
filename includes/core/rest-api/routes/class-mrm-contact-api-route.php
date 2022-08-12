@@ -90,24 +90,24 @@ class MRM_Contact_API_Route {
             ]
         ]);
         /**
-         * Contact import csv send headers endpoint
-         * This endpoint lets the user upload a csv file
+         * Contact import csv send attrs endpoint
+         * 
          * 
          * 
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/csv/headers', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/attrs', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'import_contacts_csv_headers'
+                    'import_contacts_get_attrs'
                 ],
                 'permission_callback' => [
                     $this->controller ,
                     'rest_permissions_check'
-                ] ,
+                ],
             ]
         ]);
 
@@ -127,7 +127,7 @@ class MRM_Contact_API_Route {
                 'permission_callback' => [
                     $this->controller ,
                     'rest_permissions_check'
-                ] ,
+                ],
             ]
         ]);
 
@@ -139,7 +139,7 @@ class MRM_Contact_API_Route {
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/export/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
