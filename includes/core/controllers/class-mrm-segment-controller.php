@@ -8,7 +8,6 @@ use MRM\Data\MRM_Segment;
 use Exception;
 use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Models\MRM_Model_Common;
-use MRM\Models\MRM_Segment_Model;
 
 /**
  * @author [MRM Team]
@@ -23,7 +22,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
     use Singleton;
 
     /**
-     * MRM_Segment_Model class object
+     * MRM_Contact_Group_Model class object
      * 
      * @var object
      * @since 1.0.0

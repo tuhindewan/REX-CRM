@@ -27,7 +27,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     use Singleton;
 
     /**
-     * MRM_Segment_Model class object
+     * MRM_Contact_Model class object
      * 
      * @var object
      * @since 1.0.0
