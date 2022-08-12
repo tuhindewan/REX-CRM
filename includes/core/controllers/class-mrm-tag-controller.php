@@ -1,6 +1,6 @@
 <?php
 
-namespace MRM\Controllers\Tags;
+namespace MRM\Controllers;
 
 use MRM\Models\MRM_Tag_Model;
 use MRM\Models\MRM_Model_Common;

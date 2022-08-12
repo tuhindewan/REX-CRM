@@ -2,7 +2,7 @@
 
 namespace MRM\REST\Routes;
 
-use MRM\Controllers\Tags\MRM_Tag_Controller;
+use MRM\Controllers\MRM_Tag_Controller;
 
 /**
  * @author [MRM Team]
