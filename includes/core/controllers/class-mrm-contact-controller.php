@@ -114,6 +114,39 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
+     * Return Contacts for list view
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_contacts(WP_REST_Request $request)
+    {
+        $this->model = MRM_Contact_Model::get_instance();
+
+        // Get values from API
+        $query_params   = $request->get_query_params();
+        $request_params = $request->get_params();
+        $params         = array_replace( $query_params, $request_params );
+
+        $page = isset($params['page']) ? $params['page'] : 1;
+        $perPage = isset($params['per-page']) ? $params['per-page'] : 3;
+        $offset = ($page - 1) * $perPage;
+
+        // Segment Search keyword
+        $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
+        $data = $this->model->get_contacts( $offset, $perPage, $search );
+
+        if(isset($data)) {
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $data );
+        } else {
+            return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+        }
+    }
+
+
+    /**
      * Add tags to new contact
      * 
      * @param array $tags

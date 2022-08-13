@@ -171,5 +171,50 @@ class MRM_Contact_Model{
 
         return true;
     }
+
+
+    /**
+     * Run SQL query to get or search contacts from database
+     * 
+     * @param int $type     Tag or List or Segment type
+     * @param int $offset
+     * @param int $limit
+     * @param string $search
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_contacts($offset = 0, $limit = 10, $search = '')
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $search_terms = null;
+
+        // Search contacts by email, first name or last name
+		if ( ! empty( $search ) ) {
+            $search_terms = "WHERE email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
+		}
+
+        // Prepare sql results for list view
+        try {
+            $select_query = "SELECT * FROM {$table_name} $search_terms ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $results = $wpdb->get_results( $select_query );
+
+            $count_query = "SELECT COUNT(*) as total FROM {$table_name} {$search_terms}";
+            $count_data = $wpdb->get_results($count_query);
+            $count_array = json_decode(json_encode($count_data), true);
+            
+            $count = (int) $count_array['0']['total'];
+            $total_pages = ceil(intdiv($count, $limit));
+      
+            return array(
+                'data'=> $results,
+                'total_pages' => $total_pages
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+	
+    }
     
 }

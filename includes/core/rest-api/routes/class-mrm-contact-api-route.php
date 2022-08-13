@@ -69,6 +69,17 @@ class MRM_Contact_API_Route {
                 ] ,
             ],
             [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_contacts'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
