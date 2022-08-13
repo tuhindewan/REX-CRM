@@ -91,44 +91,27 @@ class MRM_Contact_Group_Model{
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $search_terms = null;
 
         // Search segments by title
 		if ( ! empty( $search ) ) {
-			try {
-                $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d AND title LIKE %s LIMIT %d, %d",array($type, "%{$search}%", $offset, $limit) );
-                $data = $wpdb->get_results( $sql );
-                $dataJson = json_decode(json_encode( $data ));
-                $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d AND title LIKE %s",array($type, "%{$search}%"));
-                $sqlCountData = $wpdb->get_results($sqlCount);
-                $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-                
-                $count = (int) $sqlCountDataJson['0']['total'];
-                $totalPages = ceil(intdiv($count, $limit));
-          
-                return array(
-                    'data'=> $dataJson,
-                    'total_pages' => $totalPages
-                );
-
-            } catch(\Exception $e) {
-                return NULL;
-            }
+            $search_terms = "AND title LIKE '%" .$search. "%'";
 		}
 
         // Return segments for list view
         try {
-            $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE type = %d LIMIT %d, %d ",array($type, $offset, $limit) );
-            $data = $wpdb->get_results( $sql );
-            $dataJson = json_decode(json_encode( $data ));
-            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE type = %d",array($type));
-            $sqlCountData = $wpdb->get_results($sqlCount);
-            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+            $select_query = "SELECT * FROM {$table_name} WHERE type = {$type}  {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $results = $wpdb->get_results( $select_query );
+
+            $count_query = "SELECT COUNT(*) as total FROM {$table_name} WHERE type = {$type} {$search_terms}";
+            $count_data = $wpdb->get_results($count_query);
+            $count_array = json_decode(json_encode($count_data), true);
             
-            $count = (int) $sqlCountDataJson['0']['total'];
+            $count = (int) $count_array['0']['total'];
             $totalPages = ceil(intdiv($count, $limit));
       
             return array(
-                'data'=> $dataJson,
+                'data'=> $results,
                 'total_pages' => $totalPages
             );
         } catch(\Exception $e) {

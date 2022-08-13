@@ -197,7 +197,7 @@ class MRM_Contact_Model{
 
         // Prepare sql results for list view
         try {
-            $select_query = "SELECT * FROM {$table_name} $search_terms ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $select_query = "SELECT * FROM {$table_name} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
             $results = $wpdb->get_results( $select_query );
 
             $count_query = "SELECT COUNT(*) as total FROM {$table_name} {$search_terms}";
