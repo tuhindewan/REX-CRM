@@ -8,6 +8,8 @@ use MRM\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
 use MRM\Models\MRM_Contact_Group_Model;
+use MRM\Models\MRM_Contact_Group_Pivot_Model;
+use MRM\Models\MRM_Contact_Model;
 
 /**
  * @author [MRM Team]
@@ -158,11 +160,11 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $data = $this->model->get_groups( 1, $offset, $perPage, $search );
+        $groups = $this->model->get_groups( 1, $offset, $perPage, $search );
 
 
-        if(isset($data)) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 201, $data);
+        if(isset($groups)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 201, $groups);
         } else {
             return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
         }
@@ -184,14 +186,42 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
   
         $id = $urlParams['tag_id'];
   
-        $data = $this->model->get_group($id);
+        $group = $this->model->get_group($id);
 
-        if(isset($data)) {
-            return $this->get_success_response("Query Successfull", 200, $data);
+        if(isset($group)) {
+            return $this->get_success_response("Query Successfull", 200, $group);
         } else {
             return $this->get_error_response("Failed to Get Data", 400);
         }
 
-     }
+    }
+
+
+    /**
+     * Get all contacts related to specific tag
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_contacts(WP_REST_Request $request)
+    {
+        // Get values from API
+        $query_params   = $request->get_query_params();
+        $request_params = $request->get_params();
+        $params         = array_replace( $query_params, $request_params );
+
+        $results = MRM_Contact_Group_Pivot_Model::get_instance()->get_contacts_to_group( $params['tag_id'] );
+        $contacts = array_map(function($result) {
+            return $result['contact_id'];
+        }, $results);
+        
+        if(isset($contacts)) {
+            return $this->get_success_response("Query Successfull", 200, $contacts);
+        } else {
+            return $this->get_error_response("Failed to Get Data", 400);
+        }
+    }
 
 }

@@ -8,7 +8,7 @@ use MRM\Controllers\MRM_Tag_Controller;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle List Module related API callbacks]
+ * @desc [Handle Tag Module related API callbacks]
  */
 
 class MRM_Tag_API_Route{
@@ -31,7 +31,7 @@ class MRM_Tag_API_Route{
 
 
     /**
-     * MRM_Tags class object
+     * MRM_Tag_Controller class object
      * 
      * @var object
      * @since 1.0.0
@@ -52,10 +52,10 @@ class MRM_Tag_API_Route{
 
 
         /**
-         * Tag create endpoint
-         * Get Tag endpoint
+         * Create Tag endpoint
+         * Delete Tag endpoint
+         * Read Tag endpoint
          * 
-         * @return void
          * @since 1.0.0
         */  
         register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
@@ -96,10 +96,10 @@ class MRM_Tag_API_Route{
 
 
         /**
-         * Segment update endpoint
-         * Segment delete endpoint
+         * Tag update endpoint
+         * Tag delete endpoint
+         * Tag read endpoind
          * 
-         * @return void
          * @since 1.0.0
         */  
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<tag_id>[\d]+)', [
@@ -136,6 +136,26 @@ class MRM_Tag_API_Route{
                     'rest_permissions_check'
                 ] ,
             ],
+        ]);
+
+
+        /**
+         * Contacts related to a tag
+         * 
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<tag_id>[\d]+)' . '/contacts', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_contacts'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
         ]);
         
     }

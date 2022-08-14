@@ -10,6 +10,7 @@ use MRM\Data\MRM_List;
 use MRM\Models\MRM_Contact_Model;
 use MRM\Data\MRM_Tag;
 use MRM\Models\MRM_Contact_Group_Model;
+use MRM\Models\MRM_Contact_Group_Pivot_Model;
 
 /**
  * @author [MRM Team]
@@ -131,15 +132,15 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $params         = array_replace( $query_params, $request_params );
 
         $page = isset($params['page']) ? $params['page'] : 1;
-        $perPage = isset($params['per-page']) ? $params['per-page'] : 3;
+        $perPage = isset($params['per-page']) ? $params['per-page'] : 25;
         $offset = ($page - 1) * $perPage;
 
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
-        $data = $this->model->get_contacts( $offset, $perPage, $search );
-
-        if(isset($data)) {
-            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $data );
+        $contacts = $this->model->get_contacts( $offset, $perPage, $search );
+        error_log(print_r($contacts, 1));
+        if(isset($contacts)) {
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $contacts );
         } else {
             return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
         }
@@ -177,8 +178,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         }, $tags);
         
-        MRM_Contact_Group_Model::add_groups_to_contact( $pivot_ids );
-        
+        MRM_Contact_Group_Pivot_Model::get_instance()->add_groups_to_contact( $pivot_ids );
     }
 
 
@@ -213,7 +213,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         }, $lists);
         
-        MRM_Contact_Group_Model::add_groups_to_contact( $pivot_ids );
+        MRM_Contact_Group_Pivot_Model::get_instance()->add_groups_to_contact( $pivot_ids );
         
     }
 

@@ -101,8 +101,9 @@ class MRM_Contact_Group_Model{
         // Return segments for list view
         try {
             $select_query = "SELECT * FROM {$table_name} WHERE type = {$type}  {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
-            $results = $wpdb->get_results( $select_query );
-
+            $query_results = $wpdb->get_results( $select_query );
+            $results = json_decode(json_encode($query_results), true);
+            
             $count_query = "SELECT COUNT(*) as total FROM {$table_name} WHERE type = {$type} {$search_terms}";
             $count_data = $wpdb->get_results($count_query);
             $count_array = json_decode(json_encode($count_data), true);
@@ -221,30 +222,6 @@ class MRM_Contact_Group_Model{
             return true;
         }
         return false;
-    }
-
-
-    /**
-     * Run SQL query to insert contact and groups relation
-     * 
-     * @param array $pivot_ids
-     * 
-     * @return void
-     * @since 1.0.0
-     */
-    public static function add_groups_to_contact( $pivot_ids )
-    {
-        global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
-
-        foreach($pivot_ids as $id) {
-            $wpdb->insert($table_name, array(
-                'contact_id' => $id['contact_id'],
-                'group_id' => $id['group_id'],
-                'created_at' => current_time('mysql')
-            ));
-        }
-
     } 
     
 }

@@ -184,7 +184,7 @@ class MRM_Contact_Model{
      * @return array
      * @since 1.0.0
      */
-    public function get_contacts($offset = 0, $limit = 10, $search = '')
+    public function get_contacts( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -198,7 +198,8 @@ class MRM_Contact_Model{
         // Prepare sql results for list view
         try {
             $select_query = "SELECT * FROM {$table_name} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
-            $results = $wpdb->get_results( $select_query );
+            $query_results = $wpdb->get_results( $select_query );
+            $results = json_decode(json_encode($query_results), true);
 
             $count_query = "SELECT COUNT(*) as total FROM {$table_name} {$search_terms}";
             $count_data = $wpdb->get_results($count_query);
