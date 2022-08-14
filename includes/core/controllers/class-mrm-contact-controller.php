@@ -17,7 +17,7 @@ use MRM\Models\MRM_Contact_Group_Pivot_Model;
  * @email [support@rextheme.com]
  * @create date 2022-08-11 11:58:47
  * @modify date 2022-08-11 11:58:47
- * @desc [Handle Contatc Module related API callbacks]
+ * @desc [Handle Contact Module related API callbacks]
  */
 
 
@@ -268,6 +268,27 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             return $this->get_success_response( __( 'Contact Delete Successfull', 'mrm' ), 200 );
         } else {
             return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+        }
+    }
+
+
+
+    /**
+     * Remove tags from a contact
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function delete_groups(WP_REST_Request $request) 
+    {
+        $success = MRM_Contact_Pivot_Controller::get_instance()->delete_groups($request);
+
+        if($success) {
+            return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
+        } else {
+            return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
         }
     }
 

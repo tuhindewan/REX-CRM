@@ -123,6 +123,26 @@ class MRM_Contact_API_Route {
                 ] ,
             ]
         ]);
+
+        /**
+         * Remove tags from contact
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/groups', [
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_groups'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
     }
 
 }

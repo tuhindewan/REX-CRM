@@ -67,4 +67,27 @@ class MRM_Contact_Group_Pivot_Model {
 
         return NULL;
     }
+
+
+    /**
+     * Run SQL query to delete contacts and groups relation from pivot table
+     * 
+     * @param mixed $contact_id
+     * @param mixed $groups
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public function delete_groups_to_contact( $contact_id, $groups )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+        $groups = implode(",",$groups);
+        try {
+           return $wpdb->query("DELETE FROM {$table_name} WHERE contact_id = {$contact_id} AND group_id IN ({$groups})");
+        } catch(\Exception $e) {
+            return false;
+        }
+        return true;
+    }
 }
