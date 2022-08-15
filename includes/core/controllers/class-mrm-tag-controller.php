@@ -151,7 +151,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
-
     public function get_single( WP_REST_Request $request ){
  
         // Get values from API
