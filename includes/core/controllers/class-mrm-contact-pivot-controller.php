@@ -37,8 +37,6 @@ class MRM_Contact_Pivot_Controller {
      */
     public function delete_groups( WP_REST_Request $request )
     {
-        $this->model = MRM_Contact_Group_Pivot_Model::get_instance();
-
         // Get values from API
         $query_params   =   $request->get_query_params();
         $request_params =   $request->get_params();
@@ -46,7 +44,7 @@ class MRM_Contact_Pivot_Controller {
 
         $groups = isset( $params['groups'] ) ? $params['groups'] : NULL;
 
-        return $this->model->delete_groups_to_contact( $params['contact_id'], $groups );
+        return MRM_Contact_Group_Pivot_Model::delete_groups_to_contact( $params['contact_id'], $groups );
         
     }
 

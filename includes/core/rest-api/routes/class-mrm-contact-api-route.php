@@ -61,7 +61,7 @@ class MRM_Contact_API_Route {
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_contact'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -72,7 +72,7 @@ class MRM_Contact_API_Route {
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_contacts'
+                    'get_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -83,7 +83,7 @@ class MRM_Contact_API_Route {
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_contacts'
+                    'delete_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -104,7 +104,7 @@ class MRM_Contact_API_Route {
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_contact'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -115,7 +115,7 @@ class MRM_Contact_API_Route {
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_contact'
+                    'delete_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,

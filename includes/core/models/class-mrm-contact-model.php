@@ -32,7 +32,7 @@ class MRM_Contact_Model{
      * @return bool|int
      * @since 1.0.0
      */
-    public function insert(MRM_Contact $contact)
+    public static function insert(MRM_Contact $contact)
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -63,7 +63,7 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public function update( $contact_id, $fields )
+    public static function update( $contact_id, $fields )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -95,7 +95,7 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function is_contact_exist($email)
+    public static function is_contact_exist( $email )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -119,7 +119,7 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public function delete($id)
+    public static function destroy( $id )
     {
         global $wpdb;
         $table_name                     =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -149,7 +149,7 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public function delete_contacts($contact_ids)
+    public static function destroy_all($contact_ids)
     {
         global $wpdb;
         $table_name                     =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -184,7 +184,7 @@ class MRM_Contact_Model{
      * @return array
      * @since 1.0.0
      */
-    public function get_contacts( $offset = 0, $limit = 10, $search = '' )
+    public static function get_all( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;

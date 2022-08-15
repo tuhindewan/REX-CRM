@@ -6,6 +6,7 @@ use MRM\Data\MRM_Contact;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use MRM\Common\MRM_Common;
 use MRM\Data\MRM_List;
 use MRM\Models\MRM_Contact_Model;
 use MRM\Data\MRM_Tag;
@@ -51,17 +52,13 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function create_or_update(WP_REST_Request $request)
+    public function create_or_update( WP_REST_Request $request )
     {
-        $this->model = MRM_Contact_Model::get_instance();
-
         // Get values from API
-        $query_params   =   $request->get_query_params();
-        $request_params =   $request->get_params();
-        $params         =   array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
         // Email address validation
-        $email = isset($params['email']) ? sanitize_text_field($params['email']) : '';
+        $email = isset( $params['email'] ) ? sanitize_text_field( $params['email'] ) : '';
 
         if ( empty( $email ) ) {
 			$response = __( 'Email address is mandatory', 'mrm' );
@@ -70,7 +67,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 		}
 
         // Existing contact email address check
-        $exist = $this->model->is_contact_exist($email);
+        $exist = MRM_Contact_Model::is_contact_exist( $email );
         if($exist){
             $response = __( 'Email address is already exist', 'mrm' );
 
@@ -89,12 +86,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         try {
 
             if( isset( $params['contact_id']) ){
-                $contact_id = $this->model->update( $params['contact_id'], $params['fields'] );
+                $contact_id = MRM_Contact_Model::update( $params['contact_id'], $params['fields'] );
             }else{
-                $contact = new MRM_Contact($email, $this->contact_args);
-                $contact_id = $this->model->insert($contact);
+                $contact    = new MRM_Contact( $email, $this->contact_args );
+                $contact_id = MRM_Contact_Model::insert( $contact );
             }
-        
+             
             if(isset($params['tags'])){
                 $this->set_tags_to_contact( $params['tags'], $contact_id );
             }
@@ -104,12 +101,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             }
 
             if($contact_id) {
-                return $this->get_success_response(__( 'Insertion successfull', 'mrm' ), 201);
-            } else {
-                return $this->get_error_response(__( 'Insertion Failed', 'mrm' ), 400);
+                return $this->get_success_response(__( 'Contact has been saved successfully', 'mrm' ), 201);
             }
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+
         } catch(Exception $e) {
-                return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 400);
+                return $this->get_error_response(__( 'Contact is not valid', 'mrm' ), 400);
         }
     }
 
@@ -124,25 +121,20 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      */
     public function get_all(WP_REST_Request $request)
     {
-        $this->model = MRM_Contact_Model::get_instance();
-
         // Get values from API
-        $query_params   = $request->get_query_params();
-        $request_params = $request->get_params();
-        $params         = array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
-        $page = isset($params['page']) ? $params['page'] : 1;
-        $perPage = isset($params['per-page']) ? $params['per-page'] : 25;
-        $offset = ($page - 1) * $perPage;
+        $page       =  isset( $params['page'] ) ? $params['page'] : 1;
+        $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
+        $offset     =  ($page - 1) * $perPage;
 
-        // Segment Search keyword
-        $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
-        $contacts = $this->model->get_contacts( $offset, $perPage, $search );
+        // Contact Search keyword
+        $search   = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
+        $contacts = MRM_Contact_Model::get_all( $offset, $perPage, $search );
         if(isset($contacts)) {
-            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $contacts );
-        } else {
-            return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }
+        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
     }
 
 
@@ -152,7 +144,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * 
      * @return [type]
      */
-    public function get_single(WP_REST_Request $request)
+    public function get_single( WP_REST_Request $request )
     {
         
     }
@@ -167,7 +159,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return void
      * @since 1.0.0
      */
-    public function set_tags_to_contact( $tags, $contact_id )
+    private function set_tags_to_contact( $tags, $contact_id )
     {
         $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
 
@@ -189,7 +181,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         }, $tags);
         
-        MRM_Contact_Group_Pivot_Model::get_instance()->add_groups_to_contact( $pivot_ids );
+        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
     }
 
 
@@ -202,7 +194,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return void
      * @since 1.0.0
      */
-    public function set_lists_to_contact( $lists, $contact_id )
+    private function set_lists_to_contact( $lists, $contact_id )
     {
         $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
 
@@ -224,11 +216,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         }, $lists);
         
-        MRM_Contact_Group_Pivot_Model::get_instance()->add_groups_to_contact( $pivot_ids );
+        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
         
     }
 
-
+    
     /**
      * Delete a contact
      * 
@@ -237,22 +229,17 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_single(WP_REST_Request $request)
+    public function delete_single( WP_REST_Request $request )
     {
-        $this->model = MRM_Contact_Model::get_instance();
-
         // Get values from API
-        $query_params   =   $request->get_query_params();
-        $request_params =   $request->get_params();
-        $params         =   array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
-        $success = $this->model->delete($params['contact_id']);
+        $success = MRM_Contact_Model::destroy( $params['contact_id'] );
 
         if($success) {
-            return $this->get_success_response( __( 'Contact Delete Successfull', 'mrm' ), 200 );
-        } else {
-            return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
-        }
+            return $this->get_success_response( __( 'Contact has been deleted successfully', 'mrm' ), 200 );
+        } 
+        return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
     }
 
 
@@ -264,22 +251,18 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_all(WP_REST_Request $request)
+    public function delete_all( WP_REST_Request $request )
     {
-        $this->model = MRM_Contact_Model::get_instance();
-
         // Get values from API
-        $query_params   =   $request->get_query_params();
-        $request_params =   $request->get_params();
-        $params         =   array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
-        $success = $this->model->delete_contacts($params['contact_ids']);
+        $success = MRM_Contact_Model::destroy_all( $params['contact_ids'] );
 
         if($success) {
-            return $this->get_success_response( __( 'Contact Delete Successfull', 'mrm' ), 200 );
-        } else {
-            return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+            return $this->get_success_response( __( 'Contacts has been deleted successfully', 'mrm' ), 200 );
         }
+        return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+
     }
 
 
@@ -294,13 +277,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      */
     public function delete_groups(WP_REST_Request $request) 
     {
-        $success = MRM_Contact_Pivot_Controller::get_instance()->delete_groups($request);
+        $success = MRM_Contact_Pivot_Controller::get_instance()->delete_groups( $request );
 
         if($success) {
             return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
-        } else {
-            return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
         }
+        return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
     }
 
 }

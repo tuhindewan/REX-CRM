@@ -26,7 +26,7 @@ class MRM_Contact_Group_Pivot_Model {
      * @return void
      * @since 1.0.0
      */
-    public function add_groups_to_contact( $pivot_ids )
+    public static function add_groups_to_contact( $pivot_ids )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
@@ -78,7 +78,7 @@ class MRM_Contact_Group_Pivot_Model {
      * @return bool
      * @since 1.0.0
      */
-    public function delete_groups_to_contact( $contact_id, $groups )
+    public static function delete_groups_to_contact( $contact_id, $groups )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
