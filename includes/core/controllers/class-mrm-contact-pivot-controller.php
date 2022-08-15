@@ -14,7 +14,7 @@ use WP_REST_Request;
  * @desc [Handle Contacts and Groups related API callbacks]
  */
 
-class MRM_Contact_Pivot_Controller extends MRM_Base_Controller {
+class MRM_Contact_Pivot_Controller {
 
     use Singleton;
 

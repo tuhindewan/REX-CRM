@@ -37,7 +37,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function create_or_update_segment(WP_REST_Request $request)
+    public function create_or_update( WP_REST_Request $request )
     {
         $this->model = MRM_Contact_Group_Model::get_instance();
         
@@ -93,7 +93,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function get_segments( WP_REST_Request $request )
+    public function get_all( WP_REST_Request $request )
     {
         $this->model = MRM_Contact_Group_Model::get_instance();
 
@@ -128,7 +128,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function get_segment( WP_REST_Request $request )
+    public function get_single( WP_REST_Request $request )
     {
         $this->model = MRM_Contact_Group_Model::get_instance();
 
@@ -155,7 +155,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_segment( WP_REST_Request $request )
+    public function delete_single( WP_REST_Request $request )
     {
         $this->model = MRM_Contact_Group_Model::get_instance();
 
@@ -190,7 +190,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_segments( WP_REST_Request $request )
+    public function delete_all( WP_REST_Request $request )
     {
         $this->model = MRM_Contact_Group_Model::get_instance();
 

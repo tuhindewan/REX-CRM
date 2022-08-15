@@ -51,7 +51,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function create_or_update_contact(WP_REST_Request $request)
+    public function create_or_update(WP_REST_Request $request)
     {
         $this->model = MRM_Contact_Model::get_instance();
 
@@ -122,7 +122,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function get_contacts(WP_REST_Request $request)
+    public function get_all(WP_REST_Request $request)
     {
         $this->model = MRM_Contact_Model::get_instance();
 
@@ -138,12 +138,23 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
         $contacts = $this->model->get_contacts( $offset, $perPage, $search );
-        error_log(print_r($contacts, 1));
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 201, $contacts );
         } else {
             return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
         }
+    }
+
+
+    /**
+     * TODO: implement this method to get a contact details
+     * @param WP_REST_Request $request
+     * 
+     * @return [type]
+     */
+    public function get_single(WP_REST_Request $request)
+    {
+        
     }
 
 
@@ -226,7 +237,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_contact(WP_REST_Request $request)
+    public function delete_single(WP_REST_Request $request)
     {
         $this->model = MRM_Contact_Model::get_instance();
 
@@ -253,7 +264,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_contacts(WP_REST_Request $request)
+    public function delete_all(WP_REST_Request $request)
     {
         $this->model = MRM_Contact_Model::get_instance();
 

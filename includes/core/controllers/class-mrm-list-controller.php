@@ -39,7 +39,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @return WP_REST_RESPONSE
      * @since 1.0.0
      */
-    public function create_or_update_list(WP_REST_Request $request){
+    public function create_or_update(WP_REST_Request $request){
         //instantiate the model
         $this->model = MRM_Contact_Group_Model::get_instance();
         
@@ -81,7 +81,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function get_lists(WP_REST_Request $request){
+    public function get_all(WP_REST_Request $request){
 
         //instantiate the model
         $this->model = MRM_Contact_Group_Model::get_instance();
@@ -116,7 +116,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function get_list(WP_REST_Request $request){
+    public function get_single(WP_REST_Request $request){
 
         //instantiate the model
         $this->model = MRM_Contact_Group_Model::get_instance();
@@ -141,7 +141,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function delete_list(WP_REST_Request $request){
+    public function delete_single(WP_REST_Request $request){
       //get an instance of the model
       $this->model = MRM_Contact_Group_Model::get_instance();
       // get url parameters
@@ -164,7 +164,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @since 1.0.0 
      */
 
-    public function delete_lists(WP_REST_Request $request){
+    public function delete_all(WP_REST_Request $request){
         //get an instance of the model
         $this->model = MRM_Contact_Group_Model::get_instance();
 

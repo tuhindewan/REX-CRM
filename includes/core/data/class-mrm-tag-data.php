@@ -1,30 +1,54 @@
 <?php
 
 namespace MRM\Data;
+
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle representation of a single List]
+ * @desc [Manage representation of Tag object]
  */
 
 class MRM_Tag {
-  private $tag_title;
-  public function __construct($title) {
-    $this->tag_title = $title;
-  }
 
-  /**
-   * Getter Function title
-   * @return string title of the tag
-   * @since 1.0.0 
-   */
-  public function get_title() {
-    return $this->tag_title;
-  }
+    /**
+     * Tag title
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $title;
 
-  /**
+    /**
+     * Tag description
+     * 
+     * @var array
+     * @since 1.0.0
+     */
+    private $data;
+
+
+    public function __construct( $args )
+    {
+        $this->title = $args['title'];
+        $this->data = $args['data'];
+    }
+
+ 
+    /**
+     * Return tag title
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_title()
+    {
+        return $this->title;
+    }
+
+
+    /**
      * Return tag data after serialization
      * 
      * @return array
@@ -32,6 +56,8 @@ class MRM_Tag {
      */
     public function get_data()
     {
-        return null;
+        if( !is_serialized( $this->data ) ) {
+            return maybe_serialize( $this->data );
+        }
     }
 }

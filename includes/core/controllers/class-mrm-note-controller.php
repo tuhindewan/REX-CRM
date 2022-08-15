@@ -38,7 +38,7 @@ class MRM_Note_Controller extends MRM_Base_Controller {
      * 
      * @since 1.0.0
      */
-    public function create_or_update_contact_note(WP_REST_Request $request){
+    public function create_or_update(WP_REST_Request $request){
 
         $this->model = MRM_Note_Model::get_instance();
 
@@ -85,7 +85,7 @@ class MRM_Note_Controller extends MRM_Base_Controller {
      * @return void
      * @since 1.0.0
      */
-    public function delete_contact_note(WP_REST_Request $request){
+    public function delete_single(WP_REST_Request $request){
         $this->model = MRM_Note_Model::get_instance();
 
         // Get url parameters
@@ -118,7 +118,7 @@ class MRM_Note_Controller extends MRM_Base_Controller {
      * @return JSON
      * @since 1.0.0
      */
-    public function get_all_contact_notes(WP_REST_Request $request){
+    public function get_all(WP_REST_Request $request){
         $this->model = MRM_Note_Model::get_instance();
 
         // Get values from API
@@ -141,6 +141,30 @@ class MRM_Note_Controller extends MRM_Base_Controller {
         } else {
             return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
         }
+    }
+
+
+    /**
+     * TODO: write this method to get single note
+     * @param WP_REST_Request $request
+     * 
+     * @return [type]
+     */
+    public function get_single(WP_REST_Request $request)
+    {
+        
+    }
+
+
+    /**
+     * TODO: write this method to delete all or multiple notes
+     * @param WP_REST_Request $request
+     * 
+     * @return [type]
+     */
+    public function delete_all(WP_REST_Request $request)
+    {
+        
     }
 
 }

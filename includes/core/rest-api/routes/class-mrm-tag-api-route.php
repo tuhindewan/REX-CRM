@@ -63,7 +63,7 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_tag'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -74,7 +74,7 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_all_tags'
+                    'get_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -85,7 +85,7 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_multiple_tags'
+                    'delete_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -107,7 +107,7 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_tag'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -118,7 +118,7 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_single_tag'
+                    'get_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -129,7 +129,7 @@ class MRM_Tag_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_tag'
+                    'delete_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,

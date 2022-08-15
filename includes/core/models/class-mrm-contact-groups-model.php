@@ -16,9 +16,7 @@ use MRM\DB\Tables\MRM_Contact_Groups_Table;
 
 class MRM_Contact_Group_Model{
 
-
     use Singleton;
-
 
     /**
      * Insert group information to database
@@ -28,7 +26,7 @@ class MRM_Contact_Group_Model{
      * @return int|bool 
      * @since 1.0.0
      */
-    public function insert( $group, $type )
+    public static function insert( $group, $type )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -39,24 +37,24 @@ class MRM_Contact_Group_Model{
                 'type' => $type,
                 'data'  => $group->get_data(),
                 'created_at' => current_time('mysql')));
+            return $wpdb->insert_id;
         } catch(\Exception $e) {
             return false;
         }
-        return $wpdb->insert_id;
     }
 
 
     /**
      * Update group information to database
      * 
-     * @param object $group       Tag or List or Segment object 
+     * @param object $group         Tag or List or Segment object 
      * @param int    $id            Tag or List or Segment id
      * @param int    $type          Tag or List or Segment type
      * 
      * @return bool
      * @since 1.0.0
      */
-    public function update( $group, $id, $type )
+    public static function update( $group, $id, $type )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -69,10 +67,10 @@ class MRM_Contact_Group_Model{
                 'updated_at' => current_time('mysql')), array(
                   'id' => $id
                 ));
+            return true;
         } catch(\Exception $e) {
             return false;
         }
-        return true;
     }
 
 
@@ -87,7 +85,7 @@ class MRM_Contact_Group_Model{
      * @return array
      * @since 1.0.0
      */
-    public function get_groups($type ,$offset = 0, $limit = 10, $search = '')
+    public static function get_all( $type ,$offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -130,7 +128,7 @@ class MRM_Contact_Group_Model{
      * @return bool
      * @since 1.0.0
      */
-    public function delete_group($id)
+    public static function destroy( $id )
     {
         global $wpdb;
         $table_name     =   $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -139,11 +137,10 @@ class MRM_Contact_Group_Model{
         try {
             $wpdb->delete($table_name, array('id' => $id));
             $wpdb->delete($pivot_table, array('group_id' => $id));
+            return true;
         } catch(\Exception $e) {
             return false;
         }
-        return true;
-
     }
 
 
@@ -155,7 +152,7 @@ class MRM_Contact_Group_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function delete_groups($ids)
+    public static function destroy_all( $ids )
     {
         global $wpdb;
 
@@ -166,12 +163,10 @@ class MRM_Contact_Group_Model{
             $idListString = implode(",",$ids);
             $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
             $wpdb->query("DELETE FROM $pivot_table WHERE group_id IN ($idListString)");
+            return true;
         } catch(\Exception $e) {
             return false;
         }
-
-        return true;
-
     }
 
 
@@ -183,7 +178,7 @@ class MRM_Contact_Group_Model{
      * @return array an array of results if successfull, NULL otherwise
      * @since 1.0.0 
      */
-    public function get_group($id){
+    public static function get( $id ){
 
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
@@ -196,8 +191,6 @@ class MRM_Contact_Group_Model{
         } catch(\Exception $e) {
             return false;
         }
-
-        return NULL;
     }
 
 
@@ -209,7 +202,7 @@ class MRM_Contact_Group_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function is_group_exist($id)
+    public static function is_group_exist( $id )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;

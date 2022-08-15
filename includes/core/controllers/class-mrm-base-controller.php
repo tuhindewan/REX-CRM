@@ -2,6 +2,8 @@
 
 namespace MRM\Controllers;
 
+use WP_REST_Request;
+
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
@@ -12,7 +14,6 @@ namespace MRM\Controllers;
 
 abstract class MRM_Base_Controller {
 
-
 	/**
      * REST API response code
      * 
@@ -20,6 +21,64 @@ abstract class MRM_Base_Controller {
      * @since 1.0.0
      */
   	private $response_code = 200;
+
+	/**
+     * Model class object
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    protected $model;
+
+
+	/**
+	 * Create or update an object
+	 * 
+	 * @param WP_REST_Request $request
+	 * 
+	 * @return JSON 
+	 */
+	public abstract function create_or_update( WP_REST_Request $request );
+
+
+	/**
+	 * Delete a single object
+	 * 
+	 * @param WP_REST_Request $request
+	 * 
+	 * @return JSON
+	 */
+	public abstract function delete_single( WP_REST_Request $request );
+
+
+	/**
+	 * Delete all or multiple objects
+	 * 
+	 * @param WP_REST_Request $request
+	 * 
+	 * @return JSON
+	 */
+	public abstract function delete_all( WP_REST_Request $request );
+
+
+	/**
+	 * Get an object
+	 * 
+	 * @param WP_REST_Request $request
+	 * 
+	 * @return JSON
+	 */
+	public abstract function get_single( WP_REST_Request $request );
+
+
+	/**
+	 * Get all or multipla objects
+	 * 
+	 * @param WP_REST_Request $request
+	 * 
+	 * @return JSON
+	 */
+	public abstract function get_all( WP_REST_Request $request );
   
 
 	/**
