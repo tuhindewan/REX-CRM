@@ -35,7 +35,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // Tag Title validation
+        // Tag title validation
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
 
         if ( empty( $title ) ) {
@@ -113,7 +113,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
     }
-    
+
 
     /**
      * Get all tags request for tags
@@ -127,17 +127,17 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $page = isset($params['page']) ? $params['page'] : 1;
-        $perPage = isset($params['per-page']) ? $params['per-page'] : 3;
-        $offset = ($page - 1) * $perPage;
+        $page       =  isset($params['page']) ? $params['page'] : 1;
+        $perPage    =  isset($params['per-page']) ? $params['per-page'] : 25;
+        $offset     =  ($page - 1) * $perPage;
 
-        // Segment Search keyword
+        // Tag Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = MRM_Contact_Group_Model::get_all( 1, $offset, $perPage, $search );
 
         if(isset($groups)) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 201, $groups);
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
 

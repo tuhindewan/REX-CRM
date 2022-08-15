@@ -62,7 +62,7 @@ class MRM_List_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_list'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -73,7 +73,7 @@ class MRM_List_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_lists'
+                    'get_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -84,7 +84,7 @@ class MRM_List_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_lists'
+                    'delete_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -92,6 +92,7 @@ class MRM_List_API_Route{
                 ] ,
             ],
         ]);
+
         /**
          * List update endpoint
          * List delete endpoint
@@ -100,12 +101,12 @@ class MRM_List_API_Route{
          * @since 1.0.0
         */  
         
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<list_id>[\d]+)', [
             [
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_list'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -116,7 +117,7 @@ class MRM_List_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_list'
+                    'get_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -127,7 +128,7 @@ class MRM_List_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_list'
+                    'delete_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,

@@ -7,25 +7,33 @@ namespace MRM\Data;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle representation of a single List]
+ * @desc [Manage representation of a single List]
  */
 
 class MRM_List {
 
-  /**
-   * List title
-   * @var string
-   * 
-   * @since 1.0.0
-   */
-  private $list_title;
+    /**
+     * List title
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $title;
+
+    /**
+     * List description
+     * 
+     * @var array
+     * @since 1.0.0
+     */
+    private $data;
 
 
-  public function __construct( $title ) {
-
-      $this->list_title = $title;
-
-  }
+    public function __construct( $args )
+    {
+        $this->title = $args['title'];
+        $this->data  = $args['data'];
+    }
 
 
     /**
@@ -35,18 +43,21 @@ class MRM_List {
      */
     public function get_title() {
 
-        return $this->list_title;
+        return $this->title;
 
     }
 
+
     /**
-     * Return segment data after serialization
+     * Return tag data after serialization
      * 
      * @return array
      * @since 1.0.0
      */
     public function get_data()
     {
-        return null;
+        if( !is_serialized( $this->data ) ) {
+            return maybe_serialize( $this->data );
+        }
     }
 }
