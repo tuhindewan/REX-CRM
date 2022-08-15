@@ -12,7 +12,7 @@ use MRM\Data\MRM_Note;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle List Module related API callbacks]
+ * @desc [Manage contact note related databse operation]
  */
 
 class MRM_Note_Model {
@@ -20,14 +20,14 @@ class MRM_Note_Model {
     use Singleton;
 
     /**
-     * Check existing tag, list or segment on database
+     * Check existing note on database
      * 
-     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * @param mixed $id Note id
      * 
      * @return bool
      * @since 1.0.0
      */
-    public static function is_group_exist($id)
+    public static function is_note_exist( $id )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
@@ -45,74 +45,79 @@ class MRM_Note_Model {
     /**
      * SQL query to create a new note
      * 
-     * @param object
+     * @param $note         MRM_Note object
+     * @param $contact_id   Contact id
      * @return void
      * @since 1.0.0
      */
-    public function insert(MRM_Note $note, $contact_id){
-        global $wpdb;
+    public static function insert( MRM_Note $note, $contact_id ){
         
+        global $wpdb;
         $table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
 
         try {
             $wpdb->insert($table, array(
                 'contact_id'    => $contact_id,
-                'type'          => $note->get_note_type(),
-                'title'         => $note->get_note_title(),
-                'description'   => $note->get_note_description(),
-                'created_by'    => $note->get_note_created_by(),
-                'status'        => $note->get_note_status(),
-                'is_public'     => $note->get_note_is_public(),
+                'type'          => $note->get_type(),
+                'title'         => $note->get_title(),
+                'description'   => $note->get_description(),
+                'created_by'    => $note->get_created_by(),
+                'status'        => $note->get_status(),
+                'is_public'     => $note->get_is_public(),
                 'created_at'    => current_time('mysql')
-            )
-        );
+                )
+            );
+            return true;
         } catch(Exception $e) {
             return false;
         }
-        return true;
     }
 
 
     /**
      * SQL query to update a note
      * 
-     * @param int, object
+     * @param $object       Note object
+     * @param $contact_id   Contact id
+     * @param $note_id      Note id
+     * 
      * @return JSON
      * @since 1.0.0
      */
-    public function update(MRM_Note $note, $contact_id, $note_id){
-        global $wpdb;
+    public static function update( MRM_Note $note, $contact_id, $note_id ){
 
+        global $wpdb;
         $table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
         
         try {
             $wpdb->update($table, array(
                 'contact_id'    => $contact_id,
-                'type'          => $note->get_note_type(),
-                'title'         => $note->get_note_title(),
-                'description'   => $note->get_note_description(),
-                'created_by'    => $note->get_note_created_by(),
-                'status'        => $note->get_note_status(),
-                'is_public'     => $note->get_note_is_public(),
+                'type'          => $note->get_type(),
+                'title'         => $note->get_title(),
+                'description'   => $note->get_description(),
+                'created_by'    => $note->get_created_by(),
+                'status'        => $note->get_status(),
+                'is_public'     => $note->get_is_public(),
                 'updated_at' => current_time('mysql')), array(
                     'id' => $note_id
-            ));
-          } catch(Exception $e) {
+                )
+            );
+            return true;
+        } catch(Exception $e) {
             return false;
-          }
-          return true;
+        }
         
     }
 
     /**
-     * Delete a group from the database
+     * Delete a note from the database
      * 
-     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * @param mixed $id Note id
      * 
      * @return bool
      * @since 1.0.0
      */
-    public static function delete_group($id)
+    public static function destroy( $id )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
@@ -130,52 +135,40 @@ class MRM_Note_Model {
     /**
      * SQL query to get all notes for a contact with pagination
      * 
-     * @param int,int
-     * @return JSON
+     * @param mixed $contact_id
+     * @param int $offset
+     * @param int $limit
+     * @param string $search
+     * 
+     * @return array|bool
      * @since 1.0.0
      */
-    public function get_all_contact_notes($contact_id, $offset = 0, $limit = 10, $search = ''){
-        global $wpdb;
+    public static function get_all( $contact_id, $offset = 0, $limit = 10, $search = '' ){
 
+        global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
-        
+        $search_terms = null;
+
         // Search notes by title
 		if ( ! empty( $search ) ) {
-			try {
-                $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE contact_id = %d AND title LIKE %s LIMIT %d, %d",array($contact_id , "%{$search}%", $offset, $limit) );
-                $data = $wpdb->get_results( $sql );
-                $dataJson = json_decode(json_encode( $data ));
-                $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE contact_id = %d AND title LIKE %s",array($contact_id, "%{$search}%"));
-                $sqlCountData = $wpdb->get_results($sqlCount);
-                $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-                
-                $count = (int) $sqlCountDataJson['0']['total'];
-                $totalPages = ceil(intdiv($count, $limit));
-          
-                return array(
-                    'data'=> $dataJson,
-                    'total_pages' => $totalPages
-                );
-
-            } catch(\Exception $e) {
-                return NULL;
-            }
+            $search_terms = "AND title LIKE '%" .$search. "%'";
 		}
 
         // Return notes for a contact in list view
         try {
-            $sql = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE contact_id = %d LIMIT %d, %d ",array($contact_id, $offset, $limit) );
-            $data = $wpdb->get_results( $sql );
-            $dataJson = json_decode(json_encode( $data ));
-            $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE contact_id = %d",array($contact_id));
-            $sqlCountData = $wpdb->get_results($sqlCount);
-            $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
+            $select_query = "SELECT * FROM {$table_name} WHERE contact_id = {$contact_id} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $query_results = $wpdb->get_results( $select_query );
+            $results = json_decode(json_encode($query_results), true);
+
+            $count_query = "SELECT COUNT(*) as total FROM {$table_name} WHERE contact_id = {$contact_id}";
+            $count_data = $wpdb->get_results($count_query);
+            $count_array = json_decode(json_encode($count_data), true);
             
-            $count = (int) $sqlCountDataJson['0']['total'];
+            $count = (int) $count_array['0']['total'];
             $totalPages = ceil(intdiv($count, $limit));
       
             return array(
-                'data'=> $dataJson,
+                'data'=> $results,
                 'total_pages' => $totalPages
             );
         } catch(\Exception $e) {
