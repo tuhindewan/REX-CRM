@@ -13,6 +13,7 @@ use MRM\Data\MRM_Tag;
 use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use League\Csv\Reader;
+use League\Csv\Writer;
 use League\Csv\Statement;
 use MRM\Constants\MRM_Constants;
 
@@ -36,8 +37,8 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public $model;
-    private $new_uploaded_file = __DIR__.'/../../../tmp/new.csv';
-
+    private $import_file_location = __DIR__.'/../../../tmp/new.csv';
+    private $export_file_location = __DIR__.'/../../../../../uploads/contacts.csv';
 
     /**
      * Contact object arguments
@@ -297,7 +298,43 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public function export_contacts(WP_REST_Request $request) {
-        return $this->get_success_response(__('hello', 'mrm'), 200);
+        try {
+            $body = $request->get_json_params();
+            $exportJson = json_decode(json_encode($body["export"]), true);
+            if(!isset($body) && empty($body["export"])) {
+                throw new Exception(__("Export Array with necessary field names is required.", "mrm"));
+            }
+            if(file_exists($this->export_file_location)) {
+                unlink($this->export_file_location);
+            } 
+            $csvWriter = Writer::createFromPath($this->export_file_location, 'w+');
+            // write csv header
+            $csvWriter->insertOne($exportJson);
+            $page = 1;
+            $limit = 25;
+            do {
+                $offset = ($page - 1) * $limit;
+                $data = MRM_Contact_Model::get_all($offset, $limit);
+                $totalPages = $data['total_pages'];
+                $contactsBatchArray = $data['data'];
+                $contactsBatchFiltered = array_map(function($record) use($exportJson){
+                    $filtered = array();
+                    foreach($record as $key => $value) {
+                        if(in_array($key, $exportJson)) {
+                            $filtered[$key] = $value;
+                        }
+                    }
+                    return $filtered;
+                } , $contactsBatchArray);
+                // error_log(print_r($contactsBatchFiltered, 1));
+                $csvWriter->insertAll($contactsBatchFiltered);
+
+            } while($page++ <= $totalPages);
+            
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), 'mrm'), 400);
+        }
+        return $this->get_success_response(__('Export Successful', 'mrm'), 200);
     }
     
     /**
@@ -327,8 +364,8 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             }
 
             // save the file
-            move_uploaded_file( $csv['tmp_name'], $this->new_uploaded_file );
-            $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
+            move_uploaded_file( $csv['tmp_name'], $this->import_file_location );
+            $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             
             $csvAttrs = $csv->getHeader();
@@ -360,7 +397,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 throw new Exception(__("Map attribute is required.", "mrm"));
             }
             $mapJson = json_decode(json_encode($body["map"]), true);
-            error_log(print_r($mapJson, 1));
             $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
@@ -382,11 +418,10 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                       }
                     }
                 }
-                error_log(print_r($contactArgs, 1));
                 $contact    = new MRM_Contact( $contactEmail, $contactArgs );
                 $exists = MRM_Contact_Model::is_contact_exist($contactEmail);
                 if(!$exists) {
-                  $contact_id = MRM_Contact_Model::insert( $contact );
+                  MRM_Contact_Model::insert( $contact );
                 }
             }
         } catch(Exception $e) {
