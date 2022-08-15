@@ -16,7 +16,7 @@ class MRM_Note {
      * @var int
      * @since 1.0.0
      */
-    private $note_type;
+    private $type;
 
     /**
      * Note Title
@@ -24,7 +24,7 @@ class MRM_Note {
      * @var string
      * @since 1.0.0
      */
-    private $note_title;
+    private $title;
 
     
 
@@ -34,7 +34,7 @@ class MRM_Note {
      * @var string
      * @since 1.0.0
      */
-    private $note_description;
+    private $description;
 
     /**
      * Note Created By
@@ -42,7 +42,7 @@ class MRM_Note {
      * @var string
      * @since 1.0.0
      */
-    private $note_created_by;
+    private $created_by;
 
     /**
      * Contact status
@@ -50,7 +50,7 @@ class MRM_Note {
      * @var int
      * @since 1.0.0
      */
-    private $note_status;
+    private $status;
 
      /**
      * Access check
@@ -58,16 +58,16 @@ class MRM_Note {
      * @var int
      * @since 1.0.0
      */
-    private $note_is_public;
+    private $is_public;
 
 
     public function __construct($args)
     {
-        $this->note_type         = $args['type'];
-        $this->note_title        = $args['title'];
-        $this->note_description  = $args['description'];
-        $this->note_status       = $args['status'];
-        $this->note_is_public    = $args['is_public'];
+        $this->type         =  $args['type'];
+        $this->title        =  $args['title'];
+        $this->description  =  $args['description'];
+        $this->status       =  $args['status'];
+        $this->is_public    =  $args['is_public'];
     }
 
 
@@ -77,10 +77,11 @@ class MRM_Note {
      * @return string
      * @since 1.0.0
      */
-    public function get_note_type()
+    public function get_type()
     {
-        return $this->note_type;
+        return $this->type;
     }
+
 
     /**
      * Return note title
@@ -88,10 +89,11 @@ class MRM_Note {
      * @return string
      * @since 1.0.0
      */
-    public function get_note_title()
+    public function get_title()
     {
-        return $this->note_title;
+        return $this->title;
     }
+
 
     /**
      * Return note description
@@ -99,10 +101,11 @@ class MRM_Note {
      * @return string
      * @since 1.0.0
      */
-    public function get_note_description()
+    public function get_description()
     {
-        return $this->note_description;
+        return $this->description;
     }
+    
 
     /**
      * Return note created by
@@ -110,15 +113,14 @@ class MRM_Note {
      * @return string
      * @since 1.0.0
      */
-    public function get_note_created_by()
+    public function get_created_by()
     {
         if ( is_user_logged_in() ) {
-            $this->note_created_by = get_current_user_id();
-        } else {
-            $this->note_created_by = 1;
+            return $this->created_by = get_current_user_id();
         }
-        return $this->note_created_by;
+        return $this->created_by = 1;     
     }
+
 
     /**
      * Return note status
@@ -126,10 +128,11 @@ class MRM_Note {
      * @return string
      * @since 1.0.0
      */
-    public function get_note_status()
+    public function get_status()
     {
-        return $this->note_status;
+        return $this->status;
     }
+    
 
     /**
      * Return note access
@@ -137,9 +140,9 @@ class MRM_Note {
      * @return string
      * @since 1.0.0
      */
-    public function get_note_is_public()
+    public function get_is_public()
     {
-        return $this->note_is_public;
+        return $this->is_public;
     }
 
 

@@ -61,7 +61,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_segment'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -72,7 +72,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_segments'
+                    'get_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -83,7 +83,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_segments'
+                    'delete_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -105,7 +105,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_segment'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -116,7 +116,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_segment'
+                    'delete_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -127,7 +127,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_segment'
+                    'get_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,

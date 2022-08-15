@@ -1,37 +1,23 @@
 <?php
-
-
 /**
- * Class SegmentTest
+ * Class  GetContactsTest
  *
  * @package Mrm
  */
 
+/**
+ * Sample test case.
+ */
+class GetContactsTest extends WP_UnitTestCase {
 
-class SegmentTest extends WP_UnitTestCase {
-
-    /**
+	 /**
      * Holds the WP REST Server object
      *
      * @var WP_REST_Server
      */
     private $server;
- 
-    /**
-    * Holds user id.
-    *
-    * @var int
-    */
-    private $user_id;
- 
-    /**
-    * Holds post id.
-    *
-    * @var int
-    */
-    private $post_id;
- 
-    /**
+
+	/**
     * Create a user and a post for our test.
     */
     public function setUp() {
@@ -54,15 +40,11 @@ class SegmentTest extends WP_UnitTestCase {
     }
 
 	/**
-	 * Segment create test.
+	 * A single example test.
 	 */
-	public function test_segment_create() {
-
-        $request = new WP_REST_Request( 'POST', '/mrm/v1/tags/', array('titile' => 'tuhin') );
+	public function test_get_contacts() {
+		$request = new WP_REST_Request( 'GET', '/mrm/v1/contacts/' );
         $response = $this->server->dispatch( $request );
-
-        $this->assertEquals( 404, $response->get_status() );
-
-
+		$this->assertEquals( 404, $response->get_status() );
 	}
 }

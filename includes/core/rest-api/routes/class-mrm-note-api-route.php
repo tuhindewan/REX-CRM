@@ -51,7 +51,6 @@ class MRM_Note_API_Route{
     {
         $this->controller = MRM_Note_Controller::get_instance();
 
-
         /**
          * Note create endpoint
          * Get Note endpoint
@@ -64,7 +63,7 @@ class MRM_Note_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_contact_note'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -75,7 +74,7 @@ class MRM_Note_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_all_contact_notes'
+                    'get_all'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -98,7 +97,7 @@ class MRM_Note_API_Route{
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_contact_note'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -109,7 +108,7 @@ class MRM_Note_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_contact_note'
+                    'delete_single'
                 ],
                 'permission_callback' => [
                     $this->controller ,
