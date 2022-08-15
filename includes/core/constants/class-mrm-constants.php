@@ -30,6 +30,7 @@ class MRM_Constants{
         "postal_code",
         "city",	
         "state",
-        "country"
+        "country",
+        "phone"
     );
 }

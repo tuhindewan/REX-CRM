@@ -112,6 +112,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         } catch(Exception $e) {
                 return $this->get_error_response(__( 'Contact is not valid', 'mrm' ), 400);
         }
+    }
 
 
     /**
@@ -151,19 +152,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }
         return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
     }
-
-
-    /**
-     * TODO: implement this method to get a contact details
-     * @param WP_REST_Request $request
-     * 
-     * @return [type]
-     */
-    public function get_single( WP_REST_Request $request )
-    {
-        
-    }
-
 
     /**
      * Add tags to new contact
@@ -371,27 +359,38 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             if(!isset($body) && empty($body["map"])) {
                 throw new Exception(__("Map attribute is required.", "mrm"));
             }
-            $mapJson = json_decode(json_encode($body["map"]));
+            $mapJson = json_decode(json_encode($body["map"]), true);
+            error_log(print_r($mapJson, 1));
             $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
             
             foreach($csvContacts as $csvContact) {
                 // each contact
-                
+                $contactArgs = array();
                 foreach($mapJson as $map) {
                     $mapArr = json_decode(json_encode($map), true);
                     $source = $mapArr["source"];
                     $target = $mapArr["target"];
-
+                    if($target == "email") {
+                      $contactEmail = $csvContact[$source];
+                    } else {
+                      if(in_array($target, MRM_Constants::$contacts_attrs)){
+                        $contactArgs[$target] = $csvContact[$source];
+                      } else {
+                        // TODO Contact meta table information insertion goes here
+                      }
+                    }
                 }
-                
+                error_log(print_r($contactArgs, 1));
+                $contact    = new MRM_Contact( $contactEmail, $contactArgs );
+                $exists = MRM_Contact_Model::is_contact_exist($contactEmail);
+                if(!$exists) {
+                  $contact_id = MRM_Contact_Model::insert( $contact );
+                }
             }
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
-        }
-        if(isset($body["map"])) {
-
         }
         return $this->get_success_response(__("Import successful", "mrm"), 200);
     }
