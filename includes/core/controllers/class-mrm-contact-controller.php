@@ -339,16 +339,18 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     /**
      * Saves the uploaded import file in filesystem
      * sends both csv file attrs and system contacts attrs as an array to user
-     * @param array $lists
-     * @param int $contact_id
+     * 
+     * @param WP_REST_Request $request
      * 
      * @return WP_REST_Response
      * @since 1.0.0
      */
     public function import_contacts_get_attrs(WP_REST_Request $request) {
+
         $files = $request->get_file_params();
 
         try{
+            // CSV file upload validation
             if (!empty($files) && !empty($files["csv"])) {
                 $csv = $files['csv'];
             } else {
@@ -360,24 +362,25 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             
-            $csvAttrs = $csv->getHeader();
-            $contactAttrs = MRM_Constants::$contacts_attrs;
-            $data = array(
-                "csv" => $csvAttrs,
-                "contact" => $contactAttrs
+            $csv_attrs = $csv->getHeader();
+            $contact_attrs = MRM_Constants::$contacts_attrs;
+            $map_results = array(
+                "csv"       => $csv_attrs,
+                "contact"   => $contact_attrs
             );
+            return $this->get_success_response(__('Import Successful.', "mrm"), 200, $map_results);
 
         } catch (Exception $e) {
-            return $this -> get_error_response(__($e->getMessage(), "mrm"), 400);
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
-        return $this->get_success_response(__('Import Successful.', "mrm"), 200, $data);
     }
 
+
     /**
-     * Saves the uploaded import file in filesystem
-     * sends both csv file attrs and system contacts attrs as an array to user
-     * @param array $lists
-     * @param int $contact_id
+     * Prepare contact object from the uploaded CSV
+     * Inseret contcts data into database
+     * 
+     * @param WP_REST_Request $request
      * 
      * @return WP_REST_Response
      * @since 1.0.0
@@ -385,7 +388,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     public function import_contacts(WP_REST_Request $request) {
 
         $body = $request->get_json_params();
-        
         try {
             if(!isset($body) && empty($body["map"])) {
                 throw new Exception(__("Map attribute is required.", "mrm"));
@@ -396,7 +398,10 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $csvContacts = $csv->getRecords();
             foreach($csvContacts as $csvContact) {
                 // each contact
-                $contactArgs = array();
+                $contactArgs = array(
+                    'status'    => $body['status'],
+                    'source'    => 'csv'
+                );
                 foreach($mapJson as $map) {
                     $mapArr = json_decode(json_encode($map), true);
                     $source = $mapArr["source"];
@@ -417,10 +422,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                   MRM_Contact_Model::insert( $contact );
                 }
             }
+            return $this->get_success_response(__("Import successful", "mrm"), 200);
+
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
-        return $this->get_success_response(__("Import successful", "mrm"), 200);
     }
 
 

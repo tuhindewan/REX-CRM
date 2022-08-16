@@ -134,6 +134,14 @@ class MRM_Contact {
      */
     private $company_name;
 
+    /**
+     * Contact owner
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $contact_owner;
+
 
 
 
@@ -153,7 +161,7 @@ class MRM_Contact {
         $this->state            =  isset($args['state'])            ? $args['state']            : '';
         $this->country          =  isset($args['country'])          ? $args['country']          : '';
         $this->postal_code      =  isset($args['postal_code'])      ? $args['postal_code']      : '';
-        $this->company_name     =  isset($args['company_name'])     ? $args['company_name']      : '';
+        $this->company_name     =  isset($args['company_name'])     ? $args['company_name']     : '';
     }
 
 
@@ -332,6 +340,21 @@ class MRM_Contact {
     public function get_company_name()
     {
         return $this->company_name;
+    }
+
+
+    /**
+     * Return contact owner
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_contact_owner()
+    {
+        if ( is_user_logged_in() ) {
+            return $this->contact_owner = get_current_user_id();
+        }
+        return $this->contact_owner = 1;     
     }
 
 }
