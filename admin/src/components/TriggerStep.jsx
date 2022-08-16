@@ -24,7 +24,7 @@ const LandingStep = (props) => {
       </div>
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={Position.Right}
         className="handle-right"
       />
     </>

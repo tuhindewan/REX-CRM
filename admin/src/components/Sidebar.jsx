@@ -1,4 +1,5 @@
 import React from "react";
+import "../style/Canvas.css";
 
 const Sidebar = () => {
   const onDragStart = (event, nodeType) => {
@@ -6,24 +7,16 @@ const Sidebar = () => {
     event.dataTransfer.effectAllowed = "move";
   };
   return (
-    <aside>
-      <div>
-        <label htmlFor="automation">Select one : </label>
-        <select name="automation" id="automation">
-          <option value="actions">Actions</option>
-          <option value="rules">Rules</option>
-        </select>
-      </div>
-      <div className="description">Select your flow...</div>
+    <div className="canvas-drag-picker-wrapper">
       <div
-        className="dndnode input"
+        className="dndnode"
         onDragStart={(event) => onDragStart(event, "triggerStep")}
         draggable
       >
         Trigger Step
       </div>
       <div
-        className="dndnode input"
+        className="dndnode"
         onDragStart={(event) => onDragStart(event, "sendEmailStep")}
         draggable
       >
@@ -37,21 +30,21 @@ const Sidebar = () => {
         Delay
       </div>
       <div
-        className="dndnode input"
+        className="dndnode"
         onDragStart={(event) => onDragStart(event, "conditionStep")}
         draggable
       >
         Condition
       </div>
       <div
-        className="dndnode input"
+        className="dndnode"
         onDragStart={(event) => onDragStart(event, "goalStep")}
         draggable
       >
         Goal
       </div>
       <div
-        className="dndnode output"
+        className="dndnode"
         onDragStart={(event) => onDragStart(event, "parallelPathStep")}
         draggable
       >
@@ -65,13 +58,13 @@ const Sidebar = () => {
         List/Unlist
       </div>
       <div
-        className="dndnode input"
+        className="dndnode"
         onDragStart={(event) => onDragStart(event, "exitStep")}
         draggable
       >
         Exit Step
       </div>
-    </aside>
+    </div>
   );
 };
 
