@@ -128,7 +128,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $params = MRM_Common::get_api_params_values( $request );
     
         $contact = MRM_Contact_Model::get( $params['contact_id'] );
-        $tags = $this->get_tags_to_contact( $params['contact_id'] );
+
+        // Get tags and lists
+        $tags   = $this->get_tags_to_contact( $params['contact_id'] );
+        $lists  = $this->get_lists_to_contact( $params['contact_id'] );
+
         if(isset($contact)) {
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
@@ -206,7 +210,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
-     * Return tags those assigned to a contact
+     * Return tags which are assigned to a contact
      * 
      * @param mixed $contact_id
      * 
@@ -261,6 +265,26 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }, $lists);
         
         MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+        
+    }
+
+
+    /**
+     * Return lists which are assigned to a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    private function get_lists_to_contact( $contact_id )
+    {
+        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact_id );
+        $list_ids = array_map( function($list_id) {
+            return $list_id['group_id'];
+        }, $results);
+
+        return MRM_List_Controller::get_instance()->get_lists_to_contact( $list_ids );
         
     }
 

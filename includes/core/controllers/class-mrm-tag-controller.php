@@ -209,7 +209,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     public function get_tags_to_contact( $tag_ids )
     {
         return MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 1 );
-    } 
-
+    }
 
 }

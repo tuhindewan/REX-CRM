@@ -173,5 +173,19 @@ class MRM_List_Controller extends MRM_Base_Controller{
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
        
     }
+
+
+    /**
+     * Get Lists related to a contact
+     * 
+     * @param mixed $lists_ids
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_lists_to_contact( $lists_ids )
+    {
+        return MRM_Contact_Group_Model::get_groups_to_contact( $lists_ids, 2 );
+    }
     
 }

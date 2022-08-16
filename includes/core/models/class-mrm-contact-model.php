@@ -236,7 +236,7 @@ class MRM_Contact_Model{
         try {
             $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array( $id ));
             $select_results = $wpdb->get_results( $select_query );
-            $results = json_decode(json_encode( $select_results ));
+            $results = json_decode(json_encode( $select_results ), true );
             return $results;
         } catch(\Exception $e) {
             return false;
