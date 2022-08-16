@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -16,8 +16,6 @@ import Condition from "./Condition";
 import TriggerStep from "./TriggerStep";
 import ExitStep from "./ExitStep";
 
-const initialNodes = [];
-
 const getId = () => {
   const lastStepNodeID = useGlobalStore.getState().lastStepNodeID;
   const newID = lastStepNodeID + 1;
@@ -34,12 +32,28 @@ const nodeTypes = {
 
 const Canvas = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [selectedNodeID, setSelectedNodeID] = useState(null);
   const [selectedNodeType, setSelectedNodeType] = useState(null);
+
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.concat({
+        id: getId(),
+        type: "triggerStep",
+        position: { x: 100, y: 200 },
+        data: {
+          deleteNode,
+          deleteEdges,
+          resetNode,
+          openSettings,
+        },
+      })
+    );
+  }, []);
 
   const deleteNode = useCallback((nodeID) => {
     console.log(`${nodeID}`);

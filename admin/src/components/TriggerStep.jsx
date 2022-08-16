@@ -15,6 +15,7 @@ const LandingStep = (props) => {
         <CanvasStepOptions
           data={props.data}
           showEdit={false}
+          showDeleteNode={false}
           id={id}
           type={type}
         />
