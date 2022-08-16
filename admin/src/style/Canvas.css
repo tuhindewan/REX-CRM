@@ -3,6 +3,28 @@
   height: 70vh;
 }
 
+.canvas-settings-wrapper {
+  position: fixed;
+  padding-top: 40px;
+  right: 0px;
+  top: 0px;
+  height: 100%;
+  width: 0px;
+  background-color: white;
+  color: black;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  z-index: 2000;
+  transition: width 1s ease-in-out;
+}
+
+.canvas-settings-wrapper-open {
+  width: 40%;
+}
+
+.canvas-settings-wrapper-close {
+  width: 0px;
+}
+
 .canvas-drag-picker-wrapper {
   display: flex;
   flex-wrap: nowrap;

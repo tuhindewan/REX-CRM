@@ -10,6 +10,7 @@ import ReactFlow, {
   BackgroundVariant,
 } from "react-flow-renderer";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import CanvasSettingsDrawer from "./CanvasSettingsDrawer";
 
 import Sidebar from "./Sidebar";
 import Condition from "./Condition";
@@ -177,6 +178,12 @@ const Canvas = () => {
 
   return (
     <div className="dndflow">
+      <CanvasSettingsDrawer
+        openSettingsDrawer={openSettingsDrawer}
+        setOpenSettingsDrawer={setOpenSettingsDrawer}
+        selectedNodeID={selectedNodeID}
+        selectedNodeType={selectedNodeType}
+      />
       <Sidebar />
       <button
         type="submit"
