@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const Dashboard = () => {
     return (
@@ -6,7 +6,7 @@ const Dashboard = () => {
             <div className="card">
                 <h3>Dashboard</h3>
                 <p>
-                    Edit Dashboard component at <code>src/components/Dashboard.jsx</code>
+                    Edit Dashboard component at <code>src/components/Dashboard.js</code>
                 </p>
             </div>
         </div>
