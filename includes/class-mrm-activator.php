@@ -1,6 +1,5 @@
 <?php
 
-use MRM\REST\MRM_API_Activation_Handler;
 /**
  * Fired during plugin activation
  *
@@ -31,7 +30,7 @@ class Mrm_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-		MRM_API_Activation_Handler::handle();
+
 	}
 
 }
