@@ -169,8 +169,14 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     
             // Create new tag if not exist
             if( 0 == $tag['id'] ){
-                $new_tag    = new MRM_Tag($tag);
-                $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
+
+                $exist = MRM_Contact_Group_Model::is_group_exist( $tag['slug'], 1 );
+
+                if(!$exist){
+                    $new_tag    = new MRM_Tag($tag);
+                    $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
+                }
+                
             }
 
             if(isset($new_tag_id)){
@@ -204,8 +210,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
             // Create new tag if not exist
             if( 0 == $list['id'] ){
-                $new_list = new MRM_List($list);
-                $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
+                $exist = MRM_Contact_Group_Model::is_group_exist( $list['slug'], 2 );
+                if(!$exist){
+                    $new_list = new MRM_List($list);
+                    $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
+                }
+                
             }
 
             if(isset($new_list_id)){
@@ -390,7 +400,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        error_log(print_r($params, 1));
         try {
             if(!isset( $params ) && empty( $params["map"] )) {
                 throw new Exception(__("Map attribute is required.", "mrm"));
