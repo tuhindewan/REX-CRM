@@ -14,7 +14,6 @@ use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
-use League\Csv\Statement;
 use MRM\Constants\MRM_Constants;
 
 /**
@@ -154,6 +153,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
     }
 
+
     /**
      * Add tags to new contact
      * 
@@ -270,7 +270,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     }
 
 
-
     /**
      * Remove tags from a contact
      * 
@@ -288,11 +287,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }
         return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
     }
+
+
     /**
      * Export contacts controller
      * 
-     * @param array $lists
-     * @param int $contact_id
+     * @param WP_REST_Request $request
      * 
      * @return void
      * @since 1.0.0
@@ -326,7 +326,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                     }
                     return $filtered;
                 } , $contactsBatchArray);
-                // error_log(print_r($contactsBatchFiltered, 1));
                 $csvWriter->insertAll($contactsBatchFiltered);
 
             } while($page++ <= $totalPages);
@@ -348,15 +347,8 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      */
     public function import_contacts_get_attrs(WP_REST_Request $request) {
         $files = $request->get_file_params();
-        $params = $request->get_params();
 
         try{
-            // if (!empty($params) && !empty($params["map"])) {
-            //     $map = $params["map"];
-            //     $mapJson = json_decode($map, true);
-            // } else {
-            //     throw new Exception(__("Mapping of fields is required", "mrm"));
-            // }
             if (!empty($files) && !empty($files["csv"])) {
                 $csv = $files['csv'];
             } else {
@@ -397,7 +389,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 throw new Exception(__("Map attribute is required.", "mrm"));
             }
             $mapJson = json_decode(json_encode($body["map"]), true);
-            $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
+            $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
             

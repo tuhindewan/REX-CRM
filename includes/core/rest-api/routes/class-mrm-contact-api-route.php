@@ -52,6 +52,8 @@ class MRM_Contact_API_Route {
         
         /**
          * Contact create endpoint
+         * Contact get all endpoint
+         * Contact delete all endpoint
          * 
          * @return void
          * @since 1.0.0

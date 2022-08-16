@@ -2,8 +2,6 @@
 
 namespace MRM\Constants;
 
-use MRM\DB\Tables\MRM_Contacts_Table;
-use MRM\DB\Tables\MRM_Contact_Info_Table;
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
