@@ -11,11 +11,34 @@ module.exports = {
     output: {
       filename: "main.js",
       path: path.resolve(__dirname, "admin/asset/dist"),
+      clean: true,
     },
     externals: {
       react: "React",
       "react-dom": "ReactDOM",
     },
+    devServer: {
+      devMiddleware: {
+        writeToDisk: true,
+      },
+      allowedHosts: "all",
+      host: "0.0.0.0",
+      hot: true,
+      port: 8887,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Access-Control-Allow-Headers": "*",
+      },
+      proxy: {
+        "/build": {
+          pathRewrite: {
+            "^/build": "",
+          },
+        },
+      },
+    },
+    devtool: "source-map",
     module: {
       rules: [
         {
