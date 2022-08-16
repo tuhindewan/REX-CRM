@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -7,37 +7,37 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   Background,
-} from 'react-flow-renderer';
+} from "react-flow-renderer";
 
-import Sidebar from './Sidebar';
-import Condition from './Condition';
-import './component-css/Sidebar.css';
-import './component-css/Node.css';
+import Sidebar from "./Sidebar";
+import Condition from "./Condition";
+import TriggerStep from "./TriggerStep";
+import ExitStep from "./ExitStep";
 
 const initialNodes = [
   {
-    action: 'trigger',
-    id: '1',
-    type: 'input',
-    data: { label: 'Trigger' },
+    action: "trigger",
+    id: "1",
+    type: "triggerStep",
+    data: { label: "Trigger" },
     position: { x: 250, y: 50 },
-    className: 'custom-node',
   },
   {
-    action: 'exit',
-    id: '2',
-    type: 'output',
-    data: { label: 'Exit' },
+    action: "exit",
+    id: "2",
+    type: "exitStep",
+    data: { label: "Exit" },
     position: { x: 250, y: 300 },
-    className: 'custom-node'
-  }
+  },
 ];
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const nodeTypes = {
-  conditionNode: Condition ,
+  conditionNode: Condition,
+  triggerStep: TriggerStep,
+  exitStep: ExitStep,
 };
 
 const Canvas = () => {
@@ -46,46 +46,44 @@ const Canvas = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
-  
 
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const nodeType = event.dataTransfer.getData('application/reactflow');
-
+      const nodeType = event.dataTransfer.getData("application/reactflow");
 
       // check if the dropped element is valid
-      if (typeof nodeType === 'undefined' || !nodeType) {
+      if (typeof nodeType === "undefined" || !nodeType) {
         return;
       }
 
-    
       const position = reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
 
-      
-
       const newNode = {
         action: nodeType.toLowerCase(),
         id: getId(),
-        type: 'default',
+        type: "default",
         position,
         data: { label: `${nodeType}` },
-        className: 'custom-node'
+        className: "custom-node",
       };
 
-      if (nodeType === 'Condition'){
-        newNode.type = 'conditionNode';
+      if (nodeType === "Condition") {
+        newNode.type = "conditionNode";
       }
 
       setNodes((nds) => nds.concat(newNode));
@@ -94,22 +92,23 @@ const Canvas = () => {
   );
 
   const onEdgeUpdate = useCallback(
-    (oldEdge, newConnection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+    (oldEdge, newConnection) =>
+      setEdges((els) => updateEdge(oldEdge, newConnection, els)),
     [setEdges]
   );
-  
-  const allnodes =()=>{
+
+  const allnodes = () => {
     //console.log(nodes)
-    console.log("Triggered...")
+    console.log("Triggered...");
     //console.log(edges)
 
     let startNode = 0;
 
     for (const idx in edges) {
-      if (edges[idx].source === '1'){
+      if (edges[idx].source === "1") {
         startNode = idx;
-        for (const jdx in nodes){
-          if (nodes[jdx].id === edges[startNode].target){
+        for (const jdx in nodes) {
+          if (nodes[jdx].id === edges[startNode].target) {
             console.log(`${nodes[jdx].action}...`);
             break;
           }
@@ -119,27 +118,29 @@ const Canvas = () => {
     let currentNodeId = edges[startNode].target;
     //console.log(currentNodeId)
 
-    for (const idx in edges){
-      if (edges[idx].source === currentNodeId){
+    for (const idx in edges) {
+      if (edges[idx].source === currentNodeId) {
         currentNodeId = edges[idx].target;
-        for (const jdx in nodes){
-          if (nodes[jdx].id === currentNodeId){
+        for (const jdx in nodes) {
+          if (nodes[jdx].id === currentNodeId) {
             console.log(`${nodes[jdx].action}...`);
           }
         }
-        
       }
     }
-  }
-  
+  };
+
   return (
-    
     <div className="dndflow">
       <Sidebar />
-      <button type='submit' style={{height: '40px',background: 'yellow'}} onClick={allnodes}>
+      <button
+        type="submit"
+        style={{ height: "40px", background: "yellow" }}
+        onClick={allnodes}
+      >
         Automate
       </button>
-      <ReactFlowProvider>
+      
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
@@ -153,12 +154,11 @@ const Canvas = () => {
             onDragOver={onDragOver}
             onEdgeUpdate={onEdgeUpdate}
           >
-            <Background/>
+            <Background />
             <Controls />
           </ReactFlow>
         </div>
-      </ReactFlowProvider>
-      
+     
     </div>
   );
 };
