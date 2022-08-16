@@ -1,0 +1,11 @@
+.custom-node{
+    font-size: 12px;
+    height: 100px;
+    width: 90px;
+    background: #eee;
+    border: 1px solid #555;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(191, 0, 255) !important;
+    color: white;
+}

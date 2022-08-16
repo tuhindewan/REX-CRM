@@ -72,9 +72,11 @@ class Mrm_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/mrm-admin.css', array(), $this->version, 'all' );
-
+		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . '../node_modules/react-flow-renderer/dist/theme-default.css');
+		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . '../node_modules/react-flow-renderer/dist/style.css');
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/mrm-admin.css');
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/asset/index.css');
+		
 	}
 
 	/**

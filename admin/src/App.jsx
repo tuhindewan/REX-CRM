@@ -1,10 +1,11 @@
 import React from 'react';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/Dashboard.jsx';
+import 'react-flow-renderer/dist/style.css';
 
 const App = () => {
     return (
         <div>
-            <h2 className='app-title'>Job Place App</h2>
+            <h2 className='app-title'>CRM Canvas</h2>
             <hr />
             <Dashboard />
         </div>
