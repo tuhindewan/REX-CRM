@@ -42,6 +42,13 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 			return $this->get_error_response( $response,  400);
 		}
 
+        // Segment avaiability check
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 3 );
+        if ( $exist ) {
+			$response = __( 'Segment is already available', 'mrm' );
+			return $this->get_error_response( $response,  400);
+		}
+
         // Segment filters validation
         if ( empty( $params['data'] ) || ( is_array( $params['data'] ) && empty( $params['data']['filters'] ) ) ) {
 			$response            = __( 'Filters are mandatory.', 'mrm' );
@@ -137,7 +144,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Segments avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['segment_id'] );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'] );
 
         if ( !$exist ) {
 			$response = __( 'Segemnt not found', 'mrm' );

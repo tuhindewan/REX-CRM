@@ -30,11 +30,20 @@ class MRM_Segment {
      */
     private $data;
 
+    /**
+     * Segment slug
+     * 
+     * @var array
+     * @since 1.0.0
+     */
+    private $slug;
+
 
     public function __construct($args)
     {
-        $this->title = $args['title'];
-        $this->data = $args['data'];
+        $this->title = isset( $args['title'] ) ? $args['title'] : NULL;
+        $this->slug  = isset( $args['slug'] )  ? $args['slug']  : NULL;
+        $this->data =  isset( $args['data'] )  ? $args['data']  : NULL;
     }
 
 
@@ -47,6 +56,18 @@ class MRM_Segment {
     public function get_title()
     {
         return $this->title;
+    }
+
+
+    /**
+     * Return segment slug
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_slug()
+    {
+        return $this->slug;
     }
 
 

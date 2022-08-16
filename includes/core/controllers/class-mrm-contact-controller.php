@@ -387,19 +387,23 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      */
     public function import_contacts(WP_REST_Request $request) {
 
-        $body = $request->get_json_params();
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        error_log(print_r($params, 1));
         try {
-            if(!isset($body) && empty($body["map"])) {
+            if(!isset( $params ) && empty( $params["map"] )) {
                 throw new Exception(__("Map attribute is required.", "mrm"));
             }
-            $mapJson = json_decode(json_encode($body["map"]), true);
+            $mapJson = json_decode(json_encode($params["map"]), true);
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
+            
             foreach($csvContacts as $csvContact) {
                 // each contact
                 $contactArgs = array(
-                    'status'    => $body['status'],
+                    'status'    => $params['status'],
                     'source'    => 'csv'
                 );
                 foreach($mapJson as $map) {
@@ -419,7 +423,17 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 $contact    = new MRM_Contact( $contactEmail, $contactArgs );
                 $exists = MRM_Contact_Model::is_contact_exist($contactEmail);
                 if(!$exists) {
-                  MRM_Contact_Model::insert( $contact );
+                    
+                    $contact_id = MRM_Contact_Model::insert( $contact );
+
+                    if(isset($params['tags'])){
+                        $this->set_tags_to_contact( $params['tags'], $contact_id );
+                    }
+        
+                    if(isset($params['lists'])){
+                        $this->set_lists_to_contact( $params['lists'], $contact_id );
+                    }
+
                 }
             }
             return $this->get_success_response(__("Import successful", "mrm"), 200);

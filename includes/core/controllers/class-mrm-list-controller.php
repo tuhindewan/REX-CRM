@@ -40,6 +40,13 @@ class MRM_List_Controller extends MRM_Base_Controller{
         if (empty($title)) {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
         }
+
+        // list avaiability check
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 2 );
+        if ( $exist ) {
+			$response = __( 'List is already available', 'mrm' );
+			return $this->get_error_response( $response,  400);
+		}
         
         // List object create and insert or update to database
         try {
@@ -130,7 +137,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
         $params = MRM_Common::get_api_params_values( $request );
 
         // List avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['list_id'] );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'] );
 
         if ( !$exist ) {
 			$response = __( 'List not found', 'mrm' );

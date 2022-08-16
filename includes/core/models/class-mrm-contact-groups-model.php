@@ -34,7 +34,8 @@ class MRM_Contact_Group_Model{
         try {
             $wpdb->insert($table_name, array(
                 'title' => $group->get_title(),
-                'type' => $type,
+                'type'  => $type,
+                'slug'  => $group->get_slug(),
                 'data'  => $group->get_data(),
                 'created_at' => current_time('mysql')));
             return $wpdb->insert_id;
@@ -197,17 +198,17 @@ class MRM_Contact_Group_Model{
     /**
      * Check existing tag, list or segment on database
      * 
-     * @param mixed $id group id (tag_id, list_id, segment_id)
+     * @param mixed $slug group slug
      * 
      * @return bool
      * @since 1.0.0
      */
-    public static function is_group_exist( $id )
+    public static function is_group_exist( $slug, $type )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE id = %d",array($id));
+        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE slug = %s AND type = %d",array( $slug, $type ));
         $sqlCountData = $wpdb->get_results($sqlCount);
         $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
         $count = (int) $sqlCountDataJson['0']['total'];
