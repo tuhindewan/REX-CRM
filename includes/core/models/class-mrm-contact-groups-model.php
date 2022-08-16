@@ -217,5 +217,31 @@ class MRM_Contact_Group_Model{
         }
         return false;
     } 
+
+
+    /**
+     * Run SQL Query to get groups related to a contact
+     * 
+     * @param mixed $tag_ids
+     * @param mixed $type
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public static function get_groups_to_contact( $tag_ids, $type )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+
+        try {
+            $tags = implode(",",$tag_ids);
+            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id IN ($tags) AND type = $type");
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data), true);
+            return $dataJson;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
     
 }

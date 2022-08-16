@@ -137,7 +137,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
         $params = MRM_Common::get_api_params_values( $request );
 
         // List avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'] );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 2 );
 
         if ( !$exist ) {
 			$response = __( 'List not found', 'mrm' );

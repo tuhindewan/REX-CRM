@@ -116,14 +116,23 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
-     * TODO: implement this method to get a contact details
+     * Return a contact details
      * @param WP_REST_Request $request
      * 
-     * @return [type]
+     * @return WP_REST_Response
+     * @since 1.0.0
      */
     public function get_single( WP_REST_Request $request )
     {
-        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+    
+        $contact = MRM_Contact_Model::get( $params['contact_id'] );
+        $tags = $this->get_tags_to_contact( $params['contact_id'] );
+        if(isset($contact)) {
+            return $this->get_success_response("Query Successfull", 200, $contact);
+        }
+        return $this->get_error_response("Failed to Get Data", 400);
     }
 
 
@@ -192,6 +201,27 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }, $tags);
         
         MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+    }
+
+
+
+    /**
+     * Return tags those assigned to a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    private function get_tags_to_contact( $contact_id )
+    {
+        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact_id );
+        $tag_ids = array_map( function($tag_id) {
+            return $tag_id['group_id'];
+        }, $results);
+
+        return MRM_Tag_Controller::get_instance()->get_tags_to_contact( $tag_ids );
+        
     }
 
 

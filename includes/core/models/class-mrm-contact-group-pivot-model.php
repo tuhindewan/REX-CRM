@@ -64,8 +64,6 @@ class MRM_Contact_Group_Pivot_Model {
         } catch(\Exception $e) {
             return false;
         }
-
-        return NULL;
     }
 
 
@@ -89,5 +87,30 @@ class MRM_Contact_Group_Pivot_Model {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * Run SQL Query to get group ids related to a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public static function get_groups_to_contact( $contact_id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+
+        try {
+            $select_query = $wpdb->prepare("SELECT group_id FROM {$table_name} WHERE contact_id = %d",array( $contact_id ));
+            $query_results = $wpdb->get_results($select_query);
+            $results = json_decode( json_encode( $query_results ), true );
+            return $results;
+
+        } catch(\Exception $e) {
+            return false;
+        }
     }
 }

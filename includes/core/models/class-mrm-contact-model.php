@@ -218,5 +218,29 @@ class MRM_Contact_Model{
         }
 	
     }
+
+
+    /**
+     * Run SQL Query to get a single contact information
+     * 
+     * @param mixed $id Contact ID
+     * 
+     * @return array|bool
+     * @since 1.0.0
+     */
+    public static function get( $id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+
+        try {
+            $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array( $id ));
+            $select_results = $wpdb->get_results( $select_query );
+            $results = json_decode(json_encode( $select_results ));
+            return $results;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
     
 }
