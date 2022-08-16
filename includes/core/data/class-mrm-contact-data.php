@@ -62,15 +62,74 @@ class MRM_Contact {
      */
     private $source;
 
+    /**
+     * Contact address line 1
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $address_line_1;
+
+
+    /**
+     * Contact address line 2
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $address_line_2;
+
+    /**
+     * Contact city
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $city;
+
+    /**
+     * Contact state
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $state;
+
+    /**
+     * Contact country
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $country;
+
+
+
 
     public function __construct($email, $args)
     {
-        $this->email        = $email;
-        $this->first_name   = $args['first_name'];
-        $this->last_name    = $args['last_name'];
-        $this->phone        = $args['phone'];
-        $this->status       = $args['status'];
-        $this->source       = $args['source'];
+        $this->email = $email;
+        if(isset($args['first_name']))
+            $this->first_name = $args['first_name'];
+        if(isset($args['last_name']))
+            $this->last_name = $args['last_name'];
+        if(isset($args['phone']))
+            $this->phone = $args['phone'];
+        if(isset($args['status']))
+            $this->status = $args['status'];
+            if(isset($args['first_name']))
+        if(isset($args['source']))
+            $this->source = $args['source'];
+        if(isset($args['address_line_1']))
+            $this->address_line_1 = $args['address_line_1'];
+        if(isset($args['address_line_2']))
+            $this->address_line_2 = $args['address_line_2'];
+        if(isset($args['city']))
+            $this->city = $args['city'];
+        if(isset($args['state']))
+            $this->state = $args['state'];
+        if(isset($args['country']))
+            $this->country = $args['country'];
     }
 
 

@@ -397,7 +397,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 throw new Exception(__("Map attribute is required.", "mrm"));
             }
             $mapJson = json_decode(json_encode($body["map"]), true);
-            $csv = Reader::createFromPath($this->new_uploaded_file, 'r');
+            $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
             
