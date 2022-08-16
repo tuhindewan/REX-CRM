@@ -12,7 +12,7 @@ export default function ExitStep({ data }) {
     <div className="step-wrapper">
       <div>Exit Step</div>
       <div>{trigger}</div>
-      <Handle type="source" position={Position.Top} />
+      <Handle type="target" position={Position.Top} />
     </div>
   );
 }

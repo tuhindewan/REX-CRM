@@ -43,6 +43,13 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 			return $this->get_error_response( $response,  400);
 		}
 
+        // Tag avaiability check
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 1 );
+        if ( $exist ) {
+			$response = __( 'Tag is already available', 'mrm' );
+			return $this->get_error_response( $response,  400);
+		}
+
         // Tag object create and insert or update to database
         try {
             $tag = new MRM_Tag( $params );
@@ -77,7 +84,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Tag avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['tag_id'] );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'] );
 
         if ( !$exist ) {
 			$response = __( 'Tag not found', 'mrm' );

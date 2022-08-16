@@ -14,7 +14,6 @@ use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
-use League\Csv\Statement;
 use MRM\Constants\MRM_Constants;
 
 /**
@@ -154,6 +153,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
     }
 
+
     /**
      * Add tags to new contact
      * 
@@ -166,11 +166,17 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     private function set_tags_to_contact( $tags, $contact_id )
     {
         $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
-
+    
             // Create new tag if not exist
             if( 0 == $tag['id'] ){
-                $new_tag = new MRM_Tag($tag['title']);
-                $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
+
+                $exist = MRM_Contact_Group_Model::is_group_exist( $tag['slug'], 1 );
+
+                if(!$exist){
+                    $new_tag    = new MRM_Tag($tag);
+                    $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
+                }
+                
             }
 
             if(isset($new_tag_id)){
@@ -204,8 +210,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
             // Create new tag if not exist
             if( 0 == $list['id'] ){
-                $new_list = new MRM_List($list['title']);
-                $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
+                $exist = MRM_Contact_Group_Model::is_group_exist( $list['slug'], 2 );
+                if(!$exist){
+                    $new_list = new MRM_List($list);
+                    $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
+                }
+                
             }
 
             if(isset($new_list_id)){
@@ -270,7 +280,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     }
 
 
-
     /**
      * Remove tags from a contact
      * 
@@ -288,11 +297,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }
         return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
     }
+
+
     /**
      * Export contacts controller
      * 
-     * @param array $lists
-     * @param int $contact_id
+     * @param WP_REST_Request $request
      * 
      * @return void
      * @since 1.0.0
@@ -326,7 +336,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                     }
                     return $filtered;
                 } , $contactsBatchArray);
-                // error_log(print_r($contactsBatchFiltered, 1));
                 $csvWriter->insertAll($contactsBatchFiltered);
 
             } while($page++ <= $totalPages);
@@ -340,23 +349,18 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     /**
      * Saves the uploaded import file in filesystem
      * sends both csv file attrs and system contacts attrs as an array to user
-     * @param array $lists
-     * @param int $contact_id
+     * 
+     * @param WP_REST_Request $request
      * 
      * @return WP_REST_Response
      * @since 1.0.0
      */
     public function import_contacts_get_attrs(WP_REST_Request $request) {
+
         $files = $request->get_file_params();
-        $params = $request->get_params();
 
         try{
-            // if (!empty($params) && !empty($params["map"])) {
-            //     $map = $params["map"];
-            //     $mapJson = json_decode($map, true);
-            // } else {
-            //     throw new Exception(__("Mapping of fields is required", "mrm"));
-            // }
+            // CSV file upload validation
             if (!empty($files) && !empty($files["csv"])) {
                 $csv = $files['csv'];
             } else {
@@ -368,42 +372,49 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             
-            $csvAttrs = $csv->getHeader();
-            $contactAttrs = MRM_Constants::$contacts_attrs;
-            $data = array(
-                "csv" => $csvAttrs,
-                "contact" => $contactAttrs
+            $csv_attrs = $csv->getHeader();
+            $contact_attrs = MRM_Constants::$contacts_attrs;
+            $map_results = array(
+                "csv"       => $csv_attrs,
+                "contact"   => $contact_attrs
             );
+            return $this->get_success_response(__('Import Successful.', "mrm"), 200, $map_results);
 
         } catch (Exception $e) {
-            return $this -> get_error_response(__($e->getMessage(), "mrm"), 400);
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
-        return $this->get_success_response(__('Import Successful.', "mrm"), 200, $data);
     }
 
+
     /**
-     * Saves the uploaded import file in filesystem
-     * sends both csv file attrs and system contacts attrs as an array to user
-     * @param array $lists
-     * @param int $contact_id
+     * Prepare contact object from the uploaded CSV
+     * Inseret contcts data into database
+     * 
+     * @param WP_REST_Request $request
      * 
      * @return WP_REST_Response
      * @since 1.0.0
      */
     public function import_contacts(WP_REST_Request $request) {
-        $body = $request->get_json_params();
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
         try {
-            if(!isset($body) && empty($body["map"])) {
+            if(!isset( $params ) && empty( $params["map"] )) {
                 throw new Exception(__("Map attribute is required.", "mrm"));
             }
-            $mapJson = json_decode(json_encode($body["map"]), true);
+            $mapJson = json_decode(json_encode($params["map"]), true);
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
             
             foreach($csvContacts as $csvContact) {
                 // each contact
-                $contactArgs = array();
+                $contactArgs = array(
+                    'status'    => $params['status'],
+                    'source'    => 'csv'
+                );
                 foreach($mapJson as $map) {
                     $mapArr = json_decode(json_encode($map), true);
                     $source = $mapArr["source"];
@@ -421,13 +432,24 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 $contact    = new MRM_Contact( $contactEmail, $contactArgs );
                 $exists = MRM_Contact_Model::is_contact_exist($contactEmail);
                 if(!$exists) {
-                  MRM_Contact_Model::insert( $contact );
+                    
+                    $contact_id = MRM_Contact_Model::insert( $contact );
+
+                    if(isset($params['tags'])){
+                        $this->set_tags_to_contact( $params['tags'], $contact_id );
+                    }
+        
+                    if(isset($params['lists'])){
+                        $this->set_lists_to_contact( $params['lists'], $contact_id );
+                    }
+
                 }
             }
+            return $this->get_success_response(__("Import successful", "mrm"), 200);
+
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
-        return $this->get_success_response(__("Import successful", "mrm"), 200);
     }
 
 

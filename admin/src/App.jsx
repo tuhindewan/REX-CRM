@@ -1,6 +1,6 @@
 import React from "react";
 import Dashboard from "./components/Dashboard.jsx";
-// import 'react-flow-renderer/dist/style.css';
+import "react-flow-renderer/dist/style.css";
 import { ReactFlowProvider } from "react-flow-renderer";
 
 const App = () => {

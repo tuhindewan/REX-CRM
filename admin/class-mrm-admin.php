@@ -75,7 +75,7 @@ class Mrm_Admin {
 		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . '../node_modules/react-flow-renderer/dist/theme-default.css');
 		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . '../node_modules/react-flow-renderer/dist/style.css');
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/mrm-admin.css');
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/asset/index.css');
+		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/asset/index.css');
 		
 	}
 

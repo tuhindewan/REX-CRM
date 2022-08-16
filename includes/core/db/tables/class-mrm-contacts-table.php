@@ -45,6 +45,7 @@ class MRM_Contacts_Table {
                 `first_name` VARCHAR(192) NULL,
                 `last_name` VARCHAR(192) NULL,
                 `phone` VARCHAR(50) NULL,
+                `company_name` VARCHAR(192) NULL,
                 `contact_owner` BIGINT UNSIGNED NULL,
                 `scores` INT UNSIGNED NOT NULL DEFAULT 0,
                 `source` VARCHAR(50) NULL,

@@ -53,6 +53,21 @@ class MRM_Contact {
      */
     private $status;
 
+    /**
+     * Contact date of birth
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $date_of_birth;
+
+    /**
+     * Contact timezone
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $timezone;
 
     /**
      * Contact source
@@ -103,33 +118,50 @@ class MRM_Contact {
      */
     private $country;
 
+    /**
+     * Contact postal code
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $postal_code;
+
+    /**
+     * Contact company name
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $company_name;
+
+    /**
+     * Contact owner
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $contact_owner;
 
 
 
-    public function __construct($email, $args)
+
+    public function __construct( $email, $args )
     {
-        $this->email = $email;
-        if(isset($args['first_name']))
-            $this->first_name = $args['first_name'];
-        if(isset($args['last_name']))
-            $this->last_name = $args['last_name'];
-        if(isset($args['phone']))
-            $this->phone = $args['phone'];
-        if(isset($args['status']))
-            $this->status = $args['status'];
-            if(isset($args['first_name']))
-        if(isset($args['source']))
-            $this->source = $args['source'];
-        if(isset($args['address_line_1']))
-            $this->address_line_1 = $args['address_line_1'];
-        if(isset($args['address_line_2']))
-            $this->address_line_2 = $args['address_line_2'];
-        if(isset($args['city']))
-            $this->city = $args['city'];
-        if(isset($args['state']))
-            $this->state = $args['state'];
-        if(isset($args['country']))
-            $this->country = $args['country'];
+        $this->email            =  $email;
+        $this->first_name       =  isset($args['first_name'])       ? $args['first_name']       : '';
+        $this->last_name        =  isset($args['last_name'])        ? $args['last_name']        : '';
+        $this->phone            =  isset($args['phone'])            ? $args['phone']            : '';
+        $this->status           =  isset($args['status'])           ? $args['status']           : '';
+        $this->source           =  isset($args['source'])           ? $args['source']           : '';
+        $this->date_of_birth    =  isset($args['date_of_birth'])    ? $args['date_of_birth']    : '';
+        $this->timezone         =  isset($args['timezone'])         ? $args['timezone']         : '';
+        $this->address_line_1   =  isset($args['address_line_1'])   ? $args['address_line_1']   : '';
+        $this->address_line_2   =  isset($args['address_line_2'])   ? $args['address_line_2']   : '';
+        $this->city             =  isset($args['city'])             ? $args['city']             : '';
+        $this->state            =  isset($args['state'])            ? $args['state']            : '';
+        $this->country          =  isset($args['country'])          ? $args['country']          : '';
+        $this->postal_code      =  isset($args['postal_code'])      ? $args['postal_code']      : '';
+        $this->company_name     =  isset($args['company_name'])     ? $args['company_name']     : '';
     }
 
 
@@ -204,15 +236,125 @@ class MRM_Contact {
 
 
     /**
-     * Return segment data after serialization
+     * Return contact date of birth
      * 
-     * @return array
+     * @return string
      * @since 1.0.0
      */
-    public function get_data()
+    public function get_date_of_birth()
     {
-        if( !is_serialized( $this->data ) ) {
-            return maybe_serialize($this->data);
-        }
+        return $this->date_of_birth;
     }
+
+
+    /**
+     * Return contact timezone
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_timezone()
+    {
+        return $this->timezone;
+    }
+
+
+    /**
+     * Return contact address line 1
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_address_line_1()
+    {
+        return $this->address_line_1;
+    }
+
+
+    /**
+     * Return contact address line 2
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_address_line_2()
+    {
+        return $this->address_line_2;
+    }
+
+
+    /**
+     * Return contact city
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_city()
+    {
+        return $this->city;
+    }
+
+
+    /**
+     * Return contact state
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_state()
+    {
+        return $this->state;
+    }
+
+
+    /**
+     * Return contact country
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_country()
+    {
+        return $this->country;
+    }
+
+
+    /**
+     * Return contact postal_code
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_postal_code()
+    {
+        return $this->postal_code;
+    }
+
+
+    /**
+     * Return contact company_name
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_company_name()
+    {
+        return $this->company_name;
+    }
+
+
+    /**
+     * Return contact owner
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_contact_owner()
+    {
+        if ( is_user_logged_in() ) {
+            return $this->contact_owner = get_current_user_id();
+        }
+        return $this->contact_owner = 1;     
+    }
+
 }

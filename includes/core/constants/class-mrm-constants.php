@@ -2,8 +2,6 @@
 
 namespace MRM\Constants;
 
-use MRM\DB\Tables\MRM_Contacts_Table;
-use MRM\DB\Tables\MRM_Contact_Info_Table;
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
@@ -20,11 +18,8 @@ class MRM_Constants{
         "first_name",		
         "last_name",
         "email",
-        "source",
-        "status",
-        "stage",
-        "last_activity",
         "date_of_birth",
+        "company_name",
         "address_line_1",	
         "address_line_2",
         "postal_code",

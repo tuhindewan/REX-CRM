@@ -7,6 +7,7 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   Background,
+  BackgroundVariant,
 } from "react-flow-renderer";
 
 import Sidebar from "./Sidebar";
@@ -140,25 +141,24 @@ const Canvas = () => {
       >
         Automate
       </button>
-      
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onEdgeUpdate={onEdgeUpdate}
-          >
-            <Background />
-            <Controls />
-          </ReactFlow>
-        </div>
-     
+
+      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onEdgeUpdate={onEdgeUpdate}
+        >
+          <Background variant={BackgroundVariant.Lines} gap={10} size={0.4} />
+          <Controls />
+        </ReactFlow>
+      </div>
     </div>
   );
 };

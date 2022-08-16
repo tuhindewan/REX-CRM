@@ -45,6 +45,7 @@ class MRM_Contact_Model{
                 'phone'         =>  $contact->get_phone(),
                 'status'        =>  $contact->get_status(),
                 'source'        =>  $contact->get_source(),
+                'contact_owner' =>  $contact->get_contact_owner(),
                 'hash'          =>  MRM_Common::get_rand_hash(),
                 'created_at'    =>  current_time('mysql')));
         } catch(\Exception $e) {
