@@ -166,10 +166,10 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     private function set_tags_to_contact( $tags, $contact_id )
     {
         $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
-
+    
             // Create new tag if not exist
             if( 0 == $tag['id'] ){
-                $new_tag = new MRM_Tag($tag['title']);
+                $new_tag    = new MRM_Tag($tag);
                 $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
             }
 
@@ -204,7 +204,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
             // Create new tag if not exist
             if( 0 == $list['id'] ){
-                $new_list = new MRM_List($list['title']);
+                $new_list = new MRM_List($list);
                 $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
             }
 
@@ -383,7 +383,9 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public function import_contacts(WP_REST_Request $request) {
+
         $body = $request->get_json_params();
+        
         try {
             if(!isset($body) && empty($body["map"])) {
                 throw new Exception(__("Map attribute is required.", "mrm"));
@@ -392,7 +394,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
-            
             foreach($csvContacts as $csvContact) {
                 // each contact
                 $contactArgs = array();

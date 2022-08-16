@@ -31,8 +31,8 @@ class MRM_Tag {
 
     public function __construct( $args )
     {
-        $this->title = $args['title'];
-        $this->data = $args['data'];
+        $this->title = isset($args['title']) ? $args['title'] : NULL;
+        $this->data  = isset($args['data'])  ? $args['data']  : NULL;
     }
 
  
