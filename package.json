@@ -11,13 +11,12 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "@wordpress/eslint-plugin": "^12.4.0",
     "@wordpress/i18n": "^4.10.0",
-    "@wordpress/scripts": "^23.5.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "bootstrap": "^5.1.3",
@@ -29,9 +28,8 @@
     "style-loader": "^3.3.1",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
-    "webpack-merge": "^5.8.0"
-  },
-  "dependencies": {
+    "webpack-merge": "^5.8.0",
+    "@wordpress/scripts": "^23.7.1",
     "react-flow-renderer": "^10.3.14",
     "zustand": "^4.0.0"
   }

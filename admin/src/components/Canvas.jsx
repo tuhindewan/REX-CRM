@@ -9,31 +9,22 @@ import ReactFlow, {
   Background,
   BackgroundVariant,
 } from "react-flow-renderer";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 
 import Sidebar from "./Sidebar";
 import Condition from "./Condition";
 import TriggerStep from "./TriggerStep";
 import ExitStep from "./ExitStep";
 
-const initialNodes = [
-  {
-    action: "trigger",
-    id: "1",
-    type: "triggerStep",
-    data: { label: "Trigger" },
-    position: { x: 250, y: 50 },
-  },
-  {
-    action: "exit",
-    id: "2",
-    type: "exitStep",
-    data: { label: "Exit" },
-    position: { x: 250, y: 300 },
-  },
-];
+const initialNodes = [];
 
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => {
+  const lastStepNodeID = useGlobalStore.getState().lastStepNodeID;
+  const newID = lastStepNodeID + 1;
+  console.log(lastStepNodeID);
+  useGlobalStore.setState({ lastStepNodeID: newID });
+  return `dndnode_${newID}`;
+};
 
 const nodeTypes = {
   conditionNode: Condition,
@@ -46,6 +37,42 @@ const Canvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
+  const [selectedNodeID, setSelectedNodeID] = useState(null);
+  const [selectedNodeType, setSelectedNodeType] = useState(null);
+
+  const deleteNode = useCallback((nodeID) => {
+    console.log(`${nodeID}`);
+    setNodes((prevNodes) => {
+      console.log(prevNodes);
+      return prevNodes.filter((node) => node.id != nodeID);
+    });
+    deleteEdges(nodeID);
+  });
+
+  const deleteEdges = useCallback(
+    (nodeID) => {
+      console.log(`${nodeID}`);
+      setEdges((prevEdges) => {
+        console.log(prevEdges);
+        return prevEdges.filter(
+          (edge) => edge.source != nodeID && edge.target != nodeID
+        );
+      });
+    },
+    [setEdges]
+  );
+
+  const resetNode = (nodeID) => {
+    console.log(`${nodeID}`);
+    deleteEdges(nodeID);
+  };
+
+  const openSettings = useCallback((nodeID, nodeType) => {
+    setOpenSettingsDrawer(true);
+    setSelectedNodeID(nodeID);
+    setSelectedNodeType(nodeType);
+  });
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -75,12 +102,15 @@ const Canvas = () => {
       });
 
       const newNode = {
-        action: nodeType.toLowerCase(),
         id: getId(),
-        type: "default",
+        type: nodeType,
         position,
-        data: { label: `${nodeType}` },
-        className: "custom-node",
+        data: {
+          deleteNode,
+          deleteEdges,
+          resetNode,
+          openSettings,
+        },
       };
 
       if (nodeType === "Condition") {
@@ -155,7 +185,7 @@ const Canvas = () => {
           onDragOver={onDragOver}
           onEdgeUpdate={onEdgeUpdate}
         >
-          <Background variant={BackgroundVariant.Lines} gap={10} size={0.4} />
+          <Background gap={10} size={0.5} />
           <Controls />
         </ReactFlow>
       </div>

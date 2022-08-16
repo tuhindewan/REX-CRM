@@ -1,18 +1,23 @@
-import { useCallback } from "react";
+import { useState } from "react";
 import { Handle, Position } from "react-flow-renderer";
-import { useStore } from "zustand";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import "../style/Canvas.css";
+import CanvasStepOptions from "./CanvasStepOptions";
 
-const handleStyle = { left: 10 };
-
-export default function ExitStep({ data }) {
+const ExitStep = (props) => {
+  const [selection, setSelection] = useState([]);
   const trigger = useGlobalStore((state) => state.trigger);
 
+  const { id, type } = props;
   return (
-    <div className="step-wrapper">
-      <div>Exit Step</div>
-      <div>{trigger}</div>
-      <Handle type="target" position={Position.Top} />
-    </div>
+    <>
+      <div className="canvas-step-wrapper">
+        <div className="canvas-step-title">Exit Step</div>
+        <div>Exit</div>
+      </div>
+      <Handle type="target" position={Position.Top} className="handle" />
+    </>
   );
-}
+};
+
+export default ExitStep;

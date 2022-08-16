@@ -8,18 +8,17 @@ export const useGlobalStore = create((set) => ({
       comparison: "includes",
       value: "dhaka",
     },
-    [ 
-        {
-            key: "country",
-            comparison: "includes",
-            value: "dhaka",
-        },
+    [
+      {
+        key: "country",
+        comparison: "includes",
+        value: "dhaka",
+      },
     ],
-    {
-
-    }
+    {},
   ],
   delay: "",
   goal: "",
   sendEmail: "",
+  lastStepNodeID: 0,
 }));

@@ -1,24 +1,34 @@
-import { useCallback } from "react";
+import { useState } from "react";
 import { Handle, Position } from "react-flow-renderer";
-import { useStore } from "zustand";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import "../style/Canvas.css";
+import CanvasStepOptions from "./CanvasStepOptions";
 
-const handleStyle = { left: 10 };
-
-export default function TriggerStep({ data }) {
+const LandingStep = (props) => {
+  const [selection, setSelection] = useState([]);
   const trigger = useGlobalStore((state) => state.trigger);
 
+  const { id, type } = props;
   return (
-    <div className="step-wrapper">
-      <div>Trigger Step</div>
-      <input
-        type="text"
-        onChange={(event) => {
-          useGlobalStore.setState({ trigger: event.target.value });
-        }}
+    <>
+      <div className="canvas-step-wrapper">
+        <CanvasStepOptions
+          data={props.data}
+          showEdit={false}
+          id={id}
+          type={type}
+        />
+
+        <div className="canvas-step-title">Trigger Step</div>
+        <div>Trigger</div>
+      </div>
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="handle-right"
       />
-      <div>{trigger}</div>
-      <Handle type="source" position={Position.Bottom} />
-    </div>
+    </>
   );
-}
+};
+
+export default LandingStep;
