@@ -102,6 +102,7 @@ class CreateCreateTest extends WP_UnitTestCase {
                 'email' => 'Tuhin@gmail.com'
             ]
         );
+        
         $response = $this->server->dispatch( $request );
         
         $this->assertEquals( 200, $response->get_status() );

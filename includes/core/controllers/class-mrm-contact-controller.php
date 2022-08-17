@@ -515,9 +515,9 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function send_message(WP_REST_Request $request)
+    public function send_message( WP_REST_Request $request )
     {
-        error_log(print_r($request, 1));
+        MRM_Message_Controller::get_instance()->create_or_update( $request );
     }
 
 
