@@ -14,7 +14,6 @@ const NavLinks = () => {
           return (
             <li key={index}>
               <Link
-                
                 className={location.pathname == route.path ? "active" : ""}
                 to={route.path}
               >
