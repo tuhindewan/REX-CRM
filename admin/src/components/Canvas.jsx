@@ -16,6 +16,8 @@ import Sidebar from "./Sidebar";
 import ConditionStep from "./ConditionStep";
 import TriggerStep from "./TriggerStep";
 import ExitStep from "./ExitStep";
+import DelayStep from "./DelayStep";
+import SendEmailStep from "./SendEmailStep";
 
 const getId = () => {
   const lastStepNodeID = useGlobalStore.getState().lastStepNodeID;
@@ -26,8 +28,10 @@ const getId = () => {
 };
 
 const nodeTypes = {
-  conditionStep: ConditionStep,
   triggerStep: TriggerStep,
+  conditionStep: ConditionStep,
+  delayStep: DelayStep,
+  sendEmailStep: SendEmailStep,
   exitStep: ExitStep,
 };
 
