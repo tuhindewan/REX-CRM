@@ -24,18 +24,11 @@ module.exports = {
       allowedHosts: "all",
       host: "0.0.0.0",
       hot: true,
-      port: 8887,
+      port: 3000,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Headers": "*",
-      },
-      proxy: {
-        "/build": {
-          pathRewrite: {
-            "^/build": "",
-          },
-        },
       },
     },
     devtool: "source-map",
