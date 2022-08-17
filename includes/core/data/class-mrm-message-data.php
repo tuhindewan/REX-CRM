@@ -48,10 +48,10 @@ class MRM_Message {
 
     public function __construct( $args )
     {
-        $this->email_address    = isset( $args['email_address'] )   ? sanitize_text_field( $args['email_address'] )    : NULL;
-        $this->email_subject    = isset( $args['email_subject'] )   ? sanitize_text_field( $args['email_subject'] )    : NULL;
-        $this->email_body       = isset( $args['email_body'] )      ? sanitize_text_field( $args['email_body'] )       : NULL;
-        $this->type             = isset( $args['type'] )            ? sanitize_text_field( $args['type'] )             : NULL;
+        $this->email_address    = $args['email_address'];
+        $this->email_subject    = $args['email_subject'];
+        $this->email_body       = $args['email_body'];
+        $this->type             = $args['type'];
     }
 
 

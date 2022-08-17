@@ -95,7 +95,6 @@ class MessageControllerTest extends WP_UnitTestCase {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         
-        print_r($params);
         // email subject check
         $this->assertArrayHasKey("email_subject", $params);
 
@@ -108,7 +107,6 @@ class MessageControllerTest extends WP_UnitTestCase {
 
         // Message object create
         $message = new MRM_Message($params);
-
 
         // Receiver email address
         $receiver_email = $message->get_receiver_email();
@@ -129,8 +127,33 @@ class MessageControllerTest extends WP_UnitTestCase {
         $this->assertEquals( $type, $params['type'] );
 
 
+        $sent = $this->send_message( $message );
+
         $response = $this->server->dispatch( $request );
         $this->assertEquals( 200, $response->get_status() );
 	}
+
+
+    public function send_message( $message )
+    {
+        $to     = $message->get_receiver_email();
+        $this->assertEquals($to, 'tuhin@coderex.co');
+
+        $subject = $message->get_email_subject();
+        $this->assertEquals($subject, 'This is first emailssss');
+
+        $headers = array(
+			'MIME-Version: 1.0',
+			'Content-type: text/html;charset=UTF-8'
+		);
+		$from    = '';
+        $from = 'From: ' . 'MRM';
+        $headers[] = $from . ' <' . 'tuhinsshadow@gamil.com' . '>';
+        $headers[] = 'Reply-To:  ' . 'tuhinsshadow@gamil.com';
+		
+        $result = wp_mail( $to, $subject, $message, $headers );
+
+        $this->assertEquals($result, true);
+    }
 
 }

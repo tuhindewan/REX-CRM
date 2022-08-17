@@ -517,7 +517,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      */
     public function send_message( WP_REST_Request $request )
     {
-        MRM_Message_Controller::get_instance()->create_or_update( $request );
+        return MRM_Message_Controller::get_instance()->create_or_update( $request );
+        // error_log(print_r($result, 1));
+
+        // if( 1 == $result ){
+        //     return $this->get_success_response(__("Import successful", "mrm"), 200);
+        // }
     }
 
 
