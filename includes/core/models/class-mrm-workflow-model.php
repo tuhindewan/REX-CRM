@@ -72,36 +72,36 @@ class MRM_Workflow_Model{
     }
 
 
-    /**
-     * Update a workflow information
+     /**
+     * SQL query to update a workflow
      * 
-     * @param mixed $workflow_id
-     * @param mixed $fields      Entity and value to update
+     * @param $object       Workflow object
+     * @param $workflow_id      Workflow id
      * 
-     * @return bool
+     * @return JSON
      * @since 1.0.0
      */
-    public static function update( $workflow_id, $fields )
-    {
+    public static function update( MRM_Workflow $workflow, $workflow_id){
+
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Workflows_Table::$mrm_table;
-
-        $entity = array_key_first($fields);
-        $value  = array_values($fields)[0];
-
+        $table = $wpdb->prefix . MRM_Workflows_Table::$mrm_table;
+        
         try {
-            $wpdb->update( 
-                $table_name, 
-                array( 
-                    $entity         =>  $value,
-                    'updated_at'    =>  current_time('mysql')
-                ), 
-                array( 'ID' => $workflow_id )
+            $wpdb->update($table, array(
+                'title'            =>  $workflow->get_title(),
+                'workflow_data'    =>  $workflow->get_workflow_data(),
+                'global_state'     =>  $workflow->get_global_state(),
+                'status'           =>  $workflow->get_status(),
+                'last_step_id'     =>  $workflow->get_last_step_id()),
+                array(
+                    'id' => $workflow_id
+                )
             );
-        }catch(\Exception $e){
+            return true;
+        } catch(\Exception $e) {
             return false;
         }
-        return true;
+        
     }
 
 
@@ -142,7 +142,7 @@ class MRM_Workflow_Model{
         $table_name                     =   $wpdb->prefix . MRM_Workflows_Table::$mrm_table;
 
         try {
-            $contact_ids = implode( ',', array_map( 'absint', $workflow_ids ) );
+            $workflow_ids = implode( ',', array_map( 'absint', $workflow_ids ) );
 
             $wpdb->query( "DELETE FROM $table_name WHERE id IN($workflow_ids)" );
         } catch(\Exception $e) {

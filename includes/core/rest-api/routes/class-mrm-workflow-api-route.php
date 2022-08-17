@@ -80,7 +80,18 @@ class MRM_Workflow_API_Route{
                     $this->controller ,
                     'rest_permissions_check'
                 ]
-            ]
+            ],
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_all'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],  
 
         ]);
 

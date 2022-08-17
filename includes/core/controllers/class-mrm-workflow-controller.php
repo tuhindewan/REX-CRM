@@ -41,19 +41,16 @@ class MRM_Workflow_Controller extends MRM_Base_Controller {
 			return $this->get_error_response( $response,  400);
 		}
 
-        // Workflow avaiability check
-        $exist = MRM_Workflow_Model::is_workflow_exist( $params['slug'], 1 );
-        if ( $exist ) {
-			$response = __( 'Workfolow is already available', 'mrm' );
-			return $this->get_error_response( $response,  400);
-		}
-
         // Workflow object create and insert or update to database
         try {
+
+            // Workflow avaiability check
+            $exist = MRM_Workflow_Model::is_workflow_exist( $params['workflow_id'], 1 );
+
             $workflow = new MRM_Workflow( $params );
 
             if(isset($params['workflow_id'])){
-                $success = MRM_Workflow_Model::update( $workflow, $params['workflow_id'], 1 );
+                $success = MRM_Workflow_Model::update( $workflow , $params['workflow_id'] );
             }else{
                 $success = MRM_Workflow_Model::insert( $workflow, 1 );
             }

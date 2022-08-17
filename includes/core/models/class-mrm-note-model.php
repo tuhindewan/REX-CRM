@@ -98,7 +98,8 @@ class MRM_Note_Model {
                 'created_by'    => $note->get_created_by(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
-                'updated_at' => current_time('mysql')), array(
+                'updated_at'    => current_time('mysql')), 
+                array(
                     'id' => $note_id
                 )
             );
