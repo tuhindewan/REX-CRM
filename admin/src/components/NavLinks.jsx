@@ -8,13 +8,12 @@ const NavLinks = () => {
   const location = useLocation();
   console.log(location);
   return (
-    <nav className="navbar">
+    <nav className="navbar m-2 p-10">
       <ul>
         {routes.map((route, index) => {
           return (
             <li key={index}>
               <Link
-                
                 className={location.pathname == route.path ? "active" : ""}
                 to={route.path}
               >

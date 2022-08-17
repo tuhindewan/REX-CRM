@@ -19,9 +19,13 @@ a {
   text-decoration: none;
 }
 
-li a:hover {
-  background-color: #ddd;
-  color: black;
+a:hover,
+a:active,
+a:focus {
+  background-color: rgb(107, 14, 14);
+  color: white;
+  box-shadow: none;
+  outline: none;
 }
 
 .active {
