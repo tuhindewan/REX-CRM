@@ -6,7 +6,6 @@ import CanvasStepOptions from "./CanvasStepOptions";
 
 const DelayStep = (props) => {
   const [selection, setSelection] = useState([]);
-  const trigger = useGlobalStore((state) => state.trigger);
 
   const { id, type } = props;
   return (

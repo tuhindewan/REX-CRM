@@ -22,7 +22,7 @@ import SendEmailStep from "./SendEmailStep";
 const getId = () => {
   const lastStepNodeID = useGlobalStore.getState().lastStepNodeID;
   const newID = lastStepNodeID + 1;
-  console.log(lastStepNodeID);
+  //.log(lastStepNodeID);
   useGlobalStore.setState({ lastStepNodeID: newID });
   return `dndnode_${newID}`;
 };
@@ -49,7 +49,7 @@ const Canvas = () => {
       nds.concat({
         id: getId(),
         type: "triggerStep",
-        position: { x: 100, y: 200 },
+        position: { x: 100, y: 100 },
         data: {
           deleteNode,
           deleteEdges,
@@ -61,9 +61,9 @@ const Canvas = () => {
   }, []);
 
   const deleteNode = useCallback((nodeID) => {
-    console.log(`${nodeID}`);
+    //console.log(`${nodeID}`);
     setNodes((prevNodes) => {
-      console.log(prevNodes);
+      //console.log(prevNodes);
       return prevNodes.filter((node) => node.id != nodeID);
     });
     deleteEdges(nodeID);
@@ -71,9 +71,9 @@ const Canvas = () => {
 
   const deleteEdges = useCallback(
     (nodeID) => {
-      console.log(`${nodeID}`);
+      //console.log(`${nodeID}`);
       setEdges((prevEdges) => {
-        console.log(prevEdges);
+        //console.log(prevEdges);
         return prevEdges.filter(
           (edge) => edge.source != nodeID && edge.target != nodeID
         );
@@ -83,7 +83,7 @@ const Canvas = () => {
   );
 
   const resetNode = (nodeID) => {
-    console.log(`${nodeID}`);
+    //console.log(`${nodeID}`);
     deleteEdges(nodeID);
   };
 
@@ -132,10 +132,6 @@ const Canvas = () => {
         },
       };
 
-      // if (nodeType === "conditionStep") {
-      //   newNode.type = "conditionStep";
-      // }
-
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance, setNodes]
@@ -148,9 +144,9 @@ const Canvas = () => {
   );
 
   const allnodes = () => {
-    //console.log(nodes)
+    console.log(nodes)
     console.log("Triggered...");
-    //console.log(edges)
+    console.log(edges)
 
     let startNode = 0;
 
