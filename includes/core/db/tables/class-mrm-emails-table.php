@@ -44,6 +44,7 @@ class MRM_Messages_Table {
                 `ineraction_type` VARCHAR(50) NULL DEFAULT 'campaign',
                 `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'For future messaging process',
                 `contact_id` BIGINT UNSIGNED NULL COMMENT 'Set NULL on contact delete',
+                `sender_id` BIGINT(10) UNSIGNED NOT NULL DEFAULT 1,
                 `email_address` VARCHAR(192) NOT NULL,
                 `email_subject` VARCHAR(192) NULL,
                 `email_preview_text` VARCHAR(192) NULL,

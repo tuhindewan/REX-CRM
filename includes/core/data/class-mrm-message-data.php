@@ -46,11 +46,21 @@ class MRM_Message {
     private $type;
 
 
+    /**
+     * Contact ID 
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $contact_id;
+
+
     public function __construct( $args )
     {
         $this->email_address    = $args['email_address'];
         $this->email_subject    = $args['email_subject'];
         $this->email_body       = $args['email_body'];
+        $this->contact_id       = $args['contact_id'];
         $this->type             = $args['type'];
     }
 
@@ -104,5 +114,18 @@ class MRM_Message {
     public function get_message_type()
     {
         return $this->type;
+    }
+
+
+    /**
+     * Return receiver ID
+     * 
+     * @param void
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_receiver_id()
+    {
+        return $this->contact_id;
     }
 }

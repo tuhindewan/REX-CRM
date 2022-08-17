@@ -4,6 +4,7 @@ namespace MRM\Controllers;
 
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Message;
+use MRM\Models\MRM_Message_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 
@@ -46,8 +47,9 @@ class MRM_Message_Controller extends MRM_Base_Controller {
         $this->args = array(
             'email_address'     => isset( $params['email_address'] )   ? sanitize_text_field( $params['email_address'] )    : NULL,
             'email_subject'     => isset( $params['email_subject'] )   ? sanitize_text_field( $params['email_subject'] )    : NULL,
-            'email_body'        => isset( $params['email_body'] )      ? sanitize_text_field( $params['email_body'] )       : NULL,
-            'type'              => isset( $params['type'] )            ? sanitize_text_field( $params['type'] )             : NULL
+            'email_body'        => isset( $params['email_body'] )      ? $params['email_body']                              : NULL,
+            'type'              => isset( $params['type'] )            ? sanitize_text_field( $params['type'] )             : NULL,
+            'contact_id'        => isset( $params['contact_id'] )      ? sanitize_text_field( $params['contact_id'] )       : NULL
         );
 
         // Prepare message data
@@ -70,6 +72,15 @@ class MRM_Message_Controller extends MRM_Base_Controller {
 
 			return $this->get_error_response( __( 'Message is mandatory', 'mrm' ), 400 );
 		}
+
+        
+        /**
+        * TODO: We will get last insert id when we will complete campaign module
+        * 
+        */
+        $interaction_id = 1;
+
+        MRM_Message_Model::insert( $message, $interaction_id );
 
         $sent = $this->send_message( $message );
 
@@ -95,7 +106,7 @@ class MRM_Message_Controller extends MRM_Base_Controller {
 
         $subject = $message->get_email_subject();
 
-        $message = $message->get_email_body();
+        $body = $message->get_email_body();
 
         $headers = array(
 			'MIME-Version: 1.0',
@@ -107,7 +118,7 @@ class MRM_Message_Controller extends MRM_Base_Controller {
         $headers[] = 'Reply-To:  ' . 'support@rextheme.com';
 
         try {
-            $result = wp_mail( $to, $subject, $message, $headers );
+            $result = wp_mail( $to, $subject, $body, $headers );
             return $result;
 
         } catch(\Exception $e) {
@@ -118,15 +129,31 @@ class MRM_Message_Controller extends MRM_Base_Controller {
 
 
     /**
-     * TODO: use this function to get multiple emails
+     * Get all emails from the database to a contact or entire users
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return [type]
+     * @return WP_REST_Response
+     * @since 1.0.0
      */
-    public function get_all(WP_REST_Request $request)
+    public function get_all( WP_REST_Request $request )
     {
-        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $page       =  isset( $params['page'] ) ? $params['page'] : 1;
+        $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
+        $offset     =  ($page - 1) * $perPage;
+
+        // Contact Search keyword
+        $search     = isset( $params['search'] )        ? sanitize_text_field( $params['search'] )     : '';
+        $contact_id = isset( $params['contact_id'] )    ? sanitize_text_field( $params['contact_id'] ) : NULL;
+
+        $emails = MRM_Message_Model::get_emails_to_contact( $offset, $perPage, $search, $contact_id );
+        if(isset($emails)) {
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $emails );
+        }
+        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+
     }
 
 

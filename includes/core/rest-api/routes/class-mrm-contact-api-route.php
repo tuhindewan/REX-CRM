@@ -239,8 +239,29 @@ class MRM_Contact_API_Route {
                     $this->controller ,
                     'rest_permissions_check'
                 ]
-            ],
+            ]
         ]);
+
+
+        /**
+         * Emails list for a contact
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/emails', [
+        [
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [
+                $this->controller ,
+                'get_all_emails'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ]
+        ]
+    ]);
     }
 
 }

@@ -3,6 +3,7 @@
 namespace MRM\Models;
 
 use Exception;
+use MRM\Common\MRM_Common;
 use MRM\Traits\Singleton;
 use MRM\DB\Tables\MRM_Contact_Note_Table;
 use MRM\Data\MRM_Note;
@@ -61,7 +62,7 @@ class MRM_Note_Model {
                 'type'          => $note->get_type(),
                 'title'         => $note->get_title(),
                 'description'   => $note->get_description(),
-                'created_by'    => $note->get_created_by(),
+                'created_by'    => MRM_Common::get_current_user_id(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
                 'created_at'    => current_time('mysql')
@@ -95,7 +96,7 @@ class MRM_Note_Model {
                 'type'          => $note->get_type(),
                 'title'         => $note->get_title(),
                 'description'   => $note->get_description(),
-                'created_by'    => $note->get_created_by(),
+                'created_by'    => MRM_Common::get_current_user_id(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
                 'updated_at' => current_time('mysql')), array(

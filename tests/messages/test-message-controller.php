@@ -88,7 +88,8 @@ class MessageControllerTest extends WP_UnitTestCase {
                 "email_subject"     => "This is first emailssss",
                 "type"              => "email",
                 "email_body"        => "<p>Hi Tuhin,</p>\n<p>This is just an hello</p>",
-                "email_address"     => "tuhin@coderex.co"
+                "email_address"     => "tuhin@coderex.co",
+                "contact_id"        => 2
             ]
         );
 
@@ -142,6 +143,8 @@ class MessageControllerTest extends WP_UnitTestCase {
         $subject = $message->get_email_subject();
         $this->assertEquals($subject, 'This is first emailssss');
 
+        $body = $message->get_email_body();
+
         $headers = array(
 			'MIME-Version: 1.0',
 			'Content-type: text/html;charset=UTF-8'
@@ -151,9 +154,18 @@ class MessageControllerTest extends WP_UnitTestCase {
         $headers[] = $from . ' <' . 'tuhinsshadow@gamil.com' . '>';
         $headers[] = 'Reply-To:  ' . 'tuhinsshadow@gamil.com';
 		
-        $result = wp_mail( $to, $subject, $message, $headers );
+        $result = wp_mail( $to, $subject, $body, $headers );
 
         $this->assertEquals($result, true);
+    }
+
+
+    public function test_get_all_emails()
+    {
+        $request = new \WP_REST_Request( 'GET', '/mrm/v1/contacts/2/emails');
+
+        $response = $this->server->dispatch( $request );
+        $this->assertEquals( 200, $response->get_status() );
     }
 
 }
