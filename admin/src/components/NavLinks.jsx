@@ -9,12 +9,14 @@ const NavLinks = () => {
   console.log(location);
   return (
     <nav className="navbar m-2 p-10">
-      <ul>
+      <ul className="mrm-ul">
         {routes.map((route, index) => {
           return (
-            <li key={index}>
+            <li className="mrm-li" key={index}>
               <Link
-                className={location.pathname == route.path ? "active" : ""}
+                className={
+                  location.pathname == route.path ? "mrm-a active" : "mrm-a"
+                }
                 to={route.path}
               >
                 {__(route.title, "mrm")}
