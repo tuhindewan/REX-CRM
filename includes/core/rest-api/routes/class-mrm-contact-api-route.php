@@ -97,6 +97,7 @@ class MRM_Contact_API_Route {
         /**
          * Contact update endpoint
          * Contact delete endpoint
+         * Single contact endpoint 
          * 
          * @return void
          * @since 1.0.0
@@ -216,8 +217,29 @@ class MRM_Contact_API_Route {
                 'permission_callback' => [
                     $this->controller ,
                     'rest_permissions_check'
-                ] ,
+                ]
             ]
+        ]);
+
+
+        /**
+         * Send a message to contact
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/send-message', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'send_message'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
+            ],
         ]);
     }
 

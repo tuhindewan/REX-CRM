@@ -42,6 +42,7 @@ class MRM_Messages_Table {
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `interaction_id` BIGINT UNSIGNED NULL,
                 `ineraction_type` VARCHAR(50) NULL DEFAULT 'campaign',
+                `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'For future messaging process',
                 `contact_id` BIGINT UNSIGNED NULL COMMENT 'Set NULL on contact delete',
                 `email_address` VARCHAR(192) NOT NULL,
                 `email_subject` VARCHAR(192) NULL,
