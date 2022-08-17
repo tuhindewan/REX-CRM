@@ -14,53 +14,43 @@ const CanvasSettingsDrawer = (props) => {
     selectedNodeType,
   } = props;
 
-  if (selectedNodeType === "triggerStep"){
-    return (
-      <>
-        <TriggerSettingsDrawer 
-        openSettingsDrawer={openSettingsDrawer}
-        setOpenSettingsDrawer={setOpenSettingsDrawer}
-        selectedNodeID={selectedNodeID}
-        selectedNodeType={selectedNodeType}/>
-      </>
-    );
-  }
 
-  if (selectedNodeType === "sendEmailStep"){
-    return (
-      <>
-        <SendEmailSettingsDrawer 
-        openSettingsDrawer={openSettingsDrawer}
-        setOpenSettingsDrawer={setOpenSettingsDrawer}
-        selectedNodeID={selectedNodeID}
-        selectedNodeType={selectedNodeType}/>
-      </>
-    );
-  }
 
-  if (selectedNodeType === "delayStep"){
-    return (
-      <>
-        <DelaySettingsDrawer 
-        openSettingsDrawer={openSettingsDrawer}
-        setOpenSettingsDrawer={setOpenSettingsDrawer}
-        selectedNodeID={selectedNodeID}
-        selectedNodeType={selectedNodeType}/>
-      </>
-    );
-  }
+  // if (selectedNodeType === "sendEmailStep"){
+  //   return (
+  //     <>
+  //       <SendEmailSettingsDrawer 
+  //       openSettingsDrawer={openSettingsDrawer}
+  //       setOpenSettingsDrawer={setOpenSettingsDrawer}
+  //       selectedNodeID={selectedNodeID}
+  //       selectedNodeType={selectedNodeType}/>
+  //     </>
+  //   );
+  // }
 
-  if (selectedNodeType === "conditionStep"){
-    return (
-      <>
-        <ConditionSettingsDrawer 
-        openSettingsDrawer={openSettingsDrawer}
-        setOpenSettingsDrawer={setOpenSettingsDrawer}
-        selectedNodeID={selectedNodeID}
-        selectedNodeType={selectedNodeType}/>
-      </>
-    );
-  }
+  // if (selectedNodeType === "delayStep"){
+  //   return (
+  //     <>
+  //       <DelaySettingsDrawer 
+  //       openSettingsDrawer={openSettingsDrawer}
+  //       setOpenSettingsDrawer={setOpenSettingsDrawer}
+  //       selectedNodeID={selectedNodeID}
+  //       selectedNodeType={selectedNodeType}/>
+  //     </>
+  //   );
+  // }
+
+  // if (selectedNodeType === "conditionStep"){
+  //   return (
+  //     <>
+  //       <ConditionSettingsDrawer 
+  //       openSettingsDrawer={openSettingsDrawer}
+  //       setOpenSettingsDrawer={setOpenSettingsDrawer}
+  //       selectedNodeID={selectedNodeID}
+  //       selectedNodeType={selectedNodeType}/>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -74,6 +64,26 @@ const CanvasSettingsDrawer = (props) => {
         <button onClick={() => setOpenSettingsDrawer(false)}>Close</button>
         <div className="canvas-step-title">{selectedNodeID}</div>
         <div className="canvas-step-title">{selectedNodeType}</div>
+        {
+          selectedNodeType === "triggerStep" && (
+            <TriggerSettingsDrawer />
+          )
+        }
+        {
+          selectedNodeType === "delayStep" && (
+            <DelaySettingsDrawer />
+          )
+        }
+        {
+          selectedNodeType === "sendEmailStep" && (
+            <SendEmailSettingsDrawer />
+          )
+        }
+        {
+          selectedNodeType === "conditionStep" && (
+            <ConditionSettingsDrawer />
+          )
+        }
       </div>
     </>
   );
