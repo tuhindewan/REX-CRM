@@ -503,7 +503,23 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      */
     public function import_contacts_native_wc(WP_REST_Request $request) {
 
-        
+        try {
+            $user_query = new WP_User_Query(array("role" => "customer"));
+            $results = $user_query->get_results();
+
+            foreach($results as $result) {
+                $data = $result->data;
+                $name = $data->display_name;
+                $email = $data->user_email;
+                $contact = new MRM_Contact($email, array("first_name" => $name));
+                $exists = MRM_Contact_Model::is_contact_exist( $email );
+                if(!$exists)
+                    MRM_Contact_Model::insert($contact);
+            }
+            return $this->get_success_response(__("Import woocommerce users successful", "mrm"), 200);
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
     }
 
 
