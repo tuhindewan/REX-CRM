@@ -1,7 +1,7 @@
 import React from "react";
-import Canvas from './Canvas.jsx'
+import Canvas from '../components/Canvas.jsx'
 
-const Dashboard = () => {
+const Automation = () => {
   return (
     <div className="dashboard-container">
       <Canvas/>
@@ -9,4 +9,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Automation;
