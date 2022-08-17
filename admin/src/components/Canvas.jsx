@@ -13,7 +13,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import CanvasSettingsDrawer from "./CanvasSettingsDrawer";
 
 import Sidebar from "./Sidebar";
-import Condition from "./Condition";
+import ConditionStep from "./ConditionStep";
 import TriggerStep from "./TriggerStep";
 import ExitStep from "./ExitStep";
 
@@ -26,7 +26,7 @@ const getId = () => {
 };
 
 const nodeTypes = {
-  conditionNode: Condition,
+  conditionStep: ConditionStep,
   triggerStep: TriggerStep,
   exitStep: ExitStep,
 };
@@ -128,9 +128,9 @@ const Canvas = () => {
         },
       };
 
-      if (nodeType === "Condition") {
-        newNode.type = "conditionNode";
-      }
+      // if (nodeType === "conditionStep") {
+      //   newNode.type = "conditionStep";
+      // }
 
       setNodes((nds) => nds.concat(newNode));
     },
