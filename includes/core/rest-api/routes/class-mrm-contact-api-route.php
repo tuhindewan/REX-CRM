@@ -168,6 +168,50 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
+         * Contact import endpoint for wp users
+         * 
+         * 
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/native/wp', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'import_contacts_native_wp'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ],
+            ]
+        ]);
+
+        /**
+         * Contact import endpoint for woocommerce customers
+         * 
+         * 
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/native/wc', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'import_contacts_native_wc'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ],
+            ]
+        ]);
+
+        /**
          * Contact import endpint
          * This endpoint saves the imported file to database with correct mappings
          * @return void

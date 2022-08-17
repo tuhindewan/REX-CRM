@@ -28,4 +28,9 @@ class MRM_Constants{
         "country",
         "phone"
     );
+
+    /*
+    * maichimp api key for testing
+    */
+    public static $mailchimp_key = "11b321614d43814ca7d8406041bb3839-us8";
 }
