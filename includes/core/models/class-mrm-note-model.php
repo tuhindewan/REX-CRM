@@ -165,6 +165,7 @@ class MRM_Note_Model {
             $count_array = json_decode(json_encode($count_data), true);
             
             $count = (int) $count_array['0']['total'];
+
             $totalPages = ceil(intdiv($count, $limit));
       
             return array(

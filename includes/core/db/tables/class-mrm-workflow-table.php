@@ -42,9 +42,9 @@ class MRM_Workflows_Table {
                 `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `title` VARCHAR(255),
                 `workflow_data` longtext,
-                `gobal_state` longtext,
-                `status` VARCHAR(255) NOT NULL,
-                `last_step_id` BIGINT(20) UNSIGNED NOT NULL,
+                `global_state` longtext,
+                `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+                `last_step_id` VARCHAR(255) NOT NULL,
                 PRIMARY KEY (`id`)
              ) $charsetCollate;";
 

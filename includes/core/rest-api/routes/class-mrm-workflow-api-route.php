@@ -2,17 +2,17 @@
 
 namespace MRM\REST\Routes;
 
-use MRM\Controllers\MRM_Note_Controller;
+use MRM\Controllers\MRM_Workflow_Controller;
 
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Handle Note Module related API callbacks]
+ * @create date 2022-08-17 12:25:17
+ * @modify date 2022-08-17 12:25:17
+ * @desc [Handle Workflow Module related API callbacks]
  */
 
-class MRM_Note_API_Route{
+class MRM_Workflow_API_Route{
 
     /**
      * Endpoint namespace.
@@ -28,7 +28,7 @@ class MRM_Note_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'notes';
+    protected $rest_base = 'workflows';
 
 
     /**
@@ -42,23 +42,23 @@ class MRM_Note_API_Route{
     
 
     /**
-     * Register API endpoints routes for notes module
+     * Register API endpoints routes for workflow module
      * 
      * @return void
      * @since 1.0.0
      */
     public function register_routes()
     {
-        $this->controller = MRM_Note_Controller::get_instance();
+        $this->controller = MRM_Workflow_Controller::get_instance();
 
         /**
-         * Note create endpoint
-         * Get Note endpoint
+         * Workflow create endpoint
+         * Get Workflow endpoint
          * 
          * @return void
          * @since 1.0.0
         */  
-        register_rest_route($this->namespace, '/contact'. '/(?P<contact_id>[\d]+)' .'/'. $this->rest_base . '/', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
@@ -85,13 +85,13 @@ class MRM_Note_API_Route{
         ]);
 
         /**
-         * Note update endpoint
-         * Note delete endpoint
+         * Workflow update endpoint
+         * Workflow delete endpoint
          * 
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/contact' .'/(?P<contact_id>[\d]+)'.'/'. $this->rest_base . '/(?P<note_id>[\d]+)', 
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<workflow_id>[\d]+)', 
        [
             [
                 'methods' => \WP_REST_Server::EDITABLE,
@@ -114,6 +114,17 @@ class MRM_Note_API_Route{
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_single'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
             ]
         ]);
 
