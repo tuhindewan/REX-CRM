@@ -36,8 +36,6 @@ class MRM_Messages_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-
             $sql = "CREATE TABLE IF NOT EXISTS {$table} (
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `interaction_id` BIGINT UNSIGNED NULL,
@@ -62,6 +60,6 @@ class MRM_Messages_Table {
              ) $charsetCollate;";
 
             dbDelta($sql);
-        }
+        
     }
 }

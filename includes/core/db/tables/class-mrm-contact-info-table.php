@@ -7,12 +7,12 @@ require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
- * @create date 2022-08-10 11:55:03
- * @modify date 2022-08-10 11:55:03
- * @desc [Create wp_mrm_contact_note table into database]
+ * @create date 2022-08-10 10:45:03
+ * @modify date 2022-08-10 10:45:03
+ * @desc [Create wp_mrm_contact_info table into database]
  */
 
-class MRM_Contact_Note_Table {
+class MRM_Contact_Info_Table {
 
     /**
      * Table name
@@ -20,7 +20,7 @@ class MRM_Contact_Note_Table {
      * @var string
      * @since 1.0.0
      */
-    public static $mrm_table = 'mrm_contact_note';
+    public static $mrm_table = 'mrm_contact_info';
 
     /**
      * Create the table.
@@ -37,14 +37,16 @@ class MRM_Contact_Note_Table {
         $table = $wpdb->prefix . self::$mrm_table;
 
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
-            `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            `contact_id` BIGINT(20) UNSIGNED NOT NULL,
-            `type` VARCHAR(255) NOT NULL,
-            `title` VARCHAR(255),
-            `description` longtext,
-            `created_by` BIGINT(20),
-            `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
-            `is_public` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            `id` BIGINT unsigned NOT NULL auto_increment,
+            `contact_id` BIGINT unsigned NOT NULL,
+            `timezone` VARCHAR(192) NULL,
+            `address_line_1` VARCHAR(192) NULL,
+            `address_line_2` VARCHAR(192) NULL,
+            `postal_code` VARCHAR(192) NULL,
+            `city` VARCHAR(192) NULL,
+            `state` VARCHAR(192) NULL,
+            `country` VARCHAR(192) NULL,
+            `phone` VARCHAR(50) NULL,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             PRIMARY KEY (`id`),
