@@ -35,7 +35,7 @@ const BaseTable = (props) => {
               style={{ marginTop: 30 }}
               graph="square"
               active={true}
-              rows={15}
+              rows={20}
             />
             //  <Loader size="md" center content="Loading" />
             // </Stack>
