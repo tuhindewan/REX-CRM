@@ -1,6 +1,18 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Table, Pagination, Stack, Placeholder, Loader } from "rsuite";
+import {
+  Table,
+  Pagination,
+  Stack,
+  Placeholder,
+  Loader,
+  Button,
+  Input,
+  InputGroup,
+  Whisper,
+  Tooltip,
+} from "rsuite";
+import SearchIcon from "@rsuite/icons/Search";
 const { Column, HeaderCell, Cell } = Table;
 import "../style/BaseTable.css";
 
@@ -12,11 +24,15 @@ const BaseTable = (props) => {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [refresh, setRefresh] = useState();
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     async function getData() {
       setLoaded(false);
       const res = await axios.get(
-        `/wp-json/mrm/v1${endpoint}?per-page=${perPage}&page=${page}`
+        `/wp-json/mrm/v1${endpoint}?${
+          search.length >= 3 ? "search=" + search + "&" : ""
+        }per-page=${perPage}&page=${page}`
       );
       const resJson = res.data;
       const data = resJson.data.data;
@@ -32,9 +48,40 @@ const BaseTable = (props) => {
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
   };
+  const styles = {
+    width: 300,
+  };
   return (
     <>
       <div>
+        <div>
+          <Stack
+            spacing={10}
+            justifyContent="flex-end"
+            alignItems="center"
+            style={{ margin: 10 }}
+          >
+            <InputGroup style={styles}>
+              <InputGroup.Addon>
+                <SearchIcon />
+              </InputGroup.Addon>
+              <Whisper
+                trigger="focus"
+                placement="top"
+                speaker={
+                  <Tooltip>
+                    Search Terms should at least have 3 characters
+                  </Tooltip>
+                }
+              >
+                <Input value={search} onChange={setSearch} />
+              </Whisper>
+            </InputGroup>
+            <Button onClick={toggleRefresh} appearance="primary">
+              {search.length >= 3 ? "Search" : "Refresh"}
+            </Button>
+          </Stack>
+        </div>
         <div>
           {data.length == 0 && !loaded && (
             <Placeholder.Paragraph
@@ -48,9 +95,7 @@ const BaseTable = (props) => {
         <div className="mrm-spacing">
           {data.length == 0 && loaded && (
             <div>
-              No {endpoint.replace("/", "")} in the database. You can start by
-              creating new{" "}
-              {endpoint.replace("/", "").substr(0, endpoint.length - 2)}.
+              Did not find any {endpoint.replace("/", "")} in the database.
             </div>
           )}
         </div>
