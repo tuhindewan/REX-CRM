@@ -2,17 +2,17 @@
 
 namespace MRM\REST\Routes;
 
-use MRM\Controllers\MRM_Segment_Controller;
+use MRM\Controllers\Tags\MRM_Tag_Controller;
 
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
- * @create date 2022-08-10 12:50:17
- * @modify date 2022-08-10 12:50:17
- * @desc [Handle Segment Module related API callbacks]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @desc [Handle List Module related API callbacks]
  */
 
-class MRM_Segment_API_Route{
+class MRM_Tag_API_Route{
 
     /**
      * Endpoint namespace.
@@ -28,11 +28,11 @@ class MRM_Segment_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'segments';
+    protected $rest_base = 'tags';
 
 
     /**
-     * MRM_Segment_Controller class object
+     * MRM_Tags class object
      * 
      * @var object
      * @since 1.0.0
@@ -40,19 +40,21 @@ class MRM_Segment_API_Route{
     protected $controller;
 
     
+
     /**
-     * Register API endpoints routes for segment module
+     * Register API endpoints routes for tags module
      * 
      * @return void
      * @since 1.0.0
      */
     public function register_routes()
     {
-        $this->controller = MRM_Segment_Controller::get_instance();
+        $this->controller = MRM_Tag_Controller::get_instance();
+
 
         /**
-         * Segment create endpoint
-         * Get segments endpoint
+         * Tag create endpoint
+         * Get Tag endpoint
          * 
          * @return void
          * @since 1.0.0
@@ -62,7 +64,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_segment'
+                    'create_or_update_tag'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -73,7 +75,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_segments'
+                    'get_all_tags'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -84,7 +86,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_segments'
+                    'delete_multiple_tags'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -101,12 +103,23 @@ class MRM_Segment_API_Route{
          * @return void
          * @since 1.0.0
         */  
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<segment_id>[\d]+)', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<tag_id>[\d]+)', [
             [
                 'methods' => \WP_REST_Server::EDITABLE,
                 'callback' => [
                     $this->controller ,
-                    'create_or_update_segment'
+                    'create_or_update_tag'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_single_tag'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -117,7 +130,7 @@ class MRM_Segment_API_Route{
                 'methods' => \WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller ,
-                    'delete_segment'
+                    'delete_tag'
                 ],
                 'permission_callback' => [
                     $this->controller ,

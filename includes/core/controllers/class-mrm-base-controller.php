@@ -2,28 +2,61 @@
 
 namespace MRM\Controllers;
 
-use WP_REST_Response;
+/**
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @desc [Abstract class for REST API controller]
+ */
 
 abstract class MRM_Base_Controller {
 
-  public $response_code = 200;
 
-  public function get_success_response($message = '', $code = 0, $wp_error = null ) {
-    return array(
+	/**
+     * REST API response code
+     * 
+     * @var integer
+     * @since 1.0.0
+     */
+  	private $response_code = 200;
+  
+
+	/**
+     * Prepare success response for REST API
+     * 
+	 * @param $message
+	 * @param $code
+	 * @param $wp_error
+	 * 
+     * @return array
+     * @since 1.0.0
+     */  
+	public function get_success_response( $message = '', $code = 0, $data = null ) {
+		$response =  array(
 			'code'    => $code,
 			'message' => $message,
-			'data'  => [
-        "status" => $code,
-        "error_code"  => []
-      ],
+			'data'  => $data,
 		);
-  }
+
+		return rest_ensure_response($response);
+	}
 
 
-  public function get_error_response($message = '', $code = 0, $wp_error = null  ) {
-    if ( 0 !== absint( $code ) ) {
+	/**
+     * Prepare error response for REST API
+     * 
+	 * @param $message
+	 * @param $code
+	 * @param $wp_error
+	 * 
+     * @return array
+     * @since 1.0.0
+     */  
+	public function get_error_response( $message = '', $code = 0, $wp_error = null  ) {
+		if ( 0 !== absint( $code ) ) {
 			$this->response_code = $code;
-		} else if ( empty( $this->response_code ) ) {
+		} else if ( empty( $code ) ) {
 			$this->response_code = 500;
 		}
 
@@ -34,5 +67,18 @@ abstract class MRM_Base_Controller {
 		}
 
 		return new \WP_Error( $this->response_code, $message, array( 'status' => $this->response_code, 'error_data' => $data ) );
-  }
+	}
+
+
+	/**
+     * User accessability check for REST API
+     * 
+     * @return bool
+     * @since 1.0.0
+     */  
+	public function rest_permissions_check()
+	{
+		return true;
+	}
+
 }
