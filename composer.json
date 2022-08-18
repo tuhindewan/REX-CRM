@@ -9,7 +9,8 @@
   ],
   "require": {
     "phpunit/phpunit": "^7",
-    "guzzlehttp/guzzle": "^7.4"
+    "guzzlehttp/guzzle": "^7.4",
+    "league/csv": "^9.0"
   },
   "scripts": {
     "phpunit": "phpunit"

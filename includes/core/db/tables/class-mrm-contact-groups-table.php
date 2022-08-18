@@ -42,6 +42,7 @@ class MRM_Contact_Groups_Table {
             `id` BIGINT(20) unsigned NOT NULL auto_increment,
             `title` VARCHAR(255) NOT NULL,
             `type` TINYINT(2) unsigned NOT NULL COMMENT '1 - tags, 2 - lists, 3 - segments',
+            `slug` VARCHAR(255) NOT NULL,
             `data` longtext, 
             `created_at` TIMESTAMP,
             `updated_at` TIMESTAMP,

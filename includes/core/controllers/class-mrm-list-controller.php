@@ -4,10 +4,11 @@ namespace MRM\Controllers;
 
 use Exception;
 use MRM\Controllers\MRM_Base_Controller;
-use MRM\Models\MRM_List_Model;
-use MRM\Data\MRM_List_Data;
+use MRM\Data\MRM_List;
+use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
+use MRM\Common\MRM_Common;
 
 /**
  * @author [MRM Team]
@@ -19,226 +20,172 @@ use WP_REST_Request;
 
 class MRM_List_Controller extends MRM_Base_Controller{
     
-    use Singleton;
+    use Singleton; 
     
     /**
-     * holds the model instance for database related queries
-     * @var MRM_List_Model
-     * @since 1.0.0 
+     * Function used to handle create  or update requests
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0
      */
+    public function create_or_update( WP_REST_Request $request ){
+        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
-    public $model;
-    
-    
-    
+        // List title validation
+        $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
+        if (empty($title)) {
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+        }
+
+        // list avaiability check
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 2 );
+        if ( $exist ) {
+			$response = __( 'List is already available', 'mrm' );
+			return $this->get_error_response( $response,  400);
+		}
+        
+        // List object create and insert or update to database
+        try {
+            $list = new MRM_List( $params );
+
+            if(isset($params['list_id'])) {
+                $success = MRM_Contact_Group_Model::update( $list, $params['list_id'], 2 );
+            } else {
+                $success = MRM_Contact_Group_Model::insert( $list, 2 );
+            }
+
+            if($success) {
+                return $this->get_success_response(__( 'List has been saved successfully', 'mrm' ), 201);
+            }
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+
+        } catch(Exception $e) {
+            return $this -> get_error_response(__( 'List is not valid', 'mrm' ), 400);
+        }   
+    }
+
+
     /**
-     * Function used to handle create requests
+     * Function used to handle paginated get and search requests
+     * 
+     * @param WP_REST_Request $request
+     * 
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
+    public function get_all( WP_REST_Request $request ){
 
-    public function create_list(WP_REST_Request $request){
-      //instantiate the model
-      $this->model = MRM_List_Model::get_instance();
+        //instantiate the model
+        $this->model = MRM_Contact_Group_Model::get_instance();
 
-      //get the list body
-      $body = $request->get_json_params();
+       // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
-      try {
-        $list = new MRM_List_Data($body['title']);
-      } catch(Exception $e) {
-        return $this->get_error_response('Invalid Data', 400);
-      }
-      
-      $success = $this->model->insert_list($list);
-      
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Insertion successfull", 201);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Insert");
-      }
-      return $result;
+        $page       =  isset($params['page']) ? absint( $params['page'] ) : 1;
+        $perPage    =  isset($params['per-page']) ? absint( $params['per-page'] ) : 25;
+        $offset     =  ($page - 1) * $perPage;
+
+        // List Search keyword
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+
+        $groups = MRM_Contact_Group_Model::get_all( 2, $offset, $perPage, $search );
+
+        if(isset($groups)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400); 
     }
 
-    /**
-     * Function used to handle update requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function update_list(WP_REST_Request $request){
-      //get an instance of the model
-      $this->model = MRM_List_Model::get_instance();
-
-      // get url parameters
-      $urlParams = $request->get_url_params();
-      
-      // get json body as an array
-      $body = $request->get_json_params();
-
-
-      $id = $urlParams['id'];
-      $list = new MRM_List_Data($body['title']);
-
-      $success = $this->model->update_list($id, $list);
-
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Update successfull", 201);
-      } else {
-        $result = $this -> get_error_response("Failed to Update", 400);
-      }
-      return $result;
-    }
-
-    /**
-     * Function used to handle paginated get requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function get_lists(WP_REST_Request $request){
-      $this->model = MRM_List_Model::get_instance();
-      // get json body as an array
-      $body = $request->get_json_params();
-      $queryParams = $request->get_query_params();
-      $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
-      $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
-      $offset = ($page - 1) * $perPage;
-      $limit = $perPage;
-      $result = null;
-      $data = $this->model->get_lists($offset, $limit);
-      
-      if(isset($data)) {
-        $result = $this -> get_success_response("Query successfull", 201, $data);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Get Data");
-      }
-      return $result;
-    }
 
     /**
      * Function used to handle a single get request
+     * 
+     * @param WP_REST_Request $request
+     * 
      * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
+    public function get_single( WP_REST_Request $request ){
 
-    public function get_list(WP_REST_Request $request){
-       //get an instance of the model
-       $this->model = MRM_List_Model::get_instance();
-
-       // get url parameters
-       $urlParams = $request->get_url_params();
-       
-       // get json body as an array
-       $body = $request->get_json_params();
- 
- 
-       $id = $urlParams['id'];
- 
-       $data = $this->model->get_list($id);
- 
-       $result = null;
-       if(isset($data)) {
-         $result = $this -> get_success_response("Query Successfull", 200, $data);
-       } else {
-         $result = $this -> get_error_response("Failed to Get Data", 400);
-       }
-       return $result;
-    }
-
-    /**
-     * Function used to handle delete requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function delete_list(WP_REST_Request $request){
-      //get an instance of the model
-      $this->model = MRM_List_Model::get_instance();
-
-      // get url parameters
-      $urlParams = $request->get_url_params();
-      
-      // get json body as an array
-      $body = $request->get_json_params();
-
-
-      $id = $urlParams['id'];
-
-      $success = $this->model->delete_list($id);
-
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Delete Successfull", 200);
-      } else {
-        $result = $this -> get_error_response("Failed to Delete", 400);
-      }
-      return $result;
-    }
-
-    /**
-     * Function used to handle delete requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function delete_lists(WP_REST_Request $request){
-      //get an instance of the model
-      $this->model = MRM_List_Model::get_instance();
-
-      // get url parameters
-      $urlParams = $request->get_url_params();
-      
-      // get json body as an array
-      $body = $request->get_json_params();
-
-      $listOfIDS = $body['list_ids'];
-      $success = $this->model->delete_lists($listOfIDS);
-      $result = null;
-      if($success) {
-        $result = $this -> get_success_response("Delete Successfull", 200);
-      } else {
-        $result = $this -> get_error_response("Failed to Delete", 400);
-      }
-      return $result;
-    }
-
-    /**
-     * Function used to handle search requests
-     * @return WP_REST_RESPONSE
-     * @since 1.0.0 
-     */
-
-    public function search_lists(WP_REST_Request $request){
-      $this->model = MRM_List_Model::get_instance();
-      // get json body as an array
-      $body = $request->get_json_params();
-      $queryParams = $request->get_query_params();
-      $title = $queryParams['title'];
-      $page = isset($queryParams['page']) ? $queryParams['page'] : 1;
-      $perPage = isset($queryParams['per-page']) ? $queryParams['per-page'] : 3;
-      $offset = ($page - 1) * $perPage;
-      $limit = $perPage;
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
     
-      $data = $this->model->search_lists($title, $offset, $limit);
-      
-      if(isset($data)) {
-        $result = $this -> get_success_response("Search successfull", 201, $data);
-      } else {
-        $result = $this -> get_error_response(400, "Failed to Get Data");
-      }
-      return $result;
+        $group = MRM_Contact_Group_Model::get( $params['list_id'] );
+  
+        if(isset($group)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $group);
+        }
+        return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+
     }
 
 
     /**
-     * Function used check whether the given user has permission to acces the endpoing
-     * @return boolean
+     * Function used to handle delete requests
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_RESPONSE
      * @since 1.0.0 
      */
-    public function lists_permissions_check(){
-        return true;
+    public function delete_single( WP_REST_Request $request ){
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        // List avaiability check
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 2 );
+
+        if ( !$exist ) {
+			$response = __( 'List not found', 'mrm' );
+			return $this->get_error_response( $response,  400);
+		}
+
+        $success = MRM_Contact_Group_Model::destroy( $params['list_id'] );
+        if( $success ) {
+            return $this->get_success_response( __( 'List has been deleted successfully', 'mrm' ), 200 );
+        }
+
+        return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
     }
+
+
+    /**
+     * Function used to handle delete requests
+     * 
+     * @param WP_RESR_Request
+     * 
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0 
+     */
+    public function delete_all( WP_REST_Request $request ){
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $success = MRM_Contact_Group_Model::destroy_all( $params['list_ids'] );
+        if($success) {
+            return $this->get_success_response(__( 'Lists has been deleted successfully', 'mrm' ), 200);
+        }
+
+        return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
+       
+    }
+
+
+    /**
+     * Get Lists related to a contact
+     * 
+     * @param mixed $lists_ids
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_lists_to_contact( $lists_ids )
+    {
+        return MRM_Contact_Group_Model::get_groups_to_contact( $lists_ids, 2 );
+    }
+    
 }

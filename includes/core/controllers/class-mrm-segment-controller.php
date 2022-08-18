@@ -6,8 +6,8 @@ use MRM\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Data\MRM_Segment;
 use Exception;
-use MRM\Models\MRM_Model_Common;
-use MRM\Models\MRM_Segment_Model;
+use MRM\Models\MRM_Contact_Group_Model;
+use MRM\Common\MRM_Common;
 
 /**
  * @author [MRM Team]
@@ -22,15 +22,6 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
     use Singleton;
 
     /**
-     * MRM_Segment_Model class object
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    public $model;
-
-
-    /**
      * Create a new segment or update a existing segment
      * 
      * @param WP_REST_Request $request
@@ -38,23 +29,23 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function create_or_update_segment(WP_REST_Request $request)
+    public function create_or_update( WP_REST_Request $request )
     {
-        $this->model = MRM_Segment_Model::get_instance();
-        
         // Get values from API
-        $query_params   = $request->get_query_params();
-        $query_params   = is_array( $query_params ) ? $query_params : array();
-        $request_params = $request->get_params();
-        $request_params = is_array( $request_params ) ? $request_params : array();
-        $params         = array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
-        // Segment Title validation
-        $title = sanitize_text_field($params['title']);
-
+        // Segment title validation
+        $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
         if ( empty( $title ) ) {
 			$response            = __( 'Title is mandatory', 'mrm' );
 
+			return $this->get_error_response( $response,  400);
+		}
+
+        // Segment avaiability check
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 3 );
+        if ( $exist ) {
+			$response = __( 'Segment is already available', 'mrm' );
 			return $this->get_error_response( $response,  400);
 		}
 
@@ -67,19 +58,18 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
 
         // Segment object create and insert or update to database
         try {
-            $segment = new MRM_Segment($params);
+            $segment = new MRM_Segment( $params );
 
             if(isset($params['segment_id'])){
-                $success = $this->model->update($segment, $params['segment_id']);
+                $success = MRM_Contact_Group_Model::update( $segment, $params['segment_id'], 3 );
             }else{
-                $success = $this->model->insert($segment);
+                $success = MRM_Contact_Group_Model::insert( $segment, 3 );
             }
 
             if($success) {
-                return $this->get_success_response(__( 'Insertion successfull', 'mrm' ), 201);
-            } else {
-                return $this->get_error_response(__( 'Insertion Failed', 'mrm' ), 400);
+                return $this->get_success_response(__( 'Segment has been saved successfully', 'mrm' ), 201);
             }
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
         } catch(Exception $e) {
                 return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 400);
         }
@@ -96,33 +86,47 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function get_segments( WP_REST_Request $request )
+    public function get_all( WP_REST_Request $request )
     {
-        $this->model = MRM_Segment_Model::get_instance();
-
         // Get values from API
-        $query_params   = $request->get_query_params();
-        $query_params   = is_array( $query_params ) ? $query_params : array();
-        $request_params = $request->get_params();
-        $request_params = is_array( $request_params ) ? $request_params : array();
-        $params         = array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
-        $page = isset($params['page']) ? $params['page'] : 1;
-        $perPage = isset($params['per-page']) ? $params['per-page'] : 3;
-        $offset = ($page - 1) * $perPage;
+        $page       =  isset($params['page']) ? $params['page'] : 1;
+        $perPage    =  isset($params['per-page']) ? $params['per-page'] : 25;
+        $offset     =  ($page - 1) * $perPage;
 
         // Segment Search keyword
-        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
 
-        $data = $this->model->get_segments($offset, $perPage, $search);
+        $groups = MRM_Contact_Group_Model::get_all( 3, $offset, $perPage, $search );
 
-
-        if(isset($data)) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 201, $data);
-        } else {
-            return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+        if(isset($groups)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
 
+    }
+
+
+    /**
+     * Get a specefic segment data
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_single( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $group = MRM_Contact_Group_Model::get( $params['segment_id'] );
+
+        if(isset($group)) {
+            return $this->get_success_response("Query Successfull", 200, $group);
+        }
+        return $this->get_error_response("Failed to Get Data", 400);
     }
 
 
@@ -134,29 +138,25 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_segment( WP_REST_Request $request )
+    public function delete_single( WP_REST_Request $request )
     {
-        $this->model = MRM_Segment_Model::get_instance();
-
-        // Get url parameters
-        $urlParams = $request->get_url_params();
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
         // Segments avaiability check
-        $exist = MRM_Model_Common::is_group_exist($urlParams['segment_id']);
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'] );
 
         if ( !$exist ) {
-			$response = __( 'Segment not found', 'mrm' );
-
+			$response = __( 'Segemnt not found', 'mrm' );
 			return $this->get_error_response( $response,  400);
 		}
 
-        $success = MRM_Model_Common::delete_group($urlParams['segment_id']);
-
-        if($success) {
-            return $this->get_success_response( __( 'Segment Delete Successfull', 'mrm' ), 200 );
-        } else {
-            return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+        $success = MRM_Contact_Group_Model::destroy( $params['segment_id'] );
+        if( $success ) {
+            return $this->get_success_response( __( 'Segment has been deleted successfully', 'mrm' ), 200 );
         }
+
+        return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
 
     }
 
@@ -169,20 +169,17 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function delete_segments( WP_REST_Request $request )
+    public function delete_all( WP_REST_Request $request )
     {
-        $this->model = MRM_Segment_Model::get_instance();
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
-        // get json body as an array
-        $body = $request->get_json_params();
-
-        $success = MRM_Model_Common::delete_groups($body['segment_ids']);
-
+        $success = MRM_Contact_Group_Model::destroy_all( $params['segment_ids'] );
         if($success) {
-            return $this->get_success_response(__( 'Segments Delete Successfull', 'mrm' ), 200);
-        } else {
-            return $this -> get_error_response(__( 'Failed to Delete', 'mrm' ), 400);
+            return $this->get_success_response(__( 'Segments has been deleted successfully', 'mrm' ), 200);
         }
+
+        return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
 
     }
 

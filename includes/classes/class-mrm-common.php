@@ -2,6 +2,8 @@
 
 namespace MRM\Common;
 
+use WP_REST_Request;
+
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
@@ -12,23 +14,51 @@ namespace MRM\Common;
 
 class MRM_Common {
 
-    public static $response_code = 200;
 
-    public static function error_response( $message = '', $code = 0, $wp_error = null ) {
-		if ( 0 !== absint( $code ) ) {
-			self::$response_code = $code;
-		} else if ( empty( self::$response_code ) ) {
-			self::$response_code = 500;
-		}
-
-		$data = array();
-		if ( $wp_error instanceof \WP_Error ) {
-			$message = $wp_error->get_error_message();
-			$data    = $wp_error->get_error_data();
-		}
-
-		return new \WP_Error( self::$response_code, $message, array( 'status' => self::$response_code, 'error_data' => $data ) );
+    /**
+	 * Returns alphanumeric hash
+	 * 
+     * @param mixed $len=32
+     * 
+     * @return string
+	 * @since 1.0.0
+     */
+    public static function get_rand_hash( $len=32 )
+	{
+		return substr(md5(openssl_random_pseudo_bytes(20)),-$len);
 	}
+
+
+    /**
+     * Returns request query params or body values
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_api_params_values( WP_REST_Request $request )
+    {
+        $query_params   =  $request->get_query_params();
+        $request_params =  $request->get_params();
+        $params         =  array_replace( $query_params, $request_params );
+        return $params;
+    }
+
+
+    /**
+     * Return created by or author id 
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public static function get_current_user_id()
+    {
+        if ( is_user_logged_in() ) {
+            return get_current_user_id();
+        }
+        return 1;     
+    }
 
 }
 

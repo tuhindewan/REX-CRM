@@ -9,10 +9,10 @@ require_once ABSPATH . 'wp-admin/includes/upgrade.php';
  * @email [support@rextheme.com]
  * @create date 2022-08-10 11:55:03
  * @modify date 2022-08-10 11:55:03
- * @desc [Create wp_mrm_contact_group_pivot table into database]
+ * @desc [Create wp_mrm_messages table into database]
  */
 
-class MRM_Emails_Table {
+class MRM_Messages_Table {
 
     /**
      * Table name
@@ -20,7 +20,7 @@ class MRM_Emails_Table {
      * @var string
      * @since 1.0.0
      */
-    public static $mrm_table = 'mrm_emails';
+    public static $mrm_table = 'mrm_messages';
 
     /**
      * Create the table.
@@ -36,19 +36,30 @@ class MRM_Emails_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
-            `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            `track_id` BIGINT(20) unsigned NOT NULL,
-            `subject` VARCHAR(255) NOT NULL,
-            `preview_text` VARCHAR(255) NOT NULL,
-            `body` longtext,
-            `template_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Template ID',
-            `created_at` TIMESTAMP NULL,
-            `updated_at` TIMESTAMP NULL,
-            PRIMARY KEY (`id`),
-            KEY `track_id` (`track_id`)
-         ) $charsetCollate;";
+            $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                `interaction_id` BIGINT UNSIGNED NULL,
+                `ineraction_type` VARCHAR(50) NULL DEFAULT 'campaign',
+                `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'For future messaging process',
+                `contact_id` BIGINT UNSIGNED NULL COMMENT 'Set NULL on contact delete',
+                `sender_id` BIGINT(10) UNSIGNED NOT NULL DEFAULT 1,
+                `email_address` VARCHAR(192) NOT NULL,
+                `email_subject` VARCHAR(192) NULL,
+                `email_preview_text` VARCHAR(192) NULL,
+                `email_body` LONGTEXT NULL,
+                `email_headers` TEXT NULL,
+                `first_open` TIMESTAMP DEFAULT NULL,
+                `first_click` TIMESTAMP DEFAULT NULL,
+                `click_count` INT NULL,
+                `status` VARCHAR(50) NOT NULL DEFAULT 'draft' COMMENT 'SENT, SCHEDULED, PENDING, BOUNCED, FAILED',
+                `scheduled_at` TIMESTAMP NULL,
+                `created_at` TIMESTAMP NULL,
+                `updated_at` TIMESTAMP NULL,
+                INDEX `interaction_id_index` (`interaction_id` DESC),
+                INDEX `contact_id_index` (`contact_id` DESC)
+             ) $charsetCollate;";
 
-        dbDelta($sql);
+            dbDelta($sql);
+        
     }
 }
