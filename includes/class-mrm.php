@@ -129,6 +129,28 @@ class Mrm {
 
 
 	/**
+	 * Trigger init hook for rest api initialization
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function init_rest_api() {
+        $this->loader->add_action( 'init', $this, 'load_rest_api' );
+    }
+
+
+	/**
+	 * Trigger rest_api_init hook
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function load_rest_api() {
+        MRM_API_Register::get_instance()->init();
+    }
+
+
+	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *

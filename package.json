@@ -4,14 +4,34 @@
   "description": "=== Plugin Name === Contributors: (this should be a list of wordpress.org userid's) Donate link: http://rextheme.com/ Tags: comments, spam Requires at least: 3.0.1 Tested up to: 3.4 Stable tag: 4.3 License: GPLv2 or later License URI: http://www.gnu.org/licenses/gpl-2.0.html",
   "main": "index.js",
   "scripts": {
-    "start": "webpack --config webpack.config.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "hot": "wp-scripts start --hot"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@wordpress/scripts": "^23.5.0",
+  "dependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "@wordpress/eslint-plugin": "^12.4.0",
+    "@wordpress/i18n": "^4.10.0",
+    "@wordpress/scripts": "^23.7.1",
+    "axios": "^0.27.2",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "bootstrap": "^5.1.3",
+    "css-loader": "^6.7.1",
+    "node-sass": "^7.0.1",
+    "react-flow-renderer": "^10.3.14",
+    "react-router-dom": "^6.3.0",
+    "sass": "^1.53.0",
+    "sass-loader": "^13.0.2",
+    "style-loader": "^3.3.1",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
-    "bootstrap": "^5.1.3"
+    "webpack-merge": "^5.8.0",
+    "zustand": "^4.0.0"
   }
 }
