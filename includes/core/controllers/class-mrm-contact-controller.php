@@ -15,6 +15,10 @@ use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use MRM\Constants\MRM_Constants;
+use WC_API_Customers;
+use WP_User_Query;
+
+// require_once "../../../../../../wp-includes/user.php";
 
 /**
  * @author [MRM Team]
@@ -36,7 +40,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public $model;
-    private $import_file_location = __DIR__.'/../../../tmp/new.csv';
+    private $import_file_location = __DIR__.'/../../../../../uploads/import-new.csv';
     private $export_file_location = __DIR__.'/../../../../../uploads/contacts.csv';
 
     /**
@@ -501,6 +505,72 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             }
             return $this->get_success_response(__("Import successful", "mrm"), 200);
 
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+    }
+
+    /**
+     * Import contacts from wordpress users
+     * 
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_native_wp(WP_REST_Request $request) {
+        try {
+            $body = $request->get_json_params();
+
+            if(!isset( $body ) || !isset( $body["roles"] )) {
+                throw new Exception(__("Roles attribute is required.", "mrm"));
+            }
+            $roles = json_decode(json_encode($body["roles"]), 1);
+            $user_query = new WP_User_Query(array("role__in" => $roles));
+            $results = $user_query->get_results();
+
+            foreach($results as $result) {
+                $data = $result->data;
+                $name = $data->display_name;
+                $email = $data->user_email;
+                $contact = new MRM_Contact($email, array("first_name" => $name));
+                $exists = MRM_Contact_Model::is_contact_exist( $email );
+                if(!$exists)
+                    MRM_Contact_Model::insert($contact);
+                
+            }
+            return $this->get_success_response(__("Import wordpress users successful", "mrm"), 200);
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+    }
+
+    /**
+     * Import contacts from woocommerce customers
+     * 
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_native_wc(WP_REST_Request $request) {
+
+        try {
+            $user_query = new WP_User_Query(array("role" => "customer"));
+            $results = $user_query->get_results();
+
+            foreach($results as $result) {
+                $data = $result->data;
+                $name = $data->display_name;
+                $email = $data->user_email;
+                $contact = new MRM_Contact($email, array("first_name" => $name));
+                $exists = MRM_Contact_Model::is_contact_exist( $email );
+                if(!$exists)
+                    MRM_Contact_Model::insert($contact);
+            }
+            return $this->get_success_response(__("Import woocommerce users successful", "mrm"), 200);
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
