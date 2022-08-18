@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Table, Pagination, Stack, Placeholder, Loader } from "rsuite";
-
 const { Column, HeaderCell, Cell } = Table;
+import "../style/BaseTable.css";
 
 const BaseTable = (props) => {
   const { endpoint = "/contacts", children, height = 420 } = props;
@@ -11,6 +11,7 @@ const BaseTable = (props) => {
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
+  const [refresh, setRefresh] = useState();
   useEffect(() => {
     async function getData() {
       setLoaded(false);
@@ -26,7 +27,11 @@ const BaseTable = (props) => {
       setLoaded(true);
     }
     getData();
-  }, [perPage, page]);
+  }, [perPage, page, refresh]);
+
+  const toggleRefresh = () => {
+    setRefresh((prev) => !prev);
+  };
   return (
     <>
       <div>
@@ -40,7 +45,7 @@ const BaseTable = (props) => {
             />
           )}
         </div>
-        <div>
+        <div className="mrm-spacing">
           {data.length == 0 && loaded && (
             <div>
               No {endpoint.replace("/", "")} in the database. You can start by
@@ -55,7 +60,7 @@ const BaseTable = (props) => {
               <Table height={height} data={data}>
                 {children}
               </Table>
-              <div style={{ padding: 20 }}>
+              <div style={{ padding: 20, margin: 20 }}>
                 <Pagination
                   prev
                   next

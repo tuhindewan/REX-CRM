@@ -1,16 +1,21 @@
 import BaseTable from "../components/BaseTable";
 import { Table } from "rsuite";
 const { HeaderCell, Cell, Column } = Table;
+
 const Segments = () => {
   return (
-    <BaseTable endpoint="/segments" height={600}>
+    <BaseTable endpoint="/segments">
       <Column width={100} align="center" fixed>
         <HeaderCell>Id</HeaderCell>
-        <Cell dataKey="ID" />
+        <Cell dataKey="id" />
       </Column>
       <Column width={150} align="left" flexGrow={1}>
         <HeaderCell>Title</HeaderCell>
         <Cell dataKey="title" />
+      </Column>
+      <Column width={150} align="left" flexGrow={1}>
+        <HeaderCell>Slug</HeaderCell>
+        <Cell dataKey="slug" />
       </Column>
       <Column width={150} align="left" flexGrow={1}>
         <HeaderCell>Created At</HeaderCell>
