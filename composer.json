@@ -7,7 +7,13 @@
       "email": "tohin@coderex.co"
     }
   ],
-  "require": {},
+  "require": {
+    "phpunit/phpunit": "^7",
+    "guzzlehttp/guzzle": "^7.4"
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
   "autoload": {
     "classmap": [
       "includes/",
@@ -15,5 +21,8 @@
       "admin/",
       "public/"
     ]
+  },
+  "require-dev": {
+    "yoast/phpunit-polyfills": "^1.0"
   }
 }
