@@ -6,7 +6,7 @@ const Lists = () => {
     <BaseTable endpoint="/lists" height={600}>
       <Column width={100} align="center" fixed>
         <HeaderCell>Id</HeaderCell>
-        <Cell dataKey="ID" />
+        <Cell dataKey="id" />
       </Column>
       <Column width={150} align="left" flexGrow={1}>
         <HeaderCell>Title</HeaderCell>
