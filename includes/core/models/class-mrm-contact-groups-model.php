@@ -112,7 +112,8 @@ class MRM_Contact_Group_Model{
       
             return array(
                 'data'=> $results,
-                'total_pages' => $totalPages
+                'total_pages' => $totalPages,
+                'count' => $count
             );
         } catch(\Exception $e) {
             return NULL;
