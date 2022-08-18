@@ -28,7 +28,7 @@
   outline: none;
 }
 
-.active {
+.mrm-active {
   color: white;
   background-color: rgb(107, 14, 14);
 }

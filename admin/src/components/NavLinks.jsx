@@ -15,7 +15,7 @@ const NavLinks = () => {
             <li className="mrm-li" key={index}>
               <Link
                 className={
-                  location.pathname == route.path ? "mrm-a active" : "mrm-a"
+                  location.pathname == route.path ? "mrm-a mrm-active" : "mrm-a"
                 }
                 to={route.path}
               >
