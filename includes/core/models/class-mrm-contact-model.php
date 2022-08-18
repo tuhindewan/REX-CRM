@@ -101,11 +101,10 @@ class MRM_Contact_Model{
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE email = %s",array($email));
-        $sqlCountData = $wpdb->get_results($sqlCount);
-        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-        $count = (int) $sqlCountDataJson['0']['total'];
-        if( $count ){
+        $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE email = %s", array( $email ));
+        $results = $wpdb->get_results($select_query);
+
+        if( $results ){
             return true;
         }
         return false;

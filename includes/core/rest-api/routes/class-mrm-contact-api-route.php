@@ -157,10 +157,9 @@ class MRM_Contact_API_Route {
                 ] ,
             ]
         ]);
+
         /**
          * Contact import csv send attrs endpoint
-         * 
-         * 
          * 
          * @return void
          * @since 1.0.0
@@ -180,9 +179,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact import endpoint for wp users
-         * 
-         * 
+         * Contact import endpoint for WordPress users
          * 
          * @return void
          * @since 1.0.0
@@ -202,9 +199,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact import endpoint for woocommerce customers
-         * 
-         * 
+         * Contact import endpoint for WooCommerce customers
          * 
          * @return void
          * @since 1.0.0
@@ -243,8 +238,6 @@ class MRM_Contact_API_Route {
             ]
         ]);
 
-
-
         /**
          * Contact export  endpint
          * 
@@ -264,7 +257,6 @@ class MRM_Contact_API_Route {
                 ]
             ]
         ]);
-
 
         /**
          * Send a message to contact
@@ -286,26 +278,25 @@ class MRM_Contact_API_Route {
             ]
         ]);
 
-
         /**
          * Emails list for a contact
          * 
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/emails', [
-        [
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => [
-                $this->controller ,
-                'get_all_emails'
-            ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/emails', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_all_emails'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
             ]
-        ]
-    ]);
+        ]);
     }
 
 }
