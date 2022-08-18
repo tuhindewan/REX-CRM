@@ -36,18 +36,16 @@ class MRM_Contact_Meta_Table {
 
         $table = $wpdb->prefix . self::$mrm_table;
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
-            $sql = "CREATE TABLE {$table} (
-                `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `contact_id` BIGINT UNSIGNED NOT NULL,
-                `meta_key` VARCHAR(50) DEFAULT NULL,    
-				`meta_value` longtext,
-                `created_at` TIMESTAMP NULL,
-                `updated_at` TIMESTAMP NULL,
-                KEY `meta_key` (`meta_key`)
-             ) $charsetCollate;";
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+            `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            `contact_id` BIGINT UNSIGNED NOT NULL,
+            `meta_key` VARCHAR(50) DEFAULT NULL,    
+            `meta_value` longtext,
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL,
+            KEY `meta_key` (`meta_key`)
+         ) $charsetCollate;";
 
-            dbDelta($sql);
-        }
+        dbDelta($sql);
     }
 }

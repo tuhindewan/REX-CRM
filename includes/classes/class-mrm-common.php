@@ -45,5 +45,20 @@ class MRM_Common {
         return $params;
     }
 
+
+    /**
+     * Return created by or author id 
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public static function get_current_user_id()
+    {
+        if ( is_user_logged_in() ) {
+            return get_current_user_id();
+        }
+        return 1;     
+    }
+
 }
 

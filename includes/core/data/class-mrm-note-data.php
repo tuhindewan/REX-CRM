@@ -36,13 +36,6 @@ class MRM_Note {
      */
     private $description;
 
-    /**
-     * Note Created By
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $created_by;
 
     /**
      * Contact status
@@ -106,21 +99,6 @@ class MRM_Note {
         return $this->description;
     }
     
-
-    /**
-     * Return note created by
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_created_by()
-    {
-        if ( is_user_logged_in() ) {
-            return $this->created_by = get_current_user_id();
-        }
-        return $this->created_by = 1;     
-    }
-
 
     /**
      * Return note status

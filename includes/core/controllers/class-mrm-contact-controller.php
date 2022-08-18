@@ -120,14 +120,27 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
-     * TODO: implement this method to get a contact details
+     * Return a contact details
      * @param WP_REST_Request $request
      * 
-     * @return [type]
+     * @return WP_REST_Response
+     * @since 1.0.0
      */
     public function get_single( WP_REST_Request $request )
     {
-        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+    
+        $contact = MRM_Contact_Model::get( $params['contact_id'] );
+
+        // Get tags and lists
+        $tags   = $this->get_tags_to_contact( $params['contact_id'] );
+        $lists  = $this->get_lists_to_contact( $params['contact_id'] );
+
+        if(isset($contact)) {
+            return $this->get_success_response("Query Successfull", 200, $contact);
+        }
+        return $this->get_error_response("Failed to Get Data", 400);
     }
 
 
@@ -199,6 +212,27 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     }
 
 
+
+    /**
+     * Return tags which are assigned to a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    private function get_tags_to_contact( $contact_id )
+    {
+        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact_id );
+        $tag_ids = array_map( function($tag_id) {
+            return $tag_id['group_id'];
+        }, $results);
+
+        return MRM_Tag_Controller::get_instance()->get_tags_to_contact( $tag_ids );
+        
+    }
+
+
     /**
      * Add lists to new contact
      * 
@@ -235,6 +269,26 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }, $lists);
         
         MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+        
+    }
+
+
+    /**
+     * Return lists which are assigned to a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    private function get_lists_to_contact( $contact_id )
+    {
+        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact_id );
+        $list_ids = array_map( function($list_id) {
+            return $list_id['group_id'];
+        }, $results);
+
+        return MRM_List_Controller::get_instance()->get_lists_to_contact( $list_ids );
         
     }
 
@@ -520,6 +574,33 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
+    }
+
+
+    /**
+     * Send a message to contact
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function send_message( WP_REST_Request $request )
+    {
+        return MRM_Message_Controller::get_instance()->create_or_update( $request );
+    }
+
+
+    /**
+     * Get all emails to a contact
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_all_emails( WP_REST_Request $request )
+    {
+        return MRM_Message_Controller::get_instance()->get_all( $request );
     }
 
 
