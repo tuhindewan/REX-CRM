@@ -7,11 +7,13 @@ const { Column, HeaderCell, Cell } = Table;
 const BaseTable = (props) => {
   const { endpoint = "/contacts", children, height = 420 } = props;
   const [data, setContacts] = useState([]);
+  const [loaded, setLoaded] = useState(false);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   useEffect(() => {
     async function getData() {
+      setLoaded(false);
       const res = await axios.get(
         `/wp-json/mrm/v1${endpoint}?per-page=${perPage}&page=${page}`
       );
@@ -21,6 +23,7 @@ const BaseTable = (props) => {
       console.log(data);
       setContacts(data);
       setCount(count);
+      setLoaded(true);
     }
     getData();
   }, [perPage, page]);
@@ -28,17 +31,22 @@ const BaseTable = (props) => {
     <>
       <div>
         <div>
-          {data.length == 0 && (
-            // <Stack spacing={6} direction="row" alignItems="center" justifyContent="center">
-            //   <Placeholder.Paragraph rows={8} />
+          {data.length == 0 && !loaded && (
             <Placeholder.Paragraph
               style={{ marginTop: 30 }}
               graph="square"
               active={true}
               rows={20}
             />
-            //  <Loader size="md" center content="Loading" />
-            // </Stack>
+          )}
+        </div>
+        <div>
+          {data.length == 0 && loaded && (
+            <div>
+              No {endpoint.replace("/", "")} in the database. You can start by
+              creating new{" "}
+              {endpoint.replace("/", "").substr(0, endpoint.length - 2)}.
+            </div>
           )}
         </div>
         <div>
