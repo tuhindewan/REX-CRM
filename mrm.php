@@ -38,6 +38,19 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'MRM_VERSION', '1.0.0' );
 
 
+add_action( 'admin_menu', 'crm_init_menu' );
+
+
+/**
+ * Init Admin Menu.
+ *
+ * @return void
+ */
+function crm_init_menu() {
+	add_menu_page( __( 'MRM', 'mrm'), __( 'MRM', 'mrm'), 'manage_options', 'mrm', 'mrm_admin_page', 'dashicons-admin-post', '2.1' );
+}
+
+
 /**
  * Init Admin Page.
  *

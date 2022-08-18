@@ -1,6 +1,7 @@
 <?php
 
 
+use MRM\REST\MRM_API_Register;
 /**
  * The file that defines the core plugin class
  *
@@ -77,6 +78,7 @@ class Mrm {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->init_rest_api();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 

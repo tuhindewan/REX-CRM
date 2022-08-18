@@ -32,7 +32,7 @@ services:
       - wp-data:/var/www/html
       - ./:/var/www/html/wp-content/plugins/mrm
     ports:
-      - 8081:80
+      - 8080:80
     depends_on:
       - db
 

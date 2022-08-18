@@ -8,6 +8,7 @@
     }
   ],
   "require": {
+    "phpunit/phpunit": "^7",
     "guzzlehttp/guzzle": "^7.4",
     "league/csv": "^9.0"
   },
@@ -17,12 +18,12 @@
   "autoload": {
     "classmap": [
       "includes/",
+      "includes/core",
       "admin/",
       "public/"
     ]
   },
   "require-dev": {
-    "yoast/phpunit-polyfills": "^1.0",
-    "phpunit/phpunit": "^7"
+    "yoast/phpunit-polyfills": "^1.0"
   }
 }
