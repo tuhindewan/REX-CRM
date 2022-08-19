@@ -419,7 +419,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         try{
             // CSV file upload validation
-            if (!empty($files) && !empty($files["csv"])) {
+            if (!empty($files) && !empty($files["file"])) {
                 $csv = $files['csv'];
             } else {
                 throw new Exception(__("CSV file not uploaded.", "mrm"));
