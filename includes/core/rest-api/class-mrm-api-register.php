@@ -78,7 +78,8 @@ class MRM_API_Register {
             'segments'      =>  'MRM_Segment_API_Route',
             'tags'          =>  'MRM_Tag_API_Route',
             'notes'         =>  'MRM_Note_API_Route',
-            'contacts'      =>  'MRM_Contact_API_Route'
+            'contacts'      =>  'MRM_Contact_API_Route',
+            'workflows'     =>  'MRM_Workflow_API_Route'
 		));
     }
     

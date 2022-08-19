@@ -99,7 +99,8 @@ class MRM_Note_Model {
                 'created_by'    => MRM_Common::get_current_user_id(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
-                'updated_at' => current_time('mysql')), array(
+                'updated_at'    => current_time('mysql')), 
+                array(
                     'id' => $note_id
                 )
             );
@@ -166,6 +167,7 @@ class MRM_Note_Model {
             $count_array = json_decode(json_encode($count_data), true);
             
             $count = (int) $count_array['0']['total'];
+
             $totalPages = ceil(intdiv($count, $limit));
       
             return array(

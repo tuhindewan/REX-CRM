@@ -4,10 +4,9 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import "../style/Canvas.css";
 import CanvasStepOptions from "./CanvasStepOptions";
 
-const ExitStep = (props) => {
+const SendEmailStep = (props) => {
   const [selection, setSelection] = useState([]);
-  //const trigger = useGlobalStore((state) => state.trigger);
-  //console.log(trigger);
+
   const { id, type } = props;
   return (
     <>
@@ -18,12 +17,13 @@ const ExitStep = (props) => {
           id={id}
           type={type}
         />
-        <div className="canvas-step-title">Exit Step</div>
-        <div>Exit</div>
+        <div className="canvas-step-title">Send Email</div>
+        <div>Send Email</div>
       </div>
       <Handle type="target" position={Position.Left} className="handle-left" />
+      <Handle type="source" position={Position.Right} className="handle-right" />
     </>
   );
 };
 
-export default ExitStep;
+export default SendEmailStep;
