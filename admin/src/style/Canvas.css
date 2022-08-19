@@ -110,3 +110,16 @@
   font-weight: bold;
   margin: 4px 0px;
 }
+
+.save__controls {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 4;
+  font-size: 12px;
+}
+
+.save__controls button {
+  margin-left: 5px;
+}
+

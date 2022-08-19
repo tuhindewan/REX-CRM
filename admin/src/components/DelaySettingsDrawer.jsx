@@ -3,12 +3,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import "../style/Canvas.css";
 
 const DelaySettingsDrawer = (props) => {
-  const {
-    openSettingsDrawer,
-    setOpenSettingsDrawer,
-    selectedNodeID,
-    selectedNodeType,
-  } = props;
+  
 
   const today =  new Date().toISOString().split('T')[0];
   return (

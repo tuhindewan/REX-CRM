@@ -6,8 +6,8 @@ import CanvasStepOptions from "./CanvasStepOptions";
 
 const ExitStep = (props) => {
   const [selection, setSelection] = useState([]);
-  const trigger = useGlobalStore((state) => state.trigger);
-
+  //const trigger = useGlobalStore((state) => state.trigger);
+  //console.log(trigger);
   const { id, type } = props;
   return (
     <>

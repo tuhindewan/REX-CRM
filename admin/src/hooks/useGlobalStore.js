@@ -1,7 +1,10 @@
 import create from "zustand";
 
 export const useGlobalStore = create((set) => ({
-  trigger: "",
+  triggerStep: {
+    triggerCondition : "true",
+    triggerOption : {}
+  },
   condition: [
     {
       key: "country",
@@ -18,7 +21,6 @@ export const useGlobalStore = create((set) => ({
     {},
   ],
   delay: "",
-  goal: "",
   sendEmail: "",
   lastStepNodeID: 0,
 }));
