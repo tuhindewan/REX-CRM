@@ -7,18 +7,13 @@ use MRM\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
-use MRM\Data\MRM_List;
 use MRM\Models\MRM_Contact_Model;
-use MRM\Data\MRM_Tag;
-use MRM\Models\MRM_Contact_Group_Model;
-use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use MRM\Constants\MRM_Constants;
-use WC_API_Customers;
+use MRM\Helpers\Importer\MRM_Importer;
 use WP_User_Query;
 
-// require_once "../../../../../../wp-includes/user.php";
 
 /**
  * @author [MRM Team]
@@ -101,11 +96,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             }
              
             if(isset($params['tags'])){
-                $this->set_tags_to_contact( $params['tags'], $contact_id );
+                MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
             }
 
             if(isset($params['lists'])){
-                $this->set_lists_to_contact( $params['lists'], $contact_id );
+                MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
             }
 
             if($contact_id) {
@@ -172,48 +167,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
-     * Add tags to new contact
-     * 
-     * @param array $tags
-     * @param int $contact_id
-     * 
-     * @return void
-     * @since 1.0.0
-     */
-    private function set_tags_to_contact( $tags, $contact_id )
-    {
-        $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
-    
-            // Create new tag if not exist
-            if( 0 == $tag['id'] ){
-
-                $exist = MRM_Contact_Group_Model::is_group_exist( $tag['slug'], 1 );
-
-                if(!$exist){
-                    $new_tag    = new MRM_Tag($tag);
-                    $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
-                }
-                
-            }
-
-            if(isset($new_tag_id)){
-                $tag['id'] = $new_tag_id;
-            }
-
-            return array(
-                'group_id'    =>  $tag['id'],
-                'contact_id'  =>  $contact_id
-            );
-            
-
-        }, $tags);
-        
-        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
-    }
-
-
-
-    /**
      * Return tags which are assigned to a contact
      * 
      * @param mixed $contact_id
@@ -229,46 +182,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }, $results);
 
         return MRM_Tag_Controller::get_instance()->get_tags_to_contact( $tag_ids );
-        
-    }
-
-
-    /**
-     * Add lists to new contact
-     * 
-     * @param array $lists
-     * @param int $contact_id
-     * 
-     * @return void
-     * @since 1.0.0
-     */
-    private function set_lists_to_contact( $lists, $contact_id )
-    {
-        $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
-
-            // Create new tag if not exist
-            if( 0 == $list['id'] ){
-                $exist = MRM_Contact_Group_Model::is_group_exist( $list['slug'], 2 );
-                if(!$exist){
-                    $new_list = new MRM_List($list);
-                    $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
-                }
-                
-            }
-
-            if(isset($new_list_id)){
-                $list['id'] = $new_list_id;
-            }
-
-            return array(
-                'group_id'    =>  $list['id'],
-                'contact_id'  =>  $contact_id
-            );
-            
-
-        }, $lists);
-        
-        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
         
     }
 
@@ -494,11 +407,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                     $contact_id = MRM_Contact_Model::insert( $contact );
 
                     if(isset($params['tags'])){
-                        $this->set_tags_to_contact( $params['tags'], $contact_id );
+                        MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
                     }
         
                     if(isset($params['lists'])){
-                        $this->set_lists_to_contact( $params['lists'], $contact_id );
+                        MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
                     }
 
                 }
@@ -510,41 +423,83 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         }
     }
 
+
     /**
-     * Import contacts from wordpress users
+     * Get all roles from the WordPress core
      * 
-     * 
-     * @param WP_REST_Request $request
-     * 
+     * @param void
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function import_contacts_native_wp(WP_REST_Request $request) {
-        try {
-            $body = $request->get_json_params();
+    public function get_native_wp_roles()
+    {
+        $roles = MRM_Importer::get_wp_roles();
 
-            if(!isset( $body ) || !isset( $body["roles"] )) {
+        if( isset($roles) ){
+            return $this->get_success_response( __( 'Query Successful.', "mrm" ), 200, $roles );
+        }
+        return $this->get_error_response( __(  "Failed to retrieve", "mrm" ), 400 );
+
+    }
+
+
+    /**
+     * Import contacts from WordPress
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_native_wp( WP_REST_Request $request ) {
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        try {
+            if(!isset( $params ) || !isset( $params["roles"] )) {
                 throw new Exception(__("Roles attribute is required.", "mrm"));
             }
-            $roles = json_decode(json_encode($body["roles"]), 1);
-            $user_query = new WP_User_Query(array("role__in" => $roles));
-            $results = $user_query->get_results();
 
-            foreach($results as $result) {
-                $data = $result->data;
-                $name = $data->display_name;
-                $email = $data->user_email;
-                $contact = new MRM_Contact($email, array("first_name" => $name));
+            $wp_users = MRM_Importer::get_wp_users( $params["roles"] );
+
+            foreach( $wp_users as $wp_user ) {
+                $user_data      = $wp_user->data;
+                if( isset( $user_data ) ){
+                    $user_metadata  = $user_data->usermeta;
+                    $email          = $user_data->user_email;
+                }
+                
+                $contact = new MRM_Contact( $email, array(
+                                                "first_name"    => $user_metadata['first_name'],
+                                                "last_name"     => $user_metadata['last_name'],
+                                                "status"        => $params['status'],
+                                                "source"        => 'WordPress'
+                                            )
+                                        );
+
                 $exists = MRM_Contact_Model::is_contact_exist( $email );
-                if(!$exists)
-                    MRM_Contact_Model::insert($contact);
+                if(!$exists) {
+                    
+                    $contact_id = MRM_Contact_Model::insert( $contact );
+
+                    if(isset($params['tags'])){
+                        MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
+                    }
+        
+                    if(isset($params['lists'])){
+                        MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
+                    }
+
+                }
                 
             }
-            return $this->get_success_response(__("Import wordpress users successful", "mrm"), 200);
+            return $this->get_success_response(__( "Import has been successful", "mrm" ), 200);
+
         } catch(Exception $e) {
-            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+            return $this->get_error_response(__( $e->getMessage(), "mrm" ), 400);
         }
     }
+
 
     /**
      * Import contacts from woocommerce customers
@@ -555,24 +510,47 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function import_contacts_native_wc(WP_REST_Request $request) {
+    public function import_contacts_native_wc( WP_REST_Request $request ) {
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
         try {
-            $user_query = new WP_User_Query(array("role" => "customer"));
-            $results = $user_query->get_results();
+            $wc_customers = MRM_Importer::get_wc_customers();
 
-            foreach($results as $result) {
-                $data = $result->data;
-                $name = $data->display_name;
-                $email = $data->user_email;
-                $contact = new MRM_Contact($email, array("first_name" => $name));
+            foreach($wc_customers as $wc_customer) {
+                
+                if( isset( $wc_customer ) ){
+                    $email = $wc_customer['email'];
+                }
+
+                $contact = new MRM_Contact($email, array(
+                                                "first_name"    => $wc_customer['first_name'],
+                                                "last_name"     => $wc_customer['last_name'],
+                                                "status"        => $params['status'],
+                                                "source"        => 'WooCommerce'
+                                            )
+                                        );
+
                 $exists = MRM_Contact_Model::is_contact_exist( $email );
-                if(!$exists)
-                    MRM_Contact_Model::insert($contact);
+                if(!$exists) {
+                    
+                    $contact_id = MRM_Contact_Model::insert( $contact );
+
+                    if(isset($params['tags'])){
+                        MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
+                    }
+        
+                    if(isset($params['lists'])){
+                        MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
+                    }
+
+                }
             }
-            return $this->get_success_response(__("Import woocommerce users successful", "mrm"), 200);
+            return $this->get_success_response(__( "Import has been successful", "mrm" ), 200);
+
         } catch(Exception $e) {
-            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+            return $this->get_error_response(__( $e->getMessage(), "mrm" ), 400);
         }
     }
 
