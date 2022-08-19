@@ -2,6 +2,8 @@
 
 namespace MRM\Helpers\Importer;
 
+use WP_User_Query;
+
 /**
  * @author [MRM Team]
  * @email [support@rextheme.com]
@@ -38,4 +40,32 @@ class MRM_Importer {
 		}
         return $roles;
 	}
+
+
+    /**
+     * Import WP users information from users and users metadata table
+     * 
+     * @param array $roles
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_wp_users( $roles = array() )
+    {
+        $users = get_users(
+            array('role_in'    => $roles,
+                'orderby' => 'ID',
+                'order'   => 'ASC'
+            )
+        );
+
+        return array_map( function($user ){
+            
+          $user->usermeta =  array_map(function($user_data){
+            return reset($user_data);
+          }, get_user_meta( $user->ID ) );
+
+          return $user;
+        }, $users); 
+
+    }
 }

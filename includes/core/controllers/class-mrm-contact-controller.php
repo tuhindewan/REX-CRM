@@ -515,11 +515,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     /**
      * Get all roles from the WordPress core
      * 
-     * @param WP_REST_Request $request
+     * @param void
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function get_native_wp_roles( WP_REST_Request $request )
+    public function get_native_wp_roles()
     {
         $roles = MRM_Importer::get_wp_roles();
 
@@ -548,40 +548,38 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 throw new Exception(__("Roles attribute is required.", "mrm"));
             }
 
-            MRM_Contact_Model::get_wp_users( $params["roles"] );
-            // $results = get_users( array( "role__in" => $params["roles"] ) );
-            // $results    = $results->get_results();
-            // error_log(print_r($results, 1));
-            // foreach( $results as $result ) {
+            $wp_users = MRM_Importer::get_wp_users( $params["roles"] );
 
-            //     $wp_user    = $result->data;
-            //     $name       = $wp_user->display_name;
-            //     $email      = $wp_user->user_email;
+            foreach( $wp_users as $wp_user ) {
+                $user_data      = $wp_user->data;
+                $user_metadata  = $user_data->usermeta;
+                $email          = $user_data->user_email;
+                $contact = new MRM_Contact($email, array(
+                                                "first_name"    => $user_metadata['first_name'],
+                                                "last_name"     => $user_metadata['last_name'],
+                                                "status"        => $params['status'],
+                                                "source"        => 'WordPress'
+                                            )
+                                        );
 
-            //     $contact = new MRM_Contact($email, array(
-            //                                             "first_name"    => $name,
-            //                                             "status"        => $params['status'],
-            //                                             "source"        => 'WordPress'
-            //                                         )
-            //                                     );
-            //     $exists = MRM_Contact_Model::is_contact_exist( $email );
-            //     if(!$exists) {
+                $exists = MRM_Contact_Model::is_contact_exist( $email );
+                if(!$exists) {
                     
-            //         $contact_id = MRM_Contact_Model::insert( $contact );
+                    $contact_id = MRM_Contact_Model::insert( $contact );
 
-            //         if(isset($params['tags'])){
-            //             $this->set_tags_to_contact( $params['tags'], $contact_id );
-            //         }
+                    if(isset($params['tags'])){
+                        $this->set_tags_to_contact( $params['tags'], $contact_id );
+                    }
         
-            //         if(isset($params['lists'])){
-            //             $this->set_lists_to_contact( $params['lists'], $contact_id );
-            //         }
+                    if(isset($params['lists'])){
+                        $this->set_lists_to_contact( $params['lists'], $contact_id );
+                    }
 
-            //     }
+                }
                 
-            // }
+            }
             
-            return $this->get_success_response(__( "Import WordPress users successful", "mrm" ), 200);
+            return $this->get_success_response(__( "Import has been successful", "mrm" ), 200);
         } catch(Exception $e) {
             return $this->get_error_response(__( $e->getMessage(), "mrm" ), 400);
         }
