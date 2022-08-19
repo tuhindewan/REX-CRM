@@ -35,7 +35,21 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public $model;
+
+    /**
+     * CSV data override to this file
+     * 
+     * @var string
+     * @since 1.0.0
+     */
     private $import_file_location = __DIR__.'/../../../../../uploads/import-new.csv';
+
+    /**
+     * Export data override to this file
+     * 
+     * @var string
+     * @since 1.0.0
+     */
     private $export_file_location = __DIR__.'/../../../../../uploads/contacts.csv';
 
     /**
@@ -124,13 +138,12 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     public function get_single( WP_REST_Request $request )
     {
         // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+        $params     = MRM_Common::get_api_params_values( $request );
     
-        $contact = MRM_Contact_Model::get( $params['contact_id'] );
-
-        // Get tags and lists
-        $tags   = $this->get_tags_to_contact( $params['contact_id'] );
-        $lists  = $this->get_lists_to_contact( $params['contact_id'] );
+        $contact    = MRM_Contact_Model::get( $params['contact_id'] );
+        // Get and merge tags and lists
+        $contact    = MRM_Tag_Controller::get_tags_to_contact( $contact );
+        $contact    = MRM_List_Controller::get_lists_to_contact( $contact );
 
         if(isset($contact)) {
             return $this->get_success_response("Query Successfull", 200, $contact);
@@ -147,7 +160,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
      * @return array
      * @since 1.0.0
      */
-    public function get_all(WP_REST_Request $request)
+    public function get_all( WP_REST_Request $request )
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
@@ -159,50 +172,17 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         // Contact Search keyword
         $search   = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
         $contacts = MRM_Contact_Model::get_all( $offset, $perPage, $search );
+
+        $contacts = array_map(function($contact){
+            $contact    = MRM_Tag_Controller::get_tags_to_contact( $contact );
+            $contact    = MRM_List_Controller::get_lists_to_contact( $contact );
+            return $contact;
+        }, $contacts['data']);
+
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }
         return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
-    }
-
-
-    /**
-     * Return tags which are assigned to a contact
-     * 
-     * @param mixed $contact_id
-     * 
-     * @return array
-     * @since 1.0.0
-     */
-    private function get_tags_to_contact( $contact_id )
-    {
-        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact_id );
-        $tag_ids = array_map( function($tag_id) {
-            return $tag_id['group_id'];
-        }, $results);
-
-        return MRM_Tag_Controller::get_instance()->get_tags_to_contact( $tag_ids );
-        
-    }
-
-
-    /**
-     * Return lists which are assigned to a contact
-     * 
-     * @param mixed $contact_id
-     * 
-     * @return array
-     * @since 1.0.0
-     */
-    private function get_lists_to_contact( $contact_id )
-    {
-        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact_id );
-        $list_ids = array_map( function($list_id) {
-            return $list_id['group_id'];
-        }, $results);
-
-        return MRM_List_Controller::get_instance()->get_lists_to_contact( $list_ids );
-        
     }
 
     

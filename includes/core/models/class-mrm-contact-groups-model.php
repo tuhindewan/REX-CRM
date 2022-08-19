@@ -222,23 +222,21 @@ class MRM_Contact_Group_Model{
     /**
      * Run SQL Query to get groups related to a contact
      * 
-     * @param mixed $tag_ids
+     * @param mixed $group_ids
      * @param mixed $type
      * 
-     * @return WP_REST_Response
+     * @return array|bool
      * @since 1.0.0
      */
-    public static function get_groups_to_contact( $tag_ids, $type )
+    public static function get_groups_to_contact( $group_ids, $type )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
-            $tags = implode(",",$tag_ids);
-            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id IN ($tags) AND type = $type");
-            $data = $wpdb->get_results($sql);
-            $dataJson = json_decode(json_encode($data), true);
-            return $dataJson;
+            $groups = implode( ",", $group_ids );
+            $select_query = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id IN ($groups) AND type = $type" );
+            return $wpdb->get_results( $select_query );
         } catch(\Exception $e) {
             return false;
         }

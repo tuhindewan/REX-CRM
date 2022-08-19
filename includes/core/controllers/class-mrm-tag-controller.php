@@ -199,20 +199,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
 
     /**
-     * Get tags related to a contact
-     * 
-     * @param mixed $tag_ids
-     * 
-     * @return array
-     * @since 1.0.0
-     */
-    public function get_tags_to_contact( $tag_ids )
-    {
-        return MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 1 );
-    }
-
-
-    /**
      * Add tags to new contact
      * 
      * @param array $tags
@@ -249,6 +235,27 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
         }, $tags);
         MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+    }
+
+
+    /**
+     * Return tags which are assigned to a contact
+     * 
+     * @param mixed $contact
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_tags_to_contact( $contact )
+    {
+        $contact->tags = array();
+        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
+        $tag_ids = array_map( function($tag_id) {
+            return $tag_id['group_id'];
+        }, $results);
+
+        $contact->tags = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 1 );
+        return $contact;
     }
 
 }

@@ -177,20 +177,6 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
 
     /**
-     * Get Lists related to a contact
-     * 
-     * @param mixed $lists_ids
-     * 
-     * @return array
-     * @since 1.0.0
-     */
-    public function get_lists_to_contact( $lists_ids )
-    {
-        return MRM_Contact_Group_Model::get_groups_to_contact( $lists_ids, 2 );
-    }
-
-
-    /**
      * Add lists to new contact
      * 
      * @param array $lists
@@ -227,6 +213,27 @@ class MRM_List_Controller extends MRM_Base_Controller{
         
         MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
         
+    }
+
+
+    /**
+     * Return lists which are assigned to a contact
+     * 
+     * @param mixed $contact
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_lists_to_contact( $contact )
+    {
+        $contact->lists = array();
+        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
+        $list_ids = array_map( function($list_id) {
+            return $list_id['group_id'];
+        }, $results);
+
+        $contact->lists = MRM_Contact_Group_Model::get_groups_to_contact( $list_ids, 2 );
+        return $contact;
     }
     
 }
