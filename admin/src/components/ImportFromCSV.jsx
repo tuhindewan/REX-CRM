@@ -20,6 +20,7 @@ const ImportFromCSV = (props) => {
           width: "100%",
           height: "200px",
         }}
+        name="csv"
         action="/wp-json/mrm/v1/contacts/import/attrs"
         shouldQueueUpdate={(fileList) => {
           setLoading(true);

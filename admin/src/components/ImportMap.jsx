@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { SelectPicker, Stack, Button } from "rsuite";
+import React, { useState, useEffect } from "react";
+import { SelectPicker, Stack, Button, TagPicker } from "rsuite";
+import SpinnerIcon from "@rsuite/icons/legacy/Spinner";
 
+import axios from "axios";
 const ImportMap = (props) => {
   const { csvAttrs, contactAttrs, goToNextStep, goToPrevStep } = props;
   const csvSelectData = csvAttrs.map((item) => ({ label: item, value: item }));
@@ -11,6 +13,8 @@ const ImportMap = (props) => {
   const [mappings, setMappings] = useState(() => {
     return contactAttrs.map((item) => ({ source: "", target: item }));
   });
+
+  
 
   const addField = () => {
     setMappings((prevMappings) => {
@@ -32,7 +36,6 @@ const ImportMap = (props) => {
   };
 
   const handleAttrChange = (type, value, index) => {
-    console.log(value);
     setMappings((prevMappings) => {
       prevMappings = [...prevMappings];
       prevMappings[index][type] = value;
@@ -75,6 +78,14 @@ const ImportMap = (props) => {
         );
       })}
 
+      <Stack
+        spacing={10}
+        justifyContent="space-evenly"
+        alignItems="center"
+        style={{ marginTop: 100 }}
+      >
+        
+      </Stack>
       <Stack
         spacing={10}
         justifyContent="flex-end"

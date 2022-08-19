@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Steps, Stack } from "rsuite";
+import { Steps, Stack, TagPicker } from "rsuite";
 import "../App.css";
 import ImportFromCSV from "../components/ImportFromCSV";
 import ImportFromWP from "../components/ImportFromWP";
 import ImportMap from "../components/ImportMap";
+import SpinnerIcon from "@rsuite/icons/legacy/Spinner";
+import axios from "axios";
 
 const ImportContacts = () => {
   const [current, setCurrent] = useState(0);
@@ -18,6 +20,48 @@ const ImportContacts = () => {
   const goToPrevStep = () => {
     setCurrent((prev) => (prev - 1 < 0 ? totalSteps - 1 : prev - 1));
   };
+
+  const [listData, setListData] = useState([]);
+  const [tagData, setTagData] = useState([]);
+  const [lists, setLists] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [listValue, setListValue] = useState([]);
+  const [tagValue, setTagValue] = useState([]);
+  const [listCache, setListCache] = useState([]);
+  const [tagCache, setTagCache] = useState([]);
+  const handleTagSelect = (value, item, event) => {
+    let obj = {};
+    obj.title = item.title;
+    obj.slug = item.slug;
+    if (item.create) {
+      obj.id = 0;
+    } else {
+      obj.id = item.id;
+    }
+    setTags((prev) => {
+      const newArr = [...prev, obj];
+      console.log(newArr);
+      return newArr;
+    });
+    setTagCache([...tagCache, item]);
+  };
+
+  const handleListSelect = (value, item, event) => {
+    setListCache([...listCache, item]);
+  };
+
+  function gatherData(endpoint, value, callback) {
+    setLoading(true);
+    const res = axios
+      .get(`/wp-json/mrm/v1/${endpoint}?search=${value}`)
+      .then((res) => {
+        const resJson = res.data;
+        const data = resJson.data.data;
+        setLoading(false);
+        callback(data);
+      });
+  }
   return (
     <>
       <div className="mrm-spacing">
@@ -26,6 +70,54 @@ const ImportContacts = () => {
           <Steps.Item title="Map" />
           <Steps.Item title="Done" />
         </Steps>
+      </div>
+      <div>
+        <TagPicker
+          data={listData}
+          value={listValue}
+          cacheData={listCache}
+          style={{ width: 300, padding: 10 }}
+          labelKey="title"
+          block
+          valueKey="slug"
+          onChange={setListValue}
+          onSearch={(value) => gatherData("lists", value, setListData)}
+          onSelect={handleListSelect}
+          placeholder="Select Lists"
+          renderMenu={(menu) => {
+            if (loading) {
+              return (
+                <p style={{ padding: 4, color: "#999", textAlign: "center" }}>
+                  <SpinnerIcon spin /> Loading...
+                </p>
+              );
+            }
+            return menu;
+          }}
+        />
+        <TagPicker
+          data={tagData}
+          value={tagValue}
+          cacheData={tagCache}
+          style={{ width: 300 }}
+          labelKey="title"
+          valueKey="slug"
+          block
+          onChange={setTagValue}
+          onSearch={(value) => gatherData("tags", value, setTagData)}
+          onSelect={handleTagSelect}
+          placeholder="Select Tags"
+          renderMenu={(menu) => {
+            if (loading) {
+              return (
+                <p style={{ padding: 4, color: "#999", textAlign: "center" }}>
+                  <SpinnerIcon spin /> Loading...
+                </p>
+              );
+            }
+            return menu;
+          }}
+        />
       </div>
       {current == 0 && (
         <>
