@@ -11,18 +11,22 @@ const NavLinks = () => {
     <nav className="navbar">
       <ul className="mrm-ul">
         {routes.map((route, index) => {
-          return (
-            <li className="mrm-li" key={index}>
-              <Link
-                className={
-                  location.pathname == route.path ? "mrm-a mrm-active" : "mrm-a"
-                }
-                to={route.path}
-              >
-                {__(route.title, "mrm")}
-              </Link>
-            </li>
-          );
+          if (!route.hideInMenu) {
+            return (
+              <li className="mrm-li" key={index}>
+                <Link
+                  className={
+                    location.pathname == route.path
+                      ? "mrm-a mrm-active"
+                      : "mrm-a"
+                  }
+                  to={route.path}
+                >
+                  {__(route.title, "mrm")}
+                </Link>
+              </li>
+            );
+          }
         })}
       </ul>
     </nav>

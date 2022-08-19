@@ -17,7 +17,7 @@ const { Column, HeaderCell, Cell } = Table;
 import "../style/BaseTable.css";
 
 const BaseTable = (props) => {
-  const { endpoint = "/contacts", children, height = 420 } = props;
+  const { endpoint = "/contacts", children, height = 420, leftMarkup } = props;
   const [data, setContacts] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [perPage, setPerPage] = useState(10);
@@ -61,6 +61,14 @@ const BaseTable = (props) => {
             alignItems="center"
             style={{ margin: 10 }}
           >
+            <Stack
+              spacing={10}
+              justifyContent="flex-start"
+              alignItems="center"
+              style={{ margin: 10 }}
+            >
+              {leftMarkup}
+            </Stack>
             <InputGroup style={styles}>
               <InputGroup.Addon>
                 <SearchIcon />

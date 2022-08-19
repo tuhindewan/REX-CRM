@@ -1,12 +1,18 @@
-import { Table } from "rsuite";
+import { Button, Table } from "rsuite";
+import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 import BaseTable from "../components/BaseTable";
+import Import from "./ImportContacts";
 
+const leftMarkup = (
+  <Link to="/contacts/import">
+    <Button appearance="primary"> + Import</Button>
+  </Link>
+);
 const Contacts = () => {
   return (
     <>
-      
-      <BaseTable endpoint="/contacts">
+      <BaseTable endpoint="/contacts" leftMarkup={leftMarkup}>
         <Column width={50} align="center" fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey="id" />
@@ -26,6 +32,7 @@ const Contacts = () => {
           <HeaderCell>Status</HeaderCell>
           <Cell dataKey="status" />
         </Column>
+
         <Column width={200} flexGrow={1}>
           <HeaderCell>Email</HeaderCell>
           <Cell dataKey="email" />
