@@ -3,6 +3,7 @@ import { Steps, Stack } from "rsuite";
 import "../App.css";
 import ImportFromCSV from "../components/ImportFromCSV";
 import ImportFromWP from "../components/ImportFromWP";
+import ImportMap from "../components/ImportMap";
 
 const ImportContacts = () => {
   const [current, setCurrent] = useState(0);
@@ -10,8 +11,12 @@ const ImportContacts = () => {
   const [csvAttrs, setCSVAttrs] = useState([]);
   const [sourceComplete, setSourceComplete] = useState(false);
   const [source, setSource] = useState("");
+  const totalSteps = 3;
   const goToNextStep = () => {
-    setCurrent((prev) => (prev + 1) % 3);
+    setCurrent((prev) => (prev + 1) % totalSteps);
+  };
+  const goToPrevStep = () => {
+    setCurrent((prev) => (prev - 1 < 0 ? totalSteps - 1 : prev - 1));
   };
   return (
     <>
@@ -67,7 +72,18 @@ const ImportContacts = () => {
         </>
       )}
 
-      {current == 1 && <></>}
+      {current == 1 && (
+        <>
+          <ImportMap
+            contactAttrs={contactAttrs}
+            setContactAttrs={setContactAttrs}
+            csvAttrs={csvAttrs}
+            setCSVAttrs={setCSVAttrs}
+            goToNextStep={goToNextStep}
+            goToPrevStep={goToPrevStep}
+          />
+        </>
+      )}
     </>
   );
 };
