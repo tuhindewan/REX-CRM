@@ -241,5 +241,22 @@ class MRM_Contact_Model{
             return false;
         }
     }
+
+
+    /**
+     * Return WP users information from users and users metadata table
+     * 
+     * @param array $roles
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_wp_users( $roles = array() )
+    {
+        $users = get_users( array( $roles ) );
+
+        foreach($users as $user){
+            // error_log(print_r(get_user_meta ( $user->ID), 1));
+        }
+    }
     
 }

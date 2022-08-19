@@ -179,12 +179,32 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
+         * Get WordPress users roles
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/import/native/wp/roles', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_native_wp_roles'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ],
+            ]
+        ]);
+
+        /**
          * Contact import endpoint for WordPress users
          * 
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/native/wp', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/import/native/wp', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [

@@ -15,6 +15,7 @@ use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use MRM\Constants\MRM_Constants;
+use MRM\Helpers\Importer\MRM_Importer;
 use WC_API_Customers;
 use WP_User_Query;
 
@@ -512,6 +513,25 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
+     * Get all roles from the WordPress core
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_native_wp_roles( WP_REST_Request $request )
+    {
+        $roles = MRM_Importer::get_wp_roles();
+
+        if( isset($roles) ){
+            return $this->get_success_response( __( 'Query Successful.', "mrm" ), 200, $roles );
+        }
+        return $this->get_error_response( __(  "Failed to retrieve", "mrm" ), 400 );
+
+    }
+
+
+    /**
      * Import contacts from WordPress
      * 
      * @param WP_REST_Request $request
@@ -528,39 +548,38 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 throw new Exception(__("Roles attribute is required.", "mrm"));
             }
 
-            $roles = json_decode(json_encode( $params["roles"] ), true);
-            $user_query = new WP_User_Query( array( "role__in" => $roles ) );
-            $results    = $user_query->get_results();
+            MRM_Contact_Model::get_wp_users( $params["roles"] );
+            // $results = get_users( array( "role__in" => $params["roles"] ) );
+            // $results    = $results->get_results();
+            // error_log(print_r($results, 1));
+            // foreach( $results as $result ) {
 
-            
-            foreach( $results as $result ) {
+            //     $wp_user    = $result->data;
+            //     $name       = $wp_user->display_name;
+            //     $email      = $wp_user->user_email;
 
-                $wp_user    = $result->data;
-                $name       = $wp_user->display_name;
-                $email      = $wp_user->user_email;
-
-                $contact = new MRM_Contact($email, array(
-                                                        "first_name"    => $name,
-                                                        "status"        => $params['status'],
-                                                        "source"        => 'WordPress'
-                                                    )
-                                                );
-                $exists = MRM_Contact_Model::is_contact_exist( $email );
-                if(!$exists) {
+            //     $contact = new MRM_Contact($email, array(
+            //                                             "first_name"    => $name,
+            //                                             "status"        => $params['status'],
+            //                                             "source"        => 'WordPress'
+            //                                         )
+            //                                     );
+            //     $exists = MRM_Contact_Model::is_contact_exist( $email );
+            //     if(!$exists) {
                     
-                    $contact_id = MRM_Contact_Model::insert( $contact );
+            //         $contact_id = MRM_Contact_Model::insert( $contact );
 
-                    if(isset($params['tags'])){
-                        $this->set_tags_to_contact( $params['tags'], $contact_id );
-                    }
+            //         if(isset($params['tags'])){
+            //             $this->set_tags_to_contact( $params['tags'], $contact_id );
+            //         }
         
-                    if(isset($params['lists'])){
-                        $this->set_lists_to_contact( $params['lists'], $contact_id );
-                    }
+            //         if(isset($params['lists'])){
+            //             $this->set_lists_to_contact( $params['lists'], $contact_id );
+            //         }
 
-                }
+            //     }
                 
-            }
+            // }
             
             return $this->get_success_response(__( "Import WordPress users successful", "mrm" ), 200);
         } catch(Exception $e) {
