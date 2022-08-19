@@ -68,4 +68,38 @@ class MRM_Importer {
         }, $users); 
 
     }
+
+
+    /**
+     * Import WC customers information from orders and metadata table
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_wc_customers()
+    {
+        $all_order_ids = wc_get_orders( array(
+			'return'       => 'ids',
+			'numberposts'  => '-1',
+			'type'         => 'shop_order',
+			'parent'       => 0,
+			'date_created' => '<' . time(),
+			'status'       => wc_get_is_paid_statuses(),
+		) );
+        
+        $customers = array_map(function($all_order_id){
+
+                $orders = wc_get_order( $all_order_id );
+                return$orders->data['billing'];
+
+            }, $all_order_ids);
+		/**
+		 * Count orders
+		 */
+		$order_count = count( $all_order_ids );
+
+        return $customers;
+
+    }
 }
