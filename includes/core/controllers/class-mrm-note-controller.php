@@ -25,9 +25,8 @@ class MRM_Note_Controller extends MRM_Base_Controller {
     /**
      * Get and send response to create a new note
      * 
-     * @param request
-     * @return JSON
-     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request ){
@@ -38,25 +37,19 @@ class MRM_Note_Controller extends MRM_Base_Controller {
         // Note Title validation
         $title = isset( $params['notes']['title'] ) ? sanitize_text_field( $params['notes']['title'] ) : '';
         if ( empty( $title ) ) {
-			$response  = __( 'Title is mandatory', 'mrm' );
-
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
 		}
 
         // Note type validation
         $type = isset( $params['notes']['type'] ) ? sanitize_text_field( $params['notes']['type'] ) : '';
         if ( empty( $type ) ) {
-			$response  = __( 'Type is mandatory', 'mrm' );
-
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
 		}
 
         // Note description validation
         $description = isset( $params['notes']['description'] ) ? sanitize_text_field( $params['notes']['description'] ) : '';
         if ( empty( $description ) ) {
-			$response  = __( 'Description is mandatory', 'mrm' );
-
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  400);
 		}
 
         // Note object create and insert or update to database
@@ -75,7 +68,7 @@ class MRM_Note_Controller extends MRM_Base_Controller {
             return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
 
         } catch(Exception $e) {
-            return $this->get_error_response(__( 'Note is not valid', 'mrm' ), 400);
+            return $this->get_error_response(__( $e->getMessage(), 'mrm' ), 400);
         }
     }
 
@@ -83,8 +76,8 @@ class MRM_Note_Controller extends MRM_Base_Controller {
     /**
      * Delete notes for a contact
      * 
-     * @param request
-     * @return void
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function delete_single(WP_REST_Request $request){
@@ -96,12 +89,10 @@ class MRM_Note_Controller extends MRM_Base_Controller {
         $exist = MRM_Note_Model::is_note_exist($params['note_id']);
 
         if ( !$exist ) {
-			$response = __( 'Note not found', 'mrm' );
-
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Note not found', 'mrm' ),  400);
 		}
 
-        $success = MRM_Note_Model::destroy($params['note_id']);
+        $success = MRM_Note_Model::destroy( $params['note_id'] );
 
         if($success) {
             return $this->get_success_response( __( 'Note has been deleted successfully', 'mrm' ), 200 );
@@ -113,11 +104,11 @@ class MRM_Note_Controller extends MRM_Base_Controller {
     /**
      * Get all notes for a contact controller
      * 
-     * @param request
-     * @return JSON
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function get_all(WP_REST_Request $request){
+    public function get_all( WP_REST_Request $request ){
 
        // Get values from API
         $params = MRM_Common::get_api_params_values( $request );

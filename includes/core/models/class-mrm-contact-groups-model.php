@@ -11,7 +11,7 @@ use MRM\DB\Tables\MRM_Contact_Groups_Table;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle Contact Groups Module related database operations]
+ * @desc [Manage Contact Groups Module related database operations]
  */
 
 class MRM_Contact_Group_Model{
@@ -29,15 +29,16 @@ class MRM_Contact_Group_Model{
     public static function insert( $group, $type )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $group_table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
-            $wpdb->insert($table_name, array(
-                'title' => $group->get_title(),
-                'type'  => $type,
-                'slug'  => $group->get_slug(),
-                'data'  => $group->get_data(),
-                'created_at' => current_time('mysql')));
+            $wpdb->insert( $group_table, array(
+                'title'         => $group->get_title(),
+                'type'          => $type,
+                'slug'          => $group->get_slug(),
+                'data'          => $group->get_data(),
+                'created_at'    => current_time('mysql')) 
+            );
             return $wpdb->insert_id;
         } catch(\Exception $e) {
             return false;
@@ -48,9 +49,9 @@ class MRM_Contact_Group_Model{
     /**
      * Update group information to database
      * 
-     * @param object $group         Tag or List or Segment object 
-     * @param int    $id            Tag or List or Segment id
-     * @param int    $type          Tag or List or Segment type
+     * @param object    $group         Tag or List or Segment object 
+     * @param int       $id            Tag or List or Segment id
+     * @param string    $type          Tag or List or Segment type
      * 
      * @return bool
      * @since 1.0.0
@@ -58,16 +59,17 @@ class MRM_Contact_Group_Model{
     public static function update( $group, $id, $type )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $group_table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
-            $wpdb->update($table_name, array(
-                'title' => $group->get_title(),
-                'type' => $type,
-                'data'  => $group->get_data(),
-                'updated_at' => current_time('mysql')), array(
-                  'id' => $id
-                ));
+            $wpdb->update( $group_table, array(
+                'title'         => $group->get_title(),
+                'type'          => $type,
+                'slug'          => $group->get_slug(),
+                'data'          => $group->get_data(),
+                'updated_at'    => current_time('mysql')
+                ), array( 'id' => $id )
+            );
             return true;
         } catch(\Exception $e) {
             return false;
@@ -78,7 +80,7 @@ class MRM_Contact_Group_Model{
     /**
      * Run SQL query to get groups from database
      * 
-     * @param int $type     Tag or List or Segment type
+     * @param string $type     Tag or List or Segment type
      * @param int $offset
      * @param int $limit
      * @param string $search
@@ -86,11 +88,11 @@ class MRM_Contact_Group_Model{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $type ,$offset = 0, $limit = 10, $search = '' )
+    public static function get_all( $type, $offset = 0, $limit = 20, $search = '' )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-        $search_terms = null;
+        $group_table    = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $search_terms   = null;
 
         // Search segments by title
 		if ( ! empty( $search ) ) {
@@ -99,21 +101,18 @@ class MRM_Contact_Group_Model{
 
         // Return segments for list view
         try {
-            $select_query = "SELECT * FROM {$table_name} WHERE type = {$type}  {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $select_query  = $wpdb->prepare( "SELECT * FROM $group_table WHERE type = %s $search_terms ORDER BY id DESC LIMIT %d, %d", array( $type, $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
-            $results = json_decode(json_encode($query_results), true);
+
+            $wpdb->prepare( "SELECT COUNT(*) as total FROM $group_table WHERE type = %s $search_terms", array( $type ) );
+            $count = $wpdb->num_rows;
             
-            $count_query = "SELECT COUNT(*) as total FROM {$table_name} WHERE type = {$type} {$search_terms}";
-            $count_data = $wpdb->get_results($count_query);
-            $count_array = json_decode(json_encode($count_data), true);
-            
-            $count = (int) $count_array['0']['total'];
             $totalPages = ceil(intdiv($count, $limit));
       
             return array(
-                'data'=> $results,
-                'total_pages' => $totalPages,
-                'count' => $count
+                'data'          => $query_results,
+                'total_pages'   => $totalPages,
+                'count'         => $count
             );
         } catch(\Exception $e) {
             return NULL;
@@ -133,12 +132,12 @@ class MRM_Contact_Group_Model{
     public static function destroy( $id )
     {
         global $wpdb;
-        $table_name     =   $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $group_table    =   $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
         $pivot_table    =   $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
 
         try {
-            $wpdb->delete($table_name, array('id' => $id));
-            $wpdb->delete($pivot_table, array('group_id' => $id));
+            $wpdb->delete( $group_table, ['id' => $id], ["%d"] );
+            $wpdb->delete( $pivot_table, ['group_id' => $id], ["%d"] );
             return true;
         } catch(\Exception $e) {
             return false;
@@ -149,7 +148,7 @@ class MRM_Contact_Group_Model{
     /**
      * Delete multiple groups from the database
      * 
-     * @param mixed $ids multiple group ids (tag_id, list_id, segment_id)
+     * @param array $ids multiple group ids (tag_id, list_id, segment_id)
      * 
      * @return bool
      * @since 1.0.0
@@ -158,13 +157,13 @@ class MRM_Contact_Group_Model{
     {
         global $wpdb;
 
-        $table          =   $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
-        $pivot_table    =   $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+        $group_table  = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $pivot_table  = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
 
         try {
-            $idListString = implode(",",$ids);
-            $wpdb->query("DELETE FROM $table WHERE id IN ($idListString)");
-            $wpdb->query("DELETE FROM $pivot_table WHERE group_id IN ($idListString)");
+            $ids = implode(",", array_map( 'intval', $ids ));
+            $wpdb->query( "DELETE FROM $group_table WHERE id IN ($ids)" );
+            $wpdb->query( "DELETE FROM $pivot_table WHERE group_id IN ($ids)" );
             return true;
         } catch(\Exception $e) {
             return false;
@@ -183,13 +182,12 @@ class MRM_Contact_Group_Model{
     public static function get( $id ){
 
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $group_table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
-            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array($id));
-            $data = $wpdb->get_results($sql);
-            $dataJson = json_decode(json_encode($data));
-            return $dataJson;
+            $select_query   = $wpdb->prepare( "SELECT * FROM $group_table WHERE id = %d",array( $id ) );
+            $select_result  = $wpdb->get_results( $select_query );
+            return $select_result;
         } catch(\Exception $e) {
             return false;
         }
@@ -207,13 +205,11 @@ class MRM_Contact_Group_Model{
     public static function is_group_exist( $slug, $type )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
+        $group_table = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE slug = %s AND type = %d",array( $slug, $type ));
-        $sqlCountData = $wpdb->get_results($sqlCount);
-        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-        $count = (int) $sqlCountDataJson['0']['total'];
-        if( $count ){
+        $select_query   = $wpdb->prepare( "SELECT * FROM $group_table WHERE slug = %s AND type = %s",array( $slug, $type ) );
+        $select_result  = $wpdb->get_results( $select_query );
+        if( $select_result ){
             return true;
         }
         return false;
@@ -235,8 +231,8 @@ class MRM_Contact_Group_Model{
         $table_name = $wpdb->prefix . MRM_Contact_Groups_Table::$mrm_table;
 
         try {
-            $groups = implode( ",", $group_ids );
-            $select_query = $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id IN ($groups) AND type = $type" );
+            $groups = implode(",", array_map( 'intval', $group_ids ));
+            $select_query = $wpdb->prepare( "SELECT * FROM $table_name WHERE id IN ($groups) AND type = %s", array( $type ) );
             return $wpdb->get_results( $select_query );
         } catch(\Exception $e) {
             return false;

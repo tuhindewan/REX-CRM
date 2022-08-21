@@ -22,14 +22,6 @@ abstract class MRM_Base_Controller {
      */
   	private $response_code = 200;
 
-	/**
-     * Model class object
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    protected $model;
-
 
 	/**
 	 * Create or update an object

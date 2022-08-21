@@ -9,7 +9,6 @@ use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
 use MRM\Models\MRM_Contact_Group_Model;
-use MRM\Models\MRM_Contact_Group_Pivot_Model;
 
 /**
  * @author [MRM Team]
@@ -26,8 +25,8 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     /**
      * Get and send response to create a new tag
      * 
-     * @param request
-     * @return JSON
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request ){
@@ -39,15 +38,13 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
 
         if ( empty( $title ) ) {
-			$response = __( 'Title is mandatory', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
 		}
 
         // Tag avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 1 );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 'tags' );
         if ( $exist ) {
-			$response = __( 'Tag is already available', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Tag is already available', 'mrm' ),  400);
 		}
 
         // Tag object create and insert or update to database
@@ -55,9 +52,9 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             $tag = new MRM_Tag( $params );
 
             if(isset($params['tag_id'])){
-                $success = MRM_Contact_Group_Model::update( $tag, $params['tag_id'], 1 );
+                $success = MRM_Contact_Group_Model::update( $tag, $params['tag_id'], 'tags' );
             }else{
-                $success = MRM_Contact_Group_Model::insert( $tag, 1 );
+                $success = MRM_Contact_Group_Model::insert( $tag, 'tags' );
             }
 
             if($success) {
@@ -66,7 +63,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
 
         } catch(Exception $e) {
-                return $this->get_error_response(__( 'Tag is not valid', 'mrm' ), 400);
+            return $this->get_error_response(__( 'Tag is not valid', 'mrm' ), 400);
         }
     }
 
@@ -74,8 +71,8 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     /**
      * Delete request for tags
      * 
-     * @param request
-     * @return void
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function delete_single( WP_REST_Request $request ){
@@ -84,11 +81,10 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Tag avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 1 );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "tags" );
 
         if ( !$exist ) {
-			$response = __( 'Tag not found', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Tag not found', 'mrm' ),  400);
 		}
 
         $success = MRM_Contact_Group_Model::destroy( $params['tag_id'] );
@@ -100,18 +96,17 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     }
 
 
-
     /**
      * Delete multiple tags
      * 
-     * @param request
-     * @return void
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function delete_all( WP_REST_Request $request ){
 
         // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+        $params  = MRM_Common::get_api_params_values( $request );
 
         $success = MRM_Contact_Group_Model::destroy_all( $params['tag_ids'] );
         if($success) {
@@ -125,8 +120,8 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     /**
      * Get all tags request for tags
      * 
-     * @param request
-     * @return JSON
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function get_all( WP_REST_Request $request ){
@@ -141,7 +136,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         // Tag Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = MRM_Contact_Group_Model::get_all( 1, $offset, $perPage, $search );
+        $groups = MRM_Contact_Group_Model::get_all( 'tags', $offset, $perPage, $search );
 
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
@@ -154,8 +149,8 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     /**
      * Function used to handle a single get request
      * 
-     * @param $request
-     * @return WP_REST_RESPONSE
+     * @param WP_REST_Request
+     * @return WP_REST_Response
      * @since 1.0.0 
      */
     public function get_single( WP_REST_Request $request ){
@@ -166,9 +161,9 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $group = MRM_Contact_Group_Model::get( $params['tag_id'] );
 
         if(isset($group)) {
-            return $this->get_success_response("Query Successfull", 200, $group);
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $group);
         }
-        return $this->get_error_response("Failed to Get Data", 400);
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
 
     }
 
@@ -177,19 +172,15 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
      * Get all contacts related to specific tag
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return array
+     * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function get_contacts(WP_REST_Request $request)
+    public function get_contacts( WP_REST_Request $request )
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $results = MRM_Contact_Group_Pivot_Model::get_instance()->get_contacts_to_group( $params['tag_id'] );
-        $contacts = array_map(function($result) {
-            return $result['contact_id'];
-        }, $results);
+        $contacts   = MRM_Contact_Pivot_Controller::get_contacts_to_group( $params['tag_id'] );
         
         if(isset($contacts)) {
             return $this->get_success_response("Query Successfull", 200, $contacts);
@@ -214,11 +205,11 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             // Create new tag if not exist
             if( 0 == $tag['id'] ){
 
-                $exist = MRM_Contact_Group_Model::is_group_exist( $tag['slug'], 1 );
+                $exist = MRM_Contact_Group_Model::is_group_exist( $tag['slug'], 'tags' );
 
                 if(!$exist){
                     $new_tag    = new MRM_Tag($tag);
-                    $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
+                    $new_tag_id = MRM_Contact_Group_Model::insert( $new_tag, 'tags' );
                 }
                 
             }
@@ -234,7 +225,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             
 
         }, $tags);
-        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+        MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
     }
 
 
@@ -254,7 +245,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             return $tag_id['group_id'];
         }, $results);
 
-        $contact->tags = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 1 );
+        $contact->tags = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
         return $contact;
     }
 

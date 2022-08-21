@@ -31,7 +31,7 @@ class MRM_Tag {
     /**
      * Tag slug
      * 
-     * @var array
+     * @var string
      * @since 1.0.0
      */
     private $slug;
@@ -72,7 +72,7 @@ class MRM_Tag {
     /**
      * Return tag data after serialization
      * 
-     * @return array
+     * @return longtext
      * @since 1.0.0
      */
     public function get_data()

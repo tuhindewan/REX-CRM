@@ -9,7 +9,6 @@ use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Common\MRM_Common;
-use MRM\Models\MRM_Contact_Group_Pivot_Model;
 
 /**
  * @author [MRM Team]
@@ -43,20 +42,19 @@ class MRM_List_Controller extends MRM_Base_Controller{
         }
 
         // list avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 2 );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "lists" );
         if ( $exist ) {
-			$response = __( 'List is already available', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'List is already available', 'mrm' ),  400);
 		}
         
         // List object create and insert or update to database
         try {
             $list = new MRM_List( $params );
 
-            if(isset($params['list_id'])) {
-                $success = MRM_Contact_Group_Model::update( $list, $params['list_id'], 2 );
+            if(isset( $params['list_id']) ) {
+                $success = MRM_Contact_Group_Model::update( $list, $params['list_id'], "lists" );
             } else {
-                $success = MRM_Contact_Group_Model::insert( $list, 2 );
+                $success = MRM_Contact_Group_Model::insert( $list, "lists" );
             }
 
             if($success) {
@@ -74,14 +72,10 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * Function used to handle paginated get and search requests
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return WP_REST_RESPONSE
+     * @return WP_REST_Response
      * @since 1.0.0 
      */
     public function get_all( WP_REST_Request $request ){
-
-        //instantiate the model
-        $this->model = MRM_Contact_Group_Model::get_instance();
 
        // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
@@ -93,7 +87,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
         // List Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = MRM_Contact_Group_Model::get_all( 2, $offset, $perPage, $search );
+        $groups = MRM_Contact_Group_Model::get_all( 'lists', $offset, $perPage, $search );
 
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
@@ -106,8 +100,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * Function used to handle a single get request
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return WP_REST_RESPONSE
+     * @return WP_REST_Response
      * @since 1.0.0 
      */
     public function get_single( WP_REST_Request $request ){
@@ -129,8 +122,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * Function used to handle delete requests
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return WP_REST_RESPONSE
+     * @return WP_REST_Response
      * @since 1.0.0 
      */
     public function delete_single( WP_REST_Request $request ){
@@ -138,11 +130,10 @@ class MRM_List_Controller extends MRM_Base_Controller{
         $params = MRM_Common::get_api_params_values( $request );
 
         // List avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 2 );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 'lists' );
 
         if ( !$exist ) {
-			$response = __( 'List not found', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'List not found', 'mrm' ),  400);
 		}
 
         $success = MRM_Contact_Group_Model::destroy( $params['list_id'] );
@@ -158,8 +149,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * Function used to handle delete requests
      * 
      * @param WP_RESR_Request
-     * 
-     * @return WP_REST_RESPONSE
+     * @return WP_REST_Response
      * @since 1.0.0 
      */
     public function delete_all( WP_REST_Request $request ){
@@ -191,10 +181,10 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
             // Create new tag if not exist
             if( 0 == $list['id'] ){
-                $exist = MRM_Contact_Group_Model::is_group_exist( $list['slug'], 2 );
+                $exist = MRM_Contact_Group_Model::is_group_exist( $list['slug'], "lists" );
                 if(!$exist){
                     $new_list = new MRM_List($list);
-                    $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
+                    $new_list_id = MRM_Contact_Group_Model::insert( $new_list, "lists" );
                 }
                 
             }
@@ -210,8 +200,8 @@ class MRM_List_Controller extends MRM_Base_Controller{
             
 
         }, $lists);
-        
-        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+
+        MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
         
     }
 
@@ -232,7 +222,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
             return $list_id['group_id'];
         }, $results);
 
-        $contact->lists = MRM_Contact_Group_Model::get_groups_to_contact( $list_ids, 2 );
+        $contact->lists = MRM_Contact_Group_Model::get_groups_to_contact( $list_ids, "lists" );
         return $contact;
     }
     

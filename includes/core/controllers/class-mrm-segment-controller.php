@@ -25,8 +25,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * Create a new segment or update a existing segment
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return array
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request )
@@ -37,23 +36,18 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         // Segment title validation
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
         if ( empty( $title ) ) {
-			$response            = __( 'Title is mandatory', 'mrm' );
-
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400 );
 		}
 
         // Segment avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 3 );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "segments" );
         if ( $exist ) {
-			$response = __( 'Segment is already available', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Segment is already available', 'mrm' ),  400 );
 		}
 
         // Segment filters validation
         if ( empty( $params['data'] ) || ( is_array( $params['data'] ) && empty( $params['data']['filters'] ) ) ) {
-			$response            = __( 'Filters are mandatory.', 'mrm' );
-
-			return $this->get_error_response( $response, 400 );
+			return $this->get_error_response( __( 'Filters are mandatory.', 'mrm' ), 400 );
 		}
 
         // Segment object create and insert or update to database
@@ -61,9 +55,9 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
             $segment = new MRM_Segment( $params );
 
             if(isset($params['segment_id'])){
-                $success = MRM_Contact_Group_Model::update( $segment, $params['segment_id'], 3 );
+                $success = MRM_Contact_Group_Model::update( $segment, $params['segment_id'], "segments" );
             }else{
-                $success = MRM_Contact_Group_Model::insert( $segment, 3 );
+                $success = MRM_Contact_Group_Model::insert( $segment, "segments" );
             }
 
             if($success) {
@@ -77,13 +71,11 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
     }
 
 
-
     /**
      * Get segments for list views
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return array
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function get_all( WP_REST_Request $request )
@@ -98,9 +90,9 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
 
-        $groups = MRM_Contact_Group_Model::get_all( 3, $offset, $perPage, $search );
+        $groups = MRM_Contact_Group_Model::get_all( "segments", $offset, $perPage, $search );
 
-        if(isset($groups)) {
+        if( isset( $groups ) ) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
@@ -112,8 +104,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * Get a specefic segment data
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return array
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function get_single( WP_REST_Request $request )
@@ -134,8 +125,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * Delete a segement 
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return array
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function delete_single( WP_REST_Request $request )
@@ -144,11 +134,10 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Segments avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'] );
+        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "segments" );
 
         if ( !$exist ) {
-			$response = __( 'Segemnt not found', 'mrm' );
-			return $this->get_error_response( $response,  400);
+			return $this->get_error_response( __( 'Segemnt not found', 'mrm' ),  400);
 		}
 
         $success = MRM_Contact_Group_Model::destroy( $params['segment_id'] );
@@ -165,8 +154,7 @@ class MRM_Segment_Controller extends MRM_Base_Controller {
      * Delete multiple groups
      * 
      * @param WP_REST_Request $request
-     * 
-     * @return array
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function delete_all( WP_REST_Request $request )

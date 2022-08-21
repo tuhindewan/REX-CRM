@@ -49,7 +49,7 @@ class MRM_Common {
     /**
      * Return created by or author id 
      * 
-     * @return string
+     * @return int
      * @since 1.0.0
      */
     public static function get_current_user_id()
