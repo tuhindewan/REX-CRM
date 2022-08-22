@@ -60,7 +60,7 @@ trait Singleton {
      *
      * @return void
      */
-    private function __wakeup()
+    public function __wakeup()
     {
         // Don't do anything, we don't want to be unserialized
     }

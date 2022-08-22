@@ -31,7 +31,7 @@ class MRM_Note {
     /**
      * Note Description
      * 
-     * @var string
+     * @var longtext
      * @since 1.0.0
      */
     private $description;

@@ -4,6 +4,7 @@ namespace MRM\Models;
 
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;
+use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use MRM\DB\Tables\MRM_Contact_Meta_Table;
 use MRM\DB\Tables\MRM_Contact_Note_Table;
 use MRM\DB\Tables\MRM_Contacts_Table;
@@ -35,10 +36,10 @@ class MRM_Contact_Model{
     public static function insert(MRM_Contact $contact)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
         try {
-            $wpdb->insert($table_name, array(
+            $wpdb->insert( $contacts_table, array(
                 'email'         =>  $contact->get_email(),
                 'first_name'    =>  $contact->get_first_name(),
                 'last_name'     =>  $contact->get_last_name(),
@@ -47,19 +48,21 @@ class MRM_Contact_Model{
                 'source'        =>  $contact->get_source(),
                 'contact_owner' =>  $contact->get_contact_owner(),
                 'hash'          =>  MRM_Common::get_rand_hash(),
-                'created_at'    =>  current_time('mysql')));
+                'created_at'    =>  current_time('mysql')
+            ));
+        return $wpdb->insert_id;;
+
         } catch(\Exception $e) {
             return false;
         }
-        return $wpdb->insert_id;;
     }
 
 
     /**
      * Update a contact information
      * 
-     * @param mixed $contact_id
-     * @param mixed $fields      Entity and value to update
+     * @param mixed $contact_id     Contact ID
+     * @param mixed $fields         Entity and value to update
      * 
      * @return bool
      * @since 1.0.0
@@ -67,14 +70,14 @@ class MRM_Contact_Model{
     public static function update( $contact_id, $fields )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
         $entity = array_key_first($fields);
         $value  = array_values($fields)[0];
 
         try {
             $wpdb->update( 
-                $table_name, 
+                $contacts_table, 
                 array( 
                     $entity         =>  $value,
                     'updated_at'    =>  current_time('mysql')
@@ -99,9 +102,9 @@ class MRM_Contact_Model{
     public static function is_contact_exist( $email )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
-        $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE email = %s", array( $email ));
+        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s", array( $email ));
         $results = $wpdb->get_results($select_query);
 
         if( $results ){
@@ -122,22 +125,23 @@ class MRM_Contact_Model{
     public static function destroy( $id )
     {
         global $wpdb;
-        $table_name                     =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_table                 =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
         $contact_meta_table             =   $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
         $contact_note_table             =   $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
         $contact_interaction_table      =   $wpdb->prefix . MRM_Interactions_Table::$mrm_table;
+        $contact_group_pivot_table      =   $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
 
         try {
-            $wpdb->delete($table_name, array('id' => $id));
+            $wpdb->delete($contacts_table,              array('id' => $id));
+            $wpdb->delete($contact_meta_table,          array('contact_id' => $id));
+            $wpdb->delete($contact_note_table,          array('contact_id' => $id));
+            $wpdb->delete($contact_interaction_table,   array('contact_id' => $id));
+            $wpdb->delete($contact_group_pivot_table,   array('contact_id' => $id));
+            return true;
         } catch(\Exception $e) {
             return false;
         }
 
-        $wpdb->delete($contact_meta_table,          array('contact_id' => $id));
-        $wpdb->delete($contact_note_table,          array('contact_id' => $id));
-        $wpdb->delete($contact_interaction_table,   array('contact_id' => $id));
-
-        return true;
     }
 
 
@@ -152,24 +156,24 @@ class MRM_Contact_Model{
     public static function destroy_all($contact_ids)
     {
         global $wpdb;
-        $table_name                     =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_table                 =   $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
         $contact_meta_table             =   $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
         $contact_note_table             =   $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
         $contact_interaction_table      =   $wpdb->prefix . MRM_Interactions_Table::$mrm_table;
+        $contact_group_pivot_table      =   $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
 
         try {
-            $contact_ids = implode( ',', array_map( 'absint', $contact_ids ) );
+            $contact_ids = implode( ',', array_map( 'intval', $contact_ids ) );
 
-            $wpdb->query( "DELETE FROM $table_name WHERE id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contacts_table WHERE id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_meta_table WHERE contact_id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_note_table WHERE contact_id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_interaction_table WHERE contact_id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_group_pivot_table WHERE contact_id IN($contact_ids)" );
+            return true;
         } catch(\Exception $e) {
             return false;
         }
-
-        $wpdb->query( "DELETE FROM $contact_meta_table WHERE contact_id IN($contact_ids)" );
-        $wpdb->query( "DELETE FROM $contact_note_table WHERE contact_id IN($contact_ids)" );
-        $wpdb->query( "DELETE FROM $contact_interaction_table WHERE contact_id IN($contact_ids)" );
-
-        return true;
     }
 
 
@@ -196,13 +200,12 @@ class MRM_Contact_Model{
 
         // Prepare sql results for list view
         try {
-            $select_query = "SELECT * FROM {$table_name} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $select_query  = $wpdb->prepare( "SELECT * FROM $table_name $search_terms ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
 
-            $count_query = "SELECT COUNT(*) as total FROM {$table_name} {$search_terms}";
-            $count_result = $wpdb->get_results($count_query);
-            
-            $count = (int) $count_result['0']->total;
+            $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name $search_terms" );
+            $count = $wpdb->num_rows;
+
             $total_pages = ceil(intdiv($count, $limit));
       
             return array(
@@ -228,10 +231,10 @@ class MRM_Contact_Model{
     public static function get( $id )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
         try {
-            $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array( $id ));
+            $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
             return $wpdb->get_row( $select_query );
         } catch(\Exception $e) {
             return false;

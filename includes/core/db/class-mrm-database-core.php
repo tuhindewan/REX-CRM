@@ -17,6 +17,14 @@ class MRM_Database_Core {
 
     use Singleton;
 
+    /**
+     * Objects for table classes
+     *
+     * @var array
+     * @since 1.0.0
+     */
+    protected $table_objects = [];
+
 
     /**
      * Initilize all database table classes
@@ -40,8 +48,8 @@ class MRM_Database_Core {
         foreach ($this->get_db_namespaces() as $namespace => $tables) {
             foreach ($tables as $table_name => $table_class) {
                 $table_class_name = "MRM\\DB\\Tables\\".$table_class;
-                $this->routes[ $namespace ][ $table_name ] = new $table_class_name();
-                $this->routes[ $namespace ][ $table_name ]->create();
+                $this->table_objects[ $namespace ][ $table_name ] = new $table_class_name();
+                $this->table_objects[ $namespace ][ $table_name ]->create();
             }
         }
     }

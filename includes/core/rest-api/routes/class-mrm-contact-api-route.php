@@ -139,7 +139,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Remove tags from contact
+         * Remove tags, lists, and segments from contact
          * 
          * @return void
          * @since 1.0.0

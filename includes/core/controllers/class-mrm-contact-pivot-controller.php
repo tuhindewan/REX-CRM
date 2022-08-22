@@ -2,7 +2,7 @@
 
 namespace MRM\Controllers;
 
-use MRM\Models\MRM_Contact_Group_Model;
+use MRM\Common\MRM_Common;
 use MRM\Models\MRM_Contact_Group_Pivot_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
@@ -19,14 +19,6 @@ class MRM_Contact_Pivot_Controller {
 
     use Singleton;
 
-    /**
-     * MRM_Contact_Group_Pivot_Model class object
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    public $model;
-
 
     /**
      * Preapre API values and send to pivot model to delete data
@@ -39,9 +31,7 @@ class MRM_Contact_Pivot_Controller {
     public function delete_groups( WP_REST_Request $request )
     {
         // Get values from API
-        $query_params   =   $request->get_query_params();
-        $request_params =   $request->get_params();
-        $params         =   array_replace( $query_params, $request_params );
+        $params = MRM_Common::get_api_params_values( $request );
 
         $groups = isset( $params['groups'] ) ? $params['groups'] : NULL;
 
@@ -60,7 +50,39 @@ class MRM_Contact_Pivot_Controller {
      */
     public function get_groups_to_contact( $contact_id )
     {
-        return MRM_Contact_Group_Pivot_Model::get_groups_to_contact( $contact_id );
+        $results = MRM_Contact_Group_Pivot_Model::get_groups_to_contact( $contact_id );
+        return json_decode( json_encode( $results ), true );
+    }
+
+
+    /**
+     * Set Contact and groups many to many relation
+     * 
+     * @param array $pivotIds
+     * @return void
+     * @since 1.0.0
+     */
+    public static function set_groups_to_contact( $pivotIds )
+    {
+        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivotIds );
+    }
+
+
+    /**
+     * Get all contacts related to a tag or list or segments
+     * 
+     * @param mixed $group_id
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_contacts_to_group( $group_id )
+    {
+        $results = MRM_Contact_Group_Pivot_Model::get_contacts_to_group( $group_id );
+        $contact_ids = json_decode( json_encode( $results ), true );
+        $contacts  = array_map( function( $contact_id ) {
+            return $contact_id['contact_id'];
+        }, $contact_ids );
+        return $contacts;
     }
 
 }

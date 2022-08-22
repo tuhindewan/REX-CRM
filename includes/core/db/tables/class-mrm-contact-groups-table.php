@@ -41,7 +41,7 @@ class MRM_Contact_Groups_Table {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT(20) unsigned NOT NULL auto_increment,
             `title` VARCHAR(255) NOT NULL,
-            `type` TINYINT(2) unsigned NOT NULL COMMENT '1 - tags, 2 - lists, 3 - segments',
+            `type` VARCHAR(192) NOT NULL COMMENT 'tags, lists, segments',
             `slug` VARCHAR(255) NOT NULL,
             `data` longtext, 
             `created_at` TIMESTAMP,

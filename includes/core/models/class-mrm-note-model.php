@@ -31,13 +31,12 @@ class MRM_Note_Model {
     public static function is_note_exist( $id )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+        $note_table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
 
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE id = %d",array($id));
-        $sqlCountData = $wpdb->get_results($sqlCount);
-        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-        $count = (int) $sqlCountDataJson['0']['total'];
-        if( $count ){
+        $select_query = $wpdb->prepare("SELECT * FROM $note_table WHERE id = %d", array( $id ) );
+        $results = $wpdb->get_results($select_query);
+
+        if( $results ){
             return true;
         }
         return false;
@@ -54,10 +53,10 @@ class MRM_Note_Model {
     public static function insert( MRM_Note $note, $contact_id ){
         
         global $wpdb;
-        $table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+        $note_table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
 
         try {
-            $wpdb->insert($table, array(
+            $wpdb->insert($note_table, array(
                 'contact_id'    => $contact_id,
                 'type'          => $note->get_type(),
                 'title'         => $note->get_title(),
@@ -82,7 +81,7 @@ class MRM_Note_Model {
      * @param $contact_id   Contact id
      * @param $note_id      Note id
      * 
-     * @return JSON
+     * @return bool
      * @since 1.0.0
      */
     public static function update( MRM_Note $note, $contact_id, $note_id ){
@@ -122,15 +121,14 @@ class MRM_Note_Model {
     public static function destroy( $id )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+        $note_table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
 
         try {
-            $wpdb->delete($table_name, array('id' => $id));
+            $wpdb->delete( $note_table, array('id' => $id) );
+            return true;
         } catch(\Exception $e) {
             return false;
         }
-        return true;
-
     }
 
 
@@ -158,21 +156,18 @@ class MRM_Note_Model {
 
         // Return notes for a contact in list view
         try {
-            $select_query = "SELECT * FROM {$table_name} WHERE contact_id = {$contact_id} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
+            $select_query  = $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
-            $results = json_decode(json_encode($query_results), true);
 
-            $count_query = "SELECT COUNT(*) as total FROM {$table_name} WHERE contact_id = {$contact_id}";
-            $count_data = $wpdb->get_results($count_query);
-            $count_array = json_decode(json_encode($count_data), true);
-            
-            $count = (int) $count_array['0']['total'];
+            $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) );
+            $count = $wpdb->num_rows;
 
-            $totalPages = ceil(intdiv($count, $limit));
+            $total_pages = ceil(intdiv($count, $limit));
       
             return array(
-                'data'=> $results,
-                'total_pages' => $totalPages
+                'data'=> $query_results,
+                'total_pages' => $total_pages,
+                'count' => $count
             );
         } catch(\Exception $e) {
             return NULL;

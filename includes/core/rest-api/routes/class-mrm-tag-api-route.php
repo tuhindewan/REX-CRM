@@ -8,7 +8,7 @@ use MRM\Controllers\MRM_Tag_Controller;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle Tag Module related API callbacks]
+ * @desc [Manage Tag Module related API callbacks]
  */
 
 class MRM_Tag_API_Route{
@@ -39,7 +39,6 @@ class MRM_Tag_API_Route{
     protected $controller;
 
     
-
     /**
      * Register API endpoints routes for tags module
      * 

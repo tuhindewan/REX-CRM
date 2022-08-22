@@ -41,9 +41,6 @@ class MRM_Send_Email_API_Route{
     protected $mailer;
 
 
-
-    
-
     /**
      * Register API endpoints routes for send email module
      * 
