@@ -1,6 +1,7 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
-import axios from "axios";
+import BasePicker from "../components/BasePicker.jsx";
 import {
   Button,
   Stack,
@@ -29,11 +30,13 @@ const ContactCreateUpdate = (props) => {
     status: "pending",
   });
   const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [lists, setLists] = useState([]);
+
   const statusData = ["subscribed", "unsubscribed", "pending", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
   );
   const handleContactDetailsChange = (value, event) => {
-    console.log(event);
     setContactDetails((prevState) => {
       return {
         ...prevState,
@@ -49,20 +52,20 @@ const ContactCreateUpdate = (props) => {
       };
     });
   };
-  async function insertOrUpdateContact(event) {
+  async function insertOrUpdateContact() {
     setLoading(true);
-    const res = await axios.post(
-      `${config.baseURL}/contacts`,
-      {
-        title,
-        slug,
+    const contact = {
+      ...contactDetails,
+      tags: tags,
+      lists: lists,
+    };
+
+    const res = await axios.post(`${config.baseURL}/contacts`, contact, {
+      headers: {
+        "Content-type": "application/json",
       },
-      {
-        headers: {
-          "Content-type": "application/json",
-        },
-      }
-    );
+    });
+
     const resJson = res.data;
     console.log(resJson);
     const code = resJson.code;
@@ -182,8 +185,10 @@ const ContactCreateUpdate = (props) => {
             handleContactStatusChange("status", value);
           }}
         />
+        <BasePicker endpoint="/tags" data={tags} setData={setTags} />
+        <BasePicker endpoint="/lists" data={lists} setData={setLists} />
         <Button
-          //   onClick={() => insertData(title, slug)}
+          onClick={insertOrUpdateContact}
           appearance="primary"
           loading={loading}
         >

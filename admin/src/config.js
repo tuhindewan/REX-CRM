@@ -1,3 +1,3 @@
 export default {
-  baseURL: "/wpjson/mrm/v1",
+  baseURL: "/wp-json/mrm/v1",
 };
