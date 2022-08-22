@@ -8,20 +8,47 @@ import {
   Notification,
   useToaster,
 } from "rsuite";
-import { Link, useLocation} from "react-router-dom";
+import { Link, useLocation, useParams} from "react-router-dom";
 
 const UpdateTag = (props) => {
+    
+    
+    const location = useLocation(); 
+    const [tagData, setTagData] = useState({});
+    const {id} = useParams();
 
-    const location = useLocation();
+    useEffect(() => {
+        async function getData() {
+            const res = await axios.get(
+                    `/wp-json/mrm/v1${endpoint}${id}`,
+                    {
+                        title,
+                        slug,
+                    },
+                    {
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    }
+            )
+            const resJson = res.data.data;
+            setTitle(resJson[0].title);
+            setSlug(resJson[0].slug);   
+        }
+        getData();
+    }, []);
+
+    
 
   const { endpoint = "/tags/" } = props;
   const plural = endpoint.replace("/", "");
   const singular = plural.substr(0, plural.length - 1);
-
-  const [title, setTitle] = useState(location.state.title);
-  const [slug, setSlug] = useState(location.state.slug);
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const toaster = useToaster();
+
+
 
   const handleTitleChange = (value) => {
     setTitle(value);
@@ -42,7 +69,7 @@ const UpdateTag = (props) => {
     }
     setLoading(true);
     const res = await axios.put(
-      `/wp-json/mrm/v1${endpoint}${location.state.id}`,
+      `/wp-json/mrm/v1${endpoint}${id}`,
       {
         title,
         slug,
