@@ -6,6 +6,8 @@ import Tags from "../pages/Tags";
 import Segments from "../pages/Segments";
 import Dashboard from "../pages/Dashboard";
 import ImportContacts from "../pages/ImportContacts";
+import CreateTag from "../components/CreateTag";
+import UpdateTag from "../components/UpdateTag";
 
 const routes = [
   {
@@ -43,6 +45,16 @@ const routes = [
     path: "/automation",
     element: Automation,
     title: __("Automation", "mrm"),
+  },
+  {
+    path: "/tags/create",
+    element: CreateTag,
+    hideInMenu: true,
+  },
+  {
+    path: "/tags/update/:id",
+    element: UpdateTag,
+    hideInMenu: true,
   },
 ];
 
