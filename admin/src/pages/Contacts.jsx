@@ -5,9 +5,14 @@ import BaseTable from "../components/BaseTable";
 import Import from "./ImportContacts";
 
 const leftMarkup = (
-  <Link to="/contacts/import">
-    <Button appearance="primary"> + Import</Button>
-  </Link>
+  <>
+    <Link to="/contacts/create">
+      <Button appearance="primary">+ Create</Button>
+    </Link>
+    <Link to="/contacts/import">
+      <Button appearance="primary">+ Import</Button>
+    </Link>
+  </>
 );
 const Contacts = () => {
   return (

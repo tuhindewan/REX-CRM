@@ -6,6 +6,7 @@ import Tags from "../pages/Tags";
 import Segments from "../pages/Segments";
 import Dashboard from "../pages/Dashboard";
 import ImportContacts from "../pages/ImportContacts";
+import ContactCreateUpdate from "../pages/ContactCreateUpdate";
 
 const routes = [
   {
@@ -19,9 +20,18 @@ const routes = [
     title: __("Contacts", "mrm"),
   },
   {
+    path: "/contacts/create",
+    element: ContactCreateUpdate,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/update/:id",
+    element: ContactCreateUpdate,
+    hideInMenu: true,
+  },
+  {
     path: "/contacts/import",
     element: ImportContacts,
-    title: __("Import", "mrm"),
     hideInMenu: true,
   },
   {
