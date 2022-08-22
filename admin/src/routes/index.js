@@ -8,6 +8,8 @@ import Dashboard from "../pages/Dashboard";
 import ImportContacts from "../pages/ImportContacts";
 import CreateTag from "../components/CreateTag";
 import UpdateTag from "../components/UpdateTag";
+import CreateList from "../components/CreateList";
+import UpdateList from "../components/UpdateList";
 
 const routes = [
   {
@@ -54,6 +56,16 @@ const routes = [
   {
     path: "/tags/update/:id",
     element: UpdateTag,
+    hideInMenu: true,
+  },
+  {
+    path: "/lists/create",
+    element: CreateList,
+    hideInMenu: true,
+  },
+  {
+    path: "/lists/update/:id",
+    element: UpdateList,
     hideInMenu: true,
   },
 ];
