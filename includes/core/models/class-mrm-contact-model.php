@@ -183,11 +183,11 @@ class MRM_Contact_Model{
      * @param int $offset
      * @param int $limit
      * @param string $search
-     * 
+     * @param array $filters
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $offset = 0, $limit = 10, $search = '' )
+    public static function get_all( $offset = 0, $limit = 10, $search = '', $filters = array() )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;

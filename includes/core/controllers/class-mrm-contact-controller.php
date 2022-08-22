@@ -11,6 +11,7 @@ use MRM\Models\MRM_Contact_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use MRM\Constants\MRM_Constants;
+use MRM\Helpers\Filter\MRM_Filter;
 use MRM\Helpers\Importer\MRM_Importer;
 
 
@@ -159,8 +160,11 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $offset     =  ($page - 1) * $perPage;
 
         // Contact Search keyword
-        $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
-        $contacts = MRM_Contact_Model::get_all( $offset, $perPage, $search );
+        $search     = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
+        
+        $filters    = isset( $params['filters'] ) ? $params['filters'] : array();
+        $data = MRM_Filter::normalize_filter_collection($filters);
+        $contacts = MRM_Contact_Model::get_all( $offset, $perPage, $search, $filters );
 
         $contacts['data'] = array_map( function( $contact ){
             $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );

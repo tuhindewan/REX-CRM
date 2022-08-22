@@ -104,9 +104,9 @@ class MRM_Contact_Group_Model{
             $select_query  = $wpdb->prepare( "SELECT * FROM $group_table WHERE type = %s $search_terms ORDER BY id DESC LIMIT %d, %d", array( $type, $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
 
-            $wpdb->prepare( "SELECT COUNT(*) as total FROM $group_table WHERE type = %s $search_terms", array( $type ) );
+            $wpdb->prepare( "SELECT COUNT(*) as total FROM $group_table WHERE type = %s $search_terms LIMIT %d, %d", array( $type, $offset, $limit ) );
             $count = $wpdb->num_rows;
-            
+
             $totalPages = ceil(intdiv($count, $limit));
       
             return array(

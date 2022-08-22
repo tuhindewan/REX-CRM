@@ -132,7 +132,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $page       =  isset($params['page']) ? $params['page'] : 1;
         $perPage    =  isset($params['per-page']) ? $params['per-page'] : 25;
         $offset     =  ($page - 1) * $perPage;
-
         // Tag Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
