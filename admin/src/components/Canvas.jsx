@@ -8,26 +8,32 @@ import ReactFlow, {
   Controls,
   Background,
   BackgroundVariant,
+  useReactFlow
 } from "react-flow-renderer";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import CanvasSettingsDrawer from "./CanvasSettingsDrawer";
 
 import Sidebar from "./Sidebar";
-import Condition from "./Condition";
+import ConditionStep from "./ConditionStep";
 import TriggerStep from "./TriggerStep";
 import ExitStep from "./ExitStep";
+import DelayStep from "./DelayStep";
+import SendEmailStep from "./SendEmailStep";
+import axios from "axios";
 
 const getId = () => {
   const lastStepNodeID = useGlobalStore.getState().lastStepNodeID;
   const newID = lastStepNodeID + 1;
-  console.log(lastStepNodeID);
+  //.log(lastStepNodeID);
   useGlobalStore.setState({ lastStepNodeID: newID });
   return `dndnode_${newID}`;
 };
 
 const nodeTypes = {
-  conditionNode: Condition,
   triggerStep: TriggerStep,
+  conditionStep: ConditionStep,
+  delayStep: DelayStep,
+  sendEmailStep: SendEmailStep,
   exitStep: ExitStep,
 };
 
@@ -39,13 +45,25 @@ const Canvas = () => {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [selectedNodeID, setSelectedNodeID] = useState(null);
   const [selectedNodeType, setSelectedNodeType] = useState(null);
+  const { setViewport } = useReactFlow();
+
+
+  //dynamic flow ID
+  const flowKey = 'test-flow';
+
+  const [id, setId] = useState(3);
+  const [title, setTitle] = useState("");
+  const [workflow_data, setWorkflowData] = useState({});
+  const [global_state, setGlobalState] = useState({});
+  const [status, setStatus] = useState(1);
+
 
   useEffect(() => {
     setNodes((nds) =>
       nds.concat({
         id: getId(),
         type: "triggerStep",
-        position: { x: 100, y: 200 },
+        position: { x: 100, y: 100 },
         data: {
           deleteNode,
           deleteEdges,
@@ -54,12 +72,72 @@ const Canvas = () => {
         },
       })
     );
+
+    const wfDetails = axios({
+      method: 'get',
+      url: `/wp-json/mrm/v1/workflows/${id}`
+    }).then((response)=>{
+      //console.log(response.data['data']);
+      setTitle(response.data['data'][0].title);
+      setWorkflowData(response.data['data'][0].workflow_data);
+      setGlobalState(response.data['data'][0].global_state);
+      setStatus(response.data['data'][0].status);
+    });
+
+
   }, []);
 
+  
+  
+
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+
+      //update on database
+
+      const res = axios({
+        method: 'put',
+        url: `/wp-json/mrm/v1/workflows/${id}`,
+        data: {
+          'title': title,
+          'workflow_data': JSON.stringify(flow),
+          'global_state' : JSON.stringify(global_state),
+          'status': status
+        }
+      });
+
+      //localStorage.setItem(flowKey, JSON.stringify(flow));
+    }
+  }, [reactFlowInstance, title]);
+
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+
+      //get from database workflow_data
+      const flow = JSON.parse(workflow_data);
+
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        const newNodes = flow.nodes.map((node) => {return {...node, data: {
+          deleteNode,
+          deleteEdges,
+          resetNode,
+          openSettings,}}})
+        setNodes(newNodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+      }
+    };
+
+    restoreFlow();
+  }, [setNodes, setViewport, workflow_data]);
+  
+
   const deleteNode = useCallback((nodeID) => {
-    console.log(`${nodeID}`);
+    //console.log(`${nodeID}`);
     setNodes((prevNodes) => {
-      console.log(prevNodes);
+      //console.log(prevNodes);
       return prevNodes.filter((node) => node.id != nodeID);
     });
     deleteEdges(nodeID);
@@ -67,9 +145,9 @@ const Canvas = () => {
 
   const deleteEdges = useCallback(
     (nodeID) => {
-      console.log(`${nodeID}`);
+      //console.log(`${nodeID}`);
       setEdges((prevEdges) => {
-        console.log(prevEdges);
+        //console.log(prevEdges);
         return prevEdges.filter(
           (edge) => edge.source != nodeID && edge.target != nodeID
         );
@@ -79,7 +157,7 @@ const Canvas = () => {
   );
 
   const resetNode = (nodeID) => {
-    console.log(`${nodeID}`);
+    //console.log(`${nodeID}`);
     deleteEdges(nodeID);
   };
 
@@ -128,10 +206,6 @@ const Canvas = () => {
         },
       };
 
-      if (nodeType === "Condition") {
-        newNode.type = "conditionNode";
-      }
-
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance, setNodes]
@@ -144,9 +218,9 @@ const Canvas = () => {
   );
 
   const allnodes = () => {
-    //console.log(nodes)
+    console.log(nodes)
     console.log("Triggered...");
-    //console.log(edges)
+    console.log(edges)
 
     let startNode = 0;
 
@@ -209,6 +283,10 @@ const Canvas = () => {
           <Background gap={10} size={0.5} />
           <Controls />
         </ReactFlow>
+      </div>
+      <div className="save__controls">
+        <button onClick={onSave}>Save</button>
+        <button onClick={onRestore}>Restore</button>
       </div>
     </div>
   );

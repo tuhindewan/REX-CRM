@@ -199,16 +199,63 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
 
     /**
-     * Get tags related to a contact
+     * Add tags to new contact
      * 
-     * @param mixed $tag_ids
+     * @param array $tags
+     * @param int $contact_id
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public static function set_tags_to_contact( $tags, $contact_id )
+    {
+        $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
+    
+            // Create new tag if not exist
+            if( 0 == $tag['id'] ){
+
+                $exist = MRM_Contact_Group_Model::is_group_exist( $tag['slug'], 1 );
+
+                if(!$exist){
+                    $new_tag    = new MRM_Tag($tag);
+                    $new_tag_id = MRM_Contact_Group_Model::get_instance()->insert( $new_tag, 1 );
+                }
+                
+            }
+
+            if(isset($new_tag_id)){
+                $tag['id'] = $new_tag_id;
+            }
+
+            return array(
+                'group_id'    =>  $tag['id'],
+                'contact_id'  =>  $contact_id
+            );
+            
+
+        }, $tags);
+        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+    }
+
+
+    /**
+     * Return tags which are assigned to a contact
+     * 
+     * @param mixed $contact
      * 
      * @return array
      * @since 1.0.0
      */
-    public function get_tags_to_contact( $tag_ids )
+    public static function get_tags_to_contact( $contact )
     {
-        return MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 1 );
+        $contact->tags = array();
+        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
+        $tag_ids = array_map( function($tag_id) {
+            return $tag_id['group_id'];
+        }, $results);
+
+        $contact->tags = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 1 );
+        return $contact;
     }
 
 }

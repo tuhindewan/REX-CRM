@@ -1,33 +1,43 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import { Button, Table } from "rsuite";
+import { Link } from "react-router-dom";
+const { Column, HeaderCell, Cell } = Table;
+import BaseTable from "../components/BaseTable";
+import Import from "./ImportContacts";
 
+const leftMarkup = (
+  <Link to="/contacts/import">
+    <Button appearance="primary"> + Import</Button>
+  </Link>
+);
 const Contacts = () => {
-  const [contacts, setContacts] = useState([]);
-  useEffect(() => {
-    async function getData() {
-      const data = await axios.get("/wp-json/mrm/v1/contacts");
-      const dataJson = data.data;
-      setContacts(dataJson.data.data);
-    }
-    getData();
-  }, []);
   return (
     <>
-      <div>
-        {" "}
-        Contact Page
-        {contacts.length > 0 &&
-          contacts.map((contact, index) => {
-            return (
-              <div key={index}>
-                <div>
-                  {contact.first_name} {contact.last_name}
-                </div>
-                <div>{contact.email}</div>
-              </div>
-            );
-          })}
-      </div>
+      <BaseTable endpoint="/contacts" leftMarkup={leftMarkup}>
+        <Column width={50} align="center" fixed>
+          <HeaderCell>Id</HeaderCell>
+          <Cell dataKey="id" />
+        </Column>
+
+        <Column width={100} fixed>
+          <HeaderCell>First Name</HeaderCell>
+          <Cell dataKey="first_name" />
+        </Column>
+
+        <Column width={100}>
+          <HeaderCell>Last Name</HeaderCell>
+          <Cell dataKey="last_name" />
+        </Column>
+
+        <Column width={200}>
+          <HeaderCell>Status</HeaderCell>
+          <Cell dataKey="status" />
+        </Column>
+
+        <Column width={200} flexGrow={1}>
+          <HeaderCell>Email</HeaderCell>
+          <Cell dataKey="email" />
+        </Column>
+      </BaseTable>
     </>
   );
 };

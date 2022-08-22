@@ -22,13 +22,13 @@
 .mrm-a:hover,
 .mrm-a:active,
 .mrm-a:focus {
-  background-color: rgb(107, 14, 14);
+  background-color: #3498ff;
   color: white;
   box-shadow: none;
   outline: none;
 }
 
-.active {
+.mrm-active {
   color: white;
-  background-color: rgb(107, 14, 14);
+  background-color: #3498ff;
 }

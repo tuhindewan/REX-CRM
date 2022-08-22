@@ -9,6 +9,7 @@ use MRM\Models\MRM_Contact_Group_Model;
 use MRM\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Common\MRM_Common;
+use MRM\Models\MRM_Contact_Group_Pivot_Model;
 
 /**
  * @author [MRM Team]
@@ -176,16 +177,63 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
 
     /**
-     * Get Lists related to a contact
+     * Add lists to new contact
      * 
-     * @param mixed $lists_ids
+     * @param array $lists
+     * @param int $contact_id
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public static function set_lists_to_contact( $lists, $contact_id )
+    {
+        $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
+
+            // Create new tag if not exist
+            if( 0 == $list['id'] ){
+                $exist = MRM_Contact_Group_Model::is_group_exist( $list['slug'], 2 );
+                if(!$exist){
+                    $new_list = new MRM_List($list);
+                    $new_list_id = MRM_Contact_Group_Model::get_instance()->insert( $new_list, 2 );
+                }
+                
+            }
+
+            if(isset($new_list_id)){
+                $list['id'] = $new_list_id;
+            }
+
+            return array(
+                'group_id'    =>  $list['id'],
+                'contact_id'  =>  $contact_id
+            );
+            
+
+        }, $lists);
+        
+        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivot_ids );
+        
+    }
+
+
+    /**
+     * Return lists which are assigned to a contact
+     * 
+     * @param mixed $contact
      * 
      * @return array
      * @since 1.0.0
      */
-    public function get_lists_to_contact( $lists_ids )
+    public static function get_lists_to_contact( $contact )
     {
-        return MRM_Contact_Group_Model::get_groups_to_contact( $lists_ids, 2 );
+        $contact->lists = array();
+        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
+        $list_ids = array_map( function($list_id) {
+            return $list_id['group_id'];
+        }, $results);
+
+        $contact->lists = MRM_Contact_Group_Model::get_groups_to_contact( $list_ids, 2 );
+        return $contact;
     }
     
 }

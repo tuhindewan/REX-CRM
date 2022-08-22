@@ -10,13 +10,6 @@ const Sidebar = () => {
     <div className="canvas-drag-picker-wrapper">
       <div
         className="dndnode"
-        onDragStart={(event) => onDragStart(event, "triggerStep")}
-        draggable
-      >
-        Trigger Step
-      </div>
-      <div
-        className="dndnode"
         onDragStart={(event) => onDragStart(event, "sendEmailStep")}
         draggable
       >
@@ -35,27 +28,6 @@ const Sidebar = () => {
         draggable
       >
         Condition
-      </div>
-      <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, "goalStep")}
-        draggable
-      >
-        Goal
-      </div>
-      <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, "parallelPathStep")}
-        draggable
-      >
-        Parallel Path
-      </div>
-      <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, "listStep")}
-        draggable
-      >
-        List/Unlist
       </div>
       <div
         className="dndnode"

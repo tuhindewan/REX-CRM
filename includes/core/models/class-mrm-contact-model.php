@@ -15,7 +15,7 @@ use MRM\Traits\Singleton;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle Contact Module database related operations]
+ * @desc [Manage Contact Module database related operations]
  */
 
 class MRM_Contact_Model{
@@ -101,11 +101,10 @@ class MRM_Contact_Model{
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
-        $sqlCount = $wpdb->prepare("SELECT COUNT(*) as total FROM {$table_name} WHERE email = %s",array($email));
-        $sqlCountData = $wpdb->get_results($sqlCount);
-        $sqlCountDataJson = json_decode(json_encode($sqlCountData), true);
-        $count = (int) $sqlCountDataJson['0']['total'];
-        if( $count ){
+        $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE email = %s", array( $email ));
+        $results = $wpdb->get_results($select_query);
+
+        if( $results ){
             return true;
         }
         return false;
@@ -177,7 +176,6 @@ class MRM_Contact_Model{
     /**
      * Run SQL query to get or search contacts from database
      * 
-     * @param int $type     Tag or List or Segment type
      * @param int $offset
      * @param int $limit
      * @param string $search
@@ -200,18 +198,17 @@ class MRM_Contact_Model{
         try {
             $select_query = "SELECT * FROM {$table_name} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
             $query_results = $wpdb->get_results( $select_query );
-            $results = json_decode(json_encode($query_results), true);
 
             $count_query = "SELECT COUNT(*) as total FROM {$table_name} {$search_terms}";
-            $count_data = $wpdb->get_results($count_query);
-            $count_array = json_decode(json_encode($count_data), true);
+            $count_result = $wpdb->get_results($count_query);
             
-            $count = (int) $count_array['0']['total'];
+            $count = (int) $count_result['0']->total;
             $total_pages = ceil(intdiv($count, $limit));
       
             return array(
-                'data'=> $results,
-                'total_pages' => $total_pages
+                'data'=> $query_results,
+                'total_pages' => $total_pages,
+                'count' => $count
             );
         } catch(\Exception $e) {
             return NULL;
@@ -225,7 +222,7 @@ class MRM_Contact_Model{
      * 
      * @param mixed $id Contact ID
      * 
-     * @return array|bool
+     * @return object
      * @since 1.0.0
      */
     public static function get( $id )
@@ -235,12 +232,11 @@ class MRM_Contact_Model{
 
         try {
             $select_query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array( $id ));
-            $select_results = $wpdb->get_results( $select_query );
-            $results = json_decode(json_encode( $select_results ), true );
-            return $results;
+            return $wpdb->get_row( $select_query );
         } catch(\Exception $e) {
             return false;
         }
     }
+
     
 }
