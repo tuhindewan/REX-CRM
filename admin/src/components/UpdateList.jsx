@@ -8,11 +8,11 @@ import {
   Notification,
   useToaster,
 } from "rsuite";
-import { Link, useLocation, useParams} from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
 const UpdateList = (props) => {
     
-    
+    let navigate = useNavigate();
     const location = useLocation(); 
     const [tagData, setTagData] = useState({});
     const {id} = useParams();
@@ -95,6 +95,7 @@ const UpdateList = (props) => {
       setSlug("");
     }
     setLoading(false);
+    navigate("../lists")
   }
   const styles = {
     width: 300,

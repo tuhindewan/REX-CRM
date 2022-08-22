@@ -8,9 +8,11 @@ import {
   Notification,
   useToaster,
 } from "rsuite";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateTag = (props) => {
+
+    let navigate = useNavigate();
   const { endpoint = "/tags/" } = props;
   const plural = endpoint.replace("/", "");
   const singular = plural.substr(0, plural.length - 1);
@@ -66,6 +68,8 @@ const CreateTag = (props) => {
       setSlug("");
     }
     setLoading(false);
+    
+    navigate("../tags");
   }
   const styles = {
     width: 300,

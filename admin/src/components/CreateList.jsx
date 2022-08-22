@@ -8,9 +8,10 @@ import {
   Notification,
   useToaster,
 } from "rsuite";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateList = (props) => {
+    let navigate = useNavigate();
   const { endpoint = "/lists/" } = props;
   const plural = endpoint.replace("/", "");
   const singular = plural.substr(0, plural.length - 1);
@@ -66,6 +67,7 @@ const CreateList = (props) => {
       setSlug("");
     }
     setLoading(false);
+    navigate("../lists");
   }
   const styles = {
     width: 300,
