@@ -14,7 +14,9 @@ import {
 import config from "../config.js";
 
 const ContactCreateUpdate = (props) => {
+  // if id is defined then it is an update page otherwise it is an create page
   let { id } = useParams();
+
   const location = useLocation();
   const toaster = useToaster();
   const [contactDetails, setContactDetails] = useState({
@@ -54,17 +56,32 @@ const ContactCreateUpdate = (props) => {
   };
   async function insertOrUpdateContact() {
     setLoading(true);
-    const contact = {
-      ...contactDetails,
-      tags: tags,
-      lists: lists,
-    };
-
-    const res = await axios.post(`${config.baseURL}/contacts`, contact, {
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
+    let res = null;
+    if (!id) {
+      // create contact
+      let contact = {
+        ...contactDetails,
+        tags: tags,
+        lists: lists,
+      };
+      res = await axios.post(`${config.baseURL}/contacts`, contact, {
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+    } else {
+      // update contact
+      let contact = {
+        ...contactDetails,
+        tags: [...contactDetails.existing_tags, ...tags],
+        lists: [...contactDetails.existing_lists, ...lists],
+      };
+      res = await axios.put(`${config.baseURL}/contacts/${id}`, contact, {
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+    }
 
     const resJson = res.data;
     console.log(resJson);
@@ -78,9 +95,12 @@ const ContactCreateUpdate = (props) => {
           placement: "bottomEnd",
         }
       );
+    } else {
     }
     setLoading(false);
   }
+
+  // load contact details in update page
   useEffect(() => {
     async function getContact() {
       if (id) {
@@ -90,7 +110,17 @@ const ContactCreateUpdate = (props) => {
           },
         });
         const resJson = res.data;
-        console.log(resJson);
+        if ((resJson.code = 200)) {
+          let details = {
+            ...resJson.data,
+            existing_tags: resJson.data.tags,
+            existing_lists: resJson.data.lists,
+            tags: [],
+            lists: [],
+          };
+          console.log(details);
+          setContactDetails(details);
+        }
       }
     }
     getContact();
@@ -197,7 +227,20 @@ const ContactCreateUpdate = (props) => {
             handleContactStatusChange("status", value);
           }}
         />
+
+        <div>
+          <div>Tags</div>
+          {contactDetails.existing_tags?.map((item) => {
+            return <div key={item["slug"]}>{item["title"]}</div>;
+          })}
+        </div>
         <BasePicker endpoint="/tags" data={tags} setData={setTags} />
+        <div>
+          <div>Lists</div>
+          {contactDetails.existing_lists?.map((item) => {
+            return <div key={item["slug"]}>{item["title"]}</div>;
+          })}
+        </div>
         <BasePicker endpoint="/lists" data={lists} setData={setLists} />
         <Button
           onClick={insertOrUpdateContact}

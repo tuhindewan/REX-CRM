@@ -31,10 +31,10 @@ const Contacts = () => {
         </Column>
 
         <Column width={150} align="left" flexGrow={1}>
-          <HeaderCell>Title</HeaderCell>
+          <HeaderCell>Name</HeaderCell>
           <Cell>
             {(rowData) => (
-              <Link to={`/contacts/${rowData["id"]}`}>
+              <Link to={`/contacts/update/${rowData["id"]}`}>
                 <div> {`${rowData["first_name"]} ${rowData["last_name"]}`}</div>
               </Link>
             )}
@@ -44,6 +44,27 @@ const Contacts = () => {
         <Column width={200}>
           <HeaderCell>Status</HeaderCell>
           <Cell dataKey="status" />
+        </Column>
+        <Column width={200}>
+          <HeaderCell>Lists</HeaderCell>
+          <Cell>
+            {(rowData) =>
+              rowData.lists.map((item) => {
+                return <span key={item["slug"]}>{item["title"]}</span>;
+              })
+            }
+          </Cell>
+        </Column>
+
+        <Column width={200}>
+          <HeaderCell>Tags</HeaderCell>
+          <Cell>
+            {(rowData) =>
+              rowData.tags.map((item) => {
+                return <span key={item["slug"]}>{item["title"]}</span>;
+              })
+            }
+          </Cell>
         </Column>
 
         <Column width={200} flexGrow={1}>

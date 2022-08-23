@@ -15,11 +15,6 @@ import CreateSegment from "../components/Segment/CreateSegment";
 
 const routes = [
   {
-    path: "/",
-    element: Dashboard,
-    title: __("Dashboard", "mrm"),
-  },
-  {
     path: "/contacts",
     element: Contacts,
     title: __("Contacts", "mrm"),
@@ -83,7 +78,7 @@ const routes = [
     path: "segments/create",
     element: CreateSegment,
     hideInMenu: true,
-  }
+  },
 ];
 
 export default routes;
