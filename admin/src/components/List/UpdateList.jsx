@@ -8,17 +8,47 @@ import {
   Notification,
   useToaster,
 } from "rsuite";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
-const CreateTag = (props) => {
-  const { endpoint = "/tags/" } = props;
+const UpdateList = (props) => {
+    
+    let navigate = useNavigate();
+    const location = useLocation(); 
+    const [tagData, setTagData] = useState({});
+    const {id} = useParams();
+
+    useEffect(() => {
+        async function getData() {
+            const res = await axios.get(
+                    `/wp-json/mrm/v1${endpoint}${id}`,
+                    {
+                        title,
+                        slug,
+                    },
+                    {
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    }
+            )
+            const resJson = res.data.data;
+            setTitle(resJson[0].title);
+            setSlug(resJson[0].slug);   
+        }
+        getData();
+    }, []);
+
+    
+
+  const { endpoint = "/lists/" } = props;
   const plural = endpoint.replace("/", "");
   const singular = plural.substr(0, plural.length - 1);
-
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
+  const [title, setTitle] = useState(title);
+  const [slug, setSlug] = useState(slug);
   const [loading, setLoading] = useState(false);
   const toaster = useToaster();
+
+
 
   const handleTitleChange = (value) => {
     setTitle(value);
@@ -38,8 +68,8 @@ const CreateTag = (props) => {
       return;
     }
     setLoading(true);
-    const res = await axios.post(
-      `/wp-json/mrm/v1${endpoint}`,
+    const res = await axios.put(
+      `/wp-json/mrm/v1${endpoint}${id}`,
       {
         title,
         slug,
@@ -51,12 +81,11 @@ const CreateTag = (props) => {
       }
     );
     const resJson = res.data;
-    console.log(resJson);
     const code = resJson.code;
     if (code == 201) {
       toaster.push(
         <Notification closable type="success" header="success" duration={2000}>
-          Created new {singular}
+          List Updated
         </Notification>,
         {
           placement: "bottomEnd",
@@ -66,6 +95,7 @@ const CreateTag = (props) => {
       setSlug("");
     }
     setLoading(false);
+    navigate("../lists")
   }
   const styles = {
     width: 300,
@@ -79,23 +109,23 @@ const CreateTag = (props) => {
     >
       <InputGroup style={styles}>
         <InputGroup.Addon> Title</InputGroup.Addon>
-        <Input value={title} onChange={handleTitleChange} />
+        <Input value={title} onChange={handleTitleChange}/>
       </InputGroup>
 
       <InputGroup style={styles}>
         <InputGroup.Addon>Slug</InputGroup.Addon>
-        <Input value={slug} onChange={setSlug} />
+        <Input value={slug} onChange={setSlug}/>
       </InputGroup>
         <Button
             onClick={() => insertData(title, slug)}
             appearance="primary"
             loading={loading}
         >
-        Create Tag
+        Update List
         </Button>
         
     </Stack>
   );
 };
 
-export default CreateTag;
+export default UpdateList;

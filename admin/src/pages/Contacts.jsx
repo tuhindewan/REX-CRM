@@ -1,15 +1,27 @@
 import { Button, Table } from "rsuite";
 import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
-import BaseTable from "../components/BaseTable";
-import Import from "./ImportContacts";
+import BaseTable from "../components/Base/BaseTable";
+import { useSearchParams } from "react-router-dom";
+
+async function filterContacts() {}
 
 const leftMarkup = (
-  <Link to="/contacts/import">
-    <Button appearance="primary"> + Import</Button>
-  </Link>
+  <>
+    <Link to="/contacts/create">
+      <Button appearance="primary">+ Create</Button>
+    </Link>
+    <Link to="/contacts/import">
+      <Button appearance="primary">+ Import</Button>
+    </Link>
+  </>
 );
 const Contacts = () => {
+  const search = useSearchParams();
+  const searchParams = new URLSearchParams("lists=[1,2,3]");
+
+  console.log(JSON.parse(searchParams.get("lists")));
+
   return (
     <>
       <BaseTable endpoint="/contacts" leftMarkup={leftMarkup}>
@@ -18,14 +30,15 @@ const Contacts = () => {
           <Cell dataKey="id" />
         </Column>
 
-        <Column width={100} fixed>
-          <HeaderCell>First Name</HeaderCell>
-          <Cell dataKey="first_name" />
-        </Column>
-
-        <Column width={100}>
-          <HeaderCell>Last Name</HeaderCell>
-          <Cell dataKey="last_name" />
+        <Column width={150} align="left" flexGrow={1}>
+          <HeaderCell>Title</HeaderCell>
+          <Cell>
+            {(rowData) => (
+              <Link to={`/contacts/${rowData["id"]}`}>
+                <div> {`${rowData["first_name"]} ${rowData["last_name"]}`}</div>
+              </Link>
+            )}
+          </Cell>
         </Column>
 
         <Column width={200}>

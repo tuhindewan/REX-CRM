@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useGlobalStore } from "../hooks/useGlobalStore";
-import "../style/Canvas.css";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import "../../style/Canvas.css";
 
 
 

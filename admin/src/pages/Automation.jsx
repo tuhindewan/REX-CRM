@@ -1,5 +1,5 @@
 import React from "react";
-import Canvas from '../components/Canvas.jsx'
+import Canvas from '../components/Canvas/Canvas.jsx'
 
 const Automation = () => {
   return (

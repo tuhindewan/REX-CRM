@@ -14,7 +14,7 @@ import {
 } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 const { Column, HeaderCell, Cell } = Table;
-import "../style/BaseTable.css";
+import "../../style/BaseTable.css";
 
 const BaseTable = (props) => {
   const { endpoint = "/contacts", children, height = 420, leftMarkup } = props;
@@ -129,7 +129,10 @@ const BaseTable = (props) => {
                   limit={perPage}
                   activePage={page}
                   onChangePage={setPage}
-                  onChangeLimit={setPerPage}
+                  onChangeLimit={(value) => {
+                    setPage(1);
+                    setPerPage(value);
+                  }}
                 />
               </div>
             </>
