@@ -80,7 +80,8 @@ class MRM_API_Register {
             'notes'         =>  'MRM_Note_API_Route',
             'contacts'      =>  'MRM_Contact_API_Route',
             'workflows'     =>  'MRM_Workflow_API_Route',
-            'field-groups'  =>  'FieldGroupRoute'
+            'field-groups'  =>  'FieldGroupRoute',
+            'custom-fields' =>  'CustomFieldRoute'
 		));
     }
     

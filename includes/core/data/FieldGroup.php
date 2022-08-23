@@ -23,7 +23,7 @@ class FieldGroup {
 
     public function __construct( $args )
     {
-        $this->title = isset($args['title']) ? $args['title'] : NULL;
+        $this->title = isset($args['title']) ? sanitize_text_field( $args['title'] ) : NULL;
     }
 
  

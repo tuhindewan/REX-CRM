@@ -97,7 +97,7 @@ class FieldGroup{
     /**
      * Delete a group from the database
      * 
-     * @param mixed $id      Filed group ID
+     * @param mixed $id      Field group ID
      * 
      * @return bool
      * @since 1.0.0
@@ -110,6 +110,29 @@ class FieldGroup{
         try {
             $wpdb->delete( $group_table, ['id' => $id], ["%d"] );
             return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Run SQL query to get a single field group
+     * 
+     * @param int $id   Group ID
+     * 
+     * @return array an array of results if successfull, NULL otherwise
+     * @since 1.0.0 
+     */
+    public static function get( $id ){
+
+        global $wpdb;
+        $group_table = $wpdb->prefix . CustomFieldGroup::$table_name;
+
+        try {
+            $select_query   = $wpdb->prepare( "SELECT * FROM $group_table WHERE id = %d",array( $id ) );
+            $select_result  = $wpdb->get_results( $select_query );
+            return $select_result;
         } catch(\Exception $e) {
             return false;
         }

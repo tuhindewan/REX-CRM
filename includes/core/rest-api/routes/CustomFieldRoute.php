@@ -2,7 +2,7 @@
 
 namespace MRM\REST\Routes;
 
-use MRM\Controllers\FieldGroupController;
+use MRM\Controllers\CustomFieldController;
 use WP_REST_Server;
 
 /**
@@ -10,10 +10,10 @@ use WP_REST_Server;
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Manage Custom Field Group related API]
+ * @desc [Manage Custom Fields related API]
  */
 
-class FieldGroupRoute{
+class CustomFieldRoute{
 
     /**
      * Endpoint namespace.
@@ -29,11 +29,11 @@ class FieldGroupRoute{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'field-groups';
+    protected $rest_base = 'custom-fields';
 
 
     /**
-     * FieldGroupController class object
+     * CustomFieldController class object
      * 
      * @var object
      * @since 1.0.0
@@ -50,7 +50,7 @@ class FieldGroupRoute{
      */
     public function register_routes(){
 
-        $this->controller = FieldGroupController::get_instance();
+        $this->controller = CustomFieldController::get_instance();
     
         /**
          * Field group create endpoint
@@ -87,7 +87,7 @@ class FieldGroupRoute{
          * 
          * @since 1.0.0
         */  
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<group_id>[\d]+)', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<field_id>[\d]+)', [
             [
                 'methods' => WP_REST_Server::EDITABLE,
                 'callback' => [

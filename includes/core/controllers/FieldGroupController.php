@@ -18,7 +18,7 @@ use MRM\Models\FieldGroup as ModelsFieldGroup;
  * @desc [Responsible for managing Custom Field Group API callbacks]
  */
 
-class FieldGroupCpntroller extends MRM_Base_Controller {
+class FieldGroupController extends MRM_Base_Controller {
     
     use Singleton;
 
@@ -99,7 +99,7 @@ class FieldGroupCpntroller extends MRM_Base_Controller {
 
 
     /**
-     * Get all group fields requFunction used to handle a single get requestest
+     * Get all group fields request
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -121,7 +121,7 @@ class FieldGroupCpntroller extends MRM_Base_Controller {
 
 
     /**
-     * TODO: complete this function in order to get single field froup information
+     * Function use to get single field group
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -129,7 +129,15 @@ class FieldGroupCpntroller extends MRM_Base_Controller {
      */
     public function get_single( WP_REST_Request $request ){
  
-        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+    
+        $group = ModelsFieldGroup::get( $params['group_id'] );
+
+        if(isset($group)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $group);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
 
     }
 
