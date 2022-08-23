@@ -10,6 +10,7 @@ import CreateTag from "../components/CreateTag";
 import UpdateTag from "../components/UpdateTag";
 import CreateList from "../components/CreateList";
 import UpdateList from "../components/UpdateList";
+import CreateSegment from "../components/CreateSegment";
 
 const routes = [
   {
@@ -68,6 +69,11 @@ const routes = [
     element: UpdateList,
     hideInMenu: true,
   },
+  {
+    path: "segments/create",
+    element: CreateSegment,
+    hideInMenu: true,
+  }
 ];
 
 export default routes;

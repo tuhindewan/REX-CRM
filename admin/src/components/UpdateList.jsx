@@ -43,8 +43,8 @@ const UpdateList = (props) => {
   const { endpoint = "/lists/" } = props;
   const plural = endpoint.replace("/", "");
   const singular = plural.substr(0, plural.length - 1);
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
+  const [title, setTitle] = useState(title);
+  const [slug, setSlug] = useState(slug);
   const [loading, setLoading] = useState(false);
   const toaster = useToaster();
 
