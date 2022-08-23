@@ -1,30 +1,88 @@
-import { Button, Table } from "rsuite";
+import { Button, Table, SelectPicker, Stack } from "rsuite";
 import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 import BaseTable from "../components/Base/BaseTable";
 import { useSearchParams } from "react-router-dom";
+import BasePicker from "../components/Base/BasePicker";
+import React, { useState, useEffect } from "react";
 
 async function filterContacts() {}
 
-const leftMarkup = (
-  <>
-    <Link to="/contacts/create">
-      <Button appearance="primary">+ Create</Button>
-    </Link>
-    <Link to="/contacts/import">
-      <Button appearance="primary">+ Import</Button>
-    </Link>
-  </>
-);
 const Contacts = () => {
   const search = useSearchParams();
+
   const searchParams = new URLSearchParams("lists=[1,2,3]");
 
   console.log(JSON.parse(searchParams.get("lists")));
+  const [tags, setTags] = useState([]);
+  const [lists, setLists] = useState([]);
+  const [status, setStatus] = useState("pending");
+
+  const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
+    (data) => ({ label: data.toUpperCase(), value: data })
+  );
 
   return (
     <>
-      <BaseTable endpoint="/contacts" leftMarkup={leftMarkup}>
+      <BaseTable
+        endpoint="/contacts"
+        leftMarkup={
+          <>
+            <Stack
+              spacing={10}
+              justifyContent="space-between"
+              alignItems="center"
+              style={{ margin: 10 }}
+              wrap
+            >
+              <Stack
+                spacing={10}
+                justifyContent="center"
+                alignItems="center"
+                style={{ margin: 10 }}
+                wrap
+              >
+                <BasePicker
+                  endpoint="/tags"
+                  data={tags}
+                  setData={setTags}
+                  width={150}
+                />
+                <BasePicker
+                  endpoint="/lists"
+                  data={lists}
+                  setData={setLists}
+                  width={150}
+                />
+                <SelectPicker
+                  menuAutoWidth
+                  data={statusData}
+                  label="Status"
+                  name="status"
+                  defaultValue="pending"
+                  value={status}
+                  block
+                  onChange={setStatus}
+                />
+                <Button appearance="primary">Filter</Button>
+              </Stack>
+              <Stack
+                spacing={10}
+                justifyContent="center"
+                alignItems="center"
+                // style={{ margin: 10 }}
+              >
+                <Link to="/contacts/create">
+                  <Button appearance="primary">+ Create</Button>
+                </Link>
+                <Link to="/contacts/import">
+                  <Button appearance="primary">+ Import</Button>
+                </Link>
+              </Stack>
+            </Stack>
+          </>
+        }
+      >
         <Column width={50} align="center" fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey="id" />

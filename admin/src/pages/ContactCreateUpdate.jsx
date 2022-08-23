@@ -72,9 +72,11 @@ const ContactCreateUpdate = (props) => {
     } else {
       // update contact
       let contact = {
-        ...contactDetails,
-        tags: [...contactDetails.existing_tags, ...tags],
-        lists: [...contactDetails.existing_lists, ...lists],
+        fields: {
+          ...contactDetails,
+          tags: [...contactDetails.existing_tags, ...tags],
+          lists: [...contactDetails.existing_lists, ...lists],
+        },
       };
       res = await axios.put(`${config.baseURL}/contacts/${id}`, contact, {
         headers: {
