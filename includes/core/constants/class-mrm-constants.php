@@ -11,6 +11,7 @@ namespace MRM\Constants;
  */
 
 class MRM_Constants{
+
     /**
      * Contact attrs available for mapping
      */
@@ -27,6 +28,22 @@ class MRM_Constants{
         "state",
         "country",
         "phone"
+    );
+
+
+    /**
+     * Contact attrs available for mapping
+     */
+    public static $primary_contact_fields = array(
+        "first_name",		
+        "last_name",
+        "email",
+        "postal_code",
+        "scores",	
+        "source",
+        "status",
+        "stage",
+        "last_activity"
     );
 
     /*

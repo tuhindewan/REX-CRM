@@ -77,7 +77,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $this->contact_args = array(
 			'first_name'    =>  isset( $params['first_name'] )  ?   sanitize_text_field($params['first_name'])  : NULL,
             'last_name'     =>  isset( $params['last_name'] )   ?   sanitize_text_field($params['last_name'])   : NULL,
-            'phone'         =>  isset( $params['phone'] )       ?   sanitize_text_field($params['phone'])       : NULL,
             'status'        =>  isset( $params['status'] )      ?   sanitize_text_field($params['status'])      : NULL,
             'source'        =>  isset( $params['source'] )      ?   sanitize_text_field($params['source'])      : NULL,
 		);
@@ -86,7 +85,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         try {
 
             if( isset( $params['contact_id']) ){
-                $contact_id = MRM_Contact_Model::update( $params['contact_id'], $params['fields'] );
+                $contact_id = MRM_Contact_Model::update( $params['contact_id'], $params['primary'], $params['info'] );
             }else{
                 // Existing contact email address check
                 $exist = MRM_Contact_Model::is_contact_exist( $email );

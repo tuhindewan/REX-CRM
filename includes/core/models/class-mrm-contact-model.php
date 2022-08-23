@@ -3,8 +3,10 @@
 namespace MRM\Models;
 
 use MRM\Common\MRM_Common;
+use MRM\Constants\MRM_Constants;
 use MRM\Data\MRM_Contact;
 use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
+use MRM\DB\Tables\MRM_Contact_Info_Table;
 use MRM\DB\Tables\MRM_Contact_Meta_Table;
 use MRM\DB\Tables\MRM_Contact_Note_Table;
 use MRM\DB\Tables\MRM_Contacts_Table;
@@ -43,10 +45,8 @@ class MRM_Contact_Model{
                 'email'         =>  $contact->get_email(),
                 'first_name'    =>  $contact->get_first_name(),
                 'last_name'     =>  $contact->get_last_name(),
-                'phone'         =>  $contact->get_phone(),
                 'status'        =>  $contact->get_status(),
                 'source'        =>  $contact->get_source(),
-                'contact_owner' =>  $contact->get_contact_owner(),
                 'hash'          =>  MRM_Common::get_rand_hash(),
                 'created_at'    =>  current_time('mysql')
             ));
@@ -67,27 +67,88 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function update( $contact_id, $fields )
+    public static function update( $contact_id, $primary, $info )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+
+        $primary_fields = MRM_Constants::$primary_contact_fields;
+
+        if( !in_array( $fields,  $primary_fields) ){
+            if( self::is_contact_info_exist( $contact_id ) ){
+                error_log(print_r($fields, 1));
+            }
+            error_log(print_r("So far so good", 1));
+        }
+        
+        // try {
+        //     $wpdb->update( 
+        //         $contacts_table, 
+        //         array( 
+        //             $entity         =>  $value,
+        //             'updated_at'    =>  current_time('mysql')
+        //         ), 
+        //         array( 'ID' => $contact_id )
+        //     );
+        // }catch(\Exception $e){
+        //     return false;
+        // }
+        // return true;
+    }
+
+
+    public static function array_slice_keys($array, $keys = null) {
+        if ( empty($keys) ) {
+            $keys = array_keys($array);
+        }
+        if ( !is_array($keys) ) {
+            $keys = array($keys);
+        }
+        if ( !is_array($array) ) {
+            return array();
+        } else {
+            return array_intersect_key($array, array_fill_keys($keys, '1'));
+        }
+    }
+
+
+    /**
+     * Update a contact information
+     * 
+     * @param mixed $contact_id     Contact ID
+     * @param mixed $fields         Entity and value to update
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_info( $contact_id, $fields )
     {
         global $wpdb;
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
         $entity = array_key_first($fields);
         $value  = array_values($fields)[0];
-
-        try {
-            $wpdb->update( 
-                $contacts_table, 
-                array( 
-                    $entity         =>  $value,
-                    'updated_at'    =>  current_time('mysql')
-                ), 
-                array( 'ID' => $contact_id )
-            );
-        }catch(\Exception $e){
-            return false;
+        $primary_fields = MRM_Constants::$primary_contact_fields;
+        if( !in_array( $entity,  $primary_fields) ){
+            if( self::is_contact_info_exist( $contact_id ) ){
+                error_log(print_r($entity, 1));
+            }
+            error_log(print_r("So far so good", 1));
         }
-        return true;
+        
+        // try {
+        //     $wpdb->update( 
+        //         $contacts_table, 
+        //         array( 
+        //             $entity         =>  $value,
+        //             'updated_at'    =>  current_time('mysql')
+        //         ), 
+        //         array( 'ID' => $contact_id )
+        //     );
+        // }catch(\Exception $e){
+        //     return false;
+        // }
+        // return true;
     }
 
 
@@ -240,6 +301,29 @@ class MRM_Contact_Model{
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    /**
+     * Check existing contact through an email address
+     * 
+     * @param string $email 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_contact_info_exist( $contact_id )
+    {
+        global $wpdb;
+        $contacts_info_table = $wpdb->prefix . MRM_Contact_Info_Table::$mrm_table;
+
+        $select_query = $wpdb->prepare("SELECT * FROM $contacts_info_table WHERE id = %s", array( $contact_id ));
+        $results = $wpdb->get_results($select_query);
+
+        if( $results ){
+            return true;
+        }
+        return false;
     }
 
     
