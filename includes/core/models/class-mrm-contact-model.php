@@ -190,7 +190,7 @@ class MRM_Contact_Model{
     public static function get_all( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contact_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
         $search_terms = null;
 
         // Search contacts by email, first name or last name
@@ -200,13 +200,14 @@ class MRM_Contact_Model{
 
         // Prepare sql results for list view
         try {
-            $select_query  = $wpdb->prepare( "SELECT * FROM $table_name $search_terms ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
+            $select_query  = $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
 
-            $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name $search_terms" );
-            $count = $wpdb->num_rows;
-
-            $total_pages = ceil(intdiv($count, $limit));
+            $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM $contact_table $search_terms");
+            $count_result   = $wpdb->get_results($count_query);
+    
+            $count = (int) $count_result['0']->total;
+            $total_pages = ceil($count / $limit);
       
             return array(
                 'data'=> $query_results,

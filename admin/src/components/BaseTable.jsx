@@ -129,7 +129,10 @@ const BaseTable = (props) => {
                   limit={perPage}
                   activePage={page}
                   onChangePage={setPage}
-                  onChangeLimit={setPerPage}
+                  onChangeLimit={(value) => {
+                    setPage(1);
+                    setPerPage(value);
+                  }}
                 />
               </div>
             </>
