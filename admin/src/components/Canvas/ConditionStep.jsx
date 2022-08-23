@@ -1,6 +1,6 @@
 import { Handle, Position } from "react-flow-renderer";
-import "../style/Canvas.css";
-import CanvasStepOptions from "../components/CanvasStepOptions";
+import "../../style/Canvas.css";
+import CanvasStepOptions from "./CanvasStepOptions";
 
 const ConditionStep = (props) => {
   const { id, type } = props;

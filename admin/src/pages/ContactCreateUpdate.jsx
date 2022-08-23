@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
-import BasePicker from "../components/BasePicker.jsx";
+import BasePicker from "../components/Base/BasePicker.jsx";
 import {
   Button,
   Stack,

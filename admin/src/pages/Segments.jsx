@@ -1,7 +1,7 @@
-import BaseTable from "../components/BaseTable";
+import BaseTable from "../components/Base/BaseTable";
 import { Table, Button } from "rsuite";
 const { HeaderCell, Cell, Column } = Table;
-import BaseCreate from "../components/BaseCreate";
+import BaseCreate from "../components/Base/BaseCreate";
 import { Link ,useParams} from "react-router-dom";
 
 

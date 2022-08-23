@@ -1,7 +1,7 @@
 import { Button, Table } from "rsuite";
 import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
-import BaseTable from "../components/BaseTable";
+import BaseTable from "../components/Base/BaseTable";
 import Import from "./ImportContacts";
 
 const leftMarkup = (

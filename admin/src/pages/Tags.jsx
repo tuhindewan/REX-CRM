@@ -1,9 +1,9 @@
-import BaseTable from "../components/BaseTable";
+import BaseTable from "../components/Base/BaseTable";
 import React, { useState, useEffect } from "react";
 import { Button, Table } from "rsuite";
 const { HeaderCell, Cell, Column } = Table;
-import BaseCreate from "../components/BaseCreate";
-import CreateTag from "../components/CreateTag";
+import BaseCreate from "../components/Base/BaseCreate";
+import CreateTag from "../components/Tag/CreateTag";
 import { Link ,useParams,} from "react-router-dom";
 
 const leftMarkup = (
