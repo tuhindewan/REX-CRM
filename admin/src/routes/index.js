@@ -6,6 +6,12 @@ import Tags from "../pages/Tags";
 import Segments from "../pages/Segments";
 import Dashboard from "../pages/Dashboard";
 import ImportContacts from "../pages/ImportContacts";
+import ContactCreateUpdate from "../pages/ContactCreateUpdate";
+import CreateTag from "../components/CreateTag";
+import UpdateTag from "../components/UpdateTag";
+import CreateList from "../components/CreateList";
+import UpdateList from "../components/UpdateList";
+import CreateSegment from "../components/CreateSegment";
 
 const routes = [
   {
@@ -19,9 +25,18 @@ const routes = [
     title: __("Contacts", "mrm"),
   },
   {
+    path: "/contacts/create",
+    element: ContactCreateUpdate,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/update/:id",
+    element: ContactCreateUpdate,
+    hideInMenu: true,
+  },
+  {
     path: "/contacts/import",
     element: ImportContacts,
-    title: __("Import", "mrm"),
     hideInMenu: true,
   },
   {
@@ -44,6 +59,31 @@ const routes = [
     element: Automation,
     title: __("Automation", "mrm"),
   },
+  {
+    path: "/tags/create",
+    element: CreateTag,
+    hideInMenu: true,
+  },
+  {
+    path: "/tags/update/:id",
+    element: UpdateTag,
+    hideInMenu: true,
+  },
+  {
+    path: "/lists/create",
+    element: CreateList,
+    hideInMenu: true,
+  },
+  {
+    path: "/lists/update/:id",
+    element: UpdateList,
+    hideInMenu: true,
+  },
+  {
+    path: "segments/create",
+    element: CreateSegment,
+    hideInMenu: true,
+  }
 ];
 
 export default routes;

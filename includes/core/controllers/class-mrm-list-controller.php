@@ -43,7 +43,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
         // list avaiability check
         $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "lists" );
-        if ( $exist ) {
+        if ( $exist && !isset($params['list_id'])) {
 			return $this->get_error_response( __( 'List is already available', 'mrm' ),  400);
 		}
         
