@@ -33,7 +33,7 @@ const ContactCreateUpdate = (props) => {
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
 
-  const statusData = ["subscribed", "unsubscribed", "pending", "bounced"].map(
+  const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
   );
   const handleContactDetailsChange = (value, event) => {

@@ -19,17 +19,15 @@ const ImportContacts = () => {
     setCurrent((prev) => (prev - 1 < 0 ? totalSteps - 1 : prev - 1));
   };
 
-  
   return (
     <>
       <div className="mrm-spacing">
         <Steps current={current}>
           <Steps.Item title="Source" />
           <Steps.Item title="Map" />
-          <Steps.Item title="Done" />
         </Steps>
       </div>
-      
+
       {current == 0 && (
         <>
           <div className="mrm-spacing">
