@@ -78,11 +78,23 @@ const ContactCreateUpdate = (props) => {
           placement: "bottomEnd",
         }
       );
-      setTitle("");
-      setSlug("");
     }
     setLoading(false);
   }
+  useEffect(() => {
+    async function getContact() {
+      if (id) {
+        const res = await axios.get(`${config.baseURL}/contacts/${id}`, {
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
+        const resJson = res.data;
+        console.log(resJson);
+      }
+    }
+    getContact();
+  }, [id]);
   const styles = {
     margin: "10px",
     width: "40vw",
