@@ -12,6 +12,7 @@ import UpdateTag from "../components/Tag/UpdateTag";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import CreateSegment from "../components/Segment/CreateSegment";
+import EmailForm from "../components/Email/EmailForm";
 
 const routes = [
   {
@@ -79,6 +80,11 @@ const routes = [
     element: CreateSegment,
     hideInMenu: true,
   },
+  {
+    path: "contacts/:id/message",
+    element: EmailForm,
+    hideInMenu: true
+  }
 ];
 
 export default routes;
