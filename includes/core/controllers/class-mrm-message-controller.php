@@ -91,6 +91,34 @@ class MRM_Message_Controller extends MRM_Base_Controller {
 
     }
 
+    /**
+     * Get all emails for a contact
+     * 
+     * @param WP_REST_Request
+     * @return WP_RESR_Response
+     * 
+     * @since 1.0.0
+     * 
+     */
+    public function get_all_emails(WP_REST_Request $request){
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $page       =   isset($params['page']) ? $params['page'] : 1;
+        $perPage    =   isset($params['per-page']) ? $params['per-page'] : 25;
+        $offset     =   ($page - 1) * $perPage;
+
+        // Note Search keyword
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+
+        $emails = MRM_Message_Model::get_emails_to_contact($offset, $perPage, $search, $params['contact_id']);
+
+        if(isset($emails)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $emails);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+    }
+
 
 
     /**

@@ -92,11 +92,11 @@ class MRM_Message_Model {
             $count_array = json_decode(json_encode($count_data), true);
             
             $count = (int) $count_array['0']['total'];
-            $total_pages = ceil(intdiv($count, $limit));
+            $totalPages = ceil($count / $limit);
       
             return array(
                 'data'=> $results,
-                'total_pages' => $total_pages
+                'total_pages' => $totalPages
             );
         } catch(\Exception $e) {
             return NULL;

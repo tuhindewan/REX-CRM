@@ -239,7 +239,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact import endpint
+         * Contact import endpoint
          * This endpoint saves the imported file to database with correct mappings
          * @return void
          * @since 1.0.0
@@ -259,7 +259,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact export  endpint
+         * Contact export  endpoint
          * 
          * @return void
          * @since 1.0.0
@@ -297,6 +297,26 @@ class MRM_Contact_API_Route {
                 ]
             ]
         ]);
+
+        /**
+         * Get all message for a contact
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/get-emails', [
+        [
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [
+                $this->controller ,
+                'get_all_emails'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ]
+        ]
+    ]);
 
         /**
          * Emails list for a contact
