@@ -263,34 +263,44 @@ class MRM_Contact_Model{
 
         
 
-        //error_log(print_r($status,1));
-        //error_log(print_r($group_ids,1));
-
 		if ( ! empty( $search ) ) {
             $search_terms = "WHERE email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
 		}
 
+        
+
         // Prepare sql results for list view
         try {
             $ids = implode(",", array_map( 'intval', $group_ids ));
+            $no_groupId = "$pivot_table.group_id IN ($ids) AND ";
+
+            if (count($group_ids)==0){
+                $no_groupId = "";
+            }
+
             $select_query  = $wpdb->prepare(
                 "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
                 ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $pivot_table.group_id IN ($ids) AND $contact_table.status = %s
+                WHERE $no_groupId $contact_table.status = %s
                 GROUP BY $contact_table.id
                 ", array($status)) ;
             $query_results = $wpdb->get_results( $select_query );
 
-            // $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM $contact_table $search_terms");
-            // $count_result   = $wpdb->get_results($count_query);
+            $count_query  = $wpdb->prepare(
+                "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
+                ON $contact_table.id = $pivot_table.contact_id 
+                WHERE $no_groupId $contact_table.status = %s
+                GROUP BY $contact_table.id
+                ", array($status)) ;
+            $count_result   = $wpdb->get_results($count_query);
     
-            // $count = (int) $count_result['0']->total;
-            // $total_pages = ceil($count / $limit);
+            $count = (int) $count_result['0']->total;
+            $total_pages = ceil($count / $limit);
       
             return array(
                 'data'=> $query_results,
-                // 'total_pages' => $total_pages,
-                // 'count' => $count
+                'total_pages' => $total_pages,
+                'count' => $count
             );
         } catch(\Exception $e) {
             return NULL;

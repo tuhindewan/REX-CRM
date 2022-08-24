@@ -562,15 +562,16 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
         $offset     =  ($page - 1) * $perPage;
 
+        $group_id = isset ( $params ['group_id']) ? $params['group_id'] : [''];
+
 
         // Contact Search keyword
         $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
-        $contacts = MRM_Contact_Model::get_filtered_contacts( $offset, $perPage, $search ,$params['status'], $params['group_id']);
+        $contacts = MRM_Contact_Model::get_filtered_contacts( $offset, $perPage, $search ,$params['status'], $group_id);
 
 
 
         $contacts['data'] = array_map( function( $contact ){
-            error_log(print_r($contact,1));
             $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );
             $contact = MRM_List_Controller::get_lists_to_contact( $contact );
             return $contact;
