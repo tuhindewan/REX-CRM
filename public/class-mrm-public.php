@@ -100,4 +100,30 @@ class Mrm_Public {
 
 	}
 
+    /**
+	 * Register shortcode callbacks on init
+	 * 
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function load_shortcodes() {
+        add_shortcode( 'mrm-form', 'mrm_form_handler' ); 
+
+        function mrm_form_handler( $atts ) {
+            if ( isset( $_POST['submit'] ) ) {
+                $first_name = $_POST['first_name'];
+                $last_name = $_POST['last_name'];
+                $email = $_POST['email'];
+                do_action('mrm_save_contact', $first_name, $last_name, $email);
+            }
+            
+            return "<form method='post'>
+                <input type='text' name='first_name' placeholder='First Name'/>
+                <input type='text' name='last_name' placeholder='Last Name'/>
+                <input type='text' name='email' placeholder='Email'/>
+                <input type='submit' name='submit' />
+            </form>";
+        }
+    }
+
 }

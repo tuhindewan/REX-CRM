@@ -1,6 +1,5 @@
 <?php
 
-
 use MRM\REST\MRM_API_Register;
 /**
  * The file that defines the core plugin class
@@ -179,6 +178,7 @@ class Mrm {
 
 		$plugin_public = new Mrm_Public( $this->get_plugin_name(), $this->get_version() );
 
+        $this->loader->add_action( 'init', $plugin_public, 'load_shortcodes' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
