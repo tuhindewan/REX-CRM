@@ -7,11 +7,11 @@ import Segments from "../pages/Segments";
 import Dashboard from "../pages/Dashboard";
 import ImportContacts from "../pages/ImportContacts";
 import ContactCreateUpdate from "../pages/ContactCreateUpdate";
-import CreateTag from "../components/CreateTag";
-import UpdateTag from "../components/UpdateTag";
-import CreateList from "../components/CreateList";
-import UpdateList from "../components/UpdateList";
-import CreateSegment from "../components/CreateSegment";
+import CreateTag from "../components/Tag/CreateTag";
+import UpdateTag from "../components/Tag/UpdateTag";
+import CreateList from "../components/List/CreateList";
+import UpdateList from "../components/List/UpdateList";
+import CreateSegment from "../components/Segment/CreateSegment";
 
 const routes = [
   {

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import SpinnerIcon from "@rsuite/icons/legacy/Spinner";
 import { TagPicker } from "rsuite";
-import config from "../config";
+import config from "../../config";
 
 const BasePicker = (props) => {
   const { endpoint = "/tags", data, setData } = props;

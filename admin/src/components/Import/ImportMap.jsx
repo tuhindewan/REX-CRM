@@ -8,8 +8,8 @@ import {
   useToaster,
 } from "rsuite";
 import SpinnerIcon from "@rsuite/icons/legacy/Spinner";
-import BasePicker from "../components/BasePicker.jsx";
-import config from "../config.js";
+import BasePicker from "../Base/BasePicker.jsx";
+import config from "../../config.js";
 
 import axios from "axios";
 const ImportMap = (props) => {

@@ -79,7 +79,9 @@ class MRM_API_Register {
             'tags'          =>  'MRM_Tag_API_Route',
             'notes'         =>  'MRM_Note_API_Route',
             'contacts'      =>  'MRM_Contact_API_Route',
-            'workflows'     =>  'MRM_Workflow_API_Route'
+            'workflows'     =>  'MRM_Workflow_API_Route',
+            'field-groups'  =>  'FieldGroupRoute',
+            'custom-fields' =>  'CustomFieldRoute'
 		));
     }
     

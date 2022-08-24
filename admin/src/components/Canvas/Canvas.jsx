@@ -10,10 +10,10 @@ import ReactFlow, {
   BackgroundVariant,
   useReactFlow
 } from "react-flow-renderer";
-import { useGlobalStore } from "../hooks/useGlobalStore";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 import CanvasSettingsDrawer from "./CanvasSettingsDrawer";
 
-import Sidebar from "./Sidebar";
+import Sidebar from "../Sidebar";
 import ConditionStep from "./ConditionStep";
 import TriggerStep from "./TriggerStep";
 import ExitStep from "./ExitStep";

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Steps, Stack, TagPicker } from "rsuite";
 import "../App.css";
-import ImportFromCSV from "../components/ImportFromCSV";
-import ImportFromWP from "../components/ImportFromWP";
-import ImportMap from "../components/ImportMap";
+import ImportFromCSV from "../components/Import/ImportFromCSV";
+import ImportFromWP from "../components/Import/ImportFromWP";
+import ImportMap from "../components/Import/ImportMap";
 
 const ImportContacts = () => {
   const [current, setCurrent] = useState(0);
