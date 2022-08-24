@@ -4,6 +4,7 @@ namespace MRM\REST\Routes;
 
 use MRM\Controllers\MRM_Base_Controller;
 use MRM\Email\MRM_Send_Email;
+use MRM\Controllers\MRM_Message_Controller;
 
 /**
  * @author [MRM Team]
@@ -29,7 +30,7 @@ class MRM_Send_Email_API_Route{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'send-email';
+    protected $rest_base = 'messages';
 
 
     /**
@@ -49,7 +50,7 @@ class MRM_Send_Email_API_Route{
      */
     public function register_routes()
     {
-        $this->mailer = MRM_Send_Email::get_instance();
+        $this->mailer = MRM_Message_Controller::get_instance();
 
 
         /**
@@ -64,7 +65,7 @@ class MRM_Send_Email_API_Route{
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->mailer ,
-                    'send_email'
+                    'create_or_update'
                 ]
             ]
 

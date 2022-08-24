@@ -6,6 +6,7 @@ use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Message;
 use MRM\DB\Tables\MRM_Messages_Table;
 use MRM\Traits\Singleton;
+use MRM\DB\Tables\MRM_Contacts_Table;
 
 /**
  * @author [MRM Team]
