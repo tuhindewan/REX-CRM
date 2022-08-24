@@ -2,25 +2,60 @@ import { Button, Table, SelectPicker, Stack } from "rsuite";
 import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 import BaseTable from "../components/Base/BaseTable";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import BasePicker from "../components/Base/BasePicker";
 import React, { useState, useEffect } from "react";
 
-async function filterContacts() {}
-
 const Contacts = () => {
-  const search = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  console.log(location);
 
-  const searchParams = new URLSearchParams("lists=[1,2,3]");
-
-  console.log(JSON.parse(searchParams.get("lists")));
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
   const [status, setStatus] = useState("pending");
-
+  const [filter, setFilter] = useState({});
+  const [refreshFilter, setRefreshFilter] = useState(true);
   const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
   );
+
+  useEffect(() => {
+    try {
+      const searchParams = new URLSearchParams(location.search);
+      const lists = JSON.parse(searchParams.get("lists"));
+      const tags = JSON.parse(searchParams.get("tags"));
+      const status = searchParams.get("status");
+      console.log(lists);
+      console.log(tags);
+      console.log(status);
+      setFilter({
+        lists,
+        tags,
+        status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [refreshFilter]);
+
+  function filterContacts() {
+    const listArr = lists.map((item) => item.id);
+    const tagArr = tags.map((item) => item.id);
+    toggleRefreshFilter();
+    navigate(
+      `/contacts?lists=[${listArr}]&tags=[${tagArr.toString()}]&status=${status}`
+    );
+  }
+
+  function resetFilter() {
+    toggleRefreshFilter();
+    navigate("/contacts");
+  }
+
+  function toggleRefreshFilter() {
+    setRefreshFilter((prev) => !prev);
+  }
 
   return (
     <>
@@ -64,7 +99,12 @@ const Contacts = () => {
                   block
                   onChange={setStatus}
                 />
-                <Button appearance="primary">Filter</Button>
+                <Button appearance="primary" onClick={filterContacts}>
+                  Filter
+                </Button>
+                <Button appearance="primary" onClick={resetFilter}>
+                  Reset
+                </Button>
               </Stack>
               <Stack
                 spacing={10}
