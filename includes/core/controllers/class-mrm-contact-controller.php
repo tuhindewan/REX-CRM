@@ -70,29 +70,25 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         // Email address validation
         $email = isset( $params['email'] ) ? sanitize_text_field( $params['email'] ) : '';
 
-        if ( empty( $email ) ) {
-			return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  400);
-		}
-
-        $this->contact_args = array(
-			'first_name'    =>  isset( $params['first_name'] )  ?   sanitize_text_field($params['first_name'])  : NULL,
-            'last_name'     =>  isset( $params['last_name'] )   ?   sanitize_text_field($params['last_name'])   : NULL,
-            'status'        =>  isset( $params['status'] )      ?   sanitize_text_field($params['status'])      : NULL,
-            'source'        =>  isset( $params['source'] )      ?   sanitize_text_field($params['source'])      : NULL,
-		);
-
         // Contact object create and insert or update to database
         try {
 
             if( isset( $params['contact_id']) ){
-                $contact_id = MRM_Contact_Model::update( $params['contact_id'], $params['primary'], $params['info'] );
+
+                $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
+                $contact_id = MRM_Contact_Model::update( $params, $contact_id );
+                
             }else{
                 // Existing contact email address check
+                if ( empty( $email ) ) {
+                    return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  400);
+                }
+
                 $exist = MRM_Contact_Model::is_contact_exist( $email );
                 if($exist){
                     return $this->get_error_response( __( 'Email address is already exist', 'mrm' ),  400);
                 }
-                $contact    = new MRM_Contact( $email, $this->contact_args );
+                $contact    = new MRM_Contact( $email, $params );
                 $contact_id = MRM_Contact_Model::insert( $contact );
             }
              

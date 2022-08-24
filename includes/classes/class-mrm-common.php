@@ -23,9 +23,9 @@ class MRM_Common {
      * @return string
 	 * @since 1.0.0
      */
-    public static function get_rand_hash( $len=32 )
+    public static function get_rand_hash( $email, $len = 32 )
 	{
-		return substr(md5(openssl_random_pseudo_bytes(20)),-$len);
+		return substr(md5( $email ),-$len);
 	}
 
 

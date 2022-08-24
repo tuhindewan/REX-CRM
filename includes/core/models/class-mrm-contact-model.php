@@ -47,7 +47,7 @@ class MRM_Contact_Model{
                 'last_name'     =>  $contact->get_last_name(),
                 'status'        =>  $contact->get_status(),
                 'source'        =>  $contact->get_source(),
-                'hash'          =>  MRM_Common::get_rand_hash(),
+                'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_at'    =>  current_time('mysql')
             ));
         return $wpdb->insert_id;;
@@ -67,33 +67,23 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function update( $contact_id, $primary, $info )
+    public static function update( $args, $contact_id )
     {
+        unset($args['contact_id']);
+        $args['updated_at'] =current_time('mysql');
         global $wpdb;
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
-        $primary_fields = MRM_Constants::$primary_contact_fields;
-
-        if( !in_array( $fields,  $primary_fields) ){
-            if( self::is_contact_info_exist( $contact_id ) ){
-                error_log(print_r($fields, 1));
-            }
-            error_log(print_r("So far so good", 1));
+        try {
+            $wpdb->update( 
+                $contacts_table, 
+                $args, 
+                array( 'ID' => $contact_id )
+            );
+        }catch(\Exception $e){
+            return false;
         }
-        
-        // try {
-        //     $wpdb->update( 
-        //         $contacts_table, 
-        //         array( 
-        //             $entity         =>  $value,
-        //             'updated_at'    =>  current_time('mysql')
-        //         ), 
-        //         array( 'ID' => $contact_id )
-        //     );
-        // }catch(\Exception $e){
-        //     return false;
-        // }
-        // return true;
+        return true;
     }
 
 

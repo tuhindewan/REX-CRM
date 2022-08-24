@@ -143,25 +143,33 @@ class MRM_Contact {
     private $contact_owner;
 
 
+    /**
+     * Contact ID
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $contact_id;
 
 
     public function __construct( $email, $args )
     {
         $this->email            =  $email;
-        $this->first_name       =  isset($args['first_name'])       ? $args['first_name']       : '';
-        $this->last_name        =  isset($args['last_name'])        ? $args['last_name']        : '';
-        $this->phone            =  isset($args['phone'])            ? $args['phone']            : '';
-        $this->status           =  isset($args['status'])           ? $args['status']           : '';
-        $this->source           =  isset($args['source'])           ? $args['source']           : '';
-        $this->date_of_birth    =  isset($args['date_of_birth'])    ? $args['date_of_birth']    : '';
-        $this->timezone         =  isset($args['timezone'])         ? $args['timezone']         : '';
-        $this->address_line_1   =  isset($args['address_line_1'])   ? $args['address_line_1']   : '';
-        $this->address_line_2   =  isset($args['address_line_2'])   ? $args['address_line_2']   : '';
-        $this->city             =  isset($args['city'])             ? $args['city']             : '';
-        $this->state            =  isset($args['state'])            ? $args['state']            : '';
-        $this->country          =  isset($args['country'])          ? $args['country']          : '';
-        $this->postal_code      =  isset($args['postal_code'])      ? $args['postal_code']      : '';
-        $this->company_name     =  isset($args['company_name'])     ? $args['company_name']     : '';
+        $this->first_name       =  isset($args['first_name'])       ? sanitize_text_field( $args['first_name']  )       : '';
+        $this->last_name        =  isset($args['last_name'])        ? sanitize_text_field( $args['last_name'] )         : '';
+        $this->phone            =  isset($args['phone'])            ? sanitize_text_field( $args['phone'] )             : '';
+        $this->status           =  isset($args['status'])           ? sanitize_text_field( $args['status'] )            : '';
+        $this->source           =  isset($args['source'])           ? sanitize_text_field( $args['source'] )            : '';
+        $this->date_of_birth    =  isset($args['date_of_birth'])    ? sanitize_text_field( $args['date_of_birth'] )     : '';
+        $this->timezone         =  isset($args['timezone'])         ? sanitize_text_field( $args['timezone'] )          : '';
+        $this->address_line_1   =  isset($args['address_line_1'])   ? sanitize_text_field( $args['address_line_1'] )    : '';
+        $this->address_line_2   =  isset($args['address_line_2'])   ? sanitize_text_field( $args['address_line_2'] )    : '';
+        $this->city             =  isset($args['city'])             ? sanitize_text_field( $args['city'] )              : '';
+        $this->state            =  isset($args['state'])            ? sanitize_text_field( $args['state']  )            : '';
+        $this->country          =  isset($args['country'])          ? sanitize_text_field( $args['country'] )           : '';
+        $this->postal_code      =  isset($args['postal_code'])      ? sanitize_text_field( $args['postal_code'] )       : '';
+        $this->company_name     =  isset($args['company_name'])     ? sanitize_text_field( $args['company_name'] )      : '';
+        $this->contact_id       =  isset($args['contact_id'])       ? sanitize_text_field( $args['contact_id'] )        : '';
     }
 
 
@@ -355,6 +363,18 @@ class MRM_Contact {
             return $this->contact_owner = get_current_user_id();
         }
         return $this->contact_owner = 1;     
+    }
+
+
+    /**
+     * Return contact ID
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_contact_id()
+    {
+        return $this->contact_id;     
     }
 
 }
