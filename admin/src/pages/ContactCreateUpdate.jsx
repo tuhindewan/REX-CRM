@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import BasePicker from "../components/Base/BasePicker.jsx";
 import {
   Button,
@@ -16,6 +16,7 @@ import config from "../config.js";
 const ContactCreateUpdate = (props) => {
   // if id is defined then it is an update page otherwise it is an create page
   let { id } = useParams();
+  const navigate = useNavigate();
 
   const location = useLocation();
   const toaster = useToaster();
@@ -31,6 +32,7 @@ const ContactCreateUpdate = (props) => {
     country: "",
     status: "pending",
   });
+  const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
@@ -74,8 +76,6 @@ const ContactCreateUpdate = (props) => {
       let contact = {
         fields: {
           ...contactDetails,
-          tags: [...contactDetails.existing_tags, ...tags],
-          lists: [...contactDetails.existing_lists, ...lists],
         },
       };
       res = await axios.put(`${config.baseURL}/contacts/${id}`, contact, {
@@ -102,6 +102,9 @@ const ContactCreateUpdate = (props) => {
     setLoading(false);
   }
 
+  async function sendMail() {
+    navigate(`/contacts/${id}/message`);
+  }
   // load contact details in update page
   useEffect(() => {
     async function getContact() {
@@ -123,6 +126,21 @@ const ContactCreateUpdate = (props) => {
           console.log(details);
           setContactDetails(details);
         }
+        const emailRes = await axios.get(
+          `${config.baseURL}/contacts/${id}/get-emails`,
+          {
+            headers: {
+              "Content-type": "application/json",
+            },
+          }
+        );
+        const emailResJson = emailRes.data;
+        if ((emailResJson.code = 200)) {
+          const allEmails = emailResJson.data.data;
+          console.log(allEmails);
+          setEmails(allEmails);
+        }
+        console.log(emailResJson);
       }
     }
     getContact();
@@ -137,120 +155,160 @@ const ContactCreateUpdate = (props) => {
       <Stack
         spacing={10}
         justifyContent="flex-start"
-        alignItems="center"
+        alignItems="top"
         style={{ margin: 10 }}
-        direction="column"
+        direction="row"
       >
-        <InputGroup style={styles}>
-          <InputGroup.Addon>First Name</InputGroup.Addon>
-          <Input
-            name="first_name"
-            value={contactDetails["first_name"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-
-        <InputGroup style={styles}>
-          <InputGroup.Addon>Last Name</InputGroup.Addon>
-          <Input
-            name="last_name"
-            value={contactDetails["last_name"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-
-        <InputGroup style={styles}>
-          <InputGroup.Addon>Email</InputGroup.Addon>
-          <Input
-            name="email"
-            value={contactDetails["email"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-
-        <InputGroup style={styles}>
-          <InputGroup.Addon>Phone</InputGroup.Addon>
-          <Input
-            name="phone"
-            value={contactDetails["phone"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-        <InputGroup style={styles}>
-          <InputGroup.Addon>Address Line 1</InputGroup.Addon>
-          <Input
-            name="address_line_1"
-            value={contactDetails["address_line_1"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-        <InputGroup style={styles}>
-          <InputGroup.Addon>Address Line 2</InputGroup.Addon>
-          <Input
-            name="address_line_2"
-            value={contactDetails["address_line_2"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-        <InputGroup style={styles}>
-          <InputGroup.Addon>City</InputGroup.Addon>
-          <Input
-            name="city"
-            value={contactDetails["city"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-        <InputGroup style={styles}>
-          <InputGroup.Addon>State</InputGroup.Addon>
-          <Input
-            name="state"
-            value={contactDetails["state"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-        <InputGroup style={styles}>
-          <InputGroup.Addon>Country</InputGroup.Addon>
-          <Input
-            name="country"
-            value={contactDetails["country"]}
-            onChange={handleContactDetailsChange}
-          />
-        </InputGroup>
-        <SelectPicker
-          styles={styles}
-          menuAutoWidth
-          data={statusData}
-          label="Status"
-          name="status"
-          defaultValue="pending"
-          value={contactDetails["status"]}
-          block
-          onChange={(value, item, event) => {
-            handleContactStatusChange("status", value);
-          }}
-        />
-
-        <div>
-          <div>Tags</div>
-          {contactDetails.existing_tags?.map((item) => {
-            return <div key={item["slug"]}>{item["title"]}</div>;
-          })}
-        </div>
-        <BasePicker endpoint="/tags" data={tags} setData={setTags} />
-        <div>
-          <div>Lists</div>
-          {contactDetails.existing_lists?.map((item) => {
-            return <div key={item["slug"]}>{item["title"]}</div>;
-          })}
-        </div>
-        <BasePicker endpoint="/lists" data={lists} setData={setLists} />
-        <Button
-          onClick={insertOrUpdateContact}
-          appearance="primary"
-          loading={loading}
+        <Stack
+          spacing={10}
+          justifyContent="flex-start"
+          alignItems="center"
+          style={{ margin: 10 }}
+          direction="column"
         >
-          Create Contact
-        </Button>
+          <InputGroup style={styles}>
+            <InputGroup.Addon>First Name</InputGroup.Addon>
+            <Input
+              name="first_name"
+              value={contactDetails["first_name"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+
+          <InputGroup style={styles}>
+            <InputGroup.Addon>Last Name</InputGroup.Addon>
+            <Input
+              name="last_name"
+              value={contactDetails["last_name"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+
+          <InputGroup style={styles}>
+            <InputGroup.Addon>Email</InputGroup.Addon>
+            <Input
+              name="email"
+              value={contactDetails["email"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+
+          <InputGroup style={styles}>
+            <InputGroup.Addon>Phone</InputGroup.Addon>
+            <Input
+              name="phone"
+              value={contactDetails["phone"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+          <InputGroup style={styles}>
+            <InputGroup.Addon>Address Line 1</InputGroup.Addon>
+            <Input
+              name="address_line_1"
+              value={contactDetails["address_line_1"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+          <InputGroup style={styles}>
+            <InputGroup.Addon>Address Line 2</InputGroup.Addon>
+            <Input
+              name="address_line_2"
+              value={contactDetails["address_line_2"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+          <InputGroup style={styles}>
+            <InputGroup.Addon>City</InputGroup.Addon>
+            <Input
+              name="city"
+              value={contactDetails["city"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+          <InputGroup style={styles}>
+            <InputGroup.Addon>State</InputGroup.Addon>
+            <Input
+              name="state"
+              value={contactDetails["state"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+          <InputGroup style={styles}>
+            <InputGroup.Addon>Country</InputGroup.Addon>
+            <Input
+              name="country"
+              value={contactDetails["country"]}
+              onChange={handleContactDetailsChange}
+            />
+          </InputGroup>
+          <SelectPicker
+            styles={styles}
+            menuAutoWidth
+            data={statusData}
+            label="Status"
+            name="status"
+            defaultValue="pending"
+            value={contactDetails["status"]}
+            block
+            onChange={(value, item, event) => {
+              handleContactStatusChange("status", value);
+            }}
+          />
+
+          <Button
+            onClick={insertOrUpdateContact}
+            appearance="primary"
+            loading={loading}
+            block
+          >
+            {id ? "Update" : "Create"} Contact
+          </Button>
+        </Stack>
+        <Stack
+          spacing={10}
+          justifyContent="center"
+          alignItems="top"
+          style={{ margin: 10 }}
+          direction="column"
+        >
+          {id && (
+            <Button
+              onClick={sendMail}
+              appearance="primary"
+              loading={loading}
+              block
+            >
+              Send Mail
+            </Button>
+          )}
+          <div>
+            <div style={{ fontWeight: "bold" }}>Tags</div>
+            {contactDetails.existing_tags?.map((item) => {
+              return <span key={item["slug"]}>{item["title"]} | </span>;
+            })}
+          </div>
+          <BasePicker endpoint="/tags" data={tags} setData={setTags} />
+          <div>
+            <div style={{ fontWeight: "bold" }}>Lists</div>
+            {contactDetails.existing_lists?.map((item) => {
+              return <span key={item["slug"]}>{item["title"]} | </span>;
+            })}
+          </div>
+          <BasePicker endpoint="/lists" data={lists} setData={setLists} />
+          {id && (
+            <div>
+              <div style={{ fontWeight: "bold" }}>All Emails To this User</div>
+              <hr />
+              {emails.map((email) => {
+                return (
+                  <div>
+                    {email["email_subject"]} | {email["created_at"]}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Stack>
       </Stack>
     </>
   );

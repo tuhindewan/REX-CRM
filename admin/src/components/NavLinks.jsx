@@ -9,13 +9,12 @@ const NavLinks = () => {
     <nav className="navbar">
       <ul className="mrm-ul">
         {routes.map((route, index) => {
-          const routeString = route.path.replace("/", "").split("?")[0];
           if (!route.hideInMenu) {
             return (
               <li className="mrm-li" key={index}>
                 <Link
                   className={
-                    location.pathname.includes(routeString)
+                    location.pathname.includes(route.path)
                       ? "mrm-a mrm-active"
                       : "mrm-a"
                   }
