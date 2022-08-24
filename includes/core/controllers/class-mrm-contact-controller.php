@@ -124,7 +124,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $params     = MRM_Common::get_api_params_values( $request );
     
         $contact    = MRM_Contact_Model::get( $params['contact_id'] );
-
+        
         // Get and merge tags and lists
         if( isset($contact) ) {
             $contact    = MRM_Tag_Controller::get_tags_to_contact( $contact );
@@ -156,10 +156,8 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         // Contact Search keyword
         $search     = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
-        
-        $filters    = isset( $params['filters'] ) ? $params['filters'] : array();
-        $data = MRM_Filter::normalize_filter_collection($filters);
-        $contacts = MRM_Contact_Model::get_all( $offset, $perPage, $search, $filters );
+                
+        $contacts   = MRM_Contact_Model::get_all( $offset, $perPage, $search );
 
         $contacts['data'] = array_map( function( $contact ){
             $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );

@@ -48,7 +48,10 @@ class MRM_Contact_Note_Table {
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             PRIMARY KEY (`id`),
-            KEY `contact_id` (`contact_id`)
+            KEY `contact_id` (`contact_id`),
+            FOREIGN KEY (contact_id)
+            REFERENCES wp_mrm_contacts (id)
+            ON DELETE CASCADE
          ) $charsetCollate;";
 
         dbDelta($sql);

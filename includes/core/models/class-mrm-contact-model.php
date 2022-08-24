@@ -3,7 +3,6 @@
 namespace MRM\Models;
 
 use MRM\Common\MRM_Common;
-use MRM\Constants\MRM_Constants;
 use MRM\Data\MRM_Contact;
 use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use MRM\DB\Tables\MRM_Contact_Info_Table;
@@ -219,7 +218,7 @@ class MRM_Contact_Model{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $offset = 0, $limit = 10, $search = '', $filters = array() )
+    public static function get_all( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
         $contact_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
@@ -233,16 +232,23 @@ class MRM_Contact_Model{
         // Prepare sql results for list view
         try {
             $select_query  = $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
-            $query_results = $wpdb->get_results( $select_query );
+            $query_results   = json_decode(json_encode($wpdb->get_results($select_query)), true);
+            
+            $results = array();
+
+            foreach( $query_results as $query_result ){
+                $new_meta = self::get_meta( $query_result['id'] );
+                $results[] = array_merge($query_result, $new_meta);
+            }
 
             $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM $contact_table $search_terms");
             $count_result   = $wpdb->get_results($count_query);
     
             $count = (int) $count_result['0']->total;
             $total_pages = ceil($count / $limit);
-      
+
             return array(
-                'data'=> $query_results,
+                'data'=> $results,
                 'total_pages' => $total_pages,
                 'count' => $count
             );
@@ -267,11 +273,39 @@ class MRM_Contact_Model{
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
         try {
-            $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
-            return $wpdb->get_row( $select_query );
+            $contacts_query     = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
+            $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
+
+            $new_meta = self::get_meta( $id );
+            
+            return array_merge($contacts_results[0], $new_meta);
+        
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    /**
+     * Returns contact meta data
+     * 
+     * @param int $id   Contact ID
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_meta( $id )
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+
+        $meta_query         = $wpdb->prepare("SELECT meta_key, meta_value FROM $contacts_meta_table  WHERE contact_id = %d",array( $id ));
+        $meta_results       = json_decode(json_encode($wpdb->get_results($meta_query)), true);
+
+        $new_meta = [];
+        foreach($meta_results as $result){
+            $new_meta[$result['meta_key']] = $result['meta_value'];
+        }
+        return $new_meta;
     }
 
 

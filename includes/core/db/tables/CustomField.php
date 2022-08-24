@@ -44,14 +44,10 @@ class CustomField {
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `title` VARCHAR(255) NOT NULL,
                 `slug` VARCHAR(255) NOT NULL,
-                `type` VARCHAR(192) NOT NULL COMMENT 'text-input text-number text-area dropdown radio-button checkbox date',
-                `group_id` BIGINT(20) UNSIGNED NOT NULL,
+                `type` VARCHAR(192) NOT NULL COMMENT 'text-input, text-number, text-area, dropdown, radio-button, checkbox date',
                 `meta` TEXT NOT NULL,
                 `created_at` TIMESTAMP,
-                `updated_at` TIMESTAMP,
-                FOREIGN KEY (group_id)
-                REFERENCES wp_mrm_custom_field_groups (id)
-                ON DELETE CASCADE
+                `updated_at` TIMESTAMP
             ) $charsetCollate; ";
 
         dbDelta($sql);

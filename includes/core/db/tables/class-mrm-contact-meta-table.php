@@ -43,7 +43,10 @@ class MRM_Contact_Meta_Table {
             `meta_value` longtext,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
-            KEY `meta_key` (`meta_key`)
+            KEY `meta_key` (`meta_key`),
+            FOREIGN KEY (contact_id)
+            REFERENCES wp_mrm_contacts (id)
+            ON DELETE CASCADE
          ) $charsetCollate;";
 
         dbDelta($sql);
