@@ -546,5 +546,41 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         return MRM_Message_Controller::get_instance()->get_all( $request );
     }
 
+    /**
+     * Return Filtered Contacts for list view
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_filtered_contacts( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $page       =  isset( $params['page'] ) ? $params['page'] : 1;
+        $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
+        $offset     =  ($page - 1) * $perPage;
+
+
+        // Contact Search keyword
+        $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
+        $contacts = MRM_Contact_Model::get_filtered_contacts( $offset, $perPage, $search ,$params['status'], $params['group_id']);
+
+
+
+        $contacts['data'] = array_map( function( $contact ){
+            error_log(print_r($contact,1));
+            $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );
+            $contact = MRM_List_Controller::get_lists_to_contact( $contact );
+            return $contact;
+        }, $contacts['data'] );
+
+        if(isset($contacts)) {
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
+        }
+        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+    }
+
 
 }

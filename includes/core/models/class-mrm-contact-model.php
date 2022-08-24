@@ -242,5 +242,60 @@ class MRM_Contact_Model{
         }
     }
 
+
+
+    /**
+     * Run SQL Query to get filtered Contacts
+     * 
+     * @param mixed $group_ids
+     * @param mixed $type
+     * 
+     * @return array|bool
+     * @since 1.0.0
+     */
+    public static function get_filtered_contacts(  $offset = 0, $limit = 10, $search = '' , $status, $group_ids)
+    {
+        global $wpdb;
+        $contact_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $pivot_table   = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+
+        $search_terms = null;
+
+        
+
+        //error_log(print_r($status,1));
+        //error_log(print_r($group_ids,1));
+
+		if ( ! empty( $search ) ) {
+            $search_terms = "WHERE email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
+		}
+
+        // Prepare sql results for list view
+        try {
+            $ids = implode(",", array_map( 'intval', $group_ids ));
+            $select_query  = $wpdb->prepare(
+                "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
+                ON $contact_table.id = $pivot_table.contact_id 
+                WHERE $pivot_table.group_id IN ($ids) AND $contact_table.status = %s
+                GROUP BY $contact_table.id
+                ", array($status)) ;
+            $query_results = $wpdb->get_results( $select_query );
+
+            // $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM $contact_table $search_terms");
+            // $count_result   = $wpdb->get_results($count_query);
+    
+            // $count = (int) $count_result['0']->total;
+            // $total_pages = ceil($count / $limit);
+      
+            return array(
+                'data'=> $query_results,
+                // 'total_pages' => $total_pages,
+                // 'count' => $count
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+    }
+
     
 }

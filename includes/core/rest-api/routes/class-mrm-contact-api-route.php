@@ -337,6 +337,28 @@ class MRM_Contact_API_Route {
                 ]
             ]
         ]);
+
+
+        /**
+         * Filtered list for of contacts
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/filter', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_filtered_contacts'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
+            ]
+        ]);
+        
     }
 
 }
