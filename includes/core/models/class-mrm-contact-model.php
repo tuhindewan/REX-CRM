@@ -50,7 +50,7 @@ class MRM_Contact_Model{
                 'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_at'    =>  current_time('mysql')
             ));
-        return $wpdb->insert_id;;
+        return $wpdb->insert_id;
 
         } catch(\Exception $e) {
             return false;
@@ -62,17 +62,21 @@ class MRM_Contact_Model{
      * Update a contact information
      * 
      * @param mixed $contact_id     Contact ID
-     * @param mixed $fields         Entity and value to update
+     * @param mixed $args           Entity and value to update
      * 
      * @return bool
      * @since 1.0.0
      */
     public static function update( $args, $contact_id )
     {
-        unset($args['contact_id']);
-        $args['updated_at'] =current_time('mysql');
         global $wpdb;
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+
+        self::update_meta_fields($contact_id, $args);
+        
+        $args['updated_at'] = current_time('mysql');
+        unset($args['meta_fields']);
+        unset($args['contact_id']);
 
         try {
             $wpdb->update( 
@@ -87,21 +91,6 @@ class MRM_Contact_Model{
     }
 
 
-    public static function array_slice_keys($array, $keys = null) {
-        if ( empty($keys) ) {
-            $keys = array_keys($array);
-        }
-        if ( !is_array($keys) ) {
-            $keys = array($keys);
-        }
-        if ( !is_array($array) ) {
-            return array();
-        } else {
-            return array_intersect_key($array, array_fill_keys($keys, '1'));
-        }
-    }
-
-
     /**
      * Update a contact information
      * 
@@ -111,34 +100,26 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function update_info( $contact_id, $fields )
+    public static function update_meta_fields( $contact_id, $args )
     {
         global $wpdb;
-        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
 
-        $entity = array_key_first($fields);
-        $value  = array_values($fields)[0];
-        $primary_fields = MRM_Constants::$primary_contact_fields;
-        if( !in_array( $entity,  $primary_fields) ){
-            if( self::is_contact_info_exist( $contact_id ) ){
-                error_log(print_r($entity, 1));
+        if( self::is_contact_meta_exist( $contact_id ) ){
+            foreach( $args['meta_fields'] as $key => $value ){
+                $wpdb->update( $contacts_meta_table, array(
+                    'meta_value'    => $value
+                ), array( 'meta_key' => $key , 'contact_id' => $contact_id ));
             }
-            error_log(print_r("So far so good", 1));
+        }else{
+            foreach( $args['meta_fields'] as $key => $value ){
+                $wpdb->insert( $contacts_meta_table, array(
+                    'contact_id'    => $contact_id,
+                    'meta_key'      => $key,
+                    'meta_value'    => $value
+                ));
+            }
         }
-        
-        // try {
-        //     $wpdb->update( 
-        //         $contacts_table, 
-        //         array( 
-        //             $entity         =>  $value,
-        //             'updated_at'    =>  current_time('mysql')
-        //         ), 
-        //         array( 'ID' => $contact_id )
-        //     );
-        // }catch(\Exception $e){
-        //     return false;
-        // }
-        // return true;
     }
 
 
@@ -302,15 +283,15 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function is_contact_info_exist( $contact_id )
+    public static function is_contact_meta_exist( $contact_id )
     {
         global $wpdb;
-        $contacts_info_table = $wpdb->prefix . MRM_Contact_Info_Table::$mrm_table;
+        $table_name = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
 
-        $select_query = $wpdb->prepare("SELECT * FROM $contacts_info_table WHERE id = %s", array( $contact_id ));
+        $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE contact_id = %d", array( $contact_id ));
         $results = $wpdb->get_results($select_query);
 
-        if( $results ){
+        if( !empty($results) ){
             return true;
         }
         return false;

@@ -77,7 +77,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
                 $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
                 $contact_id = MRM_Contact_Model::update( $params, $contact_id );
-                
+
             }else{
                 // Existing contact email address check
                 if ( empty( $email ) ) {
