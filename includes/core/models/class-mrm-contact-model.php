@@ -48,7 +48,14 @@ class MRM_Contact_Model{
                 'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_at'    =>  current_time('mysql')
             ));
-        return $wpdb->insert_id;
+
+            $insert_id = $wpdb->insert_id;
+            if( !empty( $contact->get_meta_fields() )){
+                $meta_fields['meta_fields'] = $contact->get_meta_fields();
+                self::update_meta_fields( $insert_id, $meta_fields );
+            }
+
+            return $insert_id;
 
         } catch(\Exception $e) {
             return false;
@@ -102,7 +109,7 @@ class MRM_Contact_Model{
     {
         global $wpdb;
         $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
-
+        
         if( self::is_contact_meta_exist( $contact_id ) ){
             foreach( $args['meta_fields'] as $key => $value ){
                 $wpdb->update( $contacts_meta_table, array(
