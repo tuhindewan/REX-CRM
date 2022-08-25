@@ -1,20 +1,19 @@
+import SearchIcon from "@rsuite/icons/Search";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Table,
-  Pagination,
-  Stack,
-  Placeholder,
-  Loader,
   Button,
   Input,
   InputGroup,
-  Whisper,
+  Pagination,
+  Placeholder,
+  Stack,
+  Table,
   Tooltip,
+  Whisper,
 } from "rsuite";
-import SearchIcon from "@rsuite/icons/Search";
-const { Column, HeaderCell, Cell } = Table;
 import "../../style/BaseTable.css";
+const { Column, HeaderCell, Cell } = Table;
 
 const BaseTable = (props) => {
   const { endpoint = "/contacts", children, height = 420, leftMarkup } = props;

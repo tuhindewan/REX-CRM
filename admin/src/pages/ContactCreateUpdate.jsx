@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Input,
@@ -175,8 +175,33 @@ const ContactCreateUpdate = (props) => {
     refresh();
   }
 
-  async function removeGroupsToContact(id) {
-    console.log(id);
+  async function removeGroupsToContact(groupId) {
+    const res = await axios.delete(
+      `/wp-json/mrm/v1/contacts/${id}/groups`,
+      {
+        data: {
+          groups: [groupId],
+        },
+      },
+      {
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    );
+
+    if (res.data.code === 200) {
+      toaster.push(
+        <Notification closable type="success" header="success" duration={2000}>
+          res.data.message
+        </Notification>,
+        {
+          placement: "bottomEnd",
+        }
+      );
+    } else {
+      //error message
+    }
   }
   async function addNote() {
     navigate(`/contacts/${id}/note`);
@@ -471,15 +496,12 @@ const ContactCreateUpdate = (props) => {
               )}
               <div style={{ fontWeight: "bold" }}>All Notes To this User</div>
               <hr />
-              { 
-                notes.map((note) => {
+              {notes.map((note) => {
                 return (
                   <p>
-                  <Link to={"../contacts/"+id+"/note/"+note["id"]}>
-                    {
-                      note["title"]} | {note["created_at"]
-                    }
-                  </Link>
+                    <Link to={"../contacts/" + id + "/note/" + note["id"]}>
+                      {note["title"]} | {note["created_at"]}
+                    </Link>
                   </p>
                 );
               })}

@@ -1,11 +1,17 @@
-import { Button, Table, SelectPicker, Stack, useToaster, Notification} from "rsuite";
-import { Link } from "react-router-dom";
-const { Column, HeaderCell, Cell } = Table;
-import BaseTable from "../components/Base/BaseTable";
-import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
-import BasePicker from "../components/Base/BasePicker";
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Button,
+  Notification,
+  SelectPicker,
+  Stack,
+  Table,
+  useToaster,
+} from "rsuite";
+import BasePicker from "../components/Base/BasePicker";
+import BaseTable from "../components/Base/BaseTable";
+const { Column, HeaderCell, Cell } = Table;
 
 const Contacts = () => {
   const toaster = useToaster();
@@ -22,29 +28,25 @@ const Contacts = () => {
     (data) => ({ label: data.toUpperCase(), value: data })
   );
 
-  async function handleDelete (id) {
-  
-    const res = await axios.delete(
-      `/wp-json/mrm/v1/contacts/${id}`,
-      {
+  async function handleDelete(id) {
+    const res = await axios.delete(`/wp-json/mrm/v1/contacts/${id}`, {
       headers: {
-          "Content-type": "application/json",
+        "Content-type": "application/json",
       },
-      }
-    )
+    });
 
-    if (res.data.code === 200){
+    if (res.data.code === 200) {
       toaster.push(
-          <Notification closable type="success" header="success" duration={2000}>
-            Contact deleted
-          </Notification>,
-          {
-            placement: "bottomEnd",
-          }
+        <Notification closable type="success" header="success" duration={2000}>
+          Contact deleted
+        </Notification>,
+        {
+          placement: "bottomEnd",
+        }
       );
-      }else {
-        //error message
-      }
+    } else {
+      //error message
+    }
   }
 
   useEffect(() => {
@@ -199,13 +201,16 @@ const Contacts = () => {
 
         <Column width={150} align="left" flexGrow={1}>
           <HeaderCell> Action </HeaderCell>
-            <Cell>
-            {rowData => (
+          <Cell>
+            {(rowData) => (
               <span>
-                <button onClick={() => handleDelete(rowData.id)}> Delete </button>
+                <button onClick={() => handleDelete(rowData.id)}>
+                  {" "}
+                  Delete{" "}
+                </button>
               </span>
             )}
-            </Cell>
+          </Cell>
         </Column>
       </BaseTable>
     </>

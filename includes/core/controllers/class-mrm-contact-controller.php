@@ -226,7 +226,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     public function delete_groups( WP_REST_Request $request ) 
     {
         $success = MRM_Contact_Pivot_Controller::get_instance()->delete_groups( $request );
-
+        
         if($success) {
             return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
         }
