@@ -33,6 +33,7 @@ const ContactCreateUpdate = (props) => {
     status: "pending",
   });
   const [emails, setEmails] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
@@ -130,6 +131,8 @@ const ContactCreateUpdate = (props) => {
           console.log(details);
           setContactDetails(details);
         }
+
+        // Get All emails for this contact
         const emailRes = await axios.get(
           `${config.baseURL}/contacts/${id}/get-emails`,
           {
@@ -141,10 +144,27 @@ const ContactCreateUpdate = (props) => {
         const emailResJson = emailRes.data;
         if ((emailResJson.code = 200)) {
           const allEmails = emailResJson.data.data;
-          console.log(allEmails);
+          //console.log(allEmails);
           setEmails(allEmails);
         }
-        console.log(emailResJson);
+        //console.log(emailResJson);
+
+        // Get All Notes for this contact
+        const noteRes = await axios.get(
+          `${config.baseURL}/contact/${id}/notes`,
+          {
+            headers: {
+              "Content-type": "application/json",
+            },
+          }
+        );
+        
+        const noteResJson = noteRes.data;
+        
+        if ((noteResJson.code == 200)) {
+          const allNotes = noteResJson.data.data;
+          setNotes(allNotes);
+        }
       }
     }
     getContact();
@@ -317,6 +337,20 @@ const ContactCreateUpdate = (props) => {
                 return (
                   <div>
                     {email["email_subject"]} | {email["created_at"]}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {id && (
+            <div>
+              <div style={{ fontWeight: "bold" }}>All Notes To this User</div>
+              <hr />
+              {notes.map((note) => {
+                return (
+                  <div>
+                    {note["title"]} | {note["created_at"]}
                   </div>
                 );
               })}
