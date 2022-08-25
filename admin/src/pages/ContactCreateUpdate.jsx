@@ -42,6 +42,11 @@ const ContactCreateUpdate = (props) => {
     title: "",
     type: "",
   });
+  const [refreshContact, setRefeshContact] = useState(true);
+
+  const refresh = () => {
+    setRefeshContact((prev) => !prev);
+  };
 
   const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
@@ -156,7 +161,18 @@ const ContactCreateUpdate = (props) => {
   }
 
   async function addGroupsToContact(type) {
-    console.log(type);
+    let body = {};
+    if (type == "lists") {
+      body["lists"] = lists;
+    } else {
+      body["tags"] = tags;
+    }
+    res = await axios.post(`${config.baseURL}/contacts/${id}/groups`, body, {
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    refresh();
   }
 
   async function removeGroupsToContact(id) {
@@ -217,7 +233,7 @@ const ContactCreateUpdate = (props) => {
       }
     }
     getContact();
-  }, [id]);
+  }, [id, refresh]);
   const styles = {
     margin: "10px",
     width: "40vw",
