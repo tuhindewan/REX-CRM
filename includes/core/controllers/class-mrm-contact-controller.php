@@ -579,4 +579,21 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     }
 
 
+
+    /**
+     * Create contact after form submission
+     * 
+     * @param mixed $request POST request after form submission on frontend
+     * @return void
+     * @since 1.0.0
+     */
+    public function save_mrm_form_contact($request)
+    {
+        $email = isset( $request['email'] ) ? sanitize_text_field( $request['email'] ) : '';
+        $request['status']  = 'pending';
+        $request['source']  = 'form';
+        $contact    = new MRM_Contact( $email, $request );
+        MRM_Contact_Model::insert( $contact );
+    }
+
 }

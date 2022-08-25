@@ -77,7 +77,9 @@ class MRM_Contact_Model{
         global $wpdb;
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
-        self::update_meta_fields($contact_id, $args);
+        if( !empty( $args['meta_fields'] )){
+            self::update_meta_fields($contact_id, $args);
+        }
         
         $args['updated_at'] = current_time('mysql');
         unset($args['meta_fields']);

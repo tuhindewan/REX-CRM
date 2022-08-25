@@ -79,7 +79,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
+        
         // Tag avaiability check
         $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "tags" );
 

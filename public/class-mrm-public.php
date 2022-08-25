@@ -111,10 +111,7 @@ class Mrm_Public {
 
         function mrm_form_handler( $atts ) {
             if ( isset( $_POST['submit'] ) ) {
-                $first_name = $_POST['first_name'];
-                $last_name = $_POST['last_name'];
-                $email = $_POST['email'];
-                do_action('mrm_save_contact', $first_name, $last_name, $email);
+                do_action('mrm_save_contact', $_POST);
             }
             
             return "<form method='post'>
