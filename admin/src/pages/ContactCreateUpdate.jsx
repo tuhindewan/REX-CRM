@@ -233,7 +233,7 @@ const ContactCreateUpdate = (props) => {
       }
     }
     getContact();
-  }, [id, refresh]);
+  }, [id]);
   const styles = {
     margin: "10px",
     width: "40vw",
