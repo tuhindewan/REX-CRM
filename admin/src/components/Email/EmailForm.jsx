@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-import { Form, ButtonToolbar, Button, Input } from 'rsuite';
+import { Form, ButtonToolbar, Button, Input, useToaster, Notification } from 'rsuite';
 import FormGroup from 'rsuite/esm/FormGroup';
 import { Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
@@ -10,6 +10,8 @@ const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea
 
 
 const EmailForm = (props) => {
+  const navigate = useNavigate();
+  const toaster = useToaster();
   const [emailData, setEmailData] = useState({});
   const [type, setType] = useState("email");
   const [reciever, setReciever] = useState("");
@@ -38,10 +40,8 @@ const EmailForm = (props) => {
 
   const handleSend = (value) => {
       setEmailData (value);
-
-      
   }
-  const sendEmail = () => {
+  async function sendEmail(){
     console.log(emailData);
 
     const emailJson = {
@@ -53,7 +53,7 @@ const EmailForm = (props) => {
 
     //console.log(emailJson);
 
-    const res = axios.post(
+    const res = await axios.post(
         `/wp-json/mrm/v1/${contactEndpoint}${id}/send-message`,
           emailJson
         ,
@@ -63,6 +63,20 @@ const EmailForm = (props) => {
           },
         }
       )
+
+     if (res.data.code === 200){
+      toaster.push(
+          <Notification closable type="success" header="success" duration={2000}>
+            Email has been sent
+          </Notification>,
+          {
+            placement: "bottomEnd",
+          }
+      );
+      }else {
+        //error message
+      }
+      navigate(`../contacts/update/${id}`);
   }
 
   return (

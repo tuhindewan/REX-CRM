@@ -240,5 +240,6 @@ class MRM_Contact_Group_Model{
             return false;
         }
     }
+
     
 }

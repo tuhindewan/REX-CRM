@@ -43,7 +43,7 @@ class MRM_Note {
      * @var int
      * @since 1.0.0
      */
-    private $status;
+    private $status=0;
 
      /**
      * Access check
@@ -51,7 +51,7 @@ class MRM_Note {
      * @var int
      * @since 1.0.0
      */
-    private $is_public;
+    private $is_public=0;
 
 
     public function __construct($args)
@@ -59,8 +59,8 @@ class MRM_Note {
         $this->type         =  $args['type'];
         $this->title        =  $args['title'];
         $this->description  =  $args['description'];
-        $this->status       =  $args['status'];
-        $this->is_public    =  $args['is_public'];
+        // $this->status       =  $args['status'];
+        // $this->is_public    =  $args['is_public'];
     }
 
 

@@ -32,6 +32,7 @@ const ContactCreateUpdate = (props) => {
     status: "pending",
   });
   const [emails, setEmails] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
@@ -145,6 +146,9 @@ const ContactCreateUpdate = (props) => {
   async function removeGroupsToContact(id) {
     console.log(id);
   }
+  async function addNote() {
+    navigate(`/contacts/${id}/note`);
+  }
   // load contact details in update page
   useEffect(() => {
     async function getContact() {
@@ -166,6 +170,8 @@ const ContactCreateUpdate = (props) => {
           console.log(details);
           setContactDetails(details);
         }
+
+        // Get All emails for this contact
         const emailRes = await axios.get(
           `${config.baseURL}/contacts/${id}/get-emails`,
           {
@@ -177,10 +183,27 @@ const ContactCreateUpdate = (props) => {
         const emailResJson = emailRes.data;
         if ((emailResJson.code = 200)) {
           const allEmails = emailResJson.data.data;
-          console.log(allEmails);
+          //console.log(allEmails);
           setEmails(allEmails);
         }
-        console.log(emailResJson);
+        //console.log(emailResJson);
+
+        // Get All Notes for this contact
+        const noteRes = await axios.get(
+          `${config.baseURL}/contact/${id}/notes`,
+          {
+            headers: {
+              "Content-type": "application/json",
+            },
+          }
+        );
+
+        const noteResJson = noteRes.data;
+
+        if (noteResJson.code == 200) {
+          const allNotes = noteResJson.data.data;
+          setNotes(allNotes);
+        }
       }
     }
     getContact();
@@ -195,7 +218,7 @@ const ContactCreateUpdate = (props) => {
       <Stack
         spacing={10}
         justifyContent="flex-start"
-        alignItems="top"
+        alignItems="flex-start"
         style={{ margin: 10 }}
         direction="row"
       >
@@ -233,54 +256,58 @@ const ContactCreateUpdate = (props) => {
             />
           </InputGroup>
 
-          <InputGroup style={styles}>
-            <InputGroup.Addon>Phone</InputGroup.Addon>
-            <Input
-              name="phone"
-              value={contactDetails["phone"]}
-              onChange={handleContactDetailsChange}
-            />
-          </InputGroup>
-          <InputGroup style={styles}>
-            <InputGroup.Addon>Address Line 1</InputGroup.Addon>
-            <Input
-              name="address_line_1"
-              value={contactDetails["address_line_1"]}
-              onChange={handleContactDetailsChange}
-            />
-          </InputGroup>
-          <InputGroup style={styles}>
-            <InputGroup.Addon>Address Line 2</InputGroup.Addon>
-            <Input
-              name="address_line_2"
-              value={contactDetails["address_line_2"]}
-              onChange={handleContactDetailsChange}
-            />
-          </InputGroup>
-          <InputGroup style={styles}>
-            <InputGroup.Addon>City</InputGroup.Addon>
-            <Input
-              name="city"
-              value={contactDetails["city"]}
-              onChange={handleContactDetailsChange}
-            />
-          </InputGroup>
-          <InputGroup style={styles}>
-            <InputGroup.Addon>State</InputGroup.Addon>
-            <Input
-              name="state"
-              value={contactDetails["state"]}
-              onChange={handleContactDetailsChange}
-            />
-          </InputGroup>
-          <InputGroup style={styles}>
-            <InputGroup.Addon>Country</InputGroup.Addon>
-            <Input
-              name="country"
-              value={contactDetails["country"]}
-              onChange={handleContactDetailsChange}
-            />
-          </InputGroup>
+          {id && (
+            <>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>Phone</InputGroup.Addon>
+                <Input
+                  name="phone"
+                  value={contactDetails["phone"]}
+                  onChange={handleContactDetailsChange}
+                />
+              </InputGroup>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>Address Line 1</InputGroup.Addon>
+                <Input
+                  name="address_line_1"
+                  value={contactDetails["address_line_1"]}
+                  onChange={handleContactDetailsChange}
+                />
+              </InputGroup>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>Address Line 2</InputGroup.Addon>
+                <Input
+                  name="address_line_2"
+                  value={contactDetails["address_line_2"]}
+                  onChange={handleContactDetailsChange}
+                />
+              </InputGroup>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>City</InputGroup.Addon>
+                <Input
+                  name="city"
+                  value={contactDetails["city"]}
+                  onChange={handleContactDetailsChange}
+                />
+              </InputGroup>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>State</InputGroup.Addon>
+                <Input
+                  name="state"
+                  value={contactDetails["state"]}
+                  onChange={handleContactDetailsChange}
+                />
+              </InputGroup>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>Country</InputGroup.Addon>
+                <Input
+                  name="country"
+                  value={contactDetails["country"]}
+                  onChange={handleContactDetailsChange}
+                />
+              </InputGroup>
+            </>
+          )}
           <SelectPicker
             styles={styles}
             menuAutoWidth
@@ -303,6 +330,32 @@ const ContactCreateUpdate = (props) => {
           >
             {id ? "Update" : "Create"} Contact
           </Button>
+          {id && (
+            <>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>Field Title</InputGroup.Addon>
+                <Input
+                  name="title"
+                  value={customFields["title"]}
+                  onChange={handleCustomFieldsChange}
+                />
+              </InputGroup>
+              <SelectPicker
+                styles={styles}
+                menuAutoWidth
+                data={typeData}
+                label="Type"
+                name="type"
+                value={customFields["type"]}
+                onChange={(value, item, event) => {
+                  handleFieldTypeChange("type", value);
+                }}
+              />
+              <Button onClick={createCustomField} appearance="primary" block>
+                Create Custom Field
+              </Button>
+            </>
+          )}
         </Stack>
         <Stack
           spacing={10}
@@ -333,7 +386,6 @@ const ContactCreateUpdate = (props) => {
             <Button
               onClick={() => addGroupsToContact("tags")}
               appearance="primary"
-              loading={loading}
             >
               Add Tag
             </Button>
@@ -360,14 +412,20 @@ const ContactCreateUpdate = (props) => {
             <Button
               onClick={() => addGroupsToContact("lists")}
               appearance="primary"
-              loading={loading}
             >
               Add Lists
             </Button>
           )}
           {id && (
             <div>
+              {id && (
+                <Button onClick={sendMail} appearance="primary" block>
+                  Send Mail
+                </Button>
+              )}
+
               <div style={{ fontWeight: "bold" }}>All Emails To this User</div>
+
               <hr />
               {emails.map((email, index) => {
                 return (
@@ -379,35 +437,22 @@ const ContactCreateUpdate = (props) => {
             </div>
           )}
           {id && (
-            <Button onClick={sendMail} appearance="primary" loading={loading}>
-              Send Mail
-            </Button>
-          )}
-          {id && (
-            <>
-              <InputGroup style={styles}>
-                <InputGroup.Addon>Field Title</InputGroup.Addon>
-                <Input
-                  name="title"
-                  value={customFields["title"]}
-                  onChange={handleCustomFieldsChange}
-                />
-              </InputGroup>
-              <SelectPicker
-                styles={styles}
-                menuAutoWidth
-                data={typeData}
-                label="Type"
-                name="type"
-                value={customFields["type"]}
-                onChange={(value, item, event) => {
-                  handleFieldTypeChange("type", value);
-                }}
-              />
-              <Button onClick={createCustomField} appearance="primary" block>
-                Create Custom Field
-              </Button>
-            </>
+            <div>
+              {id && (
+                <Button onClick={addNote} appearance="primary" block>
+                  Add Note
+                </Button>
+              )}
+              <div style={{ fontWeight: "bold" }}>All Notes To this User</div>
+              <hr />
+              {notes.map((note) => {
+                return (
+                  <div>
+                    {note["title"]} | {note["created_at"]}
+                  </div>
+                );
+              })}
+            </div>
           )}
         </Stack>
       </Stack>
