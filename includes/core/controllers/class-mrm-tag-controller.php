@@ -80,10 +80,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // Tag avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "tags" );
-
-
         $success = MRM_Contact_Group_Model::destroy( $params['tag_id'] );
         if( $success ) {
             return $this->get_success_response( __( 'Tag has been deleted successfully', 'mrm' ), 200 );

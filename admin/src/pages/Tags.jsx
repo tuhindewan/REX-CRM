@@ -45,7 +45,6 @@ const Tags = () => {
       },
       }
     )
-    console.log(res.data.code);
 
     if (res.data.code === 200){
       toaster.push(
@@ -59,7 +58,6 @@ const Tags = () => {
       }else {
         //error message
       }
-      navigate('/tags');
   } 
   
   return (

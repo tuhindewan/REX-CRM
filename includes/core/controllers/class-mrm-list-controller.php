@@ -129,13 +129,6 @@ class MRM_List_Controller extends MRM_Base_Controller{
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // List avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 'lists' );
-
-        if ( !$exist ) {
-			return $this->get_error_response( __( 'List not found', 'mrm' ),  400);
-		}
-
         $success = MRM_Contact_Group_Model::destroy( $params['list_id'] );
         if( $success ) {
             return $this->get_success_response( __( 'List has been deleted successfully', 'mrm' ), 200 );
