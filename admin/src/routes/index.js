@@ -13,6 +13,7 @@ import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import CreateSegment from "../components/Segment/CreateSegment";
 import EmailForm from "../components/Email/EmailForm";
+import CreateNote from "../components/Notes/CreateNote";
 
 const routes = [
   {
@@ -84,7 +85,12 @@ const routes = [
     path: "contacts/:id/message",
     element: EmailForm,
     hideInMenu: true
-  }
+  },
+  {
+    path: "contacts/:id/note",
+    element: CreateNote,
+    hideInMenu: true
+  },
 ];
 
 export default routes;

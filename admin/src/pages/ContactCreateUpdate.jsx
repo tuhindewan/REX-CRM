@@ -105,6 +105,10 @@ const ContactCreateUpdate = (props) => {
   async function sendMail() {
     navigate(`/contacts/${id}/message`);
   }
+
+  async function addNote() {
+    navigate(`/contacts/${id}/note`);
+  }
   // load contact details in update page
   useEffect(() => {
     async function getContact() {
@@ -279,6 +283,16 @@ const ContactCreateUpdate = (props) => {
               block
             >
               Send Mail
+            </Button>
+          )}
+          {id && (
+            <Button
+              onClick={addNote}
+              appearance="primary"
+              loading={loading}
+              block
+            >
+              Add Note
             </Button>
           )}
           <div>

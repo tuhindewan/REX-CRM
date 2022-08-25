@@ -38,10 +38,8 @@ const EmailForm = (props) => {
 
   const handleSend = (value) => {
       setEmailData (value);
-
-      
   }
-  const sendEmail = () => {
+  async function sendEmail(){
     console.log(emailData);
 
     const emailJson = {
@@ -53,7 +51,7 @@ const EmailForm = (props) => {
 
     //console.log(emailJson);
 
-    const res = axios.post(
+    const res = await axios.post(
         `/wp-json/mrm/v1/${contactEndpoint}${id}/send-message`,
           emailJson
         ,
@@ -63,6 +61,8 @@ const EmailForm = (props) => {
           },
         }
       )
+
+     console.log(res.data.code);
   }
 
   return (
