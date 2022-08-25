@@ -295,26 +295,8 @@ const ContactCreateUpdate = (props) => {
           style={{ margin: 10 }}
           direction="column"
         >
-          {id && (
-            <Button
-              onClick={sendMail}
-              appearance="primary"
-              loading={loading}
-              block
-            >
-              Send Mail
-            </Button>
-          )}
-          {id && (
-            <Button
-              onClick={addNote}
-              appearance="primary"
-              loading={loading}
-              block
-            >
-              Add Note
-            </Button>
-          )}
+          
+          
           <div>
             <div style={{ fontWeight: "bold" }}>Tags</div>
             {contactDetails.existing_tags?.map((item) => {
@@ -331,7 +313,19 @@ const ContactCreateUpdate = (props) => {
           <BasePicker endpoint="/lists" data={lists} setData={setLists} />
           {id && (
             <div>
+              {id && (
+                <Button
+                  onClick={sendMail}
+                  appearance="primary"
+                  loading={loading}
+                  block
+                >
+                  Send Mail
+                </Button>
+              )}
+
               <div style={{ fontWeight: "bold" }}>All Emails To this User</div>
+              
               <hr />
               {emails.map((email) => {
                 return (
@@ -345,6 +339,16 @@ const ContactCreateUpdate = (props) => {
 
           {id && (
             <div>
+              {id && (
+                <Button
+                  onClick={addNote}
+                  appearance="primary"
+                  loading={loading}
+                  block
+                >
+                  Add Note
+                </Button>
+              )}
               <div style={{ fontWeight: "bold" }}>All Notes To this User</div>
               <hr />
               {notes.map((note) => {
