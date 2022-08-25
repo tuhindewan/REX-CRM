@@ -5,6 +5,7 @@ import routes from "../routes";
 import { useLocation } from "react-router-dom";
 
 const NavLinks = () => {
+    const location = useLocation();
   return (
     <nav className="navbar">
       <ul className="mrm-ul">

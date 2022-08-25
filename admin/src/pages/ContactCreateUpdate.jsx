@@ -64,6 +64,16 @@ const ContactCreateUpdate = (props) => {
       };
     });
   };
+
+  const handleFieldTypeChange = (key, value) => {
+    setCustomFields((prevState) => {
+      return {
+        ...prevState,
+        [key]: value,
+      };
+    });
+  };
+
   const handleContactStatusChange = (key, value) => {
     setContactDetails((prevState) => {
       return {
@@ -90,9 +100,7 @@ const ContactCreateUpdate = (props) => {
     } else {
       // update contact
       let contact = {
-        fields: {
-          ...contactDetails,
-        },
+        ...contactDetails,
       };
       res = await axios.put(`${config.baseURL}/contacts/${id}`, contact, {
         headers: {
@@ -113,6 +121,7 @@ const ContactCreateUpdate = (props) => {
           placement: "bottomEnd",
         }
       );
+      navigate("/contacts");
     } else {
     }
     setLoading(false);
@@ -123,10 +132,18 @@ const ContactCreateUpdate = (props) => {
   }
   async function createCustomField() {
     res = await axios.post(`${config.baseURL}/contacts/custom-field`, contact, {
-        headers: {
-          "Content-type": "application/json",
-        },
+      headers: {
+        "Content-type": "application/json",
+      },
     });
+  }
+
+  async function addGroupsToContact(type) {
+    console.log(type);
+  }
+
+  async function removeGroupsToContact(id) {
+    console.log(id);
   }
   // load contact details in update page
   useEffect(() => {
@@ -290,48 +307,82 @@ const ContactCreateUpdate = (props) => {
         <Stack
           spacing={10}
           justifyContent="center"
-          alignItems="top"
+          alignItems="flex-start"
           style={{ margin: 10 }}
           direction="column"
         >
-          {id && (
-            <Button
-              onClick={sendMail}
-              appearance="primary"
-              loading={loading}
-              block
-            >
-              Send Mail
-            </Button>
-          )}
           <div>
             <div style={{ fontWeight: "bold" }}>Tags</div>
             {contactDetails.existing_tags?.map((item) => {
-              return <span key={item["slug"]}>{item["title"]} | </span>;
+              return (
+                <div key={item["slug"]}>
+                  <span>{item["title"]}</span>
+                  <span
+                    style={{ color: "red" }}
+                    onClick={() => removeGroupsToContact(item["id"])}
+                  >
+                    {" "}
+                    | X |{" "}
+                  </span>
+                </div>
+              );
             })}
           </div>
           <BasePicker endpoint="/tags" data={tags} setData={setTags} />
+          {id && (
+            <Button
+              onClick={() => addGroupsToContact("tags")}
+              appearance="primary"
+              loading={loading}
+            >
+              Add Tag
+            </Button>
+          )}
           <div>
             <div style={{ fontWeight: "bold" }}>Lists</div>
             {contactDetails.existing_lists?.map((item) => {
-              return <span key={item["slug"]}>{item["title"]} | </span>;
+              return (
+                <>
+                  <span key={item["slug"]}>{item["title"]}</span>
+                  <span
+                    style={{ color: "red" }}
+                    onClick={() => removeGroupsToContact(item["id"])}
+                  >
+                    {" "}
+                    | X |{" "}
+                  </span>
+                </>
+              );
             })}
           </div>
           <BasePicker endpoint="/lists" data={lists} setData={setLists} />
           {id && (
+            <Button
+              onClick={() => addGroupsToContact("lists")}
+              appearance="primary"
+              loading={loading}
+            >
+              Add Lists
+            </Button>
+          )}
+          {id && (
             <div>
               <div style={{ fontWeight: "bold" }}>All Emails To this User</div>
               <hr />
-              {emails.map((email) => {
+              {emails.map((email, index) => {
                 return (
-                  <div>
+                  <div key={index}>
                     {email["email_subject"]} | {email["created_at"]}
                   </div>
                 );
               })}
             </div>
           )}
-
+          {id && (
+            <Button onClick={sendMail} appearance="primary" loading={loading}>
+              Send Mail
+            </Button>
+          )}
           {id && (
             <>
               <InputGroup style={styles}>
@@ -342,28 +393,19 @@ const ContactCreateUpdate = (props) => {
                   onChange={handleCustomFieldsChange}
                 />
               </InputGroup>
-              {/* <InputGroup style={styles}>
-                <InputGroup.Addon>Field Title</InputGroup.Addon>
-                <Input
-                  name="country"
-                  value={customFields["title"]}
-                  onChange={handleCustomFieldsChange}
-                />
-              </InputGroup> */}
               <SelectPicker
                 styles={styles}
                 menuAutoWidth
                 data={typeData}
-                label="Status"
+                label="Type"
                 name="type"
                 value={customFields["type"]}
-                block
                 onChange={(value, item, event) => {
-                  handleCustomFieldsChange("type", value);
+                  handleFieldTypeChange("type", value);
                 }}
               />
               <Button onClick={createCustomField} appearance="primary" block>
-                Send Mail
+                Create Custom Field
               </Button>
             </>
           )}
