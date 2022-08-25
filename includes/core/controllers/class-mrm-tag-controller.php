@@ -186,7 +186,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
      * @param array $tags
      * @param int $contact_id
      * 
-     * @return void
+     * @return bool
      * @since 1.0.0
      */
     public static function set_tags_to_contact( $tags, $contact_id )
@@ -216,7 +216,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             
 
         }, $tags);
-        MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
+        return MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
     }
 
 

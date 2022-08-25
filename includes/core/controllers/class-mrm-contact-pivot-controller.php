@@ -59,12 +59,12 @@ class MRM_Contact_Pivot_Controller {
      * Set Contact and groups many to many relation
      * 
      * @param array $pivotIds
-     * @return void
+     * @return bool
      * @since 1.0.0
      */
     public static function set_groups_to_contact( $pivotIds )
     {
-        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivotIds );
+        return MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivotIds );
     }
 
 

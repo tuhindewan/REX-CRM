@@ -155,7 +155,18 @@ class MRM_Contact_API_Route {
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
-            ]
+                ],
+                [
+                    'methods' => \WP_REST_Server::CREATABLE,
+                    'callback' => [
+                        $this->controller ,
+                        'set_groups'
+                    ],
+                    'permission_callback' => [
+                        $this->controller ,
+                        'rest_permissions_check'
+                    ] ,
+                ]
         ]);
 
         /**

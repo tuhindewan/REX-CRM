@@ -235,6 +235,38 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
 
     /**
+     * Set tags, lists, and segments from a contact
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function set_groups( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $tags   = isset( $params['tags'] ) ? $params['tags'] : array(); 
+
+        $lists  = isset( $params['lists'] ) ? $params['lists'] : array();
+
+        if( isset( $params['tags'] ) ){
+            $success = MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+        }
+
+        if( isset( $params['lists'] ) ){
+            $success = MRM_List_Controller::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+        }
+
+
+        if($success) {
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+    }
+
+
+    /**
      * Export contacts controller
      * 
      * @param WP_REST_Request $request

@@ -165,7 +165,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @param array $lists
      * @param int $contact_id
      * 
-     * @return void
+     * @return bool
      * @since 1.0.0
      */
     public static function set_lists_to_contact( $lists, $contact_id )
@@ -194,7 +194,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
         }, $lists);
 
-        MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
+        return MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
         
     }
 
