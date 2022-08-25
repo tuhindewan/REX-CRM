@@ -132,12 +132,11 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $page       =  isset($params['page']) ? $params['page'] : 1;
         $perPage    =  isset($params['per-page']) ? $params['per-page'] : 25;
         $offset     =  ($page - 1) * $perPage;
-
         // Tag Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = MRM_Contact_Group_Model::get_all( 'tags', $offset, $perPage, $search );
-
+        error_log(print_r($groups, 1));
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
@@ -239,13 +238,13 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
      */
     public static function get_tags_to_contact( $contact )
     {
-        $contact->tags = array();
-        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
+        $contact['tags'] = array();
+        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact['id']);
         $tag_ids = array_map( function($tag_id) {
             return $tag_id['group_id'];
         }, $results);
 
-        $contact->tags = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
+        $contact['tags'] = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
         return $contact;
     }
 

@@ -37,8 +37,8 @@ class MRM_Contact_Info_Table {
         $table = $wpdb->prefix . self::$mrm_table;
 
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
-            `id` BIGINT unsigned NOT NULL auto_increment,
-            `contact_id` BIGINT unsigned NOT NULL,
+            `id` BIGINT UNSIGNED NOT NULL auto_increment,
+            `contact_id` BIGINT UNSIGNED NOT NULL,
             `timezone` VARCHAR(192) NULL,
             `address_line_1` VARCHAR(192) NULL,
             `address_line_2` VARCHAR(192) NULL,
@@ -47,6 +47,9 @@ class MRM_Contact_Info_Table {
             `state` VARCHAR(192) NULL,
             `country` VARCHAR(192) NULL,
             `phone` VARCHAR(50) NULL,
+            `company_name` VARCHAR(192) NULL,
+            `contact_owner` BIGINT UNSIGNED NULL,
+            `date_of_birth` DATE NULL,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             PRIMARY KEY (`id`),
