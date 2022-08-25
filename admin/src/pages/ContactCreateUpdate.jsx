@@ -17,7 +17,6 @@ const ContactCreateUpdate = (props) => {
   // if id is defined then it is an update page otherwise it is an create page
   let { id } = useParams();
   const navigate = useNavigate();
-
   const location = useLocation();
   const toaster = useToaster();
   const [contactDetails, setContactDetails] = useState({
@@ -36,12 +35,29 @@ const ContactCreateUpdate = (props) => {
   const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
+  const [customFields, setCustomFields] = useState({
+    title: "",
+    type: "",
+  });
 
   const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
   );
+  const typeData = ["text", "radio", "checkbox", "number"].map((data) => ({
+    label: data.toUpperCase(),
+    value: data,
+  }));
   const handleContactDetailsChange = (value, event) => {
     setContactDetails((prevState) => {
+      return {
+        ...prevState,
+        [event.target.name]: value,
+      };
+    });
+  };
+
+  const handleCustomFieldsChange = (value, event) => {
+    setCustomFields((prevState) => {
       return {
         ...prevState,
         [event.target.name]: value,
@@ -104,6 +120,13 @@ const ContactCreateUpdate = (props) => {
 
   async function sendMail() {
     navigate(`/contacts/${id}/message`);
+  }
+  async function createCustomField() {
+    res = await axios.post(`${config.baseURL}/contacts/custom-field`, contact, {
+        headers: {
+          "Content-type": "application/json",
+        },
+    });
   }
   // load contact details in update page
   useEffect(() => {
@@ -307,6 +330,42 @@ const ContactCreateUpdate = (props) => {
                 );
               })}
             </div>
+          )}
+
+          {id && (
+            <>
+              <InputGroup style={styles}>
+                <InputGroup.Addon>Field Title</InputGroup.Addon>
+                <Input
+                  name="title"
+                  value={customFields["title"]}
+                  onChange={handleCustomFieldsChange}
+                />
+              </InputGroup>
+              {/* <InputGroup style={styles}>
+                <InputGroup.Addon>Field Title</InputGroup.Addon>
+                <Input
+                  name="country"
+                  value={customFields["title"]}
+                  onChange={handleCustomFieldsChange}
+                />
+              </InputGroup> */}
+              <SelectPicker
+                styles={styles}
+                menuAutoWidth
+                data={typeData}
+                label="Status"
+                name="type"
+                value={customFields["type"]}
+                block
+                onChange={(value, item, event) => {
+                  handleCustomFieldsChange("type", value);
+                }}
+              />
+              <Button onClick={createCustomField} appearance="primary" block>
+                Send Mail
+              </Button>
+            </>
           )}
         </Stack>
       </Stack>
