@@ -83,9 +83,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         // Tag avaiability check
         $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "tags" );
 
-        if ( !$exist ) {
-			return $this->get_error_response( __( 'Tag not found', 'mrm' ),  400);
-		}
 
         $success = MRM_Contact_Group_Model::destroy( $params['tag_id'] );
         if( $success ) {
