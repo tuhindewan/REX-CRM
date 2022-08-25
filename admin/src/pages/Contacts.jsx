@@ -1,12 +1,14 @@
-import { Button, Table, SelectPicker, Stack } from "rsuite";
+import { Button, Table, SelectPicker, Stack, useToaster, Notification} from "rsuite";
 import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 import BaseTable from "../components/Base/BaseTable";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import BasePicker from "../components/Base/BasePicker";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Contacts = () => {
+  const toaster = useToaster();
   const location = useLocation();
   const navigate = useNavigate();
   console.log(location);
@@ -19,6 +21,31 @@ const Contacts = () => {
   const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
   );
+
+  async function handleDelete (id) {
+  
+    const res = await axios.delete(
+      `/wp-json/mrm/v1/contacts/${id}`,
+      {
+      headers: {
+          "Content-type": "application/json",
+      },
+      }
+    )
+
+    if (res.data.code === 200){
+      toaster.push(
+          <Notification closable type="success" header="success" duration={2000}>
+            Contact deleted
+          </Notification>,
+          {
+            placement: "bottomEnd",
+          }
+      );
+      }else {
+        //error message
+      }
+  }
 
   useEffect(() => {
     try {
@@ -168,6 +195,17 @@ const Contacts = () => {
         <Column width={200} flexGrow={1}>
           <HeaderCell>Email</HeaderCell>
           <Cell dataKey="email" />
+        </Column>
+
+        <Column width={150} align="left" flexGrow={1}>
+          <HeaderCell> Action </HeaderCell>
+            <Cell>
+            {rowData => (
+              <span>
+                <button onClick={() => handleDelete(rowData.id)}> Delete </button>
+              </span>
+            )}
+            </Cell>
         </Column>
       </BaseTable>
     </>

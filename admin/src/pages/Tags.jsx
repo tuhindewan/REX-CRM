@@ -1,10 +1,11 @@
 import BaseTable from "../components/Base/BaseTable";
 import React, { useState, useEffect } from "react";
-import { Button, Table } from "rsuite";
+import { Button, Table, useToaster, Notification } from "rsuite";
 const { HeaderCell, Cell, Column } = Table;
 import BaseCreate from "../components/Base/BaseCreate";
 import CreateTag from "../components/Tag/CreateTag";
-import { Link ,useParams,} from "react-router-dom";
+import { Link ,useParams,useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const leftMarkup = (
   <Link to="/tags/create">
@@ -28,7 +29,37 @@ const TitleCell = ({ rowData, dataKey, ...props }) => {
 };
 
 
+
+
 const Tags = () => {
+  const toaster = useToaster();
+  const navigate = useNavigate();
+
+  async function handleDelete (id) {
+  
+    const res = await axios.delete(
+      `/wp-json/mrm/v1/tags/${id}`,
+      {
+      headers: {
+          "Content-type": "application/json",
+      },
+      }
+    )
+
+    if (res.data.code === 200){
+      toaster.push(
+          <Notification closable type="success" header="success" duration={2000}>
+            Tag deleted
+          </Notification>,
+          {
+            placement: "bottomEnd",
+          }
+      );
+      }else {
+        //error message
+      }
+  } 
+  
   return (
     <>
       {/* <BaseCreate endpoint="/tags" /> */}
@@ -54,7 +85,13 @@ const Tags = () => {
         </Column>
         <Column width={150} align="left" flexGrow={1}>
           <HeaderCell> Action </HeaderCell>
-          <Cell><Button>Delete</Button></Cell>
+            <Cell>
+            {rowData => (
+              <span>
+                <button onClick={() => handleDelete(rowData.id)}> Delete </button>
+              </span>
+            )}
+            </Cell>
         </Column>
       </BaseTable>
     </>
