@@ -114,6 +114,17 @@ class MRM_Note_API_Route{
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_single'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ]
         ]);
 

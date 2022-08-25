@@ -14,6 +14,7 @@ import UpdateList from "../components/List/UpdateList";
 import CreateSegment from "../components/Segment/CreateSegment";
 import EmailForm from "../components/Email/EmailForm";
 import CreateNote from "../components/Notes/CreateNote";
+import UpdateNode from "../components/Notes/UpdateNote";
 
 const routes = [
   {
@@ -91,6 +92,11 @@ const routes = [
     element: CreateNote,
     hideInMenu: true
   },
+  {
+    path: "contacts/:contact_id/note/:id",
+    element: UpdateNode,
+    hideInMenu: true
+  }
 ];
 
 export default routes;
