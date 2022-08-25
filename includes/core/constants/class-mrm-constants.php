@@ -30,7 +30,6 @@ class MRM_Constants{
         "phone"
     );
 
-
     /**
      * Contact attrs available for mapping
      */

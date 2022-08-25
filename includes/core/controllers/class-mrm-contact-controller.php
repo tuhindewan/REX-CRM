@@ -246,10 +246,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $tags   = isset( $params['tags'] ) ? $params['tags'] : array(); 
-
-        $lists  = isset( $params['lists'] ) ? $params['lists'] : array();
-
         if( isset( $params['tags'] ) ){
             $success = MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $params['contact_id'] );
         }
@@ -339,10 +335,13 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $csv->setHeaderOffset(0);
             
             $csv_attrs = $csv->getHeader();
+            $custom_attrs   = MRM_Contact_Model::mrm_contact_custom_attributes();
             $contact_attrs = MRM_Constants::$contacts_attrs;
+
+            $mrm_attrs  = array_merge( $contact_attrs, $custom_attrs );
             $map_results = array(
                 "csv"       => $csv_attrs,
-                "contact"   => $contact_attrs
+                "contact"   => $mrm_attrs
             );
             return $this->get_success_response( __('Import Successful.', "mrm"), 200, $map_results );
 
@@ -370,6 +369,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             }
 
             $mapJson = json_decode(json_encode($params["map"]), true);
+            error_log(print_r($mapJson, 1));
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
@@ -387,13 +387,14 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                     if($target == "email") {
                       $contactEmail = $csvContact[$source];
                     } else {
-                      if(in_array($target, MRM_Constants::$contacts_attrs)){
+                      if( in_array( $target, array( "first_name", "last_name", "email" ) ) ){
                         $contactArgs[$target] = $csvContact[$source];
                       } else {
-                        // TODO Contact meta table information insertion goes here
+                        $contactArgs['meta_fields'][$target] = $csvContact[$source];
                       }
                     }
                 }
+                
                 $contact    = new MRM_Contact( $contactEmail, $contactArgs );
                 $exists     = MRM_Contact_Model::is_contact_exist($contactEmail);
                 if(!$exists) {

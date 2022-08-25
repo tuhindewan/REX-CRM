@@ -400,5 +400,39 @@ class MRM_Contact_Model{
         }
     }
 
+
+    /**
+     * Return custiom fields for mapping 
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function mrm_contact_custom_attributes()
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+
+        $select_query  = $wpdb->prepare("SELECT DISTINCT meta_key FROM $contacts_meta_table WHERE meta_key NOT IN ('first_name', 
+                                                                                                                    'last_name',
+                                                                                                                    'email',
+                                                                                                                    'date_of_birth',
+                                                                                                                    'company_name',
+                                                                                                                    'address_line_1',	
+                                                                                                                    'address_line_2',
+                                                                                                                    'postal_code',
+                                                                                                                    'city',	
+                                                                                                                    'state',
+                                                                                                                    'country',
+                                                                                                                    'phone',
+                                                                                                                    'timezone'
+                                                                                                                    )");
+        $results = json_decode(json_encode($wpdb->get_results($select_query)), true);
+
+        $custom_fields = array_map(function( $result ){
+            return $result['meta_key'];
+        }, $results);
+        return $custom_fields;
+    }
     
 }
