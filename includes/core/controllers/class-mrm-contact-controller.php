@@ -88,6 +88,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                 if($exist){
                     return $this->get_error_response( __( 'Email address is already exist', 'mrm' ),  400);
                 }
+    
                 $contact    = new MRM_Contact( $email, $params );
                 $contact_id = MRM_Contact_Model::insert( $contact );
             }
@@ -558,12 +559,10 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
         $offset     =  ($page - 1) * $perPage;
 
-        $group_id = isset ( $params ['group_id']) ? $params['group_id'] : [''];
-
-
         // Contact Search keyword
         $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
-        $contacts = MRM_Contact_Model::get_filtered_contacts( $offset, $perPage, $search ,$params['status'], $group_id);
+
+        $contacts = MRM_Contact_Model::get_filtered_contacts( $offset, $perPage, $search ,$params['status'], $params ['group_id']);
 
 
 

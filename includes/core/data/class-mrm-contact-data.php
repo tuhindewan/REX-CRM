@@ -151,6 +151,14 @@ class MRM_Contact {
      */
     private $contact_id;
 
+    /**
+     * Contact Meta Fileds
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $meta_fields;
+
 
     public function __construct( $email, $args )
     {
@@ -170,6 +178,7 @@ class MRM_Contact {
         $this->postal_code      =  isset($args['postal_code'])      ? sanitize_text_field( $args['postal_code'] )       : '';
         $this->company_name     =  isset($args['company_name'])     ? sanitize_text_field( $args['company_name'] )      : '';
         $this->contact_id       =  isset($args['contact_id'])       ? sanitize_text_field( $args['contact_id'] )        : '';
+        $this->meta_fields      =  isset($args['meta_fields'])      ? $args['meta_fields']                              : array();
     }
 
 
@@ -375,6 +384,18 @@ class MRM_Contact {
     public function get_contact_id()
     {
         return $this->contact_id;     
+    }
+
+
+    /**
+     * Return Meta Fields
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_meta_fields()
+    {
+        return $this->meta_fields;     
     }
 
 }

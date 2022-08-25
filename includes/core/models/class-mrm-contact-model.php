@@ -48,7 +48,14 @@ class MRM_Contact_Model{
                 'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_at'    =>  current_time('mysql')
             ));
-        return $wpdb->insert_id;
+
+            $insert_id = $wpdb->insert_id;
+            if( !empty( $contact->get_meta_fields() )){
+                $meta_fields['meta_fields'] = $contact->get_meta_fields();
+                self::update_meta_fields( $insert_id, $meta_fields );
+            }
+
+            return $insert_id;
 
         } catch(\Exception $e) {
             return false;
@@ -102,7 +109,7 @@ class MRM_Contact_Model{
     {
         global $wpdb;
         $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
-
+        
         if( self::is_contact_meta_exist( $contact_id ) ){
             foreach( $args['meta_fields'] as $key => $value ){
                 $wpdb->update( $contacts_meta_table, array(
@@ -330,6 +337,7 @@ class MRM_Contact_Model{
         return false;
     }
 
+    
     /**
      * Run SQL Query to get filtered Contacts
      * 
@@ -347,13 +355,9 @@ class MRM_Contact_Model{
 
         $search_terms = null;
 
-        
-
 		if ( ! empty( $search ) ) {
-            $search_terms = "WHERE email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
+            $search_terms = "email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
 		}
-
-        
 
         // Prepare sql results for list view
         try {
@@ -367,7 +371,7 @@ class MRM_Contact_Model{
             $select_query  = $wpdb->prepare(
                 "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
                 ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $no_groupId $contact_table.status = %s
+                WHERE $search_terms AND $no_groupId $contact_table.status = %s
                 GROUP BY $contact_table.id
                 ", array($status)) ;
             $query_results = $wpdb->get_results( $select_query );
@@ -375,7 +379,7 @@ class MRM_Contact_Model{
             $count_query  = $wpdb->prepare(
                 "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
                 ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $no_groupId $contact_table.status = %s
+                WHERE $search_terms AND $no_groupId $contact_table.status = %s
                 GROUP BY $contact_table.id
                 ", array($status)) ;
             $count_result   = $wpdb->get_results($count_query);
