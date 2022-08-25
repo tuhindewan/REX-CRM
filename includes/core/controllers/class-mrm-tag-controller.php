@@ -239,12 +239,16 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
     {
         $contact['tags'] = array();
         $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact['id']);
-        error_log(print_r($results, 1));
-        $tag_ids = array_map( function($tag_id) {
-            return $tag_id['group_id'];
-        }, $results);
         
-        $contact['tags'] = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
+        if( !empty( $results ) ){
+
+            $tag_ids = array_map( function($tag_id) {
+                return $tag_id['group_id'];
+            }, $results);
+            
+            $contact['tags'] = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
+        }
+        
         return $contact;
     }
 
