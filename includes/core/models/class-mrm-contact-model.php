@@ -356,11 +356,11 @@ class MRM_Contact_Model{
         $contact_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
         $pivot_table   = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
 
-        $search_terms = null;
+        // $search_terms = null;
 
-		if ( ! empty( $search ) ) {
-            $search_terms = "email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
-		}
+		// if ( ! empty( $search ) ) {
+        //     $search_terms = "email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
+		// }
 
         // Prepare sql results for list view
         try {
@@ -374,7 +374,7 @@ class MRM_Contact_Model{
             $select_query  = $wpdb->prepare(
                 "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
                 ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $search_terms AND $no_groupId $contact_table.status = %s
+                WHERE $no_groupId $contact_table.status = %s
                 GROUP BY $contact_table.id
                 ", array($status)) ;
             $query_results = $wpdb->get_results( $select_query );
@@ -382,16 +382,17 @@ class MRM_Contact_Model{
             $count_query  = $wpdb->prepare(
                 "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
                 ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $search_terms AND $no_groupId $contact_table.status = %s
+                WHERE $no_groupId $contact_table.status = %s
                 GROUP BY $contact_table.id
                 ", array($status)) ;
-            $count_result   = $wpdb->get_results($count_query);
+            $count_result = $wpdb->get_results($count_query);
     
-            $count = (int) $count_result['0']->total;
+            $count = (int) $count_result["0"]->total;
+
             $total_pages = ceil($count / $limit);
       
             return array(
-                'data'=> $query_results,
+                'data'=> json_decode( json_encode( $query_results ), true ),
                 'total_pages' => $total_pages,
                 'count' => $count
             );
