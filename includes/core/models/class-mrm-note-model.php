@@ -175,5 +175,28 @@ class MRM_Note_Model {
         }
     }
 
+    /**
+     * Run SQL Query to get a single note information
+     * 
+     * @param mixed $id Note ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get( $id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+
+        try {
+            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array($id));
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data));
+            return $dataJson;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
 
 }

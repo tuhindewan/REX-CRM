@@ -137,7 +137,15 @@ class MRM_Note_Controller extends MRM_Base_Controller {
      */
     public function get_single(WP_REST_Request $request)
     {
-        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+    
+        $note = MRM_Note_Model::get( $params['note_id'] );
+
+        if(isset($note)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $note);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
     }
 
 
