@@ -35,7 +35,6 @@ class CustomField{
                 'title'      => $field->get_title(),
                 'slug'       => $field->get_slug(),
                 'type'       => $field->get_type(),
-                'group_id'   => $field->get_group_id(),
                 'meta'       => $field->get_meta(),
                 'created_at' => current_time('mysql')) 
             );
@@ -49,25 +48,21 @@ class CustomField{
     /**
      * Update fields information to database
      * 
-     * @param object    $field         Field object
-     * @param int       $id
+     * @param object    $args         Field object
+     * @param int       $id            Field ID
      * @return bool
      * @since 1.0.0
      */
-    public static function update( $field, $id )
+    public static function update( $args, $id )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . TablesCustomField::$table_name;
 
+        $args['updated_at'] = current_time('mysql');
+        unset($args['field_id']);
+
         try {
-            $wpdb->update( $fields_table, array(
-                'title'         => $field->get_title(),
-                'slug'          => $field->get_slug(),
-                'type'          => $field->get_type(),
-                'group_id'      => $field->get_group_id(),
-                'meta'          => $field->get_meta(),
-                'updated_at'    => current_time('mysql')
-                ), array( 'id' => $id )
+            $wpdb->update( $fields_table, $args, array( 'id' => $id )
             );
             return true;
         } catch(\Exception $e) {
