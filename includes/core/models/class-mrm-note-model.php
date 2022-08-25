@@ -55,6 +55,9 @@ class MRM_Note_Model {
         global $wpdb;
         $note_table = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
 
+        error_log(print_r($note,1));
+        error_log(print_r($contact_id,1));
+
         try {
             $wpdb->insert($note_table, array(
                 'contact_id'    => $contact_id,
