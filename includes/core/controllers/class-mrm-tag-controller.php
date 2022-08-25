@@ -136,7 +136,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = MRM_Contact_Group_Model::get_all( 'tags', $offset, $perPage, $search );
-        error_log(print_r($groups, 1));
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }

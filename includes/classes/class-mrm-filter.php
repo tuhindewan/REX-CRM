@@ -48,7 +48,6 @@ class MRM_Filter {
 	 */
 	public static function normalize_filter_collection( $filters ) 
     {
-        error_log(print_r($filters, 1));
         foreach ( $filters as $filter => $filter_value ) {
             
 			$filter = self::normalize_single_filter( $filter );

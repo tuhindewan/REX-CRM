@@ -36,13 +36,6 @@ class CustomField {
      */
     private $type;
 
-    /**
-     * Field group_id
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $group_id;
 
     /**
      * Field meta
@@ -58,7 +51,6 @@ class CustomField {
         $this->title    = $args['title'];
         $this->slug     = $args['slug'];
         $this->type     = $args['type'];
-        $this->group_id = $args['group_id'];
         $this->meta     = $args['meta'];
     }
 
@@ -100,18 +92,6 @@ class CustomField {
 
 
     /**
-     * Return group_id
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_group_id()
-    {
-        return $this->group_id;
-    }
-
-
-    /**
      * Return meta
      * 
      * @return string
@@ -119,6 +99,9 @@ class CustomField {
      */
     public function get_meta()
     {
+        if( !is_serialized( $this->meta ) ) {
+            return maybe_serialize($this->meta);
+        }
         return $this->meta;
     }
 

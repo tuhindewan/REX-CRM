@@ -5,7 +5,6 @@ namespace MRM\Models;
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;
 use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
-use MRM\DB\Tables\MRM_Contact_Info_Table;
 use MRM\DB\Tables\MRM_Contact_Meta_Table;
 use MRM\DB\Tables\MRM_Contact_Note_Table;
 use MRM\DB\Tables\MRM_Contacts_Table;

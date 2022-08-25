@@ -39,53 +39,56 @@ class CustomFieldController extends MRM_Base_Controller {
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request ){
-
+        
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // Filed title validation
-        $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
-
-        if ( empty( $title ) ) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
-        }
-
-        // Field type validation
-        $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
-
-        if ( empty( $type ) ) {
-            return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
-        }
-
-        if ( ! empty( $params['options'] ) ) {
-			$options = sanitize_text_field( $params['options'] );
-		}
-
-		$placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
-
-        $meta = array();
-		if ( ! empty( $options ) ) {
-			$meta['options'] = $options;
-		}
-		if ( ! empty( $placeholder ) ) {
-			$meta['placeholder'] = $placeholder;
-		}
-
-        $this->args = array(
-			'title'    => $title,
-            'slug'     => isset( $params['slug'] )    ? sanitize_text_field( $params['slug'] )     : NULL,
-            'type'     => $type,
-            'group_id' => isset( $params['group_id'] )? $params['group_id'] : NULL,
-            'meta'     => $meta
-		);
 
         // Field object create and insert or update to database
         try {
-            $field = new CustomField( $this->args );
 
-            if(isset($params['field_id'])){
-                $success = ModelsCustomField::update( $field, $params['field_id'] );
+            if(isset( $params['field_id'] )){
+                $field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
+                $success = ModelsCustomField::update( $params, $field_id );
             }else{
+
+                // Filed title validation
+                $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
+
+                if ( empty( $title ) ) {
+                    return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+                }
+
+                // Field type validation
+                $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
+
+                if ( empty( $type ) ) {
+                    return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
+                }
+
+                if ( ! empty( $params['options'] ) ) {
+                    $options = $params['options'];
+                }
+                
+                $placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
+        
+                $meta = array();
+                if ( ! empty( $options ) ) {
+                    $meta['options'] = $options;
+                }
+                if ( ! empty( $placeholder ) ) {
+                    $meta['placeholder'] = $placeholder;
+                }
+                
+                $this->args = array(
+                    'title'    => $title,
+                    'slug'     => isset( $params['slug'] )    ? sanitize_text_field( $params['slug'] )     : NULL,
+                    'type'     => $type,
+                    'meta'     => $meta
+                );
+
+                $field = new CustomField( $this->args );
+
                 $success = ModelsCustomField::insert( $field );
             }
 

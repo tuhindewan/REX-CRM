@@ -331,7 +331,6 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         try {
             if(isset( $params ) && empty( $params["map"] )) {
                 throw new Exception( __("Map attribute is required.", "mrm") );
