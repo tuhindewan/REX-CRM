@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import {
   Button,
   Input,
@@ -471,11 +471,16 @@ const ContactCreateUpdate = (props) => {
               )}
               <div style={{ fontWeight: "bold" }}>All Notes To this User</div>
               <hr />
-              {notes.map((note) => {
+              { 
+                notes.map((note) => {
                 return (
-                  <div>
-                    {note["title"]} | {note["created_at"]}
-                  </div>
+                  <p>
+                  <Link to={"../contacts/"+id+"/note/"+note["id"]}>
+                    {
+                      note["title"]} | {note["created_at"]
+                    }
+                  </Link>
+                  </p>
                 );
               })}
             </div>
