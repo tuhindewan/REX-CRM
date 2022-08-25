@@ -5,8 +5,6 @@ import routes from "../routes";
 import { useLocation } from "react-router-dom";
 
 const NavLinks = () => {
-  const location = useLocation();
-  console.log(location);
   return (
     <nav className="navbar">
       <ul className="mrm-ul">
@@ -16,7 +14,7 @@ const NavLinks = () => {
               <li className="mrm-li" key={index}>
                 <Link
                   className={
-                    location.pathname == route.path
+                    location.pathname.includes(route.path)
                       ? "mrm-a mrm-active"
                       : "mrm-a"
                   }

@@ -57,7 +57,7 @@ const BaseTable = (props) => {
         <div>
           <Stack
             spacing={10}
-            justifyContent="flex-end"
+            justifyContent="space-between"
             alignItems="center"
             style={{ margin: 10 }}
           >
@@ -69,25 +69,32 @@ const BaseTable = (props) => {
             >
               {leftMarkup}
             </Stack>
-            <InputGroup style={styles}>
-              <InputGroup.Addon>
-                <SearchIcon />
-              </InputGroup.Addon>
-              <Whisper
-                trigger="focus"
-                placement="top"
-                speaker={
-                  <Tooltip>
-                    Search Terms should at least have 3 characters
-                  </Tooltip>
-                }
-              >
-                <Input value={search} onChange={setSearch} />
-              </Whisper>
-            </InputGroup>
-            <Button onClick={toggleRefresh} appearance="primary">
-              {search.length >= 3 ? "Search" : "Refresh"}
-            </Button>
+            <Stack
+              spacing={10}
+              justifyContent="flex-start"
+              alignItems="center"
+              style={{ margin: 10 }}
+            >
+              <InputGroup style={styles}>
+                <InputGroup.Addon>
+                  <SearchIcon />
+                </InputGroup.Addon>
+                <Whisper
+                  trigger="focus"
+                  placement="top"
+                  speaker={
+                    <Tooltip>
+                      Search Terms should at least have 3 characters
+                    </Tooltip>
+                  }
+                >
+                  <Input value={search} onChange={setSearch} />
+                </Whisper>
+              </InputGroup>
+              <Button onClick={toggleRefresh} appearance="primary">
+                {search.length >= 3 ? "Search" : "Refresh"}
+              </Button>
+            </Stack>
           </Stack>
         </div>
         <div>

@@ -6,6 +6,7 @@ use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Message;
 use MRM\DB\Tables\MRM_Messages_Table;
 use MRM\Traits\Singleton;
+use MRM\DB\Tables\MRM_Contacts_Table;
 
 /**
  * @author [MRM Team]
@@ -91,11 +92,11 @@ class MRM_Message_Model {
             $count_array = json_decode(json_encode($count_data), true);
             
             $count = (int) $count_array['0']['total'];
-            $total_pages = ceil(intdiv($count, $limit));
+            $totalPages = ceil($count / $limit);
       
             return array(
                 'data'=> $results,
-                'total_pages' => $total_pages
+                'total_pages' => $totalPages
             );
         } catch(\Exception $e) {
             return NULL;

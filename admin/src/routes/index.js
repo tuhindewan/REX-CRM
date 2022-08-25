@@ -12,13 +12,10 @@ import UpdateTag from "../components/Tag/UpdateTag";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import CreateSegment from "../components/Segment/CreateSegment";
+import EmailForm from "../components/Email/EmailForm";
+import CreateNote from "../components/Notes/CreateNote";
 
 const routes = [
-  {
-    path: "/",
-    element: Dashboard,
-    title: __("Dashboard", "mrm"),
-  },
   {
     path: "/contacts",
     element: Contacts,
@@ -83,7 +80,17 @@ const routes = [
     path: "segments/create",
     element: CreateSegment,
     hideInMenu: true,
-  }
+  },
+  {
+    path: "contacts/:id/message",
+    element: EmailForm,
+    hideInMenu: true
+  },
+  {
+    path: "contacts/:id/note",
+    element: CreateNote,
+    hideInMenu: true
+  },
 ];
 
 export default routes;

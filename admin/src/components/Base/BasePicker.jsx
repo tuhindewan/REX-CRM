@@ -5,7 +5,7 @@ import { TagPicker } from "rsuite";
 import config from "../../config";
 
 const BasePicker = (props) => {
-  const { endpoint = "/tags", data, setData } = props;
+  const { endpoint = "/tags", data, setData, width = 300 } = props;
   const plural = endpoint.replace("/", "");
   const [fetchedData, setFetchedData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ const BasePicker = (props) => {
         data={fetchedData}
         value={value}
         cacheData={cache}
-        style={{ width: 300 }}
+        style={{ width: width }}
         labelKey="title"
         block
         creatable
