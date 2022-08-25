@@ -77,7 +77,9 @@ class MRM_Contact_Model{
         global $wpdb;
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
-        self::update_meta_fields($contact_id, $args);
+        if( !empty( $args['meta_fields'] )){
+            self::update_meta_fields($contact_id, $args);
+        }
         
         $args['updated_at'] = current_time('mysql');
         unset($args['meta_fields']);
@@ -109,7 +111,7 @@ class MRM_Contact_Model{
     {
         global $wpdb;
         $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
-        
+
         if( self::is_contact_meta_exist( $contact_id ) ){
             foreach( $args['meta_fields'] as $key => $value ){
                 $wpdb->update( $contacts_meta_table, array(
@@ -281,7 +283,7 @@ class MRM_Contact_Model{
         try {
             $contacts_query     = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
             $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
-
+            
             $new_meta = self::get_meta( $id );
             
             return array_merge($contacts_results[0], $new_meta);
@@ -307,10 +309,11 @@ class MRM_Contact_Model{
         $meta_query         = $wpdb->prepare("SELECT meta_key, meta_value FROM $contacts_meta_table  WHERE contact_id = %d",array( $id ));
         $meta_results       = json_decode(json_encode($wpdb->get_results($meta_query)), true);
 
-        $new_meta = [];
+        $new_meta['meta_fields'] = [];
         foreach($meta_results as $result){
-            $new_meta[$result['meta_key']] = $result['meta_value'];
+            $new_meta['meta_fields'][$result['meta_key']] = $result['meta_value'];
         }
+
         return $new_meta;
     }
 
