@@ -23,12 +23,14 @@ const ContactCreateUpdate = (props) => {
     first_name: "",
     last_name: "",
     email: "",
-    phone: "",
-    address_line_1: "",
-    address_line_2: "",
-    city: "",
-    state: "",
-    country: "",
+    meta_fields: {
+      phone: "",
+      address_line_1: "",
+      address_line_2: "",
+      city: "",
+      state: "",
+      country: "",
+    },
     status: "pending",
   });
   const [emails, setEmails] = useState([]);
@@ -56,6 +58,17 @@ const ContactCreateUpdate = (props) => {
       };
     });
   };
+  const handleContactDetailsChangeMeta = (value, event) => {
+    setContactDetails((prevState) => {
+      return {
+        ...prevState,
+        meta_fields: {
+          ...prevState.meta_fields,
+          [event.target.name]: value,
+        },
+      };
+    });
+  };
 
   const handleCustomFieldsChange = (value, event) => {
     setCustomFields((prevState) => {
@@ -79,13 +92,14 @@ const ContactCreateUpdate = (props) => {
     setContactDetails((prevState) => {
       return {
         ...prevState,
-        [key]: value,
+        status: value,
       };
     });
   };
   async function insertOrUpdateContact() {
     setLoading(true);
     let res = null;
+    console.log(contactDetails);
     if (!id) {
       // create contact
       let contact = {
@@ -103,6 +117,9 @@ const ContactCreateUpdate = (props) => {
       let contact = {
         ...contactDetails,
       };
+      delete contact["tags"];
+      delete contact["lists"];
+      console.log(contact);
       res = await axios.put(`${config.baseURL}/contacts/${id}`, contact, {
         headers: {
           "Content-type": "application/json",
@@ -111,7 +128,6 @@ const ContactCreateUpdate = (props) => {
     }
 
     const resJson = res.data;
-    console.log(resJson);
     const code = resJson.code;
     if (code == 201) {
       toaster.push(
@@ -162,10 +178,6 @@ const ContactCreateUpdate = (props) => {
         if ((resJson.code = 200)) {
           let details = {
             ...resJson.data,
-            existing_tags: resJson.data.tags,
-            existing_lists: resJson.data.lists,
-            tags: [],
-            lists: [],
           };
           console.log(details);
           setContactDetails(details);
@@ -183,10 +195,8 @@ const ContactCreateUpdate = (props) => {
         const emailResJson = emailRes.data;
         if ((emailResJson.code = 200)) {
           const allEmails = emailResJson.data.data;
-          //console.log(allEmails);
           setEmails(allEmails);
         }
-        //console.log(emailResJson);
 
         // Get All Notes for this contact
         const noteRes = await axios.get(
@@ -262,48 +272,48 @@ const ContactCreateUpdate = (props) => {
                 <InputGroup.Addon>Phone</InputGroup.Addon>
                 <Input
                   name="phone"
-                  value={contactDetails["phone"]}
-                  onChange={handleContactDetailsChange}
+                  value={contactDetails["meta_fields"]["phone"]}
+                  onChange={handleContactDetailsChangeMeta}
                 />
               </InputGroup>
               <InputGroup style={styles}>
                 <InputGroup.Addon>Address Line 1</InputGroup.Addon>
                 <Input
                   name="address_line_1"
-                  value={contactDetails["address_line_1"]}
-                  onChange={handleContactDetailsChange}
+                  value={contactDetails["meta_fields"]["address_line_1"]}
+                  onChange={handleContactDetailsChangeMeta}
                 />
               </InputGroup>
               <InputGroup style={styles}>
                 <InputGroup.Addon>Address Line 2</InputGroup.Addon>
                 <Input
                   name="address_line_2"
-                  value={contactDetails["address_line_2"]}
-                  onChange={handleContactDetailsChange}
+                  value={contactDetails["meta_fields"]["address_line_2"]}
+                  onChange={handleContactDetailsChangeMeta}
                 />
               </InputGroup>
               <InputGroup style={styles}>
                 <InputGroup.Addon>City</InputGroup.Addon>
                 <Input
                   name="city"
-                  value={contactDetails["city"]}
-                  onChange={handleContactDetailsChange}
+                  value={contactDetails["meta_fields"]["city"]}
+                  onChange={handleContactDetailsChangeMeta}
                 />
               </InputGroup>
               <InputGroup style={styles}>
                 <InputGroup.Addon>State</InputGroup.Addon>
                 <Input
                   name="state"
-                  value={contactDetails["state"]}
-                  onChange={handleContactDetailsChange}
+                  value={contactDetails["meta_fields"]["state"]}
+                  onChange={handleContactDetailsChangeMeta}
                 />
               </InputGroup>
               <InputGroup style={styles}>
                 <InputGroup.Addon>Country</InputGroup.Addon>
                 <Input
                   name="country"
-                  value={contactDetails["country"]}
-                  onChange={handleContactDetailsChange}
+                  value={contactDetails["meta_fields"]["country"]}
+                  onChange={handleContactDetailsChangeMeta}
                 />
               </InputGroup>
             </>
@@ -366,7 +376,7 @@ const ContactCreateUpdate = (props) => {
         >
           <div>
             <div style={{ fontWeight: "bold" }}>Tags</div>
-            {contactDetails.existing_tags?.map((item) => {
+            {contactDetails.tags?.map((item) => {
               return (
                 <div key={item["slug"]}>
                   <span>{item["title"]}</span>
@@ -392,7 +402,7 @@ const ContactCreateUpdate = (props) => {
           )}
           <div>
             <div style={{ fontWeight: "bold" }}>Lists</div>
-            {contactDetails.existing_lists?.map((item) => {
+            {contactDetails.lists?.map((item) => {
               return (
                 <>
                   <span key={item["slug"]}>{item["title"]}</span>
