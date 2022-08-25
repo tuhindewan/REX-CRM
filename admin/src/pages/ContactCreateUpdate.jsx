@@ -153,11 +153,19 @@ const ContactCreateUpdate = (props) => {
     navigate(`/contacts/${id}/message`);
   }
   async function createCustomField() {
-    res = await axios.post(`${config.baseURL}/contacts/custom-field`, contact, {
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
+    let custom_fileds = {
+      ...customFields,
+      slug: customFields["title"],
+    };
+    let res = await axios.post(
+      `${config.baseURL}/custom-fields`,
+      custom_fileds,
+      {
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    );
   }
 
   async function addGroupsToContact(type) {

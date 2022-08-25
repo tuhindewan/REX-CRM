@@ -44,7 +44,7 @@ class CustomField {
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `title` VARCHAR(255) NOT NULL,
                 `slug` VARCHAR(255) NOT NULL,
-                'group_id' BIGINT DEFAULT 1,
+                `group_id` BIGINT(20) DEFAULT 1,
                 `type` VARCHAR(192) NOT NULL COMMENT 'text-input, text-number, text-area, dropdown, radio-button, checkbox date',
                 `meta` TEXT NOT NULL,
                 `created_at` TIMESTAMP,
