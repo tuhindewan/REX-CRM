@@ -35,26 +35,26 @@ class MRM_Note_Controller extends MRM_Base_Controller {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Note Title validation
-        $title = isset( $params['notes']['title'] ) ? sanitize_text_field( $params['notes']['title'] ) : '';
+        $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
         if ( empty( $title ) ) {
 			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
 		}
 
         // Note type validation
-        $type = isset( $params['notes']['type'] ) ? sanitize_text_field( $params['notes']['type'] ) : '';
+        $type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : '';
         if ( empty( $type ) ) {
 			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
 		}
 
         // Note description validation
-        $description = isset( $params['notes']['description'] ) ? sanitize_text_field( $params['notes']['description'] ) : '';
+        $description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
         if ( empty( $description ) ) {
 			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  400);
 		}
 
         // Note object create and insert or update to database
         try {
-            $note = new MRM_Note( $params['notes'] );
+            $note = new MRM_Note( $params );
 
             if(isset($params['note_id'])){
                 $success = MRM_Note_Model::update( $note, $params['contact_id'], $params['note_id'] );
@@ -137,7 +137,15 @@ class MRM_Note_Controller extends MRM_Base_Controller {
      */
     public function get_single(WP_REST_Request $request)
     {
-        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+    
+        $note = MRM_Note_Model::get( $params['note_id'] );
+
+        if(isset($note)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $note);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
     }
 
 

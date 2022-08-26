@@ -38,7 +38,6 @@ class MRM_Send_Email{
             wp_mail($to, "Test Subject", "Test Body");
 
         }catch (\Exception $e){
-            error_log(print_r($e,1));
         }
     }
 

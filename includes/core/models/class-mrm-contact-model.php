@@ -43,18 +43,58 @@ class MRM_Contact_Model{
                 'email'         =>  $contact->get_email(),
                 'first_name'    =>  $contact->get_first_name(),
                 'last_name'     =>  $contact->get_last_name(),
-                'phone'         =>  $contact->get_phone(),
                 'status'        =>  $contact->get_status(),
                 'source'        =>  $contact->get_source(),
-                'contact_owner' =>  $contact->get_contact_owner(),
-                'hash'          =>  MRM_Common::get_rand_hash(),
+                'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_at'    =>  current_time('mysql')
             ));
-        return $wpdb->insert_id;;
+
+            $insert_id = $wpdb->insert_id;
+            if( !empty( $contact->get_meta_fields() )){
+                $meta_fields['meta_fields'] = $contact->get_meta_fields();
+                self::update_meta_fields( $insert_id, $meta_fields );
+            }
+
+            return $insert_id;
 
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    /**
+     * Update a contact information
+     * 
+     * @param mixed $contact_id     Contact ID
+     * @param mixed $args           Entity and value to update
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update( $args, $contact_id )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+
+        if( !empty( $args['meta_fields'] )){
+            self::update_meta_fields($contact_id, $args);
+        }
+        
+        $args['updated_at'] = current_time('mysql');
+        unset($args['meta_fields']);
+        unset($args['contact_id']);
+
+        try {
+            $wpdb->update( 
+                $contacts_table, 
+                $args, 
+                array( 'ID' => $contact_id )
+            );
+        }catch(\Exception $e){
+            return false;
+        }
+        return true;
     }
 
 
@@ -67,27 +107,26 @@ class MRM_Contact_Model{
      * @return bool
      * @since 1.0.0
      */
-    public static function update( $contact_id, $fields )
+    public static function update_meta_fields( $contact_id, $args )
     {
         global $wpdb;
-        $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
 
-        $entity = array_key_first($fields);
-        $value  = array_values($fields)[0];
-
-        try {
-            $wpdb->update( 
-                $contacts_table, 
-                array( 
-                    $entity         =>  $value,
-                    'updated_at'    =>  current_time('mysql')
-                ), 
-                array( 'ID' => $contact_id )
-            );
-        }catch(\Exception $e){
-            return false;
+        if( self::is_contact_meta_exist( $contact_id ) ){
+            foreach( $args['meta_fields'] as $key => $value ){
+                $wpdb->update( $contacts_meta_table, array(
+                    'meta_value'    => $value
+                ), array( 'meta_key' => $key , 'contact_id' => $contact_id ));
+            }
+        }else{
+            foreach( $args['meta_fields'] as $key => $value ){
+                $wpdb->insert( $contacts_meta_table, array(
+                    'contact_id'    => $contact_id,
+                    'meta_key'      => $key,
+                    'meta_value'    => $value
+                ));
+            }
         }
-        return true;
     }
 
 
@@ -183,14 +222,14 @@ class MRM_Contact_Model{
      * @param int $offset
      * @param int $limit
      * @param string $search
-     * 
+     * @param array $filters
      * @return array
      * @since 1.0.0
      */
     public static function get_all( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $contact_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
         $search_terms = null;
 
         // Search contacts by email, first name or last name
@@ -200,16 +239,24 @@ class MRM_Contact_Model{
 
         // Prepare sql results for list view
         try {
-            $select_query  = $wpdb->prepare( "SELECT * FROM $table_name $search_terms ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
-            $query_results = $wpdb->get_results( $select_query );
+            $select_query  = $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
+            $query_results   = json_decode(json_encode($wpdb->get_results($select_query)), true);
+            
+            $results = array();
 
-            $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name $search_terms" );
-            $count = $wpdb->num_rows;
+            foreach( $query_results as $query_result ){
+                $new_meta = self::get_meta( $query_result['id'] );
+                $results[] = array_merge($query_result, $new_meta);
+            }
 
-            $total_pages = ceil(intdiv($count, $limit));
-      
+            $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM $contact_table $search_terms");
+            $count_result   = $wpdb->get_results($count_query);
+    
+            $count = (int) $count_result['0']->total;
+            $total_pages = ceil($count / $limit);
+
             return array(
-                'data'=> $query_results,
+                'data'=> $results,
                 'total_pages' => $total_pages,
                 'count' => $count
             );
@@ -234,12 +281,159 @@ class MRM_Contact_Model{
         $contacts_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
 
         try {
-            $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
-            return $wpdb->get_row( $select_query );
+            $contacts_query     = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
+            $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
+            
+            $new_meta = self::get_meta( $id );
+            
+            return array_merge($contacts_results[0], $new_meta);
+        
         } catch(\Exception $e) {
             return false;
         }
     }
 
+
+    /**
+     * Returns contact meta data
+     * 
+     * @param int $id   Contact ID
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_meta( $id )
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+
+        $meta_query         = $wpdb->prepare("SELECT meta_key, meta_value FROM $contacts_meta_table  WHERE contact_id = %d",array( $id ));
+        $meta_results       = json_decode(json_encode($wpdb->get_results($meta_query)), true);
+
+        $new_meta['meta_fields'] = [];
+        foreach($meta_results as $result){
+            $new_meta['meta_fields'][$result['meta_key']] = $result['meta_value'];
+        }
+
+        return $new_meta;
+    }
+
+
+    /**
+     * Check existing contact through an email address
+     * 
+     * @param string $email 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_contact_meta_exist( $contact_id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+
+        $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE contact_id = %d", array( $contact_id ));
+        $results = $wpdb->get_results($select_query);
+
+        if( !empty($results) ){
+            return true;
+        }
+        return false;
+    }
+
+    
+    /**
+     * Run SQL Query to get filtered Contacts
+     * 
+     * @param mixed $group_ids
+     * @param mixed $type
+     * 
+     * @return array|bool
+     * @since 1.0.0
+     */
+    public static function get_filtered_contacts(  $offset = 0, $limit = 10, $search = '' , $status, $group_ids)
+    {
+        global $wpdb;
+        $contact_table = $wpdb->prefix . MRM_Contacts_Table::$mrm_table;
+        $pivot_table   = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
+
+        // $search_terms = null;
+
+		// if ( ! empty( $search ) ) {
+        //     $search_terms = "email LIKE '%".$search."%' OR first_name LIKE '%".$search."%' OR last_name LIKE '%".$search."%'";
+		// }
+
+        // Prepare sql results for list view
+        try {
+            $ids = implode(",", array_map( 'intval', $group_ids ));
+            $no_groupId = "$pivot_table.group_id IN ($ids) AND ";
+
+            if (count($group_ids)==0){
+                $no_groupId = "";
+            }
+
+            $select_query  = $wpdb->prepare(
+                "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
+                ON $contact_table.id = $pivot_table.contact_id 
+                WHERE $no_groupId $contact_table.status = %s
+                GROUP BY $contact_table.id
+                ", array($status)) ;
+            $query_results = $wpdb->get_results( $select_query );
+
+            $count_query  = $wpdb->prepare(
+                "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
+                ON $contact_table.id = $pivot_table.contact_id 
+                WHERE $no_groupId $contact_table.status = %s
+                GROUP BY $contact_table.id
+                ", array($status)) ;
+            $count_result = $wpdb->get_results($count_query);
+    
+            $count = (int) $count_result["0"]->total;
+
+            $total_pages = ceil($count / $limit);
+      
+            return array(
+                'data'=> json_decode( json_encode( $query_results ), true ),
+                'total_pages' => $total_pages,
+                'count' => $count
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+    }
+
+
+    /**
+     * Return custiom fields for mapping 
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function mrm_contact_custom_attributes()
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . MRM_Contact_Meta_Table::$mrm_table;
+
+        $select_query  = $wpdb->prepare("SELECT DISTINCT meta_key FROM $contacts_meta_table WHERE meta_key NOT IN ('first_name', 
+                                                                                                                    'last_name',
+                                                                                                                    'email',
+                                                                                                                    'date_of_birth',
+                                                                                                                    'company_name',
+                                                                                                                    'address_line_1',	
+                                                                                                                    'address_line_2',
+                                                                                                                    'postal_code',
+                                                                                                                    'city',	
+                                                                                                                    'state',
+                                                                                                                    'country',
+                                                                                                                    'phone',
+                                                                                                                    'timezone'
+                                                                                                                    )");
+        $results = json_decode(json_encode($wpdb->get_results($select_query)), true);
+
+        $custom_fields = array_map(function( $result ){
+            return $result['meta_key'];
+        }, $results);
+        return $custom_fields;
+    }
     
 }

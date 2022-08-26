@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Handle, Position } from "react-flow-renderer";
-import { useGlobalStore } from "../hooks/useGlobalStore";
-import "../style/Canvas.css";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import "../../style/Canvas.css";
 import CanvasStepOptions from "./CanvasStepOptions";
 
 const DelayStep = (props) => {

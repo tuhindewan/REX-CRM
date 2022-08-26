@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useGlobalStore } from "../hooks/useGlobalStore";
-import "../style/Canvas.css";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import "../../style/Canvas.css";
 import ConditionSettingsDrawer from "./ConditionSettingsDrawer";
 import DelaySettingsDrawer from "./DelaySettingsDrawer";
 import SendEmailSettingsDrawer from "./SendEmailSettingsDrawer";

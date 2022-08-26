@@ -5,6 +5,7 @@ namespace MRM\Models;
 use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use MRM\Traits\Singleton;
 use MRM\DB\Tables\MRM_Contact_Groups_Table;
+use WPMailSMTP\Vendor\phpseclib3\Crypt\EC\Curves\prime192v1;
 
 /**
  * @author [MRM Team]
@@ -104,10 +105,11 @@ class MRM_Contact_Group_Model{
             $select_query  = $wpdb->prepare( "SELECT * FROM $group_table WHERE type = %s $search_terms ORDER BY id DESC LIMIT %d, %d", array( $type, $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
 
-            $wpdb->prepare( "SELECT COUNT(*) as total FROM $group_table WHERE type = %s $search_terms", array( $type ) );
-            $count = $wpdb->num_rows;
-            
-            $totalPages = ceil(intdiv($count, $limit));
+            $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM $group_table WHERE type = %d",array($type));
+            $count_result   = $wpdb->get_results($count_query);
+    
+            $count = (int) $count_result['0']->total;
+            $totalPages = ceil($count / $limit);
       
             return array(
                 'data'          => $query_results,
@@ -238,5 +240,6 @@ class MRM_Contact_Group_Model{
             return false;
         }
     }
+
     
 }

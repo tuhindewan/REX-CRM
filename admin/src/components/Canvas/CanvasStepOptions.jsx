@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "../style/Canvas.css";
+import "../../style/Canvas.css";
 const CanvasStepOptions = ({
   showEdit = true,
   showSettings = true,

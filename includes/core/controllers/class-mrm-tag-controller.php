@@ -43,7 +43,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
         // Tag avaiability check
         $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 'tags' );
-        if ( $exist ) {
+        if ( $exist && !isset($params['tag_id']) ) {
 			return $this->get_error_response( __( 'Tag is already available', 'mrm' ),  400);
 		}
 
@@ -79,13 +79,6 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
-        // Tag avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "tags" );
-
-        if ( !$exist ) {
-			return $this->get_error_response( __( 'Tag not found', 'mrm' ),  400);
-		}
 
         $success = MRM_Contact_Group_Model::destroy( $params['tag_id'] );
         if( $success ) {
@@ -132,12 +125,10 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
         $page       =  isset($params['page']) ? $params['page'] : 1;
         $perPage    =  isset($params['per-page']) ? $params['per-page'] : 25;
         $offset     =  ($page - 1) * $perPage;
-
         // Tag Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = MRM_Contact_Group_Model::get_all( 'tags', $offset, $perPage, $search );
-
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
@@ -195,7 +186,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
      * @param array $tags
      * @param int $contact_id
      * 
-     * @return void
+     * @return bool
      * @since 1.0.0
      */
     public static function set_tags_to_contact( $tags, $contact_id )
@@ -225,7 +216,7 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
             
 
         }, $tags);
-        MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
+        return MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
     }
 
 
@@ -239,13 +230,18 @@ class MRM_Tag_Controller extends MRM_Base_Controller {
      */
     public static function get_tags_to_contact( $contact )
     {
-        $contact->tags = array();
-        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
-        $tag_ids = array_map( function($tag_id) {
-            return $tag_id['group_id'];
-        }, $results);
+        $contact['tags'] = array();
+        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact['id']);
+        
+        if( !empty( $results ) ){
 
-        $contact->tags = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
+            $tag_ids = array_map( function($tag_id) {
+                return $tag_id['group_id'];
+            }, $results);
+            
+            $contact['tags'] = MRM_Contact_Group_Model::get_groups_to_contact( $tag_ids, 'tags' );
+        }
+        
         return $contact;
     }
 

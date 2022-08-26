@@ -1,5 +1,5 @@
 import React from "react";
-import "../style/Canvas.css";
+import "../../style/Canvas.css";
 
 const Sidebar = () => {
   const onDragStart = (event, nodeType) => {

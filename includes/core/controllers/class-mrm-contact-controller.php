@@ -11,6 +11,7 @@ use MRM\Models\MRM_Contact_Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use MRM\Constants\MRM_Constants;
+use MRM\Helpers\Filter\MRM_Filter;
 use MRM\Helpers\Importer\MRM_Importer;
 
 
@@ -69,30 +70,26 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         // Email address validation
         $email = isset( $params['email'] ) ? sanitize_text_field( $params['email'] ) : '';
 
-        if ( empty( $email ) ) {
-			return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  400);
-		}
-
-        $this->contact_args = array(
-			'first_name'    =>  isset( $params['first_name'] )  ?   sanitize_text_field($params['first_name'])  : NULL,
-            'last_name'     =>  isset( $params['last_name'] )   ?   sanitize_text_field($params['last_name'])   : NULL,
-            'phone'         =>  isset( $params['phone'] )       ?   sanitize_text_field($params['phone'])       : NULL,
-            'status'        =>  isset( $params['status'] )      ?   sanitize_text_field($params['status'])      : NULL,
-            'source'        =>  isset( $params['source'] )      ?   sanitize_text_field($params['source'])      : NULL,
-		);
-
         // Contact object create and insert or update to database
         try {
 
             if( isset( $params['contact_id']) ){
-                $contact_id = MRM_Contact_Model::update( $params['contact_id'], $params['fields'] );
+
+                $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
+                $contact_id = MRM_Contact_Model::update( $params, $contact_id );
+
             }else{
                 // Existing contact email address check
+                if ( empty( $email ) ) {
+                    return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  400);
+                }
+
                 $exist = MRM_Contact_Model::is_contact_exist( $email );
                 if($exist){
                     return $this->get_error_response( __( 'Email address is already exist', 'mrm' ),  400);
                 }
-                $contact    = new MRM_Contact( $email, $this->contact_args );
+    
+                $contact    = new MRM_Contact( $email, $params );
                 $contact_id = MRM_Contact_Model::insert( $contact );
             }
              
@@ -128,7 +125,7 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $params     = MRM_Common::get_api_params_values( $request );
     
         $contact    = MRM_Contact_Model::get( $params['contact_id'] );
-
+        
         // Get and merge tags and lists
         if( isset($contact) ) {
             $contact    = MRM_Tag_Controller::get_tags_to_contact( $contact );
@@ -159,8 +156,9 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         $offset     =  ($page - 1) * $perPage;
 
         // Contact Search keyword
-        $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
-        $contacts = MRM_Contact_Model::get_all( $offset, $perPage, $search );
+        $search     = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
+                
+        $contacts   = MRM_Contact_Model::get_all( $offset, $perPage, $search );
 
         $contacts['data'] = array_map( function( $contact ){
             $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );
@@ -228,11 +226,39 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
     public function delete_groups( WP_REST_Request $request ) 
     {
         $success = MRM_Contact_Pivot_Controller::get_instance()->delete_groups( $request );
-
+        
         if($success) {
             return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
+    }
+
+
+    /**
+     * Set tags, lists, and segments from a contact
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function set_groups( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        if( isset( $params['tags'] ) ){
+            $success = MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+        }
+
+        if( isset( $params['lists'] ) ){
+            $success = MRM_List_Controller::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+        }
+
+
+        if($success) {
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
 
 
@@ -309,10 +335,13 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
             $csv->setHeaderOffset(0);
             
             $csv_attrs = $csv->getHeader();
+            $custom_attrs   = MRM_Contact_Model::mrm_contact_custom_attributes();
             $contact_attrs = MRM_Constants::$contacts_attrs;
+
+            $mrm_attrs  = array_merge( $contact_attrs, $custom_attrs );
             $map_results = array(
                 "csv"       => $csv_attrs,
-                "contact"   => $contact_attrs
+                "contact"   => $mrm_attrs
             );
             return $this->get_success_response( __('Import Successful.', "mrm"), 200, $map_results );
 
@@ -334,13 +363,13 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         try {
             if(isset( $params ) && empty( $params["map"] )) {
                 throw new Exception( __("Map attribute is required.", "mrm") );
             }
 
             $mapJson = json_decode(json_encode($params["map"]), true);
+            error_log(print_r($mapJson, 1));
             $csv = Reader::createFromPath($this->import_file_location, 'r');
             $csv->setHeaderOffset(0);
             $csvContacts = $csv->getRecords();
@@ -358,13 +387,14 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
                     if($target == "email") {
                       $contactEmail = $csvContact[$source];
                     } else {
-                      if(in_array($target, MRM_Constants::$contacts_attrs)){
+                      if( in_array( $target, array( "first_name", "last_name", "email" ) ) ){
                         $contactArgs[$target] = $csvContact[$source];
                       } else {
-                        // TODO Contact meta table information insertion goes here
+                        $contactArgs['meta_fields'][$target] = $csvContact[$source];
                       }
                     }
                 }
+                
                 $contact    = new MRM_Contact( $contactEmail, $contactArgs );
                 $exists     = MRM_Contact_Model::is_contact_exist($contactEmail);
                 if(!$exists) {
@@ -546,5 +576,57 @@ class MRM_Contact_Controller extends MRM_Base_Controller {
         return MRM_Message_Controller::get_instance()->get_all( $request );
     }
 
+    /**
+     * Return Filtered Contacts for list view
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_filtered_contacts( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $page       =  isset( $params['page'] ) ? $params['page'] : 1;
+        $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
+        $offset     =  ($page - 1) * $perPage;
+
+        // Contact Search keyword
+        $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
+
+        $contacts = MRM_Contact_Model::get_filtered_contacts( $offset, $perPage, $search ,$params['status'], $params ['group_id']);
+
+
+
+        $contacts['data'] = array_map( function( $contact ){
+            $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );
+            $contact = MRM_List_Controller::get_lists_to_contact( $contact );
+            return $contact;
+        }, $contacts['data'] );
+
+        if(isset($contacts)) {
+            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
+        }
+        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+    }
+
+
+
+    /**
+     * Create contact after form submission
+     * 
+     * @param mixed $request POST request after form submission on frontend
+     * @return void
+     * @since 1.0.0
+     */
+    public function save_mrm_form_contact($request)
+    {
+        $email = isset( $request['email'] ) ? sanitize_text_field( $request['email'] ) : '';
+        $request['status']  = 'pending';
+        $request['source']  = 'form';
+        $contact    = new MRM_Contact( $email, $request );
+        MRM_Contact_Model::insert( $contact );
+    }
 
 }

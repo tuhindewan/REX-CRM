@@ -84,7 +84,8 @@ class MRM_Database_Core {
             'contact_group_pivot'   => 'MRM_Contact_Group_Pivot_Table',
             'interactions'          => 'MRM_Interactions_Table',
             'emails'                => 'MRM_Messages_Table',
-            'workflows'             => 'MRM_Workflows_Table'
+            'workflows'             => 'MRM_Workflows_Table',
+            'custom_fields'         => 'CustomField'
 		));
     }
 

@@ -32,9 +32,9 @@ class MRM_Contact_Pivot_Controller {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
+        
         $groups = isset( $params['groups'] ) ? $params['groups'] : NULL;
-
+        
         return MRM_Contact_Group_Pivot_Model::delete_groups_to_contact( $params['contact_id'], $groups );
         
     }
@@ -59,12 +59,12 @@ class MRM_Contact_Pivot_Controller {
      * Set Contact and groups many to many relation
      * 
      * @param array $pivotIds
-     * @return void
+     * @return bool
      * @since 1.0.0
      */
     public static function set_groups_to_contact( $pivotIds )
     {
-        MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivotIds );
+        return MRM_Contact_Group_Pivot_Model::add_groups_to_contact( $pivotIds );
     }
 
 

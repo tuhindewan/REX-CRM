@@ -1,6 +1,6 @@
 <?php
 
-
+use MRM\Controllers\MRM_Contact_Controller;
 use MRM\REST\MRM_API_Register;
 /**
  * The file that defines the core plugin class
@@ -162,9 +162,11 @@ class Mrm {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Mrm_Admin( $this->get_plugin_name(), $this->get_version() );
+		$contact_controller = MRM_Contact_Controller::get_instance();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'mrm_save_contact', $contact_controller, 'save_mrm_form_contact', 10, 1 );
 
 	}
 
@@ -179,6 +181,7 @@ class Mrm {
 
 		$plugin_public = new Mrm_Public( $this->get_plugin_name(), $this->get_version() );
 
+        $this->loader->add_action( 'init', $plugin_public, 'load_shortcodes' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 

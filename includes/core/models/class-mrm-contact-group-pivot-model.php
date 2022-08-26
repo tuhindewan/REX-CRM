@@ -31,12 +31,17 @@ class MRM_Contact_Group_Pivot_Model {
         global $wpdb;
         $table_name = $wpdb->prefix . MRM_Contact_Group_Pivot_Table::$mrm_table;
 
-        foreach($pivot_ids as $id) {
-            $wpdb->insert($table_name, array(
-                'contact_id'    =>  $id['contact_id'],
-                'group_id'      =>  $id['group_id'],
-                'created_at'    =>  current_time('mysql')
-            ));
+        try{
+            foreach($pivot_ids as $id) {
+                $wpdb->insert($table_name, array(
+                    'contact_id'    =>  $id['contact_id'],
+                    'group_id'      =>  $id['group_id'],
+                    'created_at'    =>  current_time('mysql')
+                ));
+            }
+            return true;
+        } catch(\Exception $e){
+            return false;
         }
 
     }

@@ -43,7 +43,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
         // list avaiability check
         $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], "lists" );
-        if ( $exist ) {
+        if ( $exist && !isset($params['list_id'])) {
 			return $this->get_error_response( __( 'List is already available', 'mrm' ),  400);
 		}
         
@@ -129,13 +129,6 @@ class MRM_List_Controller extends MRM_Base_Controller{
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // List avaiability check
-        $exist = MRM_Contact_Group_Model::is_group_exist( $params['slug'], 'lists' );
-
-        if ( !$exist ) {
-			return $this->get_error_response( __( 'List not found', 'mrm' ),  400);
-		}
-
         $success = MRM_Contact_Group_Model::destroy( $params['list_id'] );
         if( $success ) {
             return $this->get_success_response( __( 'List has been deleted successfully', 'mrm' ), 200 );
@@ -172,7 +165,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
      * @param array $lists
      * @param int $contact_id
      * 
-     * @return void
+     * @return bool
      * @since 1.0.0
      */
     public static function set_lists_to_contact( $lists, $contact_id )
@@ -201,7 +194,7 @@ class MRM_List_Controller extends MRM_Base_Controller{
 
         }, $lists);
 
-        MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
+        return MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
         
     }
 
@@ -216,13 +209,18 @@ class MRM_List_Controller extends MRM_Base_Controller{
      */
     public static function get_lists_to_contact( $contact )
     {
-        $contact->lists = array();
-        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact->id );
-        $list_ids = array_map( function($list_id) {
-            return $list_id['group_id'];
-        }, $results);
+        $contact['lists'] = array();
+        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact['id'] );
 
-        $contact->lists = MRM_Contact_Group_Model::get_groups_to_contact( $list_ids, "lists" );
+        if( !empty( $results ) ){
+
+            $list_ids = array_map( function($list_id) {
+                return $list_id['group_id'];
+            }, $results);
+    
+            $contact['lists'] = MRM_Contact_Group_Model::get_groups_to_contact( $list_ids, "lists" );
+        }
+
         return $contact;
     }
     

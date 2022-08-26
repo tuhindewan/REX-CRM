@@ -6,22 +6,35 @@ import Tags from "../pages/Tags";
 import Segments from "../pages/Segments";
 import Dashboard from "../pages/Dashboard";
 import ImportContacts from "../pages/ImportContacts";
+import ContactCreateUpdate from "../pages/ContactCreateUpdate";
+import CreateTag from "../components/Tag/CreateTag";
+import UpdateTag from "../components/Tag/UpdateTag";
+import CreateList from "../components/List/CreateList";
+import UpdateList from "../components/List/UpdateList";
+import CreateSegment from "../components/Segment/CreateSegment";
+import EmailForm from "../components/Email/EmailForm";
+import CreateNote from "../components/Notes/CreateNote";
+import UpdateNode from "../components/Notes/UpdateNote";
 
 const routes = [
-  {
-    path: "/",
-    element: Dashboard,
-    title: __("Dashboard", "mrm"),
-  },
   {
     path: "/contacts",
     element: Contacts,
     title: __("Contacts", "mrm"),
   },
   {
+    path: "/contacts/create",
+    element: ContactCreateUpdate,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/update/:id",
+    element: ContactCreateUpdate,
+    hideInMenu: true,
+  },
+  {
     path: "/contacts/import",
     element: ImportContacts,
-    title: __("Import", "mrm"),
     hideInMenu: true,
   },
   {
@@ -44,6 +57,46 @@ const routes = [
     element: Automation,
     title: __("Automation", "mrm"),
   },
+  {
+    path: "/tags/create",
+    element: CreateTag,
+    hideInMenu: true,
+  },
+  {
+    path: "/tags/update/:id",
+    element: UpdateTag,
+    hideInMenu: true,
+  },
+  {
+    path: "/lists/create",
+    element: CreateList,
+    hideInMenu: true,
+  },
+  {
+    path: "/lists/update/:id",
+    element: UpdateList,
+    hideInMenu: true,
+  },
+  {
+    path: "segments/create",
+    element: CreateSegment,
+    hideInMenu: true,
+  },
+  {
+    path: "contacts/:id/message",
+    element: EmailForm,
+    hideInMenu: true
+  },
+  {
+    path: "contacts/:id/note",
+    element: CreateNote,
+    hideInMenu: true
+  },
+  {
+    path: "contacts/:contact_id/note/:id",
+    element: UpdateNode,
+    hideInMenu: true
+  }
 ];
 
 export default routes;

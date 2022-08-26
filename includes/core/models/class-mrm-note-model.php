@@ -159,18 +159,42 @@ class MRM_Note_Model {
             $select_query  = $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
             $query_results = $wpdb->get_results( $select_query );
 
-            $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) );
-            $count = $wpdb->num_rows;
+            $count_query = $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) );
+            $count_result = $wpdb->get_results($count_query);
 
-            $total_pages = ceil(intdiv($count, $limit));
+            $count = (int) $count_result['0']->total;
+            $totalPages = ceil($count / $limit);
       
             return array(
                 'data'=> $query_results,
-                'total_pages' => $total_pages,
+                'total_pages' => $totalPages,
                 'count' => $count
             );
         } catch(\Exception $e) {
             return NULL;
+        }
+    }
+
+    /**
+     * Run SQL Query to get a single note information
+     * 
+     * @param mixed $id Note ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get( $id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . MRM_Contact_Note_Table::$mrm_table;
+
+        try {
+            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array($id));
+            $data = $wpdb->get_results($sql);
+            $dataJson = json_decode(json_encode($data));
+            return $dataJson;
+        } catch(\Exception $e) {
+            return false;
         }
     }
 

@@ -155,7 +155,18 @@ class MRM_Contact_API_Route {
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
-            ]
+                ],
+                [
+                    'methods' => \WP_REST_Server::CREATABLE,
+                    'callback' => [
+                        $this->controller ,
+                        'set_groups'
+                    ],
+                    'permission_callback' => [
+                        $this->controller ,
+                        'rest_permissions_check'
+                    ] ,
+                ]
         ]);
 
         /**
@@ -239,7 +250,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact import endpint
+         * Contact import endpoint
          * This endpoint saves the imported file to database with correct mappings
          * @return void
          * @since 1.0.0
@@ -259,7 +270,7 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
-         * Contact export  endpint
+         * Contact export  endpoint
          * 
          * @return void
          * @since 1.0.0
@@ -299,6 +310,26 @@ class MRM_Contact_API_Route {
         ]);
 
         /**
+         * Get all message for a contact
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/get-emails', [
+        [
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [
+                $this->controller ,
+                'get_all_emails'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ]
+        ]
+    ]);
+
+        /**
          * Emails list for a contact
          * 
          * @return void
@@ -317,6 +348,28 @@ class MRM_Contact_API_Route {
                 ]
             ]
         ]);
+
+
+        /**
+         * Filtered list for of contacts
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/filter', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_filtered_contacts'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
+            ]
+        ]);
+        
     }
 
 }
