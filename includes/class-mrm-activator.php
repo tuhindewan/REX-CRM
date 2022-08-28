@@ -1,7 +1,6 @@
 <?php
 
-use MRM\REST\MRM_API_Activation_Handler;
-use MRM\DB\MRM_DB_Activation_Handler;
+
 /**
  * Fired during plugin activation
  *
@@ -30,8 +29,10 @@ class Mrm_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-		MRM_API_Activation_Handler::handle();
-		MRM_DB_Activation_Handler::handle();
-	}
+        require_once MRM_DIR_PATH . 'app/Database/Upgrade.php';
+
+        $upgrade = \Mint\MRM\DataBase\Upgrade::get_instance();
+        $upgrade->maybe_upgrade();
+    }
 
 }

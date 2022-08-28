@@ -1,0 +1,95 @@
+<?php
+namespace Mint\MRM\Admin\API;
+
+
+use Mint\MRM\Admin\API\Controllers\MRM_Contact_Controller;
+use Mint\Mrm\Internal\Traits\Singleton;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @desc [Register REST API routes after plugin has been activated]
+ */
+
+
+class Server {
+
+    use Singleton;
+
+    /**
+     * REST API namespaces and endpoints.
+     *
+     * @var array
+     * @since 1.0.0
+     */
+    protected $routes = [];
+
+
+    /**
+     * Hook into WordPress ready to init the REST API as needed.
+     * 
+     * @since 1.0.0
+     */
+    public function __construct() {
+
+        // rest api endpoints
+        add_action('rest_api_init', array( $this, 'rest_api_init' ), 10);
+    }
+
+    /**
+     * Register REST API after plugin activation
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function rest_api_init()
+    {
+        $test = new \Mint\MRM\Admin\API\Routes\MRM_List_API_Route();
+        foreach ($this->get_rest_namespaces() as $namespace => $controllers) {
+            foreach ($controllers as $controller_name => $route_class) {
+                $route_class_name = "\Mint\\MRM\\Admin\\API\\Routes\\".$route_class;
+                $this->routes[ $namespace ][ $controller_name ] = new $route_class_name();
+                $this->routes[ $namespace ][ $controller_name ]->register_routes();
+            }
+        }
+    }
+
+
+    /**
+     * Get API namespaces - new namespaces should be registered here.
+     *
+     * @return array List of Namespaces and Main controller classes.
+     * @since 1.0.0
+     */
+    protected function get_rest_namespaces()
+    {
+        return [
+            'mrm/v1' => $this->get_routes(),
+        ];
+    }
+
+    /**
+     * List of controllers in the mrm/v1 namespace.
+     *
+     * @return array
+     * @since 1.0.0
+     */
+    protected function get_routes()
+    {
+        return apply_filters( 'mrm/rest_api_routes', array(
+            'lists'         =>  'MRM_List_API_Route',
+            'segments'      =>  'MRM_Segment_API_Route',
+            'tags'          =>  'MRM_Tag_API_Route',
+            'notes'         =>  'MRM_Note_API_Route',
+            'contacts'      =>  'MRM_Contact_API_Route',
+            'workflows'     =>  'MRM_Workflow_API_Route',
+            'field-groups'  =>  'FieldGroupRoute',
+            'custom-fields' =>  'CustomFieldRoute'
+		));
+    }
+    
+}

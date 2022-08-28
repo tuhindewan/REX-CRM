@@ -13,7 +13,7 @@
  * @package           Mrm
  *
  * @wordpress-plugin
- * Plugin Name:       MRM
+ * Plugin Name:       MRM-Restructure
  * Plugin URI:        https://rextheme.com/mrm/
  * Description:       Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
  * Version:           1.0.0
@@ -36,29 +36,10 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'MRM_VERSION', '1.0.0' );
-
-
-add_action( 'admin_menu', 'crm_init_menu' );
-
-
-/**
- * Init Admin Menu.
- *
- * @return void
- */
-function crm_init_menu() {
-	add_menu_page( __( 'MRM', 'mrm'), __( 'MRM', 'mrm'), 'manage_options', 'mrm', 'mrm_admin_page', 'dashicons-admin-post', '2.1' );
-}
-
-
-/**
- * Init Admin Page.
- *
- * @return void
- */
-function mrm_admin_page() {
-	require_once plugin_dir_path( __FILE__ ) . 'admin/templates/app.php';
-}
+define( 'MRM_PLUGIN_NAME', 'mrm' );
+define( 'MRM_FILE', __FILE__ );
+define( 'MRM_DIR_PATH', plugin_dir_path( __FILE__ ) );
+define( 'MRM_DIR_URL', plugins_url('/', __FILE__) );
 
 
 /**
@@ -98,9 +79,65 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-mrm.php';
  * @since    1.0.0
  */
 function run_mrm() {
-
-	$plugin = new Mrm();
-	$plugin->run();
-
+	Mrm::instance();
 }
 run_mrm();
+
+
+
+if ( ! function_exists( 'mmempty' ) ) {
+
+    /**
+     * Determine if a value is empty
+     *
+     * @param $name Name of the prop
+     * @param null $array
+     * @return bool True if empty otherwise false
+     *
+     * @since 1.0.0
+     */
+    function mmempty( $name, $array = null ) {
+        if ( is_array( $name ) ) {
+            return empty( $name );
+        }
+
+        if ( ! $array ) {
+            $array = $_POST;
+        }
+
+        $val = mmarval( $array, $name );
+
+        return empty( $val );
+    }
+}
+
+
+
+
+if ( ! function_exists( 'mmarval' ) ) {
+
+    /**
+     * Get an specific property of an array
+     *
+     *
+     * @param $array Array of which the property value should be retrieved
+     * @param $prop Name of the property to be retrieved
+     * @param null $default Default value if no value is found with that name
+     * @return mixed|string|null
+     *
+     * @since 1.0.0
+     */
+    function mmarval( $array, $prop, $default = null ) {
+        if ( ! is_array( $array ) && ! ( is_object( $array ) && $array instanceof ArrayAccess ) ) {
+            return $default;
+        }
+
+        if ( isset( $array[ $prop ] ) ) {
+            $value = $array[ $prop ];
+        } else {
+            $value = '';
+        }
+
+        return empty( $value ) && $default !== null ? $default : $value;
+    }
+}
