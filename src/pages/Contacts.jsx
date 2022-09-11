@@ -1,23 +1,43 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Notification,
-  SelectPicker,
-  Stack,
-  Table,
-  useToaster,
-} from "rsuite";
-import BasePicker from "../components/Base/BasePicker";
-import BaseTable from "../components/Base/BaseTable";
+import { Button, Notification, Table, useToaster } from "rsuite";
+import BaseTable from "../components/BaseTable/index";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 const { Column, HeaderCell, Cell } = Table;
+import Import from "../components/Icons/Import";
+import Plus from "../components/Icons/Plus";
+const leftMarkup = (
+  <>
+    <Link to="/contacts/import">
+      <Button appearance="primary">+ Import</Button>
+    </Link>
+  </>
+);
 
 const Contacts = () => {
+  useGlobalStore.setState({
+    navbarMarkup: (
+      <>
+        <Link to="/contacts/import">
+          <button className="import-btn soronmrm-btn outline">
+            <Import />
+            Import
+          </button>
+        </Link>
+
+        <Link to="/contacts/create">
+          <button className="add-contact-btn soronmrm-btn ">
+            <Plus /> Add contact
+          </button>
+        </Link>
+      </>
+    ),
+    hideGlobalNav: false
+  });
   const toaster = useToaster();
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
 
   const [tags, setTags] = useState([]);
   const [lists, setLists] = useState([]);
@@ -55,17 +75,12 @@ const Contacts = () => {
       const lists = JSON.parse(searchParams.get("lists"));
       const tags = JSON.parse(searchParams.get("tags"));
       const status = searchParams.get("status");
-      console.log(lists);
-      console.log(tags);
-      console.log(status);
       setFilter({
         lists,
         tags,
         status,
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   }, [refreshFilter]);
 
   function filterContacts() {
@@ -88,71 +103,8 @@ const Contacts = () => {
 
   return (
     <>
-      <BaseTable
-        endpoint="/contacts"
-        leftMarkup={
-          <>
-            <Stack
-              spacing={10}
-              justifyContent="space-between"
-              alignItems="center"
-              style={{ margin: 10 }}
-              wrap
-            >
-              <Stack
-                spacing={10}
-                justifyContent="center"
-                alignItems="center"
-                style={{ margin: 10 }}
-                wrap
-              >
-                <BasePicker
-                  endpoint="/tags"
-                  data={tags}
-                  setData={setTags}
-                  width={150}
-                />
-                <BasePicker
-                  endpoint="/lists"
-                  data={lists}
-                  setData={setLists}
-                  width={150}
-                />
-                <SelectPicker
-                  menuAutoWidth
-                  data={statusData}
-                  label="Status"
-                  name="status"
-                  defaultValue="pending"
-                  value={status}
-                  block
-                  onChange={setStatus}
-                />
-                <Button appearance="primary" onClick={filterContacts}>
-                  Filter
-                </Button>
-                <Button appearance="primary" onClick={resetFilter}>
-                  Reset
-                </Button>
-              </Stack>
-              <Stack
-                spacing={10}
-                justifyContent="center"
-                alignItems="center"
-                // style={{ margin: 10 }}
-              >
-                <Link to="/contacts/create">
-                  <Button appearance="primary">+ Create</Button>
-                </Link>
-                <Link to="/contacts/import">
-                  <Button appearance="primary">+ Import</Button>
-                </Link>
-              </Stack>
-            </Stack>
-          </>
-        }
-      >
-        <Column width={50} align="center" fixed>
+      <BaseTable endpoint="contacts" leftMarkup={leftMarkup}>
+        {/* <Column width={50} align="center" fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey="id" />
         </Column>
@@ -197,21 +149,7 @@ const Contacts = () => {
         <Column width={200} flexGrow={1}>
           <HeaderCell>Email</HeaderCell>
           <Cell dataKey="email" />
-        </Column>
-
-        <Column width={150} align="left" flexGrow={1}>
-          <HeaderCell> Action </HeaderCell>
-          <Cell>
-            {(rowData) => (
-              <span>
-                <button onClick={() => handleDelete(rowData.id)}>
-                  {" "}
-                  Delete{" "}
-                </button>
-              </span>
-            )}
-          </Cell>
-        </Column>
+        </Column> */}
       </BaseTable>
     </>
   );

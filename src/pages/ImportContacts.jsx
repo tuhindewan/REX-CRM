@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Steps, Stack, TagPicker } from "rsuite";
+import { Stack, Steps } from "rsuite";
 import "../App.css";
 import ImportFromCSV from "../components/Import/ImportFromCSV";
 import ImportFromWP from "../components/Import/ImportFromWP";
@@ -46,14 +46,14 @@ const ImportContacts = () => {
               >
                 Import from CSV
               </div>
-              <div
+              {/* <div
                 className={`mrm-card ${
                   source == "wp" ? "mrm-card-active" : ""
                 }`}
                 onClick={() => setSource("wp")}
               >
                 Import from WP
-              </div>
+              </div> */}
             </Stack>
           </div>
           <div className="mrm-spacing">

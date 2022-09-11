@@ -1,9 +1,9 @@
 <?php
 
-namespace MRM\Models;
+namespace Mint\MRM\DataBase\Models;
 
-use MRM\DB\Tables\CustomField as TablesCustomField;
-use MRM\Traits\Singleton;
+use Mint\MRM\DataBase\Tables\CustomFieldSchema;
+use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
  * @author [MRM Team]
@@ -28,7 +28,7 @@ class CustomField{
     public static function insert( $field )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . TablesCustomField::$table_name;
+        $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
         try {
             $wpdb->insert( $fields_table, array(
@@ -56,7 +56,7 @@ class CustomField{
     public static function update( $args, $id )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . TablesCustomField::$table_name;
+        $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
         $args['updated_at'] = current_time('mysql');
         unset($args['field_id']);
@@ -80,7 +80,7 @@ class CustomField{
     public static function get_all()
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . TablesCustomField::$table_name;
+        $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
         // Return field froups for list view
         try {
@@ -108,7 +108,7 @@ class CustomField{
     public static function destroy( $id )
     {
         global $wpdb;
-        $fields_table    =   $wpdb->prefix . TablesCustomField::$table_name;
+        $fields_table    =   $wpdb->prefix . CustomFieldSchema::$table_name;
 
         try {
             $wpdb->delete( $fields_table, ['id' => $id], ["%d"] );
@@ -130,7 +130,7 @@ class CustomField{
     public static function get( $id ){
 
         global $wpdb;
-        $fields_table = $wpdb->prefix . TablesCustomField::$table_name;
+        $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
         try {
             $select_query   = $wpdb->prepare( "SELECT * FROM $fields_table WHERE id = %d",array( $id ) );

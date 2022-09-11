@@ -48,7 +48,9 @@ class Constants{
     public function define_constants() {
         $this->define( 'MRM_ADMIN_ASSETS_FOLDER', MRM_DIR_PATH.'assets/admin/' );
         $this->define( 'MRM_ADMIN_DIST_JS_FOLDER', 'assets/admin/dist/' );
-        $this->define( 'MRM_ADMIN_CSS_FOLDER', 'assets/admin/dist/css/' );
+        $this->define( 'MRM_ADMIN_DIST_CSS_FOLDER', 'assets/admin/dist/css/' );
+        $this->define( 'MRM_ADMIN_EXTERNAL_JS_FOLDER', 'assets/admin/js/' );
+        $this->define( 'MRM_ADMIN_EXTERNAL_CSS_FOLDER', 'assets/admin/css/' );
     }
 
 

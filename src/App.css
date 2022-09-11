@@ -1,14 +1,5 @@
-.container {
-  width: 600px;
-  height: 600px;
-}
 
-.mrm-spacing {
-  margin: 10px;
-  padding: 10px;
-}
-
-.mrm-card,
+/* .mrm-card,
 .mrm-card-active {
   width: 150px;
   height: 80px;
@@ -26,7 +17,7 @@
 
 .mrm-card-active {
   border: 2px solid #3498ff;
-}
+} */
 
 .rs-uploader-trigger-btn {
     width: 100%;

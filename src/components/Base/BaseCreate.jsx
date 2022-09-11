@@ -50,7 +50,6 @@ const BaseCreate = (props) => {
       }
     );
     const resJson = res.data;
-    console.log(resJson);
     const code = resJson.code;
     if (code == 201) {
       toaster.push(

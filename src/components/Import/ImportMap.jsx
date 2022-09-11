@@ -13,6 +13,7 @@ import config from "../../config.js";
 
 import axios from "axios";
 const ImportMap = (props) => {
+  console.log(props);
   const { csvAttrs, contactAttrs, goToNextStep, goToPrevStep } = props;
   const csvSelectData = csvAttrs.map((item) => ({ label: item, value: item }));
   const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
@@ -78,7 +79,6 @@ const ImportMap = (props) => {
       }
     );
     const resJson = res.data;
-    console.log(resJson);
     const code = resJson.code;
     if (code == 200) {
       toaster.push(

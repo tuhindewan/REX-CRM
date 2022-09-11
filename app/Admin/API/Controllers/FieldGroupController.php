@@ -17,7 +17,7 @@ use MRM\Models\FieldGroup as ModelsFieldGroup;
  * @desc [Responsible for managing Custom Field Group API callbacks]
  */
 
-class FieldGroupController extends MRM_Base_Controller {
+class FieldGroupController extends BaseController {
     
     use Singleton;
 

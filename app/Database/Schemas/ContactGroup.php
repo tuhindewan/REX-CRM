@@ -49,6 +49,7 @@ class ContactGroupSchema implements Schema {
             `updated_at` TIMESTAMP,
            PRIMARY KEY (`id`),
            KEY `type` (`type`)
-         ) ";
+         ) ;";
+
     }
 }

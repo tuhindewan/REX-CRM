@@ -14,6 +14,7 @@ import {
 } from "rsuite";
 import "../../style/BaseTable.css";
 const { Column, HeaderCell, Cell } = Table;
+import ContactDetails from "../ContactDetails";
 
 const BaseTable = (props) => {
   const { endpoint = "/contacts", children, height = 420, leftMarkup } = props;
@@ -113,7 +114,10 @@ const BaseTable = (props) => {
             </div>
           )}
         </div>
-        <div>
+        <div className="contact-list-page">
+          <ContactDetails />
+        </div>
+        {/* <div>
           {data.length > 0 && (
             <>
               <Table height={height} data={data}>
@@ -143,7 +147,7 @@ const BaseTable = (props) => {
               </div>
             </>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );

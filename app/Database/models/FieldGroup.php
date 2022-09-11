@@ -1,9 +1,9 @@
 <?php
 
-namespace MRM\Models;
+namespace Mint\MRM\DataBase\Models;
 
 use MRM\DB\Tables\CustomFieldGroup;
-use MRM\Traits\Singleton;
+use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
  * @author [MRM Team]

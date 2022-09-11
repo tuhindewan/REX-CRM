@@ -53,6 +53,6 @@ class ContactSchema implements Schema {
             `updated_at` TIMESTAMP NULL,
              INDEX `contact_wp_user_id_index` (`wp_user_id` ASC),
              INDEX `contact_status_index` (`status` ASC)
-         )";
+         ) ";
     }
 }

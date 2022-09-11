@@ -45,11 +45,27 @@ class AdminAssets {
             return false;
         }
         wp_enqueue_script(
+            MRM_PLUGIN_NAME.'-select2',
+            self::get_url('select2', 'js', 'external'),
+            array(),
+            MRM_VERSION,
+            true
+        );
+        wp_enqueue_script(
             MRM_PLUGIN_NAME,
             self::get_url('main', 'js'),
             array(),
             MRM_VERSION,
             true
+        );
+        wp_localize_script(
+            MRM_PLUGIN_NAME,
+            'MRM_Vars',
+            array(
+                'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
+                'api_base_url' 		=> get_rest_url(),
+                'nonce' 			=> wp_create_nonce('wp_rest'),
+            )
         );
     }
 
@@ -65,6 +81,10 @@ class AdminAssets {
             return false;
         }
         wp_enqueue_style(
+            MRM_PLUGIN_NAME.'-select2',
+            self::get_url('select2', 'css', 'external' )
+        );
+        wp_enqueue_style(
             MRM_PLUGIN_NAME,
             self::get_url('admin', 'css')
         );
@@ -76,29 +96,34 @@ class AdminAssets {
      *
      * @param $file
      * @param $ext
+     * @param string $type
      * @return string
      * @since 1.0.0
      */
-    public static function get_url( $file, $ext ) {
+    public static function get_url( $file, $ext, $type = 'dist' ) {
         $suffix = '';
         // Potentially enqueue minified JavaScript.
         if ( 'js' === $ext ) {
             $script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
             $suffix       = self::should_use_minified_file( $script_debug ) ? '' : '.min';
         }
-        return plugins_url( self::get_path( $ext ) . $file . $suffix . '.' . $ext, MRM_FILE );
+        return plugins_url( self::get_path( $ext, $type ) . $file . $suffix . '.' . $ext, MRM_FILE );
     }
 
 
     /**
      * Get the Asset path
      *
-     * @param  string
-     * @return string
+     * @param $ext
+     * @param string $type
+     * @return mixed
      * @since 1.0.0
      */
-    public static function get_path( $ext ) {
-        return ( 'css' === $ext ) ? MRM_ADMIN_CSS_FOLDER : MRM_ADMIN_DIST_JS_FOLDER;
+    public static function get_path( $ext, $type = 'dist' ) {
+        if ('external' === $type ) {
+            return ( 'css' === $ext ) ? MRM_ADMIN_EXTERNAL_CSS_FOLDER : MRM_ADMIN_EXTERNAL_JS_FOLDER;
+        }
+        return ( 'css' === $ext ) ? MRM_ADMIN_DIST_CSS_FOLDER : MRM_ADMIN_DIST_JS_FOLDER;
     }
 
 

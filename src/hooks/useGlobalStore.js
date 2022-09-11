@@ -1,9 +1,10 @@
 import create from "zustand";
 
+
 export const useGlobalStore = create((set) => ({
   triggerStep: {
-    triggerCondition : "true",
-    triggerOption : {}
+    triggerCondition: "true",
+    triggerOption: {},
   },
   condition: [
     {
@@ -23,4 +24,6 @@ export const useGlobalStore = create((set) => ({
   delay: "",
   sendEmail: "",
   lastStepNodeID: 0,
+  navbarMarkup: <></>,
+  hideGlobalNav: false
 }));

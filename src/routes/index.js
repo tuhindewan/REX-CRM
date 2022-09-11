@@ -1,62 +1,83 @@
 import { __ } from "@wordpress/i18n";
-import Contacts from "../pages/Contacts";
-import Lists from "../pages/Lists";
-import Automation from "../pages/Automation";
-import Tags from "../pages/Tags";
-import Segments from "../pages/Segments";
-import Dashboard from "../pages/Dashboard";
-import ImportContacts from "../pages/ImportContacts";
-import ContactCreateUpdate from "../pages/ContactCreateUpdate";
-import CreateTag from "../components/Tag/CreateTag";
-import UpdateTag from "../components/Tag/UpdateTag";
+import AllCampaigns from "../components/AllCampaigns";
+import AddCampaign from "../components/Campaign/AddCampaign";
+import ContactDetails from "../components/ContactDetails";
+import CreateContact from "../components/CreateContact";
+import EmailSequences from "../components/EmailSequences";
+import EmailTemplates from "../components/EmailTemplates";
+import ImportConfirmation from "../components/ImportConfirmation";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import CreateSegment from "../components/Segment/CreateSegment";
-import EmailForm from "../components/Email/EmailForm";
-import CreateNote from "../components/Notes/CreateNote";
-import UpdateNode from "../components/Notes/UpdateNote";
+import SelectFieldsMap from "../components/SelectFieldsMap";
+import CreateTag from "../components/Tag/CreateTag";
+import UpdateTag from "../components/Tag/UpdateTag";
+import Contacts from "../pages/Contacts";
+import ImportContactFile from "../pages/ImportContactFile";
+import Lists from "../pages/Lists";
+import Tags from "../pages/Tags";
+import CampaignConfirmation from "../components/Campaign/CampaignConfirmation"
 
 const routes = [
   {
     path: "/contacts",
     element: Contacts,
-    title: __("Contacts", "mrm"),
+    title: __("All Contacts", "mrm"),
+    // bage: 20,
   },
   {
     path: "/contacts/create",
-    element: ContactCreateUpdate,
+    element: CreateContact,
     hideInMenu: true,
   },
+  // {
+  //   path: "/contacts/update/:id",
+  //   element: ContactCreateUpdate,
+  //   hideInMenu: true,
+  // },
   {
     path: "/contacts/update/:id",
-    element: ContactCreateUpdate,
+    element: ContactDetails,
     hideInMenu: true,
   },
   {
     path: "/contacts/import",
-    element: ImportContacts,
+    element: ImportContactFile,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/selectfields",
+    element: SelectFieldsMap,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/selectfields/confirmation",
+    element: ImportConfirmation,
     hideInMenu: true,
   },
   {
     path: "/lists",
     element: Lists,
     title: __("Lists", "mrm"),
+    // bage: 15,
   },
   {
     path: "/tags",
     element: Tags,
     title: __("Tags", "mrm"),
+    // bage: 18,
   },
-  {
-    path: "/segments",
-    element: Segments,
-    title: __("Segments", "mrm"),
-  },
-  {
-    path: "/automation",
-    element: Automation,
-    title: __("Automation", "mrm"),
-  },
+  // {
+  //   path: "/segments",
+  //   element: Segments,
+  //   title: __("Segments", "mrm"),
+  //   bage: 5,
+  // },
+  // {
+  //   path: "/automation",
+  //   element: Automation,
+  //   title: __("Automation", "mrm"),
+  // },
   {
     path: "/tags/create",
     element: CreateTag,
@@ -83,20 +104,45 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path: "contacts/:id/message",
-    element: EmailForm,
-    hideInMenu: true
+    path: "/campaigns",
+    element: AllCampaigns,
+    title: __("All Campaigns", "mrm"),
+    // bage: 14,
+    campaignMenu: true, 
+    
+  },
+  // {
+  //   path: "/emailsequences",
+  //   element: EmailSequences,
+  //   title: __("Email Sequences", "mrm"),
+  //   hideInMenu: true,
+  //   // bage: __("08"),
+  //   campaignMenu: true,
+  // },
+  // {
+  //   path: "/emailtemplates",
+  //   element: EmailTemplates,
+  //   title: __("Email Templates", "mrm"),
+  //   hideInMenu: true,
+  //   // bage: __("06"),
+  //   campaignMenu: true,
+  // },
+  {
+    path: "/campaigns/addcampaign",
+    element: AddCampaign,
+    hideInMenu: true,
   },
   {
-    path: "contacts/:id/note",
-    element: CreateNote,
-    hideInMenu: true
+    path: "/campaigns/update/:id",
+    element: AddCampaign,
+    hideInMenu: true,
   },
   {
-    path: "contacts/:contact_id/note/:id",
-    element: UpdateNode,
-    hideInMenu: true
-  }
+    path: "/campaigns/addcampaign/confirmation",
+    element: CampaignConfirmation,
+    hideInMenu: true,
+  },
+
 ];
 
 export default routes;

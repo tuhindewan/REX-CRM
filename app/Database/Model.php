@@ -19,14 +19,14 @@ class Model {
     public static function get_tables() {
         self::autoload_table_classes();
         return apply_filters( 'mrm/database_tables', array(
-            'contact_group'         => 'ContactGroup',
-            'contact'               => 'Contact',
-            'contact_meta'          => 'ContactMeta',
-            'contact_note'          => 'ContactNote',
-            'contact_group_pivot'   => 'ContactGroupPivot',
-            'interaction'           => 'Interaction',
-            'message'               => 'Message',
-            'work_flow'             => 'WorkFlow'
+            'contact_group'         => 'ContactGroupSchema',
+            'contact'               => 'ContactSchema',
+            'contact_meta'          => 'ContactMetaSchema',
+            'contact_note'          => 'ContactNoteSchema',
+            'contact_group_pivot'   => 'ContactGroupPivotSchema',
+            'interaction'           => 'InteractionSchema',
+            'message'               => 'MessageSchema',
+            'work_flow'             => 'WorkFlowSchema'
         ));
     }
 

@@ -48,7 +48,6 @@ class Server {
      */
     public function rest_api_init()
     {
-        $test = new \Mint\MRM\Admin\API\Routes\MRM_List_API_Route();
         foreach ($this->get_rest_namespaces() as $namespace => $controllers) {
             foreach ($controllers as $controller_name => $route_class) {
                 $route_class_name = "\Mint\\MRM\\Admin\\API\\Routes\\".$route_class;
@@ -81,12 +80,12 @@ class Server {
     protected function get_routes()
     {
         return apply_filters( 'mrm/rest_api_routes', array(
-            'lists'         =>  'MRM_List_API_Route',
-            'segments'      =>  'MRM_Segment_API_Route',
-            'tags'          =>  'MRM_Tag_API_Route',
-            'notes'         =>  'MRM_Note_API_Route',
-            'contacts'      =>  'MRM_Contact_API_Route',
-            'workflows'     =>  'MRM_Workflow_API_Route',
+            'lists'         =>  'ListRoute',
+            'segments'      =>  'SegmentRoute',
+            'tags'          =>  'TagRoute',
+            'notes'         =>  'NoteRoute',
+            'contacts'      =>  'ContactRoute',
+            'workflows'     =>  'WorkflowRoute',
             'field-groups'  =>  'FieldGroupRoute',
             'custom-fields' =>  'CustomFieldRoute'
 		));

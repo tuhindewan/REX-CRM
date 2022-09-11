@@ -67,7 +67,6 @@ class Upgrade {
         $charset_collate    = $wpdb->get_charset_collate();
         foreach ( $schema as $table_name => $table_class ) {
             $table_class_name   = "Mint\\MRM\\DataBase\\Tables\\".$table_class;
-            error_log(print_r($table_class,1));
             $table              = new $table_class_name();
             $sql                = $table->get_sql().$charset_collate;
             dbDelta($sql);

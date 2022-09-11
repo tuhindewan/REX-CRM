@@ -17,7 +17,7 @@ use MRM\Models\CustomField as ModelsCustomField;
  * @desc [Responsible for managing Custom Fields API callbacks]
  */
 
-class CustomFieldController extends MRM_Base_Controller {
+class CustomFieldController extends BaseController {
     
     use Singleton;
 

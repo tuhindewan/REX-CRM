@@ -1,6 +1,6 @@
 <?php
 
-namespace MRM\Data;
+namespace Mint\MRM\DataStores;
 
 /**
  * @author [MRM Team]
