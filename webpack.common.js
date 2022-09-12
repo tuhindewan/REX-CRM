@@ -40,6 +40,13 @@ const webpackConfig = {
   module: {
     rules: [
       {
+        test: require.resolve("jquery"),
+        loader: "expose-loader",
+        options: {
+          exposes: ["$", "jQuery"],
+        },
+      },
+      {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ['babel-loader'],
@@ -90,6 +97,8 @@ const webpackConfig = {
     extensions: [ '.json', '.js', '.jsx', '.ts', '.tsx' ],
     alias: {
       '~': path.resolve( __dirname + '/src' ),
+      $: 'jQuery',
+      jquery: 'jQuery',
     },
   },
   plugins: [

@@ -1,12 +1,15 @@
 import $ from "jquery";
 import React, { useEffect } from "react";
+import 'select2';
 
 import "./style.css";
 
 export default function Selectbox(props) {
   useEffect(() => {
+
     // Init select2
     let element = $(".soronmrm-" + props.name + "-selectbox");
+    element.css('color', 'red')
     element.select2({
       dropdownParent: $("." + props.name + "-select2-result"),
       placeholder: props.placeholder,
@@ -20,6 +23,7 @@ export default function Selectbox(props) {
     element.on("select2:unselect", function (e) {
       props.onRemove(e, props.name);
     });
+
   }, []);
 
   return (
