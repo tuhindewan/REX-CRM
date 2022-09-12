@@ -33,6 +33,7 @@ class HomeScreen {
         ?>
         <div class="wrap">
             <div id="crm-app"></div>
+            <div id="crm-portal"></div>
         </div>
         <?php
     }
