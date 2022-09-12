@@ -89,7 +89,7 @@ class ContactGroupModel{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $type, $offset = 0, $limit = 20, $search = '' )
+    public static function get_all( $type, $offset = 0, $limit = 20, $search = '', $order_by = 'id', $order_type = 'DESC' )
     {
         global $wpdb;
         $group_table    = $wpdb->prefix . ContactGroupSchema::$table_name;
@@ -102,7 +102,7 @@ class ContactGroupModel{
 
         // Return segments for list view
         try {
-            $select_query  = "SELECT * FROM `wp_mrm_contact_groups` WHERE type = '$type' $search_terms ORDER BY id DESC LIMIT $offset, $limit";
+            $select_query  = "SELECT * FROM `wp_mrm_contact_groups` WHERE type = '$type' $search_terms ORDER BY $order_by $order_type LIMIT $offset, $limit";
             $query_results = $wpdb->get_results( $select_query );
 
             $count_query    = "SELECT COUNT(*) as total FROM $group_table WHERE type = '$type' $search_terms";

@@ -6,6 +6,7 @@ import {
   useParams,
   useLocation,
 } from "react-router-dom";
+import queryString from "query-string";
 
 // Internal dependencies
 import Pagination from "../Pagination";
@@ -16,6 +17,7 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import Swal from "sweetalert2";
+import Selectbox2 from "../Selectbox2";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -43,8 +45,6 @@ export default function ContactListTable(props) {
 
   const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
-
   const [countData, setCountData] = useState({});
 
   // the select all checkbox
@@ -56,55 +56,98 @@ export default function ContactListTable(props) {
   const [totalPages, setTotalPages] = useState(0);
 
   const [currentActive, setCurrentActive] = useState(0);
+  const [openListSelectBox, setOpenTagSelectBox] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filterParams, setFilterParams] = useState([]);
+
+  // Prepare filter object
+  const [filterAdder, setFilterAdder] = useState({
+    lists: [],
+    tags: [],
+    status: [],
+  });
+
+  const onSelect = (e, name) => {
+    const updatedOptions = [...e.target.options]
+      .filter((option) => option.selected)
+      .map((x) => x.value);
+
+    setFilterAdder((prevState) => ({
+      ...prevState,
+      [name]: updatedOptions,
+    }));
+  };
+
+  const onRemove = (e, name) => {
+    let unselectedItem = e.params.data.id;
+    setFilterAdder((prevState) => ({
+      ...prevState,
+      [name]: prevState[name].filter((x) => x !== unselectedItem),
+    }));
+  };
+
+  useEffect(() => {
+    //console.log(filterAdder);
+
+    setSearchParams(filterAdder);
+    setFilterParams(searchParams);
+
+    //  navigate(`${location.pathname}/${filterData}`);
+  }, [filterAdder]);
+
+  useEffect(() => {
+    setFilterData(queryString.parse(location.search));
+  }, [filterParams]);
 
   // filter by status
 
   const onSelectStatus = (e) => {
     setStatus([e.target.value]);
     navigateSearch("/contacts", {
-      lists: lists,
-      tags: tags,
+      // lists: lists,
+      // tags: tags,
       status: e.target.value,
     });
   };
 
-  const useNavigateSearch = () => {
-    return (pathname, params) => {
-      navigate(`${pathname}?${createSearchParams(params)}`, {
-        replace: true,
-      });
-      //console.log(params);
-      setFilterData(params);
-      // add your query here
-      fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${search}&page=${page}&per-page=${perPage}`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(params),
-        }
-      )
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          if (200 == data.code) {
-            setContactData(data.data.data);
-            setCount(data.data.count);
-            setTotalPages(data.data.total_pages);
-            // setPerPage(data.total_pages);
-            setLoaded(true);
-          }
-        });
-      //setContacts([]);
-    };
-  };
-  const navigateSearch = useNavigateSearch();
+  // const useNavigateSearch = () => {
+  //   return (pathname, params) => {
+  //     navigate(`${pathname}?${createSearchParams(params)}`, {
+  //       replace: true,
+  //     });
+  //     //console.log(params);
+  //     setFilterData(params);
+  //     // add your query here
+  //     fetch(
+  //       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${search}&page=${page}&per-page=${perPage}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Accept: "application/json, text/plain, */*",
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(params),
+  //       }
+  //     )
+  //       .then((response) => {
+  //         if (response.ok) {
+  //           return response.json();
+  //         }
+  //       })
+  //       .then((data) => {
+  //         if (200 == data.code) {
+  //           setContactData(data.data.data);
+  //           setCount(data.data.count);
+  //           setTotalPages(data.data.total_pages);
+  //           // setPerPage(data.total_pages);
+  //           setLoaded(true);
+  //         }
+  //       });
+  //     //setContacts([]);
+  //   };
+  // };
+  // const navigateSearch = useNavigateSearch();
 
   const location = useLocation();
 
@@ -286,7 +329,51 @@ export default function ContactListTable(props) {
             multiple={false}
             onSelect={onSelectLists}
           /> */}
-          <FilterBox
+          <Selectbox2
+            label=""
+            name="lists"
+            options={lists}
+            placeholder="Select Lists"
+            tags={true}
+            multiple={true}
+            onSelect={onSelect}
+            onRemove={onRemove}
+          />
+          <Selectbox2
+            label=""
+            name="tags"
+            options={tags}
+            placeholder="Select Tags"
+            tags={true}
+            multiple={true}
+            onSelect={onSelect}
+            onRemove={onRemove}
+          />
+          <Selectbox2
+            label=""
+            name="status"
+            options={[
+              {
+                title: "Pending",
+                id: "pending",
+              },
+              {
+                title: "Subscribed",
+                id: "subscribed",
+              },
+              {
+                title: "Unsubscribed",
+                id: "unsubscribed",
+              },
+            ]}
+            placeholder="Select Status"
+            value={status}
+            tags={true}
+            multiple={true}
+            onSelect={onSelect}
+            onRemove={onRemove}
+          />
+          {/* <FilterBox
             label="Status"
             name="status"
             options={[
@@ -308,7 +395,7 @@ export default function ContactListTable(props) {
             placeholder="Status"
             multiple={false}
             onSelect={onSelectStatus}
-          />
+          /> */}
         </div>
 
         <div className="right-buttons">
@@ -407,15 +494,17 @@ export default function ContactListTable(props) {
           </tbody>
         </table>
       </div>
-      <div className="contact-list-footer">
-        <Pagination
-          currentPage={page}
-          pageSize={perPage}
-          onPageChange={setPage}
-          totalCount={count}
-          totalPages={totalPages}
-        />
-      </div>
+      {totalPages > 1 && (
+        <div className="contact-list-footer">
+          <Pagination
+            currentPage={page}
+            pageSize={perPage}
+            onPageChange={setPage}
+            totalCount={count}
+            totalPages={totalPages}
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -3,8 +3,8 @@
 namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupModel;
+use Mint\MRM\DataStores\TagData;
 use Mint\Mrm\Internal\Traits\Singleton;
-use MRM\Data\MRM_Tag;
 use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
@@ -48,7 +48,7 @@ class TagController extends BaseController {
 
         // Tag object create and insert or update to database
         try {
-            $tag = new MRM_Tag( $params );
+            $tag = new TagData( $params );
 
             if(isset($params['tag_id'])){
                 $success = ContactGroupModel::update( $tag, $params['tag_id'], 'tags' );
@@ -127,7 +127,19 @@ class TagController extends BaseController {
         // Tag Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = ContactGroupModel::get_all( 'tags', $offset, $perPage, $search );
+
+        $order_by = isset($params['order-by']) ? strtolower($params['order-by']) : 'id';
+        $order_type = isset($params['order-type']) ? strtolower($params['order-type']) : 'desc';
+
+        // valid order by fields and types
+        $allowed_order_by_fields = array("title", "created_at");
+        $allowed_order_by_types = array("asc", "desc");
+
+        // validate order by fields or use default otherwise
+        $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
+        $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
+
+        $groups = ContactGroupModel::get_all( 'tags', $offset, $perPage, $search, $order_by, $order_type );
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
@@ -170,7 +182,7 @@ class TagController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $contacts   = MRM_Contact_Pivot_Controller::get_contacts_to_group( $params['tag_id'] );
+        $contacts   = ContactPivotController::get_contacts_to_group( $params['tag_id'] );
         
         if(isset($contacts)) {
             return $this->get_success_response("Query Successfull", 200, $contacts);
@@ -203,7 +215,7 @@ class TagController extends BaseController {
                     'data'  => null
                 );
                 if(!$exist){
-                    $new_tag    = new MRM_Tag($tag);
+                    $new_tag    = new TagData($tag);
                     $new_tag_id = ContactGroupModel::insert( $new_tag, 'tags' );
                 }
                 
@@ -220,7 +232,7 @@ class TagController extends BaseController {
             
 
         }, $tags);
-        return MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
+        return ContactPivotController::set_groups_to_contact( $pivot_ids );
     }
 
 
@@ -235,7 +247,7 @@ class TagController extends BaseController {
     public static function get_tags_to_contact( $contact )
     {
         $contact['tags'] = array();
-        $results = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact['id']);
+        $results = ContactPivotController::get_instance()->get_groups_to_contact( $contact['id']);
         
         if( !empty( $results ) ){
 

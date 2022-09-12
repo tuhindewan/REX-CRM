@@ -4,8 +4,8 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Exception;
 use Mint\MRM\DataBase\Models\ContactGroupModel;
+use Mint\MRM\DataStores\ListData;
 use Mint\Mrm\Internal\Traits\Singleton;
-use MRM\Data\MRM_List;
 use WP_REST_Request;
 use MRM\Common\MRM_Common;
 
@@ -18,19 +18,19 @@ use MRM\Common\MRM_Common;
  */
 
 class ListController extends BaseController {
-    
-    use Singleton; 
-    
+
+    use Singleton;
+
     /**
      * Function used to handle create  or update requests
-     * 
+     *
      * @param WP_REST_Request $request
-     * 
-     * @return \WP_REST_RESPONSE
+     *
+     * @return WP_REST_RESPONSE
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request ){
-        
+
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
@@ -43,12 +43,12 @@ class ListController extends BaseController {
         // list avaiability check
         $exist = ContactGroupModel::is_group_exist( $params['slug'], "lists" );
         if ( $exist && !isset($params['list_id'])) {
-			return $this->get_error_response( __( 'List is already available', 'mrm' ),  400);
-		}
-        
+            return $this->get_error_response( __( 'List is already available', 'mrm' ),  400);
+        }
+
         // List object create and insert or update to database
         try {
-            $list = new MRM_List( $params );
+            $list = new ListData( $params );
 
             if(isset( $params['list_id']) ) {
                 $success = ContactGroupModel::update( $list, $params['list_id'], "lists" );
@@ -63,52 +63,65 @@ class ListController extends BaseController {
 
         } catch(Exception $e) {
             return $this -> get_error_response(__( 'List is not valid', 'mrm' ), 400);
-        }   
+        }
     }
 
 
     /**
      * Function used to handle paginated get and search requests
-     * 
+     *
      * @param WP_REST_Request $request
      * @return WP_REST_Response
-     * @since 1.0.0 
+     * @since 1.0.0
      */
     public function get_all( WP_REST_Request $request ){
 
-       // Get values from API
+        // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
         $page       =  isset($params['page']) ? absint( $params['page'] ) : 1;
         $perPage    =  isset($params['per-page']) ? absint( $params['per-page'] ) : 25;
         $offset     =  ($page - 1) * $perPage;
 
+        $order_by = isset($params['order-by']) ? strtolower($params['order-by']) : 'id';
+        $order_type = isset($params['order-type']) ? strtolower($params['order-type']) : 'desc';
+
+        // valid order by fields and types
+        $allowed_order_by_fields = array("title", "created_at");
+        $allowed_order_by_types = array("asc", "desc");
+
+        // validate order by fields or use default otherwise
+        $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
+        $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
+
+
+
         // List Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search );
+        $groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
 
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
-        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400); 
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
     }
 
 
     /**
      * Function used to handle a single get request
-     * 
+     *
      * @param WP_REST_Request $request
      * @return WP_REST_Response
-     * @since 1.0.0 
+     * @since 1.0.0
      */
     public function get_single( WP_REST_Request $request ){
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-    
+
         $group = ContactGroupModel::get( $params['list_id'] );
-  
+
         if(isset($group)) {
             return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $group);
         }
@@ -119,10 +132,10 @@ class ListController extends BaseController {
 
     /**
      * Function used to handle delete requests
-     * 
+     *
      * @param WP_REST_Request $request
      * @return WP_REST_Response
-     * @since 1.0.0 
+     * @since 1.0.0
      */
     public function delete_single( WP_REST_Request $request ){
         // Get values from API
@@ -139,10 +152,10 @@ class ListController extends BaseController {
 
     /**
      * Function used to handle delete requests
-     * 
+     *
      * @param WP_RESR_Request
      * @return WP_REST_Response
-     * @since 1.0.0 
+     * @since 1.0.0
      */
     public function delete_all( WP_REST_Request $request ){
         // Get values from API
@@ -154,16 +167,16 @@ class ListController extends BaseController {
         }
 
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
-       
+
     }
 
 
     /**
      * Add lists to new contact
-     * 
+     *
      * @param array $lists
      * @param int $contact_id
-     * 
+     *
      * @return bool
      * @since 1.0.0
      */
@@ -183,10 +196,10 @@ class ListController extends BaseController {
                     'data'  => null
                 );
                 if(!$exist){
-                    $new_list    = new MRM_list($list);
+                    $new_list    = new ListData($list);
                     $new_list_id = ContactGroupModel::insert( $new_list, 'lists' );
                 }
-                
+
             }
 
             if(isset($new_list_id)){
@@ -197,38 +210,38 @@ class ListController extends BaseController {
                 'group_id'    =>  $list,
                 'contact_id'  =>  $contact_id
             );
-            
+
 
         }, $lists);
 
-        return MRM_Contact_Pivot_Controller::set_groups_to_contact( $pivot_ids );
-        
+        return ContactPivotController::set_groups_to_contact( $pivot_ids );
+
     }
 
 
     /**
      * Return lists which are assigned to a contact
-     * 
+     *
      * @param mixed $contact
-     * 
+     *
      * @return array
      * @since 1.0.0
      */
     public static function get_lists_to_contact( $contact )
     {
         $contact['lists'] = array();
-        $results  = MRM_Contact_Pivot_Controller::get_instance()->get_groups_to_contact( $contact['id'] );
+        $results  = ContactPivotController::get_instance()->get_groups_to_contact( $contact['id'] );
 
         if( !empty( $results ) ){
 
             $list_ids = array_map( function($list_id) {
                 return $list_id['group_id'];
             }, $results);
-    
+
             $contact['lists'] = ContactGroupModel::get_groups_to_contact( $list_ids, "lists" );
         }
 
         return $contact;
     }
-    
+
 }

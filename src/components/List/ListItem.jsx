@@ -8,13 +8,11 @@ export default function ListItem(props) {
     editList,
     deleteList,
     setCurrentActive,
-    currentActive,
+    currentActive, // whether to show the overlay menu
     handleSelectOne,
     selected,
   } = props;
 
-  // if the option menu is active or not
-  const [isActive, setIsActive] = useState(false);
 
   return (
     <tr>
@@ -39,15 +37,21 @@ export default function ListItem(props) {
           className="more-option"
           style={{ background: "white", position: "relative" }}
           onClick={() => {
-            setCurrentActive(id);
-            setIsActive((prev) => !prev);
+            setCurrentActive((prevActive) => {
+                // if current list item is already active then hide the overlay menu by setting current active to 0
+                if(prevActive == id) {
+                    return 0;
+                } else { // show current active as ususal
+                    return id;
+                }
+            });
           }}
         >
           <ThreeDotIcon />
 
           <ul
             className={
-              currentActive == id && isActive // only show the menu if both active and current active points to this listitem
+              currentActive == id // only show the menu if both active and current active points to this listitem
                 ? "soronmrm-dropdown show"
                 : "soronmrm-dropdown"
             }

@@ -5,6 +5,7 @@ import TagItem from "../components/Tag/TagItem";
 import Pagination from "../components/Pagination";
 import TagIcon from "../components/Icons/TagIcon";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import Selectbox from "../components/Selectbox";
 
 const Tags = () => {
   // set navbar Buttons
@@ -12,12 +13,22 @@ const Tags = () => {
     navbarMarkup: (
       <button
         className="contact-save soronmrm-btn"
-        onClick={() => setShowCreate((prev) => !prev)}
+        onClick={() => {
+          // if user is currently updating reset the fields so that add new tag displays a blank form
+          if (editID != 0) {
+            setEditID(0);
+            setValues({
+              title: "",
+            });
+          } else {
+            setShowCreate((prevShowCreate) => !prevShowCreate);
+          }
+        }}
       >
         + Add Tag
       </button>
     ),
-    hideGlobalNav: false
+    hideGlobalNav: false,
   });
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
@@ -104,7 +115,6 @@ const Tags = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
-    console.log(values);
   }
 
   // Handle list create form submission
@@ -220,9 +230,7 @@ const Tags = () => {
       {showCreate && (
         <div className="create-contact">
           <div className="soronmrm-container">
-            <h2 className="conatct-heading">
-              {editID == 0 ? "Add Tag" : "Update Tag"}
-            </h2>
+            <h2 className="conatct-heading">{editID == 0 ? "Add Tag" : ""}</h2>
 
             <div>
               <div className="add-contact-form">
@@ -258,7 +266,24 @@ const Tags = () => {
         <div className="soronmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
-              <div className="left-filters"></div>
+              <div className="left-filters">
+                <p className="sort-by">Sort by</p>
+                <Selectbox
+                  options={[
+                    {
+                      title: "Name",
+                      id: "name",
+                    },
+                    {
+                      title: "Date Created",
+                      id: "date-created",
+                    },
+                  ]}
+                  tags={false}
+                  placeholder="Name"
+                  multiple={false}
+                />
+              </div>
               <div className="right-buttons">
                 {/* search input */}
                 <span className="search-section">
@@ -355,15 +380,17 @@ const Tags = () => {
                 )}
               </div>
             </div>
-            <div className="contact-list-footer">
-              <Pagination
-                currentPage={page}
-                pageSize={perPage}
-                onPageChange={setPage}
-                totalCount={count}
-                totalPages={totalPages}
-              />
-            </div>
+            {totalPages > 1 && (
+              <div className="contact-list-footer">
+                <Pagination
+                  currentPage={page}
+                  pageSize={perPage}
+                  onPageChange={setPage}
+                  totalCount={count}
+                  totalPages={totalPages}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

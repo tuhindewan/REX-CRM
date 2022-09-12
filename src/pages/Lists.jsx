@@ -5,20 +5,9 @@ import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import Selectbox from "../components/Selectbox";
 
 const Lists = () => {
-  // set navbar Buttons
-  useGlobalStore.setState({
-    navbarMarkup: (
-      <button
-        className="contact-save soronmrm-btn"
-        onClick={() => setShowCreate((prev) => !prev)}
-      >
-        + Add List
-      </button>
-    ),
-    hideGlobalNav: false
-  });
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
 
@@ -36,6 +25,12 @@ const Lists = () => {
 
   // current page
   const [page, setPage] = useState(1);
+
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
+
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
 
   // total count of results
   const [count, setCount] = useState(0);
@@ -67,6 +62,30 @@ const Lists = () => {
 
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
+
+  // set navbar Buttons
+  useGlobalStore.setState({
+    navbarMarkup: (
+      <button
+        className="contact-save soronmrm-btn"
+        onClick={() => {
+          // if user is currently updating reset the fields so that add new list displays a blank form
+          if (editID != 0) {
+            setEditID(0);
+            setValues({
+              title: "",
+              data: "",
+            });
+          } else {
+            setShowCreate((prevShowCreate) => !prevShowCreate);
+          }
+        }}
+      >
+        + Add List
+      </button>
+    ),
+    hideGlobalNav: false,
+  });
 
   // Set values from list form
   const handleChange = (e) => {
@@ -105,7 +124,15 @@ const Lists = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
-    console.log(values);
+  }
+
+  // function to handle order by select component change
+  function handleOrderBy(e, name, arg1) {
+    const updatedOptions = [...e.target.options]
+      .filter((option) => option.selected)
+      .map((x) => x.value);
+    const selectedValue = updatedOptions[0];
+    console.log(selectedValue);
   }
 
   // Handle list create or update form submission
@@ -227,9 +254,7 @@ const Lists = () => {
       {showCreate && (
         <div className="create-contact">
           <div className="soronmrm-container">
-            <h2 className="conatct-heading">
-              {editID == 0 ? "Add List" : "Update List"}
-            </h2>
+            <h2 className="conatct-heading">{editID == 0 ? "Add List" : ""}</h2>
 
             <div>
               <div className="add-contact-form">
@@ -273,7 +298,25 @@ const Lists = () => {
         <div className="soronmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
-              <div className="left-filters"></div>
+              <div className="left-filters">
+                <p className="sort-by">Sort by</p>
+                <Selectbox
+                  options={[
+                    {
+                      title: "Name",
+                      id: "name",
+                    },
+                    {
+                      title: "Date Created",
+                      id: "date-created",
+                    },
+                  ]}
+                  tags={false}
+                  placeholder="Name"
+                  multiple={false}
+                  onSelect={handleOrderBy}
+                />
+              </div>
               <div className="right-buttons">
                 {/* search input */}
                 <span className="search-section">
@@ -371,15 +414,17 @@ const Lists = () => {
                 )}
               </div>
             </div>
-            <div className="contact-list-footer">
-              <Pagination
-                currentPage={page}
-                pageSize={perPage}
-                onPageChange={setPage}
-                totalCount={count}
-                totalPages={totalPages}
-              />
-            </div>
+            {totalPages > 1 && (
+              <div className="contact-list-footer">
+                <Pagination
+                  currentPage={page}
+                  pageSize={perPage}
+                  onPageChange={setPage}
+                  totalCount={count}
+                  totalPages={totalPages}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

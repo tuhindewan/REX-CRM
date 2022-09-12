@@ -4,7 +4,6 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\Mrm\Internal\Traits\Singleton;
-use MRM\Data\MRM_Contact;
 use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
@@ -89,11 +88,11 @@ class ContactController extends BaseController {
             }
              
             if(isset($params['tags'])){
-                MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
+                TagController::set_tags_to_contact( $params['tags'], $contact_id );
             }
 
             if(isset($params['lists'])){
-                MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
+                ListController::set_lists_to_contact( $params['lists'], $contact_id );
             }
 
             if($contact_id) {
@@ -123,8 +122,8 @@ class ContactController extends BaseController {
         
         // Get and merge tags and lists
         if( isset($contact) ) {
-            $contact    = MRM_Tag_Controller::get_tags_to_contact( $contact );
-            $contact    = MRM_List_Controller::get_lists_to_contact( $contact );
+            $contact    = TagController::get_tags_to_contact( $contact );
+            $contact    = ListController::get_lists_to_contact( $contact );
         }
         
         if(isset($contact)) {
@@ -156,8 +155,8 @@ class ContactController extends BaseController {
         $contacts   = ContactModel::get_all( $offset, $perPage, $search );
 
         $contacts['data'] = array_map( function( $contact ){
-            $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );
-            $contact = MRM_List_Controller::get_lists_to_contact( $contact );
+            $contact = TagController::get_tags_to_contact( $contact );
+            $contact = ListController::get_lists_to_contact( $contact );
             return $contact;
         }, $contacts['data'] );
 
@@ -222,7 +221,7 @@ class ContactController extends BaseController {
      */
     public function delete_groups( WP_REST_Request $request ) 
     {
-        $success = MRM_Contact_Pivot_Controller::get_instance()->delete_groups( $request );
+        $success = ContactPivotController::get_instance()->delete_groups( $request );
         
         if($success) {
             return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
@@ -244,11 +243,11 @@ class ContactController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
 
         if( isset( $params['tags'] ) ){
-            $success = MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+            $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
         }
 
         if( isset( $params['lists'] ) ){
-            $success = MRM_List_Controller::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+            $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
         }
 
 
@@ -451,11 +450,11 @@ class ContactController extends BaseController {
                         $contact    = new MRM_Contact( $contact_email, $contact_args );
                         $contact_id = ContactModel::insert( $contact );
                         if(isset($params['tags'])){
-                            MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
+                            TagController::set_tags_to_contact( $params['tags'], $contact_id );
                         }
             
                         if(isset($params['lists'])){
-                            MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
+                            ListController::set_lists_to_contact( $params['lists'], $contact_id );
                         }
                     }else {
                         $exists++;
@@ -546,11 +545,11 @@ class ContactController extends BaseController {
                     $contact_id = ContactModel::insert( $contact );
 
                     if(isset($params['tags'])){
-                        MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
+                        TagController::set_tags_to_contact( $params['tags'], $contact_id );
                     }
         
                     if(isset($params['lists'])){
-                        MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
+                        ListController::set_lists_to_contact( $params['lists'], $contact_id );
                     }
 
                 }
@@ -601,11 +600,11 @@ class ContactController extends BaseController {
                     $contact_id = ContactModel::insert( $contact );
 
                     if(isset($params['tags'])){
-                        MRM_Tag_Controller::set_tags_to_contact( $params['tags'], $contact_id );
+                        TagController::set_tags_to_contact( $params['tags'], $contact_id );
                     }
         
                     if(isset($params['lists'])){
-                        MRM_List_Controller::set_lists_to_contact( $params['lists'], $contact_id );
+                        ListController::set_lists_to_contact( $params['lists'], $contact_id );
                     }
 
                 }
@@ -666,8 +665,8 @@ class ContactController extends BaseController {
         $contacts = ContactModel::get_filtered_contacts( $params['status'], $group_id, $perPage, $offset, $search );
 
         $contacts['data'] = array_map( function( $contact ){
-            $contact = MRM_Tag_Controller::get_tags_to_contact( $contact );
-            $contact = MRM_List_Controller::get_lists_to_contact( $contact );
+            $contact = TagController::get_tags_to_contact( $contact );
+            $contact = ListController::get_lists_to_contact( $contact );
             return $contact;
         }, $contacts['data'] );
 

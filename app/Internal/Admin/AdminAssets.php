@@ -47,14 +47,14 @@ class AdminAssets {
         wp_enqueue_script(
             MRM_PLUGIN_NAME.'-select2',
             self::get_url('select2', 'js', 'external'),
-            array(),
+            array('jquery'),
             MRM_VERSION,
             true
         );
         wp_enqueue_script(
             MRM_PLUGIN_NAME,
             self::get_url('main', 'js'),
-            array(),
+            array('jquery'),
             MRM_VERSION,
             true
         );
