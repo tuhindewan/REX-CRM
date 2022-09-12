@@ -83,4 +83,4 @@ bin/
 docker-compose.yml
 phpunit.xml.dist
 *.csv
-dist/
+#dist/
