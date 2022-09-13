@@ -106,6 +106,7 @@ class ContactGroupModel{
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
             where type='$type'
+            $search_terms
             group by g.id, g.title, g.data, g.created_at
             order by $order_by $order_type
             limit $offset, $limit";
@@ -116,6 +117,7 @@ class ContactGroupModel{
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
             where type='$type'
+            $search_terms
             group by g.id, g.title, g.data, g.created_at
             ) as table1";
             $count_result   = $wpdb->get_results($count_query);
