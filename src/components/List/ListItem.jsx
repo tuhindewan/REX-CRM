@@ -49,32 +49,34 @@ export default function ListItem(props) {
               }
             });
           }}
-          ref={menuButtonRef}
+          ref={menuButtonRef} // we need to add ref to menu button in order to correctly position the hovermenu
         >
           <ThreeDotIcon />
-          <Portal>
-            <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
-              <ul
-                className={
-                  currentActive == id // only show the menu if both active and current active points to this listitem
-                    ? "soronmrm-dropdown show"
-                    : "soronmrm-dropdown"
-                }
-              >
-                <li
-                  onClick={() => {
-                    editList(props.list);
-                  }}
+          {currentActive == id && ( // only show the menu if both active and current active points to this listitem
+            <Portal>
+              <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
+                <ul
+                  className={
+                    currentActive == id // only show the menu  current active points to this listitem id
+                      ? "soronmrm-dropdown show"
+                      : "soronmrm-dropdown"
+                  }
                 >
-                  {" "}
-                  Edit
-                </li>
-                <li className="delete" onClick={() => deleteList(id)}>
-                  Delete
-                </li>
-              </ul>
-            </HoverMenu>
-          </Portal>
+                  <li
+                    onClick={() => {
+                      editList(props.list);
+                    }}
+                  >
+                    {" "}
+                    Edit
+                  </li>
+                  <li className="delete" onClick={() => deleteList(id)}>
+                    Delete
+                  </li>
+                </ul>
+              </HoverMenu>
+            </Portal>
+          )}
         </button>
       </td>
     </tr>
