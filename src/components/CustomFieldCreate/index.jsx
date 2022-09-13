@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import DynamicInput from "../DynamicInput";
 import InputItem from "../InputItem";
 import Selectbox from "../Selectbox";
 
 export default function CustomFieldCreate() {
+
+  const [ isShow, setIsShow ] = useState(false);
   const onSelect = (event) => {
-    console.log(event.target.value);
+
+    if( 'category' ==  event.target.value.toString()){
+      setIsShow(true)
+    }else{
+      setIsShow(false)
+    }
   };
 
   return (
@@ -43,7 +50,10 @@ export default function CustomFieldCreate() {
                 multiple={false}
                 onSelect={onSelect}
               />
-              <DynamicInput />
+              { isShow?
+              <DynamicInput /> : ''
+            }
+              
             </div>
 
             <div className="contact-button-field">

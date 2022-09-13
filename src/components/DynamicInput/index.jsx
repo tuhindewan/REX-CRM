@@ -1,71 +1,76 @@
-import React from "react";
+import { useState } from "react";
+import "./style.css";
 
-class DynamicInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      formValues: [{ name: "", email: "" }],
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+function DynamicInput() {
+  const [serviceList, setServiceList] = useState([{ service: "" }]);
 
-  handleChange(i, e) {
-    let formValues = this.state.formValues;
-    formValues[i][e.target.name] = e.target.value;
-    this.setState({ formValues });
-  }
+  const handleServiceChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...serviceList];
+    list[index][name] = value;
+    setServiceList(list);
+  };
 
-  addFormFields() {
-    this.setState({
-      formValues: [...this.state.formValues, { name: "", email: "" }],
-    });
-  }
+  const handleServiceRemove = (index) => {
+    const list = [...serviceList];
+    list.splice(index, 1);
+    setServiceList(list);
+  };
 
-  removeFormFields(i) {
-    let formValues = this.state.formValues;
-    formValues.splice(i, 1);
-    this.setState({ formValues });
-  }
+  const handleServiceAdd = () => {
+    setServiceList([...serviceList, { service: "" }]);
+  };
 
-  handleSubmit(event) {
-    event.preventDefault();
-    alert(JSON.stringify(this.state.formValues));
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        {this.state.formValues.map((element, index) => (
-          <div className="form-inline" key={index}>
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={element.name || ""}
-              onChange={(e) => this.handleChange(index, e)}
-            />
-            {index ? (
-              <button
-                type="button"
-                className="button remove"
-                onClick={() => this.removeFormFields(index)}
-              >
-                Remove
-              </button>
-            ) : null}
+  return (
+    <form className="App" autoComplete="off">
+      <div className="form-field">
+        <label htmlFor="service">Service(s)</label>
+        {serviceList.map((singleService, index) => (
+          <div key={index} className="services">
+            <div className="first-division">
+              <input
+                name="service"
+                type="text"
+                id="service"
+                value={singleService.service}
+                onChange={(e) => handleServiceChange(e, index)}
+                required
+              />
+              {serviceList.length - 1 === index && serviceList.length < 4 && (
+                <button
+                  type="button"
+                  onClick={handleServiceAdd}
+                  className="add-btn"
+                >
+                  <span>Add a Service</span>
+                </button>
+              )}
+            </div>
+            <div className="second-division">
+              {serviceList.length !== 1 && (
+                <button
+                  type="button"
+                  onClick={() => handleServiceRemove(index)}
+                  className="remove-btn"
+                >
+                  <span>Remove</span>
+                </button>
+              )}
+            </div>
           </div>
         ))}
-        <div className="button-section">
-          <button
-            className="button add"
-            type="button"
-            onClick={() => this.addFormFields()}
-          >
-            Add
-          </button>
-        </div>
-      </form>
-    );
-  }
+      </div>
+      <div className="output">
+        <h2>Output</h2>
+        {serviceList &&
+          serviceList.map((singleService, index) => (
+            <ul key={index}>
+              {singleService.service && <li>{singleService.service}</li>}
+            </ul>
+          ))}
+      </div>
+    </form>
+  );
 }
+
 export default DynamicInput;
