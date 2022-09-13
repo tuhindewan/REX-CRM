@@ -1,5 +1,6 @@
 import { Link, useLocation, Navigate } from "react-router-dom";
 import Confirmation from "./Icons/Confirmation";
+import ImportNavbar from "./Import/ImportNavbar";
 
 export default function ImportConfirmation() {
   const location = useLocation();
@@ -26,13 +27,7 @@ export default function ImportConfirmation() {
       </div>
       <div className="soronmrm-container">
         <div className="import-wrapper">
-          <div className="import-tabs choose-import-section">
-            <span className="import-type-title">Choose Import Contacts</span>
-            <button className="soronmrm-btn upload-button">
-              Upload CSV File
-            </button>
-            {/* <button className="contact-cancel soronmrm-btn outline">Paste Your Data</button> */}
-          </div>
+          <ImportNavbar />
           <div className="import-tabs-content upload-section">
             <div className="confirmation-detail">
               <Confirmation />

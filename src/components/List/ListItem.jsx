@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Portal from "../Portal";
+import HoverMenu from "../HoverMenu";
 
 export default function ListItem(props) {
   // read title and description from list prop
-  const { title, data, created_at, id } = props.list;
+  const { title, data, created_at, total_contacts, id } = props.list;
   const {
     editList,
     deleteList,
@@ -12,7 +14,7 @@ export default function ListItem(props) {
     handleSelectOne,
     selected,
   } = props;
-
+  const menuButtonRef = useRef(null);
 
   return (
     <tr>
@@ -28,6 +30,7 @@ export default function ListItem(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
+      <td className="">{total_contacts}</td>
       <td className="">
         {data?.length > 20 ? data.substring(0, 20) + "..." : data}
       </td>
@@ -38,36 +41,43 @@ export default function ListItem(props) {
           style={{ background: "white", position: "relative" }}
           onClick={() => {
             setCurrentActive((prevActive) => {
-                // if current list item is already active then hide the overlay menu by setting current active to 0
-                if(prevActive == id) {
-                    return 0;
-                } else { // show current active as ususal
-                    return id;
-                }
+              // if current list item is already active then hide the overlay menu by setting current active to 0
+              if (prevActive == id) {
+                return 0;
+              } else {
+                // show current active as ususal
+                return id;
+              }
             });
           }}
+          ref={menuButtonRef} // we need to add ref to menu button in order to correctly position the hovermenu
         >
           <ThreeDotIcon />
-
-          <ul
-            className={
-              currentActive == id // only show the menu if both active and current active points to this listitem
-                ? "soronmrm-dropdown show"
-                : "soronmrm-dropdown"
-            }
-          >
-            <li
-              onClick={() => {
-                editList(props.list);
-              }}
-            >
-              {" "}
-              Edit
-            </li>
-            <li className="delete" onClick={() => deleteList(id)}>
-              Delete
-            </li>
-          </ul>
+          {currentActive == id && ( // only show the menu if both active and current active points to this listitem
+            <Portal>
+              <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
+                <ul
+                  className={
+                    currentActive == id // only show the menu  current active points to this listitem id
+                      ? "soronmrm-dropdown show"
+                      : "soronmrm-dropdown"
+                  }
+                >
+                  <li
+                    onClick={() => {
+                      editList(props.list);
+                    }}
+                  >
+                    {" "}
+                    Edit
+                  </li>
+                  <li className="delete" onClick={() => deleteList(id)}>
+                    Delete
+                  </li>
+                </ul>
+              </HoverMenu>
+            </Portal>
+          )}
         </button>
       </td>
     </tr>

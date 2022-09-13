@@ -178,7 +178,7 @@ class ContactRoute {
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/attrs', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/csv/attrs', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
@@ -258,7 +258,7 @@ class ContactRoute {
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/csv', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [

@@ -51,6 +51,12 @@ const Tags = () => {
   // total count of results
   const [count, setCount] = useState(0);
 
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
+
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
+
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
 
@@ -104,6 +110,17 @@ const Tags = () => {
     }
     setAllSelected(!allSelected);
   };
+
+  // function to handle order by select component change
+  function handleOrderBy(e, name, arg1) {
+    const updatedOptions = [...e.target.options]
+      .filter((option) => option.selected)
+      .map((x) => x.value);
+    const selectedValue = updatedOptions[0];
+    const order = selectedValue.split("+"); // order is an array with order by and order type
+    setOrderBy(order[0]);
+    setOrderType(order[1]);
+  }
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -174,7 +191,7 @@ const Tags = () => {
   useEffect(() => {
     async function getTags() {
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/tags?page=${page}&per-page=${perPage}${query}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/tags?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
@@ -184,7 +201,7 @@ const Tags = () => {
       }
     }
     getTags();
-  }, [page, perPage, query, refresh]);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   async function deleteList(id) {
     const res = await fetch(
@@ -271,17 +288,26 @@ const Tags = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
-                      title: "Date Created",
-                      id: "date-created",
+                      title: "Name Desc",
+                      id: "title+desc",
+                    },
+                    {
+                      title: "Date Created Asc",
+                      id: "created_at+asc",
+                    },
+                    {
+                      title: "Date Created Desc",
+                      id: "created_at+desc",
                     },
                   ]}
                   tags={false}
-                  placeholder="Name"
+                  placeholder="Field"
                   multiple={false}
+                  onSelect={handleOrderBy}
                 />
               </div>
               <div className="right-buttons">
@@ -345,6 +371,7 @@ const Tags = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
+                      <th>Total Contacts</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
                     </tr>
