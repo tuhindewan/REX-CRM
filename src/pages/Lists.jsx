@@ -6,8 +6,6 @@ import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
-import Portal from "../components/Portal";
-import HoverMenu from "../components/HoverMenu";
 
 const Lists = () => {
   // editID is the id of the edit page
@@ -64,8 +62,6 @@ const Lists = () => {
 
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
-
-
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -136,7 +132,9 @@ const Lists = () => {
       .filter((option) => option.selected)
       .map((x) => x.value);
     const selectedValue = updatedOptions[0];
-    console.log(selectedValue);
+    const order = selectedValue.split("+"); // order is an array with order by and order type
+    setOrderBy(order[0]);
+    setOrderType(order[1]);
   }
 
   // Handle list create or update form submission
@@ -197,7 +195,7 @@ const Lists = () => {
   useEffect(() => {
     async function getLists() {
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/lists?page=${page}&per-page=${perPage}${query}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
@@ -207,7 +205,7 @@ const Lists = () => {
       }
     }
     getLists();
-  }, [page, perPage, query, refresh]);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   async function deleteList(id) {
     if (window.confirm("Are you sure you want to delete this item?")) {
@@ -307,16 +305,24 @@ const Lists = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
-                      title: "Date Created",
-                      id: "date-created",
+                      title: "Name Desc",
+                      id: "title+desc",
+                    },
+                    {
+                      title: "Date Created Asc",
+                      id: "created_at+asc",
+                    },
+                    {
+                      title: "Date Created Desc",
+                      id: "created_at+desc",
                     },
                   ]}
                   tags={false}
-                  placeholder="Name"
+                  placeholder="Field"
                   multiple={false}
                   onSelect={handleOrderBy}
                 />
