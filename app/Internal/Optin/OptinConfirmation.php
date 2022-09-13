@@ -36,7 +36,7 @@ class OptinConfirmation
      */
     public function __construct()
     {
-        add_action('init', array($this, 'double_optin_confirmation'));
+        add_action('init', array($this, 'double_optin_confirmation'), 9999);
     }
 
 
@@ -78,7 +78,8 @@ class OptinConfirmation
 				NoteModel::insert( $note, $contact_id );
 
 			}
-			
+            require_once(MRM_DIR_PATH. 'app/Resources/public/confirmation.php');
+			die();
 	   	}
 
 		// require_once(plugin_dir_path(__FILE__). 'templates/confirmation.php');
