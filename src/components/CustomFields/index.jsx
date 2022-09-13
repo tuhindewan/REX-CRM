@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { getCustomFields } from "../../services/CustomField";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import TagIcon from "../Icons/TagIcon";
@@ -21,6 +22,7 @@ const CustomFields = () => {
     hideGlobalNav: false,
   });
 
+  const [customFields, setCustomFields] = useState([]);
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
@@ -35,6 +37,16 @@ const CustomFields = () => {
 
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
+
+  // Fetch all custom fields
+  useEffect(() => {
+    getCustomFields().then((results) => {
+      console.log(results);
+      results.data.map(function () {
+        setCustomFields(results.data);
+      });
+    });
+  }, []);
 
   return (
     <>
@@ -107,8 +119,8 @@ const CustomFields = () => {
                   </thead>
 
                   <tbody>
-                    {/* {lists.length > 0 &&
-                      lists.map((list, idx) => {
+                    {/* {customFields.length > 0 &&
+                      customFields.map((list, idx) => {
                         return (
                           <TagItem
                             key={idx}

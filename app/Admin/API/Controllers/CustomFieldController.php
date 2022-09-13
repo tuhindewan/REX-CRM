@@ -153,7 +153,7 @@ class CustomFieldController extends BaseController {
        // Get values from API
        $params = MRM_Common::get_api_params_values( $request );
 
-       $fields = ModelsCustomField::get_all();
+       $fields = CustomFieldModel::get_all();
 
        if(isset($fields)) {
            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
@@ -175,7 +175,7 @@ class CustomFieldController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
     
-        $field = ModelsCustomField::get( $params['field_id'] );
+        $field = CustomFieldModel::get( $params['field_id'] );
 
         if(isset($field)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $field);
