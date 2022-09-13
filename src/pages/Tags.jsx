@@ -13,17 +13,7 @@ const Tags = () => {
     navbarMarkup: (
       <button
         className="contact-save soronmrm-btn"
-        onClick={() => {
-          // if user is currently updating reset the fields so that add new tag displays a blank form
-          if (editID != 0) {
-            setEditID(0);
-            setValues({
-              title: "",
-            });
-          } else {
-            setShowCreate((prevShowCreate) => !prevShowCreate);
-          }
-        }}
+        onClick={() => setShowCreate((prev) => !prev)}
       >
         + Add Tag
       </button>
@@ -115,6 +105,7 @@ const Tags = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
+    console.log(values);
   }
 
   // Handle list create form submission
@@ -230,7 +221,9 @@ const Tags = () => {
       {showCreate && (
         <div className="create-contact">
           <div className="soronmrm-container">
-            <h2 className="conatct-heading">{editID == 0 ? "Add Tag" : ""}</h2>
+            <h2 className="conatct-heading">
+              {editID == 0 ? "Add Tag" : "Update Tag"}
+            </h2>
 
             <div>
               <div className="add-contact-form">
@@ -262,7 +255,7 @@ const Tags = () => {
           </div>
         </div>
       )}
-      <div className="contact-list-page">
+      <div className="contact-list-page tags-page">
         <div className="soronmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
@@ -271,8 +264,20 @@ const Tags = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Newest",
+                      id: "newest",
+                    },
+                    {
+                      title: "Oldest",
+                      id: "Oldest",
+                    },
+                    {
+                      title: "A-Z",
+                      id: "capital-letters",
+                    },
+                    {
+                      title: "a-z",
+                      id: "small-letters",
                     },
                     {
                       title: "Date Created",
