@@ -41,7 +41,6 @@ const CustomFields = () => {
   // Fetch all custom fields
   useEffect(() => {
     getCustomFields().then((results) => {
-      console.log(results);
       results.data.map(function () {
         setCustomFields(results.data);
       });
