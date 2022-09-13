@@ -4,7 +4,10 @@ namespace Mint\MRM;
 
 use Mint\MRM\Admin\API\Server;
 use Mint\MRM\Internal\Admin\AdminAssets;
+use Mint\MRM\Internal\Admin\FrontendAssets;
 use Mint\MRM\Internal\Admin\Page\PageController;
+use Mint\MRM\Internal\Ajax\AjaxAction;
+use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 class App {
@@ -26,6 +29,17 @@ class App {
         if( $this->is_request('admin') ) {
             // Load assets
             AdminAssets::get_instance();
+        }
+
+        // init plugin shortcodes
+        ShortCode::get_instance()->init();
+
+        //init ajax
+        AjaxAction::get_instance();
+
+        if( $this->is_request('frontend') ) {
+            // Load assets
+            FrontendAssets::get_instance();
         }
     }
 
@@ -69,7 +83,7 @@ class App {
             case 'cron':
                 return defined( 'DOING_CRON' );
             case 'frontend':
-                return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! $this->is_rest_api_request();
+                return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
         }
     }
 
