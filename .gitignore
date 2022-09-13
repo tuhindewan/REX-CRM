@@ -85,3 +85,4 @@ phpunit.xml.dist
 *.csv
 admin/asset/dist
 assets/admin/dist
+dist/
