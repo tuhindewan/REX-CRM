@@ -13,7 +13,7 @@ use Mint\Mrm\Internal\Traits\Singleton;
  * @desc [Manage Custom Fields related database operations]
  */
 
-class CustomField{
+class CustomFieldModel{
 
     use Singleton;
 

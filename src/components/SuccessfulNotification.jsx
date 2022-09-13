@@ -1,24 +1,33 @@
-import SuccessfulIcon from "./Icons/SuccessfulIcon"
-import CrossIcon from "./Icons/CrossIcon"
-import {useState} from "react";
+import { useState } from "react";
+import CrossIcon from "./Icons/CrossIcon";
+import SuccessfulIcon from "./Icons/SuccessfulIcon";
 
-export default function SuccessfulNotification(){
-    const [cancelBtn, setCancelBtn] = useState(false);
+export default function SuccessfulNotification(props) {
+  const [cancelBtn, setCancelBtn] = useState(false);
+  const onCancel = () => {
+    setCancelBtn(true);
+  };
 
-    const onCancel = () => {
-        setCancelBtn(true);
-    }
-    
-    return(
-        <div className={cancelBtn ? "successful-notification inactive" : "successful-notification" }>
-            <div className="alert-toast">
-                <div className="alert-container">
-                    <div className="successfull-icon" ><SuccessfulIcon/></div>
-                    <p>Your data have been successfully exported</p>
-                    <div className="cross-icon" onClick={onCancel}><CrossIcon/></div>
-
-                </div>
-            </div>
+  return (
+    <div
+      style={{ display: props.display }}
+      className={
+        cancelBtn
+          ? "successful-notification inactive"
+          : "successful-notification"
+      }
+    >
+      <div className="alert-toast">
+        <div className="alert-container">
+          <div className="successfull-icon">
+            <SuccessfulIcon />
+          </div>
+          <p>{props.message}</p>
+          <div className="cross-icon" onClick={onCancel}>
+            <CrossIcon />
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  );
 }

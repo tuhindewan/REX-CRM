@@ -312,6 +312,27 @@ class ContactRoute {
             ]
         ]);
 
+
+        /**
+         * Send double opt-in message to contact
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/send-double-opt-in', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'send_double_opt_in'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
+            ]
+        ]);
+
         /**
          * Get all message for a contact
          * 

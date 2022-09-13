@@ -3,13 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Internal dependencies
+import { omit } from "lodash";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import InputItem from "../InputItem/index";
 import Selectbox from "../Selectbox";
-
 import "./style.css";
-import { omit } from "lodash";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -31,9 +30,6 @@ const CreateContact = (props) => {
 
   // tags
   const [tags, setTags] = useState([]);
-
-  // Error message
-  const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch lists & tags
   useEffect(() => {
@@ -77,7 +73,10 @@ const CreateContact = (props) => {
     if (event) event.preventDefault();
 
     if (Object.keys(errors).length !== 0) {
-      return alert(errors["email"]);
+      setErrors({
+        ...errors,
+        email: errors["emails"],
+      });
     }
 
     const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
@@ -91,11 +90,16 @@ const CreateContact = (props) => {
     const code = responseData?.code;
 
     if (code === 201) {
-      // navigate user with success message
-      navigate("../contacts");
+      // Navigate user with success message
+      navigate("../contacts", {
+        state: { status: "contact-created", message: responseData?.message },
+      });
     } else {
-      // you should show the error message here
-      window.alert(responseData.message);
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
     }
   };
 
@@ -182,7 +186,7 @@ const CreateContact = (props) => {
                     id: "unsubscribed",
                   },
                 ]}
-                values={contactData.status}
+                value={contactData.status}
                 tags={false}
                 placeholder="Select Status"
                 multiple={false}
@@ -192,7 +196,7 @@ const CreateContact = (props) => {
                 label="Lists"
                 name="lists"
                 options={lists}
-                values={contactData.lists}
+                value={contactData.lists}
                 placeholder="Select List"
                 tags={true}
                 multiple={true}
@@ -203,7 +207,7 @@ const CreateContact = (props) => {
                 label="Tags"
                 name="tags"
                 options={tags}
-                values={contactData.tags}
+                value={contactData.tags}
                 placeholder="Select Tags"
                 tags={true}
                 multiple={true}
@@ -225,12 +229,6 @@ const CreateContact = (props) => {
             </div>
           </div>
         </form>
-
-        {/*this is just for the markup. You need to develop a good ui to show the*/}
-        {/*error status*/}
-        <div className={`contact-create-error`}>
-          <p>{errorMessage}</p>
-        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 namespace MRM\Helpers\Importer;
 
+use Mint\MRM\Constants;
 use WP_User_Query;
 
 /**
@@ -13,6 +14,109 @@ use WP_User_Query;
  */
 
 class MRM_Importer {
+
+    /**
+	 * Create import from CSV file
+	 *
+	 * @param $file
+	 * @param string $delimiter
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function create_csv_from_import( $file, $delimiter = ',' ) {
+
+		$import_meta = array(
+			'import_type' => 'csv',
+			'delimiter'   => $delimiter
+		);
+
+		/**
+		 * CSV file import directory
+		 */
+		if ( ! file_exists( MRM_IMPORT_DIR . '/' ) ) {
+			wp_mkdir_p( MRM_IMPORT_DIR );
+		}
+
+		/**
+		 * Move the file to the directory
+		 */
+		$new_file_name = md5( rand() . time() ) . '-' . $file['name'];
+		$new_file      = MRM_IMPORT_DIR . '/' . $new_file_name;
+		$move_new_file = @move_uploaded_file( $file['tmp_name'], $new_file );
+
+		
+		if ( false === $move_new_file ) {
+			return __( 'Unable to upload CSV file', 'mrm' );
+		}
+
+		$import_meta['file'] = $new_file;
+        $import_meta['new_file_name'] = $new_file_name;
+
+		return $import_meta;
+	}
+
+
+    /**
+	 * Preapre mapping headers from uploaded CSV and custom fields
+	 *
+	 * @param string $csv_file
+	 * @param string $delimiter
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function prepare_mapping_options_from_csv( $csv_file, $delimiter ) {
+		$handle = fopen( $csv_file, 'r' );
+
+		/**
+		 * Fetching CSV header
+		 */
+		$headers = false !== $handle ? fgetcsv( $handle, 0, $delimiter ) : false;
+
+		if ( ! is_array( $headers ) && empty($headers) ) {
+			$headers = array();
+		}
+
+		if ( isset( $headers[0] ) ) {
+			$headers[0] = self::remove_utf8_bom( $headers[0] );
+		}
+
+		/**
+		 * Formatting CSV header for mapping
+		 */
+
+		foreach ( $headers as $index => $header ) {
+			$headers[ $index ] = array( 'index' => $index, 'header' => $header );
+		}
+
+		/**
+		 * Get existing contact fields
+		 */
+		$contact_attrs = Constants::$contacts_attrs;
+
+		return array(
+			'headers' => $headers,
+			'fields'  => $contact_attrs,
+		);
+	}
+
+
+    /**
+	 * Remove UTF8_bom
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
+	private static function remove_utf8_bom( $string ) {
+		if ( 'efbbbf' === substr( bin2hex( $string ), 0, 6 ) ) {
+			$string = substr( $string, 3 );
+		}
+
+		return $string;
+	}
+
 
     /**
 	 * Returns all WordPress core user roles 

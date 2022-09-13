@@ -14,7 +14,6 @@ use WP_REST_Request;
 
 class MRM_Common {
 
-
     /**
 	 * Returns alphanumeric hash
 	 * 
@@ -23,9 +22,9 @@ class MRM_Common {
      * @return string
 	 * @since 1.0.0
      */
-    public static function get_rand_hash( $len=32 )
+    public static function get_rand_hash( $email, $len = 32 )
 	{
-		return substr(md5(openssl_random_pseudo_bytes(20)),-$len);
+		return substr(md5( $email ),-$len);
 	}
 
 
@@ -49,7 +48,7 @@ class MRM_Common {
     /**
      * Return created by or author id 
      * 
-     * @return string
+     * @return int
      * @since 1.0.0
      */
     public static function get_current_user_id()
@@ -58,6 +57,43 @@ class MRM_Common {
             return get_current_user_id();
         }
         return 1;     
+    }
+
+
+    /**
+     * Get the possible csv mimes.
+     *
+     * @return array
+     * @since 1.0.0
+     */
+    public static function csv_mimes()
+    {
+        return apply_filters('mrm_csv_mimes', array(
+            'text/csv',
+            'text/plain',
+            'application/csv',
+            'text/comma-separated-values',
+            'application/excel',
+            'application/vnd.ms-excel',
+            'application/vnd.msexcel',
+            'text/anytext',
+            'application/octet-stream',
+            'application/txt'
+        ));
+    }
+
+
+    /**
+     * Create a slug from a string
+     * 
+     * @param mixed $str
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public static function create_slug($str){
+        $slug=preg_replace('/[^A-Za-z0-9-]+/', '-', $str);
+        return $slug;
     }
 
 }
