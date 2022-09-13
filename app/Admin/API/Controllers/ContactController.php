@@ -693,7 +693,7 @@ class ContactController extends BaseController {
         $status_arr = isset( $params['status'] ) ? $params['status'] : array();
 
         $contacts = ContactModel::get_filtered_contacts( $status_arr, $tags_ids, $lists_ids, $perPage, $offset, $search );
-
+        
         $contacts['data'] = array_map( function( $contact ){
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );

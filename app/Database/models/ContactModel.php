@@ -442,10 +442,12 @@ class ContactModel{
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
                  `stage` LIKE '%$search%')
-                GROUP BY $contact_table.id LIMIT $offset, $limit
+                 GROUP BY $contact_table.id
+                LIMIT $offset, $limit
             " );
-
+            
             $query_results = $wpdb->get_results( $select_query );
+
 
             $count_query = $wpdb->prepare("SELECT COUNT(*) AS total FROM $contact_table
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
