@@ -49,6 +49,7 @@ class ContactPivotController {
      */
     public function get_groups_to_contact( $contact_id )
     {
+        error_log(print_r($contact_id, 1));
         $results = ContactGroupPivotModel::get_groups_to_contact( $contact_id );
         return json_decode( json_encode( $results ), true );
     }

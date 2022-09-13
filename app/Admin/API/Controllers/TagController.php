@@ -246,7 +246,9 @@ class TagController extends BaseController {
      */
     public static function get_tags_to_contact( $contact )
     {
+
         $contact['tags'] = array();
+
         $results = ContactPivotController::get_instance()->get_groups_to_contact( $contact['id']);
         
         if( !empty( $results ) ){

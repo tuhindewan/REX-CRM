@@ -154,7 +154,6 @@ class ContactController extends BaseController {
                 
         $contacts   = ContactModel::get_all( $offset, $perPage, $search );
         $contacts['data'] = array_map( function( $contact ){
-            error_log(print_r($contact, 1));
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );
             return $contact;
