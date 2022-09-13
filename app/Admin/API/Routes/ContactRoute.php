@@ -193,6 +193,26 @@ class ContactRoute {
         ]);
 
         /**
+         * Contact import raw send attrs endpoint
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/raw/attrs', [
+        [
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [
+                $this->controller ,
+                'import_contacts_raw_get_attrs'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ],
+        ]
+    ]);
+
+        /**
          * Get WordPress users roles
          * 
          * @return void

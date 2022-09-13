@@ -9,6 +9,7 @@ use Exception;
 use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
+use Mint\MRM\Constants;
 
 
 
@@ -381,42 +382,25 @@ class ContactController extends BaseController {
      */
     public function import_contacts_raw_get_attrs( WP_REST_Request $request ) 
     {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-
-        $files  = isset( $params['files'] ) ? $params['files']: '';
-
-        $csv_mimes = MRM_Common::csv_mimes();
-        
-
         try{
-            $delimiter = isset( $params['$delimiter'] ) && ! empty( $params['$delimiter'] ) ? $params['$delimiter'] : 'comma';
+            // Get parameters
+            $params = MRM_Common::get_api_params_values($request);
+            $raw = isset($params['raw']) ? $params['raw']: "";
 
-            if ($delimiter == 'comma') {
-                $delimiter = ',';
-            } else {
-                $delimiter = ';';
+            // check for least number of characters
+            if(strlen($raw) < 5) {
+                throw new Exception("Please eneter at least 5 characters");
+            }
+            $array = preg_split("/\r\n|\n|\r/", $raw);
+            if(count($array) > 0) {
+                $headers = explode(",",$array[0]);
             }
 
-            $import_res = MRM_Importer::create_csv_from_import( $files['csv'], $delimiter );
-
-            if ( ! is_array( $import_res ) ) {
-                return $this->get_error_response( is_string( $import_res ) ? $import_res : __( 'Unknown error occurred', 'mrm' ), null, 500 );
-            }
-
-            $this->import_file_location = $import_res['file'];
-
-            $options = MRM_Importer::prepare_mapping_options_from_csv( $this->import_file_location, $import_res['delimiter'] );
-
-            if( isset( $options['headers'] ) && empty( $options['headers'] ) ){
-                return $this->get_error_response( __( "File is incompatible.", "mrm"), 400 );
-            }
             $result = array(
-                'headers'   => $options['headers'],
-                'fields'    => $options['fields'],
-                'file'      => $import_res['new_file_name']
+                'headers'   => $headers,
+                'fields'    => Constants::$contacts_attrs,
             );
-            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result );
+            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result);
 
         } catch (Exception $e) {
 

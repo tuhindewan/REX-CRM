@@ -4,10 +4,10 @@ import ImportNavbar from "../components/Import/ImportNavbar";
 
 export default function ImportContactRaw() {
   const navigate = useNavigate();
-  // stores the selected file reference
+  // stores the text data
   const [text, setText] = useState("");
 
-  // sets the file text from textarea reference on file select
+  // sets the file text from textarea reference on textarea change
   function handleChange(event) {
     setText(event.target.value);
   }
