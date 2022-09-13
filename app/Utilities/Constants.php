@@ -21,18 +21,69 @@ class Constants{
      * Contact attrs available for mapping
      */
     public static $contacts_attrs = array(
-        "first_name",
+        array(
+            'name' => 'Email',
+            'slug' => 'email'
+        ),
+        array(
+            'name' => 'First Name',
+            'slug' => 'first_name'
+        ),
+        array(
+            'name' => 'Last Name',
+            'slug' => 'last_name'
+        ),
+        array(
+            'name' => 'Date of Birth',
+            'slug' => 'date_of_birth'
+        ),
+        array(
+            'name' => 'Company Name',
+            'slug' => 'company'
+        ),
+        array(
+            'name' => 'Address Line 1',
+            'slug' => 'address'
+        ),
+        array(
+            'name' => 'Address Line 2',
+            'slug' => 'address_line_2'
+        ),
+        array(
+            'name' => 'Postal Code',
+            'slug' => 'postal_code'
+        ),
+        array(
+            'name' => 'City',
+            'slug' => 'city'
+        ),
+        array(
+            'name' => 'State',
+            'slug' => 'state'
+        ),
+        array(
+            'name' => 'Country',
+            'slug' => 'country'
+        ),
+        array(
+            'name' => 'Phone',
+            'slug' => 'phone_number'
+        )
+    );
+
+    /**
+     * Contact attrs available for mapping
+     */
+    public static $primary_contact_fields = array(
+        "first_name",		
         "last_name",
         "email",
-        "date_of_birth",
-        "company_name",
-        "address_line_1",
-        "address_line_2",
         "postal_code",
-        "city",
-        "state",
-        "country",
-        "phone"
+        "scores",	
+        "source",
+        "status",
+        "stage",
+        "last_activity"
     );
 
     /*
