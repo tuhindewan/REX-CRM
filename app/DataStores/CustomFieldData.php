@@ -10,7 +10,7 @@ namespace Mint\MRM\DataStores;
  * @desc [Manage representation of Custom Field object]
  */
 
-class CustomField {
+class CustomFieldData {
 
     /**
      * Field title

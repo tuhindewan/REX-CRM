@@ -6,6 +6,7 @@ use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 
@@ -75,16 +76,19 @@ class ContactController extends BaseController {
             }else{
                 // Existing contact email address check
                 if ( empty( $email ) ) {
-                    return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  400);
+                    return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
                 }
 
                 $exist = ContactModel::is_contact_exist( $email );
                 if($exist){
-                    return $this->get_error_response( __( 'Email address already exists.', 'mrm' ),  400);
+                    return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
                 }
     
-                $contact    = new MRM_Contact( $email, $params );
+                $contact    = new ContactData( $email, $params );
                 $contact_id = ContactModel::insert( $contact );
+                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] ){
+                    MessageController::get_instance()->send_double_opt_in( $contact_id );
+                }
             }
              
             if(isset($params['tags'])){
@@ -447,8 +451,11 @@ class ContactController extends BaseController {
                     $is_exists = ContactModel::is_contact_exist( $contact_email );
 
                     if(!$is_exists){
-                        $contact    = new MRM_Contact( $contact_email, $contact_args );
+                        $contact    = new ContactData( $contact_email, $contact_args );
                         $contact_id = ContactModel::insert( $contact );
+                        if( isset( $contact_args['status'][0] ) && 'pending' == $contact_args['status'][0] ){
+                            MessageController::get_instance()->send_double_opt_in( $contact_id );
+                        }
                         if(isset($params['tags'])){
                             TagController::set_tags_to_contact( $params['tags'], $contact_id );
                         }
@@ -531,7 +538,7 @@ class ContactController extends BaseController {
                     $email          = $user_data->user_email;
                 }
                 
-                $contact = new MRM_Contact( $email, array(
+                $contact = new ContactData( $email, array(
                                                 "first_name"    => $user_metadata['first_name'],
                                                 "last_name"     => $user_metadata['last_name'],
                                                 "status"        => $params['status'],
@@ -586,7 +593,7 @@ class ContactController extends BaseController {
                     $email = $wc_customer['email'];
                 }
 
-                $contact = new MRM_Contact($email, array(
+                $contact = new ContactData($email, array(
                                                 "first_name"    => $wc_customer['first_name'],
                                                 "last_name"     => $wc_customer['last_name'],
                                                 "status"        => $params['status'],
@@ -627,7 +634,29 @@ class ContactController extends BaseController {
      */
     public function send_message( WP_REST_Request $request )
     {
-        return MRM_Message_Controller::get_instance()->create_or_update( $request );
+        return MessageController::get_instance()->create_or_update( $request );
+    }
+
+
+    /**
+     * Send double opt-in email for pending status
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function send_double_opt_in( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params     = MRM_Common::get_api_params_values( $request );
+        
+        $success = MessageController::get_instance()->send_double_opt_in( $params['contact_id']  );
+        
+        if( 1 == $success) {
+            return $this->get_success_response("Double Optin email has been sent", 200);
+        }
+        return $this->get_error_response("Failed to send double optin email", 400);
     }
 
 
@@ -640,7 +669,7 @@ class ContactController extends BaseController {
      */
     public function get_all_emails( WP_REST_Request $request )
     {
-        return MRM_Message_Controller::get_instance()->get_all( $request );
+        return MessageController::get_instance()->get_all( $request );
     }
 
     /**
@@ -690,7 +719,7 @@ class ContactController extends BaseController {
         $email = isset( $request['email'] ) ? sanitize_text_field( $request['email'] ) : '';
         $request['status']  = 'pending';
         $request['source']  = 'form';
-        $contact    = new MRM_Contact( $email, $request );
+        $contact    = new ContactData( $email, $request );
         ContactModel::insert( $contact );
     }
 
