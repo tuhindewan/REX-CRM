@@ -1,7 +1,6 @@
 <?php
 
 
-use MRM\REST\MRM_API_Register;
 /**
  * The file that defines the core plugin class
  *
@@ -14,6 +13,9 @@ use MRM\REST\MRM_API_Register;
  * @package    Mrm
  * @subpackage Mrm/includes
  */
+
+use Mint\MRM\App;
+use Mint\MRM\Internal\Constants;
 
 /**
  * The core plugin class.
@@ -31,15 +33,13 @@ use MRM\REST\MRM_API_Register;
  */
 class Mrm {
 
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      Mrm_Loader    $loader    Maintains and registers all hooks for the plugin.
-	 */
-	protected $loader;
+    /**
+     * The single instance of the class.
+     *
+     * @var WooCommerce
+     * @since 2.1
+     */
+    protected static $_instance = null;
 
 	/**
 	 * The unique identifier of this plugin.
@@ -59,6 +59,71 @@ class Mrm {
 	 */
 	protected $version;
 
+
+    /**
+     * Plugin constants variables
+     *
+     * @var Constants
+     * @since 1.0.0
+     */
+	protected $constants;
+
+
+    /**
+     *
+     *
+     * @var App
+     * @since 1.0.0
+     */
+	protected $app;
+
+    /**
+     * Main MRM Instance.
+     *
+     * Ensures only one instance of MRM is loaded or can be loaded.
+     *
+     * @since 1.0.0
+     * @return MRM - Main instance.
+     */
+    public static function instance() {
+        if ( is_null( self::$_instance ) ) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+
+
+    /**
+     * Cloning is forbidden.
+     *
+     * @since 2.1
+     */
+    public function __clone() {
+        wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'woocommerce' ), '2.1' );
+    }
+
+    /**
+     * Unserializing instances of this class is forbidden.
+     *
+     * @since 2.1
+     */
+    public function __wakeup() {
+        wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'woocommerce' ), '2.1' );
+    }
+
+    /**
+     * Auto-load in-accessible properties on demand.
+     *
+     * @param mixed $key Key name.
+     * @return mixed
+     */
+    public function __get( $key ) {
+        if ( in_array( $key, array( 'payment_gateways', 'shipping', 'mailer', 'checkout' ), true ) ) {
+            return $this->$key();
+        }
+    }
+
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -77,12 +142,29 @@ class Mrm {
 		$this->plugin_name = 'mrm';
 
 		$this->load_dependencies();
-		$this->set_locale();
-		$this->init_rest_api();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
-
+        $this->set_locale();
+        $this->define_constants();
+        $this->boot();
 	}
+
+
+	private function define_constants() {
+        $this->constants = Constants::get_instance();
+        $this->constants->define_constants();
+    }
+
+
+    private function boot() {
+        /**
+         * Action to signal that MRM has finished loading.
+         *
+         * @since 3.6.0
+         */
+        do_action( 'mrm_loaded' );
+
+        $this->app = App::get_instance();
+        $this->app->init();
+    }
 
 	/**
 	 * Load the required dependencies for this plugin.
@@ -108,7 +190,11 @@ class Mrm {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
 
-		$this->loader = new Mrm_Loader();
+        /**
+         * The class responsible for defining internationalization functionality
+         * of the plugin.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-mrm-i18n.php';
 
 	}
 
@@ -125,73 +211,11 @@ class Mrm {
 
 		$plugin_i18n = new Mrm_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		add_action( 'plugins_loaded', array($plugin_i18n, 'load_plugin_textdomain') );
 
 	}
 
 
-	/**
-	 * Trigger init hook for rest api initialization
-	 * 
-	 * @return void
-	 * @since 1.0.0
-	 */
-	public function init_rest_api() {
-        $this->loader->add_action( 'init', $this, 'load_rest_api' );
-    }
-
-
-	/**
-	 * Trigger rest_api_init hook
-	 * 
-	 * @return void
-	 * @since 1.0.0
-	 */
-	public function load_rest_api() {
-        MRM_API_Register::getInstance()->init();
-    }
-
-
-	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_admin_hooks() {
-
-		$plugin_admin = new Mrm_Admin( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
-	}
-
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_public_hooks() {
-
-		$plugin_public = new Mrm_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
-	}
-
-	/**
-	 * Run the loader to execute all of the hooks with WordPress.
-	 *
-	 * @since    1.0.0
-	 */
-	public function run() {
-		$this->loader->run();
-	}
 
 	/**
 	 * The name of the plugin used to uniquely identify it within the context of

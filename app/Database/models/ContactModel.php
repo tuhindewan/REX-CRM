@@ -1,0 +1,519 @@
+<?php
+
+namespace Mint\MRM\DataBase\Models;
+
+use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
+use Mint\MRM\DataBase\Tables\ContactMetaSchema;
+use Mint\MRM\DataBase\Tables\ContactNoteSchema;
+use Mint\MRM\DataBase\Tables\ContactSchema;
+use MRM\Common\MRM_Common;
+use MRM\Data\MRM_Contact;
+use Mint\Mrm\Internal\Traits\Singleton;
+
+/**
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @desc [Manage Contact Module database related operations]
+ */
+
+class ContactModel{
+
+
+    use Singleton;
+
+
+    /**
+     * Insert contact information to database
+     * 
+     * @param MRM_Contact $contact
+     * 
+     * @return bool|int
+     * @since 1.0.0
+     */
+    public static function insert(MRM_Contact $contact)
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$mrm_table;
+
+        try {
+            $wpdb->insert( $contacts_table, array(
+                'email'         =>  $contact->get_email(),
+                'first_name'    =>  $contact->get_first_name(),
+                'last_name'     =>  $contact->get_last_name(),
+                'status'        =>  $contact->get_status(),
+                'source'        =>  $contact->get_source(),
+                'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
+                'created_at'    =>  current_time('mysql')
+            ));
+
+            $insert_id = $wpdb->insert_id;
+            if( !empty( $contact->get_meta_fields() )){
+                $meta_fields['meta_fields'] = $contact->get_meta_fields();
+                self::update_meta_fields( $insert_id, $meta_fields );
+            }
+
+            return $insert_id;
+
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Update a contact information
+     * 
+     * @param mixed $contact_id     Contact ID
+     * @param mixed $args           Entity and value to update
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update( $args, $contact_id )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+        if( !empty( $args['meta_fields'] )){
+            self::update_meta_fields($contact_id, $args);
+        }
+        
+        $args['updated_at'] = current_time('mysql');
+        unset($args['meta_fields']);
+        unset($args['contact_id']);
+
+        try {
+            $wpdb->update( 
+                $contacts_table, 
+                $args, 
+                array( 'ID' => $contact_id )
+            );
+        }catch(\Exception $e){
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Update a contact information
+     * 
+     * @param mixed $contact_id     Contact ID
+     * @param mixed $fields         Entity and value to update
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_meta_fields( $contact_id, $args )
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . ContactMetaSchema::$table_name;
+
+        foreach( $args['meta_fields'] as $key => $value ){
+            if( self::is_contact_meta_exist( $contact_id, $key ) ){
+                $wpdb->update( $contacts_meta_table, array(
+                    'meta_value'    => $value
+                ), array( 'meta_key' => $key , 'contact_id' => $contact_id ));
+            }else{
+                $wpdb->insert( $contacts_meta_table, array(
+                    'contact_id'    => $contact_id,
+                    'meta_key'      => $key,
+                    'meta_value'    => $value
+                ));
+                
+                // $wpdb->query( 'SET foreign_key_checks=0' );
+            }
+            
+        }
+
+        // if( self::is_contact_meta_exist( $contact_id ) ){
+
+        //     foreach( $args['meta_fields'] as $key => $value ){
+        //         $wpdb->update( $contacts_meta_table, array(
+        //             'meta_value'    => $value
+        //         ), array( 'meta_key' => $key , 'contact_id' => $contact_id ));
+        //     }
+        // }else{
+
+        //     foreach( $args['meta_fields'] as $key => $value ){
+
+                
+        //     }
+        // }
+    }
+
+
+    /**
+     * Check existing contact through an email address
+     * 
+     * @param string $email 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_contact_exist( $email )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+
+        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s", array( $email ));
+        $results = $wpdb->get_results($select_query);
+
+        if( $results ){
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Delete a contact
+     * 
+     * @param mixed $id contact id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy( $id )
+    {
+        global $wpdb;
+        $contacts_table                 =   $wpdb->prefix . ContactSchema::$table_name;
+        $contact_meta_table             =   $wpdb->prefix . ContactMetaSchema::$table_name;
+        $contact_note_table             =   $wpdb->prefix . ContactNoteSchema::$table_name;
+        $contact_group_pivot_table      =   $wpdb->prefix . ContactGroupPivotSchema::$table_name;
+
+        try {
+            $wpdb->delete($contacts_table,              array('id' => $id));
+            $wpdb->delete($contact_meta_table,          array('contact_id' => $id));
+            $wpdb->delete($contact_note_table,          array('contact_id' => $id));
+            $wpdb->delete($contact_group_pivot_table,   array('contact_id' => $id));
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+
+    }
+
+
+    /**
+     * Delete multiple contacts
+     * 
+     * @param array $contact_ids contact id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy_all($contact_ids)
+    {
+        global $wpdb;
+        $contacts_table                 =   $wpdb->prefix . ContactSchema::$table_name;
+        $contact_meta_table             =   $wpdb->prefix . ContactMetaSchema::$table_name;
+        $contact_note_table             =   $wpdb->prefix . ContactNoteSchema::$table_name;
+        $contact_group_pivot_table      =   $wpdb->prefix . ContactGroupPivotSchema::$table_name;
+
+        try {
+            $contact_ids = implode( ',', array_map( 'intval', $contact_ids ) );
+
+            $wpdb->query( "DELETE FROM $contacts_table WHERE id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_meta_table WHERE contact_id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_note_table WHERE contact_id IN($contact_ids)" );
+            $wpdb->query( "DELETE FROM $contact_group_pivot_table WHERE contact_id IN($contact_ids)" );
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Run SQL query to get or search contacts from database
+     * 
+     * @param int $offset
+     * @param int $limit
+     * @param string $search
+     * @param array $filters
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_all( $offset = 0, $limit = 10, $search = '' )
+    {
+        global $wpdb;
+        $contact_table = $wpdb->prefix . ContactSchema::$table_name;
+        $search_terms = null;
+
+        // Search contacts by email, first name or last name
+		if ( ! empty( $search ) ) {
+            $search_terms = "WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR `stage` LIKE '%$search%')";
+		}
+        // Prepare sql results for list view
+        try {
+            $select_query  =  "SELECT * FROM `wp_mrm_contacts` $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
+            $query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
+            
+            $results = array();
+
+            foreach( $query_results as $query_result ){
+                $new_meta = self::get_meta( $query_result['id'] );
+                $results[] = array_merge($query_result, $new_meta);
+            }
+
+            $count_query    = "SELECT COUNT(*) as total FROM $contact_table $search_terms";
+            $count_result   = $wpdb->get_results($count_query);
+            
+            $count = (int) $count_result['0']->total;
+            $total_pages = ceil($count / $limit);
+
+            return array(
+                'data'=> $results,
+                'total_pages' => $total_pages,
+                'count' => $count
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+	
+    }
+
+
+    /**
+     * Run SQL Query to get a single contact information
+     * 
+     * @param mixed $id Contact ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get( $id )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+
+        try {
+            $contacts_query     = $wpdb->prepare("SELECT * FROM $contacts_table WHERE id = %d",array( $id ));
+            $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
+            
+            $new_meta = self::get_meta( $id );
+            
+            return array_merge($contacts_results[0], $new_meta);
+        
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Returns contact meta data
+     * 
+     * @param int $id   Contact ID
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_meta( $id )
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . ContactMetaSchema::$table_name;
+
+        $meta_query         = $wpdb->prepare("SELECT meta_key, meta_value FROM $contacts_meta_table  WHERE contact_id = %d",array( $id ));
+        $meta_results       = json_decode(json_encode($wpdb->get_results($meta_query)), true);
+
+        $new_meta['meta_fields'] = [];
+        foreach($meta_results as $result){
+            $new_meta['meta_fields'][$result['meta_key']] = $result['meta_value'];
+        }
+
+        return $new_meta;
+    }
+
+
+    /**
+     * Check existing contact through an email address
+     * 
+     * @param string $email 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_contact_meta_exist( $contact_id, $key )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactMetaSchema::$table_name;
+
+        try {
+            $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE contact_id = %d AND meta_key=%s", array( $contact_id, $key ));
+            $results = $wpdb->get_results($select_query);
+            if( !empty($results) ){
+                return true;
+            }
+        } catch (\Throwable $th) {
+            return false;
+
+        }
+        
+    }
+
+
+    /**
+     * Check existing contact through an email address
+     * 
+     * @param string $email 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_contact_meta_key_exist( $contact_id, $meta_key )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactMetaSchema::$table_name;
+
+        try {
+            $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE contact_id = %d AND meta_key=%s", array( $contact_id, $meta_key ));
+            $results = $wpdb->get_results($select_query);
+            if( !empty($results) ){
+                return true;
+            }
+        } catch (\Throwable $th) {
+            return false;
+
+        }
+        
+    }
+
+    
+    /**
+     * Run SQL Query to get filtered Contacts
+     * 
+     * @param int $offset
+     * @param int $limit
+     * @param string $search
+     * @param mixed $status
+     * @param mixed $group_ids
+     * 
+     * @return array|bool
+     * @since 1.0.0
+     */
+    public static function get_filtered_contacts( $status, $group_ids, $limit = 10, $offset = 0, $search = '' )
+    {
+        global $wpdb;
+        $contact_table = $wpdb->prefix . ContactSchema::$table_name;
+        $pivot_table   = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
+
+        // Prepare sql results for list view
+        try {
+            $ids = implode(",", array_map( 'intval', $group_ids ));
+            $no_groupId = "$pivot_table.group_id IN ($ids) AND ";
+
+            if (count($group_ids)==0){
+                $no_groupId = "";
+            }
+
+            $select_query  = $wpdb->prepare(
+                "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
+                ON $contact_table.id = $pivot_table.contact_id 
+                WHERE $no_groupId $contact_table.status = %s 
+                AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+                 `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
+                 OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
+                 `stage` LIKE '%$search%')
+                GROUP BY $contact_table.id LIMIT $offset, $limit
+                ", array($status)) ;
+            $query_results = $wpdb->get_results( $select_query );
+
+            $count_query  = $wpdb->prepare(
+                "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
+                ON $contact_table.id = $pivot_table.contact_id 
+                WHERE $no_groupId $contact_table.status = %s
+                AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+                 `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
+                 OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
+                 `stage` LIKE '%$search%')
+                GROUP BY $contact_table.id
+                ", array($status)) ;
+
+            $count_result = $wpdb->get_results($count_query);
+    
+            $count = (int) count($count_result);
+
+            $total_pages = ceil($count / $limit);
+      
+            return array(
+                'data'=> json_decode( json_encode( $query_results ), true ),
+                'total_pages' => $total_pages,
+                'count' => $count
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+    }
+
+
+    /**
+     * Return custiom fields for mapping 
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function mrm_contact_custom_attributes()
+    {
+        global $wpdb;
+        $contacts_meta_table = $wpdb->prefix . ContactMetaSchema::$table_name;
+
+        $select_query  = $wpdb->prepare("SELECT DISTINCT meta_key FROM $contacts_meta_table WHERE meta_key NOT IN ('first_name', 
+                                                                                                                    'last_name',
+                                                                                                                    'email',
+                                                                                                                    'date_of_birth',
+                                                                                                                    'company_name',
+                                                                                                                    'address_line_1',	
+                                                                                                                    'address_line_2',
+                                                                                                                    'postal_code',
+                                                                                                                    'city',	
+                                                                                                                    'state',
+                                                                                                                    'country',
+                                                                                                                    'phone',
+                                                                                                                    'timezone'
+                                                                                                                    )");
+        $results = json_decode(json_encode($wpdb->get_results($select_query)), true);
+
+        $custom_fields = array_map(function( $result ){
+            return $result['meta_key'];
+        }, $results);
+        return $custom_fields;
+    }
+
+    /**
+     * Get Total Number of contacts 
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function get_total_count( $contact_id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+
+        $select_query = $wpdb->prepare("SELECT COUNT(*) as total FROM $table_name");
+        $total_subscribed = $wpdb->prepare("SELECT COUNT(*) as subscribed FROM $table_name WHERE status='subscribed'");
+        $total_unsubscribed = $wpdb->prepare("SELECT COUNT(*) as unsubscribed FROM $table_name WHERE status='unsubscribed'");
+        $total_pending = $wpdb->prepare("SELECT COUNT(*) as pending FROM $table_name WHERE status='pending'");
+
+        $contacts =  json_decode(json_encode($wpdb->get_results($select_query)), true);
+        $subscribed = json_decode(json_encode($wpdb->get_results($total_subscribed)), true);
+        $unsubscribed = json_decode(json_encode($wpdb->get_results($total_unsubscribed)), true);
+        $pending = json_decode(json_encode($wpdb->get_results($total_pending)), true);
+
+        $results = [
+            'total_contacts' => $contacts[0]['total'],
+            'total_subscribed'     => $subscribed[0]['subscribed'],
+            'total_unsubscribed'   => $unsubscribed[0]['unsubscribed'],
+            'total_pending'        => $pending[0]['pending']
+        ];
+
+        if( !empty($results) ){
+            return $results;
+        }
+        return false;
+    }
+    
+}

@@ -7,13 +7,22 @@
       "email": "tohin@coderex.co"
     }
   ],
-  "require": {},
+  "require": {
+    "league/csv": "^9.0"
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
   "autoload": {
+    "psr-4": {
+      "Mint\\MRM\\": "app/"
+    },
     "classmap": [
-      "includes/",
-      "includes/core",
-      "admin/",
-      "public/"
+      "app"
     ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7",
+    "yoast/phpunit-polyfills": "^1.0"
   }
 }
