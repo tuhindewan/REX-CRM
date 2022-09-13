@@ -8,8 +8,11 @@ import TagIcon from "../Icons/TagIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import Selectbox from "../Selectbox";
+import { useLocation } from "react-router-dom";
+import SuccessfulNotification from "../SuccessfulNotification";
 
 const CustomFields = () => {
+  const location = useLocation();
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -23,6 +26,9 @@ const CustomFields = () => {
   });
 
   const [customFields, setCustomFields] = useState([]);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
@@ -45,6 +51,10 @@ const CustomFields = () => {
         setCustomFields(results.data);
       });
     });
+    if ("field-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
   }, []);
 
   return (
@@ -159,6 +169,7 @@ const CustomFields = () => {
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

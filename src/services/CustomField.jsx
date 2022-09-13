@@ -13,7 +13,7 @@ export async function getCustomFields() {
     });
 }
 
-
+// Custom fields submit post request
 export async function submitCustomFields( customFields ) {
 
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/custom-fields`, {
@@ -26,11 +26,6 @@ export async function submitCustomFields( customFields ) {
   .then((response) => {
     if (response.ok) {
       return response.json();
-    }
-  })
-  .then((data) => {
-    if (201 === data.code) {
-      return data.message;
     }
   });
 }

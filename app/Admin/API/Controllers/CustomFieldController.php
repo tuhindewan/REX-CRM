@@ -55,7 +55,7 @@ class CustomFieldController extends BaseController {
                 $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
 
                 if ( empty( $title ) ) {
-                    return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+                    return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
                 }
 
                 $slug = sanitize_title( $title );
@@ -64,7 +64,7 @@ class CustomFieldController extends BaseController {
                 $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
 
                 if ( empty( $type ) ) {
-                    return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
+                    return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
                 }
 
                 error_log(print_r($params, 1));
