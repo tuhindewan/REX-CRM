@@ -3,18 +3,22 @@ import React, { useEffect, useState } from "react";
 
 import ContactCards from "../ContactCards/index";
 
+import { useLocation } from "react-router-dom";
 import ContactProfile from "../Icons/ContactProfile";
 import Pending from "../Icons/Pending";
 import Subscribe from "../Icons/Subscribe";
 import Unsubscribe from "../Icons/Unsubscribe";
+import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
-import Swal from "sweetalert2";
 
 import "./style.css";
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
   const [countData, setCountData] = useState([]);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     async function getTotal() {
@@ -24,6 +28,12 @@ const BaseTable = () => {
       const resJson = await res.json();
       setCountData(resJson);
     }
+
+    if ("contact-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
+
     getTotal();
   }, [refresh]);
 
@@ -123,14 +133,12 @@ const BaseTable = () => {
                 </ul>
               </button> */}
 
-              <ContactListTable 
-                refresh = {refresh}
-                setRefresh= {setRefresh}
-              />
+              <ContactListTable refresh={refresh} setRefresh={setRefresh} />
             </div>
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

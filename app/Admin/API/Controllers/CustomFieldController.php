@@ -5,6 +5,9 @@ namespace Mint\MRM\Admin\API\Controllers;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\DataBase\Models\CustomFieldModel;
+use Mint\MRM\DataStores\CustomField as DataStoresCustomField;
+use Mint\MRM\DataStores\CustomFieldData;
 use MRM\Common\MRM_Common;
 use MRM\Data\CustomField;
 use MRM\Models\CustomField as ModelsCustomField;
@@ -86,9 +89,9 @@ class CustomFieldController extends BaseController {
                     'meta'     => $meta
                 );
 
-                $field = new CustomField( $this->args );
+                $field = new CustomFieldData( $this->args );
 
-                $success = ModelsCustomField::insert( $field );
+                $success = CustomFieldModel::insert( $field );
             }
 
             if($success) {

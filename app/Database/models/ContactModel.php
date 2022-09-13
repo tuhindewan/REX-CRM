@@ -6,6 +6,7 @@ use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactMetaSchema;
 use Mint\MRM\DataBase\Tables\ContactNoteSchema;
 use Mint\MRM\DataBase\Tables\ContactSchema;
+use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;
 use Mint\Mrm\Internal\Traits\Singleton;
@@ -27,15 +28,15 @@ class ContactModel{
     /**
      * Insert contact information to database
      * 
-     * @param MRM_Contact $contact
+     * @param ContactData $contact
      * 
      * @return bool|int
      * @since 1.0.0
      */
-    public static function insert(MRM_Contact $contact)
+    public static function insert(ContactData $contact)
     {
         global $wpdb;
-        $contacts_table = $wpdb->prefix . ContactSchema::$mrm_table;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
         try {
             $wpdb->insert( $contacts_table, array(

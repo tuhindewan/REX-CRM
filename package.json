@@ -35,6 +35,7 @@
     "@wordpress/babel-preset-default": "^6.17.0",
     "@wordpress/i18n": "^4.15.0",
     "babel-loader": "^8.2.5",
+    "babel-plugin-react-html-attrs": "^3.0.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",

@@ -33,29 +33,29 @@ class NoteController extends BaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
+        
+        $notes = isset( $params['notes'] ) ? $params['notes'] : array();
         // Note Title validation
-        $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
+        $title = isset( $notes['title'] ) ? sanitize_text_field( $notes['title'] ) : '';
         if ( empty( $title ) ) {
 			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
 		}
 
         // Note type validation
-        $type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : '';
+        $type = isset( $notes['type'] ) ? sanitize_text_field( $notes['type'] ) : '';
         if ( empty( $type ) ) {
 			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
 		}
 
         // Note description validation
-        $description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
+        $description = isset( $notes['description'] ) ? sanitize_text_field( $notes['description'] ) : '';
         if ( empty( $description ) ) {
 			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  400);
 		}
 
         // Note object create and insert or update to database
         try {
-            $note = new MRM_Note( $params );
-
+            $note = new MRM_Note( $notes );
             if(isset($params['note_id'])){
                 $success = NoteModel::update( $note, $params['contact_id'], $params['note_id'] );
             }else{
