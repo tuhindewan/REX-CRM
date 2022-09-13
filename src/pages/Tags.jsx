@@ -371,6 +371,7 @@ const Tags = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
+                      <th>Total Contacts</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
                     </tr>

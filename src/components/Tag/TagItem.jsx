@@ -5,7 +5,7 @@ import Portal from "../Portal";
 
 export default function TagItem(props) {
   // read title and description from list prop
-  const { title, created_at, id } = props.list;
+  const { title, created_at, total_contacts, id } = props.list;
   const {
     editList,
     deleteList,
@@ -29,6 +29,7 @@ export default function TagItem(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
+      <td className="">{total_contacts}</td>
       <td className="">{created_at}</td>
       <td>
         <button

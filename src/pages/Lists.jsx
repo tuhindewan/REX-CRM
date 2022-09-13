@@ -388,6 +388,7 @@ const Lists = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
+                      <th>Total Contacts</th>
                       <th className="">Description</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>

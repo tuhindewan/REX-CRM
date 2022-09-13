@@ -5,7 +5,7 @@ import HoverMenu from "../HoverMenu";
 
 export default function ListItem(props) {
   // read title and description from list prop
-  const { title, data, created_at, id } = props.list;
+  const { title, data, created_at, total_contacts, id } = props.list;
   const {
     editList,
     deleteList,
@@ -30,6 +30,7 @@ export default function ListItem(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
+      <td className="">{total_contacts}</td>
       <td className="">
         {data?.length > 20 ? data.substring(0, 20) + "..." : data}
       </td>
