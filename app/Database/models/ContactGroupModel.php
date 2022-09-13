@@ -102,10 +102,22 @@ class ContactGroupModel{
 		}
              // Return segments for list view
         try {
-            $select_query  = "SELECT count(*) as total_contacts, group_id, g.title, g.data, g.created_at from $pivot_table as p right join $group_table as g on p.group_id = g.id where type = '$type' $search_terms GROUP BY p.group_id ORDER BY g.$order_by $order_type LIMIT $offset, $limit";
+            $select_query  = "SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+            from $pivot_table as p right join $group_table as g
+            on p.group_id = g.id
+            where type='$type'
+            group by g.id, g.title, g.data, g.created_at
+            order by $order_by $order_type
+            limit $offset, $limit";
             $query_results = $wpdb->get_results( $select_query );
 
-            $count_query    = "SELECT COUNT(*) as total FROM (SELECT count(*) as total_contacts, group_id, g.title, g.data from $pivot_table as p inner join $group_table as g on p.group_id = g.id where type = '$type' $search_terms GROUP BY p.group_id) as table1";
+            $count_query    = "SELECT COUNT(*) as total FROM (
+                SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+            from $pivot_table as p right join $group_table as g
+            on p.group_id = g.id
+            where type='$type'
+            group by g.id, g.title, g.data, g.created_at
+            ) as table1";
             $count_result   = $wpdb->get_results($count_query);
     
             $count = (int) $count_result['0']->total;
