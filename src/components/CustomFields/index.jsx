@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getCustomFields } from "../../services/CustomField";
 import Plus from "../Icons/Plus";
@@ -8,8 +8,8 @@ import TagIcon from "../Icons/TagIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import Selectbox from "../Selectbox";
-import { useLocation } from "react-router-dom";
 import SuccessfulNotification from "../SuccessfulNotification";
+import SingleField from "./SingleField";
 
 const CustomFields = () => {
   const location = useLocation();
@@ -43,19 +43,29 @@ const CustomFields = () => {
 
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
+  const [currentActive, setCurrentActive] = useState(0);
+  // the select all checkbox
+  const [allSelected, setAllSelected] = useState(false);
+
+  // single selected array which holds selected ids with
+  const [selected, setSelected] = useState([]);
 
   // Fetch all custom fields
   useEffect(() => {
     getCustomFields().then((results) => {
-      results.data.map(function () {
-        setCustomFields(results.data);
-      });
+      setCustomFields(results.data);
     });
     if ("field-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
   }, []);
+  async function deleteField() {}
+
+  const handleSelectOne = (e) => {};
+
+  // this function sets the required edit parameters
+  function editField(list) {}
 
   return (
     <>
@@ -128,21 +138,21 @@ const CustomFields = () => {
                   </thead>
 
                   <tbody>
-                    {/* {customFields.length > 0 &&
-                      customFields.map((list, idx) => {
+                    {customFields.length > 0 &&
+                      customFields.map((field, idx) => {
                         return (
-                          <TagItem
+                          <SingleField
                             key={idx}
-                            list={list}
-                            deleteList={deleteList}
+                            field={field}
+                            deleteField={deleteField}
                             currentActive={currentActive}
                             setCurrentActive={setCurrentActive}
                             handleSelectOne={handleSelectOne}
                             selected={selected}
-                            editList={editList}
+                            editField={editField}
                           />
                         );
-                      })} */}
+                      })}
                   </tbody>
                 </table>
                 {/* List empty or search not found ui */}
