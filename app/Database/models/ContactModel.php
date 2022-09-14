@@ -245,8 +245,14 @@ class ContactModel{
 
         // Search contacts by email, first name or last name
 		if ( ! empty( $search ) ) {
-            $search_terms = "WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR `stage` LIKE '%$search%')";
+            $search_terms = "WHERE (`hash` LIKE '%$search%' 
+             OR `email` LIKE '%$search%'
+             OR concat(`first_name`, ' ', `last_name`)LIKE '%$search%'
+             OR `source` LIKE '%$search%' 
+             OR `status` LIKE '%$search%' 
+             OR `stage` LIKE '%$search%')";
 		}
+        
         // Prepare sql results for list view
         try {
             $select_query  =  "SELECT * FROM `wp_mrm_contacts` $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
@@ -258,6 +264,7 @@ class ContactModel{
                 $new_meta = self::get_meta( $query_result['id'] );
                 $results[] = array_merge($query_result, $new_meta);
             }
+
 
             $count_query    = "SELECT COUNT(*) as total FROM $contact_table $search_terms";
             $count_result   = $wpdb->get_results($count_query);

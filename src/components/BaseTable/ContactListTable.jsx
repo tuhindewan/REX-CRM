@@ -76,9 +76,6 @@ export default function ContactListTable(props) {
   const location = useLocation();
 
   const [filterRequest, setFilterRequest] = useState({
-    // tags_ids: [],
-    // lists_ids: [],
-    // status: [],
   });
 
   // Prepare filter object
@@ -190,7 +187,6 @@ export default function ContactListTable(props) {
       filterRequest.lists_ids != undefined ||
       filterRequest.status != undefined
     ) {
-      console.log("filer");
       getFilter();
       setIsFilter(1);
     } else {
@@ -355,8 +351,7 @@ export default function ContactListTable(props) {
         </div>
 
         <div className="right-buttons">
-          {filterRequest.status === undefined &&
-          filterRequest?.group_id?.length === 0 ? (
+          {isFilter == 0 ? (
             <span className="search-section">
               <Search />
               <input
