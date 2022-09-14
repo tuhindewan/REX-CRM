@@ -82,13 +82,13 @@ class MRM_Importer {
 			$headers[0] = self::remove_utf8_bom( $headers[0] );
 		}
 
-		/**
-		 * Formatting CSV header for mapping
-		 */
+		// /**
+		//  * Formatting CSV header for mapping
+		//  */
 
-		foreach ( $headers as $index => $header ) {
-			$headers[ $index ] = array( 'index' => $index, 'header' => $header );
-		}
+		// foreach ( $headers as $index => $header ) {
+		// 	$headers[ $index ] = array( 'index' => $index, 'header' => $header );
+		// }
 
 		/**
 		 * Get existing contact fields

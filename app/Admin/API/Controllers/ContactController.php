@@ -387,16 +387,21 @@ class ContactController extends BaseController {
             $params = MRM_Common::get_api_params_values($request);
             $raw = isset($params['raw']) ? $params['raw']: "";
 
+            error_log(print_r($raw,1));
             // check for least number of characters
             if(strlen($raw) < 5) {
-                throw new Exception("Please eneter at least 5 characters");
+                throw new Exception("Data is insufficient. Please enter at least 5 characters.");
             }
             $array = preg_split("/\r\n|\n|\r/", $raw);
             if(count($array) > 0) {
-                $headers = explode(",",$array[0]);
+                $array[0] = trim($array[0]); // trim whitespaces for each new line
+                $headers = explode(",", $array[0]);
+            } else {
+                throw new Exception("Make sure the data contains comma seperated valid header and has newline.");
             }
 
             $result = array(
+                'raw' => $array, // need to send the data back to the user for using in actual importing
                 'headers'   => $headers,
                 'fields'    => Constants::$contacts_attrs,
             );

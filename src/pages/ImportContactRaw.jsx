@@ -7,8 +7,12 @@ export default function ImportContactRaw() {
   // stores the text data
   const [text, setText] = useState("");
 
+  // ref for referring textarea
+  const textAreaRef = useRef(null);
+
   // sets the file text from textarea reference on textarea change
   function handleChange(event) {
+    console.log(textAreaRef.current.value);
     setText(event.target.value);
   }
 
@@ -20,9 +24,13 @@ export default function ImportContactRaw() {
     let options = {
       method: "POST",
       body: JSON.stringify({
-        raw: text,
+        raw: textAreaRef.current.value,
       }),
+      headers: {
+        "Content-type": "application/json",
+      },
     };
+
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/raw/attrs`,
       options
@@ -32,7 +40,7 @@ export default function ImportContactRaw() {
       navigate("/contacts/import/raw/map", {
         state: {
           data: resJson.data,
-          type: "raw",
+          type: "raw", // indicated the type of import
         },
       });
     } else {
@@ -69,8 +77,8 @@ export default function ImportContactRaw() {
             </span>
             <textarea
               className="raw-textarea"
+              ref={textAreaRef}
               onChange={handleChange}
-              value={text}
               placeholder={`
             Email, First Name, Last Name
             john@doe.com, John, Doe
