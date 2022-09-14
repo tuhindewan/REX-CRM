@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { submitCustomFields } from "../../services/CustomField";
 import DynamicInput from "../DynamicInput";
 import InputItem from "../InputItem";
@@ -7,8 +7,9 @@ import Selectbox from "../Selectbox";
 import "./style.css";
 
 export default function CustomFieldCreate() {
-  let navigate = useNavigate();
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
   // Dynamic input fields hide or show
   const [isShow, setIsShow] = useState(false);
 
@@ -25,6 +26,22 @@ export default function CustomFieldCreate() {
     options: [],
     group_id: 1,
   });
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/${id}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        console.log(resJson);
+      }
+    }
+
+    if (id) {
+      getData();
+    }
+  }, []);
 
   // Set custom fields type
   const onSelect = async (event) => {
