@@ -42,6 +42,8 @@ export default function ContactListTable(props) {
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
+  // search query, search query only updates when there are more than 3 characters typed
+  const [query, setQuery] = useState("");
 
   const [lists, setLists] = useState([]);
   const [tags, setTags] = useState([]);
@@ -70,9 +72,6 @@ export default function ContactListTable(props) {
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
-
-  // search query, search query only updates when there are more than 3 characters typed
-  const [query, setQuery] = useState("");
 
   const [isFilter, setIsFilter] = useState(0);
 
@@ -364,7 +363,7 @@ export default function ContactListTable(props) {
                   setSearch(value);
                   // only set query when there are more than 3 characters
                   if (value.length >= 3) {
-                    setQuery(`&search=${value}`);
+                    setQuery(encodeURI(`&search=${value}`));
                     // on every new search term set the page explicitly to 1 so that results can
                     // appear
                     setPage(1);
