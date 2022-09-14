@@ -14,6 +14,7 @@ import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
 import { getCustomFields } from "../../services/CustomField";
+import InputNumber from "../InputNumber";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -85,14 +86,12 @@ export default function ContactDetails() {
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
-        console.log(resJson.data);
         setContactData(resJson.data);
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
 
     getCustomFields().then((results) => {
-      console.log(results.data);
       setCustomFields(results.data);
     });
 
@@ -108,7 +107,6 @@ export default function ContactDetails() {
 
   }, []);
 
-  //console.log(contactData);
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
     : contactData.created_at;
@@ -143,7 +141,6 @@ export default function ContactDetails() {
     "December",
   ];
 
-  //console.log(lastUpdate)
 
   const dateFormat = new Date(lastUpdate);
   const createDate = new Date(contactData.created_at);
@@ -222,19 +219,7 @@ export default function ContactDetails() {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({
-          email: contactData.email,
-          first_name: contactData.first_name,
-          last_name: contactData.last_name,
-          meta_fields: {
-            phone_number: contactData?.meta_fields?.phone_number,
-            address: contactData?.meta_fields?.address,
-            gender: contactData?.meta_fields?.gender,
-            timezone: contactData?.meta_fields?.timezone,
-            company: contactData?.meta_fields?.company,
-            designation: contactData?.meta_fields?.designation,
-          },
-        }),
+        body: JSON.stringify(contactData),
       }
     );
     toggleRefresh();
@@ -293,6 +278,7 @@ export default function ContactDetails() {
   // Set values from contact form
   const handleChange = (event) => {
     const { name, value } = event.target;
+
     validate(event, name, value);
     setContactData((prevState) => ({
       ...prevState,
@@ -303,7 +289,6 @@ export default function ContactDetails() {
   const handleMetaChange = (e) => {
     const { name, value } = e.target;
     validate(e, name, value);
-
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
@@ -662,11 +647,8 @@ export default function ContactDetails() {
                           
                         </>
                       );
-                    })}
+                      })}
                       
-
-
-
                     </ul>
 
                     <div className="profile-edit-field">
@@ -759,6 +741,32 @@ export default function ContactDetails() {
                             value={contactData?.meta_fields?.timezone}
                           />
                           {/*<Selectbox label="Designation" index="designation" />*/}
+
+                          {customFields.map((field) => {
+                          return (
+                            <>
+
+                              {field.type == 'text' && (
+                                <InputItem
+                                name={field.slug}
+                                label={field.title}
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.[field.slug]}
+                              />
+                              )}
+
+                              {field.type == 'number' && (
+                                <InputNumber
+                                name={field.slug}
+                                label={field.title}
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.[field.slug]}
+                              />
+                              )}
+                              
+                            </>
+                          );
+                          })}
                         </div>
                       </div>
 
