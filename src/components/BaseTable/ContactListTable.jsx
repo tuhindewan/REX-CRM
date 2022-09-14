@@ -20,6 +20,7 @@ import Swal from "sweetalert2";
 import Selectbox2 from "../Selectbox2";
 import ColumnList from "./ColumnList";
 import FilterItems from "./FilterItems";
+import CrossIcon from "../Icons/CrossIcon";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -264,8 +265,6 @@ export default function ContactListTable(props) {
     setActive(!isActive);
   };
 
-  
-
   async function deleteMultipleContacts() {
     Swal.fire({
       title: "Are you sure?",
@@ -325,7 +324,7 @@ export default function ContactListTable(props) {
     //   setStatus(false);
     // }
     console.log(isLists);
-  }
+  };
   const showTags = () => {
     setIsTags(!isTags);
     // if(isTags === true){
@@ -333,7 +332,7 @@ export default function ContactListTable(props) {
     //   setStatus(false);
     // }
     console.log(isTags);
-  }
+  };
   const showStatus = () => {
     setIsStatus(!isStatus);
     // if(isStatus== true){
@@ -341,7 +340,7 @@ export default function ContactListTable(props) {
     //   setIsLists(false);
     // }
     console.log(isStatus);
-  }
+  };
 
   return (
     <>
@@ -402,23 +401,32 @@ export default function ContactListTable(props) {
             onRemove={onRemove}
           /> */}
 
-          <div className="form-group">
-            <button className={isLists ? "filter-btn show" : "filter-btn"} onClick={showLists}>
+          <div className="form-group left-filter">
+            <button
+              className={isLists ? "filter-btn show" : "filter-btn"}
+              onClick={showLists}
+            >
               Lists
-              <FilterItems isActiveFilter={isLists}  />
             </button>
+            <FilterItems isActiveFilter={isLists} />
           </div>
-          <div className="form-group">
-            <button className={isTags ? "filter-btn show" : "filter-btn"} onClick={showTags}>
+          <div className="form-group left-filter">
+            <button
+              className={isTags ? "filter-btn show" : "filter-btn"}
+              onClick={showTags}
+            >
               Tags
-              <FilterItems isActiveFilter={isTags} />
             </button>
+            <FilterItems isActiveFilter={isTags} />
           </div>
-          <div className="form-group">
-            <button className={isStatus ? "filter-btn show" : "filter-btn"} onClick={showStatus}>
+          <div className="form-group left-filter">
+            <button
+              className={isStatus ? "filter-btn show" : "filter-btn"}
+              onClick={showStatus}
+            >
               Status
-              <FilterItems isActiveFilter={isStatus} />
             </button>
+            <FilterItems isActiveFilter={isStatus} />
           </div>
 
           {/* <FilterBox
@@ -488,7 +496,23 @@ export default function ContactListTable(props) {
         </div>
       </div>
 
-      <div className="selected-result"></div>
+      <div className="selected-result">
+        <div className="selected-items">
+          <span>Product Feed</span>
+          <CrossIcon />
+        </div>
+        <div className="selected-items">
+          <span>Funnel</span>
+          <CrossIcon />
+        </div>
+        <div className="selected-items">
+          <span>WPVR</span>
+          <CrossIcon />
+        </div>
+        <div className="clear-all">
+          <span>Clear All</span>
+        </div>
+      </div>
 
       <div className="contact-list-table">
         <table>

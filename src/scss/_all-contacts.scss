@@ -136,6 +136,10 @@
         }
       }
 
+      .form-group.left-filter {
+        position: relative;
+      }
+
       .soronmrm-dropdown {
         width: 315px;
         left: -2px;
@@ -225,6 +229,59 @@
     }
   }
   // ------end .contact-list-header-------
+
+  // ---------Filtered selected result-------
+
+  .selected-result {
+    padding: 20px 0 20px 25px;
+    display: flex;
+    flex-flow: row wrap;
+    border-bottom: 1px solid #e2e5ed;
+
+    .selected-items {
+      border: 1px solid #e2e5ed;
+      border-radius: 4px;
+      padding: 5px 0 5px 7px;
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      flex-flow: row wrap;
+
+      span {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        letter-spacing: -0.01em;
+        color: #667085;
+      }
+      svg {
+        height: 6px;
+        width: 6px;
+        margin: 0 5px;
+        path {
+          fill: #667085;
+        }
+      }
+    }
+    .clear-all {
+      border: 1px solid #d92d20;
+      border-radius: 4px;
+      padding: 5px 7px 5px 7px;
+      display: flex;
+      align-items: center;
+      flex-flow: row wrap;
+
+      span {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        letter-spacing: -0.01em;
+        color: #d92d20;
+      }
+    }
+  }
+
+  // -----------end Filter result---------
 
   //---------contact-list-body------
   .contact-list-body {
