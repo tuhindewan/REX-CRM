@@ -71,12 +71,14 @@ export default function ContactListTable(props) {
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
 
+  // search query, search query only updates when there are more than 3 characters typed
+  const [query, setQuery] = useState("");
+
   const [isFilter, setIsFilter] = useState(0);
 
   const location = useLocation();
 
-  const [filterRequest, setFilterRequest] = useState({
-  });
+  const [filterRequest, setFilterRequest] = useState({});
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -200,7 +202,7 @@ export default function ContactListTable(props) {
     async function getData() {
       setLoaded(false);
       await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts?search=${search}&page=${page}&per-page=${perPage}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
       )
         .then((response) => {
           if (response.ok) {
@@ -231,7 +233,7 @@ export default function ContactListTable(props) {
     });
 
     if (isFilter == 0) getData();
-  }, [perPage, page, search, refresh, isFilter]);
+  }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
@@ -358,8 +360,17 @@ export default function ContactListTable(props) {
                 type="text"
                 value={search}
                 onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
+                  let value = e.target.value;
+                  setSearch(value);
+                  // only set query when there are more than 3 characters
+                  if (value.length >= 3) {
+                    setQuery(`&search=${value}`);
+                    // on every new search term set the page explicitly to 1 so that results can
+                    // appear
+                    setPage(1);
+                  } else {
+                    setQuery("");
+                  }
                 }}
                 placeholder="Search..."
               />
