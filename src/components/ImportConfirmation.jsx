@@ -6,7 +6,7 @@ export default function ImportConfirmation() {
   const location = useLocation();
   const state = location.state;
   if (!state) {
-    return <Navigate to="/contacts/import" />;
+    return <Navigate to="/contacts/import/csv" />;
   }
   const data = state.data;
   return (
