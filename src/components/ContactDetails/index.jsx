@@ -13,6 +13,7 @@ import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
+import { getCustomFields } from "../../services/CustomField";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -69,6 +70,8 @@ export default function ContactDetails() {
   // tags
   const [tags, setTags] = useState([]);
 
+  const [customFields, setCustomFields] = useState([]);
+
   const navigate = useNavigate();
 
   const toggleRefresh = () => {
@@ -82,12 +85,28 @@ export default function ContactDetails() {
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
+        console.log(resJson.data);
         setContactData(resJson.data);
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
+
+    getCustomFields().then((results) => {
+      console.log(results.data);
+      setCustomFields(results.data);
+    });
+
     getData();
   }, [id, refresh]);
+
+  useEffect(() => {
+    
+
+    getCustomFields().then((results) => {
+      setCustomFields(results.data);
+    });
+
+  }, []);
 
   //console.log(contactData);
   const lastUpdate = contactData.updated_at
@@ -489,7 +508,7 @@ export default function ContactDetails() {
                       return (
                         <>
                           {contactData.status != status && (
-                            <li onClick={() => handleStatus(status)}>
+                            <li key={index} onClick={() => handleStatus(status)}>
                               {status.charAt(0).toUpperCase() + status.slice(1)}
                             </li>
                           )}
@@ -627,6 +646,27 @@ export default function ContactDetails() {
                           {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
                         </span>
                       </li>
+
+
+                      {customFields.map((field) => {
+                      return (
+                        <>
+                          <li>
+                            <span className="title">{field.title}</span>
+                            <span className="title-value">
+                              {contactData?.meta_fields?.[field.slug]
+                                ? contactData?.meta_fields?.[field.slug]
+                                : "-"}
+                            </span>
+                          </li>
+                          
+                        </>
+                      );
+                    })}
+                      
+
+
+
                     </ul>
 
                     <div className="profile-edit-field">
