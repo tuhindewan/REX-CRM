@@ -11,6 +11,7 @@ import CreateTag from "../components/Tag/CreateTag";
 import UpdateTag from "../components/Tag/UpdateTag";
 import Contacts from "../pages/Contacts";
 import ImportContactFile from "../pages/ImportContactFile";
+import ImportContactRaw from "../pages/ImportContactRaw";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
 
@@ -32,17 +33,27 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path: "/contacts/import",
+    path: "/contacts/import/csv",
     element: ImportContactFile,
     hideInMenu: true,
   },
   {
-    path: "/contacts/import/selectfields",
+    path: "/contacts/import/raw",
+    element: ImportContactRaw,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/csv/map",
     element: SelectFieldsMap,
     hideInMenu: true,
   },
   {
-    path: "/contacts/import/selectfields/confirmation",
+    path: "/contacts/import/raw/map",
+    element: SelectFieldsMap,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/confirmation",
     element: ImportConfirmation,
     hideInMenu: true,
   },
