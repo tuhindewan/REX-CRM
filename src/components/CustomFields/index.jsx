@@ -62,10 +62,28 @@ const CustomFields = () => {
   }, []);
   async function deleteField() {}
 
-  const handleSelectOne = (e) => {};
+  // Handle one row selection
+  const handleSelectOne = async (event) => {
+    if (selected.includes(event.target.id)) {
+      setSelected(selected.filter((element) => element != event.target.id));
+      setAllSelected(false);
+    } else {
+      setSelected([...selected, event.target.id]);
+    }
+  };
 
   // this function sets the required edit parameters
   function editField(list) {}
+
+  // Handle all checkbox row selection
+  const handleSelectAll = async (event) => {
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      setSelected(customFields.map((field) => field.id));
+    }
+    setAllSelected(!allSelected);
+  };
 
   return (
     <>
@@ -127,10 +145,13 @@ const CustomFields = () => {
                             type="checkbox"
                             name="bulk-select"
                             id="bulk-select"
+                            onChange={handleSelectAll}
+                            checked={allSelected}
                           />
                           <label for="bulk-select">Field Name</label>
                         </span>
                       </th>
+                      <th className="field-type">Slug</th>
                       <th className="field-type">Type</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
@@ -155,16 +176,13 @@ const CustomFields = () => {
                       })}
                   </tbody>
                 </table>
-                {/* List empty or search not found ui */}
-                {/* {lists.length == 0 && ( */}
-                <div className="mrm-empty-state-wrapper">
-                  <TagIcon />
-                  <div>
-                    No Fields Found{" "}
-                    {/* {search.length > 0 ? ` for the term "${search}"` : null} */}
+                {/* Custom fields empty or search not found ui */}
+                {customFields.length == 0 && (
+                  <div className="mrm-empty-state-wrapper">
+                    <TagIcon />
+                    <div>No Fields Found </div>
                   </div>
-                </div>
-                {/* )} */}
+                )}
               </div>
             </div>
             <div className="contact-list-footer">

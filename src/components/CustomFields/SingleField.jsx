@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
+import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Portal from "../Portal";
 
 export default function SingleField(props) {
   // read title and description from list prop
-  const { title, id } = props.field;
+  const { title, slug, type, created_at, id } = props.field;
   const {
     editField,
     deleteField,
@@ -28,8 +30,9 @@ export default function SingleField(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
-      <td className=""></td>
-      <td className=""></td>
+      <td className="">{slug}</td>
+      <td className="">{type}</td>
+      <td className="">{created_at}</td>
       <td>
         <button
           className="more-option"
