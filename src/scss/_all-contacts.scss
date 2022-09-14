@@ -233,10 +233,12 @@
   // ---------Filtered selected result-------
 
   .selected-result {
+
     padding: 20px 0 20px 25px;
     display: flex;
     flex-flow: row wrap;
     border-bottom: 1px solid #e2e5ed;
+    
 
     .selected-items {
       border: 1px solid #e2e5ed;
@@ -279,6 +281,10 @@
         color: #d92d20;
       }
     }
+  }
+
+  .selected-result.inactive{
+    display: none;
   }
 
   // -----------end Filter result---------

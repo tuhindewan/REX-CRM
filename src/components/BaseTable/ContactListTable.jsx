@@ -37,6 +37,7 @@ export default function ContactListTable(props) {
 
   const [isActive, setActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
+  const [selectedSection, setSelectedSection] = useState(false);
 
   const [contactData, setContactData] = useState([]);
   const [filterContact, setFilterContact] = useState([]);
@@ -485,9 +486,9 @@ export default function ContactListTable(props) {
                 isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
               }
             >
-              {/* <li>Assign to list</li>
-                    <li>Assign to tag</li>
-                    <li>Assign to segment</li> */}
+              <li>Assign to list</li>
+              <li>Assign to tag</li>
+              <li>Assign to segment</li>
               <li className="delete" onClick={deleteMultipleContacts}>
                 Delete
               </li>
@@ -496,7 +497,7 @@ export default function ContactListTable(props) {
         </div>
       </div>
 
-      <div className="selected-result">
+      <div className={selectedSection ? "selected-result" : "selected-result inactive"}>
         <div className="selected-items">
           <span>Product Feed</span>
           <CrossIcon />
