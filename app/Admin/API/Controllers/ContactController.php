@@ -393,11 +393,11 @@ class ContactController extends BaseController {
                 throw new Exception("Data is insufficient. Please enter at least 5 characters.");
             }
             $array = preg_split("/\r\n|\n|\r/", $raw);
-            if(count($array) > 0) {
-                $array[0] = trim($array[0]); // trim whitespaces for each new line
+            if(count($array) > 1) {
+                $array[0] = trim($array[0]); // trim whitespaces for first line
                 $headers = explode(",", $array[0]);
             } else {
-                throw new Exception("Make sure the data contains comma seperated valid header and has newline.");
+                throw new Exception("Make sure the data contains comma seperated values with a valid header and has at least one row of data.");
             }
 
             $result = array(
@@ -422,7 +422,7 @@ class ContactController extends BaseController {
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function import_contacts( WP_REST_Request $request ) {
+    public function import_contacts_csv( WP_REST_Request $request ) {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
@@ -533,6 +533,110 @@ class ContactController extends BaseController {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }
+
+    /**
+     * Prepare contact object from the uploaded CSV
+     * Inseret contcts data into database
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_raw( WP_REST_Request $request ) {
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+        try {
+            if(isset( $params ) && empty( $params["map"] )) {
+                throw new Exception( __("Please map at least one field to desired field.", "mrm") );
+            }
+
+            $mappings    = json_decode(json_encode($params["map"]), true);
+
+            $raw = isset($params['raw']) ? $params['raw'] : '';
+            if(empty($raw) || !is_array($raw) || count($raw) <= 1) {
+                throw new Exception( __("The data is invalid.", "mrm") );
+            }
+
+            $header = explode(",", trim($raw[0]));
+
+            $skipped = 0;
+            $exists = 0;
+            $total_count = 0;
+            // Iterate over every line of the file
+            for ($i = 1; $i < count($raw); $i++ ) {
+                // Trim and Parse the raw  string as an array
+                $row = trim($raw[$i]);
+                $row_array = explode(",", $row);
+                // check if header and the current row has same length otherwise skip to the next iteration
+                if(count($header) !== count($row_array)) {
+                    $skipped++;
+                    $total_count++;
+                    continue;
+                }
+                // combine header and values to make a contact associative array
+                $csv_contact = array_combine($header, $row_array);
+                $contact_args = array(
+                    'status'    => $params['status'],
+                    'source'    => 'raw',
+                    'meta_fields'   => []
+                );
+
+                foreach($mappings as $map) {
+                    $map_array = json_decode(json_encode($map), true);
+
+                    if( in_array( $map_array["target"], array( "first_name", "last_name", "email" ) ) ){
+                        $contact_args[$map_array["target"]] = $csv_contact[$map_array["source"]];
+                    } else {
+                        $contact_args['meta_fields'][$map_array["target"]] = $csv_contact[$map_array["source"]];
+                    }
+                }
+                if (!array_key_exists('email', $contact_args)) {
+                    return $this->get_error_response( __("The email field is required.", "mrm"), 400 );
+                }
+                $contact_email = trim($contact_args['email']);
+                if ($contact_email && is_email( $contact_email )) {
+
+                    $is_exists = ContactModel::is_contact_exist( $contact_email );
+
+                    if(!$is_exists){
+                        $contact    = new ContactData( $contact_email, $contact_args );
+                        $contact_id = ContactModel::insert( $contact );
+                        if( isset( $contact_args['status'][0] ) && 'pending' == $contact_args['status'][0] ){
+                            MessageController::get_instance()->send_double_opt_in( $contact_id );
+                        }
+                        if(isset($params['tags'])){
+                            TagController::set_tags_to_contact( $params['tags'], $contact_id );
+                        }
+            
+                        if(isset($params['lists'])){
+                            ListController::set_lists_to_contact( $params['lists'], $contact_id );
+                        }
+                    }else {
+                        $exists++;
+                    }
+                    
+                }else {
+                    $skipped++;
+                }
+                $total_count++;
+            }
+            /**
+             * Prepare data for sucess response
+             */
+            $result = array(
+                'total'                => $total_count,
+                'skipped'              => $skipped,
+                'existing_contacts'    => $exists,
+            );
+            return $this->get_success_response(__("Import contact has been successful", "mrm"), 200, $result);
+
+        } catch(Exception $e) {
+            error_log(print_r($e,1));
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+    }
+
 
 
     /**

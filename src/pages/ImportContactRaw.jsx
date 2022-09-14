@@ -86,6 +86,9 @@ export default function ImportContactRaw() {
             johnny@walker.com, Johny, Walker
                   `}
             ></textarea>
+            <span className="csv-title">
+              Type or paste your existing contacts in this box
+            </span>
             <div className="csv-save-button">
               <button
                 className="contact-save soronmrm-btn"

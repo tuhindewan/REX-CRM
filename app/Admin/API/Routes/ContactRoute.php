@@ -199,18 +199,18 @@ class ContactRoute {
          * @since 1.0.0
         */  
        register_rest_route($this->namespace, '/' . $this->rest_base . '/import/raw/attrs', [
-        [
-            'methods' => \WP_REST_Server::CREATABLE,
-            'callback' => [
-                $this->controller ,
-                'import_contacts_raw_get_attrs'
-            ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ],
-        ]
-    ]);
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'import_contacts_raw_get_attrs'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ],
+            ]
+        ]);
 
         /**
          * Get WordPress users roles
@@ -283,7 +283,7 @@ class ContactRoute {
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->controller ,
-                    'import_contacts'
+                    'import_contacts_csv'
                 ],
                 'permission_callback' => [
                     $this->controller ,
@@ -291,6 +291,27 @@ class ContactRoute {
                 ],
             ]
         ]);
+
+        /**
+         * Contact import endpoint
+         * This endpoint saves the raw data to database with correct mappings
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/raw', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'import_contacts_raw'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ],
+            ]
+        ]);
+
 
         /**
          * Contact export  endpoint

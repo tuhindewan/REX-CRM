@@ -99,8 +99,11 @@
     }
     .raw-textarea {
       color: black;
-      width: 100%;
+      width: calc(100% - 50px);
       min-height: 340px;
+      margin: 10px 25px;
+      padding: 10px;
+      background-color: #f9f9f9;
     }
     .raw-textarea::placeholder {
       color: #6a707c;
