@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { getCustomFields } from "../../services/CustomField";
+import {
+  deleteSingleCustomField,
+  getCustomFields,
+} from "../../services/CustomField";
+import DeletePopup from "../DeletePopup";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import TagIcon from "../Icons/TagIcon";
@@ -27,6 +31,7 @@ const CustomFields = () => {
 
   const [customFields, setCustomFields] = useState([]);
   const [showNotification, setShowNotification] = useState("none");
+  const [isDelete, setIsDelete] = useState("none");
   const [message, setMessage] = useState("");
 
   // whether to show more options or not
@@ -50,6 +55,12 @@ const CustomFields = () => {
   // single selected array which holds selected ids with
   const [selected, setSelected] = useState([]);
 
+  // refresh the whole list if this boolean changes
+  const [refresh, setRefresh] = useState(true);
+
+  const [fieldID, setFieldID] = useState();
+  const [errors, setErrors] = useState({});
+
   // Fetch all custom fields
   useEffect(() => {
     getCustomFields().then((results) => {
@@ -59,8 +70,34 @@ const CustomFields = () => {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
-  }, []);
-  async function deleteField() {}
+  }, [refresh]);
+
+  const deleteField = async (field_id) => {
+    setIsDelete("block");
+    setFieldID(field_id);
+  };
+
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleCustomField(fieldID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
 
   // Handle one row selection
   const handleSelectOne = async (event) => {
@@ -83,6 +120,11 @@ const CustomFields = () => {
       setSelected(customFields.map((field) => field.id));
     }
     setAllSelected(!allSelected);
+  };
+
+  // the data is fetched again whenver refresh is changed
+  const toggleRefresh = async () => {
+    setRefresh((prev) => !prev);
   };
 
   return (
@@ -196,6 +238,14 @@ const CustomFields = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="soronmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title="Delete Custom Field"
+          message="Are you sure you want to delete the Field?"
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

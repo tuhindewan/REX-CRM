@@ -14,16 +14,31 @@ export async function getCustomFields() {
 }
 
 // Custom fields submit post request
-export async function submitCustomFields( customFields ) {
-
+export async function submitCustomFields(customFields) {
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/custom-fields`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
     },
     body: JSON.stringify(customFields),
-  })
-  .then((response) => {
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
+
+// Custom fields delete request
+export async function deleteSingleCustomField(id) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    }
+  ).then((response) => {
     if (response.ok) {
       return response.json();
     }
