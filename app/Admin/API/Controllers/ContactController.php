@@ -283,30 +283,26 @@ class ContactController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
 
         $isTag = 0;
-        // $isList = 0;
+        $isList = 0;
 
         if( isset( $params['tags'] ) ){
             $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
             $isTag = true;
         }
 
-        // if( isset( $params['lists'] ) ){
-        //     $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
-        //     $isList = 1;
-        // }
+        if( isset( $params['lists'] ) ){
+            $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
+            $isList = 1;
+        }
 
-        if ($success){
+        if($success && $isList == 1 && $isTag == 1) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag == 1){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList == 1 ){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
-
-
-        // if($success && $isList == 1) {
-        //     return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
-        // }else if ($success && $isTag == 1){
-        //     return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
-        // }
-        // return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
 
 
