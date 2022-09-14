@@ -10,6 +10,7 @@ use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 use Mint\MRM\Constants;
+use MailchimpMarketing;
 
 
 
@@ -373,7 +374,7 @@ class ContactController extends BaseController {
     }
 
     /**
-     * Parse raw csv data and send the headers back to the user
+     * Parse raw textarea data input and send the headers back to the user
      *
      * 
      * @param WP_REST_Request $request
@@ -406,6 +407,45 @@ class ContactController extends BaseController {
                 'fields'    => Constants::$contacts_attrs,
             );
             return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result);
+
+        } catch (Exception $e) {
+
+            return $this->get_error_response( __( $e->getMessage(), "mrm" ), 400 );
+        }
+    }
+
+
+    /**
+     * Parse raw textarea data input and send the headers back to the user
+     *
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_mailchimp_get_attrs( WP_REST_Request $request ) 
+    {
+        try{
+            // Get parameters
+            $params = MRM_Common::get_api_params_values($request);
+            $key = isset($params['key']) ? $params['key']: "";
+            $mailchimp = new MailchimpMarketing\ApiClient();
+            
+
+            $mailchimp->setConfig([
+                'apiKey' => '11b321614d43814ca7d8406041bb3839-us8',
+                'server' => 'us8'
+            ]);
+
+            $response = $mailchimp->lists->getListMembersInfo("d28d963625", null, null, 1000);
+           
+            
+            // $result = array(
+            //     'raw' => $array, // need to send the data back to the user for using in actual importing
+            //     'headers'   => $headers,
+            //     'fields'    => Constants::$contacts_attrs,
+            // );
+            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $response);
 
         } catch (Exception $e) {
 
