@@ -15,6 +15,7 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
 import { getCustomFields } from "../../services/CustomField";
 import InputNumber from "../InputNumber";
+import InputDate from "../InputDate";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -573,6 +574,14 @@ export default function ContactDetails() {
                         </span>
                       </li>
                       <li>
+                      <span className="title">Date of Birth</span>
+                      <span className="title-value">
+                        {contactData?.meta_fields?.date_of_birth
+                          ? contactData?.meta_fields?.date_of_birth
+                          : "-"}
+                      </span>
+                    </li>
+                      <li>
                         <span className="title">Address</span>
                         <span className="title-value">
                           {contactData?.meta_fields?.address
@@ -580,14 +589,7 @@ export default function ContactDetails() {
                             : "-"}
                         </span>
                       </li>
-                      {/* <li>
-                      <span className="title">Date of Birth</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.date_of_birth
-                          ? contactData?.meta_fields?.date_of_birth
-                          : "-"}
-                      </span>
-                    </li> */}
+                      
                     </ul>
                     <ul className="other-detail-info">
                       <h4>Other</h4>
@@ -689,6 +691,12 @@ export default function ContactDetails() {
                             error={errors?.phone_number}
                             value={contactData?.meta_fields?.phone_number}
                           />
+                          <InputDate 
+                          name="date_of_birth"
+                          label="Date of Birth"
+                          handleChange={handleMetaChange}
+                          value={contactData?.meta_fields?.date_of_birth} 
+                          />
                         </div>
                         <div className="adress-info-edit">
                           <h4>Address</h4>
@@ -704,13 +712,7 @@ export default function ContactDetails() {
                             {/*<Selectbox label="Country" index="country" />*/}
                           </div>
                         </div>
-                        {/* <div className="birth-date-info">
-                        <h4>Date of Birth</h4>
-                        <div className="month-day-info">
-                          <InputNumber label="Month" />
-                          <InputNumber label="Year" />
-                        </div>
-                      </div> */}
+                        
                       </div>
                       <div className="other-info-edit">
                         <h4>Other</h4>
@@ -752,7 +754,7 @@ export default function ContactDetails() {
                                 label={field.title}
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.[field.slug]}
-                              />
+                                />
                               )}
 
                               {field.type == 'number' && (
@@ -761,7 +763,16 @@ export default function ContactDetails() {
                                 label={field.title}
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.[field.slug]}
-                              />
+                                />
+                              )}
+
+                              {field.type == 'date' && (
+                                <InputDate
+                                name={field.slug}
+                                label={field.title}
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.[field.slug]}
+                                />
                               )}
                               
                             </>
