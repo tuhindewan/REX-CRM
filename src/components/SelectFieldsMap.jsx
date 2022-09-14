@@ -28,6 +28,12 @@ export default function SelectFieldsMap() {
   // get the state from calling component
   const state = location.state;
 
+  // get the state data from calling component
+  const { fields, headers } = state.data;
+
+  // determine which type of import the previous screen was either it will be "raw" or "csv"
+  const type = state.type;
+
   // if current path is /contacts/import/csv/map replace the map and send back to /contacts/import/csv
   // this url will also be used for posting fetch request endpoint /contacts/import/csv for file and /contacts/import/raw for raw data
   const returnUrl = location.pathname.replace("/map", "");
@@ -59,9 +65,11 @@ export default function SelectFieldsMap() {
       map: mapState, // current mapping from file
       ...extra, // lists, tags, status
     };
-    // send the filename in case of csv file upload otherwise leave empty
+    // send the filename in case of csv file upload otherwise send the raw data
     if(type == "csv") {
-        body.file = file;
+        body.file = state.data.file;
+    } else if (type == "raw") {
+        body.raw = state.data.raw;
     }
     if (!body["status"]) body["status"] = ["pending"];
     try {
@@ -91,11 +99,7 @@ export default function SelectFieldsMap() {
       setLoading(false);
     }
   };
-  // get the state data from calling component
-  const { fields, headers } = state.data;
-
-  // determine which type of import the previous screen was either it will be "raw" or "csv"
-  const type = state.type;
+  
 
 
   // selectbox options for rendering
@@ -119,7 +123,7 @@ export default function SelectFieldsMap() {
     }));
   }
 
-  // handle selectbox
+  // handle selectbox and prepare the mapping
   function onSelect(e, name, arg1) {
     const updatedOptions = [...e.target.options]
       .filter((option) => option.selected)
@@ -190,7 +194,7 @@ export default function SelectFieldsMap() {
                               options={selectOptions}
                               onSelect={onSelect}
                               placeholder="Do not import this field"
-                              arg1={header}
+                              arg1={header} // arg1 is passed as the header
                             />
                           </td>
                         </tr>
