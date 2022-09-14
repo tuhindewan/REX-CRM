@@ -67,7 +67,6 @@ class CustomFieldController extends BaseController {
                     return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
                 }
 
-                error_log(print_r($params, 1));
 
                 if ( ! empty( $params['options'] ) ) {
                     $options = $params['options'];
@@ -177,8 +176,12 @@ class CustomFieldController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
     
         $field = CustomFieldModel::get( $params['field_id'] );
-
-        if(isset($field)) {
+        
+        if( $field->meta ){
+            $field->options = maybe_unserialize( $field->meta );
+        }
+        
+        if( isset( $field ) ) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $field);
         }
         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);

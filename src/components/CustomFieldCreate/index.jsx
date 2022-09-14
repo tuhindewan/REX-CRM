@@ -34,14 +34,14 @@ export default function CustomFieldCreate() {
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
-        console.log(resJson);
+        setCustomFields(resJson.data);
       }
     }
 
     if (id) {
       getData();
     }
-  }, []);
+  }, [id]);
 
   // Set custom fields type
   const onSelect = async (event) => {

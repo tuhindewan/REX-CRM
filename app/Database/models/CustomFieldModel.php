@@ -124,7 +124,7 @@ class CustomFieldModel{
      * 
      * @param int $id   Field ID
      * 
-     * @return array an array of results if successfull, NULL otherwise
+     * @return object an object of results if successfull, NULL otherwise
      * @since 1.0.0 
      */
     public static function get( $id ){
@@ -134,7 +134,7 @@ class CustomFieldModel{
 
         try {
             $select_query   = $wpdb->prepare( "SELECT * FROM $fields_table WHERE id = %d",array( $id ) );
-            $select_result  = $wpdb->get_results( $select_query );
+            $select_result  = $wpdb->get_row( $select_query );
             return $select_result;
         } catch(\Exception $e) {
             return false;

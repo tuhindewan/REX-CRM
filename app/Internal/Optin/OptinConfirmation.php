@@ -81,9 +81,6 @@ class OptinConfirmation
             require_once(MRM_DIR_PATH. 'app/Resources/public/confirmation.php');
 			die();
 	   	}
-
-		// require_once(plugin_dir_path(__FILE__). 'templates/confirmation.php');
-		//  error_log(print_r(plugin_dir_path(__FILE__). 'templates/confirmation.php', 1));
 		
 	}
 
