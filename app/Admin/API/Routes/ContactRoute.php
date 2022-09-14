@@ -172,6 +172,27 @@ class ContactRoute {
                 ]
         ]);
 
+
+        /**
+         * Assign multiple tags, lists to multiple contacts
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base. '/groups', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'set_groups_to_multiple'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
         /**
          * Contact import csv send attrs endpoint
          * 

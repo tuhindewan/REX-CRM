@@ -29,6 +29,7 @@ class ContactGroupPivotModel {
      */
     public static function add_groups_to_contact( $pivot_ids )
     {
+        error_log(print_r($pivot_ids, 1));
         global $wpdb;
         $table_name = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
