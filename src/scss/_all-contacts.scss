@@ -212,19 +212,75 @@
         }
       }
 
-      .more-option {
-        background: #ffffff;
-        border: 1px solid #e4e6eb;
-        border-radius: 6px;
-        height: 34px;
-        width: 34px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        margin-left: 12px;
+      .bulk-action {
         position: relative;
+        .more-option {
+          background: #ffffff;
+          border: 1px solid #e4e6eb;
+          border-radius: 6px;
+          height: 34px;
+          width: 34px;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          margin-left: 12px;
+        }
+        .assigned-to.soronmrm-dropdown {
+          width: 332px !important;
+
+          .list-title {
+            margin-bottom: 0;
+          }
+          .option-section {
+            padding: 10px 0;
+          }
+
+          .no-found {
+            // border: 1px solid #F9FAFB;
+            background-color: #f9fafb;
+            padding: 5px 0 5px 20px;
+            border-radius: 0;
+            background: #f9fafb;
+            position: relative;
+            left: -12px;
+            width: calc(100% + 24px);
+            cursor: text;
+            margin-top: 10px;
+
+            display: none;
+
+            span {
+              font-weight: 600;
+              font-size: 12px;
+              line-height: 15px;
+              letter-spacing: 0.05em;
+              text-transform: uppercase;
+              color: #ec5956;
+            }
+          }
+          .add-action {
+            display: flex;
+            padding: 15px 0 8px 10px;
+            border-top: 1px solid #e2e5ed;
+            position: relative;
+            left: -12px;
+            width: calc(100% + 24px);
+            svg {
+              path {
+                stroke: #807cf9;
+              }
+            }
+          }
+          .add-action:hover {
+            svg {
+              path {
+                stroke: #4c25a5;
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -233,12 +289,10 @@
   // ---------Filtered selected result-------
 
   .selected-result {
-
     padding: 20px 0 20px 25px;
     display: flex;
     flex-flow: row wrap;
     border-bottom: 1px solid #e2e5ed;
-    
 
     .selected-items {
       border: 1px solid #e2e5ed;
@@ -283,7 +337,7 @@
     }
   }
 
-  .selected-result.inactive{
+  .selected-result.inactive {
     display: none;
   }
 

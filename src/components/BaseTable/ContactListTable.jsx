@@ -21,6 +21,7 @@ import Selectbox2 from "../Selectbox2";
 import ColumnList from "./ColumnList";
 import FilterItems from "./FilterItems";
 import CrossIcon from "../Icons/CrossIcon";
+import AssignedItems from "./AssignedItems";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -37,6 +38,8 @@ export default function ContactListTable(props) {
 
   const [isActive, setActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
+  const [isAssignTo, setIsAssignTo] = useState(false);
+
   const [selectedSection, setSelectedSection] = useState(false);
 
   const [contactData, setContactData] = useState([]);
@@ -264,6 +267,7 @@ export default function ContactListTable(props) {
 
   const showMoreOption = () => {
     setActive(!isActive);
+    setIsAssignTo(false)
   };
 
   async function deleteMultipleContacts() {
@@ -341,6 +345,12 @@ export default function ContactListTable(props) {
     //   setIsLists(false);
     // }
     console.log(isStatus);
+  };
+
+  const showListDropdown = () => {
+    setIsAssignTo(!isAssignTo);
+    setActive(!isActive);
+
   };
 
   return (
@@ -477,27 +487,32 @@ export default function ContactListTable(props) {
                   <ExportIcon />
                   Export
                 </button> */}
-
-          <button className="more-option" onClick={showMoreOption}>
-            <ThreeDotIcon />
-
+          <div className="bulk-action">
+            <button className="more-option" onClick={showMoreOption}>
+              <ThreeDotIcon />
+            </button>
             <ul
               className={
                 isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
               }
             >
-              <li>Assign to list</li>
-              <li>Assign to tag</li>
-              <li>Assign to segment</li>
+              <li onClick={showListDropdown}>Assign to list</li>
+              <li onClick={showListDropdown}>Assign to tag</li>
+              <li onClick={showListDropdown}>Assign to segment</li>
               <li className="delete" onClick={deleteMultipleContacts}>
                 Delete
               </li>
             </ul>
-          </button>
+            <AssignedItems isActive={isAssignTo} />
+          </div>
         </div>
       </div>
 
-      <div className={selectedSection ? "selected-result" : "selected-result inactive"}>
+      <div
+        className={
+          selectedSection ? "selected-result" : "selected-result inactive"
+        }
+      >
         <div className="selected-items">
           <span>Product Feed</span>
           <CrossIcon />
