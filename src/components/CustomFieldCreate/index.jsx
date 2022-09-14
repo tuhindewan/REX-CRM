@@ -1,19 +1,19 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { submitCustomFields } from "../../services/CustomField";
 import DynamicInput from "../DynamicInput";
 import InputItem from "../InputItem";
 import Selectbox from "../Selectbox";
-import { submitCustomFields } from "../../services/CustomField";
-import { useNavigate } from "react-router-dom";
+import "./style.css";
 
 export default function CustomFieldCreate() {
-
   let navigate = useNavigate();
 
   // Dynamic input fields hide or show
-  const [ isShow, setIsShow ] = useState(false);
+  const [isShow, setIsShow] = useState(true);
 
   // Set options value for category field
-  const [ options, setOptions ] = useState([]);
+  const [options, setOptions] = useState([]);
 
   // Set validation error messages
   const [errors, setErrors] = useState({});
@@ -23,33 +23,28 @@ export default function CustomFieldCreate() {
     title: "",
     type: "",
     options: [],
-    group_id: 1
+    group_id: 1,
   });
-
 
   // Set custom fields type
   const onSelect = async (event) => {
-
     const { name, value } = event.target;
 
-    if( 'category' ==  value.toString()){
-      setIsShow(true)
-    }else{
-      setIsShow(false)
+    if ("category" == value.toString()) {
+      setIsShow(true);
+    } else {
+      setIsShow(false);
     }
     setCustomFields((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-
   };
 
+  // Set options value which fetching from child component
   const handleOptionData = async (options) => {
-
     setOptions(options);
-
-  }
-
+  };
 
   // Set custom fields title
   const handleChange = async (event) => {
@@ -66,8 +61,7 @@ export default function CustomFieldCreate() {
   const handleSubmit = async (event) => {
     if (event) event.preventDefault();
     customFields.options = options;
-    submitCustomFields( customFields ).then((response) => {
-
+    submitCustomFields(customFields).then((response) => {
       if (201 === response.code) {
         // Navigate user with success message
         navigate("../custom-fields", {
@@ -75,20 +69,18 @@ export default function CustomFieldCreate() {
         });
       } else {
         // Validation messages
-        if( 200 == response.code ){
+        if (200 == response.code) {
           setErrors({
             ...errors,
             title: response?.message,
           });
-        }else{
+        } else {
           setErrors({
             ...errors,
             type: response?.message,
           });
         }
       }
-
-      
     });
   };
 
@@ -105,9 +97,9 @@ export default function CustomFieldCreate() {
         <form onSubmit={handleSubmit}>
           <div className="add-contact-form">
             <div className="contact-form-body">
-              <InputItem 
-                label="Title" 
-                name="title" 
+              <InputItem
+                label="Title"
+                name="title"
                 error={errors?.title}
                 value={customFields.title}
                 handleChange={handleChange}
@@ -141,12 +133,14 @@ export default function CustomFieldCreate() {
                 onSelect={onSelect}
                 error={errors?.type}
               />
-              { isShow? <DynamicInput onOptionData={handleOptionData} /> : '' }
-              
+              {isShow ? <DynamicInput onOptionData={handleOptionData} /> : ""}
             </div>
 
             <div className="contact-button-field">
-              <button className="contact-cancel soronmrm-btn outline" onClick={routeChange}>
+              <button
+                className="contact-cancel soronmrm-btn outline"
+                onClick={routeChange}
+              >
                 Cancel
               </button>
               <button type="submit" className="contact-save soronmrm-btn ">
