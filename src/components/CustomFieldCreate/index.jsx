@@ -10,7 +10,7 @@ export default function CustomFieldCreate() {
   let navigate = useNavigate();
 
   // Dynamic input fields hide or show
-  const [isShow, setIsShow] = useState(true);
+  const [isShow, setIsShow] = useState(false);
 
   // Set options value for category field
   const [options, setOptions] = useState([]);
