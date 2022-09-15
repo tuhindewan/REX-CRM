@@ -44,3 +44,21 @@ export async function deleteSingleCustomField(id) {
     }
   });
 }
+
+// Custom fields update put request
+export async function updateCustomFields(customField) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/${customField.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(customField),
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

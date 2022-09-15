@@ -427,13 +427,7 @@ class ContactController extends BaseController {
     public function import_contacts_raw_get_attrs( WP_REST_Request $request ) 
     {
         try{
-<<<<<<<<< Temporary merge branch 1
-            // Get parameters
-            $params = MRM_Common::get_api_params_values($request);
-            $raw = isset($params['raw']) ? $params['raw']: "";
-=========
             $delimiter = isset( $params['delimiter'] ) && ! empty( $params['delimiter'] ) ? $params['delimiter'] : 'comma';
->>>>>>>>> Temporary merge branch 2
 
             error_log(print_r($raw,1));
             // check for least number of characters
@@ -448,13 +442,7 @@ class ContactController extends BaseController {
                 throw new Exception("Make sure the data contains comma seperated values with a valid header and has at least one row of data.");
             }
 
-            $result = array(
-                'headers'   => $headers,
-                'fields'    => Constants::$contacts_attrs,
-            );
-            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result);
-
-        } catch (Exception $e) {
+            $import_res = MRM_Importer::create_csv_from_import( $files['csv'], $delimiter );
 
             return $this->get_error_response( __( $e->getMessage(), "mrm" ), 400 );
         }
@@ -746,7 +734,6 @@ class ContactController extends BaseController {
             return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200, $result);
 
         } catch(Exception $e) {
-            error_log(print_r($e,1));
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }

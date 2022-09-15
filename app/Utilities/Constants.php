@@ -86,6 +86,28 @@ class Constants{
         "last_activity"
     );
 
+    /**
+     * fields slugs array for custom fields validation
+     */
+    public static $primary_fields = array(
+        "first-name",		
+        "last-name",
+        "email",
+        "postal-code",
+        "last-activity",
+        "date-of-birth",
+        "company",
+        "address-line-1",
+        "address-line-2",
+        "city",
+        "state",
+        "country",
+        "phone-number",
+        "gender",
+        "timezone",
+        "designation"
+    );
+
     /*
     * maichimp api key for testing
     */
