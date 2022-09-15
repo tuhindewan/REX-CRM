@@ -5,8 +5,8 @@ namespace Mint\MRM\Admin\API\Controllers;
 use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
-use MRM\Data\MRM_Segment;
 use Exception;
+use Mint\MRM\DataStores\SegmentData;
 use MRM\Common\MRM_Common;
 
 /**
@@ -36,23 +36,26 @@ class SegmentController extends BaseController {
         // Segment title validation
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
         if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400 );
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200 );
 		}
 
         // Segment avaiability check
-        $exist = ContactGroupModel::is_group_exist( $params['slug'], "segments" );
-        if ( $exist ) {
-			return $this->get_error_response( __( 'Segment is already available', 'mrm' ),  400 );
+        $slug = sanitize_title( $title );
+        $params['slug'] = $slug;
+        $exist = ContactGroupModel::is_group_exist( $slug, "segments" );
+
+        if ( $exist && !isset($params['segment_id']) ) {
+			return $this->get_error_response( __( 'Segment is already available', 'mrm' ),  200 );
 		}
 
         // Segment filters validation
         if ( empty( $params['data'] ) || ( is_array( $params['data'] ) && empty( $params['data']['filters'] ) ) ) {
-			return $this->get_error_response( __( 'Filters are mandatory.', 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Filters are mandatory.', 'mrm' ), 200 );
 		}
 
         // Segment object create and insert or update to database
         try {
-            $segment = new MRM_Segment( $params );
+            $segment = new SegmentData( $params );
 
             if(isset($params['segment_id'])){
                 $success = ContactGroupModel::update( $segment, $params['segment_id'], "segments" );
@@ -63,9 +66,9 @@ class SegmentController extends BaseController {
             if($success) {
                 return $this->get_success_response(__( 'Segment has been saved successfully', 'mrm' ), 201);
             }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
         } catch(Exception $e) {
-                return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 400);
+                return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 200);
         }
 
     }
