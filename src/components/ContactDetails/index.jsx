@@ -854,11 +854,11 @@ export default function ContactDetails() {
                     <AddItems isActive={selectTag} />
                     </>
                   )}
-                  {openTagSelectBox && (
+                  {/* {openTagSelectBox && (
                     <button className="add-list" onClick={handleAddTag}>
                       Add Tag
                     </button>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="lists">
@@ -906,11 +906,11 @@ export default function ContactDetails() {
                     <AddItems isActive={selectList} />
                     </>
                   )}
-                  {openListSelectBox && (
+                  {/* {openListSelectBox && (
                     <button className="add-list" onClick={handleAddList}>
                       Add List
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

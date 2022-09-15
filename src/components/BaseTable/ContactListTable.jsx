@@ -324,7 +324,6 @@ export default function ContactListTable(props) {
   };
   const showLists = (event) => {
     event.stopPropagation();
-
     setIsLists(!isLists);
     setIsTags(false);
     setIsStatus(false);
