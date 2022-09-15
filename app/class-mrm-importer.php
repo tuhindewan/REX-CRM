@@ -38,12 +38,15 @@ class MRM_Importer {
 			wp_mkdir_p( MRM_IMPORT_DIR );
 		}
 
+		$file_name = isset( $file['name'] ) ? $file['name'] : "";
+		$tmp_name = isset( $file['tmp_name'] ) ? $file['tmp_name'] : "";
+
 		/**
 		 * Move the file to the directory
 		 */
-		$new_file_name = md5( rand() . time() ) . '-' . $file['name'];
+		$new_file_name = md5( rand() . time() ) . '-' . $file_name;
 		$new_file      = MRM_IMPORT_DIR . '/' . $new_file_name;
-		$move_new_file = @move_uploaded_file( $file['tmp_name'], $new_file );
+		$move_new_file = @move_uploaded_file( $tmp_name, $new_file );
 
 		
 		if ( false === $move_new_file ) {

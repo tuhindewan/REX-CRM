@@ -1,14 +1,22 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import {
+  deleteSingleCustomField,
+  getCustomFields,
+} from "../../services/CustomField";
+import DeletePopup from "../DeletePopup";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import TagIcon from "../Icons/TagIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import Selectbox from "../Selectbox";
+import SuccessfulNotification from "../SuccessfulNotification";
+import SingleField from "./SingleField";
 
 const CustomFields = () => {
+  const location = useLocation();
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -20,6 +28,11 @@ const CustomFields = () => {
     ),
     hideGlobalNav: false,
   });
+
+  const [customFields, setCustomFields] = useState([]);
+  const [showNotification, setShowNotification] = useState("none");
+  const [isDelete, setIsDelete] = useState("none");
+  const [message, setMessage] = useState("");
 
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -35,6 +48,84 @@ const CustomFields = () => {
 
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
+  const [currentActive, setCurrentActive] = useState(0);
+  // the select all checkbox
+  const [allSelected, setAllSelected] = useState(false);
+
+  // single selected array which holds selected ids with
+  const [selected, setSelected] = useState([]);
+
+  // refresh the whole list if this boolean changes
+  const [refresh, setRefresh] = useState(true);
+
+  const [fieldID, setFieldID] = useState();
+  const [errors, setErrors] = useState({});
+
+  // Fetch all custom fields
+  useEffect(() => {
+    getCustomFields().then((results) => {
+      setCustomFields(results.data);
+    });
+    if ("field-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
+  }, [refresh]);
+
+  const deleteField = async (field_id) => {
+    setIsDelete("block");
+    setFieldID(field_id);
+  };
+
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleCustomField(fieldID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
+
+  // Handle one row selection
+  const handleSelectOne = async (event) => {
+    if (selected.includes(event.target.id)) {
+      setSelected(selected.filter((element) => element != event.target.id));
+      setAllSelected(false);
+    } else {
+      setSelected([...selected, event.target.id]);
+    }
+  };
+
+  // this function sets the required edit parameters
+  function editField(list) {}
+
+  // Handle all checkbox row selection
+  const handleSelectAll = async (event) => {
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      setSelected(customFields.map((field) => field.id));
+    }
+    setAllSelected(!allSelected);
+  };
+
+  // the data is fetched again whenver refresh is changed
+  const toggleRefresh = async () => {
+    setRefresh((prev) => !prev);
+  };
 
   return (
     <>
@@ -96,10 +187,13 @@ const CustomFields = () => {
                             type="checkbox"
                             name="bulk-select"
                             id="bulk-select"
+                            onChange={handleSelectAll}
+                            checked={allSelected}
                           />
                           <label for="bulk-select">Field Name</label>
                         </span>
                       </th>
+                      <th className="field-type">Slug</th>
                       <th className="field-type">Type</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
@@ -107,33 +201,30 @@ const CustomFields = () => {
                   </thead>
 
                   <tbody>
-                    {/* {lists.length > 0 &&
-                      lists.map((list, idx) => {
+                    {customFields.length > 0 &&
+                      customFields.map((field, idx) => {
                         return (
-                          <TagItem
+                          <SingleField
                             key={idx}
-                            list={list}
-                            deleteList={deleteList}
+                            field={field}
+                            deleteField={deleteField}
                             currentActive={currentActive}
                             setCurrentActive={setCurrentActive}
                             handleSelectOne={handleSelectOne}
                             selected={selected}
-                            editList={editList}
+                            editField={editField}
                           />
                         );
-                      })} */}
+                      })}
                   </tbody>
                 </table>
-                {/* List empty or search not found ui */}
-                {/* {lists.length == 0 && ( */}
-                <div className="mrm-empty-state-wrapper">
-                  <TagIcon />
-                  <div>
-                    No Fields Found{" "}
-                    {/* {search.length > 0 ? ` for the term "${search}"` : null} */}
+                {/* Custom fields empty or search not found ui */}
+                {customFields.length == 0 && (
+                  <div className="mrm-empty-state-wrapper">
+                    <TagIcon />
+                    <div>No Fields Found </div>
                   </div>
-                </div>
-                {/* )} */}
+                )}
               </div>
             </div>
             <div className="contact-list-footer">
@@ -148,6 +239,15 @@ const CustomFields = () => {
           </div>
         </div>
       </div>
+      <div className="soronmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title="Delete Custom Field"
+          message="Are you sure you want to delete the Field?"
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
+      </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

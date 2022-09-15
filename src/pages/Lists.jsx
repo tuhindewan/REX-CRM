@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
@@ -39,17 +39,11 @@ const Lists = () => {
   // current page
   const [page, setPage] = useState(1);
 
-  // total count of results
-  const [count, setCount] = useState(0);
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
 
-  // total number of pages for result
-  const [totalPages, setTotalPages] = useState(0);
-
-   // order by which field
-   const [orderBy, setOrderBy] = useState("id");
-
-   // order type asc or desc
-   const [orderType, setOrderType] = useState("desc");
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
 
   // list values for sending to backend
   const [values, setValues] = useState({
@@ -134,11 +128,6 @@ const Lists = () => {
       ...values,
       slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
     });
-    // check if title is not empty
-    if (values["title"].length < 1) {
-      window.alert("Title can not be empty.");
-      return;
-    }
     try {
       if (editID != 0) {
         // update contact
@@ -165,7 +154,6 @@ const Lists = () => {
 
       const resJson = await res.json();
       if (resJson.code == 201) {
-        toggleRefresh();
         setValues({
           title: "",
           data: "",
@@ -173,9 +161,16 @@ const Lists = () => {
         });
         setShowCreate(false);
         setEditID(0);
+        setShowNotification("block");
+        setMessage(resJson.message);
+        setErrors({});
+        console.log(showNotification);
+        toggleRefresh();
       } else {
-        console.log(resJson);
-        window.alert(resJson.message);
+        setErrors({
+          ...errors,
+          list: resJson.message,
+        });
       }
     } catch (e) {}
   };
@@ -266,6 +261,7 @@ const Lists = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
+                    <p className="error-message">{errors?.list}</p>
                   </div>
                   <div className="form-group contact-input-field">
                     <label htmlFor="data" aria-required>
@@ -434,6 +430,7 @@ const Lists = () => {
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

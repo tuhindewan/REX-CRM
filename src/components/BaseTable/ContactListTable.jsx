@@ -11,14 +11,12 @@ import queryString from "query-string";
 import ColumnList from "./ColumnList";
 
 // Internal dependencies
-import Pagination from "../Pagination";
-import SingleContact from "./SingleContact";
-import FilterBox from "../Filterbox";
-import Search from "../Icons/Search";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Swal from "sweetalert2";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import Swal from "sweetalert2";
+import Search from "../Icons/Search";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Pagination from "../Pagination";
 import Selectbox2 from "../Selectbox2";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import FilterItems from "./FilterItems";
