@@ -121,8 +121,10 @@ class ContactGroupModel{
             group by g.id, g.title, g.data, g.created_at
             ) as table1";
             $count_result   = $wpdb->get_results($count_query);
+
+            $count_result = isset( $count_result['0'] ) ? $count_result['0'] : "";
     
-            $count = (int) $count_result['0']->total;
+            $count = (int) $count_result->total;
             $totalPages = ceil($count / $limit);
       
             return array(

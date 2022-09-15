@@ -6,6 +6,9 @@ namespace Mint\MRM\Internal\Optin;
 use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataBase\Models\NoteModel;
 use Mint\MRM\DataStores\NoteData;
+use MRM\Common\MRM_Common;
+
+use function Crontrol\Event\get;
 
 class OptinConfirmation
 {
@@ -48,9 +51,11 @@ class OptinConfirmation
 	 */
 	public function double_optin_confirmation()
 	{
-		if( isset( $_GET['mrm'] ) && isset( $_GET['route'] ) && $_GET['route'] == 'confirmation' )  {
-			$contact_id = $_GET['contact_id'];
-			$hash 		= $_GET['hash'];
+		$get = MRM_Common::get_sanitized_get_post();
+		$get = isset($get['get']) ? $get['get'] : [];
+		if( isset( $get['mrm'] ) && isset( $get['route'] ) && $get['route'] == 'confirmation' )  {
+			$contact_id = isset( $get['contact_id'] ) ? $get['contact_id'] : "";
+			$hash 		= isset( $get['hash'] ) ? $get['hash'] : "";
 
 			$contact = ContactModel::get( $contact_id );
 			
@@ -80,10 +85,7 @@ class OptinConfirmation
 			}
             require_once(MRM_DIR_PATH. 'app/Resources/public/confirmation.php');
 			die();
-	   	}
-
-		// require_once(plugin_dir_path(__FILE__). 'templates/confirmation.php');
-		//  error_log(print_r(plugin_dir_path(__FILE__). 'templates/confirmation.php', 1));
+		}
 		
 	}
 

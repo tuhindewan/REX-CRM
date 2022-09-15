@@ -92,9 +92,30 @@ class MRM_Common {
      * @since 1.0.0
      */
     public static function create_slug($str){
-        $slug=preg_replace('/[^A-Za-z0-9-]+/', '-', $str);
-        return $slug;
+        return preg_replace('/[^A-Za-z0-9-]+/', '-', $str);
     }
+
+
+    /**
+     * Sanitize global variables
+     * 
+     * @param array $data
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_sanitized_get_post( $data = [] )
+    {
+        if ( is_array( $data ) && !empty( $data ) ) {
+            return filter_var_array( $data, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        }
+        return array(
+            'get' => filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'post' => filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'request' => filter_var_array( $_REQUEST, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+        );
+    }
+
 
 }
 

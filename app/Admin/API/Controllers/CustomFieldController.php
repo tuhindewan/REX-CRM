@@ -67,7 +67,6 @@ class CustomFieldController extends BaseController {
                     return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
                 }
 
-                error_log(print_r($params, 1));
 
                 if ( ! empty( $params['options'] ) ) {
                     $options = $params['options'];
@@ -119,7 +118,9 @@ class CustomFieldController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = CustomFieldModel::destroy( $params['field_id'] );
+        $field_id = isset( $params['field_id'] ) ? $params['field_id'] : "";
+
+        $success = CustomFieldModel::destroy( $field_id );
         if( $success ) {
             return $this->get_success_response( __( 'Field has been deleted successfully', 'mrm' ), 200 );
         }
@@ -175,8 +176,8 @@ class CustomFieldController extends BaseController {
  
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-    
-        $field = CustomFieldModel::get( $params['field_id'] );
+        $field_id = isset( $params['field_id'] ) ? $params['field_id'] : "";
+        $field = CustomFieldModel::get( $field_id );
 
         if(isset($field)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $field);
