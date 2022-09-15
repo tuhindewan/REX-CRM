@@ -13,6 +13,9 @@ import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
+import FilterItems from "../BaseTable/FilterItems";
+import AddItems from "./AddItems";
+
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -33,6 +36,8 @@ export default function ContactDetails() {
   const [contactData, setContactData] = useState({});
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
+  const [selectTag, setSelectTag] = useState(false);
+  const [selectList, setSelectList] = useState(false);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -386,6 +391,13 @@ export default function ContactDetails() {
     );
     toggleRefresh();
   };
+
+  const selectTags = () =>{
+    setSelectTag(!selectTag);
+  }
+  const selectLists = () =>{
+    setSelectList(!selectList);
+  }
 
   return (
     <>
@@ -799,7 +811,7 @@ export default function ContactDetails() {
 
                 <hr />
 
-                <div className="tags">
+                <div className="tags" >
                   <h4 className="title">Tags</h4>
                   <div className="tag-wrapper">
                     {contactData?.tags?.map((tag, idx) => {
@@ -826,17 +838,21 @@ export default function ContactDetails() {
                     </button>
                   </div>
                   {openTagSelectBox && (
-                    <Selectbox
-                      label=""
-                      name="tags"
-                      options={tags}
-                      values={tagListsAdder.tags}
-                      placeholder="Select Tags"
-                      tags={true}
-                      multiple={true}
-                      onSelect={onSelect}
-                      onRemove={onRemove}
-                    />
+                    // <Selectbox
+                    //   label=""
+                    //   name="tags"
+                    //   options={tags}
+                    //   values={tagListsAdder.tags}
+                    //   placeholder="Select Tags"
+                    //   tags={true}
+                    //   multiple={true}
+                    //   onSelect={onSelect}
+                    //   onRemove={onRemove}
+                    // />
+                    <>
+                    <button className="choose-tag-btn" onClick={selectTags}>Choose Tags</button>
+                    <AddItems isActive={selectTag} />
+                    </>
                   )}
                   {openTagSelectBox && (
                     <button className="add-list" onClick={handleAddTag}>
@@ -874,17 +890,21 @@ export default function ContactDetails() {
                     </button>
                   </div>
                   {openListSelectBox && (
-                    <Selectbox
-                      label=""
-                      name="lists"
-                      options={lists}
-                      values={tagListsAdder.lists}
-                      placeholder="Select Lists"
-                      tags={true}
-                      multiple={true}
-                      onSelect={onSelect}
-                      onRemove={onRemove}
-                    />
+                    // <Selectbox
+                    //   label=""
+                    //   name="lists"
+                    //   options={lists}
+                    //   values={tagListsAdder.lists}
+                    //   placeholder="Select Lists"
+                    //   tags={true}
+                    //   multiple={true}
+                    //   onSelect={onSelect}
+                    //   onRemove={onRemove}
+                    // />
+                    <>
+                    <button className="choose-tag-btn" onClick={selectLists}>Choose Tags</button>
+                    <AddItems isActive={selectList} />
+                    </>
                   )}
                   {openListSelectBox && (
                     <button className="add-list" onClick={handleAddList}>

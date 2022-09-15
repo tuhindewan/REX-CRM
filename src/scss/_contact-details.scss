@@ -208,9 +208,9 @@
         }
 
         .profile-edit-field {
-            border-bottom: 1px solid #E3E2E7 ;
-            padding-bottom: 20px;
-            
+          border-bottom: 1px solid #e3e2e7;
+          padding-bottom: 20px;
+
           .basic-info-edit,
           .other-info-edit {
             h4 {
@@ -258,15 +258,14 @@
               justify-content: space-between;
               align-items: center;
             }
-            .add-field-btn{
-                display: flex;
-                flex-flow: row wrap;
-                align-items: center;
-                
-                svg{
-                    margin-right: 3px;
-                }
-                
+            .add-field-btn {
+              display: flex;
+              flex-flow: row wrap;
+              align-items: center;
+
+              svg {
+                margin-right: 3px;
+              }
             }
 
             .adress-info-edit,
@@ -309,35 +308,32 @@
               display: flex;
               flex-flow: row wrap;
             }
-
-
           }
 
           .other-info-edit {
             padding-top: 30px;
           }
-          .save-cancel-button{
+          .save-cancel-button {
             display: flex;
             flex-flow: row wrap;
             justify-content: end;
 
-            .save-button{
-                margin-left: 12px;
+            .save-button {
+              margin-left: 12px;
             }
-
-        }
+          }
         }
       }
 
       .info-nav-content.is-edit-mode {
-        .basic-detail-info, .other-detail-info{
+        .basic-detail-info,
+        .other-detail-info {
           display: none;
         }
 
-        .profile-edit-field{
+        .profile-edit-field {
           display: block;
         }
-        
       }
 
       .profile-nav-activities {
@@ -647,10 +643,47 @@
           padding-right: 6px;
         }
 
+        .choose-tag-btn {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 20px;
+          color: #344054;
+          border: 1px solid #e4e6eb;
+          border-radius: 6px;
+          padding: 7px 9px;
+          background-color: #ffffff;
+          display: block;
+          margin-bottom: 5px;
+          position: relative;
+        }
+
+        .soronmrm-dropdown {
+          top: auto;
+          right: 279px;
+          width: 298px;
+          .option-section {
+            margin-bottom: 10px;
+          }
+        }
+        ul.soronmrm-dropdown:before {
+          right: 0;
+          left: 11px;
+        }
+
         .soronmrm-select2-selectbox {
           margin: 3px 0 8px;
         }
-
+        .select2.select2-container.select2-container--default {
+          width: 150px !important;
+        }
+        .select2-results__options {
+          padding-top: 12px;
+        }
+        .select2-result
+          .select2-container.select2-container--default.select2-container--open:before {
+          right: 0;
+          left: 18px;
+        }
       }
     }
   }

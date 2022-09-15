@@ -237,49 +237,7 @@
             padding: 10px 0;
           }
 
-          .no-found {
-            // border: 1px solid #F9FAFB;
-            background-color: #f9fafb;
-            padding: 5px 0 5px 20px;
-            border-radius: 0;
-            background: #f9fafb;
-            position: relative;
-            left: -12px;
-            width: calc(100% + 24px);
-            cursor: text;
-            margin-top: 10px;
-
-            display: none;
-
-            span {
-              font-weight: 600;
-              font-size: 12px;
-              line-height: 15px;
-              letter-spacing: 0.05em;
-              text-transform: uppercase;
-              color: #ec5956;
-            }
-          }
-          .add-action {
-            display: flex;
-            padding: 15px 0 8px 10px;
-            border-top: 1px solid #e2e5ed;
-            position: relative;
-            left: -12px;
-            width: calc(100% + 24px);
-            svg {
-              path {
-                stroke: #807cf9;
-              }
-            }
-          }
-          .add-action:hover {
-            svg {
-              path {
-                stroke: #4c25a5;
-              }
-            }
-          }
+          
         }
       }
     }

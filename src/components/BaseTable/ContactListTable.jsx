@@ -267,7 +267,7 @@ export default function ContactListTable(props) {
 
   const showMoreOption = () => {
     setActive(!isActive);
-    setIsAssignTo(false)
+    setIsAssignTo(false);
   };
 
   async function deleteMultipleContacts() {
@@ -322,40 +322,49 @@ export default function ContactListTable(props) {
     }
     setAllSelected(!allSelected);
   };
-  const showLists = () => {
+  const showLists = (event) => {
+    event.stopPropagation();
+
     setIsLists(!isLists);
+    setIsTags(false);
+    setIsStatus(false);
     // if(isLists === true){
     //   setIsTags(false);
     //   setStatus(false);
     // }
-    console.log(isLists);
   };
-  const showTags = () => {
+  const showTags = (event) => {
+    event.stopPropagation();
     setIsTags(!isTags);
+    setIsLists(false);
+    setIsStatus(false);
     // if(isTags === true){
     //   setIsLists(false);
     //   setStatus(false);
     // }
-    console.log(isTags);
   };
-  const showStatus = () => {
+  const showStatus = (event) => {
+    event.stopPropagation();
     setIsStatus(!isStatus);
-    // if(isStatus== true){
-    //   setIsTags(false);
-    //   setIsLists(false);
-    // }
-    console.log(isStatus);
+    setIsTags(false);
+    setIsLists(false);
   };
 
   const showListDropdown = () => {
     setIsAssignTo(!isAssignTo);
     setActive(!isActive);
-
   };
 
   return (
     <>
-      <div className="contact-list-header">
+      <div
+        className="contact-list-header"
+        onClick={() => {
+          setIsLists(false);
+          setIsTags(false);
+          setIsStatus(false);
+        }}
+      >
         <div className="left-filters filter-box">
           {/* <FilterBox
             label="Lists"
