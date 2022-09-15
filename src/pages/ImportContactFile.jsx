@@ -59,6 +59,7 @@ export default function ImportContactFile() {
       navigate("/contacts/import/csv/map", {
         state: {
           data: resJson.data,
+          type: "csv"
         },
       });
     } else {

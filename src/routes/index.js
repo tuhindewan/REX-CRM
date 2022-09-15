@@ -12,6 +12,7 @@ import UpdateTag from "../components/Tag/UpdateTag";
 import Contacts from "../pages/Contacts";
 import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
+import ImportMailchimp from "../pages/ImportMailchimp";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
 
@@ -43,12 +44,22 @@ const routes = [
     hideInMenu: true,
   },
   {
+    path: "/contacts/import/mailchimp",
+    element: ImportMailchimp,
+    hideInMenu: true,
+  },
+  {
     path: "/contacts/import/csv/map",
     element: SelectFieldsMap,
     hideInMenu: true,
   },
   {
     path: "/contacts/import/raw/map",
+    element: SelectFieldsMap,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/mailchimp/map",
     element: SelectFieldsMap,
     hideInMenu: true,
   },
