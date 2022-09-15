@@ -806,7 +806,30 @@ export default function ContactDetails() {
                   >
                     <div className="activities-header">
                       <h4 className="title">Activity Feed</h4>
-                      <Selectbox index="profile-activity" />
+                      <Selectbox
+                        name="type"
+                        options={[
+                          {
+                            title: "Text",
+                            id: "text",
+                          },
+                          {
+                            title: "Date",
+                            id: "date",
+                          },
+                          {
+                            title: "Number",
+                            id: "number",
+                          },
+                        ]}
+                        tags={false}
+                        placeholder="All activity"
+                        multiple={false}
+                        value={customFields.type}
+                        onSelect={onSelect}
+                        error={errors?.type}
+                        index="profile-activity"
+                      />
                     </div>
 
                     <div className="activities-feed-wrapper">
