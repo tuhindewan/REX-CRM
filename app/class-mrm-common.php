@@ -56,7 +56,7 @@ class MRM_Common {
         if ( is_user_logged_in() ) {
             return get_current_user_id();
         }
-        return 1;     
+        return get_current_user_id();     
     }
 
 
