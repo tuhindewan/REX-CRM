@@ -13,19 +13,18 @@ import { Link } from "react-router-dom";
 import Plus from "../Icons/Plus";
 
 // Internal dependencies
-import Pagination from "../Pagination";
-import SingleContact from "./SingleContact";
-import FilterBox from "../Filterbox";
-import Search from "../Icons/Search";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Swal from "sweetalert2";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import Swal from "sweetalert2";
+import Search from "../Icons/Search";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Pagination from "../Pagination";
 import Selectbox2 from "../Selectbox2";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import FilterItems from "./FilterItems";
 import CrossIcon from "../Icons/CrossIcon";
 import AssignedItems from "./AssignedItems";
+import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;

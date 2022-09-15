@@ -34,7 +34,6 @@ export default function Selectbox(props) {
         }
       >
         {props.label && <label>{props.label}</label>}
-
         <select
           name={props.name}
           className={"mintmrm-" + props.name + "-selectbox"}
@@ -51,6 +50,7 @@ export default function Selectbox(props) {
         <div
           className={"select2-result " + props.name + "-select2-result"}
         ></div>
+        <p className="error-message">{props?.error}</p>
       </div>
     </>
   );

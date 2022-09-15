@@ -113,6 +113,7 @@ const CreateContact = (props) => {
       ...prevState,
       [name]: value,
     }));
+    console.log(contactData);
   };
 
   const onSelect = (e, name) => {
