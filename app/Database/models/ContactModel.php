@@ -129,21 +129,6 @@ class ContactModel{
             }
             
         }
-
-        // if( self::is_contact_meta_exist( $contact_id ) ){
-
-        //     foreach( $args['meta_fields'] as $key => $value ){
-        //         $wpdb->update( $contacts_meta_table, array(
-        //             'meta_value'    => $value
-        //         ), array( 'meta_key' => $key , 'contact_id' => $contact_id ));
-        //     }
-        // }else{
-
-        //     foreach( $args['meta_fields'] as $key => $value ){
-
-                
-        //     }
-        // }
     }
 
 
@@ -247,6 +232,7 @@ class ContactModel{
 
         // Search contacts by email, first name or last name
 		if ( ! empty( $search ) ) {
+            $search = $wpdb->esc_like($search);
             $search_terms = "WHERE (`hash` LIKE '%$search%' 
              OR `email` LIKE '%$search%'
              OR concat(`first_name`, ' ', `last_name`)LIKE '%$search%'
@@ -441,6 +427,8 @@ class ContactModel{
             }else if (count($tags_ids)!=0 && count($lists_ids)!=0 && count($status)==0){
                 $my_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists))";
             }
+
+            $search = $wpdb->esc_like($search);
             
 
             $select_query = $wpdb->prepare("SELECT * FROM $contact_table
