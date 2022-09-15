@@ -31,8 +31,9 @@ class HomeScreen {
 
     public function load_wrapper() {
         ?>
-        <div class="wrap">
+        <div class="">
             <div id="crm-app"></div>
+            <div id="crm-portal"></div>
         </div>
         <?php
     }

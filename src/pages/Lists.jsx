@@ -4,8 +4,9 @@ import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
+import SuccessfulNotification from "../components/SuccessfulNotification";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 
 const Lists = () => {
   // editID is the id of the edit page
@@ -62,6 +63,11 @@ const Lists = () => {
 
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
+
+  const [errors, setErrors] = useState({});
+
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -132,7 +138,9 @@ const Lists = () => {
       .filter((option) => option.selected)
       .map((x) => x.value);
     const selectedValue = updatedOptions[0];
-    console.log(selectedValue);
+    const order = selectedValue.split("+"); // order is an array with order by and order type
+    setOrderBy(order[0]);
+    setOrderType(order[1]);
   }
 
   // Handle list create or update form submission
@@ -142,11 +150,6 @@ const Lists = () => {
       ...values,
       slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
     });
-    // check if title is not empty
-    if (values["title"].length < 1) {
-      window.alert("Title can not be empty.");
-      return;
-    }
     try {
       if (editID != 0) {
         // update contact
@@ -173,7 +176,6 @@ const Lists = () => {
 
       const resJson = await res.json();
       if (resJson.code == 201) {
-        toggleRefresh();
         setValues({
           title: "",
           data: "",
@@ -181,9 +183,16 @@ const Lists = () => {
         });
         setShowCreate(false);
         setEditID(0);
+        setShowNotification("block");
+        setMessage(resJson.message);
+        setErrors({});
+        console.log(showNotification);
+        toggleRefresh();
       } else {
-        console.log(resJson);
-        window.alert(resJson.message);
+        setErrors({
+          ...errors,
+          list: resJson.message,
+        });
       }
     } catch (e) {}
   };
@@ -193,7 +202,7 @@ const Lists = () => {
   useEffect(() => {
     async function getLists() {
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/lists?page=${page}&per-page=${perPage}${query}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
@@ -203,7 +212,7 @@ const Lists = () => {
       }
     }
     getLists();
-  }, [page, perPage, query, refresh]);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   async function deleteList(id) {
     if (window.confirm("Are you sure you want to delete this item?")) {
@@ -270,6 +279,7 @@ const Lists = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
+                    <p className="error-message">{errors?.list}</p>
                   </div>
                   <div className="form-group contact-input-field">
                     <label htmlFor="data" aria-required>
@@ -303,16 +313,24 @@ const Lists = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
-                      title: "Date Created",
-                      id: "date-created",
+                      title: "Name Desc",
+                      id: "title+desc",
+                    },
+                    {
+                      title: "Date Created Asc",
+                      id: "created_at+asc",
+                    },
+                    {
+                      title: "Date Created Desc",
+                      id: "created_at+desc",
                     },
                   ]}
                   tags={false}
-                  placeholder="Name"
+                  placeholder="Field"
                   multiple={false}
                   onSelect={handleOrderBy}
                 />
@@ -378,6 +396,7 @@ const Lists = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
+                      <th>Total Contacts</th>
                       <th className="">Description</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
@@ -428,6 +447,7 @@ const Lists = () => {
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

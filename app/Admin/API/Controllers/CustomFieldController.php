@@ -5,9 +5,9 @@ namespace Mint\MRM\Admin\API\Controllers;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\DataBase\Models\CustomFieldModel;
+use Mint\MRM\DataStores\CustomFieldData;
 use MRM\Common\MRM_Common;
-use MRM\Data\CustomField;
-use MRM\Models\CustomField as ModelsCustomField;
 
 /**
  * @author [MRM Team]
@@ -48,22 +48,26 @@ class CustomFieldController extends BaseController {
 
             if(isset( $params['field_id'] )){
                 $field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
-                $success = ModelsCustomField::update( $params, $field_id );
+                $success = CustomFieldModel::update( $params, $field_id );
             }else{
 
                 // Filed title validation
                 $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
 
                 if ( empty( $title ) ) {
-                    return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+                    return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
                 }
+
+                $slug = sanitize_title( $title );
 
                 // Field type validation
                 $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
 
                 if ( empty( $type ) ) {
-                    return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
+                    return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
                 }
+
+                error_log(print_r($params, 1));
 
                 if ( ! empty( $params['options'] ) ) {
                     $options = $params['options'];
@@ -81,14 +85,14 @@ class CustomFieldController extends BaseController {
                 
                 $this->args = array(
                     'title'    => $title,
-                    'slug'     => isset( $params['slug'] )    ? sanitize_text_field( $params['slug'] )     : NULL,
+                    'slug'     => $slug,
                     'type'     => $type,
                     'meta'     => $meta
                 );
 
-                $field = new CustomField( $this->args );
+                $field = new CustomFieldData( $this->args );
 
-                $success = ModelsCustomField::insert( $field );
+                $success = CustomFieldModel::insert( $field );
             }
 
             if($success) {
@@ -115,7 +119,7 @@ class CustomFieldController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = ModelsCustomField::destroy( $params['field_id'] );
+        $success = CustomFieldModel::destroy( $params['field_id'] );
         if( $success ) {
             return $this->get_success_response( __( 'Field has been deleted successfully', 'mrm' ), 200 );
         }
@@ -150,7 +154,7 @@ class CustomFieldController extends BaseController {
        // Get values from API
        $params = MRM_Common::get_api_params_values( $request );
 
-       $fields = ModelsCustomField::get_all();
+       $fields = CustomFieldModel::get_all();
 
        if(isset($fields)) {
            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
@@ -172,7 +176,7 @@ class CustomFieldController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
     
-        $field = ModelsCustomField::get( $params['field_id'] );
+        $field = CustomFieldModel::get( $params['field_id'] );
 
         if(isset($field)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $field);

@@ -7,6 +7,7 @@ use Mint\MRM\Internal\Admin\AdminAssets;
 use Mint\MRM\Internal\Admin\FrontendAssets;
 use Mint\MRM\Internal\Admin\Page\PageController;
 use Mint\MRM\Internal\Ajax\AjaxAction;
+use Mint\MRM\Internal\Optin\OptinConfirmation;
 use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
 
@@ -40,6 +41,8 @@ class App {
         if( $this->is_request('frontend') ) {
             // Load assets
             FrontendAssets::get_instance();
+            // Opt-in 
+            OptinConfirmation::get_instance();
         }
     }
 

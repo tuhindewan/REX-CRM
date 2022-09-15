@@ -39,6 +39,7 @@ define( 'MRM_VERSION', '1.0.0' );
 define( 'MRM_PLUGIN_NAME', 'mrm' );
 define( 'MRM_FILE', __FILE__ );
 define( 'MRM_DIR_PATH', plugin_dir_path( __FILE__ ) );
+define( 'MRM_IMPORT_DIR', WP_CONTENT_DIR . '/uploads/mrm/mrm-import' );
 define( 'MRM_DIR_URL', plugins_url('/', __FILE__) );
 
 

@@ -1,6 +1,7 @@
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import { deleteSingleContact } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
@@ -8,10 +9,10 @@ import EditButton from "../Icons/EditButton";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputItem from "../InputItem/index";
-import Selectbox from "../Selectbox";
-import SingleActivityFeed from "./SingleActivityFeed";
-import Swal from "sweetalert2";
 import InoutPhone from "../InputPhone";
+import Selectbox from "../Selectbox";
+import SuccessfulNotification from "../SuccessfulNotification";
+import SingleActivityFeed from "./SingleActivityFeed";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -43,6 +44,9 @@ export default function ContactDetails() {
 
   // Error message
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
 
   // Fetch lists & tags
   useEffect(() => {
@@ -150,7 +154,6 @@ export default function ContactDetails() {
 
   const validate = (event, name, value) => {
     switch (name) {
-
       case "email":
         if (
           !new RegExp(
@@ -324,45 +327,29 @@ export default function ContactDetails() {
     toggleRefresh();
   };
 
-  const handleUnsubscribe = async () => {
+  // Send Double opt-in email
+  const handleDoubleOptin = async () => {
     const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`,
+      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}/send-double-opt-in`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ status: "unsubscribed" }),
       }
     );
-    toggleRefresh();
-  };
-
-  const handleSubscribe = async () => {
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ status: "subscribed" }),
-      }
-    );
-    toggleRefresh();
-  };
-
-  const handlePending = async () => {
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ status: "pending" }),
-      }
-    );
+    const responseData = await res.json();
+    const code = responseData?.code;
+    if (code === 200) {
+      setShowNotification("block");
+      setMessage(responseData.message);
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData.message,
+      });
+    }
     toggleRefresh();
   };
 
@@ -401,58 +388,59 @@ export default function ContactDetails() {
   };
 
   return (
-    <div className="soronmrm-contact-details">
-      <div className="contact-details-banner">
-        <div className="contact-details-breadcrumb">
-          <div className="soronmrm-container">
-            <ul className="soronmrm-breadcrumb">
-              <li>
-                <Link to={`../contacts`}>Contact</Link>
-              </li>
-              <li className="active">
-                {contactData.first_name} {contactData.last_name}
-              </li>
-            </ul>
+    <>
+      <div className="soronmrm-contact-details">
+        <div className="contact-details-banner">
+          <div className="contact-details-breadcrumb">
+            <div className="soronmrm-container">
+              <ul className="soronmrm-breadcrumb">
+                <li>
+                  <Link to={`../contacts`}>Contact</Link>
+                </li>
+                <li className="active">
+                  {contactData.first_name} {contactData.last_name}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="contact-details-wrapper">
-        <div className="soronmrm-container">
-          <div className="contact-details-header">
-            <div className="contact-author-info">
-              {/* <div className="author-img">
+        <div className="contact-details-wrapper">
+          <div className="soronmrm-container">
+            <div className="contact-details-header">
+              <div className="contact-author-info">
+                {/* <div className="author-img">
                 <img
                   src=""
                   alt="contact-author-img"
                 />
               </div> */}
 
-              <div className="author-short-details">
-                <h2 className="author-name">
-                  {contactData.first_name} {contactData.last_name}
-                </h2>
+                <div className="author-short-details">
+                  <h2 className="author-name">
+                    {contactData.first_name} {contactData.last_name}
+                  </h2>
 
-                <p>
-                  Added on {createMonth} {toOrdinalSuffix(createDay)},{" "}
-                  {createYear}
-                </p>
+                  <p>
+                    Added on {createMonth} {toOrdinalSuffix(createDay)},{" "}
+                    {createYear}
+                  </p>
 
-                {contactData.status == "subscribed" ? (
-                  <span className="subscribe" style={{ color: "green" }}>
-                    Subscribed
-                  </span>
-                ) : contactData.status == "unsubscribed" ? (
-                  <span className="unsubscribe" style={{ color: "red" }}>
-                    Unsubscribed
-                  </span>
-                ) : (
-                  <span className="pending" style={{ color: "yellow" }}>
-                    Pending
-                  </span>
-                )}
+                  {contactData.status == "subscribed" ? (
+                    <span className="subscribe" style={{ color: "green" }}>
+                      Subscribed
+                    </span>
+                  ) : contactData.status == "unsubscribed" ? (
+                    <span className="unsubscribe" style={{ color: "red" }}>
+                      Unsubscribed
+                    </span>
+                  ) : (
+                    <span className="pending" style={{ color: "yellow" }}>
+                      Pending
+                    </span>
+                  )}
 
-                {/* <div className="rating">
+                  {/* <div className="rating">
                   <span>
                     <StarIcon />
                   </span>
@@ -469,11 +457,11 @@ export default function ContactDetails() {
                     <StarIcon />
                   </span>
                 </div> */}
+                </div>
               </div>
-            </div>
 
-            <div className="contact-author-mailing">
-              {/* <button className="create-note">
+              <div className="contact-author-mailing">
+                {/* <button className="create-note">
                 <CreateNoteIcon />
               </button>
 
@@ -481,106 +469,114 @@ export default function ContactDetails() {
                 <EmailIcon />
               </button> */}
 
-              <button className="more-option" onClick={shoMoreOption}>
-                <ThreeDotIcon />
+                <button className="more-option" onClick={shoMoreOption}>
+                  <ThreeDotIcon />
 
-                <ul
-                  className={
-                    isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
-                  }
-                >
-                  {statusList.map((status, index) => {
-                    return (
-                      <>
-                        {contactData.status != status && (
-                          <li onClick={() => handleStatus(status)}>
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                          </li>
-                        )}
-                      </>
-                    );
-                  })}
+                  <ul
+                    className={
+                      isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                    }
+                  >
+                    {contactData.status == "pending" ? (
+                      <li onClick={() => handleDoubleOptin()}>
+                        Send Double Optin Email
+                      </li>
+                    ) : (
+                      ""
+                    )}
 
-                  <li className="delete" onClick={handleDelete}>
-                    Delete
-                  </li>
-                </ul>
-              </button>
+                    {statusList.map((status, index) => {
+                      return (
+                        <>
+                          {contactData.status != status && (
+                            <li onClick={() => handleStatus(status)}>
+                              {status.charAt(0).toUpperCase() + status.slice(1)}
+                            </li>
+                          )}
+                        </>
+                      );
+                    })}
+
+                    <li className="delete" onClick={handleDelete}>
+                      Delete
+                    </li>
+                  </ul>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="contact-details-body">
-            <div className="contact-details-left">
-              <ul className="profile-info-nav">
-                <li
-                  className={tabState === 1 ? "active" : ""}
-                  onClick={() => toggleTab(1)}
-                >
-                  Profile
-                </li>
+            <div className="contact-details-body">
+              <div className="contact-details-left">
+                <ul className="profile-info-nav">
+                  <li
+                    className={tabState === 1 ? "active" : ""}
+                    onClick={() => toggleTab(1)}
+                  >
+                    Profile
+                  </li>
 
-                {/* <li
+                  {/* <li
                   className={tabState === 2 ? "active" : ""}
                   onClick={() => toggleTab(2)}
                 >
                   Activities
                 </li> */}
-              </ul>
+                </ul>
 
-              <div
-                className={
-                  editMode
-                    ? "info-nav-content is-edit-mode"
-                    : "info-nav-content"
-                }
-              >
                 <div
                   className={
-                    tabState === 1
-                      ? "profile-nav-content active"
-                      : "profile-nav-content"
+                    editMode
+                      ? "info-nav-content is-edit-mode"
+                      : "info-nav-content"
                   }
                 >
-                  <ul className="basic-detail-info">
-                    <h4>
-                      Basic Information
-                      <button className="edit-button" onClick={showEditMode}>
-                        <EditButton />
-                      </button>
-                    </h4>
-                    <li>
-                      <span className="title">Email</span>
-                      <span className="title-value">{contactData.email}</span>
-                    </li>
-                    <li>
-                      <span className="title">First Name</span>
-                      <span className="title-value">
-                        {contactData.first_name}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Last Name</span>
-                      <span className="title-value">
-                        {contactData.last_name}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Phone Number</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.phone_number
-                          ? contactData?.meta_fields?.phone_number
-                          : "-"}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Address</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.address
-                          ? contactData?.meta_fields?.address
-                          : "-"}
-                      </span>
-                    </li>
-                    {/* <li>
+                  <div
+                    className={
+                      tabState === 1
+                        ? "profile-nav-content active"
+                        : "profile-nav-content"
+                    }
+                  >
+                    <ul className="basic-detail-info">
+                      <h4>
+                        Basic Information
+                        <button className="edit-button" onClick={showEditMode}>
+                          <EditButton />
+                        </button>
+                      </h4>
+                      <li>
+                        <span className="title">Email</span>
+                        <span className="title-value">{contactData.email}</span>
+                      </li>
+                      <li>
+                        <span className="title">First Name</span>
+                        <span className="title-value">
+                          {contactData.first_name}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Last Name</span>
+                        <span className="title-value">
+                          {contactData.last_name}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Phone Number</span>
+                        <span className="title-value">
+                          {contactData?.meta_fields?.phone_number
+                            ? contactData?.meta_fields?.phone_number
+                            : "-"}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Address</span>
+                        <span className="title-value">
+                          {contactData?.meta_fields?.address
+                            ? contactData?.meta_fields?.address
+                            : "-"}
+                        </span>
+                      </li>
+                      {/* <li>
                       <span className="title">Date of Birth</span>
                       <span className="title-value">
                         {contactData?.meta_fields?.date_of_birth
@@ -588,186 +584,186 @@ export default function ContactDetails() {
                           : "-"}
                       </span>
                     </li> */}
-                  </ul>
-                  <ul className="other-detail-info">
-                    <h4>Other</h4>
-                    <li>
-                      <span className="title">Gender</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.gender
-                          ? contactData?.meta_fields?.gender
-                          : "-"}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Timezone</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.timezone
-                          ? contactData?.meta_fields?.timezone
-                          : "-"}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Company</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.company
-                          ? contactData?.meta_fields?.company
-                          : "-"}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Designation</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.designation
-                          ? contactData?.meta_fields?.designation
-                          : "-"}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="title">Last Update</span>
-                      <span className="title-value">
-                        {day}, {month} {date}, {year}
-                        {/* {hour}:{minute} */}
-                        {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
-                      </span>
-                    </li>
-                  </ul>
+                    </ul>
+                    <ul className="other-detail-info">
+                      <h4>Other</h4>
+                      <li>
+                        <span className="title">Gender</span>
+                        <span className="title-value">
+                          {contactData?.meta_fields?.gender
+                            ? contactData?.meta_fields?.gender
+                            : "-"}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Timezone</span>
+                        <span className="title-value">
+                          {contactData?.meta_fields?.timezone
+                            ? contactData?.meta_fields?.timezone
+                            : "-"}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Company</span>
+                        <span className="title-value">
+                          {contactData?.meta_fields?.company
+                            ? contactData?.meta_fields?.company
+                            : "-"}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Designation</span>
+                        <span className="title-value">
+                          {contactData?.meta_fields?.designation
+                            ? contactData?.meta_fields?.designation
+                            : "-"}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="title">Last Update</span>
+                        <span className="title-value">
+                          {day}, {month} {date}, {year}
+                          {/* {hour}:{minute} */}
+                          {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
+                        </span>
+                      </li>
+                    </ul>
 
-                  <div className="profile-edit-field">
-                    <div className="basic-info-edit">
-                      <h4>
-                        Basic Information
-                        {/* <Link to="">
+                    <div className="profile-edit-field">
+                      <div className="basic-info-edit">
+                        <h4>
+                          Basic Information
+                          {/* <Link to="">
                           <button className="add-contact-btn soronmrm-btn ">
                             <Plus /> Add contact
                           </button>
                         </Link> */}
-                      </h4>
-                      <div className="edit-input-field">
-                        <InputItem
-                          name="email"
-                          label="Email"
-                          handleChange={handleChange}
-                          error={errors?.email}
-                          isRequired
-                          value={contactData.email}
-                        />
-                        <InputItem
-                          name="first_name"
-                          handleChange={handleChange}
-                          label="First name"
-                          value={contactData.first_name}
-                        />
-                        <InputItem
-                          name="last_name"
-                          handleChange={handleChange}
-                          label="Last name"
-                          value={contactData.last_name}
-                        />
-                        <InoutPhone
-                          name="phone_number"
-                          handleChange={handleMetaChange}
-                          label="Phone number"
-                          error={errors?.phone_number}
-                          value={contactData?.meta_fields?.phone_number}
-                        />
-                      </div>
-                      <div className="adress-info-edit">
-                        <h4>Address</h4>
-                        <div className="adress-input-field">
+                        </h4>
+                        <div className="edit-input-field">
                           <InputItem
-                            name="address"
-                            handleChange={handleMetaChange}
-                            value={contactData?.meta_fields?.address}
+                            name="email"
+                            label="Email"
+                            handleChange={handleChange}
+                            error={errors?.email}
+                            isRequired
+                            value={contactData.email}
                           />
-                          {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
+                          <InputItem
+                            name="first_name"
+                            handleChange={handleChange}
+                            label="First name"
+                            value={contactData.first_name}
+                          />
+                          <InputItem
+                            name="last_name"
+                            handleChange={handleChange}
+                            label="Last name"
+                            value={contactData.last_name}
+                          />
+                          <InoutPhone
+                            name="phone_number"
+                            handleChange={handleMetaChange}
+                            label="Phone number"
+                            error={errors?.phone_number}
+                            value={contactData?.meta_fields?.phone_number}
+                          />
+                        </div>
+                        <div className="adress-info-edit">
+                          <h4>Address</h4>
+                          <div className="adress-input-field">
+                            <InputItem
+                              name="address"
+                              handleChange={handleMetaChange}
+                              value={contactData?.meta_fields?.address}
+                            />
+                            {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
                           <InputItem label="City" value={contactData?.meta_fields?.city}/>
                           <InputItem label="Country" value={contactData?.meta_fields?.country}/> */}
-                          {/*<Selectbox label="Country" index="country" />*/}
+                            {/*<Selectbox label="Country" index="country" />*/}
+                          </div>
                         </div>
-                      </div>
-                      {/* <div className="birth-date-info">
+                        {/* <div className="birth-date-info">
                         <h4>Date of Birth</h4>
                         <div className="month-day-info">
                           <InputNumber label="Month" />
                           <InputNumber label="Year" />
                         </div>
                       </div> */}
-                    </div>
-                    <div className="other-info-edit">
-                      <h4>Other</h4>
-                      <div className="edit-input-field">
-                        <InputItem
-                          name="gender"
-                          handleChange={handleMetaChange}
-                          label="Gender"
-                          value={contactData?.meta_fields?.gender}
-                        />
-                        <InputItem
-                          name="company"
-                          handleChange={handleMetaChange}
-                          label="Company"
-                          value={contactData?.meta_fields?.company}
-                        />
-                        <InputItem
-                          name="designation"
-                          handleChange={handleMetaChange}
-                          label="Designation"
-                          value={contactData?.meta_fields?.designation}
-                        />
-                        {/*<Selectbox label="Company" index="company" />*/}
-                        <InputItem
-                          name="timezone"
-                          handleChange={handleMetaChange}
-                          label="Timezone"
-                          value={contactData?.meta_fields?.timezone}
-                        />
-                        {/*<Selectbox label="Designation" index="designation" />*/}
+                      </div>
+                      <div className="other-info-edit">
+                        <h4>Other</h4>
+                        <div className="edit-input-field">
+                          <InputItem
+                            name="gender"
+                            handleChange={handleMetaChange}
+                            label="Gender"
+                            value={contactData?.meta_fields?.gender}
+                          />
+                          <InputItem
+                            name="company"
+                            handleChange={handleMetaChange}
+                            label="Company"
+                            value={contactData?.meta_fields?.company}
+                          />
+                          <InputItem
+                            name="designation"
+                            handleChange={handleMetaChange}
+                            label="Designation"
+                            value={contactData?.meta_fields?.designation}
+                          />
+                          {/*<Selectbox label="Company" index="company" />*/}
+                          <InputItem
+                            name="timezone"
+                            handleChange={handleMetaChange}
+                            label="Timezone"
+                            value={contactData?.meta_fields?.timezone}
+                          />
+                          {/*<Selectbox label="Designation" index="designation" />*/}
+                        </div>
+                      </div>
+
+                      <div className="save-cancel-button">
+                        <button
+                          className="soronmrm-btn outline cancel-btn"
+                          onClick={showEditMode}
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          className="save-button soronmrm-btn"
+                          onClick={handleUpdate}
+                        >
+                          Save
+                        </button>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="save-cancel-button">
-                      <button
-                        className="soronmrm-btn outline cancel-btn"
-                        onClick={showEditMode}
-                      >
-                        Cancel
-                      </button>
-
-                      <button
-                        className="save-button soronmrm-btn"
-                        onClick={handleUpdate}
-                      >
-                        Save
-                      </button>
+                  <div
+                    className={
+                      tabState === 2
+                        ? "profile-nav-activities active"
+                        : "profile-nav-activities"
+                    }
+                  >
+                    <div className="activities-header">
+                      <h4 className="title">Activity Feed</h4>
+                      {/*<Selectbox index="profile-activity" />*/}
                     </div>
-                  </div>
-                </div>
 
-                <div
-                  className={
-                    tabState === 2
-                      ? "profile-nav-activities active"
-                      : "profile-nav-activities"
-                  }
-                >
-                  <div className="activities-header">
-                    <h4 className="title">Activity Feed</h4>
-                    {/*<Selectbox index="profile-activity" />*/}
-                  </div>
-
-                  <div className="activities-feed-wrapper">
-                    <SingleActivityFeed />
-                    <SingleActivityFeed />
-                    <SingleActivityFeed />
+                    <div className="activities-feed-wrapper">
+                      <SingleActivityFeed />
+                      <SingleActivityFeed />
+                      <SingleActivityFeed />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* end .contact-details-left */}
+              {/* end .contact-details-left */}
 
-            <div className="contact-details-right">
-              {/* <div className="contact-stats">
+              <div className="contact-details-right">
+                {/* <div className="contact-stats">
                 <div className="single-stat total-revenue">
                   <h2 className="stat">
                     $1,700
@@ -801,105 +797,107 @@ export default function ContactDetails() {
                 </div>
               </div> */}
 
-              <hr />
+                <hr />
 
-              <div className="tags">
-                <h4 className="title">Tags</h4>
-                <div className="tag-wrapper">
-                  {contactData?.tags?.map((tag, idx) => {
-                    return (
-                      <span className="single-list" key={tag.id}>
-                        {tag.title}
-                        <button
-                          className="close-list"
-                          title="Delete"
-                          onClick={() => {
-                            handleTagListDelete(tag.id);
-                          }}
-                        >
-                          x
-                        </button>
-                      </span>
-                    );
-                  })}
+                <div className="tags">
+                  <h4 className="title">Tags</h4>
+                  <div className="tag-wrapper">
+                    {contactData?.tags?.map((tag, idx) => {
+                      return (
+                        <span className="single-list" key={tag.id}>
+                          {tag.title}
+                          <button
+                            className="close-list"
+                            title="Delete"
+                            onClick={() => {
+                              handleTagListDelete(tag.id);
+                            }}
+                          >
+                            x
+                          </button>
+                        </span>
+                      );
+                    })}
 
-                  {/* {contactData?.tags?.length == 0 && <span>No Tag Found  </span>} */}
-                  <button className="add-list" onClick={addTagInput}>
-                    {openTagSelectBox ? "" : <PlusIconSmall />}
-                    {openTagSelectBox ? "-" : "Add"}
-                  </button>
+                    {/* {contactData?.tags?.length == 0 && <span>No Tag Found  </span>} */}
+                    <button className="add-list" onClick={addTagInput}>
+                      {openTagSelectBox ? "" : <PlusIconSmall />}
+                      {openTagSelectBox ? "-" : "Add"}
+                    </button>
+                  </div>
+                  {openTagSelectBox && (
+                    <Selectbox
+                      label=""
+                      name="tags"
+                      options={tags}
+                      values={tagListsAdder.tags}
+                      placeholder="Select Tags"
+                      tags={true}
+                      multiple={true}
+                      onSelect={onSelect}
+                      onRemove={onRemove}
+                    />
+                  )}
+                  {openTagSelectBox && (
+                    <button className="add-list" onClick={handleAddTag}>
+                      Add Tag
+                    </button>
+                  )}
                 </div>
-                {openTagSelectBox && (
-                  <Selectbox
-                    label=""
-                    name="tags"
-                    options={tags}
-                    values={tagListsAdder.tags}
-                    placeholder="Select Tags"
-                    tags={true}
-                    multiple={true}
-                    onSelect={onSelect}
-                    onRemove={onRemove}
-                  />
-                )}
-                {openTagSelectBox && (
-                  <button className="add-list" onClick={handleAddTag}>
-                    Add Tag
-                  </button>
-                )}
-              </div>
 
-              <div className="lists">
-                <h4 className="title">Lists</h4>
-                <div className="list-wrapper">
-                  {contactData?.lists?.map((list, idx) => {
-                    return (
-                      <span className="single-list" key={list.id}>
-                        {list.title}
+                <div className="lists">
+                  <h4 className="title">Lists</h4>
+                  <div className="list-wrapper">
+                    {contactData?.lists?.map((list, idx) => {
+                      return (
+                        <span className="single-list" key={list.id}>
+                          {list.title}
 
-                        <button
-                          className="close-list"
-                          title="Delete"
-                          onClick={() => {
-                            handleTagListDelete(list.id);
-                          }}
-                        >
-                          x
-                        </button>
-                      </span>
-                    );
-                  })}
-                  {/* {contactData?.lists?.length == 0 && (
+                          <button
+                            className="close-list"
+                            title="Delete"
+                            onClick={() => {
+                              handleTagListDelete(list.id);
+                            }}
+                          >
+                            x
+                          </button>
+                        </span>
+                      );
+                    })}
+                    {/* {contactData?.lists?.length == 0 && (
                     <span>No List Found  </span>
                   )} */}
-                  <button className="add-list" onClick={addListInput}>
-                    {openListSelectBox ? "" : <PlusIconSmall />}
-                    {openListSelectBox ? "-" : "Add"}
-                  </button>
+                    <button className="add-list" onClick={addListInput}>
+                      {openListSelectBox ? "" : <PlusIconSmall />}
+                      {openListSelectBox ? "-" : "Add"}
+                    </button>
+                  </div>
+                  {openListSelectBox && (
+                    <Selectbox
+                      label=""
+                      name="lists"
+                      options={lists}
+                      values={tagListsAdder.lists}
+                      placeholder="Select Lists"
+                      tags={true}
+                      multiple={true}
+                      onSelect={onSelect}
+                      onRemove={onRemove}
+                    />
+                  )}
+                  {openListSelectBox && (
+                    <button className="add-list" onClick={handleAddList}>
+                      Add List
+                    </button>
+                  )}
                 </div>
-                {openListSelectBox && (
-                  <Selectbox
-                    label=""
-                    name="lists"
-                    options={lists}
-                    values={tagListsAdder.lists}
-                    placeholder="Select Lists"
-                    tags={true}
-                    multiple={true}
-                    onSelect={onSelect}
-                    onRemove={onRemove}
-                  />
-                )}
-                {openListSelectBox && (
-                  <button className="add-list" onClick={handleAddList}>
-                    Add List
-                  </button>
-                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <SuccessfulNotification display={showNotification} message={message} />
+    </>
   );
 }

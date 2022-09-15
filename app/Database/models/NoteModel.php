@@ -4,9 +4,9 @@ namespace Mint\MRM\DataBase\Models;
 
 use Exception;
 use Mint\MRM\DataBase\Tables\ContactNoteSchema;
+use Mint\MRM\DataStores\NoteData;
 use MRM\Common\MRM_Common;
 use Mint\Mrm\Internal\Traits\Singleton;
-use MRM\Data\MRM_Note;
 
 /**
  * @author [MRM Team]
@@ -45,12 +45,12 @@ class NoteModel {
     /**
      * SQL query to create a new note
      * 
-     * @param $note         MRM_Note object
+     * @param $note         NoteData object
      * @param $contact_id   Contact id
      * @return void
      * @since 1.0.0
      */
-    public static function insert( MRM_Note $note, $contact_id ){
+    public static function insert( NoteData $note, $contact_id ){
         
         global $wpdb;
         $note_table = $wpdb->prefix . ContactNoteSchema::$table_name;
@@ -84,7 +84,7 @@ class NoteModel {
      * @return bool
      * @since 1.0.0
      */
-    public static function update( MRM_Note $note, $contact_id, $note_id ){
+    public static function update( NoteData $note, $contact_id, $note_id ){
 
         global $wpdb;
         $table = $wpdb->prefix . ContactNoteSchema::$table_name;

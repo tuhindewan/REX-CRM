@@ -59,8 +59,8 @@ class NoteData {
         $this->type         =  $args['type'];
         $this->title        =  $args['title'];
         $this->description  =  $args['description'];
-        // $this->status       =  $args['status'];
-        // $this->is_public    =  $args['is_public'];
+        $this->status       =  $args['status'];
+        $this->is_public    =  $args['is_public'];
     }
 
 
@@ -122,6 +122,5 @@ class NoteData {
     {
         return $this->is_public;
     }
-
 
 }

@@ -93,19 +93,33 @@ class ContactGroupModel{
     {
         global $wpdb;
         $group_table    = $wpdb->prefix . ContactGroupSchema::$table_name;
+        $pivot_table = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
         $search_terms   = null;
 
         // Search segments by title
 		if ( ! empty( $search ) ) {
             $search_terms = "AND `title` LIKE '%$search%'";
 		}
-
-        // Return segments for list view
+             // Return segments for list view
         try {
-            $select_query  = "SELECT * FROM `wp_mrm_contact_groups` WHERE type = '$type' $search_terms ORDER BY $order_by $order_type LIMIT $offset, $limit";
+            $select_query  = "SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+            from $pivot_table as p right join $group_table as g
+            on p.group_id = g.id
+            where type='$type'
+            $search_terms
+            group by g.id, g.title, g.data, g.created_at
+            order by $order_by $order_type
+            limit $offset, $limit";
             $query_results = $wpdb->get_results( $select_query );
 
-            $count_query    = "SELECT COUNT(*) as total FROM $group_table WHERE type = '$type' $search_terms";
+            $count_query    = "SELECT COUNT(*) as total FROM (
+                SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+            from $pivot_table as p right join $group_table as g
+            on p.group_id = g.id
+            where type='$type'
+            $search_terms
+            group by g.id, g.title, g.data, g.created_at
+            ) as table1";
             $count_result   = $wpdb->get_results($count_query);
     
             $count = (int) $count_result['0']->total;
