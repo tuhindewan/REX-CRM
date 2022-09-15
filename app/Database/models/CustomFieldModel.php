@@ -144,5 +144,27 @@ class CustomFieldModel{
             return false;
         }
     }
+
+
+    /**
+     * Check existing custom fields
+     * 
+     * @param mixed $slug  
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_field_exist( $slug )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
+
+        $select_query   = $wpdb->prepare( "SELECT * FROM $fields_table WHERE slug = %s",array( $slug ) );
+        $select_result  = $wpdb->get_results( $select_query );
+        if( $select_result ){
+            return true;
+        }
+        return false;
+    } 
     
 }

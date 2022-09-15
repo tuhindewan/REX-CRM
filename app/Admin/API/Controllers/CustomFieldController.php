@@ -5,6 +5,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\Constants;
 use Mint\MRM\DataBase\Models\CustomFieldModel;
 use Mint\MRM\DataStores\CustomFieldData;
 use MRM\Common\MRM_Common;
@@ -50,6 +51,17 @@ class CustomFieldController extends BaseController {
         }
 
         $slug = sanitize_title( $title );
+        $primary_fields = Constants::$primary_fields;
+        error_log(print_r(in_array( $slug, $primary_fields ), 1));
+        $exist = CustomFieldModel::is_field_exist( $slug );
+
+        if ( $exist && !isset($params['field_id'])) {
+            return $this->get_error_response( __( 'Field is already available', 'mrm' ),  200);
+        }
+
+        if ( in_array( $slug, $primary_fields )) {
+            return $this->get_error_response( __( 'Field is already available', 'mrm' ),  200);
+        }
 
         // Field type validation
         $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
