@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Search from "../Icons/Search";
 import Portal from "../Portal";
 import HoverMenu from "../HoverMenu";
+import InputItem from "../InputItem";
 
 export default function CustomSelect(props) {
   const {
@@ -33,6 +34,11 @@ export default function CustomSelect(props) {
   function toggleActive(event) {
     event.stopPropagation();
     setActive((prev) => !prev);
+  }
+
+  function handleChange(e) {
+    setSearch(e.target.value);
+    setQuery(`&search=${e.target.value}`);
   }
 
   // at first page load get all the available lists
@@ -73,30 +79,26 @@ export default function CustomSelect(props) {
                   : "mintmrm-dropdown custom-select-dropdown"
               }
             >
-              <li className="searchbar">
+              <li className="searchbar" key="hello">
                 <span class="pos-relative">
                   <Search />
-                  <input
-                    type="search"
-                    name="column-search"
+                  {/* <input
+                    type="text"
+                    key="lskdjfaalskdjf"
                     placeholder={placeholder}
                     value={search}
-                    onChange={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      let value = e.target.value;
-                      setSearch(value);
-                      // only set query when there are more than 3 characters
-                      if (value.length >= 3) {
-                        setQuery(`&search=${value}`);
-                      } else {
-                        setQuery("");
-                      }
-                    }}
+                    onChange={(e) => setSearch(e.target.value)}
+                  /> */}
+                  <InputItem
+                    label="hello"
+                    value={search}
+                    handleChange={handleChange}
                   />
                 </span>
               </li>
-              <li className="list-title">{listTitle}</li>
+              <li className="list-title" key="world">
+                {listTitle}
+              </li>
 
               {/* Render all elements */}
               {items?.length > 0 &&

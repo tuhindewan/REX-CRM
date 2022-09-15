@@ -98,6 +98,7 @@ class ContactGroupModel{
 
         // Search segments by title
 		if ( ! empty( $search ) ) {
+            
             $search_terms = "AND `title` LIKE '%$search%'";
 		}
              // Return segments for list view
