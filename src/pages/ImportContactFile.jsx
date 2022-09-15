@@ -3,6 +3,7 @@ import ImportSVG from "../components/Icons/ImportSVG";
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DragAndDrop from "../components/DragAndDrop";
+import ImportNavbar from "../components/Import/ImportNavbar";
 export default function ImportContactFile() {
   const navigate = useNavigate();
   // stores the selected file reference
@@ -50,12 +51,12 @@ export default function ImportContactFile() {
     };
     console.log(options);
     const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/attrs`,
+      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/csv/attrs`,
       options
     );
     const resJson = await res.json();
     if (resJson.code == 200) {
-      navigate("/contacts/import/selectfields", {
+      navigate("/contacts/import/csv/map", {
         state: {
           data: resJson.data,
         },
@@ -83,13 +84,7 @@ export default function ImportContactFile() {
       </div>
       <div className="soronmrm-container">
         <div className="import-wrapper">
-          <div className="import-tabs choose-import-section">
-            <span className="import-type-title">Choose Import Contacts</span>
-            <button className="soronmrm-btn upload-button">
-              Upload CSV File
-            </button>
-            {/* <button className="contact-cancel soronmrm-btn outline">Paste Your Data</button> */}
-          </div>
+          <ImportNavbar />
 
           <div className="import-tabs-content upload-section">
             <h3>Upload CSV File</h3>
@@ -127,7 +122,7 @@ export default function ImportContactFile() {
               <button className="contact-save soronmrm-btn" onClick={uploadCSV}>
                 Upload
               </button>
-            </div>
+            </div> 
           </div>
         </div>
       </div>

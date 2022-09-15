@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
@@ -106,7 +106,17 @@ const Lists = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
-    console.log(values);
+  }
+
+  // function to handle order by select component change
+  function handleOrderBy(e, name, arg1) {
+    const updatedOptions = [...e.target.options]
+      .filter((option) => option.selected)
+      .map((x) => x.value);
+    const selectedValue = updatedOptions[0];
+    const order = selectedValue.split("+"); // order is an array with order by and order type
+    setOrderBy(order[0]);
+    setOrderType(order[1]);
   }
 
   // Handle list create or update form submission
@@ -167,7 +177,7 @@ const Lists = () => {
   useEffect(() => {
     async function getLists() {
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/lists?page=${page}&per-page=${perPage}${query}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
@@ -177,7 +187,7 @@ const Lists = () => {
       }
     }
     getLists();
-  }, [page, perPage, query, refresh]);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   async function deleteList(id) {
     if (window.confirm("Are you sure you want to delete this item?")) {
@@ -279,28 +289,24 @@ const Lists = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Newest",
-                      id: "newest",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
-                      title: "Oldest",
-                      id: "Oldest",
+                      title: "Name Desc",
+                      id: "title+desc",
                     },
                     {
-                      title: "A-Z",
-                      id: "capital-letters",
+                      title: "Date Created Asc",
+                      id: "created_at+asc",
                     },
                     {
-                      title: "a-z",
-                      id: "small-letters",
-                    },
-                    {
-                      title: "Date Created",
-                      id: "date-created",
+                      title: "Date Created Desc",
+                      id: "created_at+desc",
                     },
                   ]}
                   tags={false}
-                  placeholder="Name"
+                  placeholder="Field"
                   multiple={false}
                 />
               </div>
@@ -365,6 +371,7 @@ const Lists = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
+                      <th>Total Contacts</th>
                       <th className="">Description</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>

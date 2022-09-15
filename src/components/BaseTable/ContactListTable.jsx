@@ -1,3 +1,4 @@
+import { __ } from "@wordpress/i18n";
 import React, { useEffect, useState } from "react";
 import {
   useNavigate,
@@ -7,6 +8,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import queryString from "query-string";
+import ColumnList from "./ColumnList";
 
 // Internal dependencies
 import Pagination from "../Pagination";
@@ -18,7 +20,7 @@ import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import Swal from "sweetalert2";
 import Selectbox2 from "../Selectbox2";
-import ColumnList from "./ColumnList";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import FilterItems from "./FilterItems";
 import CrossIcon from "../Icons/CrossIcon";
 import AssignedItems from "./AssignedItems";
@@ -36,6 +38,10 @@ export default function ContactListTable(props) {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
 
+  const [filterPerPage, setFilterPerPage] = useState(10);
+  const [filterPage, setFilterPage] = useState(1);
+  const [filterCount, setFilterCount] = useState(0);
+
   const [isActive, setActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
   const [isAssignTo, setIsAssignTo] = useState(false);
@@ -47,6 +53,9 @@ export default function ContactListTable(props) {
 
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
+  const [filterSearch, setFilterSearch] = useState("");
+  // search query, search query only updates when there are more than 3 characters typed
+  const [query, setQuery] = useState("");
 
   const [lists, setLists] = useState([]);
   const [tags, setTags] = useState([]);
@@ -64,12 +73,23 @@ export default function ContactListTable(props) {
   const [selected, setSelected] = useState([]);
 
   const [totalPages, setTotalPages] = useState(0);
+  const [filterTotalPages, setFilterTotalPages] = useState(0);
 
   const [currentActive, setCurrentActive] = useState(0);
   const [openListSelectBox, setOpenTagSelectBox] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterParams, setFilterParams] = useState([]);
+
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const [isFilter, setIsFilter] = useState(0);
+
+  const location = useLocation();
+
+  const [filterRequest, setFilterRequest] = useState({});
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -110,125 +130,56 @@ export default function ContactListTable(props) {
     setFilterData(queryString.parse(location.search));
   }, [filterParams]);
 
-  // filter by status
+  useEffect(() => {
+    //console.log("getFilter");
 
-  const onSelectStatus = (e) => {
-    setStatus([e.target.value]);
-    navigateSearch("/contacts", {
-      // lists: lists,
-      // tags: tags,
-      status: e.target.value,
-    });
-  };
+    const getFilter = async () => {
+      return fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(filterRequest),
+        }
+      )
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (200 == data.code) {
+            setContactData(data.data.data);
+            setFilterCount(data.data.count);
+            setFilterTotalPages(data.data.total_pages);
+            // setFilterPerPage(data.total_pages);
+            setLoaded(true);
+          }
+        });
+    };
 
-  // const useNavigateSearch = () => {
-  //   return (pathname, params) => {
-  //     navigate(`${pathname}?${createSearchParams(params)}`, {
-  //       replace: true,
-  //     });
-  //     //console.log(params);
-  //     setFilterData(params);
-  //     // add your query here
-  //     fetch(
-  //       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${search}&page=${page}&per-page=${perPage}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Accept: "application/json, text/plain, */*",
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(params),
-  //       }
-  //     )
-  //       .then((response) => {
-  //         if (response.ok) {
-  //           return response.json();
-  //         }
-  //       })
-  //       .then((data) => {
-  //         if (200 == data.code) {
-  //           setContactData(data.data.data);
-  //           setCount(data.data.count);
-  //           setTotalPages(data.data.total_pages);
-  //           // setPerPage(data.total_pages);
-  //           setLoaded(true);
-  //         }
-  //       });
-  //     //setContacts([]);
-  //   };
-  // };
-  // const navigateSearch = useNavigateSearch();
-
-  const location = useLocation();
+    if (
+      filterRequest.tags_ids != undefined ||
+      filterRequest.lists_ids != undefined ||
+      filterRequest.status != undefined
+    ) {
+      getFilter();
+      setIsFilter(1);
+    } else {
+      setIsFilter(0);
+      // toggleRefresh();
+    }
+  }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
-    setStatus(location.search.slice(8));
-
-    fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${search}&page=${page}&per-page=${perPage}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: status }),
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        if (200 == data.code) {
-          setContactData(data.data.data);
-          setCount(data.data.count);
-          setTotalPages(data.data.total_pages);
-          // setPerPage(data.total_pages);
-          setLoaded(true);
-        }
-      });
-  }, [status]);
-
-  // lists
-
-  const onSelectLists = (e) => {};
-
-  // const onSelectLists = (e) => {
-  //   setFilterLists(e.target.value);
-  //   fetch(
-  //     `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${search}&page=${page}&per-page=${perPage}`,
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: "application/json, text/plain, */*",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ group_id: [e.target.value] }),
-  //     }
-  //   )
-  //     .then((response) => {
-  //       if (response.ok) {
-  //         return response.json();
-  //       }
-  //     })
-  //     .then((data) => {
-  //       if (200 == data.code) {
-  //         setContacts(data.data.data);
-  //         setCount(data.count);
-  //         // setPerPage(data.total_pages);
-  //         setLoaded(true);
-  //       }
-  //     });
-  // };
-
-  useEffect(() => {
-    console.log(isLists);
+    //console.log("Normal Data")
     async function getData() {
       setLoaded(false);
-      fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts?search=${search}&page=${page}&per-page=${perPage}`
+      await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
       )
         .then((response) => {
           if (response.ok) {
@@ -258,8 +209,8 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (filterData.status == undefined) getData();
-  }, [perPage, page, search, refresh]);
+    if (isFilter == 0) getData();
+  }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
@@ -327,20 +278,14 @@ export default function ContactListTable(props) {
     setIsLists(!isLists);
     setIsTags(false);
     setIsStatus(false);
-    // if(isLists === true){
-    //   setIsTags(false);
-    //   setStatus(false);
-    // }
+   
   };
   const showTags = (event) => {
     event.stopPropagation();
     setIsTags(!isTags);
     setIsLists(false);
     setIsStatus(false);
-    // if(isTags === true){
-    //   setIsLists(false);
-    //   setStatus(false);
-    // }
+    
   };
   const showStatus = (event) => {
     event.stopPropagation();
@@ -474,15 +419,24 @@ export default function ContactListTable(props) {
         </div>
 
         <div className="right-buttons">
-          {filterData.status === undefined ? (
+          {isFilter == 0 ? (
             <span className="search-section">
               <Search />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
+                  let value = e.target.value;
+                  setSearch(value);
+                  // only set query when there are more than 3 characters
+                  if (value.length >= 3) {
+                    setQuery(encodeURI(`&search=${value}`));
+                    // on every new search term set the page explicitly to 1 so that results can
+                    // appear
+                    setPage(1);
+                  } else {
+                    setQuery("");
+                  }
                 }}
                 placeholder="Search..."
               />
@@ -567,6 +521,45 @@ export default function ContactListTable(props) {
               <th className="source">Source</th>
               <th className="action"></th>
             </tr>
+            {/* <button className="add-column" onClick={showAddColumnList}>
+              <PlusCircleIcon />
+              <span className="tooltip">Add Column</span>
+
+              <ul
+                className={
+                  isAddColumn ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                }
+              >
+                <li className="searchbar">
+                  <span class="pos-relative">
+                    <Search />
+                    <input
+                      type="search"
+                      name="column-search"
+                      placeholder="Search..."
+                    />
+                  </span>
+                </li>
+
+                <li className="list-title">Choose columns</li>
+
+                {contactListColumns.map((column, index) => {
+                  <li className="single-column">
+                    <ColumnList title={column.title} key={index} />
+                  </li>;
+                })}
+
+                <li className="button-area">
+                  <button className="soronmrm-btn outline default-btn">
+                    Default
+                  </button>
+                  <button className="soronmrm-btn outline cancel-btn">
+                    Cancel
+                  </button>
+                  <button className="soronmrm-btn save-btn">Save</button>
+                </li>
+              </ul>
+            </button> */}
           </thead>
           <tbody>
             {!contactData.length && (

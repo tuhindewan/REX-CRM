@@ -6,19 +6,22 @@ import PlusCircleIcon from "../Icons/PlusCircleIcon"
 import Search from "../Icons/Search";
 import ColumnList from "../BaseTable/ColumnList"
 
+import { useLocation } from "react-router-dom";
 import ContactProfile from "../Icons/ContactProfile";
 import Pending from "../Icons/Pending";
 import Subscribe from "../Icons/Subscribe";
 import Unsubscribe from "../Icons/Unsubscribe";
+import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
-import Swal from "sweetalert2";
 
 import "./style.css";
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
   const [countData, setCountData] = useState([]);
-  const [isAddColumn, setIsAddColumn] = useState(false);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     async function getTotal() {
@@ -31,37 +34,12 @@ const BaseTable = () => {
     getTotal();
   }, [refresh]);
 
-  const showAddColumnList = () => {
-    setIsAddColumn(!isAddColumn);
-  }
+    if ("contact-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
 
 
-  const contactListColumns = [
-    {
-      title: __("Email", "mrm"),
-    },
-    {
-      title: __("First Name", "mrm"),
-    },
-    {
-      title: __("Last name", "mrm"),
-    },
-    {
-      title: __("List", "mrm"),
-    },
-    {
-      title: __("Last Activity", "mrm"),
-    },
-    {
-      title: __("Phone Number", "mrm"),
-    },
-    {
-      title: __("Source", "mrm"),
-    },
-    {
-      title: __("Action", "mrm"),
-    },
-  ];
 
   return (
     <>
@@ -92,45 +70,7 @@ const BaseTable = () => {
 
           <div className="contact-list-area">
             <div className="contact-list-body">
-              {/* <button className="add-column" onClick={showAddColumnList}>
-                <PlusCircleIcon />
-                <span className="tooltip">Add Column</span>
-
-                <ul
-                  className={
-                    isAddColumn ? "soronmrm-dropdown show" : "soronmrm-dropdown"
-                  }
-                >
-                  <li className="searchbar">
-                    <span class="pos-relative">
-                      <Search />
-                      <input
-                        type="search"
-                        name="column-search"
-                        placeholder="Search..."
-                      />
-                    </span>
-                  </li>
-
-                  <li className="list-title">Choose columns</li>
-
-                  {contactListColumns.map((column, index) => {
-                    <li className="single-column">
-                      <ColumnList title={column.title} key={index} />
-                    </li>;
-                  })}
-
-                  <li className="button-area">
-                    <button className="soronmrm-btn outline default-btn">
-                      Default
-                    </button>
-                    <button className="soronmrm-btn outline cancel-btn">
-                      Cancel
-                    </button>
-                    <button className="soronmrm-btn save-btn">Save</button>
-                  </li>
-                </ul>
-              </button> */}
+              
 
               <ContactListTable 
                 refresh = {refresh}
@@ -140,6 +80,7 @@ const BaseTable = () => {
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

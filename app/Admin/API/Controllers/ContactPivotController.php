@@ -69,6 +69,7 @@ class ContactPivotController {
     }
 
 
+
     /**
      * Get all contacts related to a tag or list or segments
      * 

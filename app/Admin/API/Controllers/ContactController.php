@@ -9,6 +9,7 @@ use Exception;
 use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
+use Mint\MRM\Constants;
 
 
 
@@ -234,7 +235,7 @@ class ContactController extends BaseController {
 
 
     /**
-     * Set tags, lists, and segments from a contact
+     * Set tags, lists, and segments to a contact
      * 
      * @param WP_REST_Request $request
      * @return WP_REST_Response
@@ -245,17 +246,61 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
+        $isTag = 0;
+        $isList = 0;
+
         if( isset( $params['tags'] ) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+            $isTag = 1;
         }
 
         if( isset( $params['lists'] ) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+            $isList = 1;
         }
 
 
-        if($success) {
+        if($success && $isList == 1 && $isTag == 1) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag == 1){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList == 1 ){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+    }
+
+    /**
+     * Set tags, lists to multiple contacts
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function set_groups_to_multiple( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $isTag = 0;
+        $isList = 0;
+
+        if( isset( $params['tags'] ) ){
+            $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
+            $isTag = true;
+        }
+
+        if( isset( $params['lists'] ) ){
+            $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
+            $isList = 1;
+        }
+
+        if($success && $isList == 1 && $isTag == 1) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag == 1){
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList == 1 ){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
@@ -363,6 +408,42 @@ class ContactController extends BaseController {
                 'file'      => $import_res['new_file_name']
             );
             return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result );
+
+        } catch (Exception $e) {
+
+            return $this->get_error_response( __( $e->getMessage(), "mrm" ), 400 );
+        }
+    }
+
+    /**
+     * Parse raw csv data and send the headers back to the user
+     *
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_raw_get_attrs( WP_REST_Request $request ) 
+    {
+        try{
+            // Get parameters
+            $params = MRM_Common::get_api_params_values($request);
+            $raw = isset($params['raw']) ? $params['raw']: "";
+
+            // check for least number of characters
+            if(strlen($raw) < 5) {
+                throw new Exception("Please eneter at least 5 characters");
+            }
+            $array = preg_split("/\r\n|\n|\r/", $raw);
+            if(count($array) > 0) {
+                $headers = explode(",",$array[0]);
+            }
+
+            $result = array(
+                'headers'   => $headers,
+                'fields'    => Constants::$contacts_attrs,
+            );
+            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result);
 
         } catch (Exception $e) {
 

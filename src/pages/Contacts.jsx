@@ -19,7 +19,7 @@ const Contacts = () => {
   useGlobalStore.setState({
     navbarMarkup: (
       <>
-        <Link to="/contacts/import">
+        <Link to="/contacts/import/csv">
           <button className="import-btn soronmrm-btn outline">
             <Import />
             Import

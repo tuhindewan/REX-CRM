@@ -172,13 +172,34 @@ class ContactRoute {
                 ]
         ]);
 
+
+        /**
+         * Assign multiple tags, lists to multiple contacts
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base. '/groups', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'set_groups_to_multiple'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
         /**
          * Contact import csv send attrs endpoint
          * 
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/attrs', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/csv/attrs', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
@@ -191,6 +212,26 @@ class ContactRoute {
                 ],
             ]
         ]);
+
+        /**
+         * Contact import raw send attrs endpoint
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/raw/attrs', [
+        [
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [
+                $this->controller ,
+                'import_contacts_raw_get_attrs'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ],
+        ]
+    ]);
 
         /**
          * Get WordPress users roles
@@ -258,7 +299,7 @@ class ContactRoute {
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/import/csv', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [

@@ -9,6 +9,7 @@ import Selectbox from "./Selectbox";
 import React, { useState, useEffect } from "react";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
+import ImportNavbar from "./Import/ImportNavbar";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -16,16 +17,22 @@ export default function SelectFieldsMap() {
   const [loading, setLoading] = useState(false);
   // holds user selected lists, tags, and status
   const [extra, setExtra] = useState([]);
+  // holds map state
   const [mapState, setMapState] = useState([]);
 
+  // holds selectbox currently selected lists
   const [lists, setLists] = useState([]);
+  // holds selectbox currently selected s
   const [tags, setTags] = useState([]);
   const state = location.state;
+
+  // if current path is /contacts/import/csv/map replace the map and send back to /contacts/import/csv
+  const returnUrl = location.pathname.replace("/map", "");
 
   //   if no data is recieved through state object
   //   force redirect to previous import page
   if (!state) {
-    return <Navigate to="/contacts/import" />;
+    return <Navigate to={returnUrl} />;
   }
 
   const map = [];
@@ -46,14 +53,14 @@ export default function SelectFieldsMap() {
   const importContacts = async () => {
     setLoading(true);
     const body = {
-      map: mapState,
-      ...extra,
+      map: mapState, // current mapping from file
+      ...extra, // lists, tags, status
       file,
     };
     if (!body["status"]) body["status"] = ["pending"];
     try {
       let res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import`,
+        `${window.MRM_Vars.api_base_url}mrm/v1${returnUrl}`,
         {
           method: "POST",
           headers: {
@@ -65,7 +72,7 @@ export default function SelectFieldsMap() {
       let resJson = await res.json();
 
       if (resJson.code == 200) {
-        navigate("/contacts/import/selectfields/confirmation", {
+        navigate("/contacts/import/confirmation", {
           state: { data: resJson.data },
         });
       } else {
@@ -88,6 +95,7 @@ export default function SelectFieldsMap() {
     id: "no_import",
   });
 
+  // handle status, lists, tags
   function handleExtraFields(e, name) {
     const updatedOptions = [...e.target.options]
       .filter((option) => option.selected)
@@ -96,7 +104,6 @@ export default function SelectFieldsMap() {
       ...prevState,
       [name]: updatedOptions,
     }));
-    console.log(extra);
   }
   function onSelect(e, name, arg1) {
     const updatedOptions = [...e.target.options]
@@ -141,13 +148,7 @@ export default function SelectFieldsMap() {
       </div>
       <div className="soronmrm-container">
         <div className="import-wrapper">
-          <div className="import-tabs choose-import-section">
-            <span className="import-type-title">Choose Import Contacts</span>
-            <button className="soronmrm-btn upload-button">
-              Upload CSV File
-            </button>
-            {/* <button className="contact-cancel soronmrm-btn outline">Paste Your Data</button> */}
-          </div>
+          <ImportNavbar />
           <div className="import-tabs-content upload-section">
             <h3>Select Fields to Map</h3>
             <span className="csv-title">
@@ -232,7 +233,7 @@ export default function SelectFieldsMap() {
             </form>
 
             <div className="import-button">
-              <Link to="/contacts/import/">
+              <Link to={returnUrl}>
                 <button className="soronmrm-btn outline cancel-btn">
                   Cancel
                 </button>
