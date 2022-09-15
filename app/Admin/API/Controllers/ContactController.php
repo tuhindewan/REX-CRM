@@ -250,12 +250,12 @@ class ContactController extends BaseController {
         $isTag = 0;
         $isList = 0;
 
-        if( isset( $params['tags'] ) ){
+        if( isset( $params['tags'] ) && isset( $params['contact_id']) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
             $isTag = 1;
         }
 
-        if( isset( $params['lists'] ) ){
+        if( isset( $params['lists'] ) && isset($params['contact_id']) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = 1;
         }
