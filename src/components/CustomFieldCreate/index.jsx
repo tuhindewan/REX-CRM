@@ -138,12 +138,12 @@ export default function CustomFieldCreate() {
 
             <div className="contact-button-field">
               <button
-                className="contact-cancel soronmrm-btn outline"
+                className="contact-cancel mintmrm-btn outline"
                 onClick={routeChange}
               >
                 Cancel
               </button>
-              <button type="submit" className="contact-save soronmrm-btn ">
+              <button type="submit" className="contact-save mintmrm-btn ">
                 Save
               </button>
             </div>

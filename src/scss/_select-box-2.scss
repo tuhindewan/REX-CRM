@@ -1,7 +1,5 @@
 .contact-list-header {
-    //   .select2-container {
-    //     min-width: 400px;
-    //   }
+    
     .left-filters.filter-box {
       .select2-results__option {
         padding-right: 20px;
@@ -36,37 +34,6 @@
       .select2.select2-container.select2-container--default {
         width: 85px !important;
       }
-  
-      // .select2-container--default .select2-selection--multiple:before {
-      //   content: " ";
-      //   display: block;
-      //   position: absolute;
-      //   border-color: #888 transparent transparent transparent;
-      //   border-style: solid;
-      //   border-width: 5px 4px 0 4px;
-      //   height: 0;
-      //   right: 10px;
-      //   margin-left: -4px;
-      //   margin-top: -2px;
-      //   top: 50%;
-      //   width: 0;
-      //   cursor: pointer;
-      // }
-  
-      // .select2-container--open .select2-selection--multiple:before {
-      //   content: " ";
-      //   display: block;
-      //   position: absolute;
-      //   border-color: transparent transparent #888 transparent;
-      //   border-width: 0 4px 5px 4px;
-      //   height: 0;
-      //   right: 10px;
-      //   margin-left: -4px;
-      //   margin-top: -2px;
-      //   top: 50%;
-      //   width: 0;
-      //   cursor: pointer;
-      // }
   
       .select2-container--default .select2-selection--multiple:before {
         content: " ";
@@ -120,7 +87,7 @@
       .select-icon .select2-results__option:before,
       .select-icon .select2-results__option[aria-selected="true"]:before {
         display: none !important;
-        /* content: "" !important; */
+        
       }
       .select-icon .select2-search--dropdown {
         display: none;

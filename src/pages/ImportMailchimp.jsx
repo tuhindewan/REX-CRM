@@ -78,12 +78,12 @@ export default function ImportMailchimp() {
 
 
   return (
-    <div className="soronmrm-import-page">
-      <div className="soronmrm-header">
+    <div className="mintmrm-import-page">
+      <div className="mintmrm-header">
         <div className="contact-details-breadcrumb import-contact-breadcrum">
           <div className="import-cotainer">
-            <div className="soronmrm-container">
-              <ul className="soronmrm-breadcrumb">
+            <div className="mintmrm-container">
+              <ul className="mintmrm-breadcrumb">
                 <li>
                   <a href="">Contact</a>
                 </li>
@@ -93,7 +93,7 @@ export default function ImportMailchimp() {
           </div>
         </div>
       </div>
-      <div className="soronmrm-container">
+      <div className="mintmrm-container">
         <div className="import-wrapper">
           <ImportNavbar />
 
@@ -110,7 +110,7 @@ export default function ImportMailchimp() {
                 handleChange={handleChange}
                 value={apiKey}
               />
-              <button className="contact-save soronmrm-btn" onClick={getLists}>
+              <button className="contact-save mintmrm-btn" onClick={getLists}>
                 Verify
               </button>
             </div>
@@ -131,7 +131,7 @@ export default function ImportMailchimp() {
             <div className="csv-save-button">
               {selectedLists.length > 0 && (
                 <button
-                  className="contact-save soronmrm-btn"
+                  className="contact-save mintmrm-btn"
                   onClick={getLists}
                 >
                   Save
