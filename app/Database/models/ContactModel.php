@@ -163,9 +163,7 @@ class ContactModel{
         $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s", array( $email ));
         $results = $wpdb->get_results($select_query);
 
-        error_log(print_r($results, 1));
         if( $results ){
-            error_log(print_r("results exist", 1));
             return true;
         }
         return false;
@@ -259,7 +257,7 @@ class ContactModel{
         
         // Prepare sql results for list view
         try {
-            $select_query  =  "SELECT * FROM `wp_mrm_contacts` $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
+            $select_query  =  "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
             $query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
             
             $results = array();
@@ -473,32 +471,6 @@ class ContactModel{
 
             $count_result = $wpdb->get_results( $count_query );
 
-
-            // $select_query  = $wpdb->prepare(
-            //     "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
-            //     ON $contact_table.id = $pivot_table.contact_id 
-            //     WHERE $no_groupId $and $status_arr 
-            //     AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
-            //      `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
-            //      OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-            //      `stage` LIKE '%$search%')
-            //     GROUP BY $contact_table.id LIMIT $offset, $limit
-            //     ") ;
-
-            // $query_results = $wpdb->get_results( $select_query );
-
-            // $count_query  = $wpdb->prepare(
-            //     "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
-            //     ON $contact_table.id = $pivot_table.contact_id 
-            //     WHERE $no_groupId $status_arr 
-            //     AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
-            //      `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
-            //      OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-            //      `stage` LIKE '%$search%')
-            //     GROUP BY $contact_table.id
-            //     ") ;
-
-            // $count_result = $wpdb->get_results($count_query);
     
             $count = (int) count($count_result);
 

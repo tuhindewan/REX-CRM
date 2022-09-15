@@ -208,7 +208,7 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (isFilter == 0) getData();
+    if (0 == isFilter) getData();
   }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
@@ -327,60 +327,7 @@ export default function ContactListTable(props) {
     <>
       <div className="contact-list-header">
         <div className="left-filters filter-box">
-          {/* <FilterBox
-            label="Lists"
-            name="lists"
-            options={lists}
-            values={contactData.lists}
-            placeholder="Select List"
-            tags={false}
-            multiple={false}
-            onSelect={onSelectLists}
-          /> */}
-          {/* <Selectbox2
-            label=""
-            name="lists"
-            options={lists}
-            placeholder="Lists"
-            tags={false}
-            multiple={true}
-            onSelect={onSelect}
-            onRemove={onRemove}
-          />
-          <Selectbox2
-            label=""
-            name="tags"
-            options={tags}
-            placeholder="Tags"
-            tags={true}
-            multiple={true}
-            onSelect={onSelect}
-            onRemove={onRemove}
-          />
-          <Selectbox2
-            label=""
-            name="status"
-            options={[
-              {
-                title: "Pending",
-                id: "pending",
-              },
-              {
-                title: "Subscribed",
-                id: "subscribed",
-              },
-              {
-                title: "Unsubscribed",
-                id: "unsubscribed",
-              },
-            ]}
-            placeholder="Status"
-            value={status}
-            tags={true}
-            multiple={true}
-            onSelect={onSelect}
-            onRemove={onRemove}
-          /> */}
+          
 
           <div className="form-group left-filter">
             <button
@@ -436,7 +383,7 @@ export default function ContactListTable(props) {
         </div>
 
         <div className="right-buttons">
-          {isFilter == 0 ? (
+          {!isFilter ? (
             <span className="search-section">
               <Search />
               <input
