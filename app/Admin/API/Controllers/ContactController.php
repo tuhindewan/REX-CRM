@@ -414,9 +414,8 @@ class ContactController extends BaseController {
         }
     }
 
-
     /**
-     * Parse raw textarea data input and send the headers back to the user
+     * Parse api key from user and send the lists, headers, fields to the user
      *
      * 
      * @param WP_REST_Request $request
@@ -430,28 +429,33 @@ class ContactController extends BaseController {
             $params = MRM_Common::get_api_params_values($request);
             $key = isset($params['key']) ? $params['key']: "";
             $mailchimp = new MailchimpMarketing\ApiClient();
-            
-
+            if(empty($key)) {
+                throw new Exception("Please send the api key in order to proceed");
+            }
+            $key_array = explode("-", $key);
+            if(count($key_array) > 1) {
+                $key_server = $key_array[1];
+            } else {
+                throw new Exception("Cannot figure out the server from the api key.");
+            }
             $mailchimp->setConfig([
-                'apiKey' => '11b321614d43814ca7d8406041bb3839-us8',
-                'server' => 'us8'
+                'apiKey' => $key,
+                'server' => $key_server
             ]);
-
-            $response = $mailchimp->lists->getListMembersInfo("d28d963625", null, null, 1000);
-           
-            
-            // $result = array(
-            //     'raw' => $array, // need to send the data back to the user for using in actual importing
-            //     'headers'   => $headers,
-            //     'fields'    => Constants::$contacts_attrs,
-            // );
-            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $response);
+            $response = $mailchimp->lists->getAllLists();
+            return $this->get_success_response( __( 'List retrieved successfully', "mrm" ), 200, [
+                "response" => $response,
+                "headers" => ["name", "email"],
+                'fields'    => Constants::$contacts_attrs,
+            ]);
 
         } catch (Exception $e) {
 
             return $this->get_error_response( __( $e->getMessage(), "mrm" ), 400 );
         }
     }
+
+
 
 
     /**
@@ -670,6 +674,31 @@ class ContactController extends BaseController {
                 'existing_contacts'    => $exists,
             );
             return $this->get_success_response(__("Import contact has been successful", "mrm"), 200, $result);
+
+        } catch(Exception $e) {
+            error_log(print_r($e,1));
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+    }
+
+     /**
+     * Prepare contact object from the uploaded CSV
+     * Inseret contcts data into database
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_mailchimp( WP_REST_Request $request ) {
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+        try {
+            if(isset( $params ) && empty( $params["map"] )) {
+                throw new Exception( __("Please map at least one field for importing", "mrm") );
+            }
+
+            return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200, $result);
 
         } catch(Exception $e) {
             error_log(print_r($e,1));

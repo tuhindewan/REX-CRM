@@ -2,20 +2,31 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import InputItem from "../components/InputItem";
+import Selectbox from "../components/Selectbox";
 
 export default function ImportMailchimp() {
   const navigate = useNavigate();
   // stores the text data
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState("11b321614d43814ca7d8406041bb3839-us8");
 
-  // stores available lists from mailchimp
-  const [lists, setLists] = useState([]);
+  // stores available lists as selectbox options from mailchimp
+  const [listsOptions, setListsOptions] = useState([]);
+
+  // stores currently selected lists
+  const [selectedLists, setSelectedLists] = useState([]);
 
   // function to handle changes in the input text
   function handleChange(event) {
     setApiKey(event.target.value);
   }
 
+  // handle selectbox new items currently selected
+  function handleSelectBox(e, name) {
+    const updatedOptions = [...e.target.options]
+      .filter((option) => option.selected)
+      .map((x) => x.value);
+    setSelectedLists(updatedOptions);
+  }
   // Funtion to get mailchimp available lists for selection
   async function getLists() {
     if (apiKey == "") {
@@ -31,7 +42,6 @@ export default function ImportMailchimp() {
         "Content-type": "application/json",
       },
     };
-    console.log(options);
 
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/mailchimp/attrs`,
@@ -39,17 +49,34 @@ export default function ImportMailchimp() {
     );
     const resJson = await res.json();
     if (resJson.code == 200) {
-      navigate("/contacts/import/mailchimp/map", {
-        state: {
-          data: resJson.data,
-          type: "mailchimp", // indicated the type of import
-        },
+      const options = [];
+      // iterate over all the lists and set list options
+      resJson.data?.lists.map((list) => {
+        options.push({
+          title: list.name,
+          id: list.id,
+        });
       });
+
+      setListsOptions(options);
+      
     } else {
       window.alert(resJson.message);
     }
     console.log(resJson);
   }
+  
+  // if a list is selected, send the user to map page
+  function goToMapPage() {
+    navigate("/contacts/import/mailchimp/map", {
+        state: {
+        data: resJson.data,
+        type: "mailchimp", // indicated the type of import
+        },
+    });
+  }
+
+
   return (
     <div className="soronmrm-import-page">
       <div className="soronmrm-header">
@@ -81,15 +108,35 @@ export default function ImportMailchimp() {
                 label="MailChimp API Key"
                 name="mailchimp-api-key"
                 handleChange={handleChange}
+                value={apiKey}
               />
               <button className="contact-save soronmrm-btn" onClick={getLists}>
                 Verify
               </button>
             </div>
+            {listsOptions.length > 0 && (
+              <div className="import-form-wrapper">
+                <Selectbox
+                  label="Lists"
+                  name="Lists"
+                  options={listsOptions}
+                  tags={false}
+                  placeholder="Select Lists for importing"
+                  multiple={true}
+                  onSelect={handleSelectBox}
+                  onRemove={handleSelectBox}
+                />
+              </div>
+            )}
             <div className="csv-save-button">
-              <button className="contact-save soronmrm-btn" onClick={getLists}>
-                Upload
-              </button>
+              {selectedLists.length > 0 && (
+                <button
+                  className="contact-save soronmrm-btn"
+                  onClick={getLists}
+                >
+                  Save
+                </button>
+              )}
             </div>
           </div>
         </div>
