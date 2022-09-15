@@ -85,7 +85,7 @@ const Lists = () => {
   useGlobalStore.setState({
     navbarMarkup: (
       <button
-        className="contact-save soronmrm-btn"
+        className="contact-save mintmrm-btn"
         onClick={() => {
           // if user is currently updating reset the fields so that add new list displays a blank form
           if (editID != 0) {

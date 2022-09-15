@@ -49,7 +49,7 @@ function DynamicInput(props) {
           </div>
           {serviceList.length - 1 === index && serviceList.length < 6 && (
             <button
-              className="add-contact-btn soronmrm-btn add-option-btn"
+              className="add-contact-btn mintmrm-btn add-option-btn"
               onClick={handleServiceAdd}
             >
               <Plus /> Add option

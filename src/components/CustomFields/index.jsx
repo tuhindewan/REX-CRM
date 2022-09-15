@@ -239,7 +239,7 @@ const CustomFields = () => {
           </div>
         </div>
       </div>
-      <div className="soronmrm-container" style={{ display: isDelete }}>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup
           title="Delete Custom Field"
           message="Are you sure you want to delete the Field?"
