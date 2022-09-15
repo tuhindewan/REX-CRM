@@ -1,6 +1,15 @@
-import queryString from "query-string";
+import { __ } from "@wordpress/i18n";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useSearchParams,
+  createSearchParams,
+  useParams,
+  useLocation,
+} from "react-router-dom";
+import queryString from "query-string";
+import ColumnList from "./ColumnList";
+import SingleContact from "./SingleContact";
 
 // Internal dependencies
 import Swal from "sweetalert2";
@@ -10,10 +19,16 @@ import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import Selectbox2 from "../Selectbox2";
-import SingleContact from "./SingleContact";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
+import FilterItems from "./FilterItems";
+import CrossIcon from "../Icons/CrossIcon";
+import AssignedItems from "./AssignedItems";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
+  const [isLists, setIsLists] = useState(false);
+  const [isTags, setIsTags] = useState(false);
+  const [isStatus, setIsStatus] = useState(false);
 
   const { endpoint = "contacts" } = props;
   const [contacts, setContacts] = useState([]);
@@ -28,6 +43,9 @@ export default function ContactListTable(props) {
 
   const [isActive, setActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
+  const [isAssignTo, setIsAssignTo] = useState(false);
+
+  const [selectedSection, setSelectedSection] = useState(false);
 
   const [contactData, setContactData] = useState([]);
   const [filterContact, setFilterContact] = useState([]);
@@ -99,51 +117,17 @@ export default function ContactListTable(props) {
   };
 
   useEffect(() => {
-    //console.log("FilterAdder")
+    //console.log(filterAdder);
+
     setSearchParams(filterAdder);
+    setFilterParams(searchParams);
+
+    //  navigate(`${location.pathname}/${filterData}`);
   }, [filterAdder]);
 
   useEffect(() => {
-    //console.log("FilterSearchParams")
     setFilterData(queryString.parse(location.search));
-
-    navigate(`${location.pathname}${location.search}`);
-  }, [searchParams]);
-
-  useEffect(() => {
-    //console.log("FilterData")
-    let tags_array = [];
-    let lists_array = [];
-    let status_array = [];
-
-    tags_array =
-      typeof filterData.tags == "string"
-        ? filterData.tags.split(" ")
-        : filterData.tags;
-
-    lists_array =
-      typeof filterData.lists == "string"
-        ? filterData.lists.split(" ")
-        : filterData.lists;
-
-    status_array =
-      typeof filterData.status == "string"
-        ? filterData.status.split(" ")
-        : filterData.status;
-
-    setFilterRequest({
-      tags_ids: tags_array,
-      lists_ids: lists_array,
-      status: status_array,
-    });
-
-    filterData.status ? setSelectedStatus(filterData.status) : "";
-    filterData.tags ? setSelectedTags(filterData.tags) : "";
-    filterData.lists ? setSelectedLists(filterData.lists) : "";
-    setFilterPage(1);
-  }, [filterData]);
-
-  // filter by status
+  }, [filterParams]);
 
   useEffect(() => {
     //console.log("getFilter");
@@ -233,10 +217,7 @@ export default function ContactListTable(props) {
 
   const showMoreOption = () => {
     setActive(!isActive);
-  };
-
-  const showAddColumnList = () => {
-    setAddColumn(!isAddColumn);
+    setIsAssignTo(false);
   };
 
   async function deleteMultipleContacts() {
@@ -291,18 +272,77 @@ export default function ContactListTable(props) {
     }
     setAllSelected(!allSelected);
   };
+  const contactListColumns = [
+    {
+      title: __("Email", "mrm"),
+    },
+    {
+      title: __("First Name", "mrm"),
+    },
+    {
+      title: __("Last name", "mrm"),
+    },
+    {
+      title: __("List", "mrm"),
+    },
+    {
+      title: __("Last Activity", "mrm"),
+    },
+    {
+      title: __("Phone Number", "mrm"),
+    },
+    {
+      title: __("Source", "mrm"),
+    },
+    {
+      title: __("Action", "mrm"),
+    },
+  ];
+  const showLists = (event) => {
+    setIsLists(!isLists);
+    event.stopPropagation();
+    setIsLists(!isLists);
+    setIsTags(false);
+    setIsStatus(false);
+  };
+  const showTags = (event) => {
+    event.stopPropagation();
+    setIsTags(!isTags);
+    setIsLists(false);
+    setIsStatus(false);
+  };
+  const showStatus = (event) => {
+    event.stopPropagation();
+    setIsStatus(!isStatus);
+    setIsTags(false);
+    setIsLists(false);
+  };
+
+  const showListDropdown = () => {
+    setIsAssignTo(!isAssignTo);
+    setActive(!isActive);
+  };
 
   return (
     <>
       <div className="contact-list-header">
-        <div className="left-filters">
-          <Selectbox2
+        <div className="left-filters filter-box">
+          {/* <FilterBox
+            label="Lists"
+            name="lists"
+            options={lists}
+            values={contactData.lists}
+            placeholder="Select List"
+            tags={false}
+            multiple={false}
+            onSelect={onSelectLists}
+          /> */}
+          {/* <Selectbox2
             label=""
             name="lists"
             options={lists}
-            placeholder="Select Lists"
-            value={selectedLists}
-            tags={true}
+            placeholder="Lists"
+            tags={false}
             multiple={true}
             onSelect={onSelect}
             onRemove={onRemove}
@@ -311,8 +351,7 @@ export default function ContactListTable(props) {
             label=""
             name="tags"
             options={tags}
-            placeholder="Select Tags"
-            value={selectedTags}
+            placeholder="Tags"
             tags={true}
             multiple={true}
             onSelect={onSelect}
@@ -335,13 +374,65 @@ export default function ContactListTable(props) {
                 id: "unsubscribed",
               },
             ]}
-            placeholder="Select Status"
-            value={selectedStatus}
+            placeholder="Status"
+            value={status}
             tags={true}
             multiple={true}
             onSelect={onSelect}
             onRemove={onRemove}
-          />
+          /> */}
+
+          <div className="form-group left-filter">
+            <button
+              className={isLists ? "filter-btn show" : "filter-btn"}
+              onClick={showLists}
+            >
+              Lists
+            </button>
+            <FilterItems isActiveFilter={isLists} />
+          </div>
+          <div className="form-group left-filter">
+            <button
+              className={isTags ? "filter-btn show" : "filter-btn"}
+              onClick={showTags}
+            >
+              Tags
+            </button>
+            <FilterItems isActiveFilter={isTags} />
+          </div>
+          <div className="form-group left-filter">
+            <button
+              className={isStatus ? "filter-btn show" : "filter-btn"}
+              onClick={showStatus}
+            >
+              Status
+            </button>
+            <FilterItems isActiveFilter={isStatus} />
+          </div>
+
+          {/* <FilterBox
+            label="Status"
+            name="status"
+            options={[
+              {
+                title: "Pending",
+                id: "pending",
+              },
+              {
+                title: "Subscribed",
+                id: "subscribed",
+              },
+              {
+                title: "Unsubscribed",
+                id: "unsubscribed",
+              },
+            ]}
+            value={status}
+            tags={false}
+            placeholder="Status"
+            multiple={false}
+            onSelect={onSelectStatus}
+          /> */}
         </div>
 
         <div className="right-buttons">
@@ -375,23 +466,46 @@ export default function ContactListTable(props) {
                   <ExportIcon />
                   Export
                 </button> */}
-
-          <button className="more-option" onClick={showMoreOption}>
-            <ThreeDotIcon />
-
+          <div className="bulk-action">
+            <button className="more-option" onClick={showMoreOption}>
+              <ThreeDotIcon />
+            </button>
             <ul
               className={
                 isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
               }
             >
-              <li>Assign to list</li>
-              <li>Assign to tag</li>
-              <li>Assign to segment</li>
+              <li onClick={showListDropdown}>Assign to list</li>
+              <li onClick={showListDropdown}>Assign to tag</li>
+              <li onClick={showListDropdown}>Assign to segment</li>
               <li className="delete" onClick={deleteMultipleContacts}>
                 Delete
               </li>
             </ul>
-          </button>
+            <AssignedItems isActive={isAssignTo} />
+          </div>
+        </div>
+      </div>
+
+      <div
+        className={
+          selectedSection ? "selected-result" : "selected-result inactive"
+        }
+      >
+        <div className="selected-items">
+          <span>Product Feed</span>
+          <CrossIcon />
+        </div>
+        <div className="selected-items">
+          <span>Funnel</span>
+          <CrossIcon />
+        </div>
+        <div className="selected-items">
+          <span>WPVR</span>
+          <CrossIcon />
+        </div>
+        <div className="clear-all">
+          <span>Clear All</span>
         </div>
       </div>
 
@@ -424,6 +538,45 @@ export default function ContactListTable(props) {
               <th className="source">Source</th>
               <th className="action"></th>
             </tr>
+            {/* <button className="add-column" onClick={showAddColumnList}>
+              <PlusCircleIcon />
+              <span className="tooltip">Add Column</span>
+
+              <ul
+                className={
+                  isAddColumn ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                }
+              >
+                <li className="searchbar">
+                  <span class="pos-relative">
+                    <Search />
+                    <input
+                      type="search"
+                      name="column-search"
+                      placeholder="Search..."
+                    />
+                  </span>
+                </li>
+
+                <li className="list-title">Choose columns</li>
+
+                {contactListColumns.map((column, index) => {
+                  <li className="single-column">
+                    <ColumnList title={column.title} key={index} />
+                  </li>;
+                })}
+
+                <li className="button-area">
+                  <button className="soronmrm-btn outline default-btn">
+                    Default
+                  </button>
+                  <button className="soronmrm-btn outline cancel-btn">
+                    Cancel
+                  </button>
+                  <button className="soronmrm-btn save-btn">Save</button>
+                </li>
+              </ul>
+            </button> */}
           </thead>
           <tbody>
             {!contactData.length && (
@@ -449,8 +602,8 @@ export default function ContactListTable(props) {
           </tbody>
         </table>
       </div>
-      <div className="contact-list-footer">
-        {isFilter === 0 ? (
+      {totalPages > 1 && (
+        <div className="contact-list-footer">
           <Pagination
             currentPage={page}
             pageSize={perPage}
@@ -458,16 +611,8 @@ export default function ContactListTable(props) {
             totalCount={count}
             totalPages={totalPages}
           />
-        ) : (
-          <Pagination
-            currentPage={filterPage}
-            pageSize={filterPerPage}
-            onPageChange={setFilterPage}
-            totalCount={filterCount}
-            totalPages={filterTotalPages}
-          />
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }
