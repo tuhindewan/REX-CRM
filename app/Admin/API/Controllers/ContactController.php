@@ -337,7 +337,7 @@ class ContactController extends BaseController {
 		}
 
         try{
-            $delimiter = isset( $params['$delimiter'] ) && ! empty( $params['$delimiter'] ) ? $params['$delimiter'] : 'comma';
+            $delimiter = isset( $params['delimiter'] ) && ! empty( $params['delimiter'] ) ? $params['delimiter'] : 'comma';
 
             if ($delimiter == 'comma') {
                 $delimiter = ',';
@@ -351,7 +351,7 @@ class ContactController extends BaseController {
                 return $this->get_error_response( is_string( $import_res ) ? $import_res : __( 'Unknown error occurred', 'mrm' ), null, 500 );
             }
 
-            $this->import_file_location = $import_res['file'];
+            $this->import_file_location = isset( $import_res['file'] ) ? $import_res['file'] : "";
 
             $options = MRM_Importer::prepare_mapping_options_from_csv( $this->import_file_location, $import_res['delimiter'] );
 
@@ -360,8 +360,8 @@ class ContactController extends BaseController {
             }
             $result = array(
                 'headers'   => $options['headers'],
-                'fields'    => $options['fields'],
-                'file'      => $import_res['new_file_name']
+                'fields'    => isset( $options['fields'] ) ? $options['fields'] : "",
+                'file'      => isset( $import_res['new_file_name'] ) ? $import_res['new_file_name'] : ""
             );
             return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result );
 
@@ -390,7 +390,7 @@ class ContactController extends BaseController {
         
 
         try{
-            $delimiter = isset( $params['$delimiter'] ) && ! empty( $params['$delimiter'] ) ? $params['$delimiter'] : 'comma';
+            $delimiter = isset( $params['delimiter'] ) && ! empty( $params['delimiter'] ) ? $params['delimiter'] : 'comma';
 
             if ($delimiter == 'comma') {
                 $delimiter = ',';
@@ -413,8 +413,8 @@ class ContactController extends BaseController {
             }
             $result = array(
                 'headers'   => $options['headers'],
-                'fields'    => $options['fields'],
-                'file'      => $import_res['new_file_name']
+                'fields'    => isset( $options['fields'] ) ? $options['fields'] : "",
+                'file'      => isset( $import_res['new_file_name'] ) ? $import_res['new_file_name'] : ""
             );
             return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result );
 
@@ -703,8 +703,8 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params     = MRM_Common::get_api_params_values( $request );
-        
-        $success = MessageController::get_instance()->send_double_opt_in( $params['contact_id']  );
+        $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
+        $success    = MessageController::get_instance()->send_double_opt_in( $contact_id  );
         
         if( 1 == $success) {
             return $this->get_success_response("Double Optin email has been sent", 200);
