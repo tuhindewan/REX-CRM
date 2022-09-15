@@ -93,6 +93,7 @@ class Upgrade {
      * @since 1.0.0
      */
     private function requires_install() {
+        return true;
         $versions = $this->get_versions();
         return mmempty( 'current_version', $versions );
     }

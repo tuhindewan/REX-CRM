@@ -40,8 +40,8 @@ class MessageSchema implements Schema{
 
         return "CREATE TABLE IF NOT EXISTS {$table} (
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `interaction_id` BIGINT UNSIGNED NULL,
-                `ineraction_type` VARCHAR(50) NULL DEFAULT 'campaign',
+                `campaign_id` BIGINT UNSIGNED NULL,
+                `campaign_type` VARCHAR(50) NULL DEFAULT 'campaign',
                 `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'For future messaging process',
                 `contact_id` BIGINT UNSIGNED NULL COMMENT 'Set NULL on contact delete',
                 `sender_id` BIGINT(10) UNSIGNED NOT NULL DEFAULT 1,
@@ -57,7 +57,7 @@ class MessageSchema implements Schema{
                 `scheduled_at` TIMESTAMP NULL,
                 `created_at` TIMESTAMP NULL,
                 `updated_at` TIMESTAMP NULL,
-                INDEX `interaction_id_index` (`interaction_id` DESC),
+                INDEX `campaign_id_index` (`campaign_id` DESC),
                 INDEX `contact_id_index` (`contact_id` DESC)
              ) ";
     }

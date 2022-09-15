@@ -34,7 +34,7 @@ class CampaignSchema {
      * @var string
      * @since 1.0.0
      */
-    public static $mrm_emails_table = 'mrm_campaign_emails';
+    public static $mrm_table = 'mrm_campaign_emails';
 
 
     /**

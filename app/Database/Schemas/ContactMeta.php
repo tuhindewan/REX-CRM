@@ -41,11 +41,7 @@ class ContactMetaSchema implements Schema{
             `meta_key` VARCHAR(50) DEFAULT NULL,    
             `meta_value` longtext,
             `created_at` TIMESTAMP NULL,
-            `updated_at` TIMESTAMP NULL,
-            KEY `meta_key` (`meta_key`),
-            FOREIGN KEY (contact_id)
-            REFERENCES wp_mrm_contacts (id)
-            ON DELETE CASCADE
+            `updated_at` TIMESTAMP NULL
          ) ";
     }
 }
