@@ -208,7 +208,7 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (isFilter == 0) getData();
+    if (0 == isFilter) getData();
   }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
@@ -436,7 +436,7 @@ export default function ContactListTable(props) {
         </div>
 
         <div className="right-buttons">
-          {isFilter == 0 ? (
+          {!isFilter ? (
             <span className="search-section">
               <Search />
               <input
