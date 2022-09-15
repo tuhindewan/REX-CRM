@@ -10,7 +10,11 @@ function DynamicInput(props) {
 
   useEffect(() => {
     if (id) {
-      setServiceList(props.options.options);
+      if (undefined == props.options.options) {
+        props.options.options?.setServiceList(props.options.options);
+      } else {
+        setServiceList(props.options.options);
+      }
     }
   }, [id]);
 

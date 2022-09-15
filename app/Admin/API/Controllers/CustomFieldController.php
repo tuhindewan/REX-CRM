@@ -42,54 +42,54 @@ class CustomFieldController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
+        // Filed title validation
+        $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
+
+        if ( empty( $title ) ) {
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
+        }
+
+        $slug = sanitize_title( $title );
+
+        // Field type validation
+        $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
+
+        if ( empty( $type ) ) {
+            return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
+        }
+
+
+        if ( ! empty( $params['options'] ) ) {
+            $options = $params['options'];
+        }
+        
+        $placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
+
+        $meta = array();
+        if ( ! empty( $options ) ) {
+            $meta['options'] = $options;
+        }
+        if ( ! empty( $placeholder ) ) {
+            $meta['placeholder'] = $placeholder;
+        }
+        
+        $this->args = array(
+            'title'    => $title,
+            'slug'     => $slug,
+            'type'     => $type,
+            'meta'     => $meta
+        );
+
+        $field = new CustomFieldData( $this->args );
 
         // Field object create and insert or update to database
         try {
 
             if(isset( $params['field_id'] )){
                 $field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
-                $success = CustomFieldModel::update( $params, $field_id );
+
+                $success = CustomFieldModel::update( $field, $field_id );
             }else{
-
-                // Filed title validation
-                $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
-
-                if ( empty( $title ) ) {
-                    return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
-                }
-
-                $slug = sanitize_title( $title );
-
-                // Field type validation
-                $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
-
-                if ( empty( $type ) ) {
-                    return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
-                }
-
-
-                if ( ! empty( $params['options'] ) ) {
-                    $options = $params['options'];
-                }
-                
-                $placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
-        
-                $meta = array();
-                if ( ! empty( $options ) ) {
-                    $meta['options'] = $options;
-                }
-                if ( ! empty( $placeholder ) ) {
-                    $meta['placeholder'] = $placeholder;
-                }
-                
-                $this->args = array(
-                    'title'    => $title,
-                    'slug'     => $slug,
-                    'type'     => $type,
-                    'meta'     => $meta
-                );
-
-                $field = new CustomFieldData( $this->args );
 
                 $success = CustomFieldModel::insert( $field );
             }

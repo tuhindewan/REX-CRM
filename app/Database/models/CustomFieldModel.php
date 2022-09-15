@@ -53,16 +53,20 @@ class CustomFieldModel{
      * @return bool
      * @since 1.0.0
      */
-    public static function update( $args, $id )
+    public static function update( $field, $id )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
-        $args['updated_at'] = current_time('mysql');
-        unset($args['field_id']);
 
         try {
-            $wpdb->update( $fields_table, $args, array( 'id' => $id )
+            $wpdb->update( $fields_table, array(
+                'title'      => $field->get_title(),
+                'slug'       => $field->get_slug(),
+                'type'       => $field->get_type(),
+                'meta'       => $field->get_meta(),
+                'updated_at'    => current_time('mysql')
+                ), array( 'id' => $id )
             );
             return true;
         } catch(\Exception $e) {
