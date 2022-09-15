@@ -326,25 +326,27 @@ const Tags = () => {
                     }}
                   />
                 </span>
-                {/* show more options section */}
-                <button
-                  className="more-option"
-                  onClick={() => setShowMoreOptions(!showMoreOptions)}
-                >
-                  <ThreeDotIcon />
-
-                  <ul
-                    className={
-                      showMoreOptions
-                        ? "mintmrm-dropdown show"
-                        : "mintmrm-dropdown"
-                    }
+                <div className="bulk-action">
+                  {/* show more options section */}
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
                   >
-                    <li className="delete" onClick={deleteMultipleList}>
-                      Delete Selected
-                    </li>
-                  </ul>
-                </button>
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete" onClick={deleteMultipleList}>
+                        Delete Selected
+                      </li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="contact-list-body">

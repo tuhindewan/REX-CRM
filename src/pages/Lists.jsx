@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
+import SuccessfulNotification from "../components/SuccessfulNotification";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 
 const Lists = () => {
   // set navbar Buttons
@@ -44,11 +45,11 @@ const Lists = () => {
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
 
-   // order by which field
-   const [orderBy, setOrderBy] = useState("id");
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
 
-   // order type asc or desc
-   const [orderType, setOrderType] = useState("desc");
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
 
   // list values for sending to backend
   const [values, setValues] = useState({
@@ -74,6 +75,35 @@ const Lists = () => {
 
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
+
+  const [errors, setErrors] = useState({});
+
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+
+  // set navbar Buttons
+  useGlobalStore.setState({
+    navbarMarkup: (
+      <button
+        className="contact-save mintmrm-btn"
+        onClick={() => {
+          // if user is currently updating reset the fields so that add new list displays a blank form
+          if (editID != 0) {
+            setEditID(0);
+            setValues({
+              title: "",
+              data: "",
+            });
+          } else {
+            setShowCreate((prevShowCreate) => !prevShowCreate);
+          }
+        }}
+      >
+        + Add List
+      </button>
+    ),
+    hideGlobalNav: false,
+  });
 
   // Set values from list form
   const handleChange = (e) => {
@@ -132,11 +162,6 @@ const Lists = () => {
       ...values,
       slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
     });
-    // check if title is not empty
-    if (values["title"].length < 1) {
-      window.alert("Title can not be empty.");
-      return;
-    }
     try {
       if (editID != 0) {
         // update contact
@@ -163,7 +188,6 @@ const Lists = () => {
 
       const resJson = await res.json();
       if (resJson.code == 201) {
-        toggleRefresh();
         setValues({
           title: "",
           data: "",
@@ -171,9 +195,16 @@ const Lists = () => {
         });
         setShowCreate(false);
         setEditID(0);
+        setShowNotification("block");
+        setMessage(resJson.message);
+        setErrors({});
+        console.log(showNotification);
+        toggleRefresh();
       } else {
-        console.log(resJson);
-        window.alert(resJson.message);
+        setErrors({
+          ...errors,
+          list: resJson.message,
+        });
       }
     } catch (e) {}
   };
@@ -262,6 +293,7 @@ const Lists = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
+                    <p className="error-message">{errors?.list}</p>
                   </div>
                   <div className="form-group contact-input-field">
                     <label htmlFor="data" aria-required>
@@ -341,25 +373,27 @@ const Lists = () => {
                     }}
                   />
                 </span>
-                {/* show more options section */}
-                <button
-                  className="more-option"
-                  onClick={() => setShowMoreOptions(!showMoreOptions)}
-                >
-                  <ThreeDotIcon />
-
-                  <ul
-                    className={
-                      showMoreOptions
-                        ? "mintmrm-dropdown show"
-                        : "mintmrm-dropdown"
-                    }
+                <div className="bulk-action">
+                  {/* show more options section */}
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
                   >
-                    <li className="delete" onClick={deleteMultipleList}>
-                      Delete Selected
-                    </li>
-                  </ul>
-                </button>
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete" onClick={deleteMultipleList}>
+                        Delete Selected
+                      </li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="contact-list-body">
@@ -430,6 +464,7 @@ const Lists = () => {
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

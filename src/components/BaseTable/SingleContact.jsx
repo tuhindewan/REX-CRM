@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { deleteSingleContact } from "../../services/Contact";
+import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import { Link } from "react-router-dom";
+import Portal from "../Portal";
 //import PlusCircleIcon from "../Icons/PlusCircleIcon";
 
 export default function SingleContact(props) {
   const navigate = useNavigate();
   const [isActive, setActive] = useState(false);
+  const menuButtonRef = useRef(null);
 
   const showMoreOption = () => {
     setActive(!isActive);
@@ -117,6 +119,7 @@ export default function SingleContact(props) {
             setActive((prev) => !prev);
             setCurrentActive(contact.id);
           }}
+          ref={menuButtonRef}
         >
           <ThreeDotIcon />
           <ul
