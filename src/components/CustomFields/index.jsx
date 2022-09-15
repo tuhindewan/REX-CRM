@@ -13,7 +13,7 @@ const CustomFields = () => {
   useGlobalStore.setState({
     navbarMarkup: (
       <Link to="/custom-fields/create">
-        <button className="add-contact-btn soronmrm-btn ">
+        <button className="add-contact-btn mintmrm-btn ">
           <Plus /> Add Field
         </button>
       </Link>
@@ -39,7 +39,7 @@ const CustomFields = () => {
   return (
     <>
       <div className="contact-list-page">
-        <div className="soronmrm-container">
+        <div className="mintmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
               <div className="left-filters">
@@ -76,8 +76,8 @@ const CustomFields = () => {
                   <ul
                     className={
                       showMoreOptions
-                        ? "soronmrm-dropdown show"
-                        : "soronmrm-dropdown"
+                        ? "mintmrm-dropdown show"
+                        : "mintmrm-dropdown"
                     }
                   >
                     <li className="delete">Delete Selected</li>
@@ -91,7 +91,7 @@ const CustomFields = () => {
                   <thead>
                     <tr>
                       <th className="">
-                        <span class="soronmrm-checkbox no-title">
+                        <span class="mintmrm-checkbox no-title">
                           <input
                             type="checkbox"
                             name="bulk-select"

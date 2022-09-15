@@ -44,7 +44,7 @@ const BaseTable = () => {
   return (
     <>
       <div className="contact-list-page">
-        <div className="soronmrm-container">
+        <div className="mintmrm-container">
           <div className="contact-info-wrapper">
             <ContactCards
               source={<ContactProfile />}

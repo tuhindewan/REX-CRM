@@ -52,7 +52,7 @@ export default function SingleContact(props) {
     <tr>
       <td className="email-wrapper">
         <div className="email">
-          <span class="soronmrm-checkbox no-title">
+          <span class="mintmrm-checkbox no-title">
             <input
               type="checkbox"
               name={contact.id}
@@ -122,8 +122,8 @@ export default function SingleContact(props) {
           <ul
             className={
               currentActive == contact.id && isActive
-                ? "soronmrm-dropdown show"
-                : "soronmrm-dropdown"
+                ? "mintmrm-dropdown show"
+                : "mintmrm-dropdown"
             }
           >
             <li style={{ display: "flex" }} onClick={handleUpdate}>

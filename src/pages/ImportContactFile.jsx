@@ -68,12 +68,12 @@ export default function ImportContactFile() {
     console.log(resJson);
   }
   return (
-    <div className="soronmrm-import-page">
-      <div className="soronmrm-header">
+    <div className="mintmrm-import-page">
+      <div className="mintmrm-header">
         <div className="contact-details-breadcrumb import-contact-breadcrum">
           <div className="import-cotainer">
-            <div className="soronmrm-container">
-              <ul className="soronmrm-breadcrumb">
+            <div className="mintmrm-container">
+              <ul className="mintmrm-breadcrumb">
                 <li>
                   <a href="">Contact</a>
                 </li>
@@ -83,7 +83,7 @@ export default function ImportContactFile() {
           </div>
         </div>
       </div>
-      <div className="soronmrm-container">
+      <div className="mintmrm-container">
         <div className="import-wrapper">
           <ImportNavbar />
 
@@ -120,7 +120,7 @@ export default function ImportContactFile() {
               </div>
             </DragAndDrop>
             <div className="csv-save-button">
-              <button className="contact-save soronmrm-btn" onClick={uploadCSV}>
+              <button className="contact-save mintmrm-btn" onClick={uploadCSV}>
                 Upload
               </button>
             </div> 

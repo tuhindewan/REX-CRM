@@ -2,7 +2,7 @@
   margin-left: -20px;
 }
 
-.soronmrm {
+.mintmrm {
   background: #ffffff;
   position: relative;
 
@@ -69,7 +69,7 @@
   button[type="submit"],
   input[type="button"],
   input[type="submit"],
-  .soronmrm-btn,
+  .mintmrm-btn,
   .transition-3ms {
     transition: all 0.3s ease;
   }
@@ -80,7 +80,7 @@
   //-----button style----
   input[type="submit"],
   button[type="submit"],
-  .soronmrm-btn {
+  .mintmrm-btn {
     display: inline-block;
     border: 1px solid transparent;
     color: #fff;
@@ -166,14 +166,14 @@
     }
   }
 
-  .soronmrm-container {
+  .mintmrm-container {
     width: 100%;
     max-width: 1190px;
     padding: 0 15px;
     margin: 0 auto;
   }
 
-  .soronmrm-container.import-cotainer{
+  .mintmrm-container.import-cotainer{
     padding-bottom: 85px;
   }
 
@@ -249,4 +249,4 @@
       display: none;
     }
   }
-} //end soronmrm
+} //end mintmrm

@@ -32,7 +32,7 @@ export default function AllCampaigns() {
     <div className="campaign-index-page">
       <CampaignsNavbar />
       <div className="campaign-list-page">
-        <div className="soronmrm-container">
+        <div className="mintmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
               {/* <div className="left-filters">

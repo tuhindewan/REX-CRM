@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import queryString from "query-string";
 import ColumnList from "./ColumnList";
+import { Link } from "react-router-dom";
+import Plus from "../Icons/Plus";
 
 // Internal dependencies
 import Pagination from "../Pagination";
@@ -273,34 +275,7 @@ export default function ContactListTable(props) {
     }
     setAllSelected(!allSelected);
   };
-  const contactListColumns = [
-    {
-      title: __("Email", "mrm"),
-    },
-    {
-      title: __("First Name", "mrm"),
-    },
-    {
-      title: __("Last name", "mrm"),
-    },
-    {
-      title: __("List", "mrm"),
-    },
-    {
-      title: __("Last Activity", "mrm"),
-    },
-    {
-      title: __("Phone Number", "mrm"),
-    },
-    {
-      title: __("Source", "mrm"),
-    },
-    {
-      title: __("Action", "mrm"),
-    },
-  ];
   const showLists = (event) => {
-    setIsLists(!isLists);
     event.stopPropagation();
     setIsLists(!isLists);
     setIsTags(false);
@@ -324,9 +299,20 @@ export default function ContactListTable(props) {
     setActive(!isActive);
   };
 
+  const showAddColumnList = () => {
+    setAddColumn(!isAddColumn);
+  };
+
   return (
     <>
-      <div className="contact-list-header">
+      <div
+        className="contact-list-header"
+        onClick={() => {
+          setIsLists(false);
+          setIsTags(false);
+          setIsStatus(false);
+        }}
+      >
         <div className="left-filters filter-box">
           {/* <FilterBox
             label="Lists"
@@ -463,7 +449,7 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          {/* <button className="export-btn soronmrm-btn outline">
+          {/* <button className="export-btn mintmrm-btn outline">
                   <ExportIcon />
                   Export
                 </button> */}
@@ -473,7 +459,7 @@ export default function ContactListTable(props) {
             </button>
             <ul
               className={
-                isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>
@@ -510,98 +496,106 @@ export default function ContactListTable(props) {
         </div>
       </div>
 
-      <div className="contact-list-table">
-        <table>
-          <thead>
-            <tr>
-              <th className="email">
-                <span class="soronmrm-checkbox">
-                  <input
-                    type="checkbox"
-                    name="bulk-select"
-                    id="bulk-select"
-                    onChange={handleSelectAll}
-                    checked={allSelected}
-                  />
-                  <label for="bulk-select">Email</label>
-                </span>
-              </th>
+      <div className="pos-relative">
+        <div className="add-column">
+          <button className="add-column-btn" onClick={showAddColumnList}>
+            <PlusCircleIcon />
+            <span className="tooltip">Add Column</span>
+          </button>
+          <ul
+            className={
+              isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
+            }
+          >
+            <li className="searchbar">
+              <span class="pos-relative">
+                <Search />
+                <input
+                  type="search"
+                  name="column-search"
+                  placeholder="Search..."
+                />
+              </span>
+            </li>
 
-              <th className="first-name">First Name</th>
+            <li className="list-title">Choose columns</li>
 
-              <th className="last-name">Last Name</th>
+            <Link className="add-action" to="">
+              <Plus />
+              Add Column
+            </Link>
 
-              <th className="list">List</th>
-              <th className="tag">Tag</th>
-              <th className="last-activity">Last Activity</th>
-              <th className="status">Status</th>
-              <th className="phone-number">Phone Number</th>
-              <th className="source">Source</th>
-              <th className="action"></th>
-            </tr>
-            {/* <button className="add-column" onClick={showAddColumnList}>
-              <PlusCircleIcon />
-              <span className="tooltip">Add Column</span>
-
-              <ul
-                className={
-                  isAddColumn ? "soronmrm-dropdown show" : "soronmrm-dropdown"
-                }
-              >
-                <li className="searchbar">
-                  <span class="pos-relative">
-                    <Search />
-                    <input
-                      type="search"
-                      name="column-search"
-                      placeholder="Search..."
-                    />
-                  </span>
-                </li>
-
-                <li className="list-title">Choose columns</li>
-
-                {contactListColumns.map((column, index) => {
+            {/* {contactListColumns.map((column, index) => {
                   <li className="single-column">
                     <ColumnList title={column.title} key={index} />
                   </li>;
-                })}
+                })} */}
 
-                <li className="button-area">
-                  <button className="soronmrm-btn outline default-btn">
-                    Default
-                  </button>
-                  <button className="soronmrm-btn outline cancel-btn">
-                    Cancel
-                  </button>
-                  <button className="soronmrm-btn save-btn">Save</button>
-                </li>
-              </ul>
-            </button> */}
-          </thead>
-          <tbody>
-            {!contactData.length && (
+            {/* <li className="button-area">
+              <button className="mintmrm-btn outline default-btn">
+                Default
+              </button>
+              <button className="mintmrm-btn outline cancel-btn">
+                Cancel
+              </button>
+              <button className="mintmrm-btn save-btn">Save</button>
+            </li> */}
+          </ul>
+        </div>
+        <div className="contact-list-table">
+          <table>
+            <thead>
               <tr>
-                <td colspan="10" style={{ textAlign: "center" }}>
-                  No contact data found.
-                </td>
+                <th className="email">
+                  <span class="mintmrm-checkbox">
+                    <input
+                      type="checkbox"
+                      name="bulk-select"
+                      id="bulk-select"
+                      onChange={handleSelectAll}
+                      checked={allSelected}
+                    />
+                    <label for="bulk-select">Email</label>
+                  </span>
+                </th>
+
+                <th className="first-name">First Name</th>
+
+                <th className="last-name">Last Name</th>
+
+                <th className="list">List</th>
+                <th className="tag">Tag</th>
+                <th className="last-activity">Last Activity</th>
+                <th className="status">Status</th>
+                <th className="phone-number">Phone Number</th>
+                <th className="source">Source</th>
+                <th className="action"></th>
               </tr>
-            )}
-            {contactData.map((contact, idx) => {
-              return (
-                <SingleContact
-                  key={idx}
-                  contact={contact}
-                  toggleRefresh={toggleRefresh}
-                  currentActive={currentActive}
-                  setCurrentActive={setCurrentActive}
-                  handleSelectOne={handleSelectOne}
-                  selected={selected}
-                />
-              );
-            })}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {!contactData.length && (
+                <tr>
+                  <td colspan="10" style={{ textAlign: "center" }}>
+                    No contact data found.
+                  </td>
+                </tr>
+              )}
+              {contactData.map((contact, idx) => {
+                return (
+                  <SingleContact
+                    key={idx}
+                    contact={contact}
+                    toggleRefresh={toggleRefresh}
+                    currentActive={currentActive}
+                    setCurrentActive={setCurrentActive}
+                    handleSelectOne={handleSelectOne}
+                    selected={selected}
+                  />
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
       {totalPages > 1 && (
         <div className="contact-list-footer">

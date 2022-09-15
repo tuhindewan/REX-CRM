@@ -20,14 +20,14 @@ const Contacts = () => {
     navbarMarkup: (
       <>
         <Link to="/contacts/import/csv">
-          <button className="import-btn soronmrm-btn outline">
+          <button className="import-btn mintmrm-btn outline">
             <Import />
             Import
           </button>
         </Link>
 
         <Link to="/contacts/create">
-          <button className="add-contact-btn soronmrm-btn ">
+          <button className="add-contact-btn mintmrm-btn ">
             <Plus /> Add contact
           </button>
         </Link>

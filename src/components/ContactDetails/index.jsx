@@ -13,6 +13,9 @@ import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
+import FilterItems from "../BaseTable/FilterItems";
+import AddItems from "./AddItems";
+
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -33,6 +36,8 @@ export default function ContactDetails() {
   const [contactData, setContactData] = useState({});
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
+  const [selectTag, setSelectTag] = useState(false);
+  const [selectList, setSelectList] = useState(false);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -387,13 +392,20 @@ export default function ContactDetails() {
     toggleRefresh();
   };
 
+  const selectTags = () =>{
+    setSelectTag(!selectTag);
+  }
+  const selectLists = () =>{
+    setSelectList(!selectList);
+  }
+
   return (
     <>
-      <div className="soronmrm-contact-details">
+      <div className="mintmrm-contact-details">
         <div className="contact-details-banner">
           <div className="contact-details-breadcrumb">
-            <div className="soronmrm-container">
-              <ul className="soronmrm-breadcrumb">
+            <div className="mintmrm-container">
+              <ul className="mintmrm-breadcrumb">
                 <li>
                   <Link to={`../contacts`}>Contact</Link>
                 </li>
@@ -406,7 +418,7 @@ export default function ContactDetails() {
         </div>
 
         <div className="contact-details-wrapper">
-          <div className="soronmrm-container">
+          <div className="mintmrm-container">
             <div className="contact-details-header">
               <div className="contact-author-info">
                 {/* <div className="author-img">
@@ -474,7 +486,7 @@ export default function ContactDetails() {
 
                   <ul
                     className={
-                      isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                      isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
                     }
                   >
                     {contactData.status == "pending" ? (
@@ -634,7 +646,7 @@ export default function ContactDetails() {
                         <h4>
                           Basic Information
                           {/* <Link to="">
-                          <button className="add-contact-btn soronmrm-btn ">
+                          <button className="add-contact-btn mintmrm-btn ">
                             <Plus /> Add contact
                           </button>
                         </Link> */}
@@ -724,14 +736,14 @@ export default function ContactDetails() {
 
                       <div className="save-cancel-button">
                         <button
-                          className="soronmrm-btn outline cancel-btn"
+                          className="mintmrm-btn outline cancel-btn"
                           onClick={showEditMode}
                         >
                           Cancel
                         </button>
 
                         <button
-                          className="save-button soronmrm-btn"
+                          className="save-button mintmrm-btn"
                           onClick={handleUpdate}
                         >
                           Save
@@ -799,7 +811,7 @@ export default function ContactDetails() {
 
                 <hr />
 
-                <div className="tags">
+                <div className="tags" >
                   <h4 className="title">Tags</h4>
                   <div className="tag-wrapper">
                     {contactData?.tags?.map((tag, idx) => {
@@ -826,23 +838,27 @@ export default function ContactDetails() {
                     </button>
                   </div>
                   {openTagSelectBox && (
-                    <Selectbox
-                      label=""
-                      name="tags"
-                      options={tags}
-                      values={tagListsAdder.tags}
-                      placeholder="Select Tags"
-                      tags={true}
-                      multiple={true}
-                      onSelect={onSelect}
-                      onRemove={onRemove}
-                    />
+                    // <Selectbox
+                    //   label=""
+                    //   name="tags"
+                    //   options={tags}
+                    //   values={tagListsAdder.tags}
+                    //   placeholder="Select Tags"
+                    //   tags={true}
+                    //   multiple={true}
+                    //   onSelect={onSelect}
+                    //   onRemove={onRemove}
+                    // />
+                    <>
+                    <button className="choose-tag-btn" onClick={selectTags}>Choose Tags</button>
+                    <AddItems isActive={selectTag} />
+                    </>
                   )}
-                  {openTagSelectBox && (
+                  {/* {openTagSelectBox && (
                     <button className="add-list" onClick={handleAddTag}>
                       Add Tag
                     </button>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="lists">
@@ -874,23 +890,27 @@ export default function ContactDetails() {
                     </button>
                   </div>
                   {openListSelectBox && (
-                    <Selectbox
-                      label=""
-                      name="lists"
-                      options={lists}
-                      values={tagListsAdder.lists}
-                      placeholder="Select Lists"
-                      tags={true}
-                      multiple={true}
-                      onSelect={onSelect}
-                      onRemove={onRemove}
-                    />
+                    // <Selectbox
+                    //   label=""
+                    //   name="lists"
+                    //   options={lists}
+                    //   values={tagListsAdder.lists}
+                    //   placeholder="Select Lists"
+                    //   tags={true}
+                    //   multiple={true}
+                    //   onSelect={onSelect}
+                    //   onRemove={onRemove}
+                    // />
+                    <>
+                    <button className="choose-tag-btn" onClick={selectLists}>Choose Tags</button>
+                    <AddItems isActive={selectList} />
+                    </>
                   )}
-                  {openListSelectBox && (
+                  {/* {openListSelectBox && (
                     <button className="add-list" onClick={handleAddList}>
                       Add List
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
