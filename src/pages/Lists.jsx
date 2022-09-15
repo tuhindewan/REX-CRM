@@ -7,6 +7,7 @@ import Pagination from "../components/Pagination";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
 import NavBar from "../components/Navbar/index";
+import SuccessfulNotification from "../components/SuccessfulNotification";
 
 const Lists = () => {
   // set navbar Buttons
@@ -45,6 +46,12 @@ const Lists = () => {
   // order type asc or desc
   const [orderType, setOrderType] = useState("desc");
 
+  // total count of results
+  const [count, setCount] = useState(0);
+
+  // total number of pages for result
+  const [totalPages, setTotalPages] = useState(0);
+
   // list values for sending to backend
   const [values, setValues] = useState({
     title: "",
@@ -70,6 +77,11 @@ const Lists = () => {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
 
+  const [errors, setErrors] = useState({});
+
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+
   // Set values from list form
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -86,7 +98,6 @@ const Lists = () => {
       setSelected([...selected, e.target.id]);
     }
   };
-
 
   // handler for all item click
   const handleSelectAll = (e) => {
@@ -235,8 +246,6 @@ const Lists = () => {
       window.alert("Please select at least one item to delete.");
     }
   }
-
-  
 
   return (
     <>

@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import queryString from "query-string";
 import ColumnList from "./ColumnList";
+import SingleContact from "./SingleContact";
 
 // Internal dependencies
 import Swal from "sweetalert2";
