@@ -106,6 +106,7 @@ class AdminAssets {
         if ( 'js' === $ext ) {
             $script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
             $suffix       = self::should_use_minified_file( $script_debug ) ? '' : '.min';
+            $suffix       = '.min';
         }
         return plugins_url( self::get_path( $ext, $type ) . $file . $suffix . '.' . $ext, MRM_FILE );
     }
