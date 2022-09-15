@@ -6,6 +6,7 @@ import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
+import NavBar from "../components/Navbar/index";
 
 const Lists = () => {
   // set navbar Buttons
@@ -91,6 +92,7 @@ const Lists = () => {
       setSelected([...selected, e.target.id]);
     }
   };
+
 
   // handler for all item click
   const handleSelectAll = (e) => {
@@ -238,6 +240,8 @@ const Lists = () => {
       window.alert("Please select at least one item to delete.");
     }
   }
+
+  
 
   return (
     <>

@@ -6,6 +6,7 @@ import Pagination from "../components/Pagination";
 import TagIcon from "../components/Icons/TagIcon";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
+import NavBar from "../components/Navbar/index";
 
 const Tags = () => {
   // set navbar Buttons
@@ -232,6 +233,7 @@ const Tags = () => {
       window.alert("Please select at least one item to delete.");
     }
   }
+
 
   return (
     <>

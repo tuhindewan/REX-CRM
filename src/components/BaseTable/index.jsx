@@ -13,6 +13,7 @@ import Subscribe from "../Icons/Subscribe";
 import Unsubscribe from "../Icons/Unsubscribe";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
+import NavBar from "../Navbar/index";
 
 import "./style.css";
 
@@ -38,6 +39,7 @@ const BaseTable = () => {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
+    <NavBar refresh={refresh}/>
 
 
 
