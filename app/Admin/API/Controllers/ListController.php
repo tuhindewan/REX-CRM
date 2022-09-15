@@ -37,13 +37,14 @@ class ListController extends BaseController {
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
         }
 
+        $slug = isset( $params['slug'] ) ? $params['slug'] : "";
         // list avaiability check
-        $exist = ContactGroupModel::is_group_exist( $params['slug'], "lists" );
+        $exist = ContactGroupModel::is_group_exist( $slug, "lists" );
         if ( $exist && !isset($params['list_id'])) {
-            return $this->get_error_response( __( 'List is already available', 'mrm' ),  400);
+            return $this->get_error_response( __( 'List is already available', 'mrm' ),  200);
         }
 
         // List object create and insert or update to database
@@ -59,10 +60,10 @@ class ListController extends BaseController {
             if($success) {
                 return $this->get_success_response(__( 'List has been saved successfully', 'mrm' ), 201);
             }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
 
         } catch(Exception $e) {
-            return $this -> get_error_response(__( 'List is not valid', 'mrm' ), 400);
+            return $this -> get_error_response(__( 'List is not valid', 'mrm' ), 200);
         }
     }
 

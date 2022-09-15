@@ -56,11 +56,11 @@ class NoteData {
 
     public function __construct($args)
     {
-        $this->type         =  $args['type'];
-        $this->title        =  $args['title'];
-        $this->description  =  $args['description'];
-        $this->status       =  $args['status'];
-        $this->is_public    =  $args['is_public'];
+        $this->type         =  isset( $args['type'] ) ? $args['type'] : "";
+        $this->title        =  isset( $args['title'] ) ? $args['title'] : "";
+        $this->description  =  isset( $args['description'] ) ? $args['description'] : "";
+        $this->status       =  isset( $args['status'] ) ? $args['status'] : "";
+        $this->is_public    =  isset( $args['is_public'] ) ? $args['is_public'] : "";
     }
 
 

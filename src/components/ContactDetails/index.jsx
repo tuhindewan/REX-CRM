@@ -13,6 +13,9 @@ import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
+import { getCustomFields } from "../../services/CustomField";
+import InputNumber from "../InputNumber";
+import InputDate from "../InputDate";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -69,6 +72,8 @@ export default function ContactDetails() {
   // tags
   const [tags, setTags] = useState([]);
 
+  const [customFields, setCustomFields] = useState([]);
+
   const navigate = useNavigate();
 
   const toggleRefresh = () => {
@@ -86,10 +91,23 @@ export default function ContactDetails() {
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
+
+    getCustomFields().then((results) => {
+      setCustomFields(results.data);
+    });
+
     getData();
   }, [id, refresh]);
 
-  //console.log(contactData);
+  useEffect(() => {
+    
+
+    getCustomFields().then((results) => {
+      setCustomFields(results.data);
+    });
+
+  }, []);
+
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
     : contactData.created_at;
@@ -124,7 +142,6 @@ export default function ContactDetails() {
     "December",
   ];
 
-  //console.log(lastUpdate)
 
   const dateFormat = new Date(lastUpdate);
   const createDate = new Date(contactData.created_at);
@@ -203,19 +220,7 @@ export default function ContactDetails() {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({
-          email: contactData.email,
-          first_name: contactData.first_name,
-          last_name: contactData.last_name,
-          meta_fields: {
-            phone_number: contactData?.meta_fields?.phone_number,
-            address: contactData?.meta_fields?.address,
-            gender: contactData?.meta_fields?.gender,
-            timezone: contactData?.meta_fields?.timezone,
-            company: contactData?.meta_fields?.company,
-            designation: contactData?.meta_fields?.designation,
-          },
-        }),
+        body: JSON.stringify(contactData),
       }
     );
     toggleRefresh();
@@ -274,6 +279,7 @@ export default function ContactDetails() {
   // Set values from contact form
   const handleChange = (event) => {
     const { name, value } = event.target;
+
     validate(event, name, value);
     setContactData((prevState) => ({
       ...prevState,
@@ -284,7 +290,6 @@ export default function ContactDetails() {
   const handleMetaChange = (e) => {
     const { name, value } = e.target;
     validate(e, name, value);
-
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
@@ -489,7 +494,7 @@ export default function ContactDetails() {
                       return (
                         <>
                           {contactData.status != status && (
-                            <li onClick={() => handleStatus(status)}>
+                            <li key={index} onClick={() => handleStatus(status)}>
                               {status.charAt(0).toUpperCase() + status.slice(1)}
                             </li>
                           )}
@@ -569,6 +574,14 @@ export default function ContactDetails() {
                         </span>
                       </li>
                       <li>
+                      <span className="title">Date of Birth</span>
+                      <span className="title-value">
+                        {contactData?.meta_fields?.date_of_birth
+                          ? contactData?.meta_fields?.date_of_birth
+                          : "-"}
+                      </span>
+                    </li>
+                      <li>
                         <span className="title">Address</span>
                         <span className="title-value">
                           {contactData?.meta_fields?.address
@@ -576,14 +589,7 @@ export default function ContactDetails() {
                             : "-"}
                         </span>
                       </li>
-                      {/* <li>
-                      <span className="title">Date of Birth</span>
-                      <span className="title-value">
-                        {contactData?.meta_fields?.date_of_birth
-                          ? contactData?.meta_fields?.date_of_birth
-                          : "-"}
-                      </span>
-                    </li> */}
+                      
                     </ul>
                     <ul className="other-detail-info">
                       <h4>Other</h4>
@@ -627,6 +633,24 @@ export default function ContactDetails() {
                           {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
                         </span>
                       </li>
+
+
+                      {customFields.map((field) => {
+                      return (
+                        <>
+                          <li>
+                            <span className="title">{field.title}</span>
+                            <span className="title-value">
+                              {contactData?.meta_fields?.[field.slug]
+                                ? contactData?.meta_fields?.[field.slug]
+                                : "-"}
+                            </span>
+                          </li>
+                          
+                        </>
+                      );
+                      })}
+                      
                     </ul>
 
                     <div className="profile-edit-field">
@@ -667,6 +691,12 @@ export default function ContactDetails() {
                             error={errors?.phone_number}
                             value={contactData?.meta_fields?.phone_number}
                           />
+                          <InputDate 
+                          name="date_of_birth"
+                          label="Date of Birth"
+                          handleChange={handleMetaChange}
+                          value={contactData?.meta_fields?.date_of_birth} 
+                          />
                         </div>
                         <div className="adress-info-edit">
                           <h4>Address</h4>
@@ -682,13 +712,7 @@ export default function ContactDetails() {
                             {/*<Selectbox label="Country" index="country" />*/}
                           </div>
                         </div>
-                        {/* <div className="birth-date-info">
-                        <h4>Date of Birth</h4>
-                        <div className="month-day-info">
-                          <InputNumber label="Month" />
-                          <InputNumber label="Year" />
-                        </div>
-                      </div> */}
+                        
                       </div>
                       <div className="other-info-edit">
                         <h4>Other</h4>
@@ -719,6 +743,41 @@ export default function ContactDetails() {
                             value={contactData?.meta_fields?.timezone}
                           />
                           {/*<Selectbox label="Designation" index="designation" />*/}
+
+                          {customFields.map((field) => {
+                          return (
+                            <>
+
+                              {field.type == 'text' && (
+                                <InputItem
+                                name={field.slug}
+                                label={field.title}
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.[field.slug]}
+                                />
+                              )}
+
+                              {field.type == 'number' && (
+                                <InputNumber
+                                name={field.slug}
+                                label={field.title}
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.[field.slug]}
+                                />
+                              )}
+
+                              {field.type == 'date' && (
+                                <InputDate
+                                name={field.slug}
+                                label={field.title}
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.[field.slug]}
+                                />
+                              )}
+                              
+                            </>
+                          );
+                          })}
                         </div>
                       </div>
 
