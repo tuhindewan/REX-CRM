@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import Search from "../Icons/Search";
-import Portal from "../Portal";
-import HoverMenu from "../HoverMenu";
-import InputItem from "../InputItem";
 
 export default function CustomSelect(props) {
   const {
@@ -22,6 +19,7 @@ export default function CustomSelect(props) {
     allowNewCreate = false,
   } = props;
   const buttonRef = useRef(null);
+  const inputRef = useRef(null);
 
   // store retrieved
   const [items, setItems] = useState([]);
@@ -36,14 +34,19 @@ export default function CustomSelect(props) {
     setActive((prev) => !prev);
   }
 
-  function handleChange(e) {
-    setSearch(e.target.value);
-    setQuery(`&search=${e.target.value}`);
+  function handleSearch(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const value = e.target.value;
+    setSearch(value);
+    if (value.length >= 3) setQuery(`&search=${value}`);
+    else setQuery("");
   }
 
   // at first page load get all the available lists
-  // also get lists if the page or perpage or search item changes
   useEffect(() => {
+    console.log("useeffect");
+
     async function getItems() {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
@@ -58,7 +61,7 @@ export default function CustomSelect(props) {
 
   return (
     <>
-      <div className="mrm-custom-select-container">
+      <div className="mrm-custom-select-container" key="container">
         <button
           className={
             active ? "mrm-custom-select-btn show" : "mrm-custom-select-btn"
@@ -66,62 +69,54 @@ export default function CustomSelect(props) {
           onClick={toggleActive}
           ref={buttonRef}
         >
-          {placeholder}
+          {placeholder} lkasjflksadfjlsdkajflkjsf
         </button>
+
+        <ul
+          className={
+            active
+              ? "mintmrm-dropdown mrm-custom-select-dropdown show"
+              : "mintmrm-dropdown mrm-custom-select-dropdown"
+          }
+        >
+          <li className="searchbar" key="hello">
+            <span class="pos-relative">
+              <Search />
+              <input
+                type="search"
+                name="column-search"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearch}
+              />
+            </span>
+          </li>
+          <li className="list-title" key="world">
+            {listTitle}
+          </li>
+
+          {/* Render all elements */}
+          {items?.length > 0 &&
+            items.map((item, index) => {
+              return (
+                <li key={index} className="single-column">
+                  <span class="mintmrm-checkbox">
+                    <input type="checkbox" name="status" id="status" />
+                    <label for="status">{item.title}</label>
+                  </span>
+                </li>
+              );
+            })}
+          {items?.length == 0 && (
+            <>
+              <li className="not-found">No data found</li>
+              <button className="mrm-custom-select-add-btn">
+                + Add new list "{search}"
+              </button>
+            </>
+          )}
+        </ul>
       </div>
-      <Portal>
-        <HoverMenu elementRef={buttonRef} x={55} y={5}>
-          <div className="mrm-custom-select-dropdown-container">
-            <ul
-              className={
-                active
-                  ? "mintmrm-dropdown custom-select-dropdown show"
-                  : "mintmrm-dropdown custom-select-dropdown"
-              }
-            >
-              <li className="searchbar" key="hello">
-                <span class="pos-relative">
-                  <Search />
-                  {/* <input
-                    type="text"
-                    key="lskdjfaalskdjf"
-                    placeholder={placeholder}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  /> */}
-                  <InputItem
-                    label="hello"
-                    value={search}
-                    handleChange={handleChange}
-                  />
-                </span>
-              </li>
-              <li className="list-title" key="world">
-                {listTitle}
-              </li>
-
-              {/* Render all elements */}
-              {items?.length > 0 &&
-                items.map((item, index) => {
-                  return (
-                    <li key={index} className="single-column">
-                      <span class="mintmrm-checkbox">
-                        <input type="checkbox" name="status" id="status" />
-                        <label for="status">{item.title}</label>
-                      </span>
-                    </li>
-                  );
-                })}
-
-              {/* {contactListColumns.map((column, index) => {
-              <li className="single-column">
-                <ColumnList title={column.title} key={index} />
-              </li>;
-            })} */}
-            </ul>
-          </div>
-        </HoverMenu>
-      </Portal>
     </>
   );
 }
