@@ -37,32 +37,6 @@ const BaseTable = () => {
     getTotal();
   }, [refresh]);
 
-  const contactListColumns = [
-    {
-      title: __("Email", "mrm"),
-    },
-    {
-      title: __("First Name", "mrm"),
-    },
-    {
-      title: __("Last name", "mrm"),
-    },
-    {
-      title: __("List", "mrm"),
-    },
-    {
-      title: __("Last Activity", "mrm"),
-    },
-    {
-      title: __("Phone Number", "mrm"),
-    },
-    {
-      title: __("Source", "mrm"),
-    },
-    {
-      title: __("Action", "mrm"),
-    },
-  ];
 
   return (
     <>
@@ -93,45 +67,7 @@ const BaseTable = () => {
 
           <div className="contact-list-area">
             <div className="contact-list-body">
-              {/* <button className="add-column" onClick={showAddColumnList}>
-                <PlusCircleIcon />
-                <span className="tooltip">Add Column</span>
-
-                <ul
-                  className={
-                    isAddColumn ? "soronmrm-dropdown show" : "soronmrm-dropdown"
-                  }
-                >
-                  <li className="searchbar">
-                    <span class="pos-relative">
-                      <Search />
-                      <input
-                        type="search"
-                        name="column-search"
-                        placeholder="Search..."
-                      />
-                    </span>
-                  </li>
-
-                  <li className="list-title">Choose columns</li>
-
-                  {contactListColumns.map((column, index) => {
-                    <li className="single-column">
-                      <ColumnList title={column.title} key={index} />
-                    </li>;
-                  })}
-
-                  <li className="button-area">
-                    <button className="soronmrm-btn outline default-btn">
-                      Default
-                    </button>
-                    <button className="soronmrm-btn outline cancel-btn">
-                      Cancel
-                    </button>
-                    <button className="soronmrm-btn save-btn">Save</button>
-                  </li>
-                </ul>
-              </button> */}
+              
 
               <ContactListTable refresh={refresh} setRefresh={setRefresh} />
             </div>
