@@ -44,6 +44,12 @@ const Lists = () => {
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
 
+   // order by which field
+   const [orderBy, setOrderBy] = useState("id");
+
+   // order type asc or desc
+   const [orderType, setOrderType] = useState("desc");
+
   // list values for sending to backend
   const [values, setValues] = useState({
     title: "",
@@ -308,6 +314,8 @@ const Lists = () => {
                   tags={false}
                   placeholder="Field"
                   multiple={false}
+                  onSelect={handleOrderBy}
+                  onRemove={handleOrderBy}
                 />
               </div>
               <div className="right-buttons">
