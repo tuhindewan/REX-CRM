@@ -198,7 +198,6 @@
 
         .select-btn.show:before {
           transform: rotate(225deg);
-          
         }
 
         .select-btn.selected {
@@ -244,6 +243,30 @@
       display: flex;
       flex-flow: row wrap;
       justify-content: end;
+    }
+
+    .wordpress-import-section {
+      padding: 0px 25px 30px 25px;
+      p {
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 18px;
+        color: #344054;
+        padding-bottom: 15px;
+      }
+      .mintmrm-checkbox {
+        margin-bottom: 20px;
+        label {
+          font-weight: 400;
+          font-size: 15px;
+          line-height: 18px;
+          color: #6a707c;
+        }
+      }
+      .mintmrm-checkbox:last-child{
+        margin-bottom: 0;
+      }
+
     }
 
     .select-field-table {

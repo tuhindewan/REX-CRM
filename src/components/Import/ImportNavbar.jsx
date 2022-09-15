@@ -33,6 +33,15 @@ export default function ImportNavbar() {
             Import From MailChimp
           </button>
         </Link>
+        <Link to="/contacts/import/wordpress">
+          <button
+            className={`mintmrm-btn upload-button ${
+              location.pathname.includes("wordpress") ? "" : "outline"
+            }`}
+          >
+            Wordpress users
+          </button>
+        </Link>
       </div>
     </>
   );
