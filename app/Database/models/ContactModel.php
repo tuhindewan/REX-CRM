@@ -446,26 +446,24 @@ class ContactModel{
             $select_query = $wpdb->prepare("SELECT * FROM $contact_table
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
             LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
-            WHERE 1=1  $and $my_query
-            AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+            WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%')
+                 `stage` LIKE '%$search%') $and $my_query
                  GROUP BY $contact_table.id
                 LIMIT $offset, $limit
             " );
             
             $query_results = $wpdb->get_results( $select_query );
 
-
             $count_query = $wpdb->prepare("SELECT COUNT(*) AS total FROM $contact_table
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
             LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
-            WHERE 1=1 $and $my_query
-            AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+            WHERE 
+            (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%')
+                 `stage` LIKE '%$search%') $and $my_query
                 GROUP BY $contact_table.id
             " );
 

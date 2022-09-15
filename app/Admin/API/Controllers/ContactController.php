@@ -250,12 +250,12 @@ class ContactController extends BaseController {
         $isTag = 0;
         $isList = 0;
 
-        if( isset( $params['tags'] ) ){
+        if( isset($params['tags'], $params['contact_id']) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
             $isTag = 1;
         }
 
-        if( isset( $params['lists'] ) ){
+        if( isset($params['tags'], $params['contact_id']) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = 1;
         }
@@ -950,11 +950,14 @@ class ContactController extends BaseController {
 
         $contacts = ContactModel::get_filtered_contacts( $status_arr, $tags_ids, $lists_ids, $perPage, $offset, $search );
         
-        $contacts['data'] = array_map( function( $contact ){
-            $contact = TagController::get_tags_to_contact( $contact );
-            $contact = ListController::get_lists_to_contact( $contact );
-            return $contact;
-        }, $contacts['data'] );
+        if(isset($contacts['data'])){
+            $contacts['data'] = array_map( function( $contact ){
+                $contact = TagController::get_tags_to_contact( $contact );
+                $contact = ListController::get_lists_to_contact( $contact );
+                return $contact;
+            }, $contacts['data'] );
+        }
+        
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }
