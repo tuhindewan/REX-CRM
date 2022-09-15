@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from "react";
-import {
-  useNavigate,
-  useSearchParams,
-  createSearchParams,
-  useParams,
-  useLocation,
-} from "react-router-dom";
 import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 // Internal dependencies
-import Pagination from "../Pagination";
-import SingleContact from "./SingleContact";
-import FilterBox from "../Filterbox";
-import Search from "../Icons/Search";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Swal from "sweetalert2";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import Swal from "sweetalert2";
+import Search from "../Icons/Search";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Pagination from "../Pagination";
 import Selectbox2 from "../Selectbox2";
+import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;

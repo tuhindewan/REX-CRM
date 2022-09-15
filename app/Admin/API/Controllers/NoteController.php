@@ -6,6 +6,7 @@ use Mint\MRM\DataBase\Models\NoteModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\DataStores\NoteData;
 use MRM\Data\MRM_Note;
 use MRM\Common\MRM_Common;
 
@@ -34,6 +35,9 @@ class NoteController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         
+        $contact_id = isset($params['contact_id']) ? $params['contact_id'] : "";
+        $note_id    = isset($params['note_id']) ? $params['note_id'] : "";
+
         $notes = isset( $params['notes'] ) ? $params['notes'] : array();
         // Note Title validation
         $title = isset( $notes['title'] ) ? sanitize_text_field( $notes['title'] ) : '';
@@ -55,11 +59,11 @@ class NoteController extends BaseController {
 
         // Note object create and insert or update to database
         try {
-            $note = new MRM_Note( $notes );
-            if(isset($params['note_id'])){
-                $success = NoteModel::update( $note, $params['contact_id'], $params['note_id'] );
+            $note = new NoteData( $notes );
+            if($note_id){
+                $success = NoteModel::update( $note, $contact_id, $note_id );
             }else{
-                $success = NoteModel::insert( $note, $params['contact_id'] );
+                $success = NoteModel::insert( $note, $contact_id );
             }
 
             if($success) {
