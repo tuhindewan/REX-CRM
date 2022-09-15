@@ -52,7 +52,6 @@ class CustomFieldController extends BaseController {
 
         $slug = sanitize_title( $title );
         $primary_fields = Constants::$primary_fields;
-        error_log(print_r(in_array( $slug, $primary_fields ), 1));
         $exist = CustomFieldModel::is_field_exist( $slug );
 
         if ( $exist && !isset($params['field_id'])) {
