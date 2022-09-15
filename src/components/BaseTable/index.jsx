@@ -2,6 +2,9 @@ import { __ } from "@wordpress/i18n";
 import React, { useEffect, useState } from "react";
 
 import ContactCards from "../ContactCards/index";
+import PlusCircleIcon from "../Icons/PlusCircleIcon"
+import Search from "../Icons/Search";
+import ColumnList from "../BaseTable/ColumnList"
 
 import { useLocation } from "react-router-dom";
 import ContactProfile from "../Icons/ContactProfile";
@@ -28,14 +31,14 @@ const BaseTable = () => {
       const resJson = await res.json();
       setCountData(resJson);
     }
+    getTotal();
+  }, [refresh]);
 
     if ("contact-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
 
-    getTotal();
-  }, [refresh]);
 
 
   return (
@@ -69,7 +72,10 @@ const BaseTable = () => {
             <div className="contact-list-body">
               
 
-              <ContactListTable refresh={refresh} setRefresh={setRefresh} />
+              <ContactListTable 
+                refresh = {refresh}
+                setRefresh= {setRefresh}
+              />
             </div>
           </div>
         </div>
