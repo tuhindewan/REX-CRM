@@ -427,9 +427,13 @@ class ContactController extends BaseController {
     public function import_contacts_raw_get_attrs( WP_REST_Request $request ) 
     {
         try{
+<<<<<<<<< Temporary merge branch 1
             // Get parameters
             $params = MRM_Common::get_api_params_values($request);
             $raw = isset($params['raw']) ? $params['raw']: "";
+=========
+            $delimiter = isset( $params['delimiter'] ) && ! empty( $params['delimiter'] ) ? $params['delimiter'] : 'comma';
+>>>>>>>>> Temporary merge branch 2
 
             error_log(print_r($raw,1));
             // check for least number of characters
@@ -445,7 +449,6 @@ class ContactController extends BaseController {
             }
 
             $result = array(
-                'raw' => $array, // need to send the data back to the user for using in actual importing
                 'headers'   => $headers,
                 'fields'    => Constants::$contacts_attrs,
             );
