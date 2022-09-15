@@ -449,7 +449,7 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          {/* <button className="export-btn soronmrm-btn outline">
+          {/* <button className="export-btn mintmrm-btn outline">
                   <ExportIcon />
                   Export
                 </button> */}
@@ -459,7 +459,7 @@ export default function ContactListTable(props) {
             </button>
             <ul
               className={
-                isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>
@@ -504,7 +504,7 @@ export default function ContactListTable(props) {
           </button>
           <ul
             className={
-              isAddColumn ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+              isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
             }
           >
             <li className="searchbar">
@@ -532,13 +532,13 @@ export default function ContactListTable(props) {
                 })} */}
 
             {/* <li className="button-area">
-              <button className="soronmrm-btn outline default-btn">
+              <button className="mintmrm-btn outline default-btn">
                 Default
               </button>
-              <button className="soronmrm-btn outline cancel-btn">
+              <button className="mintmrm-btn outline cancel-btn">
                 Cancel
               </button>
-              <button className="soronmrm-btn save-btn">Save</button>
+              <button className="mintmrm-btn save-btn">Save</button>
             </li> */}
           </ul>
         </div>
@@ -547,7 +547,7 @@ export default function ContactListTable(props) {
             <thead>
               <tr>
                 <th className="email">
-                  <span class="soronmrm-checkbox">
+                  <span class="mintmrm-checkbox">
                     <input
                       type="checkbox"
                       name="bulk-select"

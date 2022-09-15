@@ -140,7 +140,7 @@
         position: relative;
       }
 
-      .soronmrm-dropdown {
+      .mintmrm-dropdown {
         width: 315px;
         left: -2px;
         top: calc(100% + 20spx);
@@ -162,7 +162,7 @@
           }
         }
       }
-      //   .soronmrm-checkbox {
+      //   .mintmrm-checkbox {
       //     display: block;
       //     padding: 10px 0;
       // }
@@ -227,7 +227,7 @@
           cursor: pointer;
           margin-left: 12px;
         }
-        .assigned-to.soronmrm-dropdown {
+        .assigned-to.mintmrm-dropdown {
           width: 332px !important;
 
           .list-title {
@@ -361,7 +361,7 @@
         }
       }
 
-      .soronmrm-dropdown {
+      .mintmrm-dropdown {
         width: 315px;
         right: -2px;
         top: calc(100% - 5px);
@@ -493,10 +493,10 @@
             line-height: 20px;
             cursor: pointer;
           }
-          .soronmrm-checkbox label:before {
+          .mintmrm-checkbox label:before {
             top: 1px;
           }
-          .soronmrm-checkbox label:after {
+          .mintmrm-checkbox label:after {
             top: 7px;
           }
         }

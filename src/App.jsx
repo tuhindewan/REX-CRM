@@ -7,7 +7,7 @@ import Header from "./components/Navbar/";
 
 const App = () => {
   return (
-    <div className="soronmrm">
+    <div className="mintmrm">
       <ReactFlowProvider>
         <HashRouter>
           <>
@@ -24,7 +24,7 @@ const App = () => {
             </Routes>
           </>
         </HashRouter>
-        {/* <div className="soronmrm-container">
+        {/* <div className="mintmrm-container">
           <DeletePopup/>
         </div>
         <SuccessfulNotification/> */}

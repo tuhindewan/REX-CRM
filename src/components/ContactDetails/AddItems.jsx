@@ -9,8 +9,8 @@ export default function AddItems(props) {
     <ul
       className={
         props.isActive
-          ? "assigned-to soronmrm-dropdown show"
-          : "assigned-to soronmrm-dropdown"
+          ? "assigned-to mintmrm-dropdown show"
+          : "assigned-to mintmrm-dropdown"
       }
     >
       <li className="searchbar">

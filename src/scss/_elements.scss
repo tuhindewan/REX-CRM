@@ -6,15 +6,15 @@
 //6. select2 style
 //7. alert style
 //8. hamburger style
-//9. soronmrm dropdown
-//10. soronmrm delete alert modal
+//9. mintmrm dropdown
+//10. mintmrm delete alert modal
 //11. funnel loader
 //12. dot animation
 //13. datepicker calender style
 //14. breadcrumb style
 
 //------1. checkbox style-------
-.soronmrm-checkbox {
+.mintmrm-checkbox {
   input[type="checkbox"] {
     display: none;
   }
@@ -73,7 +73,7 @@
 }
 
 //----2. radio button style-------
-.soronmrm-radiobtn {
+.mintmrm-radiobtn {
   input[type="radio"] {
     display: none;
   }
@@ -128,7 +128,7 @@
 }
 
 //---3. tooltip---
-.soronmrm-tooltip {
+.mintmrm-tooltip {
   display: inline-block;
   position: relative;
   padding: 0px 3px 2px;
@@ -171,7 +171,7 @@
 }
 
 //--4. pagination---
-.soronmrm-pagination {
+.mintmrm-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,7 +218,7 @@
 }
 
 //---5. loader----
-.soronmrm-loader {
+.mintmrm-loader {
   border: 2px solid #8265c5;
   border-radius: 50%;
   border-top: 2px solid #fff;
@@ -247,7 +247,7 @@
 }
 
 //-------6. select2 style-------
-.soronmrm-select2-selectbox {
+.mintmrm-select2-selectbox {
   .select2-container--default .select2-selection--single {
     border: 1px solid #e4e6eb;
     border-radius: 6px;
@@ -440,8 +440,8 @@
   }
 }
 
-//-------7. soronmrm alert style-----
-.soronmrm .soronmrm-alert {
+//-------7. mintmrm alert style-----
+.mintmrm .mintmrm-alert {
   color: #383d41;
   text-transform: capitalize;
   font-size: 13px;
@@ -456,7 +456,7 @@
     border: 1px solid #d6d8db;
   }
 
-  &.soronmrm-success {
+  &.mintmrm-success {
     color: #269c41;
 
     &.box {
@@ -465,7 +465,7 @@
     }
   }
 
-  &.soronmrm-error {
+  &.mintmrm-error {
     color: #d63342;
 
     &.box {
@@ -474,7 +474,7 @@
     }
   }
 
-  &.soronmrm-warn {
+  &.mintmrm-warn {
     color: #856404;
 
     &.box {
@@ -485,7 +485,7 @@
 }
 
 //-------8. hamburger------
-.soronmrm-hamburger {
+.mintmrm-hamburger {
   display: block;
   width: 20px;
   height: 14px;
@@ -506,8 +506,8 @@
   }
 }
 
-//------9. soronmrm dropdown-------
-ul.soronmrm-dropdown {
+//------9. mintmrm dropdown-------
+ul.mintmrm-dropdown {
   position: absolute;
   background: #fff;
   right: 0;
@@ -675,8 +675,8 @@ ul.soronmrm-dropdown {
   }
 }
 
-//--------10. soronmrm delete alert modal-----
-.soronmrm-delete-alert-wrapper {
+//--------10. mintmrm delete alert modal-----
+.mintmrm-delete-alert-wrapper {
   position: fixed;
   top: 0;
   right: 0;
@@ -691,14 +691,14 @@ ul.soronmrm-dropdown {
   justify-content: center;
   // display: none;
 
-  .soronmrm-delete-confirmation {
+  .mintmrm-delete-confirmation {
     background: #fff;
     box-shadow: 0 1px 34px rgba(0, 0, 0, 0.06);
     border-radius: 10px;
     // padding: 30px 20px;
     width: 100%;
     max-width: 514px;
-    animation: soronmrm-bounce 0.3s;
+    animation: mintmrm-bounce 0.3s;
 
     .delete-confirmation-header {
       background-color: #f9fafb;
@@ -769,7 +769,7 @@ ul.soronmrm-dropdown {
     }
   }
 
-  .soronmrm-delete-confirm-btn {
+  .mintmrm-delete-confirm-btn {
     display: flex;
     flex-flow: row;
     align-items: center;
@@ -809,15 +809,15 @@ ul.soronmrm-dropdown {
     }
   }
 }
-.soronmrm-delete-alert-wrapper.inactive {
+.mintmrm-delete-alert-wrapper.inactive {
   display: none;
 }
 
-.folded .soronmrm-delete-alert-wrapper {
+.folded .mintmrm-delete-alert-wrapper {
   width: calc(100% - 36px);
 }
 
-@keyframes soronmrm-bounce {
+@keyframes mintmrm-bounce {
   0% {
     transform: scale(0.7);
   }
@@ -901,13 +901,13 @@ ul.soronmrm-dropdown {
 }
 
 @media only screen and (max-width: 960px) {
-  .soronmrm-delete-alert-wrapper {
+  .mintmrm-delete-alert-wrapper {
     width: calc(100% - 35px);
   }
 }
 
 @media only screen and (max-width: 782px) {
-  .soronmrm-delete-alert-wrapper {
+  .mintmrm-delete-alert-wrapper {
     width: 100%;
   }
 }
@@ -1056,7 +1056,7 @@ ul.soronmrm-dropdown {
 }
 
 //--------14.breadcrumb style----------
-.soronmrm-breadcrumb {
+.mintmrm-breadcrumb {
   display: flex;
   align-items: center;
 
@@ -1109,23 +1109,23 @@ ul.soronmrm-dropdown {
 }
 
 //--------------
-.soronmrm-row {
+.mintmrm-row {
   display: flex;
   flex-flow: row wrap;
   margin-left: -10px;
   margin-right: -10px;
 
-  .soronmrm-col-2 {
+  .mintmrm-col-2 {
     width: 50%;
     padding: 0 10px;
   }
 
-  .soronmrm-col-3 {
+  .mintmrm-col-3 {
     width: calc(100% / 3);
     padding: 0 10px;
   }
 
-  .soronmrm-col-4 {
+  .mintmrm-col-4 {
     width: calc(100% / 4);
     padding: 0 10px;
   }

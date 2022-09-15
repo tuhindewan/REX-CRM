@@ -9,8 +9,8 @@ import Linkedin from "../Icons/Linkedin";
 
 export default function CampaignConfirmation() {
   return (
-    <div className="soronmrm--campaign-confirmation">
-      <div className="soronmrm-container">
+    <div className="mintmrm--campaign-confirmation">
+      <div className="mintmrm-container">
         <div className="campaign-confirmation-wrapper">
           <div className="congratulation-section">
             <div className="confirmation-detail">
@@ -20,7 +20,7 @@ export default function CampaignConfirmation() {
                 Your data have been successfully imported.
               </span>
               <Link to="">
-                <button className="view-campaign soronmrm-btn ">
+                <button className="view-campaign mintmrm-btn ">
                   View Campaign
                 </button>
               </Link>
@@ -32,7 +32,7 @@ export default function CampaignConfirmation() {
               <div className="campaign-link">
                 <div className="link-title">
                   <p className="text">Campaign Link</p>
-                  <span className="soronmrm-tooltip">
+                  <span className="mintmrm-tooltip">
                     <TooltipQuestionIcon />
                     <p>
                       Want to brand your campaign link? Click edit to create a

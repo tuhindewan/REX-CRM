@@ -9,8 +9,8 @@ export default function DeletePopup() {
         setDeleteClass(true);
     }
   return (
-    <div class= {deleteClass ? "soronmrm-delete-alert-wrapper inactive" : "soronmrm-delete-alert-wrapper"} >
-      <div class="soronmrm-delete-confirmation">
+    <div class= {deleteClass ? "mintmrm-delete-alert-wrapper inactive" : "mintmrm-delete-alert-wrapper"} >
+      <div class="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
           <h3>Delete Tag</h3>
           <div className="cross-icon" onClick={onCancel}>
@@ -22,7 +22,7 @@ export default function DeletePopup() {
           <p>Are you sure you want to delete the List?</p>
         </div>
 
-        <ul class="soronmrm-delete-confirm-btn">
+        <ul class="mintmrm-delete-confirm-btn">
           <li>
             <button class="btn-default cancel" onClick={onCancel}>Cancel</button>
           </li>

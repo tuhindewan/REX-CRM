@@ -8,7 +8,7 @@ export default function Selectbox(props) {
   useEffect(() => {
 
     // Init select2
-    let element = $(".soronmrm-" + props.name + "-selectbox");
+    let element = $(".mintmrm-" + props.name + "-selectbox");
     element.css('color', 'red')
     element.select2({
       dropdownParent: $("." + props.name + "-select2-result"),
@@ -30,14 +30,14 @@ export default function Selectbox(props) {
     <>
       <div
         className={
-          "form-group soronmrm-select2-selectbox " + props.name + "-selectbox"
+          "form-group mintmrm-select2-selectbox " + props.name + "-selectbox"
         }
       >
         {props.label && <label>{props.label}</label>}
 
         <select
           name={props.name}
-          className={"soronmrm-" + props.name + "-selectbox"}
+          className={"mintmrm-" + props.name + "-selectbox"}
           multiple={props.multiple}
           data-placeholder={props.placeholder}
         >

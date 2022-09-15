@@ -401,11 +401,11 @@ export default function ContactDetails() {
 
   return (
     <>
-      <div className="soronmrm-contact-details">
+      <div className="mintmrm-contact-details">
         <div className="contact-details-banner">
           <div className="contact-details-breadcrumb">
-            <div className="soronmrm-container">
-              <ul className="soronmrm-breadcrumb">
+            <div className="mintmrm-container">
+              <ul className="mintmrm-breadcrumb">
                 <li>
                   <Link to={`../contacts`}>Contact</Link>
                 </li>
@@ -418,7 +418,7 @@ export default function ContactDetails() {
         </div>
 
         <div className="contact-details-wrapper">
-          <div className="soronmrm-container">
+          <div className="mintmrm-container">
             <div className="contact-details-header">
               <div className="contact-author-info">
                 {/* <div className="author-img">
@@ -486,7 +486,7 @@ export default function ContactDetails() {
 
                   <ul
                     className={
-                      isActive ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+                      isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
                     }
                   >
                     {contactData.status == "pending" ? (
@@ -646,7 +646,7 @@ export default function ContactDetails() {
                         <h4>
                           Basic Information
                           {/* <Link to="">
-                          <button className="add-contact-btn soronmrm-btn ">
+                          <button className="add-contact-btn mintmrm-btn ">
                             <Plus /> Add contact
                           </button>
                         </Link> */}
@@ -736,14 +736,14 @@ export default function ContactDetails() {
 
                       <div className="save-cancel-button">
                         <button
-                          className="soronmrm-btn outline cancel-btn"
+                          className="mintmrm-btn outline cancel-btn"
                           onClick={showEditMode}
                         >
                           Cancel
                         </button>
 
                         <button
-                          className="save-button soronmrm-btn"
+                          className="save-button mintmrm-btn"
                           onClick={handleUpdate}
                         >
                           Save
