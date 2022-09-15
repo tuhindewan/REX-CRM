@@ -48,10 +48,7 @@ class ContactNoteSchema implements Schema{
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             PRIMARY KEY (`id`),
-            KEY `contact_id` (`contact_id`),
-            FOREIGN KEY (contact_id)
-            REFERENCES wp_mrm_contacts (id)
-            ON DELETE CASCADE
+            KEY `contact_id` (`contact_id`)
          ) ";
     }
 }
