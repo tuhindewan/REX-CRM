@@ -40,8 +40,9 @@ class ListController extends BaseController {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
         }
 
+        $slug = isset( $params['slug'] ) ? $params['slug'] : "";
         // list avaiability check
-        $exist = ContactGroupModel::is_group_exist( $params['slug'], "lists" );
+        $exist = ContactGroupModel::is_group_exist( $slug, "lists" );
         if ( $exist && !isset($params['list_id'])) {
             return $this->get_error_response( __( 'List is already available', 'mrm' ),  200);
         }

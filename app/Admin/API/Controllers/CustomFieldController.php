@@ -118,7 +118,9 @@ class CustomFieldController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = CustomFieldModel::destroy( $params['field_id'] );
+        $field_id = isset( $params['field_id'] ) ? $params['field_id'] : "";
+
+        $success = CustomFieldModel::destroy( $field_id );
         if( $success ) {
             return $this->get_success_response( __( 'Field has been deleted successfully', 'mrm' ), 200 );
         }
