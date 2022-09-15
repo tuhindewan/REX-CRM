@@ -159,7 +159,6 @@ class ContactController extends BaseController {
         $search     = isset( $params['search'] ) ? $params['search'] : '';
                 
         $contacts   = ContactModel::get_all( $offset, $perPage, $search );
-
         $contacts['data'] = array_map( function( $contact ){
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );
@@ -237,7 +236,7 @@ class ContactController extends BaseController {
 
 
     /**
-     * Set tags, lists, and segments from a contact
+     * Set tags, lists, and segments to a contact
      * 
      * @param WP_REST_Request $request
      * @return WP_REST_Response
@@ -248,17 +247,61 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
+        $isTag = 0;
+        $isList = 0;
+
         if( isset( $params['tags'] ) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+            $isTag = 1;
         }
 
         if( isset( $params['lists'] ) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+            $isList = 1;
         }
 
 
-        if($success) {
+        if($success && $isList == 1 && $isTag == 1) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag == 1){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList == 1 ){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+    }
+
+    /**
+     * Set tags, lists to multiple contacts
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function set_groups_to_multiple( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $isTag = 0;
+        $isList = 0;
+
+        if( isset( $params['tags'] ) ){
+            $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
+            $isTag = true;
+        }
+
+        if( isset( $params['lists'] ) ){
+            $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
+            $isList = 1;
+        }
+
+        if($success && $isList == 1 && $isTag == 1) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag == 1){
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList == 1 ){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
@@ -573,7 +616,6 @@ class ContactController extends BaseController {
             return $this->get_success_response(__("Import contact has been successful", "mrm"), 200, $result);
 
         } catch(Exception $e) {
-            error_log(print_r($e,1));
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }
@@ -905,15 +947,17 @@ class ContactController extends BaseController {
         // Contact Search keyword
         $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 
-        $group_id = isset( $params['group_id'] ) ? $params['group_id'] : array(); 
-        $contacts = ContactModel::get_filtered_contacts( $params['status'], $group_id, $perPage, $offset, $search );
+        $tags_ids = isset( $params['tags_ids'] ) ? $params['tags_ids'] : array(); 
+        $lists_ids = isset( $params['lists_ids'] ) ? $params['lists_ids'] : array();
+        $status_arr = isset( $params['status'] ) ? $params['status'] : array();
 
+        $contacts = ContactModel::get_filtered_contacts( $status_arr, $tags_ids, $lists_ids, $perPage, $offset, $search );
+        
         $contacts['data'] = array_map( function( $contact ){
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );
             return $contact;
         }, $contacts['data'] );
-
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }

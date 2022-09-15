@@ -247,8 +247,14 @@ class ContactModel{
 
         // Search contacts by email, first name or last name
 		if ( ! empty( $search ) ) {
-            $search_terms = "WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR `stage` LIKE '%$search%')";
+            $search_terms = "WHERE (`hash` LIKE '%$search%' 
+             OR `email` LIKE '%$search%'
+             OR concat(`first_name`, ' ', `last_name`)LIKE '%$search%'
+             OR `source` LIKE '%$search%' 
+             OR `status` LIKE '%$search%' 
+             OR `stage` LIKE '%$search%')";
 		}
+        
         // Prepare sql results for list view
         try {
             $select_query  =  "SELECT * FROM `wp_mrm_contacts` $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
@@ -260,6 +266,7 @@ class ContactModel{
                 $new_meta = self::get_meta( $query_result['id'] );
                 $results[] = array_merge($query_result, $new_meta);
             }
+
 
             $count_query    = "SELECT COUNT(*) as total FROM $contact_table $search_terms";
             $count_result   = $wpdb->get_results($count_query);
@@ -396,7 +403,7 @@ class ContactModel{
      * @return array|bool
      * @since 1.0.0
      */
-    public static function get_filtered_contacts( $status, $group_ids, $limit = 10, $offset = 0, $search = '' )
+    public static function get_filtered_contacts( $status, $tags_ids, $lists_ids, $limit = 10, $offset = 0, $search = '' )
     {
         global $wpdb;
         $contact_table = $wpdb->prefix . ContactSchema::$table_name;
@@ -404,37 +411,92 @@ class ContactModel{
 
         // Prepare sql results for list view
         try {
-            $ids = implode(",", array_map( 'intval', $group_ids ));
-            $no_groupId = "$pivot_table.group_id IN ($ids) AND ";
+            $tags = implode(",", array_map( 'intval', $tags_ids ));
+            $lists= implode(",", array_map( 'intval', $lists_ids ));
+            $statuses = implode('","',$status);
 
-            if (count($group_ids)==0){
-                $no_groupId = "";
+
+            //$no_groupId = "$pivot_table.group_id IN ($ids) ";
+            $status_arr = 'status IN ("'.$statuses.'")';
+
+            $and = "AND";
+
+
+            $my_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists)
+            AND $status_arr )";
+
+            if (count($tags_ids)==0 && count($lists_ids)==0 && count($status)==0){
+                $and = ""; 
+                $my_query = "";
+            }else if (count($tags_ids)==0 && count($lists_ids)==0 && count($status)!=0){
+                $my_query = "( $status_arr )";
+            }else if (count($tags_ids)==0 && count($lists_ids)!=0 && count($status)==0){
+                $my_query = " (tt1.group_id IN ($lists))";
+            }else if (count($tags_ids)==0 && count($lists_ids)!=0 && count($status)!=0){
+                $my_query = " (tt1.group_id IN ($lists) AND $status_arr)";
+            }else if (count($tags_ids)!=0 && count($lists_ids)==0 && count($status)==0){
+                $my_query = " ($pivot_table.group_id IN ($tags))";
+            }else if (count($tags_ids)!=0 && count($lists_ids)==0 && count($status)!=0){
+                $my_query = "( $pivot_table.group_id IN ($tags) AND $status_arr )";
+            }else if (count($tags_ids)!=0 && count($lists_ids)!=0 && count($status)==0){
+                $my_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists))";
             }
+            
 
-            $select_query  = $wpdb->prepare(
-                "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
-                ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $no_groupId $contact_table.status = %s 
-                AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+            $select_query = $wpdb->prepare("SELECT * FROM $contact_table
+            LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
+            LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
+            WHERE 1=1  $and $my_query
+            AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
                  `stage` LIKE '%$search%')
-                GROUP BY $contact_table.id LIMIT $offset, $limit
-                ", array($status)) ;
+                 GROUP BY $contact_table.id
+                LIMIT $offset, $limit
+            " );
+            
             $query_results = $wpdb->get_results( $select_query );
 
-            $count_query  = $wpdb->prepare(
-                "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
-                ON $contact_table.id = $pivot_table.contact_id 
-                WHERE $no_groupId $contact_table.status = %s
-                AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+
+            $count_query = $wpdb->prepare("SELECT COUNT(*) AS total FROM $contact_table
+            LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
+            LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
+            WHERE 1=1 $and $my_query
+            AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
                  `stage` LIKE '%$search%')
                 GROUP BY $contact_table.id
-                ", array($status)) ;
+            " );
 
-            $count_result = $wpdb->get_results($count_query);
+            $count_result = $wpdb->get_results( $count_query );
+
+
+            // $select_query  = $wpdb->prepare(
+            //     "SELECT * FROM $pivot_table RIGHT JOIN $contact_table 
+            //     ON $contact_table.id = $pivot_table.contact_id 
+            //     WHERE $no_groupId $and $status_arr 
+            //     AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+            //      `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
+            //      OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
+            //      `stage` LIKE '%$search%')
+            //     GROUP BY $contact_table.id LIMIT $offset, $limit
+            //     ") ;
+
+            // $query_results = $wpdb->get_results( $select_query );
+
+            // $count_query  = $wpdb->prepare(
+            //     "SELECT COUNT(*) AS total FROM $pivot_table RIGHT JOIN $contact_table 
+            //     ON $contact_table.id = $pivot_table.contact_id 
+            //     WHERE $no_groupId $status_arr 
+            //     AND (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
+            //      `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
+            //      OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
+            //      `stage` LIKE '%$search%')
+            //     GROUP BY $contact_table.id
+            //     ") ;
+
+            // $count_result = $wpdb->get_results($count_query);
     
             $count = (int) count($count_result);
 

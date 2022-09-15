@@ -49,7 +49,9 @@ class ContactPivotController {
      */
     public function get_groups_to_contact( $contact_id )
     {
+
         $results = ContactGroupPivotModel::get_groups_to_contact( $contact_id );
+
         return json_decode( json_encode( $results ), true );
     }
 
@@ -65,6 +67,7 @@ class ContactPivotController {
     {
         return ContactGroupPivotModel::add_groups_to_contact( $pivotIds );
     }
+
 
 
     /**
