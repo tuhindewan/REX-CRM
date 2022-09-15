@@ -150,7 +150,14 @@ export default function CustomFieldCreate() {
                 onSelect={onSelect}
                 error={errors?.type}
               />
-              {isShow ? <DynamicInput onOptionData={handleOptionData} /> : ""}
+              {isShow ? (
+                <DynamicInput
+                  options={customFields.options}
+                  onOptionData={handleOptionData}
+                />
+              ) : (
+                ""
+              )}
             </div>
 
             <div className="contact-button-field">
