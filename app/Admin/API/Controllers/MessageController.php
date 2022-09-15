@@ -242,7 +242,8 @@ class MessageController extends BaseController {
 
         $subject = "Please Confirm Subscription";
 
-        $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']), 'https') === FALSE ? 'http' : 'https';
+        $server = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : "";
+        $protocol = strpos(strtolower( $server ), 'https') === FALSE ? 'http' : 'https';
         $domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
 
 

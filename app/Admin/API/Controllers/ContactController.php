@@ -540,7 +540,6 @@ class ContactController extends BaseController {
             return $this->get_success_response(__("Import contact has been successful", "mrm"), 200, $result);
 
         } catch(Exception $e) {
-            error_log(print_r($e,1));
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }

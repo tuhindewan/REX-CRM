@@ -83,6 +83,8 @@ class ContactModel{
         $args['updated_at'] = current_time('mysql');
         unset($args['meta_fields']);
         unset($args['contact_id']);
+        unset($args['tags']);
+        unset($args['lists']);
 
         try {
             $wpdb->update( 
