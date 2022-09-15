@@ -248,8 +248,10 @@ class ContactModel{
             
             $results = array();
 
+            if (isset($query_result['id']) ) $q_id = $query_result['id'];
+            
             foreach( $query_results as $query_result ){
-                $new_meta = self::get_meta( $query_result['id'] );
+                $new_meta = self::get_meta( $q_id );
                 $results[] = array_merge($query_result, $new_meta);
             }
 
