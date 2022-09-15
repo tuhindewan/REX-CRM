@@ -79,11 +79,11 @@ export default function ImportContactRaw() {
               className="raw-textarea"
               ref={textAreaRef}
               onChange={handleChange}
-              placeholder={`
-            Email, First Name, Last Name
-            john@doe.com, John, Doe
-            mary@smith.com, Mary, Smith
-            johnny@walker.com, Johny, Walker
+              placeholder={`(Example Data)
+Email, First Name, Last Name
+john@doe.com, John, Doe
+mary@smith.com, Mary, Smith
+johnny@walker.com, Johny, Walker
                   `}
             ></textarea>
             <span className="csv-title">

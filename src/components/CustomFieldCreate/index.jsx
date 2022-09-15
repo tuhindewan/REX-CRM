@@ -1,14 +1,18 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { submitCustomFields } from "../../services/CustomField";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  submitCustomFields,
+  updateCustomFields,
+} from "../../services/CustomField";
 import DynamicInput from "../DynamicInput";
 import InputItem from "../InputItem";
 import Selectbox from "../Selectbox";
 import "./style.css";
 
 export default function CustomFieldCreate() {
-  let navigate = useNavigate();
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
   // Dynamic input fields hide or show
   const [isShow, setIsShow] = useState(false);
 
@@ -17,6 +21,7 @@ export default function CustomFieldCreate() {
 
   // Set validation error messages
   const [errors, setErrors] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
 
   // Prepare contact object
   const [customFields, setCustomFields] = useState({
@@ -25,6 +30,23 @@ export default function CustomFieldCreate() {
     options: [],
     group_id: 1,
   });
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/${id}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        setCustomFields(resJson.data);
+      }
+    }
+
+    if (id) {
+      setIsEdit(true);
+      getData();
+    }
+  }, [id]);
 
   // Set custom fields type
   const onSelect = async (event) => {
@@ -61,27 +83,50 @@ export default function CustomFieldCreate() {
   const handleSubmit = async (event) => {
     if (event) event.preventDefault();
     customFields.options = options;
-    submitCustomFields(customFields).then((response) => {
-      if (201 === response.code) {
-        // Navigate user with success message
-        navigate("../custom-fields", {
-          state: { status: "field-created", message: response?.message },
+
+    const res = !isEdit
+      ? submitCustomFields(customFields).then((response) => {
+          if (201 === response.code) {
+            // Navigate user with success message
+            navigate("../custom-fields", {
+              state: { status: "field-created", message: response?.message },
+            });
+          } else {
+            // Validation messages
+            if (200 == response.code) {
+              setErrors({
+                ...errors,
+                title: response?.message,
+              });
+            } else {
+              setErrors({
+                ...errors,
+                type: response?.message,
+              });
+            }
+          }
+        })
+      : updateCustomFields(customFields).then((response) => {
+          if (201 === response.code) {
+            // Navigate user with success message
+            navigate("../custom-fields", {
+              state: { status: "field-created", message: response?.message },
+            });
+          } else {
+            // Validation messages
+            if (200 == response.code) {
+              setErrors({
+                ...errors,
+                title: response?.message,
+              });
+            } else {
+              setErrors({
+                ...errors,
+                type: response?.message,
+              });
+            }
+          }
         });
-      } else {
-        // Validation messages
-        if (200 == response.code) {
-          setErrors({
-            ...errors,
-            title: response?.message,
-          });
-        } else {
-          setErrors({
-            ...errors,
-            type: response?.message,
-          });
-        }
-      }
-    });
   };
 
   const routeChange = () => {
@@ -92,7 +137,9 @@ export default function CustomFieldCreate() {
   return (
     <div className="create-contact">
       <div className="contact-container">
-        <h2 className="conatct-heading">Add Custom Field</h2>
+        <h2 className="conatct-heading">
+          {!isEdit ? "Add Custom Field" : "Update Custom Field"}
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="add-contact-form">
@@ -121,10 +168,6 @@ export default function CustomFieldCreate() {
                     title: "Number",
                     id: "number",
                   },
-                  {
-                    title: "Category",
-                    id: "category",
-                  },
                 ]}
                 tags={false}
                 placeholder="Select Type"
@@ -133,7 +176,14 @@ export default function CustomFieldCreate() {
                 onSelect={onSelect}
                 error={errors?.type}
               />
-              {isShow ? <DynamicInput onOptionData={handleOptionData} /> : ""}
+              {isShow ? (
+                <DynamicInput
+                  options={customFields?.options}
+                  onOptionData={handleOptionData}
+                />
+              ) : (
+                ""
+              )}
             </div>
 
             <div className="contact-button-field">
@@ -144,7 +194,7 @@ export default function CustomFieldCreate() {
                 Cancel
               </button>
               <button type="submit" className="contact-save soronmrm-btn ">
-                Save
+                {!isEdit ? "Save" : "Update"}
               </button>
             </div>
           </div>

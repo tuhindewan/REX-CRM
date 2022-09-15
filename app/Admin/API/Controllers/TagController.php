@@ -264,7 +264,7 @@ class TagController extends BaseController {
                 }
                 
             }
-
+            $tag = null;
             if(isset($new_tag_id)){
                 $tag = $new_tag_id;
             }

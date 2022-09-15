@@ -286,12 +286,12 @@ class ContactController extends BaseController {
         $isTag = 0;
         $isList = 0;
 
-        if( isset( $params['tags'] ) ){
+        if( isset( $params['tags'] ) && isset( $params['contact_ids']) ){
             $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
             $isTag = true;
         }
 
-        if( isset( $params['lists'] ) ){
+        if( isset( $params['lists'] ) && isset($params['contact_ids']) ){
             $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
             $isList = 1;
         }
@@ -431,7 +431,6 @@ class ContactController extends BaseController {
             $params = MRM_Common::get_api_params_values($request);
             $raw = isset($params['raw']) ? $params['raw']: "";
 
-            error_log(print_r($raw,1));
             // check for least number of characters
             if(strlen($raw) < 5) {
                 throw new Exception("Data is insufficient. Please enter at least 5 characters.");
@@ -633,7 +632,7 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
-            if(isset( $params ) && empty( $params["map"] )) {
+            if(isset( $params["map"] ) && empty( $params["map"] )) {
                 throw new Exception( __("Please map at least one field to desired field.", "mrm") );
             }
 
@@ -668,6 +667,7 @@ class ContactController extends BaseController {
                     'meta_fields'   => []
                 );
 
+                
                 foreach($mappings as $map) {
                     $map_array = json_decode(json_encode($map), true);
 
@@ -680,7 +680,7 @@ class ContactController extends BaseController {
                 if (!array_key_exists('email', $contact_args)) {
                     return $this->get_error_response( __("The email field is required.", "mrm"), 400 );
                 }
-                $contact_email = trim($contact_args['email']);
+                $contact_email = trim(isset($contact_args['email']));
                 if ($contact_email && is_email( $contact_email )) {
 
                     $is_exists = ContactModel::is_contact_exist( $contact_email );
@@ -736,7 +736,7 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
-            if(isset( $params ) && empty( $params["map"] )) {
+            if(isset( $params["map"] ) && empty( $params["map"] )) {
                 throw new Exception( __("Please map at least one field for importing", "mrm") );
             }
 

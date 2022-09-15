@@ -93,6 +93,11 @@ const routes = [
     hideInMenu: true,
   },
   {
+    path: "/custom-fields/update/:id",
+    element: CustomFieldCreate,
+    hideInMenu: true,
+  },
+  {
     path: "/tags/create",
     element: CreateTag,
     hideInMenu: true,

@@ -29,7 +29,7 @@ export default function ImportMailchimp() {
   }
   // Funtion to get mailchimp available lists for selection
   async function getLists() {
-    if (apiKey == "") {
+    if (!apiKey) {
       window.alert("Please Enter a valid API Key");
       return;
     }
@@ -59,23 +59,21 @@ export default function ImportMailchimp() {
       });
 
       setListsOptions(options);
-      
     } else {
       window.alert(resJson.message);
     }
     console.log(resJson);
   }
-  
+
   // if a list is selected, send the user to map page
   function goToMapPage() {
     navigate("/contacts/import/mailchimp/map", {
-        state: {
+      state: {
         data: resJson.data,
         type: "mailchimp", // indicated the type of import
-        },
+      },
     });
   }
-
 
   return (
     <div className="soronmrm-import-page">

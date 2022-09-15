@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Header from "./components/Navbar/";
+import Navbar from "./components/Navbar/";
 import routes from "./routes/index.js";
 
 const App = () => {
@@ -10,7 +10,7 @@ const App = () => {
       <ReactFlowProvider>
         <HashRouter>
           <>
-            <Header />
+            <Navbar />
 
             <Routes>
               {routes.map((route, index) => (
