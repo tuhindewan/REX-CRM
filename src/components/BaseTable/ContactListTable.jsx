@@ -299,27 +299,24 @@ export default function ContactListTable(props) {
       title: __("Action", "mrm"),
     },
   ];
-  const showLists = () => {
+  const showLists = (event) => {
     setIsLists(!isLists);
-    // if(isLists === true){
-    //   setIsTags(false);
-    //   setStatus(false);
-    // }
+    event.stopPropagation();
+    setIsLists(!isLists);
+    setIsTags(false);
+    setIsStatus(false);
   };
-  const showTags = () => {
+  const showTags = (event) => {
+    event.stopPropagation();
     setIsTags(!isTags);
-    // if(isTags === true){
-    //   setIsLists(false);
-    //   setStatus(false);
-    // }
+    setIsLists(false);
+    setIsStatus(false);
   };
-  const showStatus = () => {
+  const showStatus = (event) => {
+    event.stopPropagation();
     setIsStatus(!isStatus);
-    // if(isStatus== true){
-    //   setIsTags(false);
-    //   setIsLists(false);
-    // }
-    console.log(isStatus);
+    setIsTags(false);
+    setIsLists(false);
   };
 
   const showListDropdown = () => {
