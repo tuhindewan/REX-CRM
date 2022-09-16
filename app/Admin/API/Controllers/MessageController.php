@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataBase\Models\MessageModel;
+use Mint\MRM\DataStores\MessageData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Message;
@@ -54,8 +55,7 @@ class MessageController extends BaseController {
         );
 
         // Prepare message data
-        $message = new MRM_Message( $this->args );
-
+        $message = new MessageData( $this->args );
         // Email address valiation
         if ( 'email' === $this->args['type'] && empty( $this->args['email_address'] ) ) {
 
@@ -131,20 +131,21 @@ class MessageController extends BaseController {
      */
     public function send_message( $message )
     {
-        $to     = $message['email_address'];
+        error_log(print_r($message, 1));
+        $to     = $message->get_receiver_email();
 
-        $subject = $message['email_subject'];
+        $subject = $message->get_email_subject();
 
-        $body = $message['email_body'];
+        $body = $message->get_email_body();
 
         $headers = array(
 			'MIME-Version: 1.0',
 			'Content-type: text/html;charset=UTF-8'
 		);
 		$from    = '';
-        $from = 'From: ' . $message['sender_name'];
-        $headers[] = $from . ' <' . $message['sender_email'] . '>';
-        $headers[] = 'Reply-To:  ' . $message['sender_email'];
+        $from = 'From: Mint CRM';
+        $headers[] = $from . ' <' . 'mrm@coderex.co'. '>';
+        $headers[] = 'Reply-To:  ' . 'mrm@coderex.co';
 
         try {
             $result = wp_mail( $to, $subject, $body, $headers );
@@ -242,7 +243,8 @@ class MessageController extends BaseController {
 
         $subject = "Please Confirm Subscription";
 
-        $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']), 'https') === FALSE ? 'http' : 'https';
+        $server = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : "";
+        $protocol = strpos(strtolower( $server ), 'https') === FALSE ? 'http' : 'https';
         $domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
 
 

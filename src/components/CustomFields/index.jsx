@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
   deleteSingleCustomField,
@@ -16,6 +16,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import SingleField from "./SingleField";
 
 const CustomFields = () => {
+  let navigate = useNavigate();
+
   const location = useLocation();
   // set navbar Buttons
   useGlobalStore.setState({
@@ -110,7 +112,10 @@ const CustomFields = () => {
   };
 
   // this function sets the required edit parameters
-  function editField(list) {}
+  function editField(field) {
+    let path = `../custom-fields/update/${field.id}`;
+    navigate(path);
+  }
 
   // Handle all checkbox row selection
   const handleSelectAll = async (event) => {

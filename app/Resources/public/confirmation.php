@@ -21,7 +21,8 @@
     </div>
     <div class="mrm_form_wrapper">
         <?php
-        $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']), 'https') === FALSE ? 'http' : 'https';
+        $server = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : "";
+        $protocol = strpos(strtolower($server), 'https') === FALSE ? 'http' : 'https';
         $domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
         ?>
         <h2>Subscription Confirmed</h2><p>Your subscription to our list has been confirmed.</p><p>Thank you for subscribing!</p><p>&nbsp;</p><p>Mint CRM</p><p>Dhaka, Bangladesh - 1362</p><p>&nbsp;</p><p><a style="color: #ffffff; background-color: #404040; font-size: 16px; border-radius: 5px; text-decoration: none; font-weight: normal; font-style: normal; padding: 0.8rem 1rem; border-color: #0072ff;" href="<?php $domainLink?>">Continue to our Website</a></p>    </div>

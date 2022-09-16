@@ -1,23 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Delete from "../Icons/Delete";
 import Plus from "../Icons/Plus";
 import "./style.css";
 
 function DynamicInput(props) {
+  const { id } = useParams();
   const [serviceList, setServiceList] = useState([{ option: "" }]);
+
+  useEffect(() => {
+    if (id) {
+      if (undefined == props.options.options) {
+        props.options.options?.setServiceList(props.options.options);
+      } else {
+        setServiceList(props.options.options);
+      }
+    }
+  }, [id]);
 
   const handleServiceChange = (e, index) => {
     const { name, value } = e.target;
     const list = [...serviceList];
     list[index][name] = value;
     setServiceList(list);
-    props.onOptionData(serviceList);
+    props.onOptionData(list);
   };
 
   const handleServiceRemove = (index) => {
     const list = [...serviceList];
     list.splice(index, 1);
     setServiceList(list);
+    props.onOptionData(list);
   };
 
   const handleServiceAdd = () => {
