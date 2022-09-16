@@ -680,7 +680,7 @@ class ContactController extends BaseController {
                 if (!array_key_exists('email', $contact_args)) {
                     return $this->get_error_response( __("The email field is required.", "mrm"), 400 );
                 }
-                $contact_email = trim(isset($contact_args['email']));
+                $contact_email = trim($contact_args['email']);
                 if ($contact_email && is_email( $contact_email )) {
 
                     $is_exists = ContactModel::is_contact_exist( $contact_email );
