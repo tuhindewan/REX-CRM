@@ -133,6 +133,12 @@ class ContactController extends BaseController {
         }
         
         if(isset($contact)) {
+            $avatar_url   = 'https://www.gravatar.com/avatar/0?s=80&d=retro';
+
+            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=80&&d=retro';
+
+            $contact ["avatar_url"] = $avatar_url;
+
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
         return $this->get_error_response("Failed to Get Data", 400);

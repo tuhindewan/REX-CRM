@@ -19,7 +19,6 @@ import SingleActivityFeed from "./SingleActivityFeed";
 import FilterItems from "../BaseTable/FilterItems";
 import AddItems from "./AddItems";
 
-
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
     digits = [int % 10, int % 100],
@@ -393,12 +392,12 @@ export default function ContactDetails() {
     toggleRefresh();
   };
 
-  const selectTags = () =>{
+  const selectTags = () => {
     setSelectTag(!selectTag);
-  }
-  const selectLists = () =>{
+  };
+  const selectLists = () => {
     setSelectList(!selectList);
-  }
+  };
 
   return (
     <>
@@ -422,12 +421,13 @@ export default function ContactDetails() {
           <div className="mintmrm-container">
             <div className="contact-details-header">
               <div className="contact-author-info">
-                {/* <div className="author-img">
-                <img
-                  src=""
-                  alt="contact-author-img"
-                />
-              </div> */}
+                <div className="author-img">
+                  <img
+                    src={contactData.avatar_url}
+                    alt="contact-author-img"
+                    style={{ "border-radius": "50%" }}
+                  />
+                </div>
 
                 <div className="author-short-details">
                   <h2 className="author-name">
@@ -891,7 +891,7 @@ export default function ContactDetails() {
 
                 <hr />
 
-                <div className="tags" >
+                <div className="tags">
                   <h4 className="title">Tags</h4>
                   <div className="tag-wrapper">
                     {contactData?.tags?.map((tag, idx) => {
@@ -930,8 +930,10 @@ export default function ContactDetails() {
                     //   onRemove={onRemove}
                     // />
                     <>
-                    <button className="choose-tag-btn" onClick={selectTags}>Choose Tags</button>
-                    <AddItems isActive={selectTag} />
+                      <button className="choose-tag-btn" onClick={selectTags}>
+                        Choose Tags
+                      </button>
+                      <AddItems isActive={selectTag} />
                     </>
                   )}
                   {/* {openTagSelectBox && (
@@ -982,8 +984,10 @@ export default function ContactDetails() {
                     //   onRemove={onRemove}
                     // />
                     <>
-                    <button className="choose-tag-btn" onClick={selectLists}>Choose Tags</button>
-                    <AddItems isActive={selectList} />
+                      <button className="choose-tag-btn" onClick={selectLists}>
+                        Choose Tags
+                      </button>
+                      <AddItems isActive={selectList} />
                     </>
                   )}
                   {/* {openListSelectBox && (
