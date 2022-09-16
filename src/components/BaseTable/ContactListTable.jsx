@@ -1,15 +1,11 @@
-import { __ } from "@wordpress/i18n";
+import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import {
+  Link,
+  useLocation,
   useNavigate,
   useSearchParams,
-  createSearchParams,
-  useParams,
-  useLocation,
 } from "react-router-dom";
-import queryString from "query-string";
-import ColumnList from "./ColumnList";
-import { Link } from "react-router-dom";
 import Plus from "../Icons/Plus";
 import SingleContact from "./SingleContact";
 
@@ -17,14 +13,13 @@ import SingleContact from "./SingleContact";
 import Swal from "sweetalert2";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import CrossIcon from "../Icons/CrossIcon";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
-import Selectbox2 from "../Selectbox2";
-import PlusCircleIcon from "../Icons/PlusCircleIcon";
-import FilterItems from "./FilterItems";
-import CrossIcon from "../Icons/CrossIcon";
 import AssignedItems from "./AssignedItems";
+import FilterItems from "./FilterItems";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -313,8 +308,6 @@ export default function ContactListTable(props) {
         }}
       >
         <div className="left-filters filter-box">
-          
-
           <div className="form-group left-filter">
             <button
               className={isLists ? "filter-btn show" : "filter-btn"}

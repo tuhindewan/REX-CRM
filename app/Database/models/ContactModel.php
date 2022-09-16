@@ -85,6 +85,7 @@ class ContactModel{
         unset($args['contact_id']);
         unset($args['tags']);
         unset($args['lists']);
+        unset($args['avatar_url']);
 
         try {
             $wpdb->update( 
@@ -246,10 +247,9 @@ class ContactModel{
             $query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
             
             $results = array();
-
-            if (isset($query_result['id']) ) $q_id = $query_result['id'];
             
             foreach( $query_results as $query_result ){
+                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
                 $new_meta = self::get_meta( $q_id );
                 $results[] = array_merge($query_result, $new_meta);
             }
