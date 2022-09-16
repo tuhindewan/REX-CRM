@@ -247,25 +247,25 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $isTag = 0;
-        $isList = 0;
+        $isTag = false;
+        $isList = false;
 
         if( isset($params['tags'], $params['contact_id']) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
-            $isTag = 1;
+            $isTag = true;
         }
 
         if( isset($params['tags'], $params['contact_id']) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
-            $isList = 1;
+            $isList = true;
         }
 
 
-        if($success &&  1 == $isList && 1 == $isTag) {
+        if($success &&  $isList && $isTag) {
             return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
-        }else if ($success && 1 == $isTag){
+        }else if ($success && $isTag){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
-        }else if ($success && 1 == $isList ){
+        }else if ($success && $isList ){
             return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
@@ -293,14 +293,14 @@ class ContactController extends BaseController {
 
         if( isset( $params['lists'] ) ){
             $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
-            $isList = 1;
+            $isList = true;
         }
 
-        if($success && $isList == 1 && $isTag == 1) {
+        if($success && $isList && $isTag) {
             return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isTag == 1){
+        }else if ($success && $isTag){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isList == 1 ){
+        }else if ($success && $isList){
             return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
