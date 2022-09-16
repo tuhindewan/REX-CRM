@@ -410,24 +410,24 @@ class ContactModel{
             $and = "AND";
 
 
-            $my_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists)
+            $contact_filter_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists)
             AND $status_arr )";
 
             if (count($tags_ids)==0 && count($lists_ids)==0 && count($status)==0){
                 $and = ""; 
-                $my_query = "";
+                $contact_filter_query = "";
             }else if (count($tags_ids)==0 && count($lists_ids)==0 && count($status)!=0){
-                $my_query = "( $status_arr )";
+                $contact_filter_query = "( $status_arr )";
             }else if (count($tags_ids)==0 && count($lists_ids)!=0 && count($status)==0){
-                $my_query = " (tt1.group_id IN ($lists))";
+                $contact_filter_query = " (tt1.group_id IN ($lists))";
             }else if (count($tags_ids)==0 && count($lists_ids)!=0 && count($status)!=0){
-                $my_query = " (tt1.group_id IN ($lists) AND $status_arr)";
+                $contact_filter_query = " (tt1.group_id IN ($lists) AND $status_arr)";
             }else if (count($tags_ids)!=0 && count($lists_ids)==0 && count($status)==0){
-                $my_query = " ($pivot_table.group_id IN ($tags))";
+                $contact_filter_query = " ($pivot_table.group_id IN ($tags))";
             }else if (count($tags_ids)!=0 && count($lists_ids)==0 && count($status)!=0){
-                $my_query = "( $pivot_table.group_id IN ($tags) AND $status_arr )";
+                $contact_filter_query = "( $pivot_table.group_id IN ($tags) AND $status_arr )";
             }else if (count($tags_ids)!=0 && count($lists_ids)!=0 && count($status)==0){
-                $my_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists))";
+                $contact_filter_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists))";
             }
 
             $search = $wpdb->esc_like($search);
@@ -439,7 +439,7 @@ class ContactModel{
             WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%') $and $my_query
+                 `stage` LIKE '%$search%') $and $contact_filter_query
                  GROUP BY $contact_table.id
                 LIMIT $offset, $limit
             " );
@@ -453,7 +453,7 @@ class ContactModel{
             (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
                  `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
                  OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%') $and $my_query
+                 `stage` LIKE '%$search%') $and $contact_filter_query
                 GROUP BY $contact_table.id
             " );
 
