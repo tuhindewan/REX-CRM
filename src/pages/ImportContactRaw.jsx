@@ -4,11 +4,15 @@ import ImportNavbar from "../components/Import/ImportNavbar";
 
 export default function ImportContactRaw() {
   const navigate = useNavigate();
-  // stores the selected file reference
+  // stores the text data
   const [text, setText] = useState("");
 
-  // sets the file text from textarea reference on file select
+  // ref for referring textarea
+  const textAreaRef = useRef(null);
+
+  // sets the file text from textarea reference on textarea change
   function handleChange(event) {
+    console.log(textAreaRef.current.value);
     setText(event.target.value);
   }
 
@@ -20,9 +24,13 @@ export default function ImportContactRaw() {
     let options = {
       method: "POST",
       body: JSON.stringify({
-        raw: text,
+        raw: textAreaRef.current.value,
       }),
+      headers: {
+        "Content-type": "application/json",
+      },
     };
+
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/raw/attrs`,
       options
@@ -32,7 +40,7 @@ export default function ImportContactRaw() {
       navigate("/contacts/import/raw/map", {
         state: {
           data: resJson.data,
-          type: "raw",
+          type: "raw", // indicated the type of import
         },
       });
     } else {
@@ -69,8 +77,8 @@ export default function ImportContactRaw() {
             </span>
             <textarea
               className="raw-textarea"
+              ref={textAreaRef}
               onChange={handleChange}
-              value={text}
               placeholder={`
             Email, First Name, Last Name
             john@doe.com, John, Doe
@@ -78,6 +86,9 @@ export default function ImportContactRaw() {
             johnny@walker.com, Johny, Walker
                   `}
             ></textarea>
+            <span className="csv-title">
+              Type or paste your existing contacts in this box
+            </span>
             <div className="csv-save-button">
               <button
                 className="contact-save soronmrm-btn"

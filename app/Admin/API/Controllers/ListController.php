@@ -185,12 +185,12 @@ class ListController extends BaseController {
     {
         $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
 
-            // Create new tag if not exist
+            // Create new list if not exist
 
             if( filter_var($list, FILTER_VALIDATE_INT) === false ){
 
                 $slug   = MRM_Common::create_slug($list);
-                $exist  = ContactGroupModel::is_group_exist( $slug, 'tags' );
+                $exist  = ContactGroupModel::is_group_exist( $slug, 'lists' );
                 $list   = array(
                     'title' => $list,
                     'slug'  => $slug,
@@ -219,6 +219,55 @@ class ListController extends BaseController {
 
     }
 
+    /**
+     * Add lists to multiple contacts
+     * 
+     * @param array $lists
+     * @param int $contact_id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function set_lists_to_multiple_contacts( $lists, $contact_ids )
+    {
+        $res = array_map(function ( $list ) use( $contact_ids ) {
+
+            // Create new list if not exist
+            if( filter_var($list, FILTER_VALIDATE_INT) === false ){
+
+                $slug = MRM_Common::create_slug($list);
+                $exist = ContactGroupModel::is_group_exist( $slug, 'lists' );
+                $list = array(
+                    'title' => $list,
+                    'slug'  => $slug,
+                    'data'  => null
+                );
+                if(!$exist){
+                    $new_list    = new ListData($list);
+                    $new_list_id = ContactGroupModel::insert( $new_list, 'lists' );
+                }
+                
+            }
+
+            if(isset($new_list_id)){
+                $list = $new_list_id;
+            }
+
+            $pivot_ids = array_map(function ($contact_id) use ($list){
+                return array(
+                    'group_id'    =>  $list,
+                    'contact_id'  =>  $contact_id
+                );
+            }, $contact_ids);
+
+            (ContactPivotController::set_groups_to_contact( $pivot_ids ));
+            
+        }, $lists);
+        
+        return $res;
+    }
+
+
 
     /**
      * Return lists which are assigned to a contact
@@ -230,8 +279,9 @@ class ListController extends BaseController {
      */
     public static function get_lists_to_contact( $contact )
     {
+        $contact_id = isset($contact['contact_id']) ? $contact['contact_id'] : $contact['id'];
         $contact['lists'] = array();
-        $results  = ContactPivotController::get_instance()->get_groups_to_contact( $contact['id'] );
+        $results  = ContactPivotController::get_instance()->get_groups_to_contact( $contact_id );
 
         if( !empty( $results ) ){
 

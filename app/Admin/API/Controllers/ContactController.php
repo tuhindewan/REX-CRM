@@ -9,6 +9,8 @@ use Exception;
 use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
+use Mint\MRM\Constants;
+use MailchimpMarketing;
 
 
 
@@ -157,7 +159,6 @@ class ContactController extends BaseController {
         $search     = isset( $params['search'] ) ? $params['search'] : '';
                 
         $contacts   = ContactModel::get_all( $offset, $perPage, $search );
-
         $contacts['data'] = array_map( function( $contact ){
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );
@@ -235,7 +236,7 @@ class ContactController extends BaseController {
 
 
     /**
-     * Set tags, lists, and segments from a contact
+     * Set tags, lists, and segments to a contact
      * 
      * @param WP_REST_Request $request
      * @return WP_REST_Response
@@ -246,17 +247,61 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        if( isset( $params['tags'] ) ){
+        $isTag = false;
+        $isList = false;
+
+        if( isset($params['tags'], $params['contact_id']) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+            $isTag = true;
+        }
+
+        if( isset($params['tags'], $params['contact_id']) ){
+            $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+            $isList = true;
+        }
+
+
+        if($success &&  $isList && $isTag) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag){
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList ){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+    }
+
+    /**
+     * Set tags, lists to multiple contacts
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function set_groups_to_multiple( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $isTag = false;
+        $isList = false;
+
+        if( isset( $params['tags'] ) ){
+            $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
+            $isTag = true;
         }
 
         if( isset( $params['lists'] ) ){
-            $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+            $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
+            $isList = true;
         }
 
-
-        if($success) {
+        if($success && $isList && $isTag) {
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isTag){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+        }else if ($success && $isList){
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
@@ -372,7 +417,7 @@ class ContactController extends BaseController {
     }
 
     /**
-     * Parse raw csv data and send the headers back to the user
+     * Parse raw textarea data input and send the headers back to the user
      *
      * 
      * @param WP_REST_Request $request
@@ -381,48 +426,78 @@ class ContactController extends BaseController {
      */
     public function import_contacts_raw_get_attrs( WP_REST_Request $request ) 
     {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-
-        $files  = isset( $params['files'] ) ? $params['files']: '';
-
-        $csv_mimes = MRM_Common::csv_mimes();
-        
-
         try{
-            $delimiter = isset( $params['delimiter'] ) && ! empty( $params['delimiter'] ) ? $params['delimiter'] : 'comma';
+            // Get parameters
+            $params = MRM_Common::get_api_params_values($request);
+            $raw = isset($params['raw']) ? $params['raw']: "";
 
-            if ($delimiter == 'comma') {
-                $delimiter = ',';
+            // check for least number of characters
+            if(strlen($raw) < 5) {
+                throw new Exception("Data is insufficient. Please enter at least 5 characters.");
+            }
+            $array = preg_split("/\r\n|\n|\r/", $raw);
+            if(count($array) > 1) {
+                $array[0] = trim($array[0]); // trim whitespaces for first line
+                $headers = explode(",", $array[0]);
             } else {
-                $delimiter = ';';
+                throw new Exception("Make sure the data contains comma seperated values with a valid header and has at least one row of data.");
             }
 
-            $import_res = MRM_Importer::create_csv_from_import( $files['csv'], $delimiter );
-
-            if ( ! is_array( $import_res ) ) {
-                return $this->get_error_response( is_string( $import_res ) ? $import_res : __( 'Unknown error occurred', 'mrm' ), null, 500 );
-            }
-
-            $this->import_file_location = $import_res['file'];
-
-            $options = MRM_Importer::prepare_mapping_options_from_csv( $this->import_file_location, $import_res['delimiter'] );
-
-            if( isset( $options['headers'] ) && empty( $options['headers'] ) ){
-                return $this->get_error_response( __( "File is incompatible.", "mrm"), 400 );
-            }
             $result = array(
-                'headers'   => $options['headers'],
-                'fields'    => isset( $options['fields'] ) ? $options['fields'] : "",
-                'file'      => isset( $import_res['new_file_name'] ) ? $import_res['new_file_name'] : ""
+                'raw' => $array, // need to send the data back to the user for using in actual importing
+                'headers'   => $headers,
+                'fields'    => Constants::$contacts_attrs,
             );
-            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result );
+            return $this->get_success_response( __( 'File has been uploaded successfully.', "mrm" ), 200, $result);
 
         } catch (Exception $e) {
 
             return $this->get_error_response( __( $e->getMessage(), "mrm" ), 400 );
         }
     }
+
+    /**
+     * Parse api key from user and send the lists, headers, fields to the user
+     *
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_mailchimp_get_attrs( WP_REST_Request $request ) 
+    {
+        try{
+            // Get parameters
+            $params = MRM_Common::get_api_params_values($request);
+            $key = isset($params['key']) ? $params['key']: "";
+            $mailchimp = new MailchimpMarketing\ApiClient();
+            if(empty($key)) {
+                throw new Exception("Please send the api key in order to proceed");
+            }
+            $key_array = explode("-", $key);
+            if(count($key_array) > 1) {
+                $key_server = $key_array[1];
+            } else {
+                throw new Exception("Cannot figure out the server from the api key.");
+            }
+            $mailchimp->setConfig([
+                'apiKey' => $key,
+                'server' => $key_server
+            ]);
+            $response = $mailchimp->lists->getAllLists();
+            return $this->get_success_response( __( 'List retrieved successfully', "mrm" ), 200, [
+                "response" => $response,
+                "headers" => ["name", "email"],
+                'fields'    => Constants::$contacts_attrs,
+            ]);
+
+        } catch (Exception $e) {
+
+            return $this->get_error_response( __( $e->getMessage(), "mrm" ), 400 );
+        }
+    }
+
+
 
 
     /**
@@ -433,7 +508,7 @@ class ContactController extends BaseController {
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function import_contacts( WP_REST_Request $request ) {
+    public function import_contacts_csv( WP_REST_Request $request ) {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
@@ -543,6 +618,133 @@ class ContactController extends BaseController {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }
+
+    /**
+     * Prepare contact object from the uploaded CSV
+     * Inseret contcts data into database
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_raw( WP_REST_Request $request ) {
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+        try {
+            if(isset( $params ) && empty( $params["map"] )) {
+                throw new Exception( __("Please map at least one field to desired field.", "mrm") );
+            }
+
+            $mappings    = json_decode(json_encode($params["map"]), true);
+
+            $raw = isset($params['raw']) ? $params['raw'] : '';
+            if(empty($raw) || !is_array($raw) || count($raw) <= 1) {
+                throw new Exception( __("The data is invalid.", "mrm") );
+            }
+
+            $header = explode(",", trim($raw[0]));
+
+            $skipped = 0;
+            $exists = 0;
+            $total_count = 0;
+            // Iterate over every line of the file
+            for ($i = 1; $i < count($raw); $i++ ) {
+                // Trim and Parse the raw  string as an array
+                $row = trim($raw[$i]);
+                $row_array = explode(",", $row);
+                // check if header and the current row has same length otherwise skip to the next iteration
+                if(count($header) !== count($row_array)) {
+                    $skipped++;
+                    $total_count++;
+                    continue;
+                }
+                // combine header and values to make a contact associative array
+                $csv_contact = array_combine($header, $row_array);
+                $contact_args = array(
+                    'status'    => $params['status'],
+                    'source'    => 'raw',
+                    'meta_fields'   => []
+                );
+
+                foreach($mappings as $map) {
+                    $map_array = json_decode(json_encode($map), true);
+
+                    if( in_array( $map_array["target"], array( "first_name", "last_name", "email" ) ) ){
+                        $contact_args[$map_array["target"]] = $csv_contact[$map_array["source"]];
+                    } else {
+                        $contact_args['meta_fields'][$map_array["target"]] = $csv_contact[$map_array["source"]];
+                    }
+                }
+                if (!array_key_exists('email', $contact_args)) {
+                    return $this->get_error_response( __("The email field is required.", "mrm"), 400 );
+                }
+                $contact_email = trim($contact_args['email']);
+                if ($contact_email && is_email( $contact_email )) {
+
+                    $is_exists = ContactModel::is_contact_exist( $contact_email );
+
+                    if(!$is_exists){
+                        $contact    = new ContactData( $contact_email, $contact_args );
+                        $contact_id = ContactModel::insert( $contact );
+                        if( isset( $contact_args['status'][0] ) && 'pending' == $contact_args['status'][0] ){
+                            MessageController::get_instance()->send_double_opt_in( $contact_id );
+                        }
+                        if(isset($params['tags'])){
+                            TagController::set_tags_to_contact( $params['tags'], $contact_id );
+                        }
+            
+                        if(isset($params['lists'])){
+                            ListController::set_lists_to_contact( $params['lists'], $contact_id );
+                        }
+                    }else {
+                        $exists++;
+                    }
+                    
+                }else {
+                    $skipped++;
+                }
+                $total_count++;
+            }
+            /**
+             * Prepare data for sucess response
+             */
+            $result = array(
+                'total'                => $total_count,
+                'skipped'              => $skipped,
+                'existing_contacts'    => $exists,
+            );
+            return $this->get_success_response(__("Import contact has been successful", "mrm"), 200, $result);
+
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+    }
+
+     /**
+     * Prepare contact object from the uploaded CSV
+     * Inseret contcts data into database
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function import_contacts_mailchimp( WP_REST_Request $request ) {
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+        try {
+            if(isset( $params ) && empty( $params["map"] )) {
+                throw new Exception( __("Please map at least one field for importing", "mrm") );
+            }
+
+            return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200, $result);
+
+        } catch(Exception $e) {
+            return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
+        }
+    }
+
 
 
     /**
@@ -742,15 +944,20 @@ class ContactController extends BaseController {
         // Contact Search keyword
         $search   = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 
-        $group_id = isset( $params['group_id'] ) ? $params['group_id'] : array(); 
-        $contacts = ContactModel::get_filtered_contacts( $params['status'], $group_id, $perPage, $offset, $search );
+        $tags_ids = isset( $params['tags_ids'] ) ? $params['tags_ids'] : array(); 
+        $lists_ids = isset( $params['lists_ids'] ) ? $params['lists_ids'] : array();
+        $status_arr = isset( $params['status'] ) ? $params['status'] : array();
 
-        $contacts['data'] = array_map( function( $contact ){
-            $contact = TagController::get_tags_to_contact( $contact );
-            $contact = ListController::get_lists_to_contact( $contact );
-            return $contact;
-        }, $contacts['data'] );
-
+        $contacts = ContactModel::get_filtered_contacts( $status_arr, $tags_ids, $lists_ids, $perPage, $offset, $search );
+        
+        if(isset($contacts['data'])){
+            $contacts['data'] = array_map( function( $contact ){
+                $contact = TagController::get_tags_to_contact( $contact );
+                $contact = ListController::get_lists_to_contact( $contact );
+                return $contact;
+            }, $contacts['data'] );
+        }
+        
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }

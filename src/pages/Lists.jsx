@@ -4,11 +4,24 @@ import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import Selectbox from "../components/Selectbox";
-import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import Selectbox from "../components/Selectbox";
+import NavBar from "../components/Navbar/index";
+import SuccessfulNotification from "../components/SuccessfulNotification";
 
 const Lists = () => {
+  // set navbar Buttons
+  useGlobalStore.setState({
+    navbarMarkup: (
+      <button
+        className="contact-save soronmrm-btn"
+        onClick={() => setShowCreate((prev) => !prev)}
+      >
+        + Add List
+      </button>
+    ),
+    hideGlobalNav: false,
+  });
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
 
@@ -68,30 +81,6 @@ const Lists = () => {
 
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
-
-  // set navbar Buttons
-  useGlobalStore.setState({
-    navbarMarkup: (
-      <button
-        className="contact-save soronmrm-btn"
-        onClick={() => {
-          // if user is currently updating reset the fields so that add new list displays a blank form
-          if (editID != 0) {
-            setEditID(0);
-            setValues({
-              title: "",
-              data: "",
-            });
-          } else {
-            setShowCreate((prevShowCreate) => !prevShowCreate);
-          }
-        }}
-      >
-        + Add List
-      </button>
-    ),
-    hideGlobalNav: false,
-  });
 
   // Set values from list form
   const handleChange = (e) => {
@@ -263,7 +252,9 @@ const Lists = () => {
       {showCreate && (
         <div className="create-contact">
           <div className="soronmrm-container">
-            <h2 className="conatct-heading">{editID == 0 ? "Add List" : ""}</h2>
+            <h2 className="conatct-heading">
+              {editID == 0 ? "Add List" : "Update List"}
+            </h2>
 
             <div>
               <div className="add-contact-form">
@@ -304,7 +295,7 @@ const Lists = () => {
           </div>
         </div>
       )}
-      <div className="contact-list-page">
+      <div className="contact-list-page lists-page">
         <div className="soronmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
@@ -333,6 +324,7 @@ const Lists = () => {
                   placeholder="Field"
                   multiple={false}
                   onSelect={handleOrderBy}
+                  onRemove={handleOrderBy}
                 />
               </div>
               <div className="right-buttons">
