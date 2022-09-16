@@ -286,12 +286,12 @@ class ContactController extends BaseController {
         $isTag = false;
         $isList = false;
 
-        if( isset( $params['tags'] ) ){
+        if( isset( $params['tags'] ) && isset( $params['contact_ids']) ){
             $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
             $isTag = true;
         }
 
-        if( isset( $params['lists'] ) ){
+        if( isset( $params['lists'] ) && isset($params['contact_ids']) ){
             $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
             $isList = true;
         }
@@ -632,7 +632,7 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
-            if(isset( $params ) && empty( $params["map"] )) {
+            if(isset( $params["map"] ) && empty( $params["map"] )) {
                 throw new Exception( __("Please map at least one field to desired field.", "mrm") );
             }
 
@@ -667,6 +667,7 @@ class ContactController extends BaseController {
                     'meta_fields'   => []
                 );
 
+                
                 foreach($mappings as $map) {
                     $map_array = json_decode(json_encode($map), true);
 
@@ -734,11 +735,11 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
-            if(isset( $params ) && empty( $params["map"] )) {
+            if(isset( $params["map"] ) && empty( $params["map"] )) {
                 throw new Exception( __("Please map at least one field for importing", "mrm") );
             }
 
-            return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200, $result);
+            return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200);
 
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);

@@ -148,12 +148,12 @@ export default function SelectFieldsMap() {
   }
 
   return (
-    <div className="soronmrm-import-page">
-      <div className="soronmrm-header">
+    <div className="mintmrm-import-page">
+      <div className="mintmrm-header">
         <div className="contact-details-breadcrumb import-contact-breadcrum">
           <div className="import-cotainer">
-            <div className="soronmrm-container">
-              <ul className="soronmrm-breadcrumb">
+            <div className="mintmrm-container">
+              <ul className="mintmrm-breadcrumb">
                 <li>
                   <a href="">Contact</a>
                 </li>
@@ -163,7 +163,7 @@ export default function SelectFieldsMap() {
           </div>
         </div>
       </div>
-      <div className="soronmrm-container">
+      <div className="mintmrm-container">
         <div className="import-wrapper">
           <ImportNavbar />
           <div className="import-tabs-content upload-section">
@@ -251,20 +251,20 @@ export default function SelectFieldsMap() {
 
             <div className="import-button">
               <Link to={returnUrl}>
-                <button className="soronmrm-btn outline cancel-btn">
+                <button className="mintmrm-btn outline cancel-btn">
                   Cancel
                 </button>
               </Link>
 
               <button
-                className="import-confirm-button soronmrm-btn"
+                className="import-confirm-button mintmrm-btn"
                 onClick={() => importContacts(map)}
                 loading={loading}
               >
                 Import
                 {loading && (
                   <span
-                    className="soronmrm-loader"
+                    className="mintmrm-loader"
                     style={{ display: "block" }}
                   ></span>
                 )}

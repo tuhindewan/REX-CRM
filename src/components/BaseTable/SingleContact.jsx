@@ -54,7 +54,7 @@ export default function SingleContact(props) {
     <tr>
       <td className="email-wrapper">
         <div className="email">
-          <span class="soronmrm-checkbox no-title">
+          <span class="mintmrm-checkbox no-title">
             <input
               type="checkbox"
               name={contact.id}
@@ -122,31 +122,25 @@ export default function SingleContact(props) {
           ref={menuButtonRef}
         >
           <ThreeDotIcon />
-          {currentActive == contact.id && ( // only show the menu if both active and current active points to this listitem
-            <Portal>
-              <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
-                <ul
-                  className={
-                    currentActive == contact.id && isActive
-                      ? "soronmrm-dropdown show"
-                      : "soronmrm-dropdown"
-                  }
-                >
-                  <li style={{ display: "flex" }} onClick={handleUpdate}>
-                    <span> View </span>
-                  </li>
-                  <li
-                    className="delete"
-                    onClick={() => {
-                      handleDelete();
-                    }}
-                  >
-                    Delete
-                  </li>
-                </ul>
-              </HoverMenu>
-            </Portal>
-          )}
+          <ul
+            className={
+              currentActive == contact.id && isActive
+                ? "mintmrm-dropdown show"
+                : "mintmrm-dropdown"
+            }
+          >
+            <li style={{ display: "flex" }} onClick={handleUpdate}>
+              <span> View </span>
+            </li>
+            <li
+              className="delete"
+              onClick={() => {
+                handleDelete();
+              }}
+            >
+              Delete
+            </li>
+          </ul>
         </button>
       </td>
     </tr>

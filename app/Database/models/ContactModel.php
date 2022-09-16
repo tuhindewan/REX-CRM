@@ -147,7 +147,6 @@ class ContactModel{
 
         $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s", array( $email ));
         $results = $wpdb->get_results($select_query);
-
         if( $results ){
             return true;
         }

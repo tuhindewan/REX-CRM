@@ -12,8 +12,8 @@ export default function CampaignsNavbar() {
   });
 
   return (
-    <div className="soronmrm-header">
-      <div className="soronmrm-container">
+    <div className="mintmrm-header">
+      <div className="mintmrm-container">
         <div className="header-wrapper">
           <div className="site-logo">
             <Link to="/">
@@ -21,7 +21,7 @@ export default function CampaignsNavbar() {
             </Link>
           </div>
 
-          <nav className="soronmrm-navbar">
+          <nav className="mintmrm-navbar">
             <ul className="navbar-ul">
               {routes.map((route, index) => {
                 if (route.campaignMenu) {
@@ -34,7 +34,7 @@ export default function CampaignsNavbar() {
                       }
                       key={index}
                     >
-                      <Link to={route.path}>{__(route.title, "soronmrm")}</Link>
+                      <Link to={route.path}>{__(route.title, "mintmrm")}</Link>
 
                       {route.bage && <span className="bage">{route.bage}</span>}
                     </li>
@@ -46,7 +46,7 @@ export default function CampaignsNavbar() {
 
           <div className="navbar-buttons">
             <Link to="/campaigns/addcampaign">
-              <button className="add-contact-btn soronmrm-btn ">
+              <button className="add-contact-btn mintmrm-btn ">
                 <Plus /> Add Campaign
               </button>
             </Link>
