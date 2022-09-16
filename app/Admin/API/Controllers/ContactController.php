@@ -1,4 +1,4 @@
-it <?php
+<?php
 
 namespace Mint\MRM\Admin\API\Controllers;
 
