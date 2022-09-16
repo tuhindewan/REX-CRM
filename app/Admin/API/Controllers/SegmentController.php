@@ -116,7 +116,6 @@ class SegmentController extends BaseController {
 
         $segment_id = isset($params['segment_id']) ? $params['segment_id'] : '';
         $segment = ContactGroupModel::get( $segment_id );
-        error_log(print_r($segment, 1));
         if(isset($segment)) {
             return $this->get_success_response("Query Successfull", 200, $segment);
         }
