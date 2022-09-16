@@ -34,10 +34,10 @@ class MessageModel {
         try {
             $wpdb->insert($table, array(
                 'campaign_id'       => $campaign_id,
-                'contact_id'        => $message['contact_id'],
-                'email_address'     => $message['email_address'],
-                'email_subject'     => $message['email_subject'],
-                'email_body'        => $message['email_body'],
+                'contact_id'        => $message->get_receiver_id(),
+                'email_address'     => $message->get_receiver_email(),
+                'email_subject'     => $message->get_email_subject(),
+                'email_body'        => $message->get_email_body(),
                 'sender_id'         => MRM_Common::get_current_user_id(),
                 'created_at'        => current_time('mysql')
                 )
