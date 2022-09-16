@@ -5,7 +5,7 @@ export default function NoteDrawer(prop) {
     const {isClose, setIsClose} = prop;
 
     const closeSection = () =>{
-        setIsClose(true)
+        setIsClose(!isClose)
     }
   return (
     <div class={prop.isEmailForm && !isClose ? "mintmrm-step-settings-drawer show-drawer" : "mintmrm-step-settings-drawer"}>

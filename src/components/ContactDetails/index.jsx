@@ -43,7 +43,7 @@ export default function ContactDetails() {
   const [refresh, setRefresh] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);     
-  const [isEmailForm, setIsEmailForm] = useState(false);     
+  const [isEmailForm, setIsEmailForm] = useState(true);     
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -52,7 +52,7 @@ export default function ContactDetails() {
   });
 
   const [errors, setErrors] = useState({});
-  const [isClose, setIsClose] = useState(false);
+  const [isClose, setIsClose] = useState(true);
 
   // Error message
   const [errorMessage, setErrorMessage] = useState("");
@@ -405,7 +405,8 @@ export default function ContactDetails() {
   };
 
   const emailForm = () =>{
-    setIsEmailForm(!isEmailForm);
+    setIsEmailForm(true);
+    setIsClose(!isClose);
   }
 
   return (
