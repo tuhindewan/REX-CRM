@@ -37,19 +37,19 @@ export default function ImportMailchimp() {
   }
   // Funtion to get mailchimp available lists for selection
   async function getLists() {
-    // if (apiKey == "") {
-    //   window.alert("Please Enter a valid API Key");
-    //   return;
-    // }
-    // let options = {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     key: apiKey,
-    //   }),
-    //   headers: {
-    //     "Content-type": "application/json",
-    //   },
-    // };
+    if (!apiKey) {
+      window.alert("Please Enter a valid API Key");
+      return;
+    }
+    let options = {
+      method: "POST",
+      body: JSON.stringify({
+        key: apiKey,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
     // const res = await fetch(
     //   `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/mailchimp/attrs`,

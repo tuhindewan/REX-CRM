@@ -87,7 +87,8 @@ class Server {
             'contacts'      =>  'ContactRoute',
             'workflows'     =>  'WorkflowRoute',
             'field-groups'  =>  'FieldGroupRoute',
-            'custom-fields' =>  'CustomFieldRoute'
+            'custom-fields' =>  'CustomFieldRoute',
+            'general'       =>  'generalRoute'
 		));
     }
     

@@ -5,8 +5,8 @@ namespace Mint\MRM\Admin\API\Controllers;
 use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
-use MRM\Data\MRM_Segment;
 use Exception;
+use Mint\MRM\DataStores\SegmentData;
 use MRM\Common\MRM_Common;
 
 /**
@@ -36,23 +36,26 @@ class SegmentController extends BaseController {
         // Segment title validation
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
         if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400 );
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200 );
 		}
 
         // Segment avaiability check
-        $exist = ContactGroupModel::is_group_exist( $params['slug'], "segments" );
-        if ( $exist ) {
-			return $this->get_error_response( __( 'Segment is already available', 'mrm' ),  400 );
+        $slug = sanitize_title( $title );
+        $params['slug'] = $slug;
+        $exist = ContactGroupModel::is_group_exist( $slug, "segments" );
+
+        if ( $exist && !isset($params['segment_id']) ) {
+			return $this->get_error_response( __( 'Segment is already available', 'mrm' ),  200 );
 		}
 
         // Segment filters validation
         if ( empty( $params['data'] ) || ( is_array( $params['data'] ) && empty( $params['data']['filters'] ) ) ) {
-			return $this->get_error_response( __( 'Filters are mandatory.', 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Filters are mandatory.', 'mrm' ), 200 );
 		}
 
         // Segment object create and insert or update to database
         try {
-            $segment = new MRM_Segment( $params );
+            $segment = new SegmentData( $params );
 
             if(isset($params['segment_id'])){
                 $success = ContactGroupModel::update( $segment, $params['segment_id'], "segments" );
@@ -63,9 +66,9 @@ class SegmentController extends BaseController {
             if($success) {
                 return $this->get_success_response(__( 'Segment has been saved successfully', 'mrm' ), 201);
             }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
         } catch(Exception $e) {
-                return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 400);
+                return $this->get_error_response(__( 'Segment is not valid', 'mrm' ), 200);
         }
 
     }
@@ -90,10 +93,9 @@ class SegmentController extends BaseController {
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
 
-        $groups = ContactGroupModel::get_all( "segments", $offset, $perPage, $search );
-
-        if( isset( $groups ) ) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
+        $segments = ContactGroupModel::get_all( "segments", $offset, $perPage, $search );
+        if( isset( $segments ) ) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $segments);
         }
         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
 
@@ -112,10 +114,10 @@ class SegmentController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $group = ContactGroupModel::get( $params['segment_id'] );
-
-        if(isset($group)) {
-            return $this->get_success_response("Query Successfull", 200, $group);
+        $segment_id = isset($params['segment_id']) ? $params['segment_id'] : '';
+        $segment = ContactGroupModel::get( $segment_id );
+        if(isset($segment)) {
+            return $this->get_success_response("Query Successfull", 200, $segment);
         }
         return $this->get_error_response("Failed to Get Data", 400);
     }
@@ -133,14 +135,9 @@ class SegmentController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // Segments avaiability check
-        $exist = ContactGroupModel::is_group_exist( $params['slug'], "segments" );
+        $segment_id = isset($params['segment_id']) ? $params['segment_id'] : '';
 
-        if ( !$exist ) {
-			return $this->get_error_response( __( 'Segemnt not found', 'mrm' ),  400);
-		}
-
-        $success = ContactGroupModel::destroy( $params['segment_id'] );
+        $success = ContactGroupModel::destroy( $segment_id );
         if( $success ) {
             return $this->get_success_response( __( 'Segment has been deleted successfully', 'mrm' ), 200 );
         }
@@ -162,7 +159,8 @@ class SegmentController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = ContactGroupModel::destroy_all( $params['segment_ids'] );
+        $segment_ids = isset($params['segment_ids']) ? $params['segment_ids'] : '';
+        $success = ContactGroupModel::destroy_all( $segment_ids );
         if($success) {
             return $this->get_success_response(__( 'Segments has been deleted successfully', 'mrm' ), 200);
         }
