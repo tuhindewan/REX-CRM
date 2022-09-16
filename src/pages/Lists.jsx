@@ -10,6 +10,12 @@ import NavBar from "../components/Navbar/index";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 
 const Lists = () => {
+  // showCreate shows the create form if true
+  const [showCreate, setShowCreate] = useState(false);
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -24,9 +30,6 @@ const Lists = () => {
   });
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
-
-  // showCreate shows the create form if true
-  const [showCreate, setShowCreate] = useState(false);
 
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -175,7 +178,9 @@ const Lists = () => {
         setShowNotification("block");
         setMessage(resJson.message);
         setErrors({});
-        console.log(showNotification);
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
       } else {
         setErrors({
@@ -215,6 +220,9 @@ const Lists = () => {
         }
       );
       const resJson = await res.json();
+      useGlobalStore.setState({
+        counterRefresh: !counterRefresh,
+      });
       toggleRefresh();
     }
   }
@@ -240,6 +248,9 @@ const Lists = () => {
         // remove all selected after deletion
         setAllSelected(false);
         setSelected([]);
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
       }
     } else {
