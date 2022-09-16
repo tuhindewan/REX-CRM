@@ -1,11 +1,19 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import InputItem from "../components/InputItem";
 import Selectbox from "../components/Selectbox";
+import Search from "../components/Icons/Search";
+import Plus from "../components/Icons/Plus";
+import CrossIcon from "../components/Icons/CrossIcon";
 
 export default function ImportMailchimp() {
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [isAddColumn, setIsAddColumn] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
   const navigate = useNavigate();
+
   // stores the text data
   const [apiKey, setApiKey] = useState("11b321614d43814ca7d8406041bb3839-us8");
 
@@ -29,53 +37,57 @@ export default function ImportMailchimp() {
   }
   // Funtion to get mailchimp available lists for selection
   async function getLists() {
-    if (apiKey == "") {
-      window.alert("Please Enter a valid API Key");
-      return;
-    }
-    let options = {
-      method: "POST",
-      body: JSON.stringify({
-        key: apiKey,
-      }),
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
+    // if (apiKey == "") {
+    //   window.alert("Please Enter a valid API Key");
+    //   return;
+    // }
+    // let options = {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     key: apiKey,
+    //   }),
+    //   headers: {
+    //     "Content-type": "application/json",
+    //   },
+    // };
 
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/mailchimp/attrs`,
-      options
-    );
-    const resJson = await res.json();
-    if (resJson.code == 200) {
-      const options = [];
-      // iterate over all the lists and set list options
-      resJson.data?.lists.map((list) => {
-        options.push({
-          title: list.name,
-          id: list.id,
-        });
-      });
+    // const res = await fetch(
+    //   `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/mailchimp/attrs`,
+    //   options
+    // );
+    // const resJson = await res.json();
+    // if (resJson.code == 200) {
+    //   const options = [];
+    //   // iterate over all the lists and set list options
+    //   resJson.data?.lists.map((list) => {
+    //     options.push({
+    //       title: list.name,
+    //       id: list.id,
+    //     });
+    //   });
 
-      setListsOptions(options);
-      
-    } else {
-      window.alert(resJson.message);
-    }
-    console.log(resJson);
+    //   setListsOptions(options);
+    // } else {
+    //   window.alert(resJson.message);
+    // }
+    // console.log(resJson);
+
+    setIsVerified(true);
   }
-  
+
   // if a list is selected, send the user to map page
   function goToMapPage() {
     navigate("/contacts/import/mailchimp/map", {
-        state: {
+      state: {
         data: resJson.data,
         type: "mailchimp", // indicated the type of import
-        },
+      },
     });
   }
 
+  const showLists = () => {
+    setIsAddColumn(!isAddColumn);
+  };
 
   return (
     <div className="mintmrm-import-page">
@@ -104,15 +116,30 @@ export default function ImportMailchimp() {
               <a href=""> documentation.</a>
             </span>
             <div className="import-form-wrapper">
-              <InputItem
-                label="MailChimp API Key"
-                name="mailchimp-api-key"
-                handleChange={handleChange}
-                value={apiKey}
-              />
-              <button className="contact-save mintmrm-btn" onClick={getLists}>
-                Verify
-              </button>
+              <div className="form-group contact-input-field">
+                <label htmlFor="" aria-required>
+                  MailChimp API Key
+                </label>
+                <div className="input-key-wrapper">
+                  <input
+                    type="text"
+                    name="mailchimp-api-key"
+                    onChange={handleChange}
+                    value={apiKey}
+                  />
+                  <button
+                    className="contact-save mintmrm-btn"
+                    onClick={getLists}
+                  >
+                    Verify
+                  </button>
+                </div>
+                <p
+                  className={
+                    errorMessage ? "error-message show" : "error-message"
+                  }
+                ></p>
+              </div>
             </div>
             {listsOptions.length > 0 && (
               <div className="import-form-wrapper">
@@ -128,15 +155,77 @@ export default function ImportMailchimp() {
                 />
               </div>
             )}
-            <div className="csv-save-button">
-              {selectedLists.length > 0 && (
-                <button
-                  className="contact-save mintmrm-btn"
-                  onClick={getLists}
+            <div className={isVerified ? "add-list show" : "add-list"}>
+              <div className="select-list pos-relative">
+                <div
+                  className={isAddColumn ? "select-btn selected show" : "select-btn selected"}
+                  onClick={showLists}
                 >
+                  <span className="selected-items">
+                    Product Feed 
+                    <CrossIcon/>
+                  </span>
+                  <span className="selected-items">
+                    WPVR
+                    <CrossIcon/>
+                  </span>
+                </div>
+                <div
+                  className={isAddColumn ? "select-btn show" : "select-btn"}
+                  onClick={showLists}
+                >
+                  Select List
+                </div>
+                <ul
+                  className={
+                    isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
+                  }
+                >
+                  <li className="searchbar">
+                    <span class="pos-relative">
+                      <Search />
+                      <input
+                        type="search"
+                        name="column-search"
+                        placeholder="Search..."
+                      />
+                    </span>
+                  </li>
+
+                  <li className="list-title">Choose columns</li>
+
+                  <Link className="add-action" to="">
+                    <Plus />
+                    Add Column
+                  </Link>
+
+                  {/* {contactListColumns.map((column, index) => {
+                  <li className="single-column">
+                    <ColumnList title={column.title} key={index} />
+                  </li>;
+                })} */}
+
+                  {/* <li className="button-area">
+              <button className="mintmrm-btn outline default-btn">
+                Default
+              </button>
+              <button className="mintmrm-btn outline cancel-btn">
+                Cancel
+              </button>
+              <button className="mintmrm-btn save-btn">Save</button>
+            </li> */}
+                </ul>
+              </div>
+            </div>
+            <div className="csv-save-button">
+              {/* {selectedLists.length > 0 && (
+                <button className="contact-save mintmrm-btn" onClick={getLists}>
                   Save
                 </button>
-              )}
+              )} */}
+              <button className="contact-save mintmrm-btn" onClick={getLists}>
+                Save
+              </button>
             </div>
           </div>
         </div>

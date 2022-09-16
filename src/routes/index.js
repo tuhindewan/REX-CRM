@@ -15,6 +15,7 @@ import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
+import ImportWordpress from "../pages/ImportWordpress"
 
 const routes = [
   {
@@ -46,6 +47,11 @@ const routes = [
   {
     path: "/contacts/import/mailchimp",
     element: ImportMailchimp,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/wordpress",
+    element: ImportWordpress,
     hideInMenu: true,
   },
   {
