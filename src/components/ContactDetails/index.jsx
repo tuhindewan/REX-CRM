@@ -18,9 +18,9 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
 import FilterItems from "../BaseTable/FilterItems";
 import AddItems from "./AddItems";
-import CreateNoteIcon from "../Icons/CreateNoteIcon"
-import EmailIcon from "../Icons/EmailIcon"
-
+import CreateNoteIcon from "../Icons/CreateNoteIcon";
+import EmailIcon from "../Icons/EmailIcon";
+import NoteDrawer from "../NoteDrawer";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -42,7 +42,8 @@ export default function ContactDetails() {
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
   const [selectTag, setSelectTag] = useState(false);
-  const [selectList, setSelectList] = useState(false);
+  const [selectList, setSelectList] = useState(false);     
+  const [isEmailForm, setIsEmailForm] = useState(false);     
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -51,6 +52,7 @@ export default function ContactDetails() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isClose, setIsClose] = useState(false);
 
   // Error message
   const [errorMessage, setErrorMessage] = useState("");
@@ -395,11 +397,15 @@ export default function ContactDetails() {
     toggleRefresh();
   };
 
-  const selectTags = () =>{
+  const selectTags = () => {
     setSelectTag(!selectTag);
-  }
-  const selectLists = () =>{
+  };
+  const selectLists = () => {
     setSelectList(!selectList);
+  };
+
+  const emailForm = () =>{
+    setIsEmailForm(!isEmailForm);
   }
 
   return (
@@ -477,12 +483,13 @@ export default function ContactDetails() {
 
               <div className="contact-author-mailing">
                 <button className="create-note">
-                <CreateNoteIcon />
-              </button>
+                  <CreateNoteIcon />
+                </button>
 
-              <button className="create-mail">
-                <EmailIcon />
-              </button>
+                <button className="create-mail" onClick={emailForm}>
+                  <EmailIcon />
+                </button>
+                <NoteDrawer isEmailForm={isEmailForm} isClose={isClose} setIsClose={setIsClose}/>
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />
@@ -893,7 +900,7 @@ export default function ContactDetails() {
 
                 <hr />
 
-                <div className="tags" >
+                <div className="tags">
                   <h4 className="title">Tags</h4>
                   <div className="tag-wrapper">
                     {contactData?.tags?.map((tag, idx) => {
@@ -932,8 +939,10 @@ export default function ContactDetails() {
                     //   onRemove={onRemove}
                     // />
                     <>
-                    <button className="choose-tag-btn" onClick={selectTags}>Choose Tags</button>
-                    <AddItems isActive={selectTag} />
+                      <button className="choose-tag-btn" onClick={selectTags}>
+                        Choose Tags
+                      </button>
+                      <AddItems isActive={selectTag} />
                     </>
                   )}
                   {/* {openTagSelectBox && (
@@ -984,8 +993,10 @@ export default function ContactDetails() {
                     //   onRemove={onRemove}
                     // />
                     <>
-                    <button className="choose-tag-btn" onClick={selectLists}>Choose Tags</button>
-                    <AddItems isActive={selectList} />
+                      <button className="choose-tag-btn" onClick={selectLists}>
+                        Choose Tags
+                      </button>
+                      <AddItems isActive={selectList} />
                     </>
                   )}
                   {/* {openListSelectBox && (
