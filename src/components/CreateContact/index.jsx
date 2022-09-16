@@ -9,9 +9,13 @@ import { getTags } from "../../services/Tag";
 import InputItem from "../InputItem/index";
 import Selectbox from "../Selectbox";
 import "./style.css";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
   // Prepare contact object
   const [contactData, setValues] = useState({
@@ -94,6 +98,9 @@ const CreateContact = (props) => {
       // Navigate user with success message
       navigate("../contacts", {
         state: { status: "contact-created", message: responseData?.message },
+      });
+      useGlobalStore.setState({
+        counterRefresh: !counterRefresh,
       });
     } else {
       // Validation messages

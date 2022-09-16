@@ -650,7 +650,7 @@ export default function ContactDetails() {
                       {customFields.map((field) => {
                         return (
                           <>
-                            <li>
+                            <li key={field.id}>
                               <span className="title">{field.title}</span>
                               <span className="title-value">
                                 {contactData?.meta_fields?.[field.slug]
@@ -758,6 +758,7 @@ export default function ContactDetails() {
                               <>
                                 {field.type == "text" && (
                                   <InputItem
+                                    key={field.id}
                                     name={field.slug}
                                     label={field.title}
                                     handleChange={handleMetaChange}
