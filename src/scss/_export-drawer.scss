@@ -1,10 +1,10 @@
-.mintmrm-step-settings-drawer {
+.mintmrm-export-settings-drawer {
   position: fixed;
   top: 32px;
   right: -190px;
   background-color: #fff;
   z-index: 99;
-  width: 644px;
+  width: 801px;
   height: calc(100vh - 32px);
   box-shadow: -1px 3px 13px rgba(150, 141, 169, 0.1);
   transition: all 0.3s ease-in-out;
@@ -97,15 +97,26 @@
   }
   //.drawer-header
 
-  .drawer-body {
-    padding: 32px;
-    height: calc(100% - 70px);
+  .export-drawer-body {
     overflow: auto;
-    position: relative;
+    height: calc(100% - 70px);
+    .inner-input-section {
+      padding: 25px;
+      position: relative;
+
+      h5 {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: -0.02em;
+        color: #181f38;
+      }
+    }
 
     .body-wrapper {
       border: 1px solid #e2e5ed;
       border-radius: 10px;
+      margin-top: 25px;
 
       input,
       textarea {
@@ -134,66 +145,70 @@
         }
       }
 
-      .body-footer {
-        display: flex;
-        justify-content: flex-end;
-        border-top: 1px solid #e2e5ed;
-        padding: 15px;
-        .contact-cancel,
-        .contact-save {
-          width: auto;
-          height: auto;
-        }
-
-        .outline {
-          background-color: transparent;
-
-          &:hover {
-            color: #ffffff;
-            background-color: #6f6af8;
-          }
-        }
-      }
-
       .body-title {
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
         padding: 20px;
-        h5 {
-          font-weight: 600;
-          font-size: 16px;
-          line-height: 19px;
-          letter-spacing: -0.02em;
-          color: #181f38;
-        }
-        span {
-          font-weight: 400;
-          font-size: 14px;
-          line-height: 17px;
-          color: #6a707c;
-        }
-      }
-      .text-area {
-        padding: 20px;
-        height: 161px;
-        overflow: auto;
-        textarea {
-          height: 100%;
+        border-bottom: 1px solid #e4e6eb;
+
+        .mintmrm-checkbox {
+          label {
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 18px;
+            color: #101828;
+          }
+          .selected {
+            margin-left: 5px;
+            color: #667085;
+          }
         }
       }
-      .note-footer {
+
+      .body-section {
+        padding: 25px 25px 15px 25px;
         display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        margin: 0 20px 20px 0;
-        svg{
-            margin-left: 20px;
+        flex-flow: row wrap;
+        li {
+          padding: 0 0 10px 10px;
+
+          label {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 17px;
+            letter-spacing: -0.01em;
+            color: #344054;
+          }
         }
-        .add-btn {
+
+        width: auto;
+      }
+
+      &.field {
+        li {
+          width: calc(100% / 4);
+        }
+      }
+      &.custom-field {
+        li {
           width: auto;
-          height: auto;
         }
+      }
+      &.woocommerce {
+        li {
+          width: calc(100% / 3);
+        }
+      }
+    }
+    .body-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 20px 30px;
+      border-top: 1px solid #e2e5ed;
+      .save-export {
+        margin-left: 12px;
       }
     }
 

@@ -25,6 +25,8 @@ import FilterItems from "./FilterItems";
 import CrossIcon from "../Icons/CrossIcon";
 import AssignedItems from "./AssignedItems";
 import SingleContact from "./SingleContact";
+import ExportIcon from "../Icons/ExportIcon";
+import ExportDrawer from "../ExportDrawer";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -98,6 +100,9 @@ export default function ContactListTable(props) {
     tags: [],
     status: [],
   });
+
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -302,6 +307,11 @@ export default function ContactListTable(props) {
     setAddColumn(!isAddColumn);
   };
 
+  const noteForm = () => {
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
+  };
+
   return (
     <>
       <div
@@ -448,10 +458,16 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          {/* <button className="export-btn mintmrm-btn outline">
-                  <ExportIcon />
-                  Export
-                </button> */}
+          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+            <ExportIcon />
+            Export
+          </button>
+          <ExportDrawer
+            isOpenNote={isNoteForm}
+            isCloseNote={isCloseNote}
+            setIsCloseNote={setIsCloseNote}
+          />
+
           <div className="bulk-action">
             <button className="more-option" onClick={showMoreOption}>
               <ThreeDotIcon />

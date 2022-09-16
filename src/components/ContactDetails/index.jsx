@@ -20,6 +20,7 @@ import FilterItems from "../BaseTable/FilterItems";
 import AddItems from "./AddItems";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EmailIcon from "../Icons/EmailIcon";
+import EmailDrawer from "../EmailDrawer";
 import NoteDrawer from "../NoteDrawer";
 
 const toOrdinalSuffix = (num) => {
@@ -42,8 +43,11 @@ export default function ContactDetails() {
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
   const [selectTag, setSelectTag] = useState(false);
-  const [selectList, setSelectList] = useState(false);     
-  const [isEmailForm, setIsEmailForm] = useState(true);     
+  const [selectList, setSelectList] = useState(false);
+  const [isEmailForm, setIsEmailForm] = useState(true);
+  const [isClose, setIsClose] = useState(true);
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -52,7 +56,6 @@ export default function ContactDetails() {
   });
 
   const [errors, setErrors] = useState({});
-  const [isClose, setIsClose] = useState(true);
 
   // Error message
   const [errorMessage, setErrorMessage] = useState("");
@@ -404,10 +407,14 @@ export default function ContactDetails() {
     setSelectList(!selectList);
   };
 
-  const emailForm = () =>{
+  const emailForm = () => {
     setIsEmailForm(true);
     setIsClose(!isClose);
-  }
+  };
+  const noteForm = () => {
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
+  };
 
   return (
     <>
@@ -483,14 +490,23 @@ export default function ContactDetails() {
               </div>
 
               <div className="contact-author-mailing">
-                <button className="create-note">
+                <button className="create-note" onClick={noteForm}>
                   <CreateNoteIcon />
                 </button>
+                <NoteDrawer
+                  isOpenNote={isNoteForm}
+                  isCloseNote={isCloseNote}
+                  setIsCloseNote={setIsCloseNote}
+                />
 
                 <button className="create-mail" onClick={emailForm}>
                   <EmailIcon />
                 </button>
-                <NoteDrawer isEmailForm={isEmailForm} isClose={isClose} setIsClose={setIsClose}/>
+                <EmailDrawer
+                  isOpen={isEmailForm}
+                  isClose={isClose}
+                  setIsClose={setIsClose}
+                />
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />
