@@ -7,7 +7,7 @@ export default function SingleCampaign(props) {
     <tr>
       <td className="email-wrapper campaign-name-wrapper">
         <div className="email campaign-name">
-          <span class="soronmrm-checkbox no-title">
+          <span class="mintmrm-checkbox no-title">
             <input
               type="checkbox"
               name={props.campaign.id}

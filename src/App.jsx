@@ -6,7 +6,7 @@ import routes from "./routes/index.js";
 
 const App = () => {
   return (
-    <div className="soronmrm">
+    <div className="mintmrm">
       <ReactFlowProvider>
         <HashRouter>
           <>

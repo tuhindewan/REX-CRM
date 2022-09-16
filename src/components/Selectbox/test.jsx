@@ -9,7 +9,7 @@ export default function Selectbox(props) {
 
   const jQuerycode = () => {
     if (props.index) {
-      $(".soronmrm-" + props.index + "-selectbox").select2({
+      $(".mintmrm-" + props.index + "-selectbox").select2({
         dropdownParent: $("." + props.index + "-select2-result"),
         placeholder: props.placeholder,
         tags: props.tags,
@@ -59,7 +59,7 @@ export default function Selectbox(props) {
       {props.index && (
         <div
           className={
-            "form-group soronmrm-select2-selectbox " +
+            "form-group mintmrm-select2-selectbox " +
             props.index +
             "-selectbox"
           }
@@ -67,7 +67,7 @@ export default function Selectbox(props) {
           <label>{props.label}</label>
 
           <select
-            className={"soronmrm-" + props.index + "-selectbox"}
+            className={"mintmrm-" + props.index + "-selectbox"}
             name={props.name}
             onChange={props.handleChange}
           >

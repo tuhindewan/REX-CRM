@@ -12,7 +12,7 @@ export default function CampaignListTable(props) {
           <thead>
             <tr>
               <th className="campaign-name">
-                <span class="soronmrm-checkbox">
+                <span class="mintmrm-checkbox">
                   <input
                     type="checkbox"
                     name="campaign-bulk-select"

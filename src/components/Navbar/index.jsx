@@ -32,8 +32,8 @@ export default function Navbar(props) {
   return (
     <>
       {!hideGlobalNav && (
-        <div className="soronmrm-header">
-          <div className="soronmrm-container">
+        <div className="mintmrm-header">
+          <div className="mintmrm-container">
             <div className="header-wrapper">
               <div className="site-logo">
                 <Link to="/">
@@ -44,7 +44,7 @@ export default function Navbar(props) {
                 </Link>
               </div>
 
-              <nav className="soronmrm-navbar">
+              <nav className="mintmrm-navbar">
                 <ul className="navbar-ul">
                   {routes.map((route, index) => {
                     if (!route.hideInMenu) {
@@ -58,7 +58,7 @@ export default function Navbar(props) {
                           key={index}
                         >
                           <Link to={route.path}>
-                            {__(route.title, "soronmrm")}
+                            {__(route.title, "mintmrm")}
                           </Link>
 
                           {route.bage && (

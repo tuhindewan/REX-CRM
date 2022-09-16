@@ -6,7 +6,7 @@ export default function FilterItems(props) {
   return (
     <ul
       className={
-        props.isActiveFilter ? "soronmrm-dropdown show" : "soronmrm-dropdown"
+        props.isActiveFilter ? "mintmrm-dropdown show" : "mintmrm-dropdown"
       }
     >
       <li className="searchbar">

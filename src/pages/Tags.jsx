@@ -16,7 +16,7 @@ const Tags = () => {
   useGlobalStore.setState({
     navbarMarkup: (
       <button
-        className="contact-save soronmrm-btn"
+        className="contact-save mintmrm-btn"
         onClick={() => setShowCreate((prev) => !prev)}
       >
         + Add Tag
@@ -250,7 +250,7 @@ const Tags = () => {
     <>
       {showCreate && (
         <div className="create-contact">
-          <div className="soronmrm-container">
+          <div className="mintmrm-container">
             <h2 className="conatct-heading">
               {editID == 0 ? "Add Tag" : "Update Tag"}
             </h2>
@@ -274,7 +274,7 @@ const Tags = () => {
                     />
                   </div>
                   <button
-                    className="contact-save soronmrm-btn"
+                    className="contact-save mintmrm-btn"
                     onClick={createOrUpdate} // explicityly set the id as null to force create list
                   >
                     {editID == 0 ? "Save" : "Update"}
@@ -286,7 +286,7 @@ const Tags = () => {
         </div>
       )}
       <div className="contact-list-page tags-page">
-        <div className="soronmrm-container">
+        <div className="mintmrm-container">
           <div className="contact-list-area">
             <div className="contact-list-header">
               <div className="left-filters">
@@ -339,25 +339,27 @@ const Tags = () => {
                     }}
                   />
                 </span>
-                {/* show more options section */}
-                <button
-                  className="more-option"
-                  onClick={() => setShowMoreOptions(!showMoreOptions)}
-                >
-                  <ThreeDotIcon />
-
-                  <ul
-                    className={
-                      showMoreOptions
-                        ? "soronmrm-dropdown show"
-                        : "soronmrm-dropdown"
-                    }
+                <div className="bulk-action">
+                  {/* show more options section */}
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
                   >
-                    <li className="delete" onClick={deleteMultipleList}>
-                      Delete Selected
-                    </li>
-                  </ul>
-                </button>
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete" onClick={deleteMultipleList}>
+                        Delete Selected
+                      </li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="contact-list-body">
@@ -366,7 +368,7 @@ const Tags = () => {
                   <thead>
                     <tr>
                       <th className="">
-                        <span class="soronmrm-checkbox no-title">
+                        <span class="mintmrm-checkbox no-title">
                           <input
                             type="checkbox"
                             name="bulk-select"

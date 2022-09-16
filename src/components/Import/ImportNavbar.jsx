@@ -8,7 +8,7 @@ export default function ImportNavbar() {
         <span className="import-type-title">Choose Import Contacts</span>
         <Link to="/contacts/import/csv">
           <button
-            className={`soronmrm-btn upload-button ${
+            className={`mintmrm-btn upload-button ${
               location.pathname.includes("csv") ? "" : "outline"
             }`}
           >
@@ -17,7 +17,7 @@ export default function ImportNavbar() {
         </Link>
         <Link to="/contacts/import/raw">
           <button
-            className={`soronmrm-btn upload-button ${
+            className={`mintmrm-btn upload-button ${
               location.pathname.includes("raw") ? "" : "outline"
             }`}
           >
@@ -26,7 +26,7 @@ export default function ImportNavbar() {
         </Link>
         <Link to="/contacts/import/mailchimp">
           <button
-            className={`soronmrm-btn upload-button ${
+            className={`mintmrm-btn upload-button ${
               location.pathname.includes("mailchimp") ? "" : "outline"
             }`}
           >

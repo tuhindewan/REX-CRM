@@ -265,10 +265,10 @@ export default function AddCampaign(props) {
   };
 
   return (
-    <div className="soronmrm-add-campaign">
+    <div className="mintmrm-add-campaign">
       <div className="add-campaign-breadcrumb">
-        <div className="soronmrm-container">
-          <ul className="soronmrm-breadcrumb">
+        <div className="mintmrm-container">
+          <ul className="mintmrm-breadcrumb">
             <li>
               {/* <a href="/contacts/allcampaigns">Campaigns</a> */}
               <Link to="/campaigns">Campaigns</Link>
@@ -278,7 +278,7 @@ export default function AddCampaign(props) {
         </div>
       </div>
 
-      <div className="soronmrm-container">
+      <div className="mintmrm-container">
         <div className="add-campaign-wrapper">
           <div className="add-campaign-header">
             <div className="campaign-title">
@@ -325,8 +325,8 @@ export default function AddCampaign(props) {
             </div>
 
             <div className="campaign-action-btn">
-              {/*<button className="soronmrm-btn outline">Save as draft</button>*/}
-              {/*<button className="soronmrm-btn">Preview & test</button>*/}
+              {/*<button className="mintmrm-btn outline">Save as draft</button>*/}
+              {/*<button className="mintmrm-btn">Preview & test</button>*/}
             </div>
           </div>
 
@@ -362,14 +362,14 @@ export default function AddCampaign(props) {
                     {viewdata && fromData?.sender_email ? (
                       <button
                         onClick={addForm}
-                        className="edit-btn soronmrm-btn outline"
+                        className="edit-btn mintmrm-btn outline"
                       >
                         <EditButton />
                       </button>
                     ) : (
                       <button
                         onClick={addForm}
-                        className="soronmrm-btn outline"
+                        className="mintmrm-btn outline"
                       >
                         Add From
                       </button>
@@ -382,8 +382,8 @@ export default function AddCampaign(props) {
                     enableForm ? "form-box-body active-form" : "form-box-body"
                   }
                 >
-                  <div className="soronmrm-row">
-                    <div className="soronmrm-col-2">
+                  <div className="mintmrm-row">
+                    <div className="mintmrm-col-2">
                       <InputItem
                         label="Email"
                         name="sender_email"
@@ -392,11 +392,11 @@ export default function AddCampaign(props) {
                       />
                     </div>
 
-                    <div className="soronmrm-col-2">
+                    <div className="mintmrm-col-2">
                       <div className="form-group">
                         <label htmlFor="">
                           Name
-                          <span className="soronmrm-tooltip">
+                          <span className="mintmrm-tooltip">
                             <TooltipQuestionIcon />
                             <p>
                               Use something subscribers will instantly
@@ -423,11 +423,11 @@ export default function AddCampaign(props) {
                 >
                   <button
                     onClick={id ? handleUpdate : handleSubmit}
-                    className="soronmrm-btn"
+                    className="mintmrm-btn"
                   >
                     Save
                   </button>
-                  {/* <button onClick={onSave} className="soronmrm-btn">Save</button> */}
+                  {/* <button onClick={onSave} className="mintmrm-btn">Save</button> */}
                 </div>
               </div>
 
@@ -440,7 +440,7 @@ export default function AddCampaign(props) {
                   </div>
 
                   <div className="box-action">
-                    <button onClick={addTo} className="soronmrm-btn outline">
+                    <button onClick={addTo} className="mintmrm-btn outline">
                       Add Recipients
                     </button>
                   </div>
@@ -451,8 +451,8 @@ export default function AddCampaign(props) {
                     enableTo ? "form-box-body active-form" : "form-box-body"
                   }
                 >
-                  <div className="soronmrm-row">
-                    <div className="soronmrm-col-2">
+                  <div className="mintmrm-row">
+                    <div className="mintmrm-col-2">
                       <div className="form-group">
                         <Selectbox
                           label="Lists"
@@ -467,7 +467,7 @@ export default function AddCampaign(props) {
                       </div>
                     </div>
 
-                    <div className="soronmrm-col-2">
+                    <div className="mintmrm-col-2">
                       <div className="form-group">
                         <Selectbox
                           label="Tags"
@@ -489,7 +489,7 @@ export default function AddCampaign(props) {
                     enableTo ? "form-box-footer active-form" : "form-box-footer"
                   }
                 >
-                  <button onClick={handleUpdate} className="soronmrm-btn">
+                  <button onClick={handleUpdate} className="mintmrm-btn">
                     Save
                   </button>
                 </div>
@@ -535,14 +535,14 @@ export default function AddCampaign(props) {
                     {viewdata && emailSubject?.email_preview_text ? (
                       <button
                         onClick={addSubject}
-                        className="edit-btn soronmrm-btn outline"
+                        className="edit-btn mintmrm-btn outline"
                       >
                         <EditButton />
                       </button>
                     ) : (
                       <button
                         onClick={addSubject}
-                        className="soronmrm-btn outline"
+                        className="mintmrm-btn outline"
                       >
                         Add Subject
                       </button>
@@ -557,8 +557,8 @@ export default function AddCampaign(props) {
                       : "form-box-body"
                   }
                 >
-                  <div className="soronmrm-row">
-                    <div className="soronmrm-col-2">
+                  <div className="mintmrm-row">
+                    <div className="mintmrm-col-2">
                       <div className="form-group">
                         <label htmlFor="">Subject line</label>
                         <input
@@ -574,7 +574,7 @@ export default function AddCampaign(props) {
                       </div>
                     </div>
 
-                    <div className="soronmrm-col-2">
+                    <div className="mintmrm-col-2">
                       <div className="form-group">
                         <label htmlFor="">Preview text </label>
                         <input
@@ -599,7 +599,7 @@ export default function AddCampaign(props) {
                       : "form-box-footer"
                   }
                 >
-                  <button onClick={handleUpdate} className="soronmrm-btn">
+                  <button onClick={handleUpdate} className="mintmrm-btn">
                     Save
                   </button>
                 </div>
@@ -615,7 +615,7 @@ export default function AddCampaign(props) {
                   <div className="box-action">
                     <button
                       onClick={addDesign}
-                      className="soronmrm-btn outline"
+                      className="mintmrm-btn outline"
                     >
                       Design Email
                     </button>
@@ -627,7 +627,7 @@ export default function AddCampaign(props) {
                     enableDesign ? "form-box-body active-form" : "form-box-body"
                   }
                 >
-                  <div className="soronmrm-row">
+                  <div className="mintmrm-row">
                     <div className="box-text-col">
                       <DefaultEditor value={emailBody} onChange={handleText} />
                     </div>
@@ -641,7 +641,7 @@ export default function AddCampaign(props) {
                       : "form-box-footer"
                   }
                 >
-                  <button onClick={handleUpdate} className="soronmrm-btn">
+                  <button onClick={handleUpdate} className="mintmrm-btn">
                     Save
                   </button>
                 </div>
@@ -650,10 +650,10 @@ export default function AddCampaign(props) {
           </div>
 
           <div className="add-campaign-footer">
-            {/*<button className="soronmrm-btn outline">Schedule</button>*/}
+            {/*<button className="mintmrm-btn outline">Schedule</button>*/}
             <button
                 onClick={sendCampaignEmail}
-                className="soronmrm-btn"
+                className="mintmrm-btn"
             >
               {triggerButtonText}
             </button>

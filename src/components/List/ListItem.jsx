@@ -19,7 +19,7 @@ export default function ListItem(props) {
   return (
     <tr>
       <td>
-        <span class="soronmrm-checkbox" title="">
+        <span class="mintmrm-checkbox" title="">
           <input
             type="checkbox"
             name={id}
@@ -59,8 +59,8 @@ export default function ListItem(props) {
                 <ul
                   className={
                     currentActive == id // only show the menu  current active points to this listitem id
-                      ? "soronmrm-dropdown show"
-                      : "soronmrm-dropdown"
+                      ? "mintmrm-dropdown show"
+                      : "mintmrm-dropdown"
                   }
                 >
                   <li

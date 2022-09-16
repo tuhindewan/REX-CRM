@@ -140,7 +140,7 @@
         position: relative;
       }
 
-      .soronmrm-dropdown {
+      .mintmrm-dropdown {
         width: 315px;
         left: -2px;
         top: calc(100% + 20spx);
@@ -162,7 +162,7 @@
           }
         }
       }
-      //   .soronmrm-checkbox {
+      //   .mintmrm-checkbox {
       //     display: block;
       //     padding: 10px 0;
       // }
@@ -227,7 +227,7 @@
           cursor: pointer;
           margin-left: 12px;
         }
-        .assigned-to.soronmrm-dropdown {
+        .assigned-to.mintmrm-dropdown {
           width: 332px !important;
 
           .list-title {
@@ -237,49 +237,7 @@
             padding: 10px 0;
           }
 
-          .no-found {
-            // border: 1px solid #F9FAFB;
-            background-color: #f9fafb;
-            padding: 5px 0 5px 20px;
-            border-radius: 0;
-            background: #f9fafb;
-            position: relative;
-            left: -12px;
-            width: calc(100% + 24px);
-            cursor: text;
-            margin-top: 10px;
-
-            display: none;
-
-            span {
-              font-weight: 600;
-              font-size: 12px;
-              line-height: 15px;
-              letter-spacing: 0.05em;
-              text-transform: uppercase;
-              color: #ec5956;
-            }
-          }
-          .add-action {
-            display: flex;
-            padding: 15px 0 8px 10px;
-            border-top: 1px solid #e2e5ed;
-            position: relative;
-            left: -12px;
-            width: calc(100% + 24px);
-            svg {
-              path {
-                stroke: #807cf9;
-              }
-            }
-          }
-          .add-action:hover {
-            svg {
-              path {
-                stroke: #4c25a5;
-              }
-            }
-          }
+          
         }
       }
     }
@@ -362,6 +320,10 @@
       background: #f9fafb;
       padding: 9px 13px 9px;
 
+      .add-column-btn{
+        background-color: #f9fafb;
+      }
+
       .tooltip {
         background: #10052e;
         border-radius: 6px;
@@ -399,7 +361,7 @@
         }
       }
 
-      .soronmrm-dropdown {
+      .mintmrm-dropdown {
         width: 315px;
         right: -2px;
         top: calc(100% - 5px);
@@ -531,10 +493,10 @@
             line-height: 20px;
             cursor: pointer;
           }
-          .soronmrm-checkbox label:before {
+          .mintmrm-checkbox label:before {
             top: 1px;
           }
-          .soronmrm-checkbox label:after {
+          .mintmrm-checkbox label:after {
             top: 7px;
           }
         }
