@@ -19,6 +19,7 @@ const CreateContact = (props) => {
     first_name: "",
     last_name: "",
     status: ["pending"],
+    created_by: `${window.MRM_Vars.current_userID}`,
     lists: [],
     tags: [],
   });

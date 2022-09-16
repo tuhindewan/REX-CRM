@@ -1,4 +1,4 @@
-it <?php
+<?php
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -133,11 +133,23 @@ class ContactController extends BaseController {
         }
         
         if($contact && isset($contact['email'])) {
-            $avatar_url   = 'https://www.gravatar.com/avatar/0?s=80&d=retro';
+            if (isset($contact['created_at'])){
+                $time = new \DateTimeImmutable($contact['created_at'], wp_timezone());
+                $created_time = $time->format("h:i a");
 
-            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=80&&d=retro';
+                $contact['created_time'] = $created_time;
+            }
+                
+            if(isset($contact['created_by']))$user_meta = get_userdata($contact['created_by']);
+
+            $contact ["added_by_login"] = $user_meta->data->user_login;
+
+            $avatar_url   = 'https://www.gravatar.com/avatar/0?s=100&d=retro';
+
+            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=100&&d=retro';
 
             $contact ["avatar_url"] = $avatar_url;
+
 
             return $this->get_success_response("Query Successfull", 200, $contact);
         }

@@ -49,6 +49,7 @@ class ContactSchema implements Schema {
             `status` VARCHAR(50) NOT NULL DEFAULT 'subscribed' COMMENT 'SUBSCRIBED, UNSUBSCRIBED, PENDING, BOUNCED',
             `stage` VARCHAR(50) DEFAULT 'lead' COMMENT 'LEAD, MQL, SQL, CUSTOMER',
             `last_activity` TIMESTAMP NULL,
+            `created_by` BIGINT(20),
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
              INDEX `contact_wp_user_id_index` (`wp_user_id` ASC),

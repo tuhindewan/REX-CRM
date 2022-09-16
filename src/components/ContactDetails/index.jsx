@@ -18,8 +18,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
 import FilterItems from "../BaseTable/FilterItems";
 import AddItems from "./AddItems";
-import CreateNoteIcon from "../Icons/CreateNoteIcon"
-import EmailIcon from "../Icons/EmailIcon"
+import CreateNoteIcon from "../Icons/CreateNoteIcon";
+import EmailIcon from "../Icons/EmailIcon";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -437,8 +437,9 @@ export default function ContactDetails() {
                   </h2>
 
                   <p>
-                    Added on {createMonth} {toOrdinalSuffix(createDay)},{" "}
-                    {createYear}
+                    Added via {contactData.added_by_login} Add on {createMonth}{" "}
+                    {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                    {contactData.created_time}
                   </p>
 
                   {contactData.status == "subscribed" ? (
@@ -477,12 +478,12 @@ export default function ContactDetails() {
 
               <div className="contact-author-mailing">
                 <button className="create-note">
-                <CreateNoteIcon />
-              </button>
+                  <CreateNoteIcon />
+                </button>
 
-              <button className="create-mail">
-                <EmailIcon />
-              </button>
+                <button className="create-mail">
+                  <EmailIcon />
+                </button>
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />
