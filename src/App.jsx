@@ -6,7 +6,6 @@ import Header from "./components/Navbar/";
 import routes from "./routes/index.js";
 
 import { useState } from "react";
-import LoadingIndicator from "./components/LoadingIndicator";
 
 const App = () => {
   const [active, setActive] = useState(false);
@@ -23,7 +22,6 @@ const App = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <LoadingIndicator />
 
             <Routes>
               {routes.map((route, index) => (

@@ -51,13 +51,23 @@
   width: 17px;
 }
 
-.shimmer-wrapper {
+.shimmer-wrapper, .shimmer-wrapper-center {
   width: 100%;
   height: 100%;
   padding: 10px;
   animation: shimmer-full-view 0.5s forwards
     cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
+.shimmer-wrapper-center {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+
 
 @keyframes shimmer-full-view {
   0% {
