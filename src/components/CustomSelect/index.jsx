@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, isValidElement } from "react";
 import Search from "../Icons/Search";
 
 export default function CustomSelect(props) {
@@ -16,7 +16,7 @@ export default function CustomSelect(props) {
     placeholder = "Lists",
     listTitle = "CHOOSE LIST",
     searchPlaceHolder = "Search...",
-    multiple,
+    multiple = false,
     allowNewCreate = false,
   } = props;
   const buttonRef = useRef(null);
@@ -44,6 +44,32 @@ export default function CustomSelect(props) {
     else setQuery("");
   }
 
+  // handler for one single item click
+  const handleSelectOne = (e) => {
+    console.log(e.target);
+    const index = selected.findIndex((item) => item.id == e.target.id);
+
+    // already in selected list so remove it from the array
+    if (multiple) {
+      if (index >= 0) {
+        setSelected(selected.filter((item) => item.id != e.target.id));
+      } else {
+        // add id to the array
+        setSelected([...selected, { id: e.target.id, title: e.target.value }]);
+      }
+    } else {
+      if (index >= 0) setSelected([]);
+      else setSelected([{ id: e.target.id, title: e.target.value }]);
+    }
+
+    console.log(selected);
+  };
+
+  const checkIfSelected = (id) => {
+    const checked = selected.findIndex((item) => item.id == id) >= 0;
+    return checked;
+  };
+
   // at first page load get all the available lists
   useEffect(() => {
     console.log("useeffect");
@@ -70,7 +96,7 @@ export default function CustomSelect(props) {
           onClick={toggleActive}
           ref={buttonRef}
         >
-          {placeholder} lkasjflksadfjlsdkajflkjsf
+          {placeholder}
         </button>
 
         <ul
@@ -101,10 +127,17 @@ export default function CustomSelect(props) {
             items.map((item, index) => {
               return (
                 <li key={index} className="single-column">
-                  <span class="mintmrm-checkbox">
-                    <input type="checkbox" name="status" id="status" />
-                    <label for="status">{item.title}</label>
-                  </span>
+                  <div class="mintmrm-checkbox">
+                    <input
+                      type="checkbox"
+                      name={item.id}
+                      id={item.id}
+                      value={item.title}
+                      onChange={handleSelectOne}
+                      checked={checkIfSelected(item.id)}
+                    />
+                    <label for={item.id}>{item.title}</label>
+                  </div>
                 </li>
               );
             })}
