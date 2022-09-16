@@ -18,6 +18,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import SingleActivityFeed from "./SingleActivityFeed";
 import FilterItems from "../BaseTable/FilterItems";
 import AddItems from "./AddItems";
+import CreateNoteIcon from "../Icons/CreateNoteIcon"
+import EmailIcon from "../Icons/EmailIcon"
 
 
 const toOrdinalSuffix = (num) => {
@@ -474,13 +476,13 @@ export default function ContactDetails() {
               </div>
 
               <div className="contact-author-mailing">
-                {/* <button className="create-note">
+                <button className="create-note">
                 <CreateNoteIcon />
               </button>
 
               <button className="create-mail">
                 <EmailIcon />
-              </button> */}
+              </button>
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />

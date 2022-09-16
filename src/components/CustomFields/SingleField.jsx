@@ -19,7 +19,7 @@ export default function SingleField(props) {
   return (
     <tr>
       <td>
-        <span class="soronmrm-checkbox" title="">
+        <span class="mintmrm-checkbox" title="">
           <input
             type="checkbox"
             name={id}
@@ -57,8 +57,8 @@ export default function SingleField(props) {
                 <ul
                   className={
                     currentActive == id // only show the menu if both active and current active points to this listitem
-                      ? "soronmrm-dropdown show"
-                      : "soronmrm-dropdown"
+                      ? "mintmrm-dropdown show"
+                      : "mintmrm-dropdown"
                   }
                 >
                   <li

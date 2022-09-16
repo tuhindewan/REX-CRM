@@ -23,6 +23,10 @@ const App = () => {
             </Routes>
           </>
         </HashRouter>
+        {/* <div className="mintmrm-container">
+          <DeletePopup/>
+        </div>
+        <SuccessfulNotification/> */}
       </ReactFlowProvider>
     </div>
   );

@@ -27,7 +27,7 @@ export default function CustomSelect(props) {
         >
           Tags
         </button>
-        <ul className={active ? "soronmrm-dropdown show" : "soronmrm-dropdown"}>
+        <ul className={active ? "mintmrm-dropdown show" : "mintmrm-dropdown"}>
           <li className="searchbar">
             <span class="pos-relative">
               <Search />
