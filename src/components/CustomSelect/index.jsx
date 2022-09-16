@@ -2,8 +2,12 @@ import { useState, useEffect, useRef, isValidElement } from "react";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
 import CrossIcon from "../Icons/CrossIcon";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function CustomSelect(props) {
+  const hideAllCustomSelect = useGlobalStore(
+    (state) => state.hideAllCustomSelect
+  );
   const {
     active,
     setActive,
@@ -146,7 +150,9 @@ export default function CustomSelect(props) {
       <div className="mrm-custom-select-container" key="container">
         <button
           className={
-            active ? "mrm-custom-select-btn show" : "mrm-custom-select-btn"
+            active && hideAllCustomSelect
+              ? "mrm-custom-select-btn show"
+              : "mrm-custom-select-btn"
           }
           onClick={toggleActive}
           ref={buttonRef}
@@ -170,6 +176,9 @@ export default function CustomSelect(props) {
               ? "mintmrm-dropdown mrm-custom-select-dropdown show"
               : "mintmrm-dropdown mrm-custom-select-dropdown"
           }
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
           {showSearchBar && (
             <li className="searchbar" key="hello">

@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
+import CustomSelect from "./CustomSelect";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -31,6 +32,8 @@ export default function SelectFieldsMap() {
   // if current path is /contacts/import/csv/map replace the map and send back to /contacts/import/csv
   // this url will also be used for posting fetch request endpoint /contacts/import/csv for file and /contacts/import/raw for raw data
   const returnUrl = location.pathname.replace("/map", "");
+
+  
 
   //   if no data is recieved through state object
   //   force redirect to previous import page
@@ -205,7 +208,7 @@ export default function SelectFieldsMap() {
                 <h3>Contact Profile</h3>
 
                 <div className="contact-profile">
-                  <Selectbox
+                  {/* <Selectbox
                     label="Status"
                     name="status"
                     options={[
@@ -244,7 +247,8 @@ export default function SelectFieldsMap() {
                     tags={false}
                     multiple={true}
                     onSelect={handleExtraFields}
-                  />
+                  /> */}
+                  
                 </div>
               </div>
             </form>
