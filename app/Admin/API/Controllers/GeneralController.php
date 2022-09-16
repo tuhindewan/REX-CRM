@@ -39,9 +39,9 @@ class GeneralController{
          $contacts = ContactModel::get_all( 'contacts' );
 
          $data = array(
-            'total_contacts' => $contacts['count'],
-            'total_lists'    => $lists['count'],
-            'total_tags'     => $tags['count']
+            'total_contacts' => isset($contacts['count']) ? $contacts['count']: 0,
+            'total_lists'    => isset($lists['count']) ? $lists['count'] : 0,
+            'total_tags'     => isset($tags['count']) ? $tags['count'] : 0
          );
 
          if(isset($lists) && isset($tags) && isset($contacts)) {

@@ -261,11 +261,11 @@ class ContactController extends BaseController {
         }
 
 
-        if($success && $isList == 1 && $isTag == 1) {
+        if($success &&  1 == $isList && 1 == $isTag) {
             return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isTag == 1){
+        }else if ($success && 1 == $isTag){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isList == 1 ){
+        }else if ($success && 1 == $isList ){
             return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
@@ -283,8 +283,8 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $isTag = 0;
-        $isList = 0;
+        $isTag = false;
+        $isList = false;
 
         if( isset( $params['tags'] ) ){
             $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
