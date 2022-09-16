@@ -25,5 +25,6 @@ export const useGlobalStore = create((set) => ({
   sendEmail: "",
   lastStepNodeID: 0,
   navbarMarkup: <></>,
-  hideGlobalNav: false
+  hideGlobalNav: false,
+  counterRefresh: false
 }));

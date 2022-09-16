@@ -127,12 +127,18 @@ class ContactController extends BaseController {
         $contact    = ContactModel::get( $params['contact_id'] );
         
         // Get and merge tags and lists
-        if( isset($contact) ) {
+        if( $contact ) {
             $contact    = TagController::get_tags_to_contact( $contact );
             $contact    = ListController::get_lists_to_contact( $contact );
         }
         
-        if(isset($contact)) {
+        if($contact && isset($contact['email'])) {
+            $avatar_url   = 'https://www.gravatar.com/avatar/0?s=80&d=retro';
+
+            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=80&&d=retro';
+
+            $contact ["avatar_url"] = $avatar_url;
+
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
         return $this->get_error_response("Failed to Get Data", 400);

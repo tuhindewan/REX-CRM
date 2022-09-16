@@ -11,6 +11,7 @@ export default function Navbar(props) {
   const location = useLocation();
   const navbarMarkup = useGlobalStore((state) => state.navbarMarkup);
   const hideGlobalNav = useGlobalStore((state) => state.hideGlobalNav);
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
   const [dataCount, setDataCount] = useState(0);
 
@@ -21,12 +22,12 @@ export default function Navbar(props) {
       );
       const countJson = await countData.json();
       if (countJson.code == 200) {
-        console.log(countJson.data);
         setDataCount(countJson.data);
       }
     };
     getCount();
-  }, [refresh]);
+    
+  }, [counterRefresh]);
 
   return (
     <>
@@ -67,7 +68,7 @@ export default function Navbar(props) {
                             <span className="bage">
                               {dataCount.total_contacts}
                             </span>
-                          ) : "Lists" === route.title  ? (
+                          ) : "Lists" === route.title ? (
                             <span className="bage">
                               {dataCount.total_lists}
                             </span>

@@ -9,6 +9,9 @@ import Selectbox from "../components/Selectbox";
 import NavBar from "../components/Navbar/index";
 
 const Tags = () => {
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -152,7 +155,7 @@ const Tags = () => {
           }
         );
       } else {
-        // create contact
+        // create tag
         res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags`, {
           method: "POST",
           headers: {
@@ -164,6 +167,9 @@ const Tags = () => {
 
       const resJson = await res.json();
       if (resJson.code == 201) {
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
         setValues({
           title: "",
@@ -206,6 +212,9 @@ const Tags = () => {
       }
     );
     const resJson = await res.json();
+    useGlobalStore.setState({
+      counterRefresh: !counterRefresh,
+    });
     toggleRefresh();
   }
 
@@ -227,13 +236,15 @@ const Tags = () => {
         // remove all selected after deletion
         setAllSelected(false);
         setSelected([]);
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
       }
     } else {
       window.alert("Please select at least one item to delete.");
     }
   }
-
 
   return (
     <>
