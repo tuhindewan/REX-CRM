@@ -215,6 +215,11 @@ const Lists = () => {
     } catch (e) {}
   };
 
+  // Hide create form after click on cancel
+  const handleCancel = () => {
+    setShowCreate(false);
+  }
+
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
@@ -230,6 +235,10 @@ const Lists = () => {
       }
     }
     getLists();
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   async function deleteList(id) {
@@ -285,7 +294,7 @@ const Lists = () => {
   return (
     <>
       {showCreate && (
-        <div className="create-contact">
+        <div className="tag-contact">
           <div className="mintmrm-container">
             <h2 className="conatct-heading">
               {editID == 0 ? "Add List" : "Update List"}
@@ -318,12 +327,16 @@ const Lists = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <button
-                    className="contact-save mintmrm-btn"
-                    onClick={createOrUpdate} // explicityly set the id as null to force create list
-                  >
+                  <div className="contact-button-field">
+                    <button
+                      className="contact-cancel mintmrm-btn outline" onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="contact-save mintmrm-btn" onClick={createOrUpdate}>
                     {editID == 0 ? "Save" : "Update"}
-                  </button>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
