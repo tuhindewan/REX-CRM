@@ -8,7 +8,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import DeletePopup from "../components/DeletePopup";
-import { deleteSingleList } from "../services/List";
+import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -87,6 +87,10 @@ const Lists = () => {
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
   const [listID, setListID] = useState();
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [multiDeleteConfirmation, setMultiDeleteConfirmation] = useState(false);
+
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -248,6 +252,8 @@ const Lists = () => {
   // Get field id from child component
   const deleteList = async (list_id) => {
     setIsDelete("block");
+    setDeleteTitle("Delete List");
+    setDeleteMessage("Are you sure you want to delete the list?");
     setListID(list_id);
   }
 
@@ -273,36 +279,40 @@ const Lists = () => {
     setIsDelete("none");
   };
 
+  // Multiple selection confirmation
   async function deleteMultipleList() {
     if (selected.length > 0) {
-      if (
-        window.confirm("Are you sure you want to delete these selected items?")
-      ) {
-        const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1/lists/`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-              list_ids: selected,
-            }),
-          }
-        );
-        const resJson = await res.json();
-        // remove all selected after deletion
-        setAllSelected(false);
-        setSelected([]);
-        useGlobalStore.setState({
-          counterRefresh: !counterRefresh,
-        });
-        toggleRefresh();
-      }
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
     } else {
       window.alert("Please select at least one item to delete.");
     }
   }
+
+  // Delete multiple lists after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleListsItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          setAllSelected(false);
+          setSelected([]);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
 
   // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
@@ -509,10 +519,12 @@ const Lists = () => {
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup
-          title="Delete List"
-          message="Are you sure you want to delete the list?"
+          title={deleteTitle}
+          message={deleteMessage}
           onDeleteShow={onDeleteShow}
           onDeleteStatus={onDeleteStatus}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />

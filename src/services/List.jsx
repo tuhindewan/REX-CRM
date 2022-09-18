@@ -28,4 +28,24 @@ export async function deleteSingleList(id) {
         return response.json();
       }
     });
-  }
+}
+
+// Multiple lists delete request
+export async function deleteMultipleListsItems(selected) {
+    return await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/lists/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            list_ids: selected,
+          }),
+        }
+    ).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    });
+}
