@@ -40,8 +40,9 @@ class TagController extends BaseController {
 			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
 		}
 
+        $slug = sanitize_title( $title );
         // Tag avaiability check
-        $exist = ContactGroupModel::is_group_exist( $params['slug'], 'tags' );
+        $exist = ContactGroupModel::is_group_exist( $slug, 'tags' );
         if ( $exist && !isset($params['tag_id']) ) {
 			return $this->get_error_response( __( 'Tag is already available', 'mrm' ),  400);
 		}
