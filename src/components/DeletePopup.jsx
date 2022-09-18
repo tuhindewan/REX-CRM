@@ -43,7 +43,7 @@ export default function DeletePopup(props) {
             <button
               type="button"
               class="btn-default delete product-trash"
-              onClick={props.selected.length > 0 ? onMultilpleDelete : onDelete}
+              onClick={props.selected?.length > 0 ? onMultilpleDelete : onDelete}
             >
               Delete
             </button>
