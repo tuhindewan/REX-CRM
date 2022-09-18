@@ -9,6 +9,7 @@ import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import DeletePopup from "../components/DeletePopup";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
+import AlertPopup from "../components/AlertPopup";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -89,7 +90,7 @@ const Lists = () => {
   const [listID, setListID] = useState();
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
-  const [multiDeleteConfirmation, setMultiDeleteConfirmation] = useState(false);
+  const [showAlert, setShowAlert] = useState("none");
 
 
   // set navbar Buttons
@@ -280,13 +281,13 @@ const Lists = () => {
   };
 
   // Multiple selection confirmation
-  async function deleteMultipleList() {
+  const deleteMultipleList = async () => {
     if (selected.length > 0) {
       setIsDelete("block");
       setDeleteTitle("Delete Multiple");
       setDeleteMessage("Are you sure you want to delete these selected items?");
     } else {
-      window.alert("Please select at least one item to delete.");
+      setShowAlert("block");
     }
   }
 
@@ -317,6 +318,11 @@ const Lists = () => {
   // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
     setIsDelete(status);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
   };
 
   return (
@@ -526,6 +532,9 @@ const Lists = () => {
           onMultiDelete={onMultiDelete}
           selected={selected}
         />
+      </div>
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert}/>
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>
