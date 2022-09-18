@@ -15,7 +15,7 @@ export default function DeletePopup(props) {
   };
 
   return (
-    <div class= {deleteClass ? "mintmrm-delete-alert-wrapper inactive" : "mintmrm-delete-alert-wrapper"} >
+    <div class= {deleteClass ? "mintmrm-delete-alert-wrapper" : "mintmrm-delete-alert-wrapper"} >
       <div class="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
           <h3>{props.title}</h3>

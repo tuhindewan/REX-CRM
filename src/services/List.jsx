@@ -12,3 +12,20 @@ export function getLists() {
             }
         })
 }
+
+// List delete request
+export async function deleteSingleList(id) {
+    return await fetch(
+      `${window.MRM_Vars.api_base_url}mrm/v1/lists/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    ).then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    });
+  }
