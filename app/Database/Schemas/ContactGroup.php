@@ -38,7 +38,7 @@ class ContactGroupSchema implements Schema {
     {
         global $wpdb;
         $table = $wpdb->prefix . self::$table_name;
-
+        
         return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT(20) unsigned NOT NULL auto_increment,
             `title` VARCHAR(255) NOT NULL,

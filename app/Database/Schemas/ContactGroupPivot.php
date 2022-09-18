@@ -33,7 +33,9 @@ class ContactGroupPivotSchema implements Schema {
     public function get_sql()
     {
         global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
+        $table              = $wpdb->prefix . self::$table_name;
+        $reference_table    = $wpdb->prefix . ContactGroupSchema::$table_name;;
+
         return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `contact_id` BIGINT UNSIGNED NOT NULL,
@@ -41,7 +43,10 @@ class ContactGroupPivotSchema implements Schema {
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             INDEX `contact_id_pivot_index` (`contact_id` ASC),
-            INDEX `group_id_pivot_index` (`group_id` ASC)
+            INDEX `group_id_pivot_index` (`group_id` ASC),
+            FOREIGN KEY (group_id)
+            REFERENCES `{$reference_table}` (id)
+            ON DELETE CASCADE
         ) ";
     }
 }

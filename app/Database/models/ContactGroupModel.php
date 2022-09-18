@@ -151,11 +151,9 @@ class ContactGroupModel{
     {
         global $wpdb;
         $group_table    =   $wpdb->prefix . ContactGroupSchema::$table_name;
-        $pivot_table    =   $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
         try {
             $wpdb->delete( $group_table, ['id' => $id], ["%d"] );
-            $wpdb->delete( $pivot_table, ['group_id' => $id], ["%d"] );
             return true;
         } catch(\Exception $e) {
             return false;
@@ -176,12 +174,10 @@ class ContactGroupModel{
         global $wpdb;
 
         $group_table  = $wpdb->prefix . ContactGroupSchema::$table_name;
-        $pivot_table  = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
         try {
             $ids = implode(",", array_map( 'intval', $ids ));
-            $wpdb->query( "DELETE FROM $group_table WHERE id IN ($ids)" );
-            $wpdb->query( "DELETE FROM $pivot_table WHERE group_id IN ($ids)" );
+            $wpdb->query( "DELETE FROM {$group_table} WHERE id IN ($ids)" );
             return true;
         } catch(\Exception $e) {
             return false;

@@ -33,14 +33,13 @@ class ListController extends BaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
         }
 
-        $slug = isset( $params['slug'] ) ? $params['slug'] : "";
+        $slug = sanitize_title( $title );
         // list avaiability check
         $exist = ContactGroupModel::is_group_exist( $slug, "lists" );
         if ( $exist && !isset($params['list_id'])) {

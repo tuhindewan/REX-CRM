@@ -6,7 +6,6 @@ import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
-import NavBar from "../components/Navbar/index";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 
 const Lists = () => {
