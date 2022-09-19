@@ -140,11 +140,9 @@ class ContactController extends BaseController {
                 $contact['created_time'] = $created_time;
             }
                 
-            if(isset($contact['created_by']))$user_meta = get_userdata($contact['created_by']);
+            if(isset($contact['created_by']) && !empty($contact['created_by']))$user_meta = get_userdata($contact['created_by']);
 
             $contact ["added_by_login"] = $user_meta->data->user_login;
-
-            $avatar_url   = 'https://www.gravatar.com/avatar/0?s=100&d=retro';
 
             $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=100&&d=retro';
 
