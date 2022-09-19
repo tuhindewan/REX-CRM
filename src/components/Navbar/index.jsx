@@ -2,13 +2,32 @@ import { __ } from "@wordpress/i18n";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import routes from "../../routes";
+import { useState, useEffect } from "react";
 
 import "./style.css";
 
-export default function Navbar() {
+export default function Navbar(props) {
+  const { refresh, setRefresh } = props;
   const location = useLocation();
   const navbarMarkup = useGlobalStore((state) => state.navbarMarkup);
   const hideGlobalNav = useGlobalStore((state) => state.hideGlobalNav);
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
+  const [dataCount, setDataCount] = useState(0);
+
+  useEffect(() => {
+    const getCount = async () => {
+      const countData = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/general`
+      );
+      const countJson = await countData.json();
+      if (countJson.code == 200) {
+        setDataCount(countJson.data);
+      }
+    };
+    getCount();
+    
+  }, [counterRefresh]);
 
   return (
     <>
@@ -44,6 +63,19 @@ export default function Navbar() {
 
                           {route.bage && (
                             <span className="bage">{route.bage}</span>
+                          )}
+                          {"All Contacts" === route.title ? (
+                            <span className="bage">
+                              {dataCount.total_contacts}
+                            </span>
+                          ) : "Lists" === route.title ? (
+                            <span className="bage">
+                              {dataCount.total_lists}
+                            </span>
+                          ) : "Tags" === route.title ? (
+                            <span className="bage">{dataCount.total_tags}</span>
+                          ) : (
+                            ""
                           )}
                         </li>
                       );

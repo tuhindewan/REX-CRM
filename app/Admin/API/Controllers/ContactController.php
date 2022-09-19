@@ -127,12 +127,18 @@ class ContactController extends BaseController {
         $contact    = ContactModel::get( $params['contact_id'] );
         
         // Get and merge tags and lists
-        if( isset($contact) ) {
+        if( $contact ) {
             $contact    = TagController::get_tags_to_contact( $contact );
             $contact    = ListController::get_lists_to_contact( $contact );
         }
         
-        if(isset($contact)) {
+        if($contact && isset($contact['email'])) {
+            $avatar_url   = 'https://www.gravatar.com/avatar/0?s=80&d=retro';
+
+            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=80&&d=retro';
+
+            $contact ["avatar_url"] = $avatar_url;
+
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
         return $this->get_error_response("Failed to Get Data", 400);
@@ -247,25 +253,25 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $isTag = 0;
-        $isList = 0;
+        $isTag = false;
+        $isList = false;
 
-        if( isset( $params['tags'] ) ){
+        if( isset($params['tags'], $params['contact_id']) ){
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
-            $isTag = 1;
+            $isTag = true;
         }
 
-        if( isset( $params['lists'] ) ){
+        if( isset($params['tags'], $params['contact_id']) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
-            $isList = 1;
+            $isList = true;
         }
 
 
-        if($success && $isList == 1 && $isTag == 1) {
+        if($success &&  $isList && $isTag) {
             return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isTag == 1){
+        }else if ($success && $isTag){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isList == 1 ){
+        }else if ($success && $isList ){
             return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
@@ -283,24 +289,24 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $isTag = 0;
-        $isList = 0;
+        $isTag = false;
+        $isList = false;
 
-        if( isset( $params['tags'] ) ){
+        if( isset( $params['tags'] ) && isset( $params['contact_ids']) ){
             $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
             $isTag = true;
         }
 
-        if( isset( $params['lists'] ) ){
+        if( isset( $params['lists'] ) && isset($params['contact_ids']) ){
             $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
-            $isList = 1;
+            $isList = true;
         }
 
-        if($success && $isList == 1 && $isTag == 1) {
+        if($success && $isList && $isTag) {
             return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isTag == 1){
+        }else if ($success && $isTag){
             return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
-        }else if ($success && $isList == 1 ){
+        }else if ($success && $isList){
             return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
@@ -431,7 +437,6 @@ class ContactController extends BaseController {
             $params = MRM_Common::get_api_params_values($request);
             $raw = isset($params['raw']) ? $params['raw']: "";
 
-            error_log(print_r($raw,1));
             // check for least number of characters
             if(strlen($raw) < 5) {
                 throw new Exception("Data is insufficient. Please enter at least 5 characters.");
@@ -633,7 +638,7 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
-            if(isset( $params ) && empty( $params["map"] )) {
+            if(isset( $params["map"] ) && empty( $params["map"] )) {
                 throw new Exception( __("Please map at least one field to desired field.", "mrm") );
             }
 
@@ -668,6 +673,7 @@ class ContactController extends BaseController {
                     'meta_fields'   => []
                 );
 
+                
                 foreach($mappings as $map) {
                     $map_array = json_decode(json_encode($map), true);
 
@@ -718,7 +724,6 @@ class ContactController extends BaseController {
             return $this->get_success_response(__("Import contact has been successful", "mrm"), 200, $result);
 
         } catch(Exception $e) {
-            error_log(print_r($e,1));
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }
@@ -736,14 +741,13 @@ class ContactController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
-            if(isset( $params ) && empty( $params["map"] )) {
+            if(isset( $params["map"] ) && empty( $params["map"] )) {
                 throw new Exception( __("Please map at least one field for importing", "mrm") );
             }
 
-            return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200, $result);
+            return $this->get_success_response(__("Import contact from mailchimp has been successful", "mrm"), 200);
 
         } catch(Exception $e) {
-            error_log(print_r($e,1));
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
     }
@@ -953,11 +957,14 @@ class ContactController extends BaseController {
 
         $contacts = ContactModel::get_filtered_contacts( $status_arr, $tags_ids, $lists_ids, $perPage, $offset, $search );
         
-        $contacts['data'] = array_map( function( $contact ){
-            $contact = TagController::get_tags_to_contact( $contact );
-            $contact = ListController::get_lists_to_contact( $contact );
-            return $contact;
-        }, $contacts['data'] );
+        if(isset($contacts['data'])){
+            $contacts['data'] = array_map( function( $contact ){
+                $contact = TagController::get_tags_to_contact( $contact );
+                $contact = ListController::get_lists_to_contact( $contact );
+                return $contact;
+            }, $contacts['data'] );
+        }
+        
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }

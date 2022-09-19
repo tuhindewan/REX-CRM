@@ -6,7 +6,9 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
+import EmailIcon from "../Icons/EmailIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
@@ -15,13 +17,10 @@ import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
-import SingleActivityFeed from "./SingleActivityFeed";
-import FilterItems from "../BaseTable/FilterItems";
 import AddItems from "./AddItems";
-import CreateNoteIcon from "../Icons/CreateNoteIcon";
-import EmailIcon from "../Icons/EmailIcon";
 import EmailDrawer from "../EmailDrawer";
 import NoteDrawer from "../NoteDrawer";
+import SingleActivityFeed from "./SingleActivityFeed";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -438,12 +437,13 @@ export default function ContactDetails() {
           <div className="mintmrm-container">
             <div className="contact-details-header">
               <div className="contact-author-info">
-                {/* <div className="author-img">
-                <img
-                  src=""
-                  alt="contact-author-img"
-                />
-              </div> */}
+                <div className="author-img">
+                  <img
+                    src={contactData.avatar_url}
+                    alt="contact-author-img"
+                    style={{ "border-radius": "50%" }}
+                  />
+                </div>
 
                 <div className="author-short-details">
                   <h2 className="author-name">
@@ -673,7 +673,7 @@ export default function ContactDetails() {
                       {customFields.map((field) => {
                         return (
                           <>
-                            <li>
+                            <li key={field.id}>
                               <span className="title">{field.title}</span>
                               <span className="title-value">
                                 {contactData?.meta_fields?.[field.slug]
@@ -781,6 +781,7 @@ export default function ContactDetails() {
                               <>
                                 {field.type == "text" && (
                                   <InputItem
+                                    key={field.id}
                                     name={field.slug}
                                     label={field.title}
                                     handleChange={handleMetaChange}

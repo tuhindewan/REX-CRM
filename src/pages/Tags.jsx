@@ -6,8 +6,12 @@ import Pagination from "../components/Pagination";
 import TagIcon from "../components/Icons/TagIcon";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
+import NavBar from "../components/Navbar/index";
 
 const Tags = () => {
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -151,7 +155,7 @@ const Tags = () => {
           }
         );
       } else {
-        // create contact
+        // create tag
         res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags`, {
           method: "POST",
           headers: {
@@ -163,6 +167,9 @@ const Tags = () => {
 
       const resJson = await res.json();
       if (resJson.code == 201) {
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
         setValues({
           title: "",
@@ -205,6 +212,9 @@ const Tags = () => {
       }
     );
     const resJson = await res.json();
+    useGlobalStore.setState({
+      counterRefresh: !counterRefresh,
+    });
     toggleRefresh();
   }
 
@@ -226,6 +236,9 @@ const Tags = () => {
         // remove all selected after deletion
         setAllSelected(false);
         setSelected([]);
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
       }
     } else {
@@ -326,25 +339,27 @@ const Tags = () => {
                     }}
                   />
                 </span>
-                {/* show more options section */}
-                <button
-                  className="more-option"
-                  onClick={() => setShowMoreOptions(!showMoreOptions)}
-                >
-                  <ThreeDotIcon />
-
-                  <ul
-                    className={
-                      showMoreOptions
-                        ? "mintmrm-dropdown show"
-                        : "mintmrm-dropdown"
-                    }
+                <div className="bulk-action">
+                  {/* show more options section */}
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
                   >
-                    <li className="delete" onClick={deleteMultipleList}>
-                      Delete Selected
-                    </li>
-                  </ul>
-                </button>
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete" onClick={deleteMultipleList}>
+                        Delete Selected
+                      </li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="contact-list-body">

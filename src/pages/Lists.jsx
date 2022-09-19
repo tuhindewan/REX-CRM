@@ -4,11 +4,18 @@ import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import Selectbox from "../components/Selectbox";
-import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import Selectbox from "../components/Selectbox";
+import NavBar from "../components/Navbar/index";
+import SuccessfulNotification from "../components/SuccessfulNotification";
 
 const Lists = () => {
+  // showCreate shows the create form if true
+  const [showCreate, setShowCreate] = useState(false);
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -24,9 +31,6 @@ const Lists = () => {
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
 
-  // showCreate shows the create form if true
-  const [showCreate, setShowCreate] = useState(false);
-
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
@@ -39,17 +43,17 @@ const Lists = () => {
   // current page
   const [page, setPage] = useState(1);
 
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
+
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
+
   // total count of results
   const [count, setCount] = useState(0);
 
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
-
-   // order by which field
-   const [orderBy, setOrderBy] = useState("id");
-
-   // order type asc or desc
-   const [orderType, setOrderType] = useState("desc");
 
   // list values for sending to backend
   const [values, setValues] = useState({
@@ -198,7 +202,9 @@ const Lists = () => {
         setShowNotification("block");
         setMessage(resJson.message);
         setErrors({});
-        console.log(showNotification);
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
       } else {
         setErrors({
@@ -238,6 +244,9 @@ const Lists = () => {
         }
       );
       const resJson = await res.json();
+      useGlobalStore.setState({
+        counterRefresh: !counterRefresh,
+      });
       toggleRefresh();
     }
   }
@@ -263,6 +272,9 @@ const Lists = () => {
         // remove all selected after deletion
         setAllSelected(false);
         setSelected([]);
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
         toggleRefresh();
       }
     } else {
@@ -373,25 +385,27 @@ const Lists = () => {
                     }}
                   />
                 </span>
-                {/* show more options section */}
-                <button
-                  className="more-option"
-                  onClick={() => setShowMoreOptions(!showMoreOptions)}
-                >
-                  <ThreeDotIcon />
-
-                  <ul
-                    className={
-                      showMoreOptions
-                        ? "mintmrm-dropdown show"
-                        : "mintmrm-dropdown"
-                    }
+                <div className="bulk-action">
+                  {/* show more options section */}
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
                   >
-                    <li className="delete" onClick={deleteMultipleList}>
-                      Delete Selected
-                    </li>
-                  </ul>
-                </button>
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete" onClick={deleteMultipleList}>
+                        Delete Selected
+                      </li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="contact-list-body">
