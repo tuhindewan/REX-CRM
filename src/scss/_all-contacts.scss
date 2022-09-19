@@ -12,7 +12,7 @@
     border-radius: 10px;
     width: calc(100% / 4 - 15px);
     margin-left: 20px;
-    padding: 20px 0 20px 20px;
+    padding: 20px;
 
     &:first-child {
       margin-left: 0;
@@ -20,8 +20,10 @@
 
     .image-title {
       display: flex;
+      flex-flow: row wrap;
       align-items: center;
       padding-bottom: 8px;
+      gap: 12px;
 
       .card-icon {
         border: 1px solid #e4e6eb;
@@ -33,7 +35,6 @@
         align-items: center;
       }
       p {
-        padding-left: 12px;
         color: #6a707c;
       }
     }
@@ -43,6 +44,19 @@
       font-size: 30px;
       line-height: 38px;
       color: #181f38;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    .single-card {
+      width: calc(50% - 20px);
+      margin: 0 10px 10px 10px;
+
+      &:first-child {
+        margin-left: 10px;
+      }
+    }
+    .contact-list-area {
+      margin-top: 15px;
     }
   }
 }
@@ -236,8 +250,6 @@
           .option-section {
             padding: 10px 0;
           }
-
-          
         }
       }
     }
@@ -320,7 +332,7 @@
       background: #f9fafb;
       padding: 9px 13px 9px;
 
-      .add-column-btn{
+      .add-column-btn {
         background-color: #f9fafb;
       }
 
@@ -607,6 +619,18 @@
           color: #ffffff;
         }
       }
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .contact-list-header {
+      .right-buttons {
+        margin-top: 15px;
+      }
+    }
+    .contact-list-footer {
+      justify-content: center;
+      gap: 10px;
     }
   }
   // ------end .contact-list-footer-------
