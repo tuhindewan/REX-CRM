@@ -8,6 +8,7 @@ import routes from "./routes/index.js";
 
 const App = () => {
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
   return (
     <div
       className="mintmrm"
@@ -30,11 +31,35 @@ const App = () => {
               listTitle="Select Tags"
               listTitleOnNotFound="No Data Found"
               searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={true}
+              allowMultiple={false}
+              showSearchBar={false}
+              showListTitle={false}
               showSelectedInside={false}
-              allowNewCreate={true}
+              allowNewCreate={false}
+            />
+            <CustomSelect
+              selected={selectedStatus}
+              setSelected={setSelectedStatus}
+              placeholder="Status"
+              name="tag"
+              options={[
+                {
+                  id: "pending",
+                  title: "Pending",
+                },
+                {
+                  id: "subscribed",
+                  title: "Subscribed",
+                },
+              ]}
+              listTitle="Select Tags"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={false}
+              showListTitle={false}
+              showSelectedInside={false}
+              allowNewCreate={false}
             />
             <Routes>
               {routes.map((route, index) => (

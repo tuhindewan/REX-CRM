@@ -5,9 +5,11 @@ import CrossIcon from "../Icons/CrossIcon";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function CustomSelect(props) {
+  // global state reference for whether to hide all dropdown
   const hideAllCustomSelect = useGlobalStore(
     (state) => state.hideAllCustomSelect
   );
+  // global state reference for which dropdown is currently active
   const activeCustomSelect = useGlobalStore(
     (state) => state.activeCustomSelect
   );
@@ -19,7 +21,7 @@ export default function CustomSelect(props) {
     page = 1,
     perPage = 15,
     placeholder = "Lists",
-    name = "list",
+    name = "list", // used inside the new button of
     listTitle = "CHOOSE LIST",
     listTitleOnNotFound = "No Data Found",
     searchPlaceHolder = "Search...",
@@ -43,6 +45,7 @@ export default function CustomSelect(props) {
   // loading or not
   const [loading, setLoading] = useState(false);
 
+  // function used for either showing or hiding the dropdown
   function toggleActive(event) {
     event.stopPropagation();
     useGlobalStore.setState({
@@ -54,6 +57,7 @@ export default function CustomSelect(props) {
     });
   }
 
+  // helper function to set the search query only when there are at least 3 characters or more
   function handleSearch(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -63,32 +67,37 @@ export default function CustomSelect(props) {
     else setQuery("");
   }
 
-  // handler for one single item click
+  // handler for one single item click for both list item and checkbox rendering
   const handleSelectOne = (e) => {
     e.stopPropagation();
-    const index = selected.findIndex((item) => item.id == e.target.id);
+    // since this function is handling input for both checkboxes and li elements
+    // there might be either id and value for input checkboxes
+    // or custom ID and custom Value dataset attribute for li elements
+    let value = e.target.value ? e.target.value : e.target.dataset.customValue;
+    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    const index = selected.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
-        setSelected(selected.filter((item) => item.id != e.target.id));
+        setSelected(selected.filter((item) => item.id != id));
       } else {
         // add id to the array
-        setSelected([...selected, { id: e.target.id, title: e.target.value }]);
+        setSelected([...selected, { id: id, title: value }]);
       }
     } else {
       if (index >= 0) setSelected([]);
-      else setSelected([{ id: e.target.id, title: e.target.value }]);
+      else setSelected([{ id: id, title: value }]);
     }
   };
 
+  // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
     const checked = selected.findIndex((item) => item.id == id) >= 0;
     return checked;
   };
 
   const deleteSelected = (e, id) => {
-    console.log("hello");
     console.log(id);
     const index = selected.findIndex((item) => item.id == id);
 
@@ -103,6 +112,7 @@ export default function CustomSelect(props) {
   };
 
   // at first page load get all the available lists
+  // keep fetching lists whenever user types something in the search bar
   useEffect(() => {
     async function getItems() {
       setLoading(true);
@@ -120,7 +130,7 @@ export default function CustomSelect(props) {
     if (!options) getItems();
   }, [query]);
 
-  // Handle list create or update form submission
+  // Handle new list or tag creation
   const addNewItem = async () => {
     let res = null;
     let body = {
@@ -167,6 +177,7 @@ export default function CustomSelect(props) {
         >
           {placeholder}
         </button>
+        {/**code for showing selected items inside the tags container still needs to fix css issues */}
         {/* <div className="mrm-selected-items-container">
           {showSelectedInside &&
             selected.map((item) => {
@@ -213,24 +224,23 @@ export default function CustomSelect(props) {
             </li>
           )}
 
-          {/* Render all elements */}
+          {/* Render all elements while options are specified */}
           {options &&
             options.map((item, index) => {
+              let checked = checkIfSelected(item.id);
               return (
-                <li key={index} className="single-column">
-                  <div class="mintmrm-checkbox">
-                    <input
-                      type="checkbox"
-                      name={item.id}
-                      id={item.id}
-                      value={item.title}
-                      onChange={handleSelectOne}
-                      checked={checkIfSelected(item.id)}
-                    />
-                    <label for={item.id} className="mrm-custom-select-label">
-                      {item.title}
-                    </label>
-                  </div>
+                <li
+                  key={index}
+                  className={
+                    checked
+                      ? "single-column mrm-custom-select-single-column-selected"
+                      : "single-column"
+                  }
+                  data-custom-id={item.id}
+                  data-custom-value={item.title}
+                  onClick={handleSelectOne}
+                >
+                  {item.title}
                 </li>
               );
             })}
@@ -238,8 +248,16 @@ export default function CustomSelect(props) {
             !options &&
             !loading &&
             items.map((item, index) => {
+              let checked = checkIfSelected(item.id);
               return (
-                <li key={index} className="single-column">
+                <li
+                  key={index}
+                  className={
+                    checked
+                      ? "single-column mrm-custom-select-single-column-selected"
+                      : "single-column"
+                  }
+                >
                   <div class="mintmrm-checkbox">
                     <input
                       type="checkbox"
@@ -247,8 +265,9 @@ export default function CustomSelect(props) {
                       id={item.id}
                       value={item.title}
                       onChange={handleSelectOne}
-                      checked={checkIfSelected(item.id)}
+                      checked={checked}
                     />
+
                     <label for={item.id} className="mrm-custom-select-label">
                       {item.title}
                     </label>
