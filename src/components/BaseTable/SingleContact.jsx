@@ -6,7 +6,6 @@ import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-//import PlusCircleIcon from "../Icons/PlusCircleIcon";
 
 export default function SingleContact(props) {
   // global counter update real time
