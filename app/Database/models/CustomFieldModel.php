@@ -124,6 +124,30 @@ class CustomFieldModel{
 
 
     /**
+     * Delete multiple custom fields from the database
+     * 
+     * @param array $ids multiple field ids
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy_all( $ids )
+    {
+        global $wpdb;
+
+        $fields_table  = $wpdb->prefix . CustomFieldSchema::$table_name;
+
+        try {
+            $ids = implode(",", array_map( 'intval', $ids ));
+            $wpdb->query( "DELETE FROM {$fields_table} WHERE id IN ($ids)" );
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
      * Run SQL query to get a single field 
      * 
      * @param int $id   Field ID

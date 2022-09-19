@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
+  deleteMultipleFieldItems,
   deleteSingleCustomField,
   getCustomFields,
 } from "../../services/CustomField";
+import AlertPopup from "../AlertPopup";
 import DeletePopup from "../DeletePopup";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
@@ -31,6 +33,8 @@ const CustomFields = () => {
     hideGlobalNav: false,
   });
 
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [customFields, setCustomFields] = useState([]);
   const [showNotification, setShowNotification] = useState("none");
   const [isDelete, setIsDelete] = useState("none");
@@ -62,6 +66,9 @@ const CustomFields = () => {
 
   const [fieldID, setFieldID] = useState();
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
 
   // Fetch all custom fields
   useEffect(() => {
@@ -77,6 +84,8 @@ const CustomFields = () => {
   // Get field id from child component
   const deleteField = async (field_id) => {
     setIsDelete("block");
+    setDeleteTitle("Delete List");
+    setDeleteMessage("Are you sure you want to delete the list?");
     setFieldID(field_id);
   };
 
@@ -135,6 +144,46 @@ const CustomFields = () => {
     setRefresh((prev) => !prev);
   };
 
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
+
+  // Multiple selection confirmation
+  const deleteMultipleFields = async () => {
+    if (selected.length > 0) {
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
+    } else {
+      setShowAlert("block");
+    }
+  };
+
+  // Delete multiple lists after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleFieldItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          setAllSelected(false);
+          setSelected([]);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
   return (
     <>
       <div className="contact-list-page">
@@ -180,7 +229,9 @@ const CustomFields = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li className="delete">Delete Selected</li>
+                      <li className="delete" onClick={deleteMultipleFields}>
+                        Delete Selected
+                      </li>
                     </ul>
                   </button>
                 </div>
@@ -251,11 +302,16 @@ const CustomFields = () => {
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup
-          title="Delete Custom Field"
-          message="Are you sure you want to delete the Field?"
+          title={deleteTitle}
+          message={deleteMessage}
           onDeleteShow={onDeleteShow}
           onDeleteStatus={onDeleteStatus}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
         />
+      </div>
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

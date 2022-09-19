@@ -62,3 +62,20 @@ export async function updateCustomFields(customField) {
     }
   });
 }
+
+// Multiple custom fields delete request
+export async function deleteMultipleFieldItems(selected) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      field_ids: selected,
+    }),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
