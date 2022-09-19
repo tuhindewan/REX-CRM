@@ -8,15 +8,16 @@ export default function CustomSelect(props) {
   const hideAllCustomSelect = useGlobalStore(
     (state) => state.hideAllCustomSelect
   );
+  const activeCustomSelect = useGlobalStore(
+    (state) => state.activeCustomSelect
+  );
   const {
-    active,
-    setActive,
     selected,
     setSelected,
     options = null,
     endpoint = "/lists",
     page = 1,
-    perPage = 20,
+    perPage = 15,
     placeholder = "Lists",
     name = "list",
     listTitle = "CHOOSE LIST",
@@ -29,7 +30,7 @@ export default function CustomSelect(props) {
     allowNewCreate = true,
   } = props;
   const buttonRef = useRef(null);
-  const inputRef = useRef(null);
+  const customSelectUUID = useRef(Math.random());
 
   // store retrieved
   const [items, setItems] = useState([]);
@@ -44,7 +45,13 @@ export default function CustomSelect(props) {
 
   function toggleActive(event) {
     event.stopPropagation();
-    setActive((prev) => !prev);
+    useGlobalStore.setState({
+      hideAllCustomSelect: false,
+      activeCustomSelect:
+        activeCustomSelect == customSelectUUID.current
+          ? null
+          : customSelectUUID.current,
+    });
   }
 
   function handleSearch(e) {
@@ -150,7 +157,8 @@ export default function CustomSelect(props) {
       <div className="mrm-custom-select-container" key="container">
         <button
           className={
-            active && hideAllCustomSelect
+            activeCustomSelect == customSelectUUID.current &&
+            !hideAllCustomSelect
               ? "mrm-custom-select-btn show"
               : "mrm-custom-select-btn"
           }
@@ -172,7 +180,8 @@ export default function CustomSelect(props) {
         </div> */}
         <ul
           className={
-            active
+            activeCustomSelect == customSelectUUID.current &&
+            !hideAllCustomSelect
               ? "mintmrm-dropdown mrm-custom-select-dropdown show"
               : "mintmrm-dropdown mrm-custom-select-dropdown"
           }

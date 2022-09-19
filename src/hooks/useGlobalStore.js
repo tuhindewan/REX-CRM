@@ -26,5 +26,6 @@ export const useGlobalStore = create((set) => ({
   lastStepNodeID: 0,
   navbarMarkup: <></>,
   hideGlobalNav: false,
-  hideAllCustomSelect: false
+  hideAllCustomSelect: false,
+  activeCustomSelect: null
 }));

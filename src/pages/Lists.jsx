@@ -22,13 +22,7 @@ const Lists = () => {
     ),
     hideGlobalNav: false,
   });
-  const [activeStatus, setActiveStatus] = useState(false);
-  const [activeList, setActiveList] = useState(false);
-  const [activeTag, setActiveTag] = useState(false);
 
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
 
@@ -326,70 +320,7 @@ const Lists = () => {
           </div>
         </div>
       )}
-      <CustomSelect
-              active={activeStatus}
-              setActive={setActiveStatus}
-              selected={selectedStatus}
-              setSelected={setSelectedStatus}
-              options={[
-                {
-                  title: "Pending",
-                  id: "pending",
-                },
-                {
-                  title: "Subscribed",
-                  id: "subscribed",
-                },
-                {
-                  title: "Unsubscribed",
-                  id: "unsubscribed",
-                },
-              ]}
-              placeholder="Status"
-              name="list"
-              listTitle="Select Status"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={false}
-              showSearchBar={false}
-              showListTitle={true}
-              showSelectedInside={false}
-              allowNewCreate={false}
-            />
-            <CustomSelect
-              active={activeTag}
-              setActive={setActiveTag}
-              selected={selectedTags}
-              setSelected={setSelectedTags}
-              endpoint="/tags"
-              placeholder="Tags"
-              name="tag"
-              listTitle="Select Tags"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={true}
-              showSelectedInside={false}
-              allowNewCreate={true}
-            />
-            <CustomSelect
-              active={activeList}
-              setActive={setActiveList}
-              selected={selectedLists}
-              setSelected={setSelectedLists}
-              endpoint="/lists"
-              placeholder="Lists"
-              name="list"
-              listTitle="Select Lists"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={true}
-              showSelectedInside={false}
-              allowNewCreate={true}
-            />
+                 
       <div className="contact-list-page lists-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">
