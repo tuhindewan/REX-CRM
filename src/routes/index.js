@@ -18,6 +18,7 @@ import Tags from "../pages/Tags";
 import ImportWordpress from "../pages/ImportWordpress";
 import AllCampaigns from "../components/AllCampaigns";
 import AddCampaign from "../components/Campaign/AddCampaign";
+import EmailBuilder from "../components/Campaign/EmailBuilder";
 
 const routes = [
   {
@@ -149,6 +150,11 @@ const routes = [
     path: "/campaigns/create",
     element: AddCampaign,
     title: __("Email Sequences", "mrm"),
+    hideInMenu: true,
+  },
+  {
+    path: "/campaigns/builder",
+    element: EmailBuilder,
     hideInMenu: true,
   },
 ];
