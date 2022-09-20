@@ -88,7 +88,7 @@ class CampaignRoute{
                 ],
                 'permission_callback' => [
                     $this->controller, 
-                    'rest_permission_check'
+                    'rest_permissions_check'
                 ],
             ]
         ]);
