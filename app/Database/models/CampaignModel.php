@@ -100,13 +100,14 @@ class CampaignModel {
      * @return int|bool 
      * @since 1.0.0
      */
-    public static function insert_campaign_emails( $email, $campaign_id )
+    public static function insert_campaign_emails( $email, $campaign_id, $index )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
 
-        $email['campaign_id'] = $campaign_id;
-        $email['created_at'] = current_time('mysql');
+        $email['campaign_id']   = $campaign_id;
+        $email['created_at']    = current_time('mysql');
+        $email['email_index']   = $index + 1;
 
         try {
             $wpdb->insert( $fields_table, $email );
@@ -159,13 +160,13 @@ class CampaignModel {
     }
 
 
-    public static function update_campaign_emails( $email, $campaign_id )
+    public static function update_campaign_emails( $email, $campaign_id, $index )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
 
         try {
-            $wpdb->update( $fields_table, $email, array( 'campaign_id' => $campaign_id ));
+            $wpdb->update( $fields_table, $email, array( 'campaign_id' => $campaign_id, 'email_index' => $index + 1 ));
         } catch(\Exception $e) {
             return false;
         }

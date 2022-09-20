@@ -59,8 +59,8 @@ class CampaignController extends BaseController {
                 
                 $emails = isset($params['emails']) ? $params['emails'] : array();
 
-                foreach( $emails as $email ){
-                    ModelsCampaign::update_campaign_emails( $email, $campaign_id );
+                foreach( $emails as $index => $email ){
+                    ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
                 }
 
             }
@@ -74,8 +74,8 @@ class CampaignController extends BaseController {
 
                 $emails = isset($params['emails']) ? $params['emails'] : array();
 
-                foreach( $emails as $email ){
-                    ModelsCampaign::insert_campaign_emails( $email, $campaign_id );
+                foreach( $emails as $index => $email ){
+                    ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
                 }
                 
             }

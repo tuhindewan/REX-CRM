@@ -150,6 +150,7 @@ class CampaignSchema {
             `delay` INT(10) DEFAULT 0,
             `sender_email` VARCHAR(192),
             `sender_name` VARCHAR(192),
+            `email_index` INT(10),
             `email_subject` VARCHAR(192),
             `email_preview_text` VARCHAR(192) NULL,
             `template_id` bigint(20) unsigned NULL,
