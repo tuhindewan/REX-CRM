@@ -6,6 +6,7 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 
+// default email object empty template, this object is reused thats why declared here once
 const emptyInputStateTemplate = {
   subject: "",
   body: "",
@@ -17,16 +18,23 @@ const emptyInputStateTemplate = {
 };
 
 export default function AddCampaign(props) {
+  // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([
     {
       ...emptyInputStateTemplate,
     },
   ]);
+
+  // tracks currently selected email index and highlights in the UI
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
+  // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
+
+  // recipient lists and recipients tags state variables to whom the email(s) should be sent
   const [recipientLists, setRecipientLists] = useState([]);
   const [recipientTags, setRecipientTags] = useState([]);
 
+  // function for adding new email in the sequence
   const addNextEmail = () => {
     setEmailData((prevEmailData) => {
       setSelectedEmailIndex(prevEmailData.length);
@@ -34,6 +42,7 @@ export default function AddCampaign(props) {
     });
   };
 
+  // function for removing an email from the sequence
   const deleteEmail = (index) => {
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -45,6 +54,7 @@ export default function AddCampaign(props) {
     });
   };
 
+  // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = (e) => {
     setEmailData((prevEmailData) => {
       const name = e.target.name;
@@ -63,7 +73,6 @@ export default function AddCampaign(props) {
         <div className="mintmrm-container">
           <ul className="mintmrm-breadcrumb">
             <li>
-              {/* <a href="/contacts/allcampaigns">Campaigns</a> */}
               <Link to="/campaigns">Campaigns</Link>
             </li>
             <li className="active">Add Campaign</li>
@@ -74,6 +83,9 @@ export default function AddCampaign(props) {
       <div className="mintmrm-container">
         <div className="add-campaign-wrapper">
           <div className="add-email-section">
+            {/**
+             * loop through email data state and render the side buttons for each email sequence
+             */}
             {emailData.map((email, index) => {
               return (
                 <>
@@ -109,6 +121,9 @@ export default function AddCampaign(props) {
           </div>
           <div className="email-content-section">
             <div className="email-container">
+              {/**
+               * only shows the title and recipients list on first email sequnce form
+               */}
               {selectedEmailIndex == 0 && (
                 <>
                   <div className="email-title input-item">
