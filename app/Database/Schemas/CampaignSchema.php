@@ -15,7 +15,7 @@ require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 class CampaignSchema {
 
     /**
-     * Table name
+     * Table name for mrm_campaigns
      *
      * @var string
      * @since 1.0.0
@@ -24,6 +24,8 @@ class CampaignSchema {
 
 
     /**
+     * Table name for mrm_campaigns_meta
+     * 
      * @var string
      * @since 1.0.0
      */
@@ -31,6 +33,8 @@ class CampaignSchema {
 
 
     /**
+     * Table name for mrm_campaign_emails
+     * 
      * @var string
      * @since 1.0.0
      */
@@ -38,7 +42,7 @@ class CampaignSchema {
 
 
     /**
-     * Create the table.
+     * Create tables on plugin activation
      *
      * @return void
      * @since 1.0.0
