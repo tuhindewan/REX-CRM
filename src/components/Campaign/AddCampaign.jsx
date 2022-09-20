@@ -7,8 +7,6 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 
 const emptyInputStateTemplate = {
-  title: "",
-  to: "",
   subject: "",
   preview: "",
   fromName: "",
@@ -24,6 +22,9 @@ export default function AddCampaign(props) {
     },
   ]);
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
+  const [campaignTitle, setCampaignTitle] = useState("");
+  const [recipientLists, setRecipientLists] = useState([]);
+  const [recipientTags, setRecipientTags] = useState([]);
 
   const addNextEmail = () => {
     setEmailData((prevEmailData) => {
@@ -51,25 +52,9 @@ export default function AddCampaign(props) {
       if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
       }
-      if (name == "to" || name == "fromEmail") {
-        if (value.length > 0 && !validateEmail(value)) {
-          copy[selectedEmailIndex][`${name}Error`] =
-            "Enter a valid Email Address";
-        } else {
-          copy[selectedEmailIndex][`${name}Error`] = null;
-        }
-      }
       copy[selectedEmailIndex][name] = value;
       return copy;
     });
-  };
-
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
   };
   return (
     <div className="mintmrm-add-campaign">
@@ -123,26 +108,23 @@ export default function AddCampaign(props) {
           </div>
           <div className="email-content-section">
             <div className="email-container">
-              <div className="email-title input-item">
-                <label>Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={emailData[selectedEmailIndex]["title"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Email title"
-                />
-              </div>
-              <div className="email-to input-item">
-                <label>To:</label>
-                <input
-                  type="text"
-                  name="to"
-                  value={emailData[selectedEmailIndex]["to"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="All Subscriber"
-                />
-              </div>
+              {selectedEmailIndex == 0 && (
+                <>
+                  <div className="email-title input-item">
+                    <label>Title</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={campaignTitle}
+                      onChange={(e) => setCampaignTitle(e.target.value)}
+                      placeholder="Enter Campaign title"
+                    />
+                  </div>
+                  <div className="email-to input-item">
+                    <label>To:</label>
+                  </div>
+                </>
+              )}
               <div className="email-subject input-item">
                 <label>Subject:</label>
                 <input
@@ -210,7 +192,10 @@ export default function AddCampaign(props) {
             </div>
           </div>
         </div>
-        <div>{emailData[selectedEmailIndex]["toError"]} {emailData[selectedEmailIndex]["fromEmailError"]}</div>
+        <div>
+          {emailData[selectedEmailIndex]["toError"]}{" "}
+          {emailData[selectedEmailIndex]["fromEmailError"]}
+        </div>
       </div>
     </div>
   );
