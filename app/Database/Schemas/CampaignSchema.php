@@ -113,7 +113,7 @@ class CampaignSchema {
 
 
     /**
-     * Create Campaign meta table name
+     * Create Campaign meta table
      * 
      * @param mixed $table Campaign meta table name
      * @param mixed $charsetCollate
@@ -126,7 +126,7 @@ class CampaignSchema {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
-            `meta_key` VARCHAR(50) NULL,
+            `meta_key` VARCHAR(50) NOT NULL,
             `meta_value` longtext
          ) $charsetCollate;";
         dbDelta($sql);
@@ -134,7 +134,7 @@ class CampaignSchema {
 
 
     /**
-     * Create Campaign emails table name
+     * Create Campaign emails table
      * 
      * @param mixed $table Campaign emails table name
      * @param mixed $charsetCollate
@@ -161,7 +161,7 @@ class CampaignSchema {
 
 
     /**
-     * Create Campaign emails meta table name
+     * Create Campaign emails meta table
      * 
      * @param mixed $table
      * @param mixed $charsetCollate
@@ -174,7 +174,7 @@ class CampaignSchema {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_emails_id` BIGINT(20) NOT NULL,
-            `meta_key` VARCHAR(50) NULL,
+            `meta_key` VARCHAR(50) NOT NULL,
             `meta_value` longtext
          ) $charsetCollate;";
         dbDelta($sql);
