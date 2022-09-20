@@ -42,6 +42,6 @@ class ContactGroupPivotSchema implements Schema {
             `updated_at` TIMESTAMP NULL,
             INDEX `contact_id_pivot_index` (`contact_id` ASC),
             INDEX `group_id_pivot_index` (`group_id` ASC)
-         ) ";
+        ) ";
     }
 }

@@ -1,16 +1,13 @@
-import { __ } from "@wordpress/i18n";
 import React, { useEffect, useState } from "react";
 
 import ContactCards from "../ContactCards/index";
-import PlusCircleIcon from "../Icons/PlusCircleIcon"
-import Search from "../Icons/Search";
-import ColumnList from "../BaseTable/ColumnList"
 
 import { useLocation } from "react-router-dom";
 import ContactProfile from "../Icons/ContactProfile";
 import Pending from "../Icons/Pending";
 import Subscribe from "../Icons/Subscribe";
 import Unsubscribe from "../Icons/Unsubscribe";
+import NavBar from "../Navbar/index";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
 
@@ -32,14 +29,13 @@ const BaseTable = () => {
       setCountData(resJson);
     }
     getTotal();
-  }, [refresh]);
-
     if ("contact-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
+  }, [refresh]);
 
-
+  <NavBar refresh={refresh} />;
 
   return (
     <>
@@ -70,12 +66,7 @@ const BaseTable = () => {
 
           <div className="contact-list-area">
             <div className="contact-list-body">
-              
-
-              <ContactListTable 
-                refresh = {refresh}
-                setRefresh= {setRefresh}
-              />
+              <ContactListTable refresh={refresh} setRefresh={setRefresh} />
             </div>
           </div>
         </div>

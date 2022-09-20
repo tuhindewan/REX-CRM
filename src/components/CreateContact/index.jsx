@@ -9,9 +9,13 @@ import { getTags } from "../../services/Tag";
 import InputItem from "../InputItem/index";
 import Selectbox from "../Selectbox";
 import "./style.css";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
   // Prepare contact object
   const [contactData, setValues] = useState({
@@ -19,6 +23,7 @@ const CreateContact = (props) => {
     first_name: "",
     last_name: "",
     status: ["pending"],
+    created_by: `${window.MRM_Vars.current_userID}`,
     lists: [],
     tags: [],
   });
@@ -94,6 +99,9 @@ const CreateContact = (props) => {
       navigate("../contacts", {
         state: { status: "contact-created", message: responseData?.message },
       });
+      useGlobalStore.setState({
+        counterRefresh: !counterRefresh,
+      });
     } else {
       // Validation messages
       setErrors({
@@ -113,7 +121,6 @@ const CreateContact = (props) => {
       ...prevState,
       [name]: value,
     }));
-    console.log(contactData);
   };
 
   const onSelect = (e, name) => {

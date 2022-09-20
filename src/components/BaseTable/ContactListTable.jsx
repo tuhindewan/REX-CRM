@@ -1,30 +1,26 @@
-import { __ } from "@wordpress/i18n";
+import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import {
+  Link,
+  useLocation,
   useNavigate,
   useSearchParams,
-  createSearchParams,
-  useParams,
-  useLocation,
 } from "react-router-dom";
-import queryString from "query-string";
-import ColumnList from "./ColumnList";
-import { Link } from "react-router-dom";
 import Plus from "../Icons/Plus";
+import SingleContact from "./SingleContact";
 
 // Internal dependencies
 import Swal from "sweetalert2";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import CrossIcon from "../Icons/CrossIcon";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
-import Selectbox2 from "../Selectbox2";
-import PlusCircleIcon from "../Icons/PlusCircleIcon";
-import FilterItems from "./FilterItems";
-import CrossIcon from "../Icons/CrossIcon";
 import AssignedItems from "./AssignedItems";
-import SingleContact from "./SingleContact";
+import FilterItems from "./FilterItems";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -91,6 +87,9 @@ export default function ContactListTable(props) {
   const location = useLocation();
 
   const [filterRequest, setFilterRequest] = useState({});
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -210,7 +209,7 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (isFilter == 0) getData();
+    if (0 == isFilter) getData();
   }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
@@ -248,6 +247,9 @@ export default function ContactListTable(props) {
           );
           Swal.fire("Deleted!", "Contact has been deleted.", "success");
           setAllSelected(false);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
           toggleRefresh();
         }
       }
@@ -313,61 +315,6 @@ export default function ContactListTable(props) {
         }}
       >
         <div className="left-filters filter-box">
-          {/* <FilterBox
-            label="Lists"
-            name="lists"
-            options={lists}
-            values={contactData.lists}
-            placeholder="Select List"
-            tags={false}
-            multiple={false}
-            onSelect={onSelectLists}
-          /> */}
-          {/* <Selectbox2
-            label=""
-            name="lists"
-            options={lists}
-            placeholder="Lists"
-            tags={false}
-            multiple={true}
-            onSelect={onSelect}
-            onRemove={onRemove}
-          />
-          <Selectbox2
-            label=""
-            name="tags"
-            options={tags}
-            placeholder="Tags"
-            tags={true}
-            multiple={true}
-            onSelect={onSelect}
-            onRemove={onRemove}
-          />
-          <Selectbox2
-            label=""
-            name="status"
-            options={[
-              {
-                title: "Pending",
-                id: "pending",
-              },
-              {
-                title: "Subscribed",
-                id: "subscribed",
-              },
-              {
-                title: "Unsubscribed",
-                id: "unsubscribed",
-              },
-            ]}
-            placeholder="Status"
-            value={status}
-            tags={true}
-            multiple={true}
-            onSelect={onSelect}
-            onRemove={onRemove}
-          /> */}
-
           <div className="form-group left-filter">
             <button
               className={isLists ? "filter-btn show" : "filter-btn"}
@@ -422,7 +369,7 @@ export default function ContactListTable(props) {
         </div>
 
         <div className="right-buttons">
-          {isFilter == 0 ? (
+          {!isFilter ? (
             <span className="search-section">
               <Search />
               <input

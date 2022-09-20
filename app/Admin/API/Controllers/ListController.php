@@ -248,7 +248,7 @@ class ListController extends BaseController {
                 }
                 
             }
-
+            $list = null;
             if(isset($new_list_id)){
                 $list = $new_list_id;
             }

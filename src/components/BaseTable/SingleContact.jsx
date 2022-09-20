@@ -5,9 +5,11 @@ import { deleteSingleContact } from "../../services/Contact";
 import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
-//import PlusCircleIcon from "../Icons/PlusCircleIcon";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function SingleContact(props) {
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const navigate = useNavigate();
   const [isActive, setActive] = useState(false);
   const menuButtonRef = useRef(null);
@@ -38,6 +40,9 @@ export default function SingleContact(props) {
       if (result.isConfirmed) {
         deleteSingleContact(contact.id).then((result) => {
           if (result.status === 200) {
+            useGlobalStore.setState({
+              counterRefresh: !counterRefresh,
+            });
             toggleRefresh();
           }
         });
@@ -122,25 +127,32 @@ export default function SingleContact(props) {
           ref={menuButtonRef}
         >
           <ThreeDotIcon />
-          <ul
-            className={
-              currentActive == contact.id && isActive
-                ? "mintmrm-dropdown show"
-                : "mintmrm-dropdown"
-            }
-          >
-            <li style={{ display: "flex" }} onClick={handleUpdate}>
-              <span> View </span>
-            </li>
-            <li
-              className="delete"
-              onClick={() => {
-                handleDelete();
-              }}
-            >
-              Delete
-            </li>
-          </ul>
+
+          {currentActive == contact.id && ( // only show the menu if both active and current active points to this listitem
+            <Portal>
+              <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
+                <ul
+                  className={
+                    currentActive == contact.id && isActive
+                      ? "mintmrm-dropdown show"
+                      : "mintmrm-dropdown"
+                  }
+                >
+                  <li style={{ display: "flex" }} onClick={handleUpdate}>
+                    <span> View </span>
+                  </li>
+                  <li
+                    className="delete"
+                    onClick={() => {
+                      handleDelete();
+                    }}
+                  >
+                    Delete
+                  </li>
+                </ul>
+              </HoverMenu>
+            </Portal>
+          )}
         </button>
       </td>
     </tr>

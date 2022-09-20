@@ -27,5 +27,6 @@ export const useGlobalStore = create((set) => ({
   navbarMarkup: <></>,
   hideGlobalNav: false,
   hideAllCustomSelect: false,
-  activeCustomSelect: null
+  activeCustomSelect: null,
+  counterRefresh: false
 }));

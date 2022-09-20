@@ -15,6 +15,7 @@ import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
+import ImportWordpress from "../pages/ImportWordpress"
 
 const routes = [
   {
@@ -49,6 +50,11 @@ const routes = [
     hideInMenu: true,
   },
   {
+    path: "/contacts/import/wordpress",
+    element: ImportWordpress,
+    hideInMenu: true,
+  },
+  {
     path: "/contacts/import/csv/map",
     element: SelectFieldsMap,
     hideInMenu: true,
@@ -72,7 +78,7 @@ const routes = [
     path: "/lists",
     element: Lists,
     title: __("Lists", "mrm"),
-    // bage: 15,
+    //bage: 15,
   },
   {
     path: "/tags",
@@ -89,6 +95,11 @@ const routes = [
   },
   {
     path: "/custom-fields/create",
+    element: CustomFieldCreate,
+    hideInMenu: true,
+  },
+  {
+    path: "/custom-fields/update/:id",
     element: CustomFieldCreate,
     hideInMenu: true,
   },

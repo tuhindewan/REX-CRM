@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
   deleteSingleCustomField,
@@ -16,6 +16,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import SingleField from "./SingleField";
 
 const CustomFields = () => {
+  let navigate = useNavigate();
+
   const location = useLocation();
   // set navbar Buttons
   useGlobalStore.setState({
@@ -110,7 +112,10 @@ const CustomFields = () => {
   };
 
   // this function sets the required edit parameters
-  function editField(list) {}
+  function editField(field) {
+    let path = `../custom-fields/update/${field.id}`;
+    navigate(path);
+  }
 
   // Handle all checkbox row selection
   const handleSelectAll = async (event) => {
@@ -158,22 +163,24 @@ const CustomFields = () => {
                   <input type="text" placeholder="Search..." />
                 </span>
                 {/* show more options section */}
-                <button
-                  className="more-option"
-                  onClick={() => setShowMoreOptions(!showMoreOptions)}
-                >
-                  <ThreeDotIcon />
-
-                  <ul
-                    className={
-                      showMoreOptions
-                        ? "mintmrm-dropdown show"
-                        : "mintmrm-dropdown"
-                    }
+                <div className="bulk-action">
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
                   >
-                    <li className="delete">Delete Selected</li>
-                  </ul>
-                </button>
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete">Delete Selected</li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="contact-list-body">
@@ -239,7 +246,7 @@ const CustomFields = () => {
           </div>
         </div>
       </div>
-      <div className="soronmrm-container" style={{ display: isDelete }}>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup
           title="Delete Custom Field"
           message="Are you sure you want to delete the Field?"

@@ -1,12 +1,15 @@
 import $ from "jquery";
-import React, { useEffect } from "react";
-import 'select2';
+import React, { useEffect, useState } from "react";
+import "select2";
 
 import "./style.css";
 
 export default function Selectbox(props) {
+  const [myValue, setMyValue] = useState("");
+  // const [selected, setSelected] = useState("false");
+  // const selected = optionState === option.value ? "selected" : "false";
   useEffect(() => {
-
+    setMyValue(props.value);
     // Init select2
     let element = $(".mintmrm-" + props.name + "-selectbox");
     element.css('color', 'red')
@@ -23,8 +26,7 @@ export default function Selectbox(props) {
     element.on("select2:unselect", function (e) {
       props.onRemove(e, props.name);
     });
-
-  }, []);
+  }, [props]);
 
   return (
     <>
@@ -39,6 +41,7 @@ export default function Selectbox(props) {
           className={"mintmrm-" + props.name + "-selectbox"}
           multiple={props.multiple}
           data-placeholder={props.placeholder}
+          defaultValue={myValue}
         >
           <option></option>
           {props.options.map((option, key) => (

@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import CustomSelect from "./components/CustomSelect";
-import Header from "./components/Navbar/";
-import { useGlobalStore } from "./hooks/useGlobalStore";
+import Navbar from "./components/Navbar/";
 import routes from "./routes/index.js";
 
 const App = () => {
@@ -21,46 +19,8 @@ const App = () => {
       <ReactFlowProvider>
         <HashRouter>
           <>
-            <Header />
-            <CustomSelect
-              selected={selectedTags}
-              setSelected={setSelectedTags}
-              endpoint="/tags"
-              placeholder="Tags"
-              name="tag"
-              listTitle="Select Tags"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={false}
-              showSelectedInside={false}
-              allowNewCreate={true}
-            />
-            <CustomSelect
-              selected={selectedStatus}
-              setSelected={setSelectedStatus}
-              placeholder="Status"
-              name="tag"
-              options={[
-                {
-                  id: "pending",
-                  title: "Pending",
-                },
-                {
-                  id: "subscribed",
-                  title: "Subscribed",
-                },
-              ]}
-              listTitle="Select Tags"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={false}
-              showListTitle={false}
-              showSelectedInside={false}
-              allowNewCreate={false}
-            />
+            <Navbar />
+
             <Routes>
               {routes.map((route, index) => (
                 <Route
@@ -72,6 +32,10 @@ const App = () => {
             </Routes>
           </>
         </HashRouter>
+        {/* <div className="mintmrm-container">
+          <DeletePopup/>
+        </div>
+        <SuccessfulNotification/> */}
       </ReactFlowProvider>
     </div>
   );

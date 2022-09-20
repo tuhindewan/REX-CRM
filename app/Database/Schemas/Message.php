@@ -40,11 +40,10 @@ class MessageSchema implements Schema{
 
         return "CREATE TABLE IF NOT EXISTS {$table} (
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `interaction_id` BIGINT UNSIGNED NULL,
-                `ineraction_type` VARCHAR(50) NULL DEFAULT 'campaign',
-                `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'For future messaging process',
+                `campaign_id` BIGINT UNSIGNED NULL,
+                `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'SMS, WHATSAPP etc will add in future',
                 `contact_id` BIGINT UNSIGNED NULL COMMENT 'Set NULL on contact delete',
-                `sender_id` BIGINT(10) UNSIGNED NOT NULL DEFAULT 1,
+                `sender_id` BIGINT(10) UNSIGNED NULL,
                 `email_address` VARCHAR(192) NOT NULL,
                 `email_subject` VARCHAR(192) NULL,
                 `email_preview_text` VARCHAR(192) NULL,
@@ -53,11 +52,10 @@ class MessageSchema implements Schema{
                 `first_open` TIMESTAMP DEFAULT NULL,
                 `first_click` TIMESTAMP DEFAULT NULL,
                 `click_count` INT NULL,
-                `status` VARCHAR(50) NOT NULL DEFAULT 'draft' COMMENT 'SENT, SCHEDULED, PENDING, BOUNCED, FAILED',
-                `scheduled_at` TIMESTAMP NULL,
+                `status` VARCHAR(50) NOT NULL DEFAULT 'sent' COMMENT 'SENT, BOUNCED, FAILED',
                 `created_at` TIMESTAMP NULL,
                 `updated_at` TIMESTAMP NULL,
-                INDEX `interaction_id_index` (`interaction_id` DESC),
+                INDEX `campaign_id_index` (`campaign_id` DESC),
                 INDEX `contact_id_index` (`contact_id` DESC)
              ) ";
     }

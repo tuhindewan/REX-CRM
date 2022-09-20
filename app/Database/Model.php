@@ -26,7 +26,9 @@ class Model {
             'contact_group_pivot'   => 'ContactGroupPivotSchema',
             'interaction'           => 'InteractionSchema',
             'message'               => 'MessageSchema',
-            'work_flow'             => 'WorkFlowSchema'
+            'work_flow'             => 'WorkFlowSchema',
+            'custom_fields'         => 'CustomFieldSchema',
+            'campaign_schema'       => 'CampaignSchema'
         ));
     }
 

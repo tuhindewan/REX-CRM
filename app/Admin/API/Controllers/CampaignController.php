@@ -4,15 +4,11 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
-use MRM\Controllers\MRM_Base_Controller;
-use MRM\Traits\Singleton;
+use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
-use MRM\Data\Campaign;
-use MRM\Models\CampaignModel as ModelsCampaign;
-use MRM\Models\MRM_Contact_Group_Pivot_Model;
-use MRM\Models\MRM_Message_Model;
+use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 
 /**
  * @author [MRM Team]
@@ -61,7 +57,7 @@ class CampaignController extends BaseController {
                 $update         = ModelsCampaign::update( $params, $campaign_id );
 
                 if( isset( $params['status'] ) && 'send' == $params['status'] ){
-                    $this->send_campaing_email( $campaign_id, $params );
+                    $this->send_campaign_email( $campaign_id, $params );
                 }
 
             }
@@ -92,8 +88,14 @@ class CampaignController extends BaseController {
 
     }
 
-
-    public static function send_campaing_email( $campaign_id, $params ){
+    /**
+     * Get and send response to send campaign email 
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public static function send_campaign_email( $campaign_id, $params ){
         
         $campaign = ModelsCampaign::get( $campaign_id );
         
@@ -122,9 +124,9 @@ class CampaignController extends BaseController {
                     'sender_name'   => $campaign->sender_name,
                     'campaign_id'   => $campaign->id
                 );
-        }, $contacts);
+            }, $contacts);
 
-        do_action( 'mrm/send_campaign_email', $messages );
+            do_action( 'mrm/send_campaign_email', $messages );
         }
 
 
@@ -134,7 +136,7 @@ class CampaignController extends BaseController {
 
 
     /**
-     * Request for deleting a single field 
+     * Request for deleting a single campaign to Campaign Model by Campaign ID
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -142,26 +144,48 @@ class CampaignController extends BaseController {
      */
     public function delete_single( WP_REST_Request $request ){
 
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
+        // Campaign avaiability check
+        $exist = ModelsCampaign::is_campaign_exist($params['campaign_id']);
+
+        if ( !$exist ) {
+			return $this->get_error_response( __( 'Campaign not found', 'mrm' ),  400);
+		}
+
+        $success = ModelsCampaign::destroy( $params['id'] );
+
+        if($success) {
+            return $this->get_success_response( __( 'Campaign has been deleted successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
 
     }
 
 
     /**
-     * TODO: complete this function in order to delete multilple fields
+     * Request for deleting multiple campaigns to Campaign Model by Campaign ID
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
      * @since 1.0.0
      */
     public function delete_all( WP_REST_Request $request ){
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
-        
+        $success = ModelsCampaign::destroy_all( $params['campaign_ids'] );
+        if($success) {
+            return $this->get_success_response(__( 'Campaign has been deleted successfully', 'mrm' ), 200);
+        }
+
+        return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
     }
 
 
     /**
-     * Get all fields request
+     * Get all campaign request to Campaign Model
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -212,7 +236,13 @@ class CampaignController extends BaseController {
 
     }
 
-
+    /**
+     * Function use to schedule the action for campaign emails
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0 
+     */
     public function process_campaign_email( $messages )
     {
         $data = array();
@@ -231,7 +261,13 @@ class CampaignController extends BaseController {
         
     }
 
-
+    /**
+     * Function use send campaign email to a recipients 
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0 
+     */
     public function process_campaign_email_send($data)
     {
         foreach( $data as $message ) {
