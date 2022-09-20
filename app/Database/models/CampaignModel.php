@@ -194,9 +194,12 @@ class CampaignModel {
         $campaign_table  = $wpdb->prefix . CampaignSchema::$table_name;
 
         try {
-            $ids = implode(",", array_map( 'intval', $ids ));
-            $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ($ids)" );
-            return true;
+            if (is_array($ids)){
+                $ids = implode(",", array_map( 'intval', $ids ));
+                $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ($ids)" );
+                return true;
+            }
+            return false;
         } catch(\Exception $e) {
             return false;
         }

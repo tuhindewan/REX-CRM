@@ -88,7 +88,13 @@ class CampaignController extends BaseController {
 
     }
 
-
+    /**
+     * Get and send response to send campaign email 
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
     public static function send_campaign_email( $campaign_id, $params ){
         
         $campaign = ModelsCampaign::get( $campaign_id );
@@ -130,7 +136,7 @@ class CampaignController extends BaseController {
 
 
     /**
-     * Request for deleting a single field 
+     * Request for deleting a single campaign to Campaign Model by Campaign ID
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -159,7 +165,7 @@ class CampaignController extends BaseController {
 
 
     /**
-     * to delete multilple fields
+     * Request for deleting multiple campaigns to Campaign Model by Campaign ID
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -171,7 +177,7 @@ class CampaignController extends BaseController {
 
         $success = ModelsCampaign::destroy_all( $params['campaign_ids'] );
         if($success) {
-            return $this->get_success_response(__( 'Lists has been deleted successfully', 'mrm' ), 200);
+            return $this->get_success_response(__( 'Campaign has been deleted successfully', 'mrm' ), 200);
         }
 
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
@@ -179,7 +185,7 @@ class CampaignController extends BaseController {
 
 
     /**
-     * Get all fields request
+     * Get all campaign request to Campaign Model
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -230,7 +236,13 @@ class CampaignController extends BaseController {
 
     }
 
-
+    /**
+     * Function use to schedule the action for campaign emails
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0 
+     */
     public function process_campaign_email( $messages )
     {
         $data = array();
@@ -249,7 +261,13 @@ class CampaignController extends BaseController {
         
     }
 
-
+    /**
+     * Function use send campaign email to a recipients 
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0 
+     */
     public function process_campaign_email_send($data)
     {
         foreach( $data as $message ) {
