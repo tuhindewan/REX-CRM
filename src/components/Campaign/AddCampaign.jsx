@@ -8,11 +8,12 @@ import TemplateIcon from "../Icons/TemplateIcon";
 
 const emptyInputStateTemplate = {
   subject: "",
+  body: "",
   preview: "",
-  fromName: "",
-  fromEmail: "",
+  senderName: "",
+  senderEmail: "",
   toError: null,
-  fromEmailError: null,
+  senderEmailError: null,
 };
 
 export default function AddCampaign(props) {
@@ -161,15 +162,15 @@ export default function AddCampaign(props) {
                 <label>From</label>
                 <input
                   type="text"
-                  name="fromName"
-                  value={emailData[selectedEmailIndex]["fromName"]}
+                  name="senderName"
+                  value={emailData[selectedEmailIndex]["senderName"]}
                   onChange={handleEmailFieldsChange}
                   placeholder="Enter Name"
                 />
                 <input
                   type="text"
-                  name="fromEmail"
-                  value={emailData[selectedEmailIndex]["fromEmail"]}
+                  name="senderEmail"
+                  value={emailData[selectedEmailIndex]["senderEmail"]}
                   onChange={handleEmailFieldsChange}
                   placeholder="Enter Email"
                 />
@@ -191,10 +192,6 @@ export default function AddCampaign(props) {
               </button>
             </div>
           </div>
-        </div>
-        <div>
-          {emailData[selectedEmailIndex]["toError"]}{" "}
-          {emailData[selectedEmailIndex]["fromEmailError"]}
         </div>
       </div>
     </div>
