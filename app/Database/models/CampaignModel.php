@@ -104,19 +104,20 @@ class CampaignModel {
     public static function get_all( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
-        $contact_table = $wpdb->prefix . CampaignSchema::$table_name;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$table_name;
         $search_terms = null;
 
         // Search contacts by email, first name or last name
 		if ( ! empty( $search ) ) {
+            $search = $wpdb->esc_like($search);
             $search_terms = "WHERE (`title` LIKE '%$search%')";
 		}
         // Prepare sql results for list view
         try {
-            $select_query  =  "SELECT * FROM `wp_mrm_campaigns` $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
+            $select_query  =  "SELECT * FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
             $results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
 
-            $count_query    = "SELECT COUNT(*) as total FROM $contact_table $search_terms";
+            $count_query    = "SELECT COUNT(*) as total FROM $campaign_table $search_terms";
             $count_result   = $wpdb->get_results($count_query);
             
             $count = (int) $count_result['0']->total;

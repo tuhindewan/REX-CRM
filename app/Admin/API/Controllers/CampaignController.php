@@ -4,15 +4,11 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
-use MRM\Controllers\MRM_Base_Controller;
-use MRM\Traits\Singleton;
+use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
-use MRM\Data\Campaign;
-use MRM\Models\CampaignModel as ModelsCampaign;
-use MRM\Models\MRM_Contact_Group_Pivot_Model;
-use MRM\Models\MRM_Message_Model;
+use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 
 /**
  * @author [MRM Team]
@@ -61,7 +57,7 @@ class CampaignController extends BaseController {
                 $update         = ModelsCampaign::update( $params, $campaign_id );
 
                 if( isset( $params['status'] ) && 'send' == $params['status'] ){
-                    $this->send_campaing_email( $campaign_id, $params );
+                    $this->send_campaign_email( $campaign_id, $params );
                 }
 
             }
@@ -93,7 +89,7 @@ class CampaignController extends BaseController {
     }
 
 
-    public static function send_campaing_email( $campaign_id, $params ){
+    public static function send_campaign_email( $campaign_id, $params ){
         
         $campaign = ModelsCampaign::get( $campaign_id );
         
@@ -122,9 +118,9 @@ class CampaignController extends BaseController {
                     'sender_name'   => $campaign->sender_name,
                     'campaign_id'   => $campaign->id
                 );
-        }, $contacts);
+            }, $contacts);
 
-        do_action( 'mrm/send_campaign_email', $messages );
+            do_action( 'mrm/send_campaign_email', $messages );
         }
 
 
