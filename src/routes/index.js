@@ -15,7 +15,9 @@ import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
-import ImportWordpress from "../pages/ImportWordpress"
+import ImportWordpress from "../pages/ImportWordpress";
+import AllCampaigns from "../components/AllCampaigns";
+import AddCampaign from "../components/Campaign/AddCampaign";
 
 const routes = [
   {
@@ -122,8 +124,33 @@ const routes = [
     path: "/lists/update/:id",
     element: UpdateList,
     hideInMenu: true,
-  }
-
+  },
+  {
+    path: "/campaigns/",
+    element: AllCampaigns,
+    title: __("All Campaigns", "mrm"),
+    campaignMenu: true,
+  },
+  {
+    path: "/campaigns/sequences",
+    element: AllCampaigns,
+    title: __("Email Sequences", "mrm"),
+    campaignMenu: true,
+    hideInMenu: true,
+  },
+  {
+    path: "/campaigns/templates",
+    element: AllCampaigns,
+    title: __("Email Templates", "mrm"),
+    campaignMenu: true,
+    hideInMenu: true,
+  },
+  {
+    path: "/campaigns/create",
+    element: AddCampaign,
+    title: __("Email Sequences", "mrm"),
+    hideInMenu: true,
+  },
 ];
 
 export default routes;

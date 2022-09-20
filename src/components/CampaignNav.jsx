@@ -45,7 +45,7 @@ export default function CampaignsNavbar() {
           </nav>
 
           <div className="navbar-buttons">
-            <Link to="/campaigns/addcampaign">
+            <Link to="/campaigns/create">
               <button className="add-contact-btn mintmrm-btn ">
                 <Plus /> Add Campaign
               </button>
