@@ -20,21 +20,21 @@ class CampaignSchema {
      * @var string
      * @since 1.0.0
      */
-    public static $table_name = 'mrm_campaigns';
+    public static $campaign_table = 'mrm_campaigns';
 
 
     /**
      * @var string
      * @since 1.0.0
      */
-    public static $mrm_campaign_meta_table = 'mrm_campaigns_meta';
+    public static $campaign_meta_table = 'mrm_campaigns_meta';
 
 
     /**
      * @var string
      * @since 1.0.0
      */
-    public static $mrm_table = 'mrm_campaign_emails';
+    public static $campaign_emails_table = 'mrm_campaign_emails';
 
 
     /**
@@ -43,28 +43,22 @@ class CampaignSchema {
      * @return void
      * @since 1.0.0
      */
-    public function create()
+    public function get_sql()
     {
         global $wpdb;
 
         $charsetCollate = $wpdb->get_charset_collate();
 
-        $table = $wpdb->prefix . self::$mrm_table;
+        $table = $wpdb->prefix . self::$campaign_table;
 
         // campaigns table
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `title` VARCHAR(192) NULL,
             `slug` VARCHAR(192),
-            `status` varchar(20),
-            `template_id` bigint(20) unsigned NULL,
-            `email_subject` varchar(192) NULL,
-            `email_preview_text` VARCHAR(192),
-            `email_body` longtext,
-            `sender_email` VARCHAR(192),
-            `sender_name` VARCHAR(192),
-            `settings` longtext NULL,
-            `total_recipients` bigint(20) unsigned NULL,
+            `status` varchar(20) NOT NULL DEFAULT 'draft' COMMENT 'DRAFT, SCHEDULED, ONGOING, COMPLETED',
+            `type` VARCHAR(50) NOT NULL DEFAULT 'regular' COMMENT 'REGULAR, SEQUENCE',
+            `scheduled_at` TIMESTAMP NULL,
             `created_by` bigint(20) unsigned NULL,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL
@@ -74,23 +68,28 @@ class CampaignSchema {
 
 
         // campaign meta table
-        $table = $wpdb->prefix . self::$mrm_campaign_meta_table;
+        $table = $wpdb->prefix . self::$campaign_meta_table;
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
-            `meta_key` varchar(50) NULL,
+            `meta_key` VARCHAR(50) NULL,
             `meta_value` longtext
          ) $charsetCollate;";
         dbDelta($sql);
 
 
         // campaign emails table
-        $table = $wpdb->prefix . self::$mrm_emails_table;
+        $table = $wpdb->prefix . self::$campaign_emails_table;
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
-            `contact_id` BIGINT(20) NULL,
-            `status` varchar(50),
+            `delay` INT(10) DEFAULT 0,
+            `email_subject` VARCHAR(192),
+            `email_preview_text` VARCHAR(192) NULL,
+            `template_id` bigint(20) unsigned NULL,
+            `email_body` longtext,
+            `sender_email` VARCHAR(192),
+            `sender_name` VARCHAR(192),
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL
          ) $charsetCollate;";
