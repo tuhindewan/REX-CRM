@@ -94,6 +94,31 @@ class CampaignModel {
 
 
     /**
+     * Insert information to database
+     * 
+     * @param $args    
+     * 
+     * @return int|bool 
+     * @since 1.0.0
+     */
+    public static function insert_campaign_emails( $email, $campaign_id )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        $email['campaign_id'] = $campaign_id;
+        $email['created_at'] = current_time('mysql');
+
+        try {
+            $wpdb->insert( $fields_table, $email );
+            return $wpdb->insert_id;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
      * Update information to database
      * 
      * @param object    $args         

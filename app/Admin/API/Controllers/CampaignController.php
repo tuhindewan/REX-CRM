@@ -43,7 +43,6 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         // Field object create and insert or update to database
         try {
 
@@ -75,6 +74,11 @@ class CampaignController extends BaseController {
 
                 ModelsCampaign::insert_campaign_recipients( $reciepients, $campaign_id );
 
+                $emails = isset($params['emails']) ? $params['emails'] : array();
+
+                foreach( $emails as  $key=>$email ){
+                    ModelsCampaign::insert_campaign_emails( $email, $campaign_id );
+                }
                 // if (empty( $params['sender_email'] )) {
                 //     return $this->get_error_response( __( 'Sender Email is mandatory', 'mrm' ),  400);
                 // }
