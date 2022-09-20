@@ -43,6 +43,7 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
         // Field object create and insert or update to database
         try {
 
@@ -63,16 +64,23 @@ class CampaignController extends BaseController {
             }
             else{
 
-                if (empty( $params['title'] )) {
+                if ( isset($params['title']) && empty( $params['title'] )) {
                     return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
                 }
+
+                $params['slug'] = isset($params['title']) ? sanitize_title( $params['title'] ): "";
+                $campaign_id = ModelsCampaign::insert( $params );
+
+                $reciepients = isset($params['reciepients']) ? maybe_serialize( $params['reciepients']) : "";
+
+                ModelsCampaign::insert_campaign_recipients( $reciepients, $campaign_id );
 
                 // if (empty( $params['sender_email'] )) {
                 //     return $this->get_error_response( __( 'Sender Email is mandatory', 'mrm' ),  400);
                 // }
 
                 // $campaign = new Campaign( $params );
-                $campaign_id = ModelsCampaign::insert( $params );
+                
             }
             
 

@@ -50,12 +50,42 @@ class CampaignModel {
     public static function insert( $args )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . CampaignSchema::$table_name;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
+        unset($args['reciepients']);
+        unset($args['emails']);
         $args['created_at'] = current_time('mysql');
 
         try {
             $wpdb->insert( $fields_table, $args );
+            return $wpdb->insert_id;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Insert information to database
+     * 
+     * @param $args    
+     * 
+     * @return int|bool 
+     * @since 1.0.0
+     */
+    public static function insert_campaign_recipients( $reciepients, $campaign_id )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
+
+        // $args['created_at'] = current_time('mysql');
+
+        try {
+            $wpdb->insert( $fields_table, [
+                'meta_key'      => 'recipients',
+                'meta_value'    => $reciepients,
+                'campaign_id'   => $campaign_id
+            ] );
             return $wpdb->insert_id;
         } catch(\Exception $e) {
             return false;
