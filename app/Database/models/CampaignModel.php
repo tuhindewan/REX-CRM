@@ -18,6 +18,28 @@ class CampaignModel {
     use Singleton;
 
     /**
+     * Check existing campaign on database
+     * 
+     * @param mixed $id Campaign id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_campaign_exist( $id )
+    {
+        global $wpdb;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$table_name;
+
+        $select_query = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", array( $id ) );
+        $results = $wpdb->get_results($select_query);
+
+        if( $results ){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Insert information to database
      * 
      * @param $args    
@@ -133,5 +155,52 @@ class CampaignModel {
         }
 	
     }
+
+
+    /**
+     * Delete a campaign from the database
+     * 
+     * @param mixed $id Campaign id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy( $id )
+    {
+        global $wpdb;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$table_name;
+
+        try {
+            $wpdb->delete( $campaign_table, array('id' => $id) );
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Delete multiple campaigns from the database
+     * 
+     * @param array $ids multiple campaigns
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy_all( $ids )
+    {
+        global $wpdb;
+
+        $campaign_table  = $wpdb->prefix . CampaignSchema::$table_name;
+
+        try {
+            $ids = implode(",", array_map( 'intval', $ids ));
+            $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ($ids)" );
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+    
     
 }
