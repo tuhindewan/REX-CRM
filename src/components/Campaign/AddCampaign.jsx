@@ -3,8 +3,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
+import SettingIcon from "../Icons/SettingIcon";
+import TemplateIcon from "../Icons/TemplateIcon";
 
 export default function AddCampaign(props) {
+  const [showAnotherEmail, setShowAnotherEmail] = useState(false);
+
+  const showNextEmail = () =>{
+    setShowAnotherEmail(true);
+   
+  }
   return (
     <div className="mintmrm-add-campaign">
       <div className="add-campaign-breadcrumb">
@@ -22,68 +30,100 @@ export default function AddCampaign(props) {
       <div className="mintmrm-container">
         <div className="add-campaign-wrapper">
           <div className="add-email-section">
-            <div className="email-select-section">
+            <div className= "email-select-section">
               <div className="icon-section">
                 <InboxIcon />
               </div>
               <h5>Email 1</h5>
+            </div>
+            <div className="link-line"></div>
+            <div className={showAnotherEmail ? "email-select-section another-email show" : "email-select-section another-email"}>
+              <div className="icon-section">
+                <InboxIcon />
+              </div>
+              <h5>Email 2</h5>
               <div className="delete-option">
                 <Delete />
               </div>
             </div>
-            <div className="link-line"></div>
-            <div className="add-another-email">
+            <div className={showAnotherEmail ? "link-line show-line show" :"link-line show-line"}></div>
+            <div className="add-another-email" onClick={showNextEmail}>
               <Plus />
             </div>
           </div>
-          <div className="email-container">
-            <div className="email-title input-item">
-              <label>Title</label>
-              <input
-                type="text
+          <div className="email-content-section">
+            <div className="email-container">
+              <div className="email-title input-item">
+                <label>Title</label>
+                <input
+                  type="text
               "
-              placeholder="Enter Email title"
-              />
+                  placeholder="Enter Email title"
+                />
+              </div>
+              <div className="email-to input-item">
+                <label>To:</label>
+                <input
+                  type="text
+              "
+                  placeholder="All Subscriber"
+                />
+              </div>
+              <div className="email-subject input-item">
+                <label>Subject:</label>
+                <input
+                  type="text
+              "
+                  placeholder="Be Specific and concise to spark interest"
+                />
+                <span>0/200</span>
+                <div className="setting-section">
+                  <SettingIcon />
+                </div>
+              </div>
+              <div className="email-preview input-item">
+                <label>Preview Text</label>
+                <input
+                  type="text
+              "
+                  placeholder="Write a summary of your email to display after the subject line"
+                />
+                <span>0/200</span>
+                <div className="setting-section">
+                  <SettingIcon />
+                </div>
+              </div>
+              <div className="email-from input-item">
+                <label>From</label>
+                <input
+                  type="text
+              "
+                  placeholder="Enter Name"
+                />
+                <input
+                  type="text
+              "
+                  placeholder="Enter Email"
+                />
+              </div>
+              <div className="email-design input-item">
+                <label>Design</label>
+                <div className="add-template-section">
+                  <TemplateIcon />
+                  <a href="">Select a Template</a>
+                </div>
+              </div>
             </div>
-            <div className="email-to input-item">
-              <label>To:</label>
-              <input
-                type="text
-              "
-              placeholder="All Subscriber"
-              />
-            </div>
-            <div className="email-subject input-item">
-              <label>Subject:</label>
-              <input
-                type="text
-              "
-              placeholder="Be Specific and concise to spark interest"
-              />
-            </div>
-            <div className="email-preview input-item">
-              <label>Preview Text</label>
-              <input
-                type="text
-              "
-              placeholder="Write a summary of your email to display after the subject line"
-              />
-            </div>
-            <div className="email-from input-item">
-              <label>From</label>
-              <input
-                type="text
-              "
-              placeholder="Enter Name"
-              />
-              <input
-                type="text
-              "
-              placeholder="Enter Email"
-              />
-            </div>
-            <div className="email-design input-item">
-              <label>Design</label>
+            <div className="content-save-section">
+              <button
+                className="campaign-schedule mintmrm-btn outline"
+                
+              >
+                Schedule
+              </button>
+              <button type="submit" className="contact-save mintmrm-btn ">
+                Save
+              </button>
             </div>
           </div>
         </div>

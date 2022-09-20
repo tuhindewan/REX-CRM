@@ -1,3 +1,4 @@
+@import "variables";
 .mintmrm-add-campaign {
   .add-campaign-breadcrumb {
     background: #10052e;
@@ -65,10 +66,26 @@
           }
         }
       }
+      .email-select-section{
+        &.another-email{
+          display: none;
+          &.show{
+            display: flex;
+          }
+        }
+      }
       .link-line {
         width: 1px;
         height: 34px;
         background-color: #d7d8dd;
+      }
+      .link-line{
+        &.show-line{
+          display: none;
+          &.show{
+            display: block;
+          }
+        }
       }
       .add-another-email {
         background: #6f6af8;
@@ -81,38 +98,117 @@
         align-items: center;
       }
     }
-    .email-container {
-      background: #ffffff;
-      box-shadow: 0px 1px 2px #dadada;
-      border-radius: 10px;
+    .email-content-section {
       width: 100%;
       max-width: 979px;
-      padding: 24px;
 
-      .input-item {
-        padding: 23px 0;
-        border-bottom: 1px solid #e3e4e8;
-        label {
+      .email-container {
+        background: #ffffff;
+        box-shadow: 0px 1px 2px #dadada;
+        border-radius: 10px;
+        padding: 24px;
+
+        .input-item {
+          padding: 23px 0;
+          border-bottom: 1px solid #e3e4e8;
+          display: flex;
+          flex-flow: row wrap;
+          align-items: center;
+
+          label {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 15px;
+            color: #6f7075;
+            width: 120px;
+            display: inline-block;
+            padding-right: 20px;
+          }
+          input {
+            border: none;
+
+            width: calc(100% - 220px);
+          }
+          input::placeholder {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            letter-spacing: -0.01em;
+            color: #b6b6b7;
+          }
+          .setting-section {
+            display: inline;
+          }
+        }
+        .input-item:last-child {
+          border-bottom: none;
+        }
+        span {
           font-weight: 500;
           font-size: 14px;
           line-height: 15px;
           color: #6f7075;
-          width: 120px;
-          display: inline-block;
-          padding-right: 20px;
+          padding-left: 20px;
+          display: block;
         }
-        input {
-          border: none;
-          font-weight: 400;
-          font-size: 14px;
-          line-height: 17px;
-          letter-spacing: -0.01em;
-          color: #b6b6b7;
+        .setting-section {
+          padding-left: 18px;
+        }
+        .email-from {
+          &.input-item {
+            input {
+              width: calc(50% - 80px);
+              padding-right: 15px;
+            }
+          }
+          &.input-item {
+            input:last-child {
+              border-left: 1px solid #d1d3da;
+              padding-left: 20px;
+            }
+          }
+        }
+        .email-design {
+          &.input-item {
+            display: flex;
+            align-items: flex-start;
+            padding-top: 30px;
+
+            .add-template-section {
+              width: calc(100% - 120px);
+              display: flex;
+              flex-flow: column wrap;
+              gap: 15px;
+              justify-content: center;
+              align-items: center;
+
+              a {
+                text-decoration: underline;
+                font-weight: 600;
+                font-size: 15px;
+                line-height: 18px;
+                letter-spacing: -0.01em;
+                text-decoration-line: underline;
+                color: #6f6af8;
+              }
+              a:hover {
+                text-decoration: underline;
+                color: $secondary-color;
+              }
+            }
+          }
         }
       }
-      .input-item:last-child{
-        border-bottom: none;
+      .content-save-section{
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 25px 0;
+        .campaign-schedule{
+          margin-right: 15px;
+        }
       }
+
     }
   }
 }
