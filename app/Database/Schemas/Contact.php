@@ -46,7 +46,7 @@ class ContactSchema implements Schema {
             `last_name` VARCHAR(192) NULL,
             `scores` INT UNSIGNED NOT NULL DEFAULT 0,
             `source` VARCHAR(50) NULL,
-            `status` VARCHAR(50) NOT NULL DEFAULT 'subscribed' COMMENT 'SUBSCRIBED, UNSUBSCRIBED, PENDING, BOUNCED',
+            `status` VARCHAR(50) NOT NULL DEFAULT 'subscribed' COMMENT 'SUBSCRIBED, UNSUBSCRIBED, PENDING',
             `stage` VARCHAR(50) DEFAULT 'lead' COMMENT 'LEAD, MQL, SQL, CUSTOMER',
             `last_activity` TIMESTAMP NULL,
             `created_at` TIMESTAMP NULL,
