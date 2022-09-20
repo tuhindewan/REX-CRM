@@ -74,6 +74,8 @@ const CustomFields = () => {
   useEffect(() => {
     getCustomFields().then((results) => {
       setCustomFields(results.data);
+      setCount(results.count);
+      setTotalPages(results.total_pages);
     });
     if ("field-created" == location.state?.status) {
       setShowNotification("block");
@@ -288,15 +290,17 @@ const CustomFields = () => {
                 )}
               </div>
             </div>
-            <div className="contact-list-footer">
-              <Pagination
-                currentPage={page}
-                pageSize={perPage}
-                onPageChange={setPage}
-                totalCount={count}
-                totalPages={totalPages}
-              />
-            </div>
+            {totalPages > 1 && (
+              <div className="contact-list-footer">
+                <Pagination
+                  currentPage={page}
+                  pageSize={perPage}
+                  onPageChange={setPage}
+                  totalCount={count}
+                  totalPages={totalPages}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

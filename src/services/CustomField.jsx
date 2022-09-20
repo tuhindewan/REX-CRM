@@ -1,6 +1,14 @@
 // Return all custom fields from the database
-export async function getCustomFields() {
-  return fetch(window.MRM_Vars.api_base_url + "mrm/v1/custom-fields/")
+export async function getCustomFields(
+  orderBy,
+  orderType,
+  page,
+  perPage,
+  query
+) {
+  return fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
+  )
     .then((response) => {
       if (response.ok) {
         return response.json();
