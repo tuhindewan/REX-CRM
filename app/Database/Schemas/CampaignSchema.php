@@ -125,7 +125,9 @@ class CampaignSchema {
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
             `meta_key` VARCHAR(50) NOT NULL,
-            `meta_value` longtext
+            `meta_value` longtext,
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL
          ) $charsetCollate;";
         dbDelta($sql);
     }

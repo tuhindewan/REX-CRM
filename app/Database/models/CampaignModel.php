@@ -52,7 +52,7 @@ class CampaignModel {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
-        unset($args['reciepients']);
+        unset($args['recipients']);
         unset($args['emails']);
         $args['created_at'] = current_time('mysql');
 
@@ -73,18 +73,17 @@ class CampaignModel {
      * @return int|bool 
      * @since 1.0.0
      */
-    public static function insert_campaign_recipients( $reciepients, $campaign_id )
+    public static function insert_campaign_recipients( $recipients, $campaign_id )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
-        // $args['created_at'] = current_time('mysql');
-
         try {
             $wpdb->insert( $fields_table, [
                 'meta_key'      => 'recipients',
-                'meta_value'    => $reciepients,
-                'campaign_id'   => $campaign_id
+                'meta_value'    => $recipients,
+                'campaign_id'   => $campaign_id,
+                'created_at'    => current_time('mysql')
             ] );
             return $wpdb->insert_id;
         } catch(\Exception $e) {
@@ -129,14 +128,44 @@ class CampaignModel {
     public static function update( $args, $id )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . CampaignSchema::$table_name;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
         $args['updated_at'] = current_time('mysql');
         unset($args['campaign_id']);
+        unset($args['recipients']);
+        unset($args['emails']);
 
         try {
             $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
             return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    public static function update_campaign_recipients( $recipients, $campaign_id )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
+
+        try {
+            $wpdb->update( $fields_table, array(
+                'meta_value'    => $recipients
+            ), array( 'meta_key' => 'recipients' , 'campaign_id' => $campaign_id ));
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    public static function update_campaign_emails( $email, $campaign_id )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        try {
+            $wpdb->update( $fields_table, $email, array( 'campaign_id' => $campaign_id ));
         } catch(\Exception $e) {
             return false;
         }
