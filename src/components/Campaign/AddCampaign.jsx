@@ -110,7 +110,7 @@ export default function AddCampaign(props) {
                 <label>Design</label>
                 <div className="add-template-section">
                   <TemplateIcon />
-                  <a href="">Select a Template</a>
+                  <Link to="">Select a Template</Link>
                 </div>
               </div>
             </div>
