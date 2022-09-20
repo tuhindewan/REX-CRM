@@ -65,6 +65,7 @@ class AdminAssets {
                 'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
                 'api_base_url' 		=> get_rest_url(),
                 'nonce' 			=> wp_create_nonce('wp_rest'),
+                'current_userID'    => get_current_user_id() 
             )
         );
     }

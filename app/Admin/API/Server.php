@@ -88,7 +88,8 @@ class Server {
             'workflows'     =>  'WorkflowRoute',
             'field-groups'  =>  'FieldGroupRoute',
             'custom-fields' =>  'CustomFieldRoute',
-            'general'       =>  'generalRoute'
+            'general'       =>  'generalRoute',
+            'campaigns'      =>  'campaignRoute'
 		));
     }
     
