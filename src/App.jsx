@@ -31,11 +31,11 @@ const App = () => {
               listTitle="Select Tags"
               listTitleOnNotFound="No Data Found"
               searchPlaceHolder="Search..."
-              allowMultiple={false}
-              showSearchBar={false}
+              allowMultiple={true}
+              showSearchBar={true}
               showListTitle={false}
               showSelectedInside={false}
-              allowNewCreate={false}
+              allowNewCreate={true}
             />
             <CustomSelect
               selected={selectedStatus}
