@@ -2,6 +2,8 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
+use ParagonIE\Sodium\Core\Curve25519\H;
+
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 /**
@@ -53,15 +55,37 @@ class CampaignSchema {
 
         $charsetCollate = $wpdb->get_charset_collate();
 
-        $table = $wpdb->prefix . self::$campaign_table;
-
         // campaigns table
+        $campaign_table         = $wpdb->prefix . self::$campaign_table;
+        $this->create_campaign_table( $campaign_table, $charsetCollate );
+
+        // campaign meta table
+        $campaign_meta_table    = $wpdb->prefix . self::$campaign_meta_table;
+        $this->create_campaign_meta_table( $campaign_meta_table, $charsetCollate );
+
+        // campaign emails table
+        $campaign_emails_table  = $wpdb->prefix . self::$campaign_emails_table;
+        $this->create_campaign_emails_table( $campaign_emails_table, $charsetCollate );
+    }
+
+
+    /**
+     * @param mixed $table Campaign table name
+     * @param mixed $charsetCollate
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function create_campaign_table( $table, $charsetCollate )
+    {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `title` VARCHAR(192) NULL,
             `slug` VARCHAR(192),
             `status` varchar(20) NOT NULL DEFAULT 'draft' COMMENT 'DRAFT, SCHEDULED, ONGOING, COMPLETED',
             `type` VARCHAR(50) NOT NULL DEFAULT 'regular' COMMENT 'REGULAR, SEQUENCE',
+            `sender_email` VARCHAR(192),
+            `sender_name` VARCHAR(192),
             `scheduled_at` TIMESTAMP NULL,
             `created_by` bigint(20) unsigned NULL,
             `created_at` TIMESTAMP NULL,
@@ -69,10 +93,18 @@ class CampaignSchema {
          ) $charsetCollate;";
 
         dbDelta($sql);
+    }
 
 
-        // campaign meta table
-        $table = $wpdb->prefix . self::$campaign_meta_table;
+    /**
+     * @param mixed $table Campaign meta table name
+     * @param mixed $charsetCollate
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function create_campaign_meta_table( $table, $charsetCollate )
+    {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
@@ -80,10 +112,18 @@ class CampaignSchema {
             `meta_value` longtext
          ) $charsetCollate;";
         dbDelta($sql);
+    }
 
 
-        // campaign emails table
-        $table = $wpdb->prefix . self::$campaign_emails_table;
+    /**
+     * @param mixed $table Campaign emails table name
+     * @param mixed $charsetCollate
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public function create_campaign_emails_table( $table, $charsetCollate )
+    {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
@@ -92,8 +132,6 @@ class CampaignSchema {
             `email_preview_text` VARCHAR(192) NULL,
             `template_id` bigint(20) unsigned NULL,
             `email_body` longtext,
-            `sender_email` VARCHAR(192),
-            `sender_name` VARCHAR(192),
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL
          ) $charsetCollate;";
