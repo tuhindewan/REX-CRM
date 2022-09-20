@@ -13,6 +13,8 @@ const emptyInputStateTemplate = {
   preview: "",
   fromName: "",
   fromEmail: "",
+  toError: null,
+  fromEmailError: null,
 };
 
 export default function AddCampaign(props) {
@@ -49,9 +51,25 @@ export default function AddCampaign(props) {
       if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
       }
+      if (name == "to" || name == "fromEmail") {
+        if (value.length > 0 && !validateEmail(value)) {
+          copy[selectedEmailIndex][`${name}Error`] =
+            "Enter a valid Email Address";
+        } else {
+          copy[selectedEmailIndex][`${name}Error`] = null;
+        }
+      }
       copy[selectedEmailIndex][name] = value;
       return copy;
     });
+  };
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
   };
   return (
     <div className="mintmrm-add-campaign">
@@ -192,6 +210,7 @@ export default function AddCampaign(props) {
             </div>
           </div>
         </div>
+        <div>{emailData[selectedEmailIndex]["toError"]} {emailData[selectedEmailIndex]["fromEmailError"]}</div>
       </div>
     </div>
   );
