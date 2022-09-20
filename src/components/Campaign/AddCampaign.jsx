@@ -5,14 +5,25 @@ import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
+import CampaignTemplates from "./CampaignTemplates";
+import DeletePopup from "../DeletePopup";
 
 export default function AddCampaign(props) {
   const [showAnotherEmail, setShowAnotherEmail] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [isClose, setIsClose] = useState(true);
+  const [isTemplate, setIsTemplate] = useState(true);
 
-  const showNextEmail = () =>{
+  const showNextEmail = () => {
     setShowAnotherEmail(true);
-   
-  }
+  };
+  const showTemplate = () => {
+    setShowTemplates(true);
+  };
+  const openTemplate = () => {
+    setIsTemplate(true);
+    setIsClose(!isClose);
+  };
   return (
     <div className="mintmrm-add-campaign">
       <div className="add-campaign-breadcrumb">
@@ -30,14 +41,20 @@ export default function AddCampaign(props) {
       <div className="mintmrm-container">
         <div className="add-campaign-wrapper">
           <div className="add-email-section">
-            <div className= "email-select-section">
+            <div className="email-select-section">
               <div className="icon-section">
                 <InboxIcon />
               </div>
               <h5>Email 1</h5>
             </div>
             <div className="link-line"></div>
-            <div className={showAnotherEmail ? "email-select-section another-email show" : "email-select-section another-email"}>
+            <div
+              className={
+                showAnotherEmail
+                  ? "email-select-section another-email show"
+                  : "email-select-section another-email"
+              }
+            >
               <div className="icon-section">
                 <InboxIcon />
               </div>
@@ -46,7 +63,13 @@ export default function AddCampaign(props) {
                 <Delete />
               </div>
             </div>
-            <div className={showAnotherEmail ? "link-line show-line show" :"link-line show-line"}></div>
+            <div
+              className={
+                showAnotherEmail
+                  ? "link-line show-line show"
+                  : "link-line show-line"
+              }
+            ></div>
             <div className="add-another-email" onClick={showNextEmail}>
               <Plus />
             </div>
@@ -108,17 +131,19 @@ export default function AddCampaign(props) {
               </div>
               <div className="email-design input-item">
                 <label>Design</label>
-                <div className="add-template-section">
+                <div className="add-template-section" onClick={openTemplate}>
                   <TemplateIcon />
                   <Link to="">Select a Template</Link>
                 </div>
+                <CampaignTemplates
+                  isOpen={isTemplate}
+                  isClose={isClose}
+                  setIsClose={setIsClose}
+                />
               </div>
             </div>
             <div className="content-save-section">
-              <button
-                className="campaign-schedule mintmrm-btn outline"
-                
-              >
+              <button className="campaign-schedule mintmrm-btn outline">
                 Schedule
               </button>
               <button type="submit" className="contact-save mintmrm-btn ">

@@ -1,9 +1,11 @@
+@import "variables";
+
 #crm-app {
   margin-left: -20px;
 }
 
 .mintmrm {
-  background: #ffffff;
+  background: $body-background-color;
   position: relative;
 
   //---input field style---

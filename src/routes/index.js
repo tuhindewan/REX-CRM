@@ -18,6 +18,7 @@ import Tags from "../pages/Tags";
 import ImportWordpress from "../pages/ImportWordpress";
 import AllCampaigns from "../components/AllCampaigns";
 import AddCampaign from "../components/Campaign/AddCampaign";
+import CampaignTemplates from "../components/Campaign/CampaignTemplates";
 
 const routes = [
   {

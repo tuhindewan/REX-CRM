@@ -126,8 +126,7 @@
           }
           input {
             border: none;
-
-            width: calc(100% - 220px);
+            width: calc(100% - 240px);
           }
           input::placeholder {
             font-weight: 400;
@@ -144,6 +143,7 @@
           border-bottom: none;
         }
         span {
+          width: 80px;
           font-weight: 500;
           font-size: 14px;
           line-height: 15px;
