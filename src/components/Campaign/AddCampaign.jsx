@@ -43,8 +43,13 @@ export default function AddCampaign(props) {
 
   const handleEmailFieldsChange = (e) => {
     setEmailData((prevEmailData) => {
+      const name = e.target.name;
+      const value = e.target.value;
       const copy = [...prevEmailData];
-      copy[selectedEmailIndex][e.target.name] = e.target.value;
+      if (name == "subject" || name == "preview") {
+        if (value.length > 200) return copy;
+      }
+      copy[selectedEmailIndex][name] = value;
       return copy;
     });
   };
@@ -129,7 +134,9 @@ export default function AddCampaign(props) {
                   onChange={handleEmailFieldsChange}
                   placeholder="Be Specific and concise to spark interest"
                 />
-                <span>0/200</span>
+                <span>
+                  {emailData[selectedEmailIndex]["subject"].length}/200
+                </span>
                 <div className="setting-section">
                   <SettingIcon />
                 </div>
@@ -143,7 +150,9 @@ export default function AddCampaign(props) {
                   onChange={handleEmailFieldsChange}
                   placeholder="Write a summary of your email to display after the subject line"
                 />
-                <span>0/200</span>
+                <span>
+                  {emailData[selectedEmailIndex]["preview"].length}/200
+                </span>
                 <div className="setting-section">
                   <SettingIcon />
                 </div>
