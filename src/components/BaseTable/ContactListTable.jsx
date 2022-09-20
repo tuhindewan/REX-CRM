@@ -20,6 +20,7 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import AssignedItems from "./AssignedItems";
 import FilterItems from "./FilterItems";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -86,6 +87,9 @@ export default function ContactListTable(props) {
   const location = useLocation();
 
   const [filterRequest, setFilterRequest] = useState({});
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -243,6 +247,9 @@ export default function ContactListTable(props) {
           );
           Swal.fire("Deleted!", "Contact has been deleted.", "success");
           setAllSelected(false);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
           toggleRefresh();
         }
       }

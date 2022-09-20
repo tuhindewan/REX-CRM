@@ -152,6 +152,14 @@ class ContactData {
     private $contact_id;
 
     /**
+     * Created By WP user ID
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $created_by;
+
+    /**
      * Contact Meta Fileds
      * 
      * @var string
@@ -179,6 +187,7 @@ class ContactData {
         $this->company_name     =  isset($args['company_name'])     ? sanitize_text_field( $args['company_name'] )      : '';
         $this->contact_id       =  isset($args['contact_id'])       ? sanitize_text_field( $args['contact_id'] )        : '';
         $this->meta_fields      =  isset($args['meta_fields'])      ? $args['meta_fields']                              : array();
+        $this->created_by       =  isset($args['created_by'])       ? sanitize_text_field( $args['created_by'])         : '';
     }
 
 
@@ -372,6 +381,18 @@ class ContactData {
             return $this->contact_owner = get_current_user_id();
         }
         return $this->contact_owner = 1;     
+    }
+
+
+    /**
+     * Return created by WP user ID
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_created_by()
+    {
+        return $this->created_by;     
     }
 
 
