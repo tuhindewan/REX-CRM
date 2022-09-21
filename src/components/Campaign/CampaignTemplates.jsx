@@ -31,8 +31,18 @@ export default function CampaignTemplates(props) {
               </ul>
             </div>
             <div className="email-type-dropdown">
-                <button className="type-button">Email Type</button>
+              <button className="type-button">Email Type</button>
             </div>
+          </div>
+          <div className="template-body">
+            <div className="template-select-section">
+              <button type="submit" className="save-template mintmrm-btn ">
+                Start From Scratch
+              </button>
+            </div>
+            <div className="template-select-section"></div>
+            <div className="template-select-section"></div>
+            <div className="template-select-section"></div>
           </div>
         </div>
       </div>

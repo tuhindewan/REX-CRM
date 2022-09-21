@@ -95,6 +95,31 @@
           }
         }
       }
+
+      .template-body {
+        display: flex;
+        flex-flow: row wrap;
+        padding: 40px 0;
+        .template-select-section {
+          width: calc(100% / 4 - 40px);
+          margin: 0 20px;
+          background: #ffffff;
+          box-shadow: 0px 2px 3px #dfdfdf;
+          border-radius: 6px;
+          display: none;
+        }
+        .template-select-section:first-child {
+          margin-left: 0;
+          border: 1.3px dashed #c3c2c2;
+          display: flex;
+          padding: 135px 50px;
+          width: auto;
+        }
+        }
+        .template-select-section:last-child {
+          margin-right: 0;
+        }
+      }
     }
   }
 
