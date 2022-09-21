@@ -15,9 +15,11 @@ import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
+import AddItems from "./AddItems";
+import EmailDrawer from "../EmailDrawer";
+import NoteDrawer from "../NoteDrawer";
 import SingleActivityFeed from "./SingleActivityFeed";
 import FilterItems from "../BaseTable/FilterItems";
-import AddItems from "./AddItems";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EmailIcon from "../Icons/EmailIcon";
 
@@ -42,6 +44,10 @@ export default function ContactDetails() {
   const [refresh, setRefresh] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);
+  const [isEmailForm, setIsEmailForm] = useState(true);
+  const [isClose, setIsClose] = useState(true);
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -401,6 +407,15 @@ export default function ContactDetails() {
     setSelectList(!selectList);
   };
 
+  const emailForm = () => {
+    setIsEmailForm(true);
+    setIsClose(!isClose);
+  };
+  const noteForm = () => {
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
+  };
+
   return (
     <>
       <div className="mintmrm-contact-details">
@@ -477,13 +492,23 @@ export default function ContactDetails() {
               </div>
 
               <div className="contact-author-mailing">
-                <button className="create-note">
+                <button className="create-note" onClick={noteForm}>
                   <CreateNoteIcon />
                 </button>
+                <NoteDrawer
+                  isOpenNote={isNoteForm}
+                  isCloseNote={isCloseNote}
+                  setIsCloseNote={setIsCloseNote}
+                />
 
-                <button className="create-mail">
+                <button className="create-mail" onClick={emailForm}>
                   <EmailIcon />
                 </button>
+                <EmailDrawer
+                  isOpen={isEmailForm}
+                  isClose={isClose}
+                  setIsClose={setIsClose}
+                />
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />

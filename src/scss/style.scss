@@ -7,9 +7,12 @@
 @import "contact-details";
 @import "all-lists";
 
-@import "import-page";
-@import "campaign-module";
-@import "campaign-list";
-@import "add-campaign";
-@import "contact-list";
+@import 'import-page';
+@import 'campaign-module';
+@import 'campaign-list';
+@import 'add-campaign';
+@import 'contact-list';
+@import 'drawer';
+@import "custom-select";
+@import "shimmer";
 @import "campaign-email-builder";

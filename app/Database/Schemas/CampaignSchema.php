@@ -100,8 +100,6 @@ class CampaignSchema {
             `slug` VARCHAR(192),
             `status` ENUM('draft', 'scheduled', 'ongoing', 'completed'),
             `type` ENUM('regular', 'sequence'),
-            `sender_email` VARCHAR(192),
-            `sender_name` VARCHAR(192),
             `scheduled_at` TIMESTAMP NULL,
             `created_by` bigint(20) unsigned NULL,
             `created_at` TIMESTAMP NULL,
@@ -127,7 +125,9 @@ class CampaignSchema {
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
             `meta_key` VARCHAR(50) NOT NULL,
-            `meta_value` longtext
+            `meta_value` longtext,
+            `created_at` TIMESTAMP NULL,
+            `updated_at` TIMESTAMP NULL
          ) $charsetCollate;";
         dbDelta($sql);
     }
@@ -148,6 +148,9 @@ class CampaignSchema {
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
             `delay` INT(10) DEFAULT 0,
+            `sender_email` VARCHAR(192),
+            `sender_name` VARCHAR(192),
+            `email_index` INT(10),
             `email_subject` VARCHAR(192),
             `email_preview_text` VARCHAR(192) NULL,
             `template_id` bigint(20) unsigned NULL,
