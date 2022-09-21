@@ -252,7 +252,6 @@ class CampaignController extends BaseController {
 
         $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
         $campaign   = ModelsCampaign::get( $campaign_id );
-        error_log(print_r($campaign, 1));
         if(isset($campaign)) {
             return $this->get_success_response("Query Successfull", 200, $campaign);
         }
