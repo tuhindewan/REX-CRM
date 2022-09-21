@@ -41,7 +41,6 @@ export default function AddCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
 
-
   async function saveCampaign() {
     if (campaignTitle.length < 3) {
       window.alert(
@@ -49,8 +48,7 @@ export default function AddCampaign(props) {
       );
       return;
     }
-    
-    
+
     const campaign = {
       title: campaignTitle,
       recipients: {
@@ -85,15 +83,6 @@ export default function AddCampaign(props) {
       window.alert(resJson.message);
     }
   }
-
-  // async function saveTitle(){
-  //   const title = {
-  //     title : campaignTitle,
-  //   };
-
-  //   const res = await fetch 
-
-  // }
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
@@ -135,7 +124,6 @@ export default function AddCampaign(props) {
   const showTemplate = () => {
     setShowTemplates(true);
   };
-
 
   return (
     <div className="mintmrm-add-campaign">
