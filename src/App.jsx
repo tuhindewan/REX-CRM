@@ -3,6 +3,7 @@ import { ReactFlowProvider } from "react-flow-renderer";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar/";
 import routes from "./routes/index.js";
+import { useGlobalStore } from "./hooks/useGlobalStore";
 
 const App = () => {
   const [selectedTags, setSelectedTags] = useState([]);

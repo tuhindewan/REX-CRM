@@ -218,7 +218,7 @@ class CampaignModel {
     public static function get_all( $offset = 0, $limit = 10, $search = '' )
     {
         global $wpdb;
-        $campaign_table = $wpdb->prefix . CampaignSchema::$table_name;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
         $search_terms = null;
 
         // Search contacts by email, first name or last name
