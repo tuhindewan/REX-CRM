@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import CampaignTemplates from "./CampaignTemplates";
-import DeletePopup from "../DeletePopup";
 
 // default email object empty template, this object is reused thats why declared here once
 const emptyInputStateTemplate = {
@@ -27,6 +26,7 @@ export default function AddCampaign(props) {
     },
   ]);
 
+  console.log(emailData);
   // tracks currently selected email index and highlights in the UI
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
@@ -38,7 +38,6 @@ export default function AddCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
-
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
@@ -80,7 +79,6 @@ export default function AddCampaign(props) {
   const showTemplate = () => {
     setShowTemplates(true);
   };
-
 
   return (
     <div className="mintmrm-add-campaign">

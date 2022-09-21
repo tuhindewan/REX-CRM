@@ -1,11 +1,10 @@
-import { __ } from "@wordpress/i18n";
-import { Link, useLocation } from "react-router-dom";
-import React, { useState, useEffect, useRef } from "react";
-import LeftArrow from "../Icons/LeftArrow";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
+import React, { useRef } from "react";
 import EmailEditor from "react-email-editor";
-import ComputerIcon from "../Icons/ComputerIcon"
-import MobileIcon from "../Icons/MobileIcon"
+import { Link, useLocation } from "react-router-dom";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import ComputerIcon from "../Icons/ComputerIcon";
+import LeftArrow from "../Icons/LeftArrow";
+import MobileIcon from "../Icons/MobileIcon";
 
 export default function EmailBuilder() {
   const emailEditorRef = useRef(null);
@@ -43,14 +42,16 @@ export default function EmailBuilder() {
           </button>
           <div className="responsive-section">
             <button className="computer-view">
-              <ComputerIcon/>
+              <ComputerIcon />
             </button>
             <button className="mobile-view">
-              <MobileIcon/>
+              <MobileIcon />
             </button>
           </div>
         </div>
-        <div className="navbar-right-section">Email Builder Navbar Right</div>
+        <div className="navbar-right-section">
+          <button onClick={exportHtml}>Export HTML</button>
+        </div>
       </div>
       <div>
         <EmailEditor ref={emailEditorRef} onLoad={onLoad} onReady={onReady} />
