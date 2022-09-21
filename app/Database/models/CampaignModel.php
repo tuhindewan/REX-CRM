@@ -40,7 +40,7 @@ class CampaignModel {
     }
 
     /**
-     * Insert information to database
+     * Run SQL query to insert campaign information into database
      * 
      * @param $args    
      * 
@@ -50,25 +50,25 @@ class CampaignModel {
     public static function insert( $args )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
         unset($args['recipients']);
         unset($args['emails']);
         $args['created_at'] = current_time('mysql');
 
-        try {
-            $wpdb->insert( $fields_table, $args );
+        $inserted = $wpdb->insert( $campaign_table, $args );
+        if( $inserted ){
             return $wpdb->insert_id;
-        } catch(\Exception $e) {
-            return false;
         }
+        return false;
     }
 
 
     /**
-     * Insert information to database
+     * Run SQL query to update campaign recipients information into database
      * 
-     * @param $args    
+     * @param $recipients    
+     * @param $campaign_id
      * 
      * @return int|bool 
      * @since 1.0.0
@@ -76,26 +76,27 @@ class CampaignModel {
     public static function insert_campaign_recipients( $recipients, $campaign_id )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
+        $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
-        try {
-            $wpdb->insert( $fields_table, [
-                'meta_key'      => 'recipients',
-                'meta_value'    => $recipients,
-                'campaign_id'   => $campaign_id,
-                'created_at'    => current_time('mysql')
-            ] );
+        $inserted = $wpdb->insert( $campaign_meta_table, [
+            'meta_key'      => 'recipients',
+            'meta_value'    => $recipients,
+            'campaign_id'   => $campaign_id,
+            'created_at'    => current_time('mysql')
+        ] );
+        if( $inserted ){
             return $wpdb->insert_id;
-        } catch(\Exception $e) {
-            return false;
         }
+        return false;
     }
 
 
     /**
-     * Insert information to database
+     * Run SQL query to update campaign emails information into database
      * 
-     * @param $args    
+     * @param $email    
+     * @param $campaign_id
+     * @param $index
      * 
      * @return int|bool 
      * @since 1.0.0
@@ -109,12 +110,11 @@ class CampaignModel {
         $email['created_at']    = current_time('mysql');
         $email['email_index']   = $index + 1;
 
-        try {
-            $wpdb->insert( $fields_table, $email );
+        $inserted = $wpdb->insert( $fields_table, $email );
+        if( $inserted ){
             return $wpdb->insert_id;
-        } catch(\Exception $e) {
-            return false;
         }
+        return false;
     }
 
 

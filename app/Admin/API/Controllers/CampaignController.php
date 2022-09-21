@@ -46,17 +46,25 @@ class CampaignController extends BaseController {
 
         // Campaign title validation
         if ( isset($params['title']) && empty( $params['title'] )) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
         }
 
         // Campaign slug create
         $params['slug'] = isset($params['title']) ? sanitize_title( $params['title'] ): "";
 
+        // Email subject validation
+        $emails = isset($params['emails']) ? $params['emails'] : array();
+        foreach( $emails as $index => $email ){
+            if ( isset($email['email_subject']) && empty( $email['email_subject'] )) {
+                return $this->get_error_response( __( 'Subject is missing on email '. ($index+1), 'mrm' ),  200);
+            }
+        }
+
         try {
             // Update a campaign if campaign_id present on API request
             if( isset( $params['campaign_id']) ){
-                $campaign_id = $params['campaign_id'];
-                $updated      = ModelsCampaign::update( $params, $campaign_id );
+                $campaign_id    = $params['campaign_id'];
+                $updated        = ModelsCampaign::update( $params, $campaign_id );
 
                 if( true == $updated ){
                     // Update campaign recipients into meta table
@@ -73,21 +81,24 @@ class CampaignController extends BaseController {
             }
             else{
 
+                // Insert campaign information
                 $campaign_id = ModelsCampaign::insert( $params );
 
-                $recipients = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
-
-                ModelsCampaign::insert_campaign_recipients( $recipients, $campaign_id );
-
-                $emails = isset($params['emails']) ? $params['emails'] : array();
-
-                foreach( $emails as $index => $email ){
-                    ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
+                if( $campaign_id ){
+                    // Insert campaign recipients information
+                    $recipients = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
+                    ModelsCampaign::insert_campaign_recipients( $recipients, $campaign_id );
+                    
+                    // Insert campaign emails information
+                    $emails = isset($params['emails']) ? $params['emails'] : array();
+                    foreach( $emails as $index => $email ){
+                        ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
+                    }
                 }
                 
             }
             
-
+            // Send renponses back to the frontend
             if($campaign_id) {
                 $data['campaign_id'] = $campaign_id;
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
