@@ -41,7 +41,7 @@ class CampaignModel {
     }
 
     /**
-     * Insert information to database
+     * Run SQL query to insert campaign information into database
      * 
      * @param $args    
      * 
@@ -51,21 +51,76 @@ class CampaignModel {
     public static function insert( $args )
     {
         global $wpdb;
-        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
+        unset($args['recipients']);
+        unset($args['emails']);
         $args['created_at'] = current_time('mysql');
 
-        try {
-            $wpdb->insert( $fields_table, $args );
+        $inserted = $wpdb->insert( $campaign_table, $args );
+        if( $inserted ){
             return $wpdb->insert_id;
-        } catch(\Exception $e) {
-            return false;
         }
+        return false;
     }
 
 
     /**
-     * Update information to database
+     * Run SQL query to update campaign recipients information into database
+     * 
+     * @param $recipients    
+     * @param $campaign_id
+     * 
+     * @return int|bool 
+     * @since 1.0.0
+     */
+    public static function insert_campaign_recipients( $recipients, $campaign_id )
+    {
+        global $wpdb;
+        $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
+
+        $inserted = $wpdb->insert( $campaign_meta_table, [
+            'meta_key'      => 'recipients',
+            'meta_value'    => $recipients,
+            'campaign_id'   => $campaign_id,
+            'created_at'    => current_time('mysql')
+        ] );
+        if( $inserted ){
+            return $wpdb->insert_id;
+        }
+        return false;
+    }
+
+
+    /**
+     * Run SQL query to update campaign emails information into database
+     * 
+     * @param $email    
+     * @param $campaign_id
+     * @param $index
+     * 
+     * @return int|bool 
+     * @since 1.0.0
+     */
+    public static function insert_campaign_emails( $email, $campaign_id, $index )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        $email['campaign_id']   = $campaign_id;
+        $email['created_at']    = current_time('mysql');
+        $email['email_index']   = $index + 1;
+
+        $inserted = $wpdb->insert( $fields_table, $email );
+        if( $inserted ){
+            return $wpdb->insert_id;
+        }
+        return false;
+    }
+
+
+    /**
+     * Run SQL query to update campaign information into database
      * 
      * @param object    $args         
      * @param int       $id     
@@ -79,13 +134,50 @@ class CampaignModel {
 
         $args['updated_at'] = current_time('mysql');
         unset($args['campaign_id']);
+        unset($args['recipients']);
+        unset($args['emails']);
 
-        try {
-            $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
+            
+    }
+
+
+    /**
+     * Run SQL query to update campaign recipients into database
+     * 
+     * @param string    $recipients         
+     * @param int       $campaign_id     
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_recipients( $recipients, $campaign_id )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
+
+        return $wpdb->update( $fields_table, array(
+                    'meta_value'    => $recipients
+                ), array( 'meta_key' => 'recipients' , 'campaign_id' => $campaign_id ));
+    }
+
+
+    /**
+     * Run SQL query to update campaign emails into database
+     * 
+     * @param array     $email         
+     * @param int       $campaign_id    
+     * @param int       $index 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_emails( $email, $campaign_id, $index )
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        return $wpdb->update( $fields_table, $email, array( 
+                            'campaign_id' => $campaign_id, 'email_index' => $index + 1 
+                        ));
     }
 
 

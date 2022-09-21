@@ -28,6 +28,7 @@ const Lists = () => {
     ),
     hideGlobalNav: false,
   });
+
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
 
@@ -330,6 +331,7 @@ const Lists = () => {
           </div>
         </div>
       )}
+                 
       <div className="contact-list-page lists-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">
