@@ -53,7 +53,7 @@ class CampaignRoute{
         $this->controller = CampaignController::get_instance();
 
         /**
-         * Campaign create endpoint
+         * Campaign multiple interaction endpoints
          * 
          * @since 1.0.0
         */  
@@ -79,16 +79,38 @@ class CampaignRoute{
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
+            ],
+            [
+                'methods' => WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller,
+                    'delete_multiple'
+                ],
+                'permission_callback' => [
+                    $this->controller, 
+                    'rest_permissions_check'
+                ],
             ]
         ]);
 
 
         /**
-         * Campaign update endpoint
+         * Campaign single interaction endpoints
          * 
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/update/(?P<campaign_id>[\d]+)', [
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)', [
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_single'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
             [
                 'methods' => WP_REST_Server::EDITABLE,
                 'callback' => [
@@ -99,29 +121,22 @@ class CampaignRoute{
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
+            ],
+            [
+                'methods' => WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller,
+                    'delete_single'
+                ],
+                'permission_callback' => [
+                    $this->controller,
+                    'rest_permissions_check'
+                ],
             ]
 
         ]);
 
-        /**
-         * Campaign update endpoint
-         * 
-         * @since 1.0.0
-        */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)', [
-        [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [
-                $this->controller ,
-                'get_single'
-            ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ] ,
-        ]
-
-    ]);
+        
 
     }
 

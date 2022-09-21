@@ -11,14 +11,12 @@ export default function EmailDrawer(prop) {
     <div class={prop.isOpen && !isClose ? "mintmrm-step-settings-drawer show-drawer" : "mintmrm-step-settings-drawer"}>
       <span className="drawer-bg-overlay"></span>
 
-      <div className="drawer-wrapper ConditionFields">
+      <div className="drawer-wrapper">
         <div className="drawer-header">
           {/* <!-- step title --> */}
           <h4 className="drawer-title">
             <span className="drawer-type">New Message</span>
           </h4>
-
-          {/* <!-- Add Condition title --> */}
 
           <span className="mintmrm-drawer-close" onClick={closeSection} >
             <CrossIcon />
@@ -40,7 +38,7 @@ export default function EmailDrawer(prop) {
               <textarea />
             </div>
             <div className="body-footer">
-              <button className="contact-cancel mintmrm-btn outline">
+              <button className="contact-cancel mintmrm-btn outline" onClick={closeSection}>
                 Cancel
               </button>
               <button type="submit" className="contact-save mintmrm-btn ">

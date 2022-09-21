@@ -285,7 +285,7 @@ export default function ExportDrawer(prop) {
           </div>
 
           <div className="body-footer">
-            <button className="cancel-export mintmrm-btn outline">
+            <button className="cancel-export mintmrm-btn outline" onClick={closeSection}>
               Cancel
             </button>
             <button type="submit" className="save-export mintmrm-btn ">
