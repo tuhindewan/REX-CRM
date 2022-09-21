@@ -224,7 +224,7 @@ class CampaignController extends BaseController {
      */
     public function get_single( WP_REST_Request $request ){
  
-        // Get values from API
+        // Get values from REST API JSON
         $params     = MRM_Common::get_api_params_values( $request );
             
         $campaign    = ModelsCampaign::get( $params['campaign_id'] );

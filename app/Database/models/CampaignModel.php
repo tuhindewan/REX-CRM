@@ -101,15 +101,19 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-        $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
-        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        $campaign_emails_meta_table = $wpdb->prefix . CampaignSchema::$campaign_emails_meta_table;
 
         try {
             $select_query     = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d",array( $id ));
-            $select_results   = $wpdb->get_row($select_query);
+            $select_results   = json_decode( json_encode( $wpdb->get_row($select_query) ), true );
+
+            $campaign_meta = self::get_campaign_meta( $id );
+            $campaign_email = self::get_campaign_email( $id );
+
             
-            return $select_results;
+
+            $results[] = array_merge($select_results, $campaign_meta, $campaign_email);
+            
+            return $results;
         
         } catch(\Exception $e) {
             return false;
