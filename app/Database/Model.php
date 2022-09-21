@@ -27,7 +27,8 @@ class Model {
             'interaction'           => 'InteractionSchema',
             'message'               => 'MessageSchema',
             'work_flow'             => 'WorkFlowSchema',
-            'custom_fields'         => 'CustomFieldSchema'
+            'custom_fields'         => 'CustomFieldSchema',
+            'campaign_schema'       => 'CampaignSchema'
         ));
     }
 

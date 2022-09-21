@@ -26,6 +26,7 @@ class HomeScreen {
             'dashicons-admin-post',
             '20'
         );
+        add_submenu_page(self::MENU_SLUG, __( 'MRM', 'mrm'), __( 'Campaigns', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/campaigns/');
     }
 
 

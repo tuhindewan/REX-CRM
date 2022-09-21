@@ -19,6 +19,7 @@ import ImportWordpress from "../pages/ImportWordpress";
 import AllCampaigns from "../components/AllCampaigns";
 import AddCampaign from "../components/Campaign/AddCampaign";
 import CampaignTemplates from "../components/Campaign/CampaignTemplates";
+import EmailBuilder from "../components/Campaign/EmailBuilder";
 
 const routes = [
   {
@@ -130,6 +131,7 @@ const routes = [
     path: "/campaigns/",
     element: AllCampaigns,
     title: __("All Campaigns", "mrm"),
+    hideInMenu: true,
     campaignMenu: true,
   },
   {
@@ -150,6 +152,11 @@ const routes = [
     path: "/campaigns/create",
     element: AddCampaign,
     title: __("Email Sequences", "mrm"),
+    hideInMenu: true,
+  },
+  {
+    path: "/campaigns/builder",
+    element: EmailBuilder,
     hideInMenu: true,
   },
 ];

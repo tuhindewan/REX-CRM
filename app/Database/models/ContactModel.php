@@ -37,6 +37,7 @@ class ContactModel{
     {
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+        
 
         try {
             $wpdb->insert( $contacts_table, array(
@@ -46,8 +47,9 @@ class ContactModel{
                 'status'        =>  $contact->get_status(),
                 'source'        =>  $contact->get_source(),
                 'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
+                'created_by'    =>  $contact->get_created_by(),
                 'created_at'    =>  current_time('mysql')
-            ));
+            )); 
 
             $insert_id = $wpdb->insert_id;
             if( !empty( $contact->get_meta_fields() )){
