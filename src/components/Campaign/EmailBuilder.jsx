@@ -35,7 +35,9 @@ export default function EmailBuilder() {
       <div className="mrm-campaign-builder-navbar-wrapper">
         <div>
           <button>
-            <Arrow />
+            <Link to="/campaigns">
+              <LeftArrow />
+            </Link>
           </button>
         </div>
         <div>Email Builder Navbar Right</div>
