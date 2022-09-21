@@ -1,5 +1,6 @@
 import CrossIcon from "../Icons/CrossIcon";
 import Delete from "../Icons/Delete";
+import { Link } from "react-router-dom";
 
 export default function CampaignTemplates(props) {
   const { isClose, setIsClose } = props;
@@ -36,9 +37,11 @@ export default function CampaignTemplates(props) {
           </div>
           <div className="template-body">
             <div className="template-select-section">
-              <button type="submit" className="save-template mintmrm-btn ">
-                Start From Scratch
-              </button>
+              <Link to="/campaigns/builder">
+                <button type="submit" className="save-template mintmrm-btn ">
+                  Start From Scratch
+                </button>
+              </Link>
             </div>
             <div className="template-select-section"></div>
             <div className="template-select-section"></div>

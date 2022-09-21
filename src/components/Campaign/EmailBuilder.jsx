@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import LeftArrow from "../Icons/LeftArrow";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import EmailEditor from "react-email-editor";
+import ComputerIcon from "../Icons/ComputerIcon"
+import MobileIcon from "../Icons/MobileIcon"
 
 export default function EmailBuilder() {
   const emailEditorRef = useRef(null);
@@ -33,14 +35,22 @@ export default function EmailBuilder() {
   return (
     <>
       <div className="mrm-campaign-builder-navbar-wrapper">
-        <div>
-          <button>
+        <div className="navbar-left-section">
+          <button className="back-button">
             <Link to="/campaigns">
               <LeftArrow />
             </Link>
           </button>
+          <div className="responsive-section">
+            <button className="computer-view">
+              <ComputerIcon/>
+            </button>
+            <button className="mobile-view">
+              <MobileIcon/>
+            </button>
+          </div>
         </div>
-        <div>Email Builder Navbar Right</div>
+        <div className="navbar-right-section">Email Builder Navbar Right</div>
       </div>
       <div>
         <EmailEditor ref={emailEditorRef} onLoad={onLoad} onReady={onReady} />
