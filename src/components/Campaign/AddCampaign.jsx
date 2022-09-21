@@ -41,6 +41,9 @@ export default function AddCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
 
+
+
+
   async function saveCampaign() {
     if (campaignTitle.length < 3) {
       window.alert(
@@ -48,6 +51,7 @@ export default function AddCampaign(props) {
       );
       return;
     }
+    
 
     const campaign = {
       title: campaignTitle,
@@ -55,6 +59,7 @@ export default function AddCampaign(props) {
         lists: recipientLists.map((list) => list.id),
         tags: recipientTags.map((tag) => tag.id),
       },
+      type: emailData.length > 1 ? "sequence":"regular",
       status: "draft",
       emails: emailData.map((email) => {
         return {
@@ -116,6 +121,7 @@ export default function AddCampaign(props) {
       copy[selectedEmailIndex][name] = value;
       return copy;
     });
+    
   };
   const openTemplate = () => {
     setIsTemplate(true);
