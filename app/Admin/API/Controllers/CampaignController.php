@@ -33,7 +33,7 @@ class CampaignController extends BaseController {
 
 
     /**
-     * Get and send response to create or update a custom field 
+     * Get and send response to create or update a campaign
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -44,23 +44,30 @@ class CampaignController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
+        // Campaign title validation
         if ( isset($params['title']) && empty( $params['title'] )) {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
         }
 
+        // Campaign slug create
         $params['slug'] = isset($params['title']) ? sanitize_title( $params['title'] ): "";
-        // Field object create and insert or update to database
+
         try {
+            // Update a campaign if campaign_id present on API request
             if( isset( $params['campaign_id']) ){
                 $campaign_id = $params['campaign_id'];
-                $update      = ModelsCampaign::update( $params, $campaign_id );
-                $recipients = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
-                ModelsCampaign::update_campaign_recipients( $recipients, $campaign_id );
-                
-                $emails = isset($params['emails']) ? $params['emails'] : array();
+                $updated      = ModelsCampaign::update( $params, $campaign_id );
 
-                foreach( $emails as $index => $email ){
-                    ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
+                if( true == $updated ){
+                    // Update campaign recipients into meta table
+                    $recipients  = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
+                    ModelsCampaign::update_campaign_recipients( $recipients, $campaign_id );
+
+                    // Update emails list
+                    $emails = isset($params['emails']) ? $params['emails'] : array();
+                    foreach( $emails as $index => $email ){
+                        ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
+                    }
                 }
 
             }

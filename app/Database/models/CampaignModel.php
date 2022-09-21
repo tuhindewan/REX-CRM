@@ -119,7 +119,7 @@ class CampaignModel {
 
 
     /**
-     * Update information to database
+     * Run SQL query to update campaign information into database
      * 
      * @param object    $args         
      * @param int       $id     
@@ -136,40 +136,47 @@ class CampaignModel {
         unset($args['recipients']);
         unset($args['emails']);
 
-        try {
-            $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
+            
     }
 
 
+    /**
+     * Run SQL query to update campaign recipients into database
+     * 
+     * @param string    $recipients         
+     * @param int       $campaign_id     
+     * @return bool
+     * @since 1.0.0
+     */
     public static function update_campaign_recipients( $recipients, $campaign_id )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
-        try {
-            $wpdb->update( $fields_table, array(
-                'meta_value'    => $recipients
-            ), array( 'meta_key' => 'recipients' , 'campaign_id' => $campaign_id ));
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->update( $fields_table, array(
+                    'meta_value'    => $recipients
+                ), array( 'meta_key' => 'recipients' , 'campaign_id' => $campaign_id ));
     }
 
 
+    /**
+     * Run SQL query to update campaign emails into database
+     * 
+     * @param array     $email         
+     * @param int       $campaign_id    
+     * @param int       $index 
+     * @return bool
+     * @since 1.0.0
+     */
     public static function update_campaign_emails( $email, $campaign_id, $index )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
 
-        try {
-            $wpdb->update( $fields_table, $email, array( 'campaign_id' => $campaign_id, 'email_index' => $index + 1 ));
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->update( $fields_table, $email, array( 
+                            'campaign_id' => $campaign_id, 'email_index' => $index + 1 
+                        ));
     }
 
 
