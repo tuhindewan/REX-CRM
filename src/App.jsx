@@ -1,12 +1,21 @@
-import React from "react";
+import { useState } from "react";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar/";
 import routes from "./routes/index.js";
 
 const App = () => {
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
   return (
-    <div className="mintmrm">
+    <div
+      className="mintmrm"
+      onClick={() => {
+        useGlobalStore.setState({
+          hideAllCustomSelect: true,
+        });
+      }}
+    >
       <ReactFlowProvider>
         <HashRouter>
           <>
