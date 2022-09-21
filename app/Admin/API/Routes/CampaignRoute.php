@@ -84,7 +84,7 @@ class CampaignRoute{
                 'methods' => WP_REST_Server::DELETABLE,
                 'callback' => [
                     $this->controller,
-                    'delete_multiple'
+                    'delete_all'
                 ],
                 'permission_callback' => [
                     $this->controller, 
