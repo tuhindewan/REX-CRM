@@ -169,15 +169,8 @@ class CampaignController extends BaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
-        // Campaign avaiability check
-        $exist = ModelsCampaign::is_campaign_exist($params['campaign_id']);
-
-        if ( !$exist ) {
-			return $this->get_error_response( __( 'Campaign not found', 'mrm' ),  400);
-		}
-
-        $success = ModelsCampaign::destroy( $params['id'] );
+        $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+        $success = ModelsCampaign::destroy( $campaign_id );
 
         if($success) {
             return $this->get_success_response( __( 'Campaign has been deleted successfully', 'mrm' ), 200 );
@@ -198,7 +191,10 @@ class CampaignController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = ModelsCampaign::destroy_all( $params['campaign_ids'] );
+        $campaign_ids = isset( $params['campaign_ids'] ) ? $params['campaign_ids'] : "";
+        $success = ModelsCampaign::destroy( $campaign_ids );
+
+        $success = ModelsCampaign::destroy_all( $campaign_ids );
         if($success) {
             return $this->get_success_response(__( 'Campaign has been deleted successfully', 'mrm' ), 200);
         }
