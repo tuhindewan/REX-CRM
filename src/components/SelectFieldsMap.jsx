@@ -208,7 +208,7 @@ export default function SelectFieldsMap() {
                 <h3>Contact Profile</h3>
 
                 <div className="contact-profile">
-                  {/* <Selectbox
+                  <Selectbox
                     label="Status"
                     name="status"
                     options={[
@@ -247,7 +247,7 @@ export default function SelectFieldsMap() {
                     tags={false}
                     multiple={true}
                     onSelect={handleExtraFields}
-                  /> */}
+                  />
                   
                 </div>
               </div>

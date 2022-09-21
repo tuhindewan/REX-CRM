@@ -96,12 +96,14 @@ class ContactGroupModel{
         $pivot_table = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
         $search_terms   = null;
 
-        // Search segments by title
+        /**
+         * Here take the search terms in a variable and only include the whole 
+         * clause if search parameter exists otherwise skip the search clause
+         */
 		if ( ! empty( $search ) ) {
             
             $search_terms = "AND `title` LIKE '%$search%'";
 		}
-             // Return segments for list view
         try {
             $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
