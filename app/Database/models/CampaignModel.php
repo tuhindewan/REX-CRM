@@ -196,14 +196,14 @@ class CampaignModel {
 
         try {
             $select_query     = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d",array( $id ));
-            $select_results   = json_decode( json_encode( $wpdb->get_row($select_query) ), true );
+            $select_campaign_results   = json_decode( json_encode( $wpdb->get_row($select_query) ), true );
 
             $campaign_meta = self::get_campaign_meta( $id );
             $campaign_email = self::get_campaign_email( $id );
 
             
 
-            $results[] = array_merge($select_results, $campaign_meta, $campaign_email);
+            $results[] = array_merge($select_campaign_results, $campaign_meta, $campaign_email);
             
             return $results;
         
@@ -238,19 +238,19 @@ class CampaignModel {
         // Prepare sql results for list view
         try {
             $select_query  =  "SELECT * FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
-            $query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
+            $campaign_query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
 
             $results = array();
             
-            foreach( $query_results as $query_result ){
-                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
+            foreach( $campaign_query_results as $campaign_query_result ){
+                $q_id = isset($campaign_query_result['id']) ? $campaign_query_result['id'] : "";
                 $campaign_meta = self::get_campaign_meta( $q_id );
                 $campaign_email = self::get_campaign_email( $q_id );
-                $results[] = array_merge($query_result, $campaign_meta, $campaign_email);
+                $results[] = array_merge($campaign_query_result, $campaign_meta, $campaign_email);
             }
 
-            $count_query    = "SELECT COUNT(*) as total FROM $campaign_table $search_terms";
-            $count_result   = $wpdb->get_results($count_query);
+            $count_campaign_query    = "SELECT COUNT(*) as total FROM $campaign_table $search_terms";
+            $count_result   = $wpdb->get_results($count_campaign_query);
             
             $count = (int) $count_result['0']->total;
             $total_pages = ceil($count / $limit);
@@ -302,18 +302,18 @@ class CampaignModel {
         global $wpdb;
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
 
-        $campaign_table_query = $wpdb->prepare("SELECT 
+        $campaign_emails_query = $wpdb->prepare("SELECT 
                                     id,delay,sender_email,
                                     sender_name,email_index,email_subject,email_preview_text,
                                     template_id,email_body, created_at, updated_at
                                      FROM $campaign_emails_table  
                                      WHERE campaign_id = %d",array( $id ));
-        $email_results       = json_decode(json_encode($wpdb->get_results($campaign_table_query)), true);
+        $campaign_email_results       = json_decode(json_encode($wpdb->get_results($campaign_emails_query)), true);
         $campaign_emails['emails'] = [];
 
         $campaign_emails['emails'] = array_map(function($result){
             return $result;
-        }, $email_results);
+        }, $campaign_email_results);
 
         return $campaign_emails;
     }
@@ -333,8 +333,9 @@ class CampaignModel {
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
         try {
-            $wpdb->delete( $campaign_table, array('id' => $id) );
-            return true;
+            $success = $wpdb->delete( $campaign_table, array('id' => $id) );
+            if ($success) return true;
+            return false;
         } catch(\Exception $e) {
             return false;
         }
@@ -358,8 +359,9 @@ class CampaignModel {
         try {
             if (is_array($ids)){
                 $ids = implode(",", array_map( 'intval', $ids ));
-                $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ($ids)" );
-                return true;
+                $success = $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ($ids)" );
+                if ($success) return true;
+                return false;
             }
             return false;
         } catch(\Exception $e) {
