@@ -1,16 +1,24 @@
-import CrossIcon from "../Icons/CrossIcon";
-import Delete from "../Icons/Delete";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import CrossIcon from "../Icons/CrossIcon";
+import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
-  const { isClose, setIsClose } = props;
+  const { isClose, setIsClose, setEmailBody } = props;
+  const [isCloseBuilder, setIsCloseBuilder] = useState(true);
+  const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const closeSection = () => {
     setIsClose(!isClose);
   };
 
+  const openTemplateBuilder = () => {
+    setIsTemplateBuilder(true);
+    setIsCloseBuilder(!isCloseBuilder);
+  };
+
   return (
     <div
-      class={
+      className={
         props.isOpen && !isClose
           ? "mintmrm-template-alert-wrapper"
           : "mintmrm-template-alert-wrapper inactive"
@@ -36,8 +44,11 @@ export default function CampaignTemplates(props) {
             </div>
           </div>
           <div className="template-body">
-            <div className="template-select-section">
-              <Link to="/campaigns/builder">
+            <div
+              className="template-select-section"
+              onClick={openTemplateBuilder}
+            >
+              <Link to="">
                 <button type="submit" className="save-template mintmrm-btn ">
                   Start From Scratch
                 </button>
@@ -47,6 +58,11 @@ export default function CampaignTemplates(props) {
             <div className="template-select-section"></div>
             <div className="template-select-section"></div>
           </div>
+          <EmailBuilder
+            isOpen={isTemplateBuilder}
+            isClose={isCloseBuilder}
+            setEmailBody={setEmailBody}
+          />
         </div>
       </div>
     </div>

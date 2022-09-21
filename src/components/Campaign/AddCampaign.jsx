@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
@@ -19,6 +20,7 @@ const emptyInputStateTemplate = {
 };
 
 export default function AddCampaign(props) {
+  const navigate = useNavigate();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([
     {
@@ -26,7 +28,6 @@ export default function AddCampaign(props) {
     },
   ]);
 
-  console.log(emailData);
   // tracks currently selected email index and highlights in the UI
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
@@ -38,6 +39,58 @@ export default function AddCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
+
+  async function saveCampaign() {
+    if (campaignTitle.length < 3) {
+      window.alert(
+        "Please enter at least 3 characters for the campaign title."
+      );
+      return;
+    }
+
+    const campaign = {
+      title: campaignTitle,
+      recipients: {
+        lists: recipientLists.map((list) => list.id),
+        tags: recipientTags.map((tag) => tag.id),
+      },
+      status: "draft",
+      emails: emailData.map((email) => {
+        return {
+          email_subject: email.subject,
+          email_preview_text: email.preview,
+          sender_email: email.senderEmail,
+          sender_name: email.senderName,
+          email_body: email.body,
+        };
+      }),
+    };
+    const res = await fetch(
+      `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(campaign),
+      }
+    );
+    const resJson = await res.json();
+    if (resJson.code == 201) {
+      navigate("/campaigns");
+    } else {
+      window.alert(resJson.message);
+    }
+  }
+
+  // async function saveTitle(){
+  //   const title = {
+  //     title : campaignTitle,
+  //   };
+
+  //   const res = await fetch
+
+  // }
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
@@ -78,6 +131,16 @@ export default function AddCampaign(props) {
   };
   const showTemplate = () => {
     setShowTemplates(true);
+  };
+
+  const setEmailBody = (html) => {
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      copy[selectedEmailIndex].body = html;
+      console.log(copy[selectedEmailIndex].body);
+
+      return copy;
+    });
   };
 
   return (
@@ -151,6 +214,38 @@ export default function AddCampaign(props) {
                   </div>
                   <div className="email-to input-item">
                     <label>To:</label>
+                    <div>
+                      <CustomSelect
+                        selected={recipientLists}
+                        setSelected={setRecipientLists}
+                        endpoint="/lists"
+                        placeholder="Lists"
+                        name="list"
+                        listTitle="CHOOSE LIST"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={true}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
+                      />
+                      <CustomSelect
+                        selected={recipientTags}
+                        setSelected={setRecipientTags}
+                        endpoint="/tags"
+                        placeholder="Tags"
+                        name="tag"
+                        listTitle="CHOOSE TAG"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={true}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
+                      />
+                    </div>
                   </div>
                 </>
               )}
@@ -213,6 +308,7 @@ export default function AddCampaign(props) {
                   isOpen={isTemplate}
                   isClose={isClose}
                   setIsClose={setIsClose}
+                  setEmailBody={setEmailBody}
                 />
               </div>
             </div>
@@ -220,7 +316,11 @@ export default function AddCampaign(props) {
               <button className="campaign-schedule mintmrm-btn outline">
                 Schedule
               </button>
-              <button type="submit" className="contact-save mintmrm-btn ">
+              <button
+                type="submit"
+                className="contact-save mintmrm-btn"
+                onClick={saveCampaign}
+              >
                 Save
               </button>
             </div>
