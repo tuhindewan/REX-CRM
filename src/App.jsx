@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar/";
+import { useGlobalStore } from "./hooks/useGlobalStore";
 import routes from "./routes/index.js";
 
 const App = () => {

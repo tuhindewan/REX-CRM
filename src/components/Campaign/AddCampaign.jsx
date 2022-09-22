@@ -1,267 +1,133 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { DefaultEditor } from "react-simple-wysiwyg";
-import { getLists } from "../../services/List";
-import { getTags } from "../../services/Tag";
-import EditButton from "../Icons/EditButton";
-import TooltipQuestionIcon from "../Icons/TooltipQuestionIcon";
-import InputItem from "../InputItem";
-import Selectbox from "../Selectbox";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { submitCampaign } from "../../services/Campaign";
+import CustomSelect from "../CustomSelect";
+import Delete from "../Icons/Delete";
+import InboxIcon from "../Icons/InboxIcon";
+import Plus from "../Icons/Plus";
+import SettingIcon from "../Icons/SettingIcon";
+import TemplateIcon from "../Icons/TemplateIcon";
+import CampaignTemplates from "./CampaignTemplates";
+
+// default email object empty template, this object is reused thats why declared here once
+const emptyInputStateTemplate = {
+  subject: "",
+  body: "",
+  preview: "",
+  senderName: "",
+  senderEmail: "",
+  toError: null,
+  senderEmailError: null,
+};
 
 export default function AddCampaign(props) {
-  const { id } = useParams();
-  let navigate = useNavigate();
-  const [enableForm, setEnableForm] = useState(false);
-  const [enableTo, setEnableTo] = useState(false);
-  const [enableSubject, setEnableSubject] = useState(false);
-  const [editButton, setEditButton] = useState(false);
-  const [campaignId, setCampaignId] = useState();
-  const [title, setTitle] = useState("Untitled");
-  const [emailSubject, setEmailSubject] = useState({
-    email_subject: "",
-    email_preview_text: "",
-  });
+  const navigate = useNavigate();
+  // state variable for holding each email sequence[s] data in an array
+  const [emailData, setEmailData] = useState([
+    {
+      ...emptyInputStateTemplate,
+    },
+  ]);
 
-  const [stepStatus, setStepStatus] = useState({
-    'step1' : 'close',
-    'step2' : 'close',
-    'step3' : 'close',
-    'step4' : 'close',
-  });
+  // tracks currently selected email index and highlights in the UI
+  const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
+  // campaign title state variable
+  const [campaignTitle, setCampaignTitle] = useState("");
 
-  const [emailBody, setEmailBody] = useState("");
-  // lists
-  const [lists, setLists] = useState([]);
-  // tags
-  const [tags, setTags] = useState([]);
+  // recipient lists and recipients tags state variables to whom the email(s) should be sent
+  const [recipientLists, setRecipientLists] = useState([]);
+  const [recipientTags, setRecipientTags] = useState([]);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [isClose, setIsClose] = useState(true);
+  const [isTemplate, setIsTemplate] = useState(true);
 
-  const [triggerButtonText, setTriggerButtonText] = useState('Send');
-  const [status, setStatus] = useState("draft");
-
-  // Prepare campaign object
-  const [fromData, setFromData] = useState({
-    sender_email: "",
-    sender_name: "",
-  });
-
-  const [recipientsData, setRecipientsData] = useState({
-    lists: [],
-    tags: [],
-  });
-
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Fetch lists & tags
-  useEffect(() => {
-    async function getData() {
-      const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${id}`
+  // Prepare campaign object and send post request to backend
+  const saveCampaign = async () => {
+    if (campaignTitle.length < 3) {
+      window.alert(
+        "Please enter at least 3 characters for the campaign title."
       );
-      const resJson = await res.json();
-      if (resJson.code == 200) {
-        setTitle(resJson.data?.title);
-        setFromData({
-          sender_email: resJson.data?.sender_email,
-          sender_name: resJson.data?.sender_name,
-        });
-        setEmailSubject({
-          email_subject: resJson.data?.email_subject,
-          email_preview_text: resJson.data?.email_preview_text,
-        });
-        setEmailBody(resJson.data?.email_body);
-        setRecipientsData({
-          lists: resJson.data?.settings.contact.lists,
-          tags: resJson.data?.settings.contact.tags,
-        });
-      }
+      return;
     }
 
-    // Get lists
-    getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
-      });
-    });
-
-    // Get tags
-    getTags().then((results) => {
-      setTags(results.data);
-    });
-
-    if (id) {
-      getData();
-      setViewData(true);
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFromData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubjectChange = (e) => {
-    const { name, value } = e.target;
-    setEmailSubject((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
-
-  const onSelect = (e, name) => {
-    setRecipientsData((prevState) => ({
-      ...prevState,
-      [name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // validate input on frontend before submitting the form
-    // do not use axios
-
-    let body = {
-      ...fromData,
-      title: title,
-      status: status,
+    const campaign = {
+      title: campaignTitle,
+      recipients: {
+        lists: recipientLists.map((list) => list.id),
+        tags: recipientTags.map((tag) => tag.id),
+      },
+      status: "draft",
+      emails: emailData.map((email) => {
+        return {
+          email_subject: email.subject,
+          email_preview_text: email.preview,
+          sender_email: email.senderEmail,
+          sender_name: email.senderName,
+          email_body: email.body,
+        };
+      }),
     };
 
-    const res = await axios.post(`/wp-json/mrm/v1/campaigns`, body, {
-      headers: {
-        "Content-type": "application/json",
-      },
+    // Send POST request to save data
+    submitCampaign(campaign).then((response) => {
+      if (201 === response.code) {
+        // Navigate user with success message
+        navigate("/campaigns", {
+          state: { status: "campaign-created", message: response?.message },
+        });
+      } else {
+        window.alert(resJson.message);
+      }
     });
   };
 
-  const handleTitleSubmit = async (e) => {
-    e.preventDefault();
-    // validate input on frontend before submitting the form
-    // do not use axios
-
-    let body = {
-      title: title,
-      status: status,
-    };
-
-    const res = await axios.post(`/wp-json/mrm/v1/campaigns`, body, {
-      headers: {
-        "Content-type": "application/json",
-      },
+  // function for adding new email in the sequence
+  const addNextEmail = () => {
+    setEmailData((prevEmailData) => {
+      setSelectedEmailIndex(prevEmailData.length);
+      return [...prevEmailData, { ...emptyInputStateTemplate }];
     });
-
-    const responseData = res.data,
-      code = responseData?.code;
-
-    if (code === 201) {
-      // navigate user with success message
-      setCampaignId(responseData.data.campaign_id);
-      navigate(`/campaigns/update/${responseData.data.campaign_id}`);
-      setViewData(true);
-      setEnableForm(!enableForm);
-    } else {
-      // you should show the error message here
-      setErrorMessage(responseData?.message);
-    }
   };
 
-  const sendCampaignEmail = async (e) => {
-    e.preventDefault();
-    // validate input on frontend before submitting the form
-    // do not use axios
+  // function for removing an email from the sequence
+  const deleteEmail = (index) => {
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      copy.splice(index, 1);
+      setSelectedEmailIndex(
+        index < copy.length ? index : Math.max(0, index - 1)
+      );
+      return copy;
+    });
+  };
 
-    setTriggerButtonText('In progress');
-
-    let body = {};
-
-    const res = await axios.post(
-      `/wp-json/mrm/v1/campaign/${id}/schedule`,
-      body,
-      {
-        headers: {
-          "Content-type": "application/json",
-        },
+  // handler function for each text field change in each email sequence
+  const handleEmailFieldsChange = (e) => {
+    setEmailData((prevEmailData) => {
+      const name = e.target.name;
+      const value = e.target.value;
+      const copy = [...prevEmailData];
+      if (name == "subject" || name == "preview") {
+        if (value.length > 200) return copy;
       }
-    );
-
-    if (res.data.success) {
-      setTriggerButtonText(res.data.message);
-    }
+      copy[selectedEmailIndex][name] = value;
+      return copy;
+    });
+  };
+  const openTemplate = () => {
+    setIsTemplate(true);
+    setIsClose(!isClose);
+  };
+  const showTemplate = () => {
+    setShowTemplates(true);
   };
 
-  const handleUpdate = async () => {
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/update/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          ...fromData,
-          title,
-          settings: {
-            contact: [
-              {
-                lists: recipientsData.lists,
-                tags: recipientsData.tags,
-              },
-            ],
-          },
-          ...emailSubject,
-          email_body: emailBody,
-          status: status,
-        }),
-      }
-    );
-
-    const responseData = res.data,
-      code = responseData?.code;
-    setViewData(true);
-    setEnableForm(!enableForm);
-
-    if (code === 201) {
-      // navigate user with success message
-      setViewData(true);
-      setEnableForm(!enableForm);
-    } else {
-      // you should show the error message here
-      setErrorMessage(responseData?.message);
-    }
-  };
-  const [enableDesign, setEnableDesign] = useState(false);
-  const [html, setHtml] = useState("");
-  const [viewdata, setViewData] = useState(false);
-  const [viewSubject, setViewSubject] = useState(false);
-
-  const addForm = () => {
-    setEnableForm(!enableForm);
-  };
-  const addTo = () => {
-    setEnableTo(!enableTo);
-  };
-  const addSubject = () => {
-    setEnableSubject(!enableSubject);
-  };
-  const addDesign = () => {
-    setEnableDesign(!enableDesign);
-  };
-  const addTitle = () => {
-    setEditButton(!editButton);
-  };
-  const handleText = (e) => {
-    setEmailBody(e.target.value);
-  };
-
-  const onSave = () => {
-    setViewData(true);
-    setEnableForm(!enableForm);
+  const setEmailBody = (html) => {
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      copy[selectedEmailIndex].body = html;
+      return copy;
+    });
   };
 
   return (
@@ -270,7 +136,6 @@ export default function AddCampaign(props) {
         <div className="mintmrm-container">
           <ul className="mintmrm-breadcrumb">
             <li>
-              {/* <a href="/contacts/allcampaigns">Campaigns</a> */}
               <Link to="/campaigns">Campaigns</Link>
             </li>
             <li className="active">Add Campaign</li>
@@ -280,383 +145,172 @@ export default function AddCampaign(props) {
 
       <div className="mintmrm-container">
         <div className="add-campaign-wrapper">
-          <div className="add-campaign-header">
-            <div className="campaign-title">
-              <input
-                className={
-                  editButton
-                    ? "campaign-name-input active-edit"
-                    : "campaign-name-input"
-                }
-                type="text"
-                onChange={handleTitleChange}
-                value={title}
-              />
-              <h4
-                className={
-                  editButton ? "campaign-name active-edit" : "campaign-name"
-                }
-              >
-                {title}
-              </h4>
-
-              <span
-                onClick={addTitle}
-                className="edit-name"
-                title="Edit Campaign Name"
-              >
-                {!editButton ? (
-                  <EditButton />
-                ) : (
-                  <span onClick={handleTitleSubmit}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-save"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />{" "}
-                    </svg>
-                  </span>
-                )}
-              </span>
-            </div>
-
-            <div className="campaign-action-btn">
-              {/*<button className="mintmrm-btn outline">Save as draft</button>*/}
-              {/*<button className="mintmrm-btn">Preview & test</button>*/}
-            </div>
-          </div>
-
-          <div className="add-campaign-body">
-            <div className="campaign-from-wrapper">
-
-              <div className="campaign-form-box">
-                <div className="form-box-header">
-                  <div className="box-title">
-                    <h6 className="title">From</h6>
-                    <p
-                      className={
-                        viewdata && fromData?.sender_email
-                          ? "box-meaning show-text"
-                          : "box-meaning"
-                      }
-                    >
-                      Who is sending this email campaign?
-                    </p>
-                    <p
-                      className={
-                        viewdata && fromData?.sender_email
-                          ? "sender-info show-value"
-                          : "sender-info"
-                      }
-                    >
-                      {fromData.sender_name} <span className="dot"></span>{" "}
-                      {fromData.sender_email}
-                    </p>
-                  </div>
-
-                  <div className="box-action">
-                    {viewdata && fromData?.sender_email ? (
-                      <button
-                        onClick={addForm}
-                        className="edit-btn mintmrm-btn outline"
+          <div className="add-email-section">
+            {/**
+             * loop through email data state and render the side buttons for each email sequence
+             */}
+            {emailData.map((email, index) => {
+              return (
+                <>
+                  <div
+                    className={
+                      selectedEmailIndex != index
+                        ? "email-select-section"
+                        : "email-select-section selected"
+                    }
+                    onClick={() => setSelectedEmailIndex(index)}
+                    key={index}
+                  >
+                    <div className="icon-section">
+                      <InboxIcon />
+                    </div>
+                    <h5>Email {index + 1}</h5>
+                    {index > 0 && (
+                      <div
+                        className="delete-option"
+                        onClick={() => deleteEmail(index)}
                       >
-                        <EditButton />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={addForm}
-                        className="mintmrm-btn outline"
-                      >
-                        Add From
-                      </button>
+                        <Delete />
+                      </div>
                     )}
                   </div>
-                </div>
-
-                <div
-                  className={
-                    enableForm ? "form-box-body active-form" : "form-box-body"
-                  }
-                >
-                  <div className="mintmrm-row">
-                    <div className="mintmrm-col-2">
-                      <InputItem
-                        label="Email"
-                        name="sender_email"
-                        value={fromData.sender_email}
-                        handleChange={handleChange}
+                  <div className="link-line"></div>
+                </>
+              );
+            })}
+            <div className="add-another-email" onClick={addNextEmail}>
+              <Plus />
+            </div>
+          </div>
+          <div className="email-content-section">
+            <div className="email-container">
+              {/**
+               * only shows the title and recipients list on first email sequnce form
+               */}
+              {selectedEmailIndex == 0 && (
+                <>
+                  <div className="email-title input-item">
+                    <label>Title</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={campaignTitle}
+                      onChange={(e) => setCampaignTitle(e.target.value)}
+                      placeholder="Enter Campaign title"
+                    />
+                  </div>
+                  <div className="email-to input-item">
+                    <label>To:</label>
+                    <div>
+                      <CustomSelect
+                        selected={recipientLists}
+                        setSelected={setRecipientLists}
+                        endpoint="/lists"
+                        placeholder="Lists"
+                        name="list"
+                        listTitle="CHOOSE LIST"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={true}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
+                      />
+                      <CustomSelect
+                        selected={recipientTags}
+                        setSelected={setRecipientTags}
+                        endpoint="/tags"
+                        placeholder="Tags"
+                        name="tag"
+                        listTitle="CHOOSE TAG"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={true}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
                       />
                     </div>
-
-                    <div className="mintmrm-col-2">
-                      <div className="form-group">
-                        <label htmlFor="">
-                          Name
-                          <span className="mintmrm-tooltip">
-                            <TooltipQuestionIcon />
-                            <p>
-                              Use something subscribers will instantly
-                              recognize, like your company name.
-                            </p>
-                          </span>
-                        </label>
-                        <InputItem
-                          name="sender_name"
-                          value={fromData.sender_name}
-                          handleChange={handleChange}
-                        />
-                      </div>
-                    </div>
                   </div>
-                </div>
-
-                <div
-                  className={
-                    enableForm
-                      ? "form-box-footer active-form"
-                      : "form-box-footer"
-                  }
-                >
-                  <button
-                    onClick={id ? handleUpdate : handleSubmit}
-                    className="mintmrm-btn"
-                  >
-                    Save
-                  </button>
-                  {/* <button onClick={onSave} className="mintmrm-btn">Save</button> */}
+                </>
+              )}
+              <div className="email-subject input-item">
+                <label>Subject:</label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={emailData[selectedEmailIndex]["subject"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Be Specific and concise to spark interest"
+                />
+                <span>
+                  {emailData[selectedEmailIndex]["subject"].length}/200
+                </span>
+                <div className="setting-section">
+                  <SettingIcon />
                 </div>
               </div>
-
-              <div className="campaign-form-box">
-                <div className="form-box-header">
-                  <div className="box-title">
-                    <h6 className="title">To</h6>
-                    <p className="box-meaning">Choose your contact list(s)</p>
-                    <p className="sender-info">6 recipients</p>
-                  </div>
-
-                  <div className="box-action">
-                    <button onClick={addTo} className="mintmrm-btn outline">
-                      Add Recipients
-                    </button>
-                  </div>
-                </div>
-
-                <div
-                  className={
-                    enableTo ? "form-box-body active-form" : "form-box-body"
-                  }
-                >
-                  <div className="mintmrm-row">
-                    <div className="mintmrm-col-2">
-                      <div className="form-group">
-                        <Selectbox
-                          label="Lists"
-                          name="lists"
-                          options={lists}
-                          value={recipientsData.lists}
-                          placeholder="Select List"
-                          tags={true}
-                          multiple={false}
-                          onSelect={onSelect}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="mintmrm-col-2">
-                      <div className="form-group">
-                        <Selectbox
-                          label="Tags"
-                          name="tags"
-                          options={tags}
-                          value={recipientsData.tags}
-                          placeholder="Select Tags"
-                          tags={true}
-                          multiple={false}
-                          onSelect={onSelect}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  className={
-                    enableTo ? "form-box-footer active-form" : "form-box-footer"
-                  }
-                >
-                  <button onClick={handleUpdate} className="mintmrm-btn">
-                    Save
-                  </button>
+              <div className="email-preview input-item">
+                <label>Preview Text</label>
+                <input
+                  type="text"
+                  name="preview"
+                  value={emailData[selectedEmailIndex]["preview"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Write a summary of your email to display after the subject line"
+                />
+                <span>
+                  {emailData[selectedEmailIndex]["preview"].length}/200
+                </span>
+                <div className="setting-section">
+                  <SettingIcon />
                 </div>
               </div>
-
-              <div className="campaign-form-box">
-                <div className="form-box-header">
-                  <div className="box-title">
-                    <h6 className="title">Subject</h6>
-
-                    <p
-                      className={
-                        viewdata ? "box-meaning show-text" : "box-meaning"
-                      }
-                    >
-                      Add a subject line for this campaign.
-                    </p>
-
-                    <p
-                      className={
-                        viewdata && emailSubject?.email_subject
-                          ? "sender-info show-value"
-                          : "sender-info"
-                      }
-                    >
-                      Subject Line <span className="dot"></span>
-                      {emailSubject?.email_subject}
-                    </p>
-
-                    <p
-                      className={
-                        viewdata && emailSubject?.email_preview_text
-                          ? "sender-info show-value"
-                          : "sender-info"
-                      }
-                    >
-                      Preview Text <span className="dot"></span>
-                      {emailSubject?.email_preview_text}
-                    </p>
-                  </div>
-
-                  <div className="box-action">
-                    {viewdata && emailSubject?.email_preview_text ? (
-                      <button
-                        onClick={addSubject}
-                        className="edit-btn mintmrm-btn outline"
-                      >
-                        <EditButton />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={addSubject}
-                        className="mintmrm-btn outline"
-                      >
-                        Add Subject
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  className={
-                    enableSubject
-                      ? "form-box-body active-form"
-                      : "form-box-body"
-                  }
-                >
-                  <div className="mintmrm-row">
-                    <div className="mintmrm-col-2">
-                      <div className="form-group">
-                        <label htmlFor="">Subject line</label>
-                        <input
-                          type="text"
-                          name="email_subject"
-                          value={emailSubject?.email_subject}
-                          onChange={handleSubjectChange}
-                        />
-                        <span className="hints">
-                          See how your <a href="">recent subject lines</a>{" "}
-                          performed. View our <a href="">subject line guide</a>{" "}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mintmrm-col-2">
-                      <div className="form-group">
-                        <label htmlFor="">Preview text </label>
-                        <input
-                          type="text"
-                          name="email_preview_text"
-                          value={emailSubject?.email_preview_text}
-                          onChange={handleSubjectChange}
-                        />
-                        <span className="hints">
-                          <a href="">Preview text</a> appears in the inbox after
-                          the subject line.
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  className={
-                    enableSubject
-                      ? "form-box-footer active-form"
-                      : "form-box-footer"
-                  }
-                >
-                  <button onClick={handleUpdate} className="mintmrm-btn">
-                    Save
-                  </button>
-                </div>
+              <div className="email-from input-item">
+                <label>From</label>
+                <input
+                  type="text"
+                  name="senderName"
+                  value={emailData[selectedEmailIndex]["senderName"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Enter Name"
+                />
+                <input
+                  type="text"
+                  name="senderEmail"
+                  value={emailData[selectedEmailIndex]["senderEmail"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Enter Email"
+                />
               </div>
-
-              <div className="campaign-form-box">
-                <div className="form-box-header">
-                  <div className="box-title">
-                    <h6 className="title">Design</h6>
-                    <p className="box-meaning">Create your email content.</p>
-                  </div>
-
-                  <div className="box-action">
-                    <button
-                      onClick={addDesign}
-                      className="mintmrm-btn outline"
-                    >
-                      Design Email
-                    </button>
-                  </div>
+              <div className="email-design input-item">
+                <label>Design</label>
+                <div className="add-template-section" onClick={openTemplate}>
+                  <TemplateIcon />
+                  <Link to="">Select a Template</Link>
                 </div>
-
-                <div
-                  className={
-                    enableDesign ? "form-box-body active-form" : "form-box-body"
-                  }
-                >
-                  <div className="mintmrm-row">
-                    <div className="box-text-col">
-                      <DefaultEditor value={emailBody} onChange={handleText} />
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  className={
-                    enableDesign
-                      ? "form-box-footer active-form"
-                      : "form-box-footer"
-                  }
-                >
-                  <button onClick={handleUpdate} className="mintmrm-btn">
-                    Save
-                  </button>
-                </div>
+                <CampaignTemplates
+                  isOpen={isTemplate}
+                  isClose={isClose}
+                  setIsClose={setIsClose}
+                  setEmailBody={setEmailBody}
+                />
               </div>
             </div>
-          </div>
-
-          <div className="add-campaign-footer">
-            {/*<button className="mintmrm-btn outline">Schedule</button>*/}
-            <button
-                onClick={sendCampaignEmail}
-                className="mintmrm-btn"
-            >
-              {triggerButtonText}
-            </button>
+            <div className="content-save-section">
+              <button className="campaign-schedule mintmrm-btn outline">
+                Schedule
+              </button>
+              <button
+                type="submit"
+                className="contact-save mintmrm-btn"
+                onClick={saveCampaign}
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>

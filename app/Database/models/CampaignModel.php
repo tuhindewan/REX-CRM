@@ -227,8 +227,6 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-
-
         $search_terms = null;
 
 		if ( ! empty( $search ) ) {
