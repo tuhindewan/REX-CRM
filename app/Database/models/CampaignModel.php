@@ -181,9 +181,9 @@ class CampaignModel {
 
 
     /**
-     * Run SQL Query to get a single contact information
+     * Run SQL Query to get a single campaign information
      * 
-     * @param mixed $id Contact ID
+     * @param mixed $id campaign ID
      * 
      * @return object
      * @since 1.0.0
