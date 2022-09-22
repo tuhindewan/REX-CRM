@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EmailEditor from "react-email-editor";
 import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -6,31 +6,54 @@ import ComputerIcon from "../Icons/ComputerIcon";
 import LeftArrow from "../Icons/LeftArrow";
 import MobileIcon from "../Icons/MobileIcon";
 
-export default function EmailBuilder(props) {
+const EmailBuilder = (props) => {
   const { isCloseBuilder, setIsCloseBuilder } = props;
   const emailEditorRef = useRef(null);
+  const [design, setDesign] = useState({});
+  // console.log(emailEditorRef.current);
+  // emailEditorRef.current.editor.loadDesign(props.dataTest);
   useGlobalStore.setState({
     hideGlobalNav: true,
   });
   const exportHtml = () => {
-    emailEditorRef.current.editor.exportHtml((data) => {
-      const { design, html } = data;
-      setIsCloseBuilder("none");
-      props.setEmailBody(html);
-      props.setCloseTemplateSelection("hide");
+    emailEditorRef.current.editor.exportHtml(
+      (data) => {
+        const { design, html } = data;
+        setIsCloseBuilder("none");
+        props.setEmailBody(html);
+        props.setCloseTemplateSelection("hide");
+      },
+      {
+        cleanup: true,
+      }
+    );
+    emailEditorRef.current.editor.loadBlank({
+      backgroundColor: "#e7e7e7",
     });
   };
 
-  const onLoad = () => {
+  useEffect(() => {
+    console.log(props.dataTest);
+    onLoad(props.dataTest);
+  }, [design]);
+
+  const onDesignLoad = (data) => {
+    // console.log("onDesignLoad", data);
+  };
+
+  const onLoad = (design) => {
     // editor instance is created
     // you can load your template here;
     // const templateJson = {};
-    // emailEditorRef.current.editor.loadDesign(templateJson);
+    // emailEditorRef.current.editor.loadDesign(sample);
+    // emailEditorRef.current.editor.addEventListener(
+    //   "design:loaded",
+    //   onDesignLoad
+    // );
+    // emailEditorRef.current.editor.loadDesign(design);
   };
 
-  const onReady = () => {
-    // editor is ready
-  };
+  const onReady = () => {};
 
   const closeEmailBuilder = () => {
     setIsCloseBuilder("none");
@@ -76,4 +99,5 @@ export default function EmailBuilder(props) {
       </div>
     </>
   );
-}
+};
+export default EmailBuilder;
