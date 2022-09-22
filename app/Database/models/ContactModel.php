@@ -303,14 +303,14 @@ class ContactModel{
 
 
     /**
-     * Run SQL Query to get a single campaign email only
+     * Run SQL Query to get a single contact email only
      * 
      * @param mixed $id Contact ID
      * 
      * @return object
      * @since 1.0.0
      */
-    public static function get_email_only( $id )
+    public static function get_single_email( $id )
     {
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;

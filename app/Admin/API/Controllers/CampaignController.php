@@ -85,7 +85,7 @@ class CampaignController extends BaseController {
                         //counting the sending time for each email
                         $delay = isset( $email['delay'] ) ? $email['delay'] : 0;
 
-                        if ($index == 0){
+                        if (0 === $index){
                             $email['send_time'] = microtime(true);
                             $emails[$index]['send_time'] = $email['send_time'];
                         }
@@ -124,9 +124,9 @@ class CampaignController extends BaseController {
                         //counting the sending time for each email
                         $delay = isset( $email['delay'] ) ? $email['delay'] : 0;
 
-                        if ($index == 0){
+                        if (0 === $index){
                             $email['send_time'] = microtime(true);
-                            $emails[$index]['send_time'] = $email['send_time'];
+                            $emails[$index]['send_time'] = microtime(true);
                         }
                         else {
                             $prev_send_time = $emails[$index-1]['send_time'];
@@ -352,10 +352,13 @@ class CampaignController extends BaseController {
     public function send_email_to_reciepents($campaign_id)
     {
         $recipients_emails = self::get_reciepents_email($campaign_id);
+
+        // TODO : We have all the contacts email here and email send_time.
+        // TODO : Time to run CRON and start sending email here.
     }
 
     /**
-     * Function use to get recipients and send email
+     * Function use to get recipients
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -364,6 +367,16 @@ class CampaignController extends BaseController {
     public function get_reciepents_email($campaign_id)
     {
         $all_receipents = ModelsCampaign::get_campaign_meta($campaign_id);
+
+        $group_ids = [];
+
+        if( isset($all_receipents['recipients']['lists'], $all_receipents['recipients']['tags']) ){
+             $group_ids = array_merge($all_receipents['recipients']['lists'],$all_receipents['recipients']['tags']);
+        }else{
+            isset($all_receipents['recipients']['lists']) ? $group_ids = $all_receipents['recipients']['lists'] : 
+            (isset($all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
+            $group_ids = []);
+        }
 
         $group_ids = array_merge($all_receipents['recipients']['lists'],$all_receipents['recipients']['tags']);
 
@@ -376,16 +389,19 @@ class CampaignController extends BaseController {
         $recipients_ids = [];
 
         foreach ($contact_ids as $contact_id){
-            foreach ($contact_id as $id){
-                array_push($recipients_ids, $id->contact_id);
+            if (is_array($contact_id ) ){
+                foreach ($contact_id as $id){
+                    if( isset( $id->contact_id ) ){
+                        array_push($recipients_ids, $id->contact_id);
+                    }
+                }
             }
-            
         }
         $unique_recipients_ids = array_unique($recipients_ids);
 
         $recipients_emails = [];
         foreach ($unique_recipients_ids as $contact_id){
-            array_push($recipients_emails, ContactModel::get_email_only($contact_id));
+            array_push($recipients_emails, ContactModel::get_single_email($contact_id));
         }
 
         return $recipients_emails;
