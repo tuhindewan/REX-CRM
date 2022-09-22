@@ -37,7 +37,7 @@ class CampaignController extends BaseController {
      * Get and send response to create or update a campaign
      * 
      * @param WP_REST_Request
-     * @return WP_REST_Response
+     * @return \WP_REST_Response
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request ){
@@ -289,10 +289,9 @@ class CampaignController extends BaseController {
     public function get_single( WP_REST_Request $request ){
  
         // Get values from REST API JSON
-        $params     = MRM_Common::get_api_params_values( $request );
-
-        $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
-        $campaign   = ModelsCampaign::get( $campaign_id );
+        $params         = MRM_Common::get_api_params_values( $request );
+        $campaign_id    = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+        $campaign       = ModelsCampaign::get( $campaign_id );
         if(isset($campaign)) {
             return $this->get_success_response("Query Successfull", 200, $campaign);
         }

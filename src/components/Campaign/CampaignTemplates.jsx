@@ -5,7 +5,7 @@ import sample from "../sample.json";
 import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
-  const { isClose, setIsClose, setEmailBody } = props;
+  const { isClose, setIsClose, setEmailBody, emailData } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [dataTest, setData] = useState({});
@@ -26,6 +26,11 @@ export default function CampaignTemplates(props) {
       setIsClose(!isClose);
     }
   };
+
+
+  const closeEmailBuilder = () => {
+    setIsCloseBuilder('none');
+  }
 
   return (
     <div
@@ -73,9 +78,9 @@ export default function CampaignTemplates(props) {
             isOpen={isTemplateBuilder}
             isCloseBuilder={isCloseBuilder}
             setEmailBody={setEmailBody}
-            setIsCloseBuilder={setIsCloseBuilder}
+            setIsCloseBuilder={closeEmailBuilder}
             setCloseTemplateSelection={setCloseTemplateSelection}
-            dataTest={dataTest}
+            emailData={emailData}
           />
         </div>
       </div>
