@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EmailEditor from "react-email-editor";
 import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -9,6 +9,9 @@ import MobileIcon from "../Icons/MobileIcon";
 const EmailBuilder = (props) => {
   const { isCloseBuilder, setIsCloseBuilder } = props;
   const emailEditorRef = useRef(null);
+  const [design, setDesign] = useState({});
+  // console.log(emailEditorRef.current);
+  // emailEditorRef.current.editor.loadDesign(props.dataTest);
   useGlobalStore.setState({
     hideGlobalNav: true,
   });
@@ -29,11 +32,16 @@ const EmailBuilder = (props) => {
     });
   };
 
+  useEffect(() => {
+    console.log(props.dataTest);
+    onLoad(props.dataTest);
+  }, [design]);
+
   const onDesignLoad = (data) => {
     // console.log("onDesignLoad", data);
   };
 
-  const onLoad = () => {
+  const onLoad = (design) => {
     // editor instance is created
     // you can load your template here;
     // const templateJson = {};
@@ -42,7 +50,7 @@ const EmailBuilder = (props) => {
     //   "design:loaded",
     //   onDesignLoad
     // );
-    // emailEditorRef.current.editor.loadDesign(props.dataTest);
+    // emailEditorRef.current.editor.loadDesign(design);
   };
 
   const onReady = () => {};
