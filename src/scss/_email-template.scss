@@ -108,6 +108,13 @@
           border-radius: 6px;
           display: none;
         }
+        .template-select-section {
+          margin-left: 0;
+          border: 1.3px dashed #c3c2c2;
+          display: flex;
+          padding: 135px 50px;
+          width: auto;
+        }
         .template-select-section:first-child {
           margin-left: 0;
           border: 1.3px dashed #c3c2c2;

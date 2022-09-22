@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import CrossIcon from "../Icons/CrossIcon";
+import sample from "../sample.json";
 import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
   const { isClose, setIsClose, setEmailBody } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
+  const [dataTest, setData] = useState({});
   const closeSection = () => {
     setIsClose(!isClose);
   };
 
   // Open template builder with full height and width
-  const openTemplateBuilder = () => {
+  const openTemplateBuilder = (event, data) => {
     setIsTemplateBuilder(true);
     setIsCloseBuilder("block");
+    setData(data);
   };
 
   // Templates selection popup close after finishing email building
@@ -54,7 +57,7 @@ export default function CampaignTemplates(props) {
           <div className="template-body">
             <div
               className="template-select-section"
-              onClick={openTemplateBuilder}
+              onClick={(event) => openTemplateBuilder(event, sample)}
             >
               <Link to="">
                 <button type="submit" className="save-template mintmrm-btn ">
@@ -72,6 +75,7 @@ export default function CampaignTemplates(props) {
             setEmailBody={setEmailBody}
             setIsCloseBuilder={setIsCloseBuilder}
             setCloseTemplateSelection={setCloseTemplateSelection}
+            dataTest={dataTest}
           />
         </div>
       </div>

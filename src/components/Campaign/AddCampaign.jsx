@@ -56,7 +56,8 @@ export default function AddCampaign(props) {
         lists: recipientLists.map((list) => list.id),
         tags: recipientTags.map((tag) => tag.id),
       },
-      status: "draft",
+      type: emailData.length > 1 ? "sequence" : "regular",
+      status: "ongoing",
       emails: emailData.map((email) => {
         return {
           email_subject: email.subject,
