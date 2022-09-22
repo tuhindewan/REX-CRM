@@ -11,11 +11,13 @@ export default function CampaignTemplates(props) {
     setIsClose(!isClose);
   };
 
+  // Open template builder with full height and width
   const openTemplateBuilder = () => {
     setIsTemplateBuilder(true);
     setIsCloseBuilder("block");
   };
 
+  // Templates selection popup close after finishing email building
   const setCloseTemplateSelection = (status) => {
     if ("hide" == status) {
       setIsClose(!isClose);

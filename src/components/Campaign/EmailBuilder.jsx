@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import EmailEditor from "react-email-editor";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import ComputerIcon from "../Icons/ComputerIcon";
 import LeftArrow from "../Icons/LeftArrow";
@@ -9,18 +9,12 @@ import MobileIcon from "../Icons/MobileIcon";
 export default function EmailBuilder(props) {
   const { isCloseBuilder, setIsCloseBuilder } = props;
   const emailEditorRef = useRef(null);
-  const location = useLocation();
-  // const [hideBuilder, setHideBuilder] = useState(props.isClose);
   useGlobalStore.setState({
     hideGlobalNav: true,
   });
-  const navigate = useNavigate();
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-      // navigate("/campaigns/create", {
-      //   state: { email_body: html, status: "set_body" },
-      // });
       setIsCloseBuilder("none");
       props.setEmailBody(html);
       props.setCloseTemplateSelection("hide");
@@ -36,7 +30,6 @@ export default function EmailBuilder(props) {
 
   const onReady = () => {
     // editor is ready
-    console.log("onReady");
   };
 
   const closeEmailBuilder = () => {

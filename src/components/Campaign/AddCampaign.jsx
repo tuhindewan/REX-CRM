@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
@@ -40,7 +41,8 @@ export default function AddCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
 
-  async function saveCampaign() {
+  // Prepare campaign object and send post request to backend
+  const saveCampaign = async () => {
     if (campaignTitle.length < 3) {
       window.alert(
         "Please enter at least 3 characters for the campaign title."
@@ -65,32 +67,19 @@ export default function AddCampaign(props) {
         };
       }),
     };
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(campaign),
+
+    // Send POST request to save data
+    submitCampaign(campaign).then((response) => {
+      if (201 === response.code) {
+        // Navigate user with success message
+        navigate("/campaigns", {
+          state: { status: "campaign-created", message: response?.message },
+        });
+      } else {
+        window.alert(resJson.message);
       }
-    );
-    const resJson = await res.json();
-    if (resJson.code == 201) {
-      navigate("/campaigns");
-    } else {
-      window.alert(resJson.message);
-    }
-  }
-
-  // async function saveTitle(){
-  //   const title = {
-  //     title : campaignTitle,
-  //   };
-
-  //   const res = await fetch
-
-  // }
+    });
+  };
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
