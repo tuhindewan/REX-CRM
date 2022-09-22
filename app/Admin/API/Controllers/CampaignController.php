@@ -73,7 +73,27 @@ class CampaignController extends BaseController {
 
                     // Update emails list
                     $emails = isset($params['emails']) ? $params['emails'] : array();
+
+                    // set send_time key for all email of campaign
+                    $emails = array_map(function($email){
+                        $email['send_time'] = 0;
+                        return $email;
+                    }, $emails);
+
                     foreach( $emails as $index => $email ){
+                        //counting the sending time for each email
+                        $delay = isset( $email['delay'] ) ? $email['delay'] : 0;
+
+                        if ($index == 0){
+                            $email['send_time'] = microtime(true);
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+                        else {
+                            $prev_send_time = $emails[$index-1]['send_time'];
+                            $email['send_time'] = $delay + $prev_send_time;
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+
                         ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
@@ -91,7 +111,28 @@ class CampaignController extends BaseController {
                     
                     // Insert campaign emails information
                     $emails = isset($params['emails']) ? $params['emails'] : array();
+                    
+                    // set send_time key for all email of campaign
+                    $emails = array_map(function($email){
+                            $email['send_time'] = 0;
+                            return $email;
+                    }, $emails);
+
+
                     foreach( $emails as $index => $email ){
+                        //counting the sending time for each email
+                        $delay = isset( $email['delay'] ) ? $email['delay'] : 0;
+
+                        if ($index == 0){
+                            $email['send_time'] = microtime(true);
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+                        else {
+                            $prev_send_time = $emails[$index-1]['send_time'];
+                            $email['send_time'] = $delay + $prev_send_time;
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+                        
                         ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
