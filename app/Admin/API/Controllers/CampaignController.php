@@ -378,8 +378,6 @@ class CampaignController extends BaseController {
             $group_ids = []);
         }
 
-        $group_ids = array_merge($all_receipents['recipients']['lists'],$all_receipents['recipients']['tags']);
-
         $contact_ids = [];
 
         foreach ($group_ids as $group_id){
