@@ -74,11 +74,13 @@ const CustomFields = () => {
     }
   }, [refresh]);
 
+  // Get field id from child component
   const deleteField = async (field_id) => {
     setIsDelete("block");
     setFieldID(field_id);
   };
 
+  // Delete field after delete confirmation
   const onDeleteStatus = async (status) => {
     if (status) {
       deleteSingleCustomField(fieldID).then((response) => {
@@ -97,6 +99,7 @@ const CustomFields = () => {
     setIsDelete("none");
   };
 
+  // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
     setIsDelete(status);
   };
