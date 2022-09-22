@@ -6,9 +6,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
-import EmailIcon from "../Icons/EmailIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
@@ -18,7 +16,12 @@ import InoutPhone from "../InputPhone";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AddItems from "./AddItems";
+import EmailDrawer from "../EmailDrawer";
+import NoteDrawer from "../NoteDrawer";
 import SingleActivityFeed from "./SingleActivityFeed";
+import FilterItems from "../BaseTable/FilterItems";
+import CreateNoteIcon from "../Icons/CreateNoteIcon";
+import EmailIcon from "../Icons/EmailIcon";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -41,6 +44,10 @@ export default function ContactDetails() {
   const [refresh, setRefresh] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);
+  const [isEmailForm, setIsEmailForm] = useState(true);
+  const [isClose, setIsClose] = useState(true);
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -400,6 +407,15 @@ export default function ContactDetails() {
     setSelectList(!selectList);
   };
 
+  const emailForm = () => {
+    setIsEmailForm(true);
+    setIsClose(!isClose);
+  };
+  const noteForm = () => {
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
+  };
+
   return (
     <>
       <div className="mintmrm-contact-details">
@@ -436,8 +452,9 @@ export default function ContactDetails() {
                   </h2>
 
                   <p>
-                    Added on {createMonth} {toOrdinalSuffix(createDay)},{" "}
-                    {createYear}
+                    Added via {contactData.added_by_login} Add on {createMonth}{" "}
+                    {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                    {contactData.created_time}
                   </p>
 
                   {contactData.status == "subscribed" ? (
@@ -475,13 +492,23 @@ export default function ContactDetails() {
               </div>
 
               <div className="contact-author-mailing">
-                <button className="create-note">
+                <button className="create-note" onClick={noteForm}>
                   <CreateNoteIcon />
                 </button>
+                <NoteDrawer
+                  isOpenNote={isNoteForm}
+                  isCloseNote={isCloseNote}
+                  setIsCloseNote={setIsCloseNote}
+                />
 
-                <button className="create-mail">
+                <button className="create-mail" onClick={emailForm}>
                   <EmailIcon />
                 </button>
+                <EmailDrawer
+                  isOpen={isEmailForm}
+                  isClose={isClose}
+                  setIsClose={setIsClose}
+                />
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />

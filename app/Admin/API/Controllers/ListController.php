@@ -57,7 +57,7 @@ class ListController extends BaseController {
             }
 
             if($success) {
-                return $this->get_success_response(__( 'List has been saved successfully', 'mrm' ), 201);
+                return $this->get_success_response(__( 'List has been saved successfully', 'mrm' ), 201, $success);
             }
             return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
 

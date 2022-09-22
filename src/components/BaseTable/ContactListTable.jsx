@@ -7,8 +7,6 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import Plus from "../Icons/Plus";
-import SingleContact from "./SingleContact";
-
 // Internal dependencies
 import Swal from "sweetalert2";
 import { getLists } from "../../services/List";
@@ -19,7 +17,11 @@ import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import AssignedItems from "./AssignedItems";
+import SingleContact from "./SingleContact";
+import ExportIcon from "../Icons/ExportIcon";
+import ExportDrawer from "../ExportDrawer";
 import FilterItems from "./FilterItems";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -87,12 +89,18 @@ export default function ContactListTable(props) {
 
   const [filterRequest, setFilterRequest] = useState({});
 
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
     lists: [],
     tags: [],
     status: [],
   });
+
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -243,6 +251,9 @@ export default function ContactListTable(props) {
           );
           Swal.fire("Deleted!", "Contact has been deleted.", "success");
           setAllSelected(false);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
           toggleRefresh();
         }
       }
@@ -295,6 +306,11 @@ export default function ContactListTable(props) {
 
   const showAddColumnList = () => {
     setAddColumn(!isAddColumn);
+  };
+
+  const noteForm = () => {
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
   };
 
   return (
@@ -388,10 +404,16 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          {/* <button className="export-btn mintmrm-btn outline">
-                  <ExportIcon />
-                  Export
-                </button> */}
+          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+            <ExportIcon />
+            Export
+          </button>
+          <ExportDrawer
+            isOpenNote={isNoteForm}
+            isCloseNote={isCloseNote}
+            setIsCloseNote={setIsCloseNote}
+          />
+
           <div className="bulk-action">
             <button className="more-option" onClick={showMoreOption}>
               <ThreeDotIcon />
