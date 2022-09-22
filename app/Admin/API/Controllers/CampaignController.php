@@ -9,6 +9,7 @@ use WP_REST_Request;
 use Exception;
 use MRM\Common\MRM_Common;
 use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
+use Mint\MRM\DataBase\Models\ContactModel;
 
 /**
  * @author [MRM Team]
@@ -72,7 +73,27 @@ class CampaignController extends BaseController {
 
                     // Update emails list
                     $emails = isset($params['emails']) ? $params['emails'] : array();
+
+                    // set send_time key for all email of campaign
+                    $emails = array_map(function($email){
+                        $email['send_time'] = 0;
+                        return $email;
+                    }, $emails);
+
                     foreach( $emails as $index => $email ){
+                        //counting the sending time for each email
+                        $delay = isset( $email['delay'] ) ? $email['delay'] : 0;
+
+                        if (0 === $index){
+                            $email['send_time'] = microtime(true);
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+                        else {
+                            $prev_send_time = $emails[$index-1]['send_time'];
+                            $email['send_time'] = $delay + $prev_send_time;
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+
                         ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
@@ -90,7 +111,28 @@ class CampaignController extends BaseController {
                     
                     // Insert campaign emails information
                     $emails = isset($params['emails']) ? $params['emails'] : array();
+                    
+                    // set send_time key for all email of campaign
+                    $emails = array_map(function($email){
+                            $email['send_time'] = 0;
+                            return $email;
+                    }, $emails);
+
+
                     foreach( $emails as $index => $email ){
+                        //counting the sending time for each email
+                        $delay = isset( $email['delay'] ) ? $email['delay'] : 0;
+
+                        if (0 === $index){
+                            $email['send_time'] = microtime(true);
+                            $emails[$index]['send_time'] = microtime(true);
+                        }
+                        else {
+                            $prev_send_time = $emails[$index-1]['send_time'];
+                            $email['send_time'] = $delay + $prev_send_time;
+                            $emails[$index]['send_time'] = $email['send_time'];
+                        }
+                        
                         ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
@@ -100,6 +142,10 @@ class CampaignController extends BaseController {
             // Send renponses back to the frontend
             if($campaign_id) {
                 $data['campaign_id'] = $campaign_id;
+
+                //test_email_sending(for dev)
+                self::send_email_to_reciepents($campaign_id);
+
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
             }
             return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
@@ -292,6 +338,70 @@ class CampaignController extends BaseController {
             MessageModel::insert( $message, $message['campaign_id'] );
             $sent = MessageController::get_instance()->send_message($message);
         }
+    }
+
+
+    /**
+     * Function use to send email
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0 
+     */
+    public function send_email_to_reciepents($campaign_id)
+    {
+        $recipients_emails = self::get_reciepents_email($campaign_id);
+
+        // TODO : We have all the contacts email here and email send_time.
+        // TODO : Time to run CRON and start sending email here.
+    }
+
+    /**
+     * Function use to get recipients
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0 
+     */
+    public function get_reciepents_email($campaign_id)
+    {
+        $all_receipents = ModelsCampaign::get_campaign_meta($campaign_id);
+
+        $group_ids = [];
+
+        if( isset($all_receipents['recipients']['lists'], $all_receipents['recipients']['tags']) ){
+             $group_ids = array_merge($all_receipents['recipients']['lists'],$all_receipents['recipients']['tags']);
+        }else{
+            isset($all_receipents['recipients']['lists']) ? $group_ids = $all_receipents['recipients']['lists'] : 
+            (isset($all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
+            $group_ids = []);
+        }
+
+        $contact_ids = [];
+
+        foreach ($group_ids as $group_id){
+            array_push($contact_ids,ContactGroupPivotModel::get_contacts_to_group($group_id));
+        }
+
+        $recipients_ids = [];
+
+        foreach ($contact_ids as $contact_id){
+            if (is_array($contact_id ) ){
+                foreach ($contact_id as $id){
+                    if( isset( $id->contact_id ) ){
+                        array_push($recipients_ids, $id->contact_id);
+                    }
+                }
+            }
+        }
+        $unique_recipients_ids = array_unique($recipients_ids);
+
+        $recipients_emails = [];
+        foreach ($unique_recipients_ids as $contact_id){
+            array_push($recipients_emails, ContactModel::get_single_email($contact_id));
+        }
+
+        return $recipients_emails;
     }
 
 

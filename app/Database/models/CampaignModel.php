@@ -82,8 +82,7 @@ class CampaignModel {
         $inserted = $wpdb->insert( $campaign_meta_table, [
             'meta_key'      => 'recipients',
             'meta_value'    => $recipients,
-            'campaign_id'   => $campaign_id,
-            'created_at'    => current_time('mysql')
+            'campaign_id'   => $campaign_id
         ] );
         if( $inserted ){
             return $wpdb->insert_id;
@@ -182,9 +181,9 @@ class CampaignModel {
 
 
     /**
-     * Run SQL Query to get a single contact information
+     * Run SQL Query to get a single campaign information
      * 
-     * @param mixed $id Contact ID
+     * @param mixed $id campaign ID
      * 
      * @return object
      * @since 1.0.0
