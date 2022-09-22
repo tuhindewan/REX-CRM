@@ -1,10 +1,19 @@
 import React from "react";
 import NoCampaign from "./NoCampaign";
-
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 // Internal dependencies
 import SingleCampaign from "./SingleCampaign";
 
 export default function CampaignListTable(props) {
+
+  const [currentActive, setCurrentActive] = useState(0);
+  let navigate = useNavigate();
+  
+  function editField(campaign) {
+    let path = `../campaigns/update/${campaign.id}`;
+    navigate(path);
+  }
   return (
     <>
       <div className="contact-list-table campaign-list-table">
@@ -28,6 +37,7 @@ export default function CampaignListTable(props) {
               <th className="click-rate">Click rate</th>
               <th className="unsubscribers">Unsubscribers</th> */}
               <th className="status">Status</th>
+              <th className="action"></th>
             </tr>
           </thead>
 
@@ -35,7 +45,13 @@ export default function CampaignListTable(props) {
 
             {!props.campaigns.length && <NoCampaign />}
             {props.campaigns.map((campaign, idx) => {
-              return <SingleCampaign key={idx} campaign={campaign} />;
+              return <SingleCampaign 
+                        key={idx} 
+                        campaign={campaign} 
+                        currentActive={currentActive}
+                        setCurrentActive={setCurrentActive} 
+                        editField={editField}
+                        />;
             })}
           </tbody>
         </table>

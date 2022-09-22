@@ -155,6 +155,11 @@ const routes = [
     hideInMenu: true,
   },
   {
+    path: "/campaigns/update/:id",
+    element: AddCampaign,
+    hideInMenu: true,
+  },
+  {
     path: "/campaigns/builder",
     element: EmailBuilder,
     hideInMenu: true,
