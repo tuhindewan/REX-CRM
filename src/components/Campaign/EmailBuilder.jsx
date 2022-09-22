@@ -7,7 +7,7 @@ import LeftArrow from "../Icons/LeftArrow";
 import MobileIcon from "../Icons/MobileIcon";
 
 export default function EmailBuilder(props) {
-  const { isClose } = props;
+  const { isCloseBuilder, setIsCloseBuilder } = props;
   const emailEditorRef = useRef(null);
   const location = useLocation();
   // const [hideBuilder, setHideBuilder] = useState(props.isClose);
@@ -21,8 +21,9 @@ export default function EmailBuilder(props) {
       // navigate("/campaigns/create", {
       //   state: { email_body: html, status: "set_body" },
       // });
-      // setHideBuilder(!props.isClose);
+      setIsCloseBuilder(!isCloseBuilder);
       props.setEmailBody(html);
+      props.setCloseTemplateSelection("hide");
     });
   };
 
@@ -37,11 +38,16 @@ export default function EmailBuilder(props) {
     // editor is ready
     console.log("onReady");
   };
+
+  const closeEmailBuilder = () => {
+    setIsCloseBuilder(!isCloseBuilder);
+    props.setIsClose(false);
+  };
   return (
     <>
       <div
         className={
-          props.isOpen && !isClose
+          props.isOpen && !isCloseBuilder
             ? "mintmrm-template-alert-wrapper"
             : "mintmrm-template-alert-wrapper inactive"
         }
@@ -49,7 +55,7 @@ export default function EmailBuilder(props) {
         <div className="mrm-campaign-builder-navbar-wrapper">
           <div className="navbar-left-section">
             <button className="back-button">
-              <Link to="/campaigns">
+              <Link to="" onClick={closeEmailBuilder}>
                 <LeftArrow />
               </Link>
             </button>

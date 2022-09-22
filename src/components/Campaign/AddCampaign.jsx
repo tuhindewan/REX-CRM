@@ -137,8 +137,6 @@ export default function AddCampaign(props) {
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
       copy[selectedEmailIndex].body = html;
-      console.log(copy[selectedEmailIndex].body);
-
       return copy;
     });
   };

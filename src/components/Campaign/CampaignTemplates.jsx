@@ -16,6 +16,12 @@ export default function CampaignTemplates(props) {
     setIsCloseBuilder(!isCloseBuilder);
   };
 
+  const setCloseTemplateSelection = (status) => {
+    if ("hide" == status) {
+      setIsClose(!isClose);
+    }
+  };
+
   return (
     <div
       className={
@@ -60,8 +66,10 @@ export default function CampaignTemplates(props) {
           </div>
           <EmailBuilder
             isOpen={isTemplateBuilder}
-            isClose={isCloseBuilder}
+            isCloseBuilder={isCloseBuilder}
             setEmailBody={setEmailBody}
+            setIsCloseBuilder={setIsCloseBuilder}
+            setCloseTemplateSelection={setCloseTemplateSelection}
           />
         </div>
       </div>
