@@ -5,7 +5,7 @@ import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
   const { isClose, setIsClose, setEmailBody } = props;
-  const [isCloseBuilder, setIsCloseBuilder] = useState(true);
+  const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const closeSection = () => {
     setIsClose(!isClose);
@@ -13,7 +13,7 @@ export default function CampaignTemplates(props) {
 
   const openTemplateBuilder = () => {
     setIsTemplateBuilder(true);
-    setIsCloseBuilder(!isCloseBuilder);
+    setIsCloseBuilder("block");
   };
 
   const setCloseTemplateSelection = (status) => {

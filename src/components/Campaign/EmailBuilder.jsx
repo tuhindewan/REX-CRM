@@ -21,7 +21,7 @@ export default function EmailBuilder(props) {
       // navigate("/campaigns/create", {
       //   state: { email_body: html, status: "set_body" },
       // });
-      setIsCloseBuilder(!isCloseBuilder);
+      setIsCloseBuilder("none");
       props.setEmailBody(html);
       props.setCloseTemplateSelection("hide");
     });
@@ -40,16 +40,16 @@ export default function EmailBuilder(props) {
   };
 
   const closeEmailBuilder = () => {
-    setIsCloseBuilder(!isCloseBuilder);
-    props.setIsClose(false);
+    setIsCloseBuilder("none");
   };
   return (
     <>
       <div
+        style={{ display: isCloseBuilder }}
         className={
           props.isOpen && !isCloseBuilder
             ? "mintmrm-template-alert-wrapper"
-            : "mintmrm-template-alert-wrapper inactive"
+            : "mintmrm-template-alert-wrapper"
         }
       >
         <div className="mrm-campaign-builder-navbar-wrapper">
@@ -72,8 +72,13 @@ export default function EmailBuilder(props) {
             <button onClick={exportHtml}>Export HTML</button>
           </div>
         </div>
-        <div>
-          <EmailEditor ref={emailEditorRef} onLoad={onLoad} onReady={onReady} />
+        <div style={{ height: "100%" }}>
+          <EmailEditor
+            minHeight={"100%"}
+            ref={emailEditorRef}
+            onLoad={onLoad}
+            onReady={onReady}
+          />
         </div>
       </div>
     </>
