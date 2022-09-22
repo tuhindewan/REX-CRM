@@ -65,7 +65,7 @@ export default function SingleCampaign(props) {
                     {" "}
                     Edit
                   </li>
-                  <li className="delete" onClick={() => deleteField(props.campaign.id)}>
+                  <li className="delete" onClick={() => props.deleteCampaign(props.campaign.id)}>
                     Delete
                   </li>
                 </ul>

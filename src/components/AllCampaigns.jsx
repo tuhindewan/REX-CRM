@@ -5,28 +5,9 @@ import CampaignsNavbar from "./CampaignNav";
 
 export default function AllCampaigns() {
   const [search, setSearch] = useState("");
-  const [campaigns, setCampaigns] = useState([]);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    async function getData() {
-      fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/campaigns?search=${search}&page=${page}&per-page=${perPage}`
-      )
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          if (200 == data.code) {
-            setCampaigns(data.data.data);
-          }
-        });
-    }
-    getData();
-  }, []);
+  
 
   return (
     <div className="campaign-index-page">
@@ -71,7 +52,7 @@ export default function AllCampaigns() {
             </div>
 
             <div className="contact-list-body">
-              <CampaignListTable campaigns={campaigns} />
+              <CampaignListTable />
             </div>
           </div>
         </div>
