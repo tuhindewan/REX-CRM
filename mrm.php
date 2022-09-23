@@ -13,7 +13,7 @@
  * @package           Mrm
  *
  * @wordpress-plugin
- * Plugin Name:       MRM
+ * Plugin Name:       MRM Latest
  * Plugin URI:        https://rextheme.com/mrm/
  * Description:       Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
  * Version:           1.0.0

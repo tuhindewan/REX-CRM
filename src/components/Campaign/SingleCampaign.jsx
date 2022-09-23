@@ -21,7 +21,7 @@ export default function SingleCampaign(props) {
           </span>
           <h6 className="title">
             {" "}
-            <Link to={`../campaigns/update/${props.campaign.id}`}>
+            <Link to={`../campaign/edit/${props.campaign.id}`}>
               {props.campaign.title}
             </Link>{" "}
           </h6>

@@ -10,9 +10,10 @@ import TemplateIcon from "../Icons/TemplateIcon";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
-const emptyInputStateTemplate = {
+const defaultCampaignData = {
   subject: "",
-  body: "",
+  email_body: "",
+  email_json: "",
   preview: "",
   senderName: "",
   senderEmail: "",
@@ -24,11 +25,7 @@ export default function AddCampaign(props) {
   const navigate = useNavigate();
   const { id } = useParams();
   // state variable for holding each email sequence[s] data in an array
-  const [emailData, setEmailData] = useState([
-    {
-      ...emptyInputStateTemplate,
-    },
-  ]);
+  const [emailData, setEmailData] = useState([{ ...defaultCampaignData }]);
 
   // tracks currently selected email index and highlights in the UI
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
@@ -41,6 +38,7 @@ export default function AddCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
+  const [responseMessage, setResponseMessage] = useState("");
 
   // useEffect(() => {
   //   console.log(id);
@@ -49,9 +47,7 @@ export default function AddCampaign(props) {
   // Prepare campaign object and send post request to backend
   const saveCampaign = async () => {
     if (campaignTitle.length < 3) {
-      window.alert(
-        "Please enter at least 3 characters for the campaign title."
-      );
+      alert("Please enter at least 3 characters for the campaign title.");
       return;
     }
 
@@ -69,7 +65,8 @@ export default function AddCampaign(props) {
           email_preview_text: email.preview,
           sender_email: email.senderEmail,
           sender_name: email.senderName,
-          email_body: email.body,
+          email_body: email.email_body,
+          email_json: email.email_json,
         };
       }),
     };
@@ -91,7 +88,7 @@ export default function AddCampaign(props) {
   const addNextEmail = () => {
     setEmailData((prevEmailData) => {
       setSelectedEmailIndex(prevEmailData.length);
-      return [...prevEmailData, { ...emptyInputStateTemplate }];
+      return [...prevEmailData, { ...defaultCampaignData }];
     });
   };
 
@@ -128,10 +125,12 @@ export default function AddCampaign(props) {
     setShowTemplates(true);
   };
 
-  const setEmailBody = (html) => {
+  const setEmailBody = (data) => {
+    const { design, html } = data;
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
-      copy[selectedEmailIndex].body = html;
+      copy[selectedEmailIndex].email_body = html;
+      copy[selectedEmailIndex].email_json = design;
       return copy;
     });
   };
@@ -157,7 +156,7 @@ export default function AddCampaign(props) {
              */}
             {emailData.map((email, index) => {
               return (
-                <>
+                <div key={`emails-${index}`}>
                   <div
                     className={
                       selectedEmailIndex != index
@@ -165,7 +164,6 @@ export default function AddCampaign(props) {
                         : "email-select-section selected"
                     }
                     onClick={() => setSelectedEmailIndex(index)}
-                    key={index}
                   >
                     <div className="icon-section">
                       <InboxIcon />
@@ -181,7 +179,7 @@ export default function AddCampaign(props) {
                     )}
                   </div>
                   <div className="link-line"></div>
-                </>
+                </div>
               );
             })}
             <div className="add-another-email" onClick={addNextEmail}>
@@ -311,11 +309,12 @@ export default function AddCampaign(props) {
               </button>
               <button
                 type="submit"
-                className="contact-save mintmrm-btn"
+                className="campaign-save mintmrm-btn"
                 onClick={saveCampaign}
               >
                 Save
               </button>
+              {responseMessage && <p>{responseMessage}</p>}
             </div>
           </div>
         </div>
