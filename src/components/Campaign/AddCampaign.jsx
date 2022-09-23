@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
@@ -22,6 +22,7 @@ const emptyInputStateTemplate = {
 
 export default function AddCampaign(props) {
   const navigate = useNavigate();
+  const { id } = useParams();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([
     {
@@ -40,6 +41,10 @@ export default function AddCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
+
+  // useEffect(() => {
+  //   console.log(id);
+  // }, [id]);
 
   // Prepare campaign object and send post request to backend
   const saveCampaign = async () => {

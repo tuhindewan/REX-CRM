@@ -16,6 +16,13 @@ export default function CampaignTemplates(props) {
     setIsCloseBuilder(!isCloseBuilder);
   };
 
+  // Templates selection popup close after finishing email building
+  const setCloseTemplateSelection = (status) => {
+    if ("hide" == status) {
+      setIsClose(!isClose);
+    }
+  };
+
   return (
     <div
       className={
@@ -62,6 +69,8 @@ export default function CampaignTemplates(props) {
             isOpen={isTemplateBuilder}
             isClose={isCloseBuilder}
             setEmailBody={setEmailBody}
+            setIsCloseBuilder={setIsCloseBuilder}
+            setCloseTemplateSelection={setCloseTemplateSelection}
           />
         </div>
       </div>
