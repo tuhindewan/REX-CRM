@@ -303,6 +303,31 @@ class ContactModel{
 
 
     /**
+     * Run SQL Query to get a single contact email only
+     * 
+     * @param mixed $id Contact ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get_single_email( $id )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+
+        try {
+            $contacts_query     = $wpdb->prepare("SELECT `email` FROM $contacts_table WHERE id = %d",array( $id ));
+            $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
+            
+            return $contacts_results[0];
+        
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
      * Returns contact meta data
      * 
      * @param int $id   Contact ID

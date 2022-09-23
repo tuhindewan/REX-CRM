@@ -16,6 +16,11 @@ export default function CampaignTemplates(props) {
     setIsCloseBuilder(!isCloseBuilder);
   };
 
+
+  const closeEmailBuilder = () => {
+    setIsCloseBuilder('none');
+  }
+
   return (
     <div
       className={

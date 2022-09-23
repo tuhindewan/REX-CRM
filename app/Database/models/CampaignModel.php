@@ -82,8 +82,7 @@ class CampaignModel {
         $inserted = $wpdb->insert( $campaign_meta_table, [
             'meta_key'      => 'recipients',
             'meta_value'    => $recipients,
-            'campaign_id'   => $campaign_id,
-            'created_at'    => current_time('mysql')
+            'campaign_id'   => $campaign_id
         ] );
         if( $inserted ){
             return $wpdb->insert_id;
@@ -110,7 +109,7 @@ class CampaignModel {
         $email['campaign_id']   = $campaign_id;
         $email['created_at']    = current_time('mysql');
         $email['email_index']   = $index + 1;
-
+        $email['email_json']    = $email['email_json'] ? serialize($email['email_json']) : '';
         $inserted = $wpdb->insert( $fields_table, $email );
         if( $inserted ){
             return $wpdb->insert_id;
@@ -182,9 +181,9 @@ class CampaignModel {
 
 
     /**
-     * Run SQL Query to get a single contact information
+     * Run SQL Query to get a single campaign information
      * 
-     * @param mixed $id Contact ID
+     * @param mixed $id campaign ID
      * 
      * @return object
      * @since 1.0.0
@@ -193,20 +192,14 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-
         try {
-            $select_query     = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d",array( $id ));
-            $select_campaign_results   = json_decode( json_encode( $wpdb->get_row($select_query) ), true );
-
-            $campaign_meta = self::get_campaign_meta( $id );
-            $campaign_email = self::get_campaign_email( $id );
-
-            
-
-            $results[] = array_merge($select_campaign_results, $campaign_meta, $campaign_email);
-            
-            return $results;
-        
+            $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", $id );
+            $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
+            $campaign_meta      = self::get_campaign_meta( $id );
+            $campaign_email     = self::get_campaign_email( $id );
+            $campaign['meta']   = $campaign_meta;
+            $campaign['emails'] = $campaign_email;
+            return $campaign;
         } catch(\Exception $e) {
             return false;
         }
@@ -302,18 +295,19 @@ class CampaignModel {
 
         $campaign_emails_query = $wpdb->prepare("SELECT 
                                     id,delay,sender_email,
-                                    sender_name,email_index,email_subject,email_preview_text,
+                                    sender_name,email_index,email_subject,email_preview_text,email_json,
                                     template_id,email_body, created_at, updated_at
                                      FROM $campaign_emails_table  
-                                     WHERE campaign_id = %d",array( $id ));
-        $campaign_email_results       = json_decode(json_encode($wpdb->get_results($campaign_emails_query)), true);
-        $campaign_emails['emails'] = [];
+                                     WHERE campaign_id = %d", $id);
+        $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
+        if (!empty($emails)) {
+            $emails = array_map(function ($email) {
+                $email['email_json'] = unserialize($email['email_json']);
+                return $email;
+            }, $emails);
+        }
 
-        $campaign_emails['emails'] = array_map(function($result){
-            return $result;
-        }, $campaign_email_results);
-
-        return $campaign_emails;
+        return $emails;
     }
 
 

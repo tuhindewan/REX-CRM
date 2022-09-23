@@ -148,6 +148,7 @@ class CampaignSchema {
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
             `delay` INT(10) DEFAULT 0,
+            `send_time` BIGINT(20) DEFAULT 0,   
             `sender_email` VARCHAR(192),
             `sender_name` VARCHAR(192),
             `email_index` INT(10),
@@ -155,6 +156,7 @@ class CampaignSchema {
             `email_preview_text` VARCHAR(192) NULL,
             `template_id` bigint(20) unsigned NULL,
             `email_body` longtext,
+            `email_json` longtext,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL
          ) $charsetCollate;";

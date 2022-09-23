@@ -131,7 +131,6 @@ class MessageController extends BaseController {
      */
     public function send_message( $message )
     {
-        error_log(print_r($message, 1));
         $to     = $message->get_receiver_email();
 
         $subject = $message->get_email_subject();

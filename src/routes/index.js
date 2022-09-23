@@ -18,6 +18,7 @@ import Tags from "../pages/Tags";
 import ImportWordpress from "../pages/ImportWordpress";
 import AllCampaigns from "../components/AllCampaigns";
 import AddCampaign from "../components/Campaign/AddCampaign";
+import EditCampaign from "../components/Campaign/EditCampaign";
 import CampaignTemplates from "../components/Campaign/CampaignTemplates";
 import EmailBuilder from "../components/Campaign/EmailBuilder";
 
@@ -160,7 +161,11 @@ const routes = [
   {
     path: "/campaigns/builder",
     element: EmailBuilder,
-    hideInMenu: true,
+    hideInMenu: true,}
+    {path        : "/campaign/edit/:id",
+    element     : EditCampaign,
+    title       : __("Email Sequences", "mrm"),
+    hideInMenu  : true,
   },
 ];
 
