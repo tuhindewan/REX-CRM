@@ -60,10 +60,14 @@ const EmailBuilder = (props) => {
           </div>
         </div>
         <div className="email-builder-section" style={{ height: "100%" }}>
-          <EmailEditor ref={emailEditorRef} onReady={onReady} />
+          <EmailEditor
+            minHeight={"100%"}  
+            
+          />
         </div>
       </div>
     </>
+
   );
 };
 
