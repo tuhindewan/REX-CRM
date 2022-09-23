@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
@@ -60,10 +61,6 @@ export default function AddCampaign(props) {
     },
   ];
 
-  // useEffect(() => {
-  //   console.log(id);
-  // }, [id]);
-
   // Prepare campaign object and send post request to backend
   const saveCampaign = async () => {
     if (campaignTitle.length < 3) {
@@ -113,18 +110,17 @@ export default function AddCampaign(props) {
       }),
     };
 
-    console.log(campaign);
     // Send POST request to save data
-    // submitCampaign(campaign).then((response) => {
-    //   if (201 === response.code) {
-    //     // Navigate to campaigns list with success message
-    //     navigate("/campaigns", {
-    //       state: { status: "campaign-created", message: response?.message },
-    //     });
-    //   } else {
-    //     window.alert(response?.message);
-    //   }
-    // });
+    submitCampaign(campaign).then((response) => {
+      if (201 === response.code) {
+        // Navigate to campaigns list with success message
+        navigate("/campaigns", {
+          state: { status: "campaign-created", message: response?.message },
+        });
+      } else {
+        window.alert(response?.message);
+      }
+    });
   };
 
   // function for adding new email in the sequence
