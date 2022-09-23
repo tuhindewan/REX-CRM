@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -8,7 +8,6 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import CampaignTemplates from "./CampaignTemplates";
-
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -199,7 +198,7 @@ export default function AddCampaign(props) {
              */}
             {emailData.map((email, index) => {
               return (
-                <div key={`emails-${index}`}>
+                <div className="email-box" key={`emails-${index}`}>
                   <div
                     className={
                       selectedEmailIndex != index
@@ -333,41 +332,43 @@ export default function AddCampaign(props) {
                 <span>
                   {emailData[selectedEmailIndex]["preview"].length}/200
                 </span>
-                  <div className="setting-section">
-                    <SettingIcon />
-                  </div>
+                <div className="setting-section">
+                  <SettingIcon />
                 </div>
-                <div className="email-from input-item">
-                  <label>From</label>
-                  <input
-                      type="text"
-                      name="senderName"
-                      value={emailData[selectedEmailIndex]["senderName"]}
-                      onChange={handleEmailFieldsChange}
-                      placeholder="Enter Name"
-                  />
-                  <input
-                      type="text"
-                      name="senderEmail"
-                      value={emailData[selectedEmailIndex]["senderEmail"]}
-                      onChange={handleEmailFieldsChange}
-                      placeholder="Enter Email"
-                  />
+              </div>
+              <div className="email-from input-item">
+                <label>From</label>
+                <input
+                  type="text"
+                  name="senderName"
+                  value={emailData[selectedEmailIndex]["senderName"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Enter Name"
+                />
+                <input
+                  type="text"
+                  name="senderEmail"
+                  value={emailData[selectedEmailIndex]["senderEmail"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Enter Email"
+                />
+              </div>
+              <div className="email-design input-item">
+                <label>Design</label>
+                <div className="add-template-section" onClick={openTemplate}>
+                  <TemplateIcon />
+                  <Link to="">Select a Template</Link>
                 </div>
-                <div className="email-design input-item">
-                  <label>Design</label>
-                  <div className="add-template-section" onClick={openTemplate}>
-                    <TemplateIcon />
-                    <Link to="">Select a Template</Link>
-                  </div>
-                  <CampaignTemplates
-                      isOpen={isTemplate}
-                      isClose={isClose}
-                      setIsClose={setIsClose}
-                      setEmailBody={setEmailBody}
-                      emailData={emailData[selectedEmailIndex]}
-                  />
+                <CampaignTemplates
+                  isOpen={isTemplate}
+                  isClose={isClose}
+                  setIsClose={setIsClose}
+                  setEmailBody={setEmailBody}
+                  emailData={emailData[selectedEmailIndex]}
+                />
 
+                <div className="setting-section">
+                  <SettingIcon />
                 </div>
               </div>
               <div className="email-from input-item">
@@ -416,6 +417,7 @@ export default function AddCampaign(props) {
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 }

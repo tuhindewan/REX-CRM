@@ -102,11 +102,11 @@ export default function CampaignListTable(props) {
 
   return (
     <>
-      <div className="contact-list-table campaign-list-table">
-        <table>
-          <thead>
-            <tr>
-              <th className="campaign-name">
+      <div className="campaign-list-table">
+        <div className="campaign-table">
+          <div className="table-head">
+            <div className="table-row">
+              <div className="table-header campaign-name">
                 <span class="mintmrm-checkbox">
                   <input
                     type="checkbox"
@@ -115,33 +115,24 @@ export default function CampaignListTable(props) {
                   />
                   <label for="campaign-bulk-select">Campaign Name</label>
                 </span>
-              </th>
+              </div>
 
-              {/* <th className="recipient">Recipient</th>
-              <th className="open-rate">Open rate</th>
-              <th className="click-rate">Click rate</th>
-              <th className="unsubscribers">Unsubscribers</th> */}
-              <th className="status">Status</th>
-              <th className="action"></th>
-            </tr>
-          </thead>
+              <div className="table-header recipient">Recipient</div>
+              <div className="table-header open-rate">Open rate</div>
+              <div className="table-header click-rate">Click rate</div>
+              <div className="table-header unsubscribers">Unsubscribers</div>
+              <div className="table-header status">Status</div>
+              <div className="table-header three-dot"></div>
+            </div>
+          </div>
 
-          <tbody>
-            {!campaigns.length && <NoCampaign />}
-            {campaigns.map((campaign, idx) => {
-              return (
-                <SingleCampaign
-                  key={idx}
-                  campaign={campaign}
-                  currentActive={currentActive}
-                  setCurrentActive={setCurrentActive}
-                  editField={editField}
-                  deleteCampaign={deleteCampaign}
-                />
-              );
+          <div className="table-body">
+            {!props.campaigns.length && <NoCampaign />}
+            {props.campaigns.map((campaign, idx) => {
+              return <SingleCampaign key={idx} campaign={campaign} />;
             })}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup

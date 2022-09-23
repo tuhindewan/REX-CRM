@@ -1,15 +1,18 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
+import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
-import HoverMenu from "../HoverMenu";
+//import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import CompletedCampaignIcon from "../Icons/CompletedCampaignIcon";
+import DraftCampaignIcon from "../Icons/DraftCampaignIcon";
 
 export default function SingleCampaign(props) {
   const menuButtonRef = useRef(null);
-  
+
   return (
-    <tr>
-      <td className="email-wrapper campaign-name-wrapper">
+    <div className="table-row">
+      <div className="table-data email-wrapper campaign-name-wrapper">
         <div className="email campaign-name">
           <span class="mintmrm-checkbox no-title">
             <input
@@ -19,14 +22,20 @@ export default function SingleCampaign(props) {
             />
             <label for={props.campaign.id}></label>
           </span>
-          <h6 className="title">
+          {props.campaign.status == "draft" ? (
+            <DraftCampaignIcon />
+          ) : (
+            <CompletedCampaignIcon />
+          )}
+          <div className="title">
             {" "}
             <Link to={`../campaign/edit/${props.campaign.id}`}>
               {props.campaign.title}
             </Link>{" "}
-          </h6>
+            <span>2 days ago</span>
+          </div>
         </div>
-      </td>
+      </div>
 
       <td className="status">{props.campaign.status}</td>
       <td>
@@ -65,7 +74,10 @@ export default function SingleCampaign(props) {
                     {" "}
                     Edit
                   </li>
-                  <li className="delete" onClick={() => props.deleteCampaign(props.campaign.id)}>
+                  <li
+                    className="delete"
+                    onClick={() => props.deleteCampaign(props.campaign.id)}
+                  >
                     Delete
                   </li>
                 </ul>
@@ -74,6 +86,17 @@ export default function SingleCampaign(props) {
           )}
         </button>
       </td>
-    </tr>
+
+      {/* <div className="table-data recipient">-</div>
+      <div className="table-data open-rate">-</div>
+      <div className="table-data click-rate">-</div>
+      <div className="table-data unsubscribers">-</div>
+      <div className="table-data status">
+        <span className="draft">{props.campaign.status}</span>
+      </div>
+      <div className="three-dot">
+        <ThreeDotIcon />
+      </div> */}
+    </div>
   );
 }
