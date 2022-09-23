@@ -1,7 +1,7 @@
 import React from "react";
 import NoCampaign from "./NoCampaign";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "../DeletePopup";
 // Internal dependencies
 import SingleCampaign from "./SingleCampaign";
@@ -9,26 +9,28 @@ import { deleteSingleCampaign, getAllCampaigns } from "../../services/Campaign";
 import SuccessfulNotification from "../SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import Plus from "../Icons/Plus";
 
 export default function CampaignListTable(props) {
 
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
-  // set navbar Buttons
-  // useGlobalStore.setState({
-  //   navbarMarkup: (
-  //     <button
-  //       className="contact-save mintmrm-btn"
-  //       onClick={() => setShowCreate((prev) => !prev)}
-  //     >
-  //       + Add List
-  //     </button>
-  //   ),
-  //   hideGlobalNav: false,
-  // });
+  //set navbar Buttons
+  useGlobalStore.setState({
+    navbarMarkup: (
+      <Link to="/campaigns/create">
+        <button className="add-contact-btn mintmrm-btn ">
+          <Plus /> Add Campaign
+        </button>
+      </Link>
+    ),
+    hideGlobalNav: false,
+  });
 
   let navigate = useNavigate();
+  const location = useLocation();
   const [currentActive, setCurrentActive] = useState(0);
   const [isDelete, setIsDelete] = useState("none");
   const [camaignID, setCampaignID] = useState();
@@ -44,6 +46,10 @@ export default function CampaignListTable(props) {
   useEffect(() => {
     getAllCampaigns().then((results) => {
       setCampaigns(results.data);
+      if ("campaign-created" == location.state?.status) {
+        setShowNotification("block");
+        setMessage(location.state?.message);
+      }
     });
     const timer = setTimeout(() => {
       setShowNotification("none");

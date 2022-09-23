@@ -11,7 +11,7 @@ export default function AllCampaigns() {
 
   return (
     <div className="campaign-index-page">
-      <CampaignsNavbar />
+      {/* <CampaignsNavbar /> */}
       <div className="campaign-list-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">

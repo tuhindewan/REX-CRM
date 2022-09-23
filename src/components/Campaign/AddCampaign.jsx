@@ -72,7 +72,7 @@ export default function AddCampaign(props) {
     // Send POST request to save data
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
-        // Navigate user with success message
+        // Navigate to campaigns list with success message
         navigate("/campaigns", {
           state: { status: "campaign-created", message: response?.message },
         });

@@ -131,8 +131,6 @@ const routes = [
     path: "/campaigns/",
     element: AllCampaigns,
     title: __("All Campaigns", "mrm"),
-    hideInMenu: true,
-    campaignMenu: true,
   },
   {
     path: "/campaigns/sequences",
