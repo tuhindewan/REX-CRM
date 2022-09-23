@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
@@ -41,7 +40,7 @@ export default function AddCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
-  const [delayCount, setDelayCount] = useState(1);
+  const [delay, setDelay] = useState();
   const names = [
     {
       value: "Minutes",
@@ -91,29 +90,41 @@ export default function AddCampaign(props) {
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
       emails: emailData.map((email) => {
+        if (email.delay_value == "Minutes") {
+          email.delay = email.delay_count * 60;
+        } else if (email.delay_value == "Hours") {
+          email.delay = email.delay_count * 60 * 60;
+        } else if (email.delay_value == "Days") {
+          email.delay = email.delay_count * 60 * 60 * 24;
+        } else if (email.delay_value == "Weeks") {
+          email.delay = email.delay_count * 60 * 60 * 24 * 7;
+        } else {
+          email.delay = 0;
+        }
         return {
           email_subject: email.subject,
           email_preview_text: email.preview,
           sender_email: email.senderEmail,
-          delay_count: email.delay_count,
-          delay_value: email.delay_value,
+          delay: email.delay,
           sender_name: email.senderName,
           email_body: email.email_body,
           email_json: email.email_json,
         };
       }),
     };
+
+    console.log(campaign);
     // Send POST request to save data
-    submitCampaign(campaign).then((response) => {
-      if (201 === response.code) {
-        // Navigate to campaigns list with success message
-        navigate("/campaigns", {
-          state: { status: "campaign-created", message: response?.message },
-        });
-      } else {
-        window.alert(response?.message);
-      }
-    });
+    // submitCampaign(campaign).then((response) => {
+    //   if (201 === response.code) {
+    //     // Navigate to campaigns list with success message
+    //     navigate("/campaigns", {
+    //       state: { status: "campaign-created", message: response?.message },
+    //     });
+    //   } else {
+    //     window.alert(response?.message);
+    //   }
+    // });
   };
 
   // function for adding new email in the sequence
@@ -138,9 +149,7 @@ export default function AddCampaign(props) {
 
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = (e) => {
-    console.log(e);
     setEmailData((prevEmailData) => {
-      console.log(prevEmailData);
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
