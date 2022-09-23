@@ -1,4 +1,8 @@
 import { __ } from "@wordpress/i18n";
+import AllCampaigns from "../components/AllCampaigns";
+import AddCampaign from "../components/Campaign/AddCampaign";
+import EditCampaign from "../components/Campaign/EditCampaign";
+import EmailBuilder from "../components/Campaign/EmailBuilder";
 import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
@@ -16,11 +20,8 @@ import ImportMailchimp from "../pages/ImportMailchimp";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
 import ImportWordpress from "../pages/ImportWordpress";
-import AllCampaigns from "../components/AllCampaigns";
-import AddCampaign from "../components/Campaign/AddCampaign";
-import EditCampaign from "../components/Campaign/EditCampaign";
 import CampaignTemplates from "../components/Campaign/CampaignTemplates";
-import EmailBuilder from "../components/Campaign/EmailBuilder";
+
 
 const routes = [
   {
@@ -161,12 +162,14 @@ const routes = [
   {
     path: "/campaigns/builder",
     element: EmailBuilder,
-    hideInMenu: true,}
-    {path        : "/campaign/edit/:id",
+    hideInMenu: true,
+  },
+  {
+    path        : "/campaign/edit/:id",
     element     : EditCampaign,
     title       : __("Email Sequences", "mrm"),
     hideInMenu  : true,
-  },
+  }
 ];
 
 export default routes;

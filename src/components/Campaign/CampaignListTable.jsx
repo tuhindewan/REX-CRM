@@ -1,19 +1,16 @@
-import React from "react";
-import NoCampaign from "./NoCampaign";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "../DeletePopup";
+import NoCampaign from "./NoCampaign";
 // Internal dependencies
-import SingleCampaign from "./SingleCampaign";
-import { deleteSingleCampaign, getAllCampaigns } from "../../services/Campaign";
-import SuccessfulNotification from "../SuccessfulNotification";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { deleteSingleCampaign } from "../../services/Campaign";
 import Plus from "../Icons/Plus";
+import SuccessfulNotification from "../SuccessfulNotification";
+import SingleCampaign from "./SingleCampaign";
 
 export default function CampaignListTable(props) {
-
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
@@ -42,24 +39,23 @@ export default function CampaignListTable(props) {
   const [refresh, setRefresh] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
 
-
-  useEffect(() => {
-    getAllCampaigns().then((results) => {
-      setCampaigns(results.data);
-      if ("campaign-created" == location.state?.status) {
-        setShowNotification("block");
-        setMessage(location.state?.message);
-      }
-    });
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [refresh]);
+  // useEffect(() => {
+  //   getAllCampaigns().then((results) => {
+  //     setCampaigns(results.data);
+  //     if ("campaign-created" == location.state?.status) {
+  //       setShowNotification("block");
+  //       setMessage(location.state?.message);
+  //     }
+  //   });
+  //   const timer = setTimeout(() => {
+  //     setShowNotification("none");
+  //   }, 3000);
+  //   return () => clearTimeout(timer);
+  // }, [refresh]);
 
   // Navigate to campaign edit page
   function editField(campaign) {
-    let path = `../campaigns/update/${campaign.id}`;
+    let path = `../campaign/edit/${campaign.id}`;
     navigate(path);
   }
 
@@ -69,7 +65,7 @@ export default function CampaignListTable(props) {
     setCampaignID(campaign_id);
     setDeleteTitle("Campaign List");
     setDeleteMessage("Are you sure you want to delete the campaign?");
-  }
+  };
 
   // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
@@ -105,11 +101,11 @@ export default function CampaignListTable(props) {
 
   return (
     <>
-      <div className="contact-list-table campaign-list-table">
-        <table>
-          <thead>
-            <tr>
-              <th className="campaign-name">
+      <div className="campaign-list-table">
+        <div className="campaign-table">
+          <div className="table-head">
+            <div className="table-row">
+              <div className="table-header campaign-name">
                 <span class="mintmrm-checkbox">
                   <input
                     type="checkbox"
@@ -118,33 +114,24 @@ export default function CampaignListTable(props) {
                   />
                   <label for="campaign-bulk-select">Campaign Name</label>
                 </span>
-              </th>
+              </div>
 
+              <div className="table-header recipient">Recipient</div>
+              <div className="table-header open-rate">Open rate</div>
+              <div className="table-header click-rate">Click rate</div>
+              <div className="table-header unsubscribers">Unsubscribers</div>
+              <div className="table-header status">Status</div>
+              <div className="table-header three-dot"></div>
+            </div>
+          </div>
 
-              {/* <th className="recipient">Recipient</th>
-              <th className="open-rate">Open rate</th>
-              <th className="click-rate">Click rate</th>
-              <th className="unsubscribers">Unsubscribers</th> */}
-              <th className="status">Status</th>
-              <th className="action"></th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            {!campaigns.length && <NoCampaign />}
-            {campaigns.map((campaign, idx) => {
-              return <SingleCampaign 
-                        key={idx} 
-                        campaign={campaign} 
-                        currentActive={currentActive}
-                        setCurrentActive={setCurrentActive} 
-                        editField={editField}
-                        deleteCampaign={deleteCampaign}
-                        />;
+          <div className="table-body">
+            {!props.campaigns.length && <NoCampaign />}
+            {props.campaigns.map((campaign, idx) => {
+              return <SingleCampaign key={idx} campaign={campaign} />;
             })}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup
