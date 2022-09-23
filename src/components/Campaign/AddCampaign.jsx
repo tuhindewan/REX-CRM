@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -8,6 +8,9 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import CampaignTemplates from "./CampaignTemplates";
+
+import EmailEditor from "react-email-editor";
+
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -22,6 +25,8 @@ const defaultCampaignData = {
 };
 
 export default function AddCampaign(props) {
+  const emailEditorRef = useRef(null);
+
   const navigate = useNavigate();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{...defaultCampaignData}]);
@@ -128,6 +133,12 @@ export default function AddCampaign(props) {
     });
   };
 
+  const exportHtml = () => {
+    emailEditorRef.current.editor.exportHtml((data) => {
+      const { design, html } = data;
+      console.log('exportHtml', html);
+    });
+  };
 
   return (
       <div className="mintmrm-add-campaign">
@@ -296,7 +307,9 @@ export default function AddCampaign(props) {
                       isClose={isClose}
                       setIsClose={setIsClose}
                       setEmailBody={setEmailBody}
+                      emailData={emailData[selectedEmailIndex]}
                   />
+
                 </div>
               </div>
               <div className="content-save-section">
