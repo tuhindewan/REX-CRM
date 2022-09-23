@@ -44,7 +44,6 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         // Campaign title validation
         if ( isset($params['title']) && empty( $params['title'] )) {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);

@@ -173,10 +173,15 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-
-        return $wpdb->update( $fields_table, $email, array( 
+        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index + 1 );
+        if($campaign_email->email_index == $index + 1){
+            $wpdb->update( $fields_table, $email, array( 
                             'campaign_id' => $campaign_id, 'email_index' => $index + 1 
                         ));
+        }else{
+            self::insert_campaign_emails( $email, $campaign_id, $index );
+        }
+        return true;
     }
 
 
@@ -307,6 +312,20 @@ class CampaignModel {
             }, $emails);
         }
 
+        return $emails;
+    }
+
+
+    public static function get_campaign_email_by_index($campaign_id, $index)
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        $campaign_emails_query = $wpdb->prepare("SELECT 
+                                    id,email_index
+                                     FROM $campaign_emails_table  
+                                     WHERE campaign_id = %d AND email_index = %d", $campaign_id, $index);
+        $emails = $wpdb->get_row($campaign_emails_query);
         return $emails;
     }
 

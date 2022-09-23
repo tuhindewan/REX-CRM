@@ -17,9 +17,9 @@ const defaultEmailData = {
   email_json: "",
   delay_count: 0,
   delay_value: "",
-  preview: "",
-  senderName: "",
-  senderEmail: "",
+  email_preview_text: "",
+  sender_name: "",
+  sender_email: "",
   toError: null,
   senderEmailError: null,
 };
@@ -82,7 +82,6 @@ export default function EditCampaign(props) {
       setRecipientLists(campaign.meta.recipients?.lists);
       setRecipientTags(campaign.meta.recipients?.tags);
       setEmailData(emails);
-      console.log(emails);
       setActiveEmailData(emails[0]);
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
@@ -115,24 +114,13 @@ export default function EditCampaign(props) {
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
       emails: emailData.map((email) => {
-        if (email.delay_value == "Minutes") {
-          email.delay = email.delay_count * 60;
-        } else if (email.delay_value == "Hours") {
-          email.delay = email.delay_count * 60 * 60;
-        } else if (email.delay_value == "Days") {
-          email.delay = email.delay_count * 60 * 60 * 24;
-        } else if (email.delay_value == "Weeks") {
-          email.delay = email.delay_count * 60 * 60 * 24 * 7;
-        } else {
-          email.delay = 0;
-        }
         return {
-          email_subject: email.subject,
-          email_preview_text: email.preview,
-          sender_email: email.senderEmail,
-          delay: email.delay,
-          delay_type: email.delay_value,
-          sender_name: email.senderName,
+          email_subject: email.email_subject,
+          email_preview_text: email.email_preview_text,
+          sender_email: email.sender_email,
+          delay_count: email.delay_count,
+          delay_value: email.delay_value,
+          sender_name: email.sender_name,
           email_body: email.email_body,
           email_json: email.email_json,
         };
@@ -141,6 +129,7 @@ export default function EditCampaign(props) {
     };
 
     console.log(campaign);
+
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
@@ -322,11 +311,15 @@ export default function EditCampaign(props) {
                       type="number"
                       name="delay_count"
                       value={emailData[selectedEmailIndex]["delay_count"]}
-                      onChange={handleEmailFieldsChange}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "delay_count")
+                      }
                     />
                     <select
                       style={{ maxWidth: "fit-content" }}
-                      onChange={handleEmailFieldsChange}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "delay_value")
+                      }
                       name="delay_value"
                       value={emailData[selectedEmailIndex]["delay_value"]}
                     >
@@ -358,8 +351,8 @@ export default function EditCampaign(props) {
                   <label>Preview Text</label>
                   <input
                     type="text"
-                    name="preview"
-                    value={activeEmailData.email_preview_text}
+                    name="email_preview_text"
+                    value={emailData[selectedEmailIndex]["email_preview_text"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(
                         e.target.value,
@@ -369,7 +362,8 @@ export default function EditCampaign(props) {
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]?.email_subject.length}/200
+                    {emailData[selectedEmailIndex]?.email_preview_text.length}
+                    /200
                   </span>
                   <div className="setting-section">
                     <SettingIcon />
@@ -380,7 +374,7 @@ export default function EditCampaign(props) {
                   <input
                     type="text"
                     name="senderName"
-                    value={activeEmailData.sender_name}
+                    value={emailData[selectedEmailIndex]["sender_name"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "sender_name")
                     }
@@ -389,7 +383,7 @@ export default function EditCampaign(props) {
                   <input
                     type="text"
                     name="senderEmail"
-                    value={activeEmailData.sender_email}
+                    value={emailData[selectedEmailIndex]["sender_email"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "sender_email")
                     }
