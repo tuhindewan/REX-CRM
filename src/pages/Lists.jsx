@@ -171,10 +171,6 @@ const Lists = () => {
   // Handle list create or update form submission
   const createOrUpdate = async () => {
     let res = null;
-    let body = JSON.stringify({
-      ...values,
-      slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
-    });
     try {
       if (editID != 0) {
         // update contact
@@ -185,7 +181,7 @@ const Lists = () => {
             headers: {
               "Content-type": "application/json",
             },
-            body: body,
+            body: JSON.stringify(values),
           }
         );
       } else {
@@ -195,7 +191,7 @@ const Lists = () => {
           headers: {
             "Content-type": "application/json",
           },
-          body: body,
+          body: JSON.stringify(values),
         });
       }
 

@@ -22,6 +22,14 @@ class ListController extends BaseController {
     use Singleton;
 
     /**
+     * List object arguments
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    public $args;
+
+    /**
      * Function used to handle create  or update requests
      *
      * @param WP_REST_Request $request
@@ -31,24 +39,31 @@ class ListController extends BaseController {
      */
     public function create_or_update( WP_REST_Request $request ){
 
-        // Get values from API
+        // Get values from the API request
         $params = MRM_Common::get_api_params_values( $request );
+
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
         }
 
+        // List avaiability check
         $slug = sanitize_title( $title );
-        // list avaiability check
         $exist = ContactGroupModel::is_group_exist( $slug, "lists" );
         if ( $exist && !isset($params['list_id'])) {
             return $this->get_error_response( __( 'List is already available', 'mrm' ),  200);
         }
 
         // List object create and insert or update to database
+        $this->args = array(
+            'title'    => $title,
+            'slug'     => $slug,
+            'data'     => isset( $params['data'] ) ? $params['data'] : ""
+        );
+        
         try {
-            $list = new ListData( $params );
+            $list = new ListData( $this->args );
 
             if(isset( $params['list_id']) ) {
                 $success = ContactGroupModel::update( $list, $params['list_id'], "lists" );
