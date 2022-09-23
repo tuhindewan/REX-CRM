@@ -87,22 +87,23 @@ export default function AddCampaign(props) {
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
       emails: emailData.map((email) => {
-        if (email.delay_value == "Minutes") {
-          email.delay = email.delay_count * 60;
-        } else if (email.delay_value == "Hours") {
-          email.delay = email.delay_count * 60 * 60;
-        } else if (email.delay_value == "Days") {
-          email.delay = email.delay_count * 60 * 60 * 24;
-        } else if (email.delay_value == "Weeks") {
-          email.delay = email.delay_count * 60 * 60 * 24 * 7;
-        } else {
-          email.delay = 0;
-        }
+        // if (email.delay_value == "Minutes") {
+        //   email.delay = email.delay_count * 60;
+        // } else if (email.delay_value == "Hours") {
+        //   email.delay = email.delay_count * 60 * 60;
+        // } else if (email.delay_value == "Days") {
+        //   email.delay = email.delay_count * 60 * 60 * 24;
+        // } else if (email.delay_value == "Weeks") {
+        //   email.delay = email.delay_count * 60 * 60 * 24 * 7;
+        // } else {
+        //   email.delay = 0;
+        // }
         return {
           email_subject: email.subject,
           email_preview_text: email.preview,
           sender_email: email.senderEmail,
-          delay: email.delay,
+          delay_count: email.delay_count,
+          delay_value: email.delay_value,
           sender_name: email.senderName,
           email_body: email.email_body,
           email_json: email.email_json,

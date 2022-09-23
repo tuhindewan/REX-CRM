@@ -294,7 +294,7 @@ class CampaignModel {
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
 
         $campaign_emails_query = $wpdb->prepare("SELECT 
-                                    id,delay,sender_email,
+                                    id,delay_count,delay_value,sender_email,
                                     sender_name,email_index,email_subject,email_preview_text,email_json,
                                     template_id,email_body, created_at, updated_at
                                      FROM $campaign_emails_table  

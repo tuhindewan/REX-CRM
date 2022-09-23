@@ -15,6 +15,8 @@ const defaultEmailData = {
   email_subject: "",
   email_body: "",
   email_json: "",
+  delay_count: 0,
+  delay_value: "",
   preview: "",
   senderName: "",
   senderEmail: "",
@@ -45,6 +47,25 @@ export default function EditCampaign(props) {
   // get the campaign id from url
   const { id } = useParams();
 
+  const names = [
+    {
+      value: "Minutes",
+      id: "minutes",
+    },
+    {
+      value: "Hours",
+      id: "hours",
+    },
+    {
+      value: "Days",
+      id: "days",
+    },
+    {
+      value: "Weeks",
+      id: "weeks",
+    },
+  ];
+
   // fetch campaign data
   const fetchCampaignData = async () => {
     const response = await fetch(`/wp-json/mrm/v1/campaigns/${id}`);
@@ -61,6 +82,7 @@ export default function EditCampaign(props) {
       setRecipientLists(campaign.meta.recipients?.lists);
       setRecipientTags(campaign.meta.recipients?.tags);
       setEmailData(emails);
+      console.log(emails);
       setActiveEmailData(emails[0]);
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
@@ -92,10 +114,33 @@ export default function EditCampaign(props) {
       },
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
-      emails: emailData,
+      emails: emailData.map((email) => {
+        if (email.delay_value == "Minutes") {
+          email.delay = email.delay_count * 60;
+        } else if (email.delay_value == "Hours") {
+          email.delay = email.delay_count * 60 * 60;
+        } else if (email.delay_value == "Days") {
+          email.delay = email.delay_count * 60 * 60 * 24;
+        } else if (email.delay_value == "Weeks") {
+          email.delay = email.delay_count * 60 * 60 * 24 * 7;
+        } else {
+          email.delay = 0;
+        }
+        return {
+          email_subject: email.subject,
+          email_preview_text: email.preview,
+          sender_email: email.senderEmail,
+          delay: email.delay,
+          delay_type: email.delay_value,
+          sender_name: email.senderName,
+          email_body: email.email_body,
+          email_json: email.email_json,
+        };
+      }),
       campaign_id: id,
     };
 
+    console.log(campaign);
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
@@ -265,6 +310,31 @@ export default function EditCampaign(props) {
                       </div>
                     </div>
                   </>
+                )}
+                {selectedEmailIndex > 0 && (
+                  <div className="email-from input-item">
+                    <label>Delay</label>
+                    <input
+                      style={{
+                        border: "1px solid #e3e4e8",
+                        marginRight: "15px",
+                      }}
+                      type="number"
+                      name="delay_count"
+                      value={emailData[selectedEmailIndex]["delay_count"]}
+                      onChange={handleEmailFieldsChange}
+                    />
+                    <select
+                      style={{ maxWidth: "fit-content" }}
+                      onChange={handleEmailFieldsChange}
+                      name="delay_value"
+                      value={emailData[selectedEmailIndex]["delay_value"]}
+                    >
+                      {names.map((item) => (
+                        <option key={item.id}>{item.value}</option>
+                      ))}
+                    </select>
+                  </div>
                 )}
                 <div className="email-subject input-item">
                   <label>Subject:</label>
