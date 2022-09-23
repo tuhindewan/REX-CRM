@@ -19,6 +19,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-right: 16px;
         a {
           width: 16px;
           height: 13px;
@@ -77,7 +78,7 @@
   }
 
   .email-builder-section {
-    .design-web.design-email.editor-desktop.right{
+    .design-web.design-email.editor-desktop.right {
       background-image: none !important;
     }
   }
