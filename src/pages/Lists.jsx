@@ -8,7 +8,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import DeletePopup from "../components/DeletePopup";
-import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
+import { deleteMultipleListsItems, deleteSingleList, submitList, updateList } from "../services/List";
 import AlertPopup from "../components/AlertPopup";
 
 const Lists = () => {
@@ -168,61 +168,40 @@ const Lists = () => {
     setOrderType(order[1]);
   }
 
-  // Handle list create or update form submission
+  // Handle list create or update after form submission
   const createOrUpdate = async () => {
-    let res = null;
-    try {
-      if (editID != 0) {
-        // update contact
-        res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1/lists/${editID}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify(values),
-          }
-        );
-      } else {
-        // create contact
-        res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/lists`, {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
-      }
 
-      const resJson = await res.json();
-      if (resJson.code == 201) {
+    let result = (0 != editID) ? updateList(values) : submitList(values);
+
+    result.then((response) => {
+      if (201 === response.code) {
         setValues({
           title: "",
           data: "",
-          slug: "",
         });
         setShowCreate(false);
         setEditID(0);
         setShowNotification("block");
-        setMessage(resJson.message);
+        setMessage(response.message);
         setErrors({});
         useGlobalStore.setState({
           counterRefresh: !counterRefresh,
         });
         toggleRefresh();
       } else {
+        // Error messages
         setErrors({
           ...errors,
-          list: resJson.message,
+          list: response.message,
         });
       }
-    } catch (e) {}
+    })
   };
 
-  // Hide create form after click on cancel
+  // Hide create or update form after click on cancel
   const handleCancel = () => {
     setShowCreate(false);
+    setErrors({});
   }
 
   // at first page load get all the available lists
