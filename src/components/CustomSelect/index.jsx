@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, isValidElement } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
-import CrossIcon from "../Icons/CrossIcon";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 export default function CustomSelect(props) {
   // global state reference for whether to hide all dropdown
@@ -98,7 +97,6 @@ export default function CustomSelect(props) {
   };
 
   const deleteSelected = (e, id) => {
-    console.log(id);
     const index = selected.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array

@@ -54,8 +54,18 @@ export default function AddCampaign(props) {
     const campaign = {
       title: campaignTitle,
       recipients: {
-        lists: recipientLists.map((list) => list.id),
-        tags: recipientTags.map((tag) => tag.id),
+        lists: recipientLists.map((list) => {
+          return {
+            id: list.id,
+            title: list.title,
+          };
+        }),
+        tags: recipientTags.map((tag) => {
+          return {
+            id: tag.id,
+            title: tag.title,
+          };
+        }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
@@ -70,7 +80,6 @@ export default function AddCampaign(props) {
         };
       }),
     };
-
     // Send POST request to save data
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
@@ -79,7 +88,7 @@ export default function AddCampaign(props) {
           state: { status: "campaign-created", message: response?.message },
         });
       } else {
-        window.alert(resJson.message);
+        window.alert(response?.message);
       }
     });
   };

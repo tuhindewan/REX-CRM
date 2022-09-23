@@ -15,21 +15,17 @@ export async function submitCampaign(campaign) {
 
 // Campaign delete request
 export async function deleteSingleCampaign(id) {
-  return await fetch(
-    `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${id}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-      },
-    }
-  ).then((response) => {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+  }).then((response) => {
     if (response.ok) {
       return response.json();
     }
   });
 }
-
 
 // Return all campaigns from the database
 export async function getAllCampaigns() {
@@ -44,4 +40,22 @@ export async function getAllCampaigns() {
         return data.data;
       }
     });
+}
+
+// Campaign update put request
+export async function updateCampaignRequest(campaign) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${campaign.campaign_id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(campaign),
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
 }
