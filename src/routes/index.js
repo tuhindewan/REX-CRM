@@ -17,9 +17,11 @@ import Contacts from "../pages/Contacts";
 import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
-import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
+import ImportWordpress from "../pages/ImportWordpress";
+import CampaignTemplates from "../components/Campaign/CampaignTemplates";
+
 
 const routes = [
   {
