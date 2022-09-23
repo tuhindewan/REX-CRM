@@ -7,6 +7,7 @@ import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
+import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -27,7 +28,6 @@ export default function AddCampaign(props) {
   const emailEditorRef = useRef(null);
 
   const navigate = useNavigate();
-  const { id } = useParams();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{ ...defaultCampaignData }]);
 
@@ -117,9 +117,10 @@ export default function AddCampaign(props) {
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
-        navigate("/campaigns", {
-          state: { status: "campaign-created", message: response?.message },
-        });
+        // navigate("/campaigns", {
+        //   state: { status: "campaign-created", message: response?.message },
+        // });
+        setResponseMessage("Campaign is saved.");
       } else {
         window.alert(response?.message);
       }
@@ -366,40 +367,6 @@ export default function AddCampaign(props) {
                   setEmailBody={setEmailBody}
                   emailData={emailData[selectedEmailIndex]}
                 />
-
-                <div className="setting-section">
-                  <SettingIcon />
-                </div>
-              </div>
-              <div className="email-from input-item">
-                <label>From</label>
-                <input
-                  type="text"
-                  name="senderName"
-                  value={emailData[selectedEmailIndex]["senderName"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Name"
-                />
-                <input
-                  type="text"
-                  name="senderEmail"
-                  value={emailData[selectedEmailIndex]["senderEmail"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Email"
-                />
-              </div>
-              <div className="email-design input-item">
-                <label>Design</label>
-                <div className="add-template-section" onClick={openTemplate}>
-                  <TemplateIcon />
-                  <Link to="">Select a Template</Link>
-                </div>
-                <CampaignTemplates
-                  isOpen={isTemplate}
-                  isClose={isClose}
-                  setIsClose={setIsClose}
-                  setEmailBody={setEmailBody}
-                />
               </div>
             </div>
             <div className="content-save-section">
@@ -413,7 +380,12 @@ export default function AddCampaign(props) {
               >
                 Save
               </button>
-              {responseMessage && <p>{responseMessage}</p>}
+              {responseMessage != "" && (
+                <SuccessfulNotification
+                  display={"block"}
+                  message="Campaign is saved."
+                />
+              )}
             </div>
           </div>
         </div>

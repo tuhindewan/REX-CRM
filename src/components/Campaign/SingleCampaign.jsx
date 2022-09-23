@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import Portal from "../Portal";
 //import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import CompletedCampaignIcon from "../Icons/CompletedCampaignIcon";
 import DraftCampaignIcon from "../Icons/DraftCampaignIcon";
@@ -37,7 +35,7 @@ export default function SingleCampaign(props) {
         </div>
       </div>
 
-      <td className="status">{props.campaign.status}</td>
+      {/* <td className="status">{props.campaign.status}</td>
       <td>
         <button
           className="more-option"
@@ -85,9 +83,9 @@ export default function SingleCampaign(props) {
             </Portal>
           )}
         </button>
-      </td>
+      </td> */}
 
-      {/* <div className="table-data recipient">-</div>
+      <div className="table-data recipient">-</div>
       <div className="table-data open-rate">-</div>
       <div className="table-data click-rate">-</div>
       <div className="table-data unsubscribers">-</div>
@@ -96,7 +94,7 @@ export default function SingleCampaign(props) {
       </div>
       <div className="three-dot">
         <ThreeDotIcon />
-      </div> */}
+      </div>
     </div>
   );
 }

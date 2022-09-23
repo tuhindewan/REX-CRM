@@ -219,7 +219,7 @@ export default function EditCampaign(props) {
             <div className="add-email-section">
               {emailData.map((email, index) => {
                 return (
-                  <div key={`emails-${index}`}>
+                  <div className="email-box" key={`emails-${index}`}>
                     <div
                       className={
                         selectedEmailIndex != index

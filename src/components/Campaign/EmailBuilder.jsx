@@ -13,9 +13,9 @@ const EmailBuilder = (props) => {
 
   const closeEmailBuilder = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
+      console.log(data);
       setEmailBody(data);
       setIsCloseBuilder("hide");
-      setIsEmailBuilderOpen(false);
     });
   };
 
