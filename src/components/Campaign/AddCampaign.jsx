@@ -14,6 +14,8 @@ const defaultCampaignData = {
   subject: "",
   email_body: "",
   email_json: "",
+  delay_count: 0,
+  delay_value: "",
   preview: "",
   senderName: "",
   senderEmail: "",
@@ -39,6 +41,25 @@ export default function AddCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
+  const [delayCount, setDelayCount] = useState(1);
+  const names = [
+    {
+      value: "Minutes",
+      id: "minutes",
+    },
+    {
+      value: "Hours",
+      id: "hours",
+    },
+    {
+      value: "Days",
+      id: "days",
+    },
+    {
+      value: "Weeks",
+      id: "weeks",
+    },
+  ];
 
   // useEffect(() => {
   //   console.log(id);
@@ -74,6 +95,8 @@ export default function AddCampaign(props) {
           email_subject: email.subject,
           email_preview_text: email.preview,
           sender_email: email.senderEmail,
+          delay_count: email.delay_count,
+          delay_value: email.delay_value,
           sender_name: email.senderName,
           email_body: email.email_body,
           email_json: email.email_json,
@@ -115,7 +138,9 @@ export default function AddCampaign(props) {
 
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = (e) => {
+    console.log(e);
     setEmailData((prevEmailData) => {
+      console.log(prevEmailData);
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
@@ -248,6 +273,28 @@ export default function AddCampaign(props) {
                     </div>
                   </div>
                 </>
+              )}
+              {selectedEmailIndex > 0 && (
+                <div className="email-from input-item">
+                  <label>Delay</label>
+                  <input
+                    style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
+                    type="number"
+                    name="delay_count"
+                    value={emailData[selectedEmailIndex]["delay_count"]}
+                    onChange={handleEmailFieldsChange}
+                  />
+                  <select
+                    style={{ maxWidth: "fit-content" }}
+                    onChange={handleEmailFieldsChange}
+                    name="delay_value"
+                    value={emailData[selectedEmailIndex]["delay_value"]}
+                  >
+                    {names.map((item) => (
+                      <option key={item.id}>{item.value}</option>
+                    ))}
+                  </select>
+                </div>
               )}
               <div className="email-subject input-item">
                 <label>Subject:</label>
