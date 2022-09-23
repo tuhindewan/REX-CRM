@@ -5,11 +5,11 @@ import { useGlobalStore } from "../../hooks/useGlobalStore";
 import ComputerIcon from "../Icons/ComputerIcon";
 import LeftArrow from "../Icons/LeftArrow";
 import MobileIcon from "../Icons/MobileIcon";
-
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
 
 function useHookWithRefCallback() {
-  const ref = useRef(null)
-  const setRef = useCallback(node => {
+  const ref = useRef(null);
+  const setRef = useCallback((node) => {
     if (ref.current) {
       // Make sure to cleanup any events/references added to the last instance
     }
@@ -20,13 +20,12 @@ function useHookWithRefCallback() {
     }
 
     // Save a reference to the node
-    ref.current = node
-    console.log(ref)
-  }, [])
+    ref.current = node;
+    console.log(ref);
+  }, []);
 
-  return [setRef]
+  return [setRef];
 }
-
 
 const EmailBuilder = (props) => {
   const { isCloseBuilder, setIsCloseBuilder, setEmailBody, emailData } = props;
@@ -38,7 +37,7 @@ const EmailBuilder = (props) => {
     hideGlobalNav: true,
   });
 
-  const [ref] = useHookWithRefCallback()
+  const [ref] = useHookWithRefCallback();
 
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml(
@@ -69,9 +68,7 @@ const EmailBuilder = (props) => {
   const onLoad = () => {
     // console.log(emailEditorRef, ref)
     // emailEditorRef.current.editor.loadDesign(emailData.email_json);
-  }
-
-
+  };
 
   return (
     <>
@@ -85,14 +82,14 @@ const EmailBuilder = (props) => {
       >
         <div className="mrm-campaign-builder-navbar-wrapper">
           <div className="navbar-left-section">
-            <button className="back-button">
+            {/* <button className="back-button">
               <Link to="" onClick={closeEmailBuilder}>
                 <LeftArrow />
               </Link>
-            </button>
+            </button> */}
 
             <div className="responsive-section">
-              <button className="computer-view">
+              <button className="computer-view active">
                 <ComputerIcon />
               </button>
               <button className="mobile-view">
@@ -100,11 +97,18 @@ const EmailBuilder = (props) => {
               </button>
             </div>
           </div>
+          <div className="navbar-right-section">
+            <button className="three-dot-btn">
+              <ThreeDotIcon />
+            </button>
+            <button className="mintmrm-btn outline">Send Test</button>
+            <button className="mintmrm-btn">Next</button>
+          </div>
         </div>
-        <div style={{ height: "100%" }}>
+        <div className="email-builder-section" style={{ height: "100%" }}>
           <EmailEditor
             minHeight={"100%"}
-            ref={ref}
+            ref={ref}  
             onLoad={onLoad}
           />
         </div>
