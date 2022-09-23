@@ -3,10 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "../DeletePopup";
 import NoCampaign from "./NoCampaign";
 // Internal dependencies
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { deleteSingleCampaign, getAllCampaigns } from "../../services/Campaign";
+import { deleteSingleCampaign } from "../../services/Campaign";
 import Plus from "../Icons/Plus";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleCampaign from "./SingleCampaign";
@@ -40,19 +39,19 @@ export default function CampaignListTable(props) {
   const [refresh, setRefresh] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
 
-  useEffect(() => {
-    getAllCampaigns().then((results) => {
-      setCampaigns(results.data);
-      if ("campaign-created" == location.state?.status) {
-        setShowNotification("block");
-        setMessage(location.state?.message);
-      }
-    });
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [refresh]);
+  // useEffect(() => {
+  //   getAllCampaigns().then((results) => {
+  //     setCampaigns(results.data);
+  //     if ("campaign-created" == location.state?.status) {
+  //       setShowNotification("block");
+  //       setMessage(location.state?.message);
+  //     }
+  //   });
+  //   const timer = setTimeout(() => {
+  //     setShowNotification("none");
+  //   }, 3000);
+  //   return () => clearTimeout(timer);
+  // }, [refresh]);
 
   // Navigate to campaign edit page
   function editField(campaign) {
