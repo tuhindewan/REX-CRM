@@ -93,43 +93,38 @@ class ContactGroupModel{
     {
         global $wpdb;
         $group_table    = $wpdb->prefix . ContactGroupSchema::$table_name;
-        $pivot_table = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
+        $pivot_table    = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
         $search_terms   = null;
-
-        /**
-         * Here take the search terms in a variable and only include the whole 
-         * clause if search parameter exists otherwise skip the search clause
-         */
+        // Search groups by title
 		if ( ! empty( $search ) ) {
-            
-            $search_terms = "AND `title` LIKE '%$search%'";
+            $search = $wpdb->esc_like($search);
+            $search_terms = "AND title LIKE '%%$search%%'";
 		}
+        
+        // Return groups for list view
         try {
             $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
             where type='$type'
-            $search_terms
+            {$search_terms}
             group by g.id, g.title, g.data, g.created_at
             order by $order_by $order_type
             limit $offset, $limit");
             $query_results = $wpdb->get_results( $select_query );
 
-            $count_query    = $wpdb->prepare("SELECT COUNT(*) as total FROM (
+            $count_query = $wpdb->prepare("SELECT COUNT(*) as total FROM (
                 SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
             where type='$type'
-            $search_terms
+            {$search_terms}
             group by g.id, g.title, g.data, g.created_at
             ) as table1");
             $count_result   = $wpdb->get_results($count_query);
-
-            $count_result = isset( $count_result['0'] ) ? $count_result['0'] : "";
-    
-            $count = (int) $count_result->total;
+            
+            $count = (int) $count_result['0']->total;
             $totalPages = ceil($count / $limit);
-      
             return array(
                 'data'          => $query_results,
                 'total_pages'   => $totalPages,
@@ -154,11 +149,9 @@ class ContactGroupModel{
     {
         global $wpdb;
         $group_table    =   $wpdb->prefix . ContactGroupSchema::$table_name;
-        $pivot_table    =   $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
         try {
             $wpdb->delete( $group_table, ['id' => $id], ["%d"] );
-            $wpdb->delete( $pivot_table, ['group_id' => $id], ["%d"] );
             return true;
         } catch(\Exception $e) {
             return false;
@@ -179,12 +172,10 @@ class ContactGroupModel{
         global $wpdb;
 
         $group_table  = $wpdb->prefix . ContactGroupSchema::$table_name;
-        $pivot_table  = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
         try {
             $ids = implode(",", array_map( 'intval', $ids ));
-            $wpdb->query( "DELETE FROM $group_table WHERE id IN ($ids)" );
-            $wpdb->query( "DELETE FROM $pivot_table WHERE group_id IN ($ids)" );
+            $wpdb->query( "DELETE FROM {$group_table} WHERE id IN ($ids)" );
             return true;
         } catch(\Exception $e) {
             return false;

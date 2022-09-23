@@ -2,8 +2,10 @@ import React, { useRef } from "react";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 import HoverMenu from "../HoverMenu";
+import { useNavigate } from "react-router-dom";
 
 export default function ListItem(props) {
+  const navigate = useNavigate();
   // read title and description from list prop
   const { title, data, created_at, total_contacts, id } = props.list;
   const {
@@ -15,6 +17,14 @@ export default function ListItem(props) {
     selected,
   } = props;
   const menuButtonRef = useRef(null);
+
+  const handleHref = async (event) => {
+    event.preventDefault();
+    
+    navigate(`/contacts?list=${id}`, {
+      state: { list_id: id },
+    });
+  }
 
   return (
     <tr>
@@ -30,7 +40,7 @@ export default function ListItem(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
-      <td className="">{total_contacts}</td>
+      <td className=""><a href="" onClick={handleHref} >{total_contacts}</a></td>
       <td className="">
         {data?.length > 20 ? data.substring(0, 20) + "..." : data}
       </td>

@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import CrossIcon from "../Icons/CrossIcon";
-import sample from "../sample.json";
 
-import EmailBuilder from './EmailBuilder';
+import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
   const { isClose, setIsClose, setEmailBody, emailData } = props;
@@ -11,6 +10,7 @@ export default function CampaignTemplates(props) {
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [ isEmailBuilderOpen, setIsEmailBuilderOpen ] = useState(false);
   const [dataTest, setData] = useState({});
+
   const closeSection = () => {
     setIsClose(!isClose);
   };
@@ -19,8 +19,7 @@ export default function CampaignTemplates(props) {
   const openTemplateBuilder = (event, data) => {
     setIsEmailBuilderOpen(true)
     setIsTemplateBuilder(true);
-    setIsCloseBuilder("block");
-    setData(data);
+    setIsCloseBuilder(!isCloseBuilder);
   };
 
   // Templates selection popup close after finishing email building
@@ -31,10 +30,9 @@ export default function CampaignTemplates(props) {
   };
   const emailEditorRef = useRef(null);
 
-
   const closeEmailBuilder = () => {
-    setIsCloseBuilder('none');
-  }
+    setIsCloseBuilder("none");
+  };
 
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
@@ -73,7 +71,7 @@ export default function CampaignTemplates(props) {
           <div className="template-body">
             <div
               className="template-select-section"
-              onClick={(event) => openTemplateBuilder(event, sample)}
+              onClick={openTemplateBuilder}
             >
               <Link to="">
                 <button type="submit" className="save-template mintmrm-btn ">
@@ -93,7 +91,7 @@ export default function CampaignTemplates(props) {
               setEmailBody={setEmailBody}
               setIsCloseBuilder={closeEmailBuilder}
               setCloseTemplateSelection={setCloseTemplateSelection}
-              setIsEmailBuilderOpen={setIsEmailBuilderOpen}
+              setIsEmailBuilderOpen={setIsEmailBuilderOpen} r
           />
         </div>
       </div>

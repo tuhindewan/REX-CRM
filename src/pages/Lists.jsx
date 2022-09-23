@@ -6,8 +6,10 @@ import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
-import NavBar from "../components/Navbar/index";
 import SuccessfulNotification from "../components/SuccessfulNotification";
+import DeletePopup from "../components/DeletePopup";
+import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
+import AlertPopup from "../components/AlertPopup";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -85,6 +87,12 @@ const Lists = () => {
 
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
+  const [isDelete, setIsDelete] = useState("none");
+  const [listID, setListID] = useState();
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [showAlert, setShowAlert] = useState("none");
+
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -216,9 +224,15 @@ const Lists = () => {
     } catch (e) {}
   };
 
+  // Hide create form after click on cancel
+  const handleCancel = () => {
+    setShowCreate(false);
+  }
+
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
+    console.log(query);
     async function getLists() {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
@@ -231,62 +245,92 @@ const Lists = () => {
       }
     }
     getLists();
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
-  async function deleteList(id) {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/lists/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-type": "application/json",
-          },
+
+  // Get field id from child component
+  const deleteList = async (list_id) => {
+    setIsDelete("block");
+    setDeleteTitle("Delete List");
+    setDeleteMessage("Are you sure you want to delete the list?");
+    setListID(list_id);
+  }
+
+  // Delete list after delete confirmation
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleList(listID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
         }
-      );
-      const resJson = await res.json();
-      useGlobalStore.setState({
-        counterRefresh: !counterRefresh,
       });
-      toggleRefresh();
+    }
+    setIsDelete("none");
+  };
+
+  // Multiple selection confirmation
+  const deleteMultipleList = async () => {
+    if (selected.length > 0) {
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
+    } else {
+      setShowAlert("block");
     }
   }
 
-  async function deleteMultipleList() {
-    if (selected.length > 0) {
-      if (
-        window.confirm("Are you sure you want to delete these selected items?")
-      ) {
-        const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1/lists/`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-              list_ids: selected,
-            }),
-          }
-        );
-        const resJson = await res.json();
-        // remove all selected after deletion
-        setAllSelected(false);
-        setSelected([]);
-        useGlobalStore.setState({
-          counterRefresh: !counterRefresh,
-        });
-        toggleRefresh();
-      }
-    } else {
-      window.alert("Please select at least one item to delete.");
+  // Delete multiple lists after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleListsItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          setAllSelected(false);
+          setSelected([]);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
     }
-  }
+    setIsDelete("none");
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
 
   return (
     <>
       {showCreate && (
-        <div className="create-contact">
+        <div className="tag-contact">
           <div className="mintmrm-container">
             <h2 className="conatct-heading">
               {editID == 0 ? "Add List" : "Update List"}
@@ -319,12 +363,16 @@ const Lists = () => {
                       onChange={handleChange}
                     />
                   </div>
-                  <button
-                    className="contact-save mintmrm-btn"
-                    onClick={createOrUpdate} // explicityly set the id as null to force create list
-                  >
+                  <div className="contact-button-field">
+                    <button
+                      className="contact-cancel mintmrm-btn outline" onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="contact-save mintmrm-btn" onClick={createOrUpdate}>
                     {editID == 0 ? "Save" : "Update"}
-                  </button>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -477,6 +525,19 @@ const Lists = () => {
             )}
           </div>
         </div>
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
+        />
+      </div>
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert}/>
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>
