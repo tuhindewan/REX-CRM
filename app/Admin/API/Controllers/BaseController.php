@@ -86,6 +86,26 @@ abstract class BaseController {
 
 
 	/**
+     * Prepare json response message for REST API
+     * 
+	 * @param $message
+	 * @param $code
+	 * @param $wp_error
+	 * 
+     * @return array
+     * @since 1.0.0
+     */  
+	public function get_json_response( $message = '') {
+		$response =  [
+			'status'	=> 'success',
+			'message' 	=> $message,
+		];
+
+		return rest_ensure_response($response);
+	}
+
+
+	/**
      * Prepare error response for REST API
      * 
 	 * @param $message

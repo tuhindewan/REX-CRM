@@ -138,14 +138,15 @@ class ListController extends BaseController {
     public function get_single( WP_REST_Request $request ){
 
         // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+        $params  = MRM_Common::get_api_params_values( $request );
 
-        $group = ContactGroupModel::get( $params['list_id'] );
+        $list_id = isset( $params['list_id'] ) ? $params['list_id'] : "";
+        $group   = ContactGroupModel::get( $list_id );
 
         if(isset($group)) {
-            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $group);
+            return rest_ensure_response( $group );
         }
-        return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+        return $this->get_error_response( __('Failed to get data.', 'mrm' ) );
 
     }
 
@@ -159,14 +160,15 @@ class ListController extends BaseController {
      */
     public function delete_single( WP_REST_Request $request ){
         // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+        $params  = MRM_Common::get_api_params_values( $request );
 
-        $success = ContactGroupModel::destroy( $params['list_id'] );
+        $list_id = isset( $params['list_id'] ) ? $params['list_id'] : "";
+        $success = ContactGroupModel::destroy( $list_id );
+
         if( $success ) {
-            return $this->get_success_response( __( 'List has been deleted successfully', 'mrm' ), 200 );
+            return $this->get_json_response( __( 'List has been deleted successfully', 'mrm' ) );
         }
-
-        return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'Failed to delete', 'mrm' ) );
     }
 
 
@@ -181,9 +183,10 @@ class ListController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = ContactGroupModel::destroy_all( $params['list_ids'] );
+        $ids = isset( $params['list_ids'] ) ? $params['list_ids'] : [];
+        $success = ContactGroupModel::destroy_all( $ids );
         if($success) {
-            return $this->get_success_response(__( 'Lists has been deleted successfully', 'mrm' ), 200);
+            return $this->get_json_response(__( 'Lists has been deleted successfully', 'mrm' ));
         }
 
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);

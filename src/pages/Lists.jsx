@@ -237,7 +237,7 @@ const Lists = () => {
   const onDeleteStatus = async (status) => {
     if (status) {
       deleteSingleList(listID).then((response) => {
-        if (200 === response.code) {
+        if ('success' === response.status) {
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -270,7 +270,7 @@ const Lists = () => {
   const onMultiDelete = async (status) => {
     if (status) {
       deleteMultipleListsItems(selected).then((response) => {
-        if (200 === response.code) {
+        if ('success' === response.status) {
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();

@@ -136,13 +136,7 @@ class ContactGroupModel{
     {
         global $wpdb;
         $group_table    =   $wpdb->prefix . ContactGroupSchema::$table_name;
-
-        try {
-            $wpdb->delete( $group_table, ['id' => $id], ["%d"] );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->delete( $group_table, ['id' => $id], ["%d"] );
     }
 
 
@@ -160,13 +154,8 @@ class ContactGroupModel{
 
         $group_table  = $wpdb->prefix . ContactGroupSchema::$table_name;
 
-        try {
-            $ids = implode(",", array_map( 'intval', $ids ));
-            $wpdb->query( "DELETE FROM {$group_table} WHERE id IN ($ids)" );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        $ids = implode(",", array_map( 'intval', $ids ));
+        return $wpdb->query( "DELETE FROM {$group_table} WHERE id IN ($ids)" );
     }
 
 
