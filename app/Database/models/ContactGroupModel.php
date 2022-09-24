@@ -6,6 +6,7 @@ use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactGroupSchema;
 use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use Mint\Mrm\Internal\Traits\Singleton;
+use WP_Error;
 
 /**
  * @author [MRM Team]
@@ -24,7 +25,7 @@ class ContactGroupModel{
      * 
      * @param $group Tag or List or Segment object 
      * 
-     * @return int|bool 
+     * @return bool|int
      * @since 1.0.0
      */
     public static function insert( $group, $type )
@@ -32,18 +33,15 @@ class ContactGroupModel{
         global $wpdb;
         $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
 
-        try {
-            $wpdb->insert( $group_table, array(
-                'title'         => $group->get_title(),
-                'type'          => $type,
-                'slug'          => $group->get_slug(),
-                'data'          => $group->get_data(),
-                'created_at'    => current_time('mysql')) 
-            );
-            return $wpdb->insert_id;
-        } catch(\Exception $e) {
-            return false;
-        }
+        $result = $wpdb->insert( $group_table, array(
+            'title'         => $group->get_title(),
+            'type'          => $type,
+            'slug'          => $group->get_slug(),
+            'data'          => $group->get_data(),
+            'created_at'    => current_time('mysql')) 
+        );
+
+        return $result ? self::get( $wpdb->insert_id ) : false;
     }
 
 
@@ -62,19 +60,14 @@ class ContactGroupModel{
         global $wpdb;
         $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
 
-        try {
-            $wpdb->update( $group_table, array(
-                'title'         => $group->get_title(),
-                'type'          => $type,
-                'slug'          => $group->get_slug(),
-                'data'          => $group->get_data(),
-                'updated_at'    => current_time('mysql')
-                ), array( 'id' => $id )
-            );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        $result = $wpdb->update( $group_table, array(
+            'title'         => $group->get_title(),
+            'type'          => $type,
+            'slug'          => $group->get_slug(),
+            'data'          => $group->get_data(),
+            'updated_at'    => current_time('mysql')
+            ), array( 'id' => $id )
+        );
     }
 
 
@@ -196,13 +189,8 @@ class ContactGroupModel{
         global $wpdb;
         $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
 
-        try {
-            $select_query   = $wpdb->prepare( "SELECT * FROM $group_table WHERE id = %d",array( $id ) );
-            $select_result  = $wpdb->get_results( $select_query );
-            return $select_result;
-        } catch(\Exception $e) {
-            return false;
-        }
+        $result  = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$group_table} WHERE id = %d", array( $id ) ), ARRAY_A );
+        return $result;
     }
 
 

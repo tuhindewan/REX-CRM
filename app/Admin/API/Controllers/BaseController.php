@@ -83,12 +83,12 @@ abstract class BaseController {
      * @return array
      * @since 1.0.0
      */  
-	public function get_success_response( $message = '', $code = 0, $data = null ) {
-		$response =  array(
-			'code'    => $code,
-			'message' => $message,
-			'data'  => $data,
-		);
+	public function get_success_response( $data = null, $message = '', $code = 201 ) {
+		$response =  [
+			'code'    	=> $code,
+			'message' 	=> $message,
+			'data'  	=> $data
+		];
 
 		return rest_ensure_response($response);
 	}
@@ -104,20 +104,13 @@ abstract class BaseController {
      * @return array
      * @since 1.0.0
      */  
-	public function get_error_response( $message = '', $code = 0, $wp_error = null  ) {
-		if ( 0 !== absint( $code ) ) {
-			$this->response_code = $code;
-		} else if ( empty( $code ) ) {
-			$this->response_code = 500;
-		}
+	public function get_error_response( $message = '', $code = 400 ) {
+		$response =  [
+			'error'    	=> 'bad_request',
+			'message' 	=> $message,
+		];
 
-		$data = array();
-		if ( $wp_error instanceof \WP_Error ) {
-			$message = $wp_error->get_error_message();
-			$data    = $wp_error->get_error_data();
-		}
-
-		return new \WP_Error( $this->response_code, $message, array( 'status' => $this->response_code, 'error_data' => $data ) );
+		return rest_ensure_response($response);
 	}
 
 

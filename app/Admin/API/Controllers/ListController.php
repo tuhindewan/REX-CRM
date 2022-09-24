@@ -45,14 +45,14 @@ class ListController extends BaseController {
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
+            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ));
         }
 
         // List avaiability check
         $slug = sanitize_title( $title );
         $exist = ContactGroupModel::is_group_exist( $slug, "lists" );
         if ( $exist && !isset($params['list_id'])) {
-            return $this->get_error_response( __( 'List is already available', 'mrm' ),  200);
+            return $this->get_error_response( __( 'List is already available', 'mrm' ));
         }
 
         // List object create and insert or update to database
@@ -61,23 +61,22 @@ class ListController extends BaseController {
             'slug'     => $slug,
             'data'     => isset( $params['data'] ) ? $params['data'] : ""
         );
-        
+
         try {
             $list = new ListData( $this->args );
 
             if(isset( $params['list_id']) ) {
-                $success = ContactGroupModel::update( $list, $params['list_id'], "lists" );
+                $result = ContactGroupModel::update( $list, $params['list_id'], "lists" );
             } else {
-                $success = ContactGroupModel::insert( $list, "lists" );
+                $result = ContactGroupModel::insert( $list, "lists" );
             }
-
-            if($success) {
-                return $this->get_success_response(__( 'List has been saved successfully', 'mrm' ), 201, $success);
+            if( $result ) {
+                return $this->get_success_response($result, __( 'List has been saved successfully', 'mrm' ));
             }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
+            return $this->get_error_response( __( 'Failed to save', 'mrm' ) );
 
         } catch(Exception $e) {
-            return $this -> get_error_response(__( 'List is not valid', 'mrm' ), 200);
+            return $this->get_error_response(__( $e->getMessage(), 'mrm' ));
         }
     }
 
@@ -117,7 +116,7 @@ class ListController extends BaseController {
         $groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
 
         if(isset($groups)) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
+            return $this->get_success_response( $groups, __( 'Query Successfull', 'mrm' ));
         }
         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
     }
