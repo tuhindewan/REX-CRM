@@ -15,15 +15,6 @@ use WP_REST_Request;
 abstract class BaseController {
 
 	/**
-     * REST API response code
-     * 
-     * @var integer
-     * @since 1.0.0
-     */
-  	private $response_code = 200;
-
-
-	/**
 	 * Create or update an object
 	 * 
 	 * @param WP_REST_Request $request

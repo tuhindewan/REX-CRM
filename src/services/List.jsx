@@ -13,6 +13,16 @@ export async function getLists() {
         })
 }
 
+// Return Lists to index page from the database based on query params 
+export async function getAllLists(orderBy, orderType, page, perPage, query) {
+  return fetch(`${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`)
+      .then( (response) => {
+          if( response.ok ){
+              return response.json()
+          }
+      })
+}
+
 // Submit list via POST request
 export async function submitList(list) {
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/lists`, {

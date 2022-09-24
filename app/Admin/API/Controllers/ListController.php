@@ -45,7 +45,7 @@ class ListController extends BaseController {
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ));
+            return $this->get_error_response( __( 'List name is mandatory', 'mrm' ));
         }
 
         // List avaiability check
@@ -114,11 +114,10 @@ class ListController extends BaseController {
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
-
         if(isset($groups)) {
-            return $this->get_success_response( $groups, __( 'Query Successfull', 'mrm' ));
+            return rest_ensure_response( $groups );
         }
-        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+        return $this->get_error_response( __( 'Failed to get data', 'mrm' ) );
     }
 
 

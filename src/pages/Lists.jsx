@@ -8,7 +8,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import DeletePopup from "../components/DeletePopup";
-import { deleteMultipleListsItems, deleteSingleList, submitList, updateList } from "../services/List";
+import { deleteMultipleListsItems, deleteSingleList, getAllLists, submitList, updateList } from "../services/List";
 import AlertPopup from "../components/AlertPopup";
 
 const Lists = () => {
@@ -207,18 +207,13 @@ const Lists = () => {
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
-    async function getLists() {
-      const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
-      );
-      const resJson = await res.json();
-      if (resJson.code == 200) {
-        setLists(resJson.data.data);
-        setCount(resJson.data.count);
-        setTotalPages(resJson.data.total_pages);
-      }
-    }
-    getLists();
+
+    getAllLists(orderBy, orderType, page, perPage, query).then((response) => {
+      setLists(response.data);
+      setCount(response.count);
+      setTotalPages(response.total_pages);
+    });
+
     const timer = setTimeout(() => {
       setShowNotification("none");
     }, 3000);
