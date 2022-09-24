@@ -4,9 +4,7 @@ namespace Mint\MRM\DataBase\Models;
 
 use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactGroupSchema;
-use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use Mint\Mrm\Internal\Traits\Singleton;
-use WP_Error;
 
 /**
  * @author [MRM Team]
@@ -24,8 +22,9 @@ class ContactGroupModel{
      * Insert group information to database
      * 
      * @param $group Tag or List or Segment object 
+     * @param $type  
      * 
-     * @return bool|int
+     * @return bool|array
      * @since 1.0.0
      */
     public static function insert( $group, $type )
@@ -52,7 +51,7 @@ class ContactGroupModel{
      * @param int       $id            Tag or List or Segment id
      * @param string    $type          Tag or List or Segment type
      * 
-     * @return bool
+     * @return bool|array
      * @since 1.0.0
      */
     public static function update( $group, $id, $type )
@@ -68,6 +67,8 @@ class ContactGroupModel{
             'updated_at'    => current_time('mysql')
             ), array( 'id' => $id )
         );
+
+        return $result ? self::get( $id ) : false;
     }
 
 
@@ -230,6 +231,29 @@ class ContactGroupModel{
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    /**
+     * Check existing tag, list or segment on database by id
+     * 
+     * @param mixed $slug group slug
+     * @param mixed $type group type
+     * @param int   $id   group id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_group_exist_by_id( $slug, $type, $id )
+    {
+        global $wpdb;
+        $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+
+        $result  = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $group_table WHERE slug = %s AND type = %s AND id= %d",array( $slug, $type, $id ) ) );
+        if( $result ){
+            return true;
+        }
+        return false;
     }
 
     

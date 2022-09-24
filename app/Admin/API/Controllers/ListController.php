@@ -65,11 +65,18 @@ class ListController extends BaseController {
         try {
             $list = new ListData( $this->args );
 
-            if(isset( $params['list_id']) ) {
+            if( isset( $params['list_id']) ) {
+                // Check slugs for removing the duplication of same name
+                $other_slugs = ContactGroupModel::is_group_exist( $slug, "lists" );
+                $update_slug = ContactGroupModel::is_group_exist_by_id( $slug, "lists", $params['list_id'] );
+                if ( $other_slugs && !$update_slug ) {
+                    return $this->get_error_response( __( 'List is already available', 'mrm' ));
+                }
                 $result = ContactGroupModel::update( $list, $params['list_id'], "lists" );
             } else {
                 $result = ContactGroupModel::insert( $list, "lists" );
             }
+
             if( $result ) {
                 return $this->get_success_response($result, __( 'List has been saved successfully', 'mrm' ));
             }

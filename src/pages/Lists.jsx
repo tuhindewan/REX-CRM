@@ -201,6 +201,10 @@ const Lists = () => {
   // Hide create or update form after click on cancel
   const handleCancel = () => {
     setShowCreate(false);
+    setValues({
+      title: "",
+      data: "",
+    });
     setErrors({});
   }
 
