@@ -99,7 +99,7 @@ class CampaignRoute{
          * 
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)', [
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [
@@ -132,6 +132,27 @@ class CampaignRoute{
                     $this->controller,
                     'rest_permissions_check'
                 ],
+            ]
+
+        ]);
+
+
+        /**
+         * Delete a campaign email
+         * 
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)' . '/email' . '/(?P<email_id>[\d]+)', [
+            [
+                'methods' => WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_campaign_email'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
             ]
 
         ]);

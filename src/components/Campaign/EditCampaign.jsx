@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { updateCampaignRequest } from "../../services/Campaign";
+import { deleteCampaignEmail, updateCampaignRequest } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
@@ -9,6 +9,7 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
+import DeletePopup from "../DeletePopup";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -43,6 +44,13 @@ export default function EditCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
+  const [isEmailDelete, setIsEmailDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [emailID, setEmailID] = useState();
+  const [emailIndex, setEmailIndex] = useState();
+  const [refresh, setRefresh] = useState(true);
+  const [errors, setErrors] = useState({});
 
   // get the campaign id from url
   const { id } = useParams();
@@ -72,6 +80,11 @@ export default function EditCampaign(props) {
     return await response.json();
   };
 
+  // the data is fetched again whenver refresh is changed
+  function toggleRefresh() {
+    setRefresh((prev) => !prev);
+  }
+
   useEffect(() => {
     fetchCampaignData().then((res) => {
       let campaign = res.data,
@@ -86,7 +99,7 @@ export default function EditCampaign(props) {
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
     });
-  }, []);
+  }, [refresh]);
 
   // Prepare campaign object and send post request to backend
   const updateCampaign = async () => {
@@ -152,15 +165,43 @@ export default function EditCampaign(props) {
   };
 
   // function for removing an email from the sequence
-  const deleteEmail = (index) => {
-    setEmailData((prevEmailData) => {
-      const copy = [...prevEmailData];
-      copy.splice(index, 1);
-      setSelectedEmailIndex(
-        index < copy.length ? index : Math.max(0, index - 1)
-      );
-      return copy;
-    });
+  const deleteEmail = (index, email_id) => {
+    setIsEmailDelete("block");
+    setDeleteTitle("Delete Sequence Email");
+    setDeleteMessage("Are you sure you want to delete the email?");
+    setEmailIndex(index);
+    setEmailID(email_id);
+  };
+
+  const onDeleteShow = async (status) => {
+    setIsEmailDelete(status);
+  };
+
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      setEmailData((prevEmailData) => {
+        const copy = [...prevEmailData];
+        copy.splice(emailIndex, 1);
+        setSelectedEmailIndex(
+          emailIndex < copy.length ? emailIndex : Math.max(0, emailIndex - 1)
+        );
+        return copy;
+      });
+
+      deleteCampaignEmail(id, emailID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsEmailDelete("none");
   };
 
   // handler function for each text field change in each email sequence
@@ -235,7 +276,7 @@ export default function EditCampaign(props) {
                       {index > 0 && (
                         <div
                           className="delete-option"
-                          onClick={() => deleteEmail(index)}
+                          onClick={() => deleteEmail(index, email.id)}
                         >
                           <Delete />
                         </div>
@@ -334,7 +375,7 @@ export default function EditCampaign(props) {
                   <input
                     type="text"
                     name="subject"
-                    value={activeEmailData.email_subject}
+                    value={emailData[selectedEmailIndex]["email_subject"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "email_subject")
                     }
@@ -424,6 +465,14 @@ export default function EditCampaign(props) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mintmrm-container" style={{ display: isEmailDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

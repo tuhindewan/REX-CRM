@@ -36,7 +36,7 @@ class GeneralController{
 
          $lists = ContactGroupModel::get_all( 'lists' );
          $tags = ContactGroupModel::get_all( 'tags' );
-         $contacts = ContactModel::get_all( 'contacts' );
+         $contacts = ContactModel::get_all();
 
          $data = array(
             'total_contacts' => isset($contacts['count']) ? $contacts['count']: 0,

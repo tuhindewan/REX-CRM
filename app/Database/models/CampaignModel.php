@@ -379,6 +379,24 @@ class CampaignModel {
             return false;
         }
     }
+
+
+    /**
+     * Delete a email from campaign 
+     * 
+     * @param int $campaign_id 
+     *  @param int $email_id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function remove_email_from_campaign( $campaign_id, $email_id )
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        return $wpdb->delete( $campaign_emails_table, array('id' => $email_id, 'campaign_id' => $campaign_id) );
+    }
     
     
 }
