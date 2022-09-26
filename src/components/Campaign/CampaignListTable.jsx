@@ -63,7 +63,7 @@ export default function CampaignListTable(props) {
   const deleteCampaign = async (campaign_id) => {
     setIsDelete("block");
     setCampaignID(campaign_id);
-    setDeleteTitle("Campaign List");
+    setDeleteTitle("Campaign Delete");
     setDeleteMessage("Are you sure you want to delete the campaign?");
   };
 
@@ -128,7 +128,16 @@ export default function CampaignListTable(props) {
           <div className="table-body">
             {!props.campaigns.length && <NoCampaign />}
             {props.campaigns.map((campaign, idx) => {
-              return <SingleCampaign key={idx} campaign={campaign} />;
+              return (
+                <SingleCampaign
+                  key={idx}
+                  campaign={campaign}
+                  setCurrentActive={setCurrentActive}
+                  currentActive={currentActive}
+                  editField={editField}
+                  deleteCampaign={deleteCampaign}
+                />
+              );
             })}
           </div>
         </div>

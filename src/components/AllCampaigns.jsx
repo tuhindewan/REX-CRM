@@ -37,8 +37,8 @@ export default function AllCampaigns() {
             <div className="campaign-list-header">
               <div className="left-filters">
                 <FilterBox
-                  label="Statusss"
-                  name="Statusss"
+                  label="Status"
+                  name="Status"
                   options={[
                     {
                       title: "Pending",
