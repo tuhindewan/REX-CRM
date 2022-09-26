@@ -44,6 +44,7 @@ export default function AddCampaign(props) {
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
+  const [isValid, setIsValid] = useState(true);
   const names = [
     {
       value: "Minutes",
@@ -65,9 +66,10 @@ export default function AddCampaign(props) {
 
   // Prepare campaign object and send post request to backend
   const saveCampaign = async () => {
-    if (campaignTitle.length < 3) {
-      alert("Please enter at least 3 characters for the campaign title.");
-      return;
+    // Assign Untitled as value if title is empty
+    if (0 == campaignTitle.length) {
+      console.log(campaignTitle.length);
+      setCampaignTitle("Untitled");
     }
 
     const campaign = {
@@ -112,6 +114,7 @@ export default function AddCampaign(props) {
         };
       }),
     };
+    console.log(campaign);
 
     // Send POST request to save data
     submitCampaign(campaign).then((response) => {
@@ -148,7 +151,7 @@ export default function AddCampaign(props) {
   };
 
   // handler function for each text field change in each email sequence
-  const handleEmailFieldsChange = (e) => {
+  const handleEmailFieldsChange = async (e) => {
     setEmailData((prevEmailData) => {
       const name = e.target.name;
       const value = e.target.value;
@@ -160,15 +163,15 @@ export default function AddCampaign(props) {
       return copy;
     });
   };
-  const openTemplate = () => {
+  const openTemplate = async () => {
     setIsTemplate(true);
     setIsClose(!isClose);
   };
-  const showTemplate = () => {
+  const showTemplate = async () => {
     setShowTemplates(true);
   };
 
-  const setEmailBody = (data) => {
+  const setEmailBody = async (data) => {
     const { design, html } = data;
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -176,6 +179,10 @@ export default function AddCampaign(props) {
       copy[selectedEmailIndex].email_json = design;
       return copy;
     });
+  };
+
+  let handlePulish = async () => {
+    console.log("so far so good");
   };
 
   return (
@@ -370,15 +377,20 @@ export default function AddCampaign(props) {
               </div>
             </div>
             <div className="content-save-section">
-              <button className="campaign-schedule mintmrm-btn outline">
-                Schedule
+              <button
+                className="campaign-schedule mintmrm-btn outline"
+                disabled={isValid}
+                onClick={handlePulish}
+              >
+                Publish
               </button>
               <button
                 type="submit"
                 className="campaign-save mintmrm-btn"
                 onClick={saveCampaign}
+                disabled={!isValid}
               >
-                Save
+                Save draft
               </button>
               {responseMessage != "" && (
                 <SuccessfulNotification

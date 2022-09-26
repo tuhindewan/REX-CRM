@@ -44,9 +44,10 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        // Campaign title validation
+
+        // Assign Untitled as value if title is empty
         if ( isset($params['title']) && empty( $params['title'] )) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
+            $params['title'] = "Untitled";
         }
 
         // Campaign slug create
@@ -100,6 +101,7 @@ class CampaignController extends BaseController {
 
             }
             else{
+                error_log(print_r($params, 1));
 
                 // Insert campaign information
                 $campaign_id = ModelsCampaign::insert( $params );
