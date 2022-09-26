@@ -123,7 +123,12 @@ const webpackConfig = {
     new MiniCssExtractPlugin({
       filename: "css/admin.css", // relative to output.path
     }),
-  ]
+  ],
+  externals: [
+    'packages/easy-email-core/src/index.tsx',
+    'packages/easy-email-editor/src/index.tsx',
+    'packages/easy-email-extensions/src/index.tsx',
+  ],
 };
 
 module.exports = webpackConfig;
