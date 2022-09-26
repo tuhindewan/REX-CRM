@@ -65,7 +65,7 @@ export default function AddCampaign(props) {
   ];
 
   // Prepare campaign object and send post request to backend
-  const saveCampaign = async () => {
+  const saveCampaign = async (status) => {
     // Assign Untitled as value if title is empty
     // if (0 == campaignTitle.length) {
     //   console.log(campaignTitle.length);
@@ -89,7 +89,8 @@ export default function AddCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: "ongoing",
+      status: status,
+      created_by: `${window.MRM_Vars.current_userID}`,
       emails: emailData.map((email) => {
         // if (email.delay_value == "Minutes") {
         //   email.delay = email.delay_count * 60;
@@ -118,10 +119,9 @@ export default function AddCampaign(props) {
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
-        // navigate("/campaigns", {
-        //   state: { status: "campaign-created", message: response?.message },
-        // });
-        setResponseMessage("Campaign is saved.");
+        navigate("/campaign/edit/" + response.data.campaign.id, {
+          state: { status: "campaign-created", message: response?.message },
+        });
       } else {
         window.alert(response?.message);
       }
@@ -414,7 +414,7 @@ export default function AddCampaign(props) {
               <button
                 type="submit"
                 className="campaign-save mintmrm-btn"
-                onClick={saveCampaign}
+                onClick={() => saveCampaign("draft")}
                 disabled={!isValid}
               >
                 Save draft

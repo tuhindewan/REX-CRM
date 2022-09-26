@@ -50,9 +50,6 @@ class CampaignController extends BaseController {
             $params['title'] = "Untitled";
         }
 
-        // Campaign slug create
-        $params['slug'] = isset($params['title']) ? sanitize_title( $params['title'] ): "";
-
         // Email subject validation
         $emails = isset($params['emails']) ? $params['emails'] : array();
         foreach( $emails as $index => $email ){
@@ -101,11 +98,9 @@ class CampaignController extends BaseController {
 
             }
             else{
-                error_log(print_r($params, 1));
-
                 // Insert campaign information
-                $campaign_id = ModelsCampaign::insert( $params );
-
+                $campaign = ModelsCampaign::insert( $params );
+                $campaign_id = isset($campaign['id']) ? $campaign['id'] : "";
                 if( $campaign_id ){
                     // Insert campaign recipients information
                     $recipients = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
@@ -143,7 +138,7 @@ class CampaignController extends BaseController {
             
             // Send renponses back to the frontend
             if($campaign_id) {
-                $data['campaign_id'] = $campaign_id;
+                $data['campaign'] = $campaign;
 
                 //test_email_sending(for dev)
                 self::send_email_to_reciepents($campaign_id);

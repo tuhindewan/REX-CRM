@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { deleteCampaignEmail, updateCampaignRequest } from "../../services/Campaign";
+import { Link, useLocation, useParams } from "react-router-dom";
+import {
+  deleteCampaignEmail,
+  updateCampaignRequest,
+} from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
+import DeletePopup from "../DeletePopup";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
@@ -9,7 +13,6 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
-import DeletePopup from "../DeletePopup";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -54,6 +57,7 @@ export default function EditCampaign(props) {
 
   // get the campaign id from url
   const { id } = useParams();
+  const location = useLocation();
 
   const names = [
     {
@@ -99,6 +103,10 @@ export default function EditCampaign(props) {
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
     });
+    if ("campaign-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
   }, [refresh]);
 
   // Prepare campaign object and send post request to backend
@@ -140,8 +148,6 @@ export default function EditCampaign(props) {
       }),
       campaign_id: id,
     };
-
-    console.log(campaign);
 
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {

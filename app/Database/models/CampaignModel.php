@@ -57,11 +57,8 @@ class CampaignModel {
         unset($args['emails']);
         $args['created_at'] = current_time('mysql');
 
-        $inserted = $wpdb->insert( $campaign_table, $args );
-        if( $inserted ){
-            return $wpdb->insert_id;
-        }
-        return false;
+        $result = $wpdb->insert( $campaign_table, $args );
+        return $result ? self::get( $wpdb->insert_id ) : false;
     }
 
 
@@ -190,24 +187,21 @@ class CampaignModel {
      * 
      * @param mixed $id campaign ID
      * 
-     * @return object
+     * @return array
      * @since 1.0.0
      */
     public static function get( $id )
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-        try {
-            $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", $id );
-            $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
-            $campaign_meta      = self::get_campaign_meta( $id );
-            $campaign_email     = self::get_campaign_email( $id );
-            $campaign['meta']   = $campaign_meta;
-            $campaign['emails'] = $campaign_email;
-            return $campaign;
-        } catch(\Exception $e) {
-            return false;
-        }
+
+        $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", $id );
+        $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
+        $campaign_meta      = self::get_campaign_meta( $id );
+        $campaign_email     = self::get_campaign_email( $id );
+        $campaign['meta']   = $campaign_meta;
+        $campaign['emails'] = $campaign_email;
+        return $campaign;
     }
 
 
