@@ -52,9 +52,16 @@ class AdminAssets {
             true
         );
         wp_enqueue_script(
+            MRM_PLUGIN_NAME.'-easy-email',
+            MRM_DIR_URL.'/assets/admin/dist/chunks/packages_easy-email-extensions_src_components_Form_CodemirrorEditor_index_tsx.min.js',
+            array(),
+            MRM_VERSION,
+            true
+        );
+        wp_enqueue_script(
             MRM_PLUGIN_NAME,
             self::get_url('main', 'js'),
-            array('jquery'),
+            array('jquery', MRM_PLUGIN_NAME.'-easy-email' ),
             MRM_VERSION,
             true
         );

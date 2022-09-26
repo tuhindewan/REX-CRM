@@ -40,6 +40,11 @@ const webpackConfig = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
         test: require.resolve("jquery"),
         loader: "expose-loader",
         options: {
@@ -99,6 +104,16 @@ const webpackConfig = {
       '~': path.resolve( __dirname + '/src' ),
       $: 'jQuery',
       jquery: 'jQuery',
+      '@extensions': path.resolve('./packages/easy-email-extensions/src'),
+      '@core': path.resolve('./packages/easy-email-core/src'),
+      '@arco-themes': path.resolve('./node_modules/@arco-themes'),
+      '@': path.resolve('./packages/easy-email-editor/src'),
+      'easy-email-editor/lib/style.css': path.resolve(__dirname, 'package.json'),
+      'easy-email-extensions/lib/style.css': path.resolve(__dirname, 'package.json'),
+      'react-final-form': path.resolve(__dirname, './node_modules/react-final-form'),
+      'easy-email-core': path.resolve('./packages/easy-email-core/src/index.tsx'),
+      'easy-email-editor': path.resolve('./packages/easy-email-editor/src/index.tsx'),
+      'easy-email-extensions': path.resolve('./packages/easy-email-extensions/src/index.tsx'),
     },
   },
   plugins: [
