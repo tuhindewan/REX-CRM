@@ -54,6 +54,7 @@ export default function EditCampaign(props) {
   const [emailIndex, setEmailIndex] = useState();
   const [refresh, setRefresh] = useState(true);
   const [errors, setErrors] = useState({});
+  const [isValid, setIsValid] = useState(false);
 
   // get the campaign id from url
   const { id } = useParams();
@@ -159,6 +160,7 @@ export default function EditCampaign(props) {
         window.alert(response?.message);
       }
     });
+    setIsValid(false);
   };
 
   // function for adding new email in the sequence
@@ -212,6 +214,7 @@ export default function EditCampaign(props) {
 
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = (value, key) => {
+    setIsValid(true);
     setActiveEmailData((prevState) => ({
       ...prevState,
       [key]: value,
@@ -246,6 +249,8 @@ export default function EditCampaign(props) {
     setSelectedEmailIndex(index);
     setActiveEmailData(emailData[index]);
   };
+
+  let handlePublish = async () => {};
 
   return (
     <>
@@ -370,6 +375,9 @@ export default function EditCampaign(props) {
                       name="delay_value"
                       value={emailData[selectedEmailIndex]["delay_value"]}
                     >
+                      <option disabled={true} value="">
+                        --Choose delay--
+                      </option>
                       {names.map((item) => (
                         <option key={item.id}>{item.value}</option>
                       ))}
@@ -456,15 +464,20 @@ export default function EditCampaign(props) {
                 </div>
               </div>
               <div className="content-save-section">
-                <button className="campaign-schedule mintmrm-btn outline">
-                  Schedule
+                <button
+                  className="campaign-schedule mintmrm-btn outline"
+                  disabled={!isValid}
+                  onClick={handlePublish}
+                >
+                  Publish
                 </button>
                 <button
                   type="submit"
                   className="campaign-save mintmrm-btn"
                   onClick={updateCampaign}
+                  disabled={!isValid}
                 >
-                  Save
+                  Save draft
                 </button>
                 {/* {responseMessage && <p>{responseMessage}</p>} */}
               </div>

@@ -333,6 +333,9 @@ export default function AddCampaign(props) {
                     name="delay_value"
                     value={emailData[selectedEmailIndex]["delay_value"]}
                   >
+                    <option disabled={true} value="">
+                      --Choose delay--
+                    </option>
                     {names.map((item) => (
                       <option key={item.id}>{item.value}</option>
                     ))}
