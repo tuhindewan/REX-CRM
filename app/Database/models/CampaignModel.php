@@ -133,7 +133,8 @@ class CampaignModel {
         unset($args['recipients']);
         unset($args['emails']);
 
-        return $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
+        $result = $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
+        return $result ? self::get( $id ) : false;
             
     }
 
