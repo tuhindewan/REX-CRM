@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -44,7 +44,7 @@ export default function AddCampaign(props) {
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
-  const [isValid, setIsValid] = useState(true);
+  const [isValid, setIsValid] = useState(false);
   const names = [
     {
       value: "Minutes",
@@ -67,10 +67,10 @@ export default function AddCampaign(props) {
   // Prepare campaign object and send post request to backend
   const saveCampaign = async () => {
     // Assign Untitled as value if title is empty
-    if (0 == campaignTitle.length) {
-      console.log(campaignTitle.length);
-      setCampaignTitle("Untitled");
-    }
+    // if (0 == campaignTitle.length) {
+    //   console.log(campaignTitle.length);
+    //   setCampaignTitle("Untitled");
+    // }
 
     const campaign = {
       title: campaignTitle,
@@ -114,8 +114,6 @@ export default function AddCampaign(props) {
         };
       }),
     };
-    console.log(campaign);
-
     // Send POST request to save data
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
@@ -181,9 +179,38 @@ export default function AddCampaign(props) {
     });
   };
 
-  let handlePulish = async () => {
-    console.log("so far so good");
+  const validate = () => {
+    if (
+      campaignTitle.length > 0 ||
+      recipientLists.length != 0 ||
+      recipientTags.length != 0 ||
+      emailData[selectedEmailIndex]["subject"].length != 0 ||
+      emailData[selectedEmailIndex]["preview"].length != 0 ||
+      emailData[selectedEmailIndex]["senderName"].length != 0 ||
+      emailData[selectedEmailIndex]["senderEmail"].length != 0 ||
+      emailData[selectedEmailIndex].email_body.length != 0 ||
+      emailData[selectedEmailIndex].email_json.length != 0
+    ) {
+      return true;
+    }
   };
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [
+    campaignTitle,
+    recipientLists,
+    recipientTags,
+    emailData[selectedEmailIndex]["subject"],
+    emailData[selectedEmailIndex]["preview"],
+    emailData[selectedEmailIndex]["senderName"],
+    emailData[selectedEmailIndex]["senderEmail"],
+    emailData[selectedEmailIndex].email_body,
+    emailData[selectedEmailIndex].email_json,
+  ]);
+
+  let handlePublish = async () => {};
 
   return (
     <div className="mintmrm-add-campaign">
@@ -379,8 +406,8 @@ export default function AddCampaign(props) {
             <div className="content-save-section">
               <button
                 className="campaign-schedule mintmrm-btn outline"
-                disabled={isValid}
-                onClick={handlePulish}
+                disabled={!isValid}
+                onClick={handlePublish}
               >
                 Publish
               </button>
