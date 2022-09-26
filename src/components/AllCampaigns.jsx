@@ -53,7 +53,7 @@ export default function AllCampaigns() {
                       id: "unsubscribed",
                     },
                   ]}
-                  placeholder="Statusss"
+                  placeholder="Status"
                 />
               </div>
 

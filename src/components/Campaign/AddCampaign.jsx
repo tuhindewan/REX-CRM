@@ -8,6 +8,7 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
+import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -211,6 +212,12 @@ export default function AddCampaign(props) {
   ]);
 
   let handlePublish = async () => {};
+
+  useUnload((e) => {
+    e.preventDefault();
+    e.returnValue = "";
+    console.log(e);
+  });
 
   return (
     <div className="mintmrm-add-campaign">
