@@ -12,17 +12,23 @@ export default function AllCampaigns() {
   const [page, setPage] = useState(1);
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
+  // total count of results
+  const [count, setCount] = useState(0);
+  // total number of pages for result
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     getAllCampaigns(page, perPage, query).then((results) => {
-      console.log(results);
       setCampaigns(results.data);
+      setCount(results.count);
+      setTotalPages(results.total_pages);
     });
     const timer = setTimeout(() => {
       setShowNotification("none");
     }, 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [page, perPage, query]);
 
   return (
     <div className="campaign-index-page">
@@ -67,7 +73,14 @@ export default function AllCampaigns() {
             </div>
 
             <div className="campaign-list-body">
-              <CampaignListTable campaigns={campaigns} />
+              <CampaignListTable
+                currentPage={page}
+                pageSize={perPage}
+                onPageChange={setPage}
+                totalCount={count}
+                totalPages={totalPages}
+                campaigns={campaigns}
+              />
             </div>
           </div>
         </div>

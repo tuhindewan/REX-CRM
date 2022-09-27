@@ -22,23 +22,6 @@ export default function CampaignListTable(props) {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
-  // refresh the whole list if this boolean changes
-  const [refresh, setRefresh] = useState(true);
-  const [campaigns, setCampaigns] = useState([]);
-
-  // useEffect(() => {
-  //   getAllCampaigns().then((results) => {
-  //     setCampaigns(results.data);
-  //     if ("campaign-created" == location.state?.status) {
-  //       setShowNotification("block");
-  //       setMessage(location.state?.message);
-  //     }
-  //   });
-  //   const timer = setTimeout(() => {
-  //     setShowNotification("none");
-  //   }, 3000);
-  //   return () => clearTimeout(timer);
-  // }, [refresh]);
 
   // Navigate to campaign edit page
   function editField(campaign) {
@@ -81,11 +64,6 @@ export default function CampaignListTable(props) {
     setIsDelete("none");
   };
 
-  // the data is fetched again whenver refresh is changed
-  function toggleRefresh() {
-    setRefresh((prev) => !prev);
-  }
-
   return (
     <>
       <div className="campaign-list-table">
@@ -127,15 +105,17 @@ export default function CampaignListTable(props) {
               );
             })}
           </div>
-          <div className="table-footer">
-            <Pagination
-              currentPage={1}
-              pageSize={10}
-              onPageChange={1}
-              totalCount={11}
-              totalPages={2}
-            />
-          </div>
+          {props.totalPages > 1 && (
+            <div className="table-footer">
+              <Pagination
+                currentPage={props.currentPage}
+                pageSize={props.pageSize}
+                onPageChange={props.onPageChange}
+                totalCount={props.totalCount}
+                totalPages={props.totalPages}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
