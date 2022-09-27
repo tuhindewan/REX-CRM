@@ -4,6 +4,7 @@ import CampaignListTable from "./Campaign/CampaignListTable";
 import CampaignsNavbar from "./CampaignNav";
 import FilterBox from "./Filterbox";
 import Search from "./Icons/Search";
+import ThreeDotIcon from "./Icons/ThreeDotIcon";
 
 export default function AllCampaigns() {
   const [search, setSearch] = useState("");
@@ -17,6 +18,8 @@ export default function AllCampaigns() {
   const [count, setCount] = useState(0);
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
+  // whether to show more options or not
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   useEffect(() => {
     getAllCampaigns(page, perPage, query).then((results) => {
@@ -81,6 +84,25 @@ export default function AllCampaigns() {
                     placeholder="Search by title"
                   />
                 </span>
+                <div className="bulk-action">
+                  {/* show more options section */}
+                  <button
+                    className="more-option"
+                    onClick={() => setShowMoreOptions(!showMoreOptions)}
+                  >
+                    <ThreeDotIcon />
+
+                    <ul
+                      className={
+                        showMoreOptions
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete">Delete Selected</li>
+                    </ul>
+                  </button>
+                </div>
               </div>
             </div>
 
