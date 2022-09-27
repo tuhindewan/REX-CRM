@@ -307,7 +307,7 @@ class CampaignModel {
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         if (!empty($emails)) {
             $emails = array_map(function ($email) {
-                $email['email_json'] = unserialize($email['email_json']);
+                $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
                 return $email;
             }, $emails);
         }
@@ -316,6 +316,15 @@ class CampaignModel {
     }
 
 
+    /**
+     * Get an email by its index for a specific campaign
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $index
+     * 
+     * @return object
+     * @since 1.0.0
+     */
     public static function get_campaign_email_by_index($campaign_id, $index)
     {
         global $wpdb;
@@ -325,8 +334,7 @@ class CampaignModel {
                                     id,email_index
                                      FROM $campaign_emails_table  
                                      WHERE campaign_id = %d AND email_index = %d", $campaign_id, $index);
-        $emails = $wpdb->get_row($campaign_emails_query);
-        return $emails;
+        return $wpdb->get_row($campaign_emails_query);
     }
 
 
