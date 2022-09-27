@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleCampaign } from "../../services/Campaign";
 import Plus from "../Icons/Plus";
+import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleCampaign from "./SingleCampaign";
 
@@ -139,6 +140,15 @@ export default function CampaignListTable(props) {
                 />
               );
             })}
+          </div>
+          <div className="table-footer">
+            <Pagination
+              currentPage={1}
+              pageSize={10}
+              onPageChange={1}
+              totalCount={11}
+              totalPages={2}
+            />
           </div>
         </div>
       </div>

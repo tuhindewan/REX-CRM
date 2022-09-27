@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getAllCampaigns } from "../services/Campaign";
 import CampaignListTable from "./Campaign/CampaignListTable";
 import FilterBox from "./Filterbox";
 import Search from "./Icons/Search";
@@ -8,24 +9,18 @@ export default function AllCampaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
+  // search query, search query only updates when there are more than 3 characters typed
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    async function getData() {
-      fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/campaigns?search=${search}&page=${page}&per-page=${perPage}`
-      )
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          if (200 == data.code) {
-            setCampaigns(data.data.data);
-          }
-        });
-    }
-    getData();
+    getAllCampaigns(page, perPage, query).then((results) => {
+      console.log(results);
+      setCampaigns(results.data);
+    });
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
