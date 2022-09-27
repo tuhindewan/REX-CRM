@@ -1,10 +1,9 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-//import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import HoverMenu from "../HoverMenu";
 import CompletedCampaignIcon from "../Icons/CompletedCampaignIcon";
 import DraftCampaignIcon from "../Icons/DraftCampaignIcon";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 
 export default function SingleCampaign(props) {
@@ -19,6 +18,8 @@ export default function SingleCampaign(props) {
               type="checkbox"
               name={props.campaign.id}
               id={props.campaign.id}
+              onChange={props.handleSelectOne}
+              checked={props.selected.includes(props.campaign.id)}
             />
             <label for={props.campaign.id}></label>
           </span>
