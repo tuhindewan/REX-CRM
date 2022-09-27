@@ -155,7 +155,6 @@
           border-bottom: none;
         }
         span {
-          width: 80px;
           font-weight: 500;
           font-size: 14px;
           line-height: 15px;
@@ -165,6 +164,15 @@
         }
         .setting-section {
           padding-left: 18px;
+        }
+        .email-to {
+          .all-recipients {
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 18px;
+            color: #2d3149;
+            background: transparent;
+          }
         }
         .email-from {
           &.input-item {
@@ -219,6 +227,27 @@
         padding: 25px 0;
         .campaign-schedule {
           margin-right: 15px;
+
+          &.disable {
+            color: #b6b6b7;
+            border: 1px solid #dee1e8;
+          }
+          &.disable:hover {
+            color: #b6b6b7;
+            border: 1px solid #dee1e8;
+            background-color: transparent;
+          }
+
+        }
+        .campaign-save {
+          &.disable {
+            color: rgba(255, 255, 255, 0.4);
+            background: #573bff;
+          }
+          &.disable:hover {
+            color: rgba(255, 255, 255, 0.4);
+            background: #573bff;
+          }
         }
       }
     }

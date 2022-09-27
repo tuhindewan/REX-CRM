@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
+import CrossIcon from "../Icons/CrossIcon";
 
 export default function CustomSelect(props) {
   // global state reference for whether to hide all dropdown
@@ -176,7 +177,7 @@ export default function CustomSelect(props) {
           {placeholder}
         </button>
         {/**code for showing selected items inside the tags container still needs to fix css issues */}
-        {/* <div className="mrm-selected-items-container">
+        <div className="mrm-selected-items-container">
           {showSelectedInside &&
             selected.map((item) => {
               return (
@@ -186,7 +187,7 @@ export default function CustomSelect(props) {
                 </span>
               );
             })}
-        </div> */}
+        </div>
         <ul
           className={
             activeCustomSelect == customSelectUUID.current &&

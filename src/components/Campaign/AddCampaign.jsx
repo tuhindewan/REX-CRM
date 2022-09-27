@@ -9,6 +9,8 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
+import DownArrowIcon from "../../scss/DownArrowIcon";
+import UpArrowIcon from "../../scss/UpArrowIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -44,6 +46,7 @@ export default function AddCampaign(props) {
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
+  const [dropDown, setDropDown] = useState(false);
   const names = [
     {
       value: "Minutes",
@@ -178,6 +181,10 @@ export default function AddCampaign(props) {
     });
   };
 
+  const showDropDown = () =>{
+    setDropDown(!dropDown);
+  }
+
   return (
     <div className="mintmrm-add-campaign">
       <div className="add-campaign-breadcrumb">
@@ -248,7 +255,8 @@ export default function AddCampaign(props) {
                   </div>
                   <div className="email-to input-item">
                     <label>To:</label>
-                    <div>
+                    <button className="all-recipients" onClick={showDropDown}>All Subscriber {dropDown ? <UpArrowIcon/> : <DownArrowIcon/> }</button>
+                    {/* <div>
                       <CustomSelect
                         selected={recipientLists}
                         setSelected={setRecipientLists}
@@ -261,7 +269,7 @@ export default function AddCampaign(props) {
                         allowMultiple={true}
                         showSearchBar={true}
                         showListTitle={true}
-                        showSelectedInside={false}
+                        showSelectedInside={true}
                         allowNewCreate={true}
                       />
                       <CustomSelect
@@ -276,10 +284,10 @@ export default function AddCampaign(props) {
                         allowMultiple={true}
                         showSearchBar={true}
                         showListTitle={true}
-                        showSelectedInside={false}
+                        showSelectedInside={true}
                         allowNewCreate={true}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </>
               )}
@@ -370,12 +378,12 @@ export default function AddCampaign(props) {
               </div>
             </div>
             <div className="content-save-section">
-              <button className="campaign-schedule mintmrm-btn outline">
+              <button className="campaign-schedule disable mintmrm-btn outline">
                 Schedule
               </button>
               <button
                 type="submit"
-                className="campaign-save mintmrm-btn"
+                className="campaign-save disable mintmrm-btn"
                 onClick={saveCampaign}
               >
                 Save
