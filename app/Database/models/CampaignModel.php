@@ -53,9 +53,14 @@ class CampaignModel {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
+        $current_date = date("d M Y");
+        $time = new \DateTimeImmutable('now', wp_timezone());
+        error_log(print_r($time, 1));
+        $current_time = $time->format("h:i A");
+
         unset($args['recipients']);
         unset($args['emails']);
-        $args['created_at'] = current_time('mysql');
+        $args['created_at'] = $current_time;
 
         $result = $wpdb->insert( $campaign_table, $args );
         return $result ? self::get( $wpdb->insert_id ) : false;

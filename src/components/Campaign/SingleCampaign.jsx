@@ -8,7 +8,47 @@ import Portal from "../Portal";
 
 export default function SingleCampaign(props) {
   const menuButtonRef = useRef(null);
+  const MINUTE = 60;
+  const HOUR = MINUTE * 60;
+  const DAY = HOUR * 24;
+  const WEEK = DAY * 7;
+  const MONTH = DAY * 30;
+  const YEAR = DAY * 365;
 
+  function getTimeAgo(date) {
+    const secondsAgo = Math.round((Date.now() - Number(date)) / 1000);
+    console.log(secondsAgo);
+    if (secondsAgo < MINUTE) {
+      return secondsAgo + ` second${secondsAgo !== 1 ? "s" : ""} ago`;
+    }
+
+    let divisor;
+    let unit = "";
+
+    if (secondsAgo < HOUR) {
+      [divisor, unit] = [MINUTE, "minute"];
+    } else if (secondsAgo < DAY) {
+      [divisor, unit] = [HOUR, "hour"];
+    } else if (secondsAgo < WEEK) {
+      [divisor, unit] = [DAY, "day"];
+    } else if (secondsAgo < MONTH) {
+      [divisor, unit] = [WEEK, "week"];
+    } else if (secondsAgo < YEAR) {
+      [divisor, unit] = [MONTH, "month"];
+    } else {
+      [divisor, unit] = [YEAR, "year"];
+    }
+
+    const count = Math.floor(secondsAgo / divisor);
+    return `${count} ${unit}${count > 1 ? "s" : ""} ago`;
+  }
+
+  const date = new Date(props.campaign.created_at);
+  console.log(typeof props.campaign.created_at);
+  console.log(typeof Number(props.campaign.created_at));
+  // console.log(Date.parse(date.toUTCString()));
+  console.log(Number(Date.parse(props.campaign.created_at)));
+  console.log(getTimeAgo(Number(Date.parse(props.campaign.created_at))));
   return (
     <div className="table-row">
       <div className="table-data email-wrapper campaign-name-wrapper">
@@ -33,7 +73,7 @@ export default function SingleCampaign(props) {
             <Link to={`../campaign/edit/${props.campaign.id}`}>
               {props.campaign.title}
             </Link>{" "}
-            <span>2 days ago</span>
+            <span>{props.campaign.created_at}</span>
           </div>
         </div>
       </div>
