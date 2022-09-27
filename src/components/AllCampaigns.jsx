@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { deleteSingleCampaign, getAllCampaigns } from "../services/Campaign";
+import {
+  deleleMultipleCampaigns,
+  deleteSingleCampaign,
+  getAllCampaigns,
+} from "../services/Campaign";
 import AlertPopup from "./AlertPopup";
 import NoCampaign from "./Campaign/NoCampaign";
 import SingleCampaign from "./Campaign/SingleCampaign";
@@ -94,6 +98,27 @@ export default function AllCampaigns() {
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Delete multiple lists after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleleMultipleCampaigns(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          setAllSelected(false);
+          setSelected([]);
         } else {
           setErrors({
             ...errors,
@@ -283,6 +308,8 @@ export default function AllCampaigns() {
           message={deleteMessage}
           onDeleteShow={onDeleteShow}
           onDeleteStatus={onDeleteStatus}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
         />
       </div>
       <div className="mintmrm-container" style={{ display: showAlert }}>

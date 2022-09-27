@@ -27,6 +27,23 @@ export async function deleteSingleCampaign(id) {
   });
 }
 
+// Campaign delete request
+export async function deleleMultipleCampaigns(selected) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/campaigns/`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      campaign_ids: selected,
+    }),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
+
 // Delete a campaign email
 export async function deleteCampaignEmail(campaign_id, email_id) {
   return await fetch(
