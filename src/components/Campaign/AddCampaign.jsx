@@ -11,6 +11,7 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
+import CampaignCustomSelect from "./CampaignCustomSelect";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -47,6 +48,7 @@ export default function AddCampaign(props) {
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
   const [dropDown, setDropDown] = useState(false);
+
   const names = [
     {
       value: "Minutes",
@@ -181,9 +183,9 @@ export default function AddCampaign(props) {
     });
   };
 
-  const showDropDown = () =>{
+  const showDropDown = () => {
     setDropDown(!dropDown);
-  }
+  };
 
   return (
     <div className="mintmrm-add-campaign">
@@ -255,9 +257,13 @@ export default function AddCampaign(props) {
                   </div>
                   <div className="email-to input-item">
                     <label>To:</label>
-                    <button className="all-recipients" onClick={showDropDown}>All Subscriber {dropDown ? <UpArrowIcon/> : <DownArrowIcon/> }</button>
-                    {/* <div>
-                      <CustomSelect
+                    <button className="all-recipients" onClick={showDropDown}>
+                      All Subscriber{" "}
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                    <CampaignCustomSelect dropDown={dropDown} />
+                    <div>
+                      {/* <CustomSelect
                         selected={recipientLists}
                         setSelected={setRecipientLists}
                         endpoint="/lists"
@@ -286,8 +292,8 @@ export default function AddCampaign(props) {
                         showListTitle={true}
                         showSelectedInside={true}
                         allowNewCreate={true}
-                      />
-                    </div> */}
+                      /> */}
+                    </div>
                   </div>
                 </>
               )}
