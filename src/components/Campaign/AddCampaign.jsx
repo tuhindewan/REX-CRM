@@ -9,8 +9,8 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
-import DownArrowIcon from "../../scss/DownArrowIcon";
-import UpArrowIcon from "../../scss/UpArrowIcon";
+import DownArrowIcon from "../Icons/DownArrowIcon";
+import UpArrowIcon from "../Icons/UpArrowIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
