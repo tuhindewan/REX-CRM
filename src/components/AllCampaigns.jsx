@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllCampaigns } from "../services/Campaign";
 import CampaignListTable from "./Campaign/CampaignListTable";
+import CampaignsNavbar from "./CampaignNav";
 import FilterBox from "./Filterbox";
 import Search from "./Icons/Search";
 
@@ -25,7 +26,7 @@ export default function AllCampaigns() {
 
   return (
     <div className="campaign-index-page">
-      {/* <CampaignsNavbar /> */}
+      <CampaignsNavbar />
       <div className="campaign-list-page">
         <div className="mintmrm-container">
           <div className="campaign-list-area">

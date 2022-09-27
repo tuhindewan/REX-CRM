@@ -7,6 +7,7 @@ import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
+import Dashboard from "../components/Dashboard";
 import ImportConfirmation from "../components/ImportConfirmation";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
@@ -17,17 +18,22 @@ import Contacts from "../pages/Contacts";
 import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
+import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
-import ImportWordpress from "../pages/ImportWordpress";
-import CampaignTemplates from "../components/Campaign/CampaignTemplates";
 
 
 const routes = [
   {
+    path: "/",
+    element: Dashboard,
+    title: __("Dashboard", "mrm"),
+    hideInMenu: true,
+  },
+  {
     path: "/contacts",
     element: Contacts,
-    title: __("All Contacts", "mrm"),
+    title: __("Contacts", "mrm"),
     // bage: 20,
   },
   {
@@ -132,30 +138,24 @@ const routes = [
   {
     path: "/campaigns/",
     element: AllCampaigns,
-    title: __("All Campaigns", "mrm"),
+    hideInMenu:true
   },
-  {
-    path: "/campaigns/sequences",
-    element: AllCampaigns,
-    title: __("Email Sequences", "mrm"),
-    campaignMenu: true,
-    hideInMenu: true,
-  },
-  {
-    path: "/campaigns/templates",
-    element: AllCampaigns,
-    title: __("Email Templates", "mrm"),
-    campaignMenu: true,
-    hideInMenu: true,
-  },
+  // {
+  //   path: "/campaigns/sequences",
+  //   element: AllCampaigns,
+  //   title: __("Email Sequences", "mrm"),
+  //   campaignMenu: true,
+  //   hideInMenu: true,
+  // },
+  // {
+  //   path: "/campaigns/templates",
+  //   element: AllCampaigns,
+  //   title: __("Email Templates", "mrm"),
+  //   campaignMenu: true,
+  //   hideInMenu: true,
+  // },
   {
     path: "/campaigns/create",
-    element: AddCampaign,
-    title: __("Email Sequences", "mrm"),
-    hideInMenu: true,
-  },
-  {
-    path: "/campaigns/update/:id",
     element: AddCampaign,
     hideInMenu: true,
   },
@@ -167,7 +167,6 @@ const routes = [
   {
     path        : "/campaign/edit/:id",
     element     : EditCampaign,
-    title       : __("Email Sequences", "mrm"),
     hideInMenu  : true,
   }
 ];

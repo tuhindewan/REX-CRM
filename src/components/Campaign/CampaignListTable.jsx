@@ -3,10 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "../DeletePopup";
 import NoCampaign from "./NoCampaign";
 // Internal dependencies
-import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleCampaign } from "../../services/Campaign";
-import Plus from "../Icons/Plus";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleCampaign from "./SingleCampaign";
@@ -14,18 +12,6 @@ import SingleCampaign from "./SingleCampaign";
 export default function CampaignListTable(props) {
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
-
-  //set navbar Buttons
-  useGlobalStore.setState({
-    navbarMarkup: (
-      <Link to="/campaigns/create">
-        <button className="add-contact-btn mintmrm-btn ">
-          <Plus /> Add Campaign
-        </button>
-      </Link>
-    ),
-    hideGlobalNav: false,
-  });
 
   let navigate = useNavigate();
   const location = useLocation();
