@@ -8,16 +8,19 @@ import {
 } from "react-router-dom";
 import Plus from "../Icons/Plus";
 // Internal dependencies
-import Swal from "sweetalert2";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import AlertPopup from "../AlertPopup";
+import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
+import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import FilterItems from "./FilterItems";
 import SingleContact from "./SingleContact";
@@ -90,6 +93,8 @@ export default function ContactListTable(props) {
 
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -100,6 +105,10 @@ export default function ContactListTable(props) {
 
   const [isNoteForm, setIsNoteForm] = useState(true);
   const [isCloseNote, setIsCloseNote] = useState(true);
+  const [showAlert, setShowAlert] = useState("none");
+  const [isDelete, setIsDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -225,39 +234,80 @@ export default function ContactListTable(props) {
   };
 
   async function deleteMultipleContacts() {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        if (selected.length > 0) {
-          const res = await fetch(
-            `${window.MRM_Vars.api_base_url}mrm/v1/contacts/`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-type": "application/json",
-              },
-              body: JSON.stringify({
-                contact_ids: selected,
-              }),
-            }
-          );
-          Swal.fire("Deleted!", "Contact has been deleted.", "success");
+    if (selected.length > 0) {
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
+    } else {
+      setShowAlert("block");
+    }
+    // Swal.fire({
+    //   title: "Are you sure?",
+    //   text: "You won't be able to revert this!",
+    //   icon: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonColor: "#3085d6",
+    //   cancelButtonColor: "#d33",
+    //   confirmButtonText: "Yes, delete it!",
+    // }).then(async (result) => {
+    //   if (result.isConfirmed) {
+    //     if (selected.length > 0) {
+    //       const res = await fetch(
+    //         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/`,
+    //         {
+    //           method: "DELETE",
+    //           headers: {
+    //             "Content-type": "application/json",
+    //           },
+    //           body: JSON.stringify({
+    //             contact_ids: selected,
+    //           }),
+    //         }
+    //       );
+    //       Swal.fire("Deleted!", "Contact has been deleted.", "success");
+    //       setAllSelected(false);
+    //       useGlobalStore.setState({
+    //         counterRefresh: !counterRefresh,
+    //       });
+    //       toggleRefresh();
+    //     }
+    //   }
+    // });
+  }
+
+  // Delete multiple contacts after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleContactsItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
           setAllSelected(false);
+          setSelected([]);
           useGlobalStore.setState({
             counterRefresh: !counterRefresh,
           });
-          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
         }
-      }
-    });
-  }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
 
   const handleSelectOne = (e) => {
     if (selected.includes(e.target.id)) {
@@ -570,6 +620,19 @@ export default function ContactListTable(props) {
           />
         </div>
       )}
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
+        />
+      </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }
