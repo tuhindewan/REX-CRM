@@ -15,7 +15,6 @@ import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
 import NoteDrawer from "../NoteDrawer";
-import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
@@ -96,6 +95,7 @@ export default function ContactDetails() {
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
+        console.log(resJson.data);
         setContactData(resJson.data);
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
@@ -863,7 +863,7 @@ export default function ContactDetails() {
                   >
                     <div className="activities-header">
                       <h4 className="title">Activity Feed</h4>
-                      <Selectbox
+                      {/* <Selectbox
                         name="type"
                         options={[
                           {
@@ -886,12 +886,10 @@ export default function ContactDetails() {
                         onSelect={onSelect}
                         error={errors?.type}
                         index="profile-activity"
-                      />
+                      /> */}
                     </div>
 
                     <div className="activities-feed-wrapper">
-                      <SingleActivityFeed />
-                      <SingleActivityFeed />
                       <SingleActivityFeed />
                     </div>
                   </div>

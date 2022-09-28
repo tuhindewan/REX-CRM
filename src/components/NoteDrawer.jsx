@@ -12,10 +12,12 @@ export default function NoteDrawer(props) {
     description: "",
     title: "MRM Note",
     type: "MRM Note",
+    created_by: `${window.MRM_Vars.current_userID}`,
   });
 
   const closeSection = () => {
     setIsCloseNote(!isCloseNote);
+    setErrors({});
   };
 
   const handleOnChange = async (event) => {
@@ -41,6 +43,7 @@ export default function NoteDrawer(props) {
           title: "MRM Note",
           type: "MRM Note",
         });
+        setErrors({});
       } else {
         // Validation messages
         if (200 == response.code) {
