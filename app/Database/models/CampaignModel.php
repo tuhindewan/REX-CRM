@@ -227,33 +227,16 @@ class CampaignModel {
             $search_terms = "WHERE (`title` LIKE '%%$search%%')";
 		}
         // Prepare sql results for list view
-        try {
-            $select_query  =  "SELECT * FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
-            $campaign_query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
-
-            $results = array();
+        $results     =  $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
             
-            foreach( $campaign_query_results as $campaign_query_result ){
-                $q_id = isset($campaign_query_result['id']) ? $campaign_query_result['id'] : "";
-                $campaign_meta = self::get_campaign_meta( $q_id );
-                $campaign_email = self::get_campaign_email( $q_id );
-                $results[] = array_merge($campaign_query_result, $campaign_meta, $campaign_email);
-            }
+        $count       = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $campaign_table $search_terms" ) );
+        $total_pages = ceil($count / $limit);
 
-            $count_campaign_query    = "SELECT COUNT(*) as total FROM $campaign_table $search_terms";
-            $count_result   = $wpdb->get_results($count_campaign_query);
-            
-            $count = (int) $count_result['0']->total;
-            $total_pages = ceil($count / $limit);
-
-            return array(
-                'data'=> $results,
-                'total_pages' => $total_pages,
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
-        }
+        return [
+            'data'          => $results,
+            'total_pages'   => $total_pages,
+            'count'         => $count
+        ];
 	
     }
 

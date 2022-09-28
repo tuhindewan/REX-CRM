@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   deleleMultipleCampaigns,
   deleteSingleCampaign,
@@ -15,6 +16,7 @@ import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {
+  let navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [campaigns, setCampaigns] = useState([]);
   const [perPage, setPerPage] = useState(10);

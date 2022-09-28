@@ -112,7 +112,7 @@ export default function EditCampaign(props) {
   }, [refresh]);
 
   // Prepare campaign object and send post request to backend
-  const updateCampaign = async () => {
+  const updateCampaign = async (status) => {
     if (campaignTitle.length < 3) {
       alert("Please enter at least 3 characters for the campaign title.");
       return;
@@ -135,7 +135,7 @@ export default function EditCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: "ongoing",
+      status: status,
       emails: emailData.map((email) => {
         return {
           email_subject: email.email_subject,
@@ -317,7 +317,10 @@ export default function EditCampaign(props) {
                         type="text"
                         name="title"
                         value={campaignTitle}
-                        onChange={(e) => setCampaignTitle(e.target.value)}
+                        onChange={(e) => {
+                          setIsValid(true);
+                          setCampaignTitle(e.target.value);
+                        }}
                         placeholder="Enter Campaign title"
                       />
                     </div>
@@ -480,7 +483,7 @@ export default function EditCampaign(props) {
                 <button
                   type="submit"
                   className="campaign-save mintmrm-btn"
-                  onClick={updateCampaign}
+                  onClick={() => updateCampaign("draft")}
                   disabled={!isValid}
                 >
                   Save draft
