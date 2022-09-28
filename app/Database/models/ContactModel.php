@@ -88,6 +88,9 @@ class ContactModel{
         unset($args['tags']);
         unset($args['lists']);
         unset($args['avatar_url']);
+        unset($args['created_time']);
+        unset($args['added_by_login']);
+        unset($args['avatar_url']);
 
         try {
             $wpdb->update( 

@@ -6,22 +6,21 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import EmailDrawer from "../EmailDrawer";
+import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
+import EmailIcon from "../Icons/EmailIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
+import NoteDrawer from "../NoteDrawer";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AddItems from "./AddItems";
-import EmailDrawer from "../EmailDrawer";
-import NoteDrawer from "../NoteDrawer";
 import SingleActivityFeed from "./SingleActivityFeed";
-import FilterItems from "../BaseTable/FilterItems";
-import CreateNoteIcon from "../Icons/CreateNoteIcon";
-import EmailIcon from "../Icons/EmailIcon";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -215,12 +214,6 @@ export default function ContactDetails() {
   };
 
   const handleUpdate = async () => {
-    if (Object.keys(errors).length !== 0) {
-      return window.alert(
-        errors["email"] ? errors["email"] : errors["phone_number"]
-      );
-    }
-
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
       {
@@ -559,12 +552,12 @@ export default function ContactDetails() {
                     Profile
                   </li>
 
-                  <li
+                  {/* <li
                     className={tabState === 2 ? "active" : ""}
                     onClick={() => toggleTab(2)}
                   >
                     Activities
-                  </li>
+                  </li> */}
                 </ul>
 
                 <div
