@@ -12,3 +12,64 @@ export async function submitCampaign(campaign) {
     }
   });
 }
+
+// Campaign delete request
+export async function deleteSingleCampaign(id) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
+
+// Delete a campaign email
+export async function deleteCampaignEmail(campaign_id, email_id) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${campaign_id}/email/${email_id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
+
+// Return all campaigns from the database
+export async function getAllCampaigns() {
+  return fetch(window.MRM_Vars.api_base_url + "mrm/v1/campaigns/")
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      if (200 === data.code) {
+        return data.data;
+      }
+    });
+}
+
+// Campaign update put request
+export async function updateCampaignRequest(campaign) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${campaign.campaign_id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(campaign),
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

@@ -13,7 +13,7 @@ export default function SuccessfulNotification(props) {
       style={{ display: props.display }}
       className={
         cancelBtn
-          ? "successful-notification inactive"
+          ? "successful-notification"
           : "successful-notification"
       }
     >

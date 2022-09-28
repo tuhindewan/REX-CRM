@@ -19,6 +19,13 @@
       justify-content: center;
       align-items: center;
 
+      .email-box {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        align-items: center;
+      }
+
       .email-select-section {
         position: relative;
         display: flex;

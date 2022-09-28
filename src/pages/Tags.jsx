@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import AlertPopup from "../components/AlertPopup";
+import DeletePopup from "../components/DeletePopup";
 import Search from "../components/Icons/Search";
-import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
-import TagItem from "../components/Tag/TagItem";
-import Pagination from "../components/Pagination";
 import TagIcon from "../components/Icons/TagIcon";
-import { useGlobalStore } from "../hooks/useGlobalStore";
+import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
+import Pagination from "../components/Pagination";
 import Selectbox from "../components/Selectbox";
-import NavBar from "../components/Navbar/index";
+import SuccessfulNotification from "../components/SuccessfulNotification";
+import TagItem from "../components/Tag/TagItem";
+import { useGlobalStore } from "../hooks/useGlobalStore";
+import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
 
 const Tags = () => {
   // global counter update real time
@@ -77,6 +80,14 @@ const Tags = () => {
 
   // single selected array which holds selected ids with
   const [selected, setSelected] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+  const [isDelete, setIsDelete] = useState("none");
+  const [tagID, setTagID] = useState();
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [showAlert, setShowAlert] = useState("none");
 
   // Set values from list form
   const handleChange = (e) => {
@@ -137,11 +148,6 @@ const Tags = () => {
         ...values,
         slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
       });
-      // check if title is not empty
-      if (values["title"].length < 1) {
-        window.alert("Tag name can not be empty.");
-        return;
-      }
       if (editID != 0) {
         // update contact
         res = await fetch(
@@ -167,19 +173,25 @@ const Tags = () => {
 
       const resJson = await res.json();
       if (resJson.code == 201) {
-        useGlobalStore.setState({
-          counterRefresh: !counterRefresh,
-        });
-        toggleRefresh();
         setValues({
           title: "",
           data: "",
           slug: "",
         });
+        setShowNotification("block");
         setShowCreate(false);
         setEditID(0);
+        setMessage(resJson.message);
+        setErrors({});
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
+        toggleRefresh();
       } else {
-        window.alert(resJson.message);
+        setErrors({
+          ...errors,
+          tag: resJson.message,
+        });
       }
     } catch (e) {}
   };
@@ -199,57 +211,94 @@ const Tags = () => {
       }
     }
     getTags();
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
-  async function deleteList(id) {
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/tags/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        },
-      }
-    );
-    const resJson = await res.json();
-    useGlobalStore.setState({
-      counterRefresh: !counterRefresh,
-    });
-    toggleRefresh();
-  }
+  const deleteTag = async (tag_id) => {
+    setIsDelete("block");
+    setDeleteTitle("Delete Tag");
+    setDeleteMessage("Are you sure you want to delete the tag?");
+    setTagID(tag_id);
+  };
+
+  // Delete tag after delete confirmation
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleTag(tagID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
 
   async function deleteMultipleList() {
     if (selected.length > 0) {
-      if (
-        window.confirm("Are you sure you want to delete these selected items?")
-      ) {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags/`, {
-          method: "DELETE",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            tag_ids: selected,
-          }),
-        });
-        const resJson = await res.json();
-        // remove all selected after deletion
-        setAllSelected(false);
-        setSelected([]);
-        useGlobalStore.setState({
-          counterRefresh: !counterRefresh,
-        });
-        toggleRefresh();
-      }
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
     } else {
-      window.alert("Please select at least one item to delete.");
+      setShowAlert("block");
     }
   }
+
+  // Delete multiple tags after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleTagsItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          setAllSelected(false);
+          setSelected([]);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Hide create form after click on cancel
+  const handleCancel = () => {
+    setShowCreate(false);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
 
   return (
     <>
       {showCreate && (
-        <div className="create-contact">
+        <div className="tag-contact">
           <div className="mintmrm-container">
             <h2 className="conatct-heading">
               {editID == 0 ? "Add Tag" : "Update Tag"}
@@ -257,10 +306,7 @@ const Tags = () => {
 
             <div>
               <div className="add-contact-form">
-                <div
-                  className="contact-form-body"
-                  style={{ alignItems: "center", gap: "15px" }}
-                >
+                <div className="contact-form-body">
                   <div className="form-group contact-input-field">
                     <label htmlFor="title" aria-required>
                       Tag Name
@@ -272,13 +318,24 @@ const Tags = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
+                    <p className="error-message">{errors?.tag}</p>
                   </div>
-                  <button
-                    className="contact-save mintmrm-btn"
-                    onClick={createOrUpdate} // explicityly set the id as null to force create list
-                  >
-                    {editID == 0 ? "Save" : "Update"}
-                  </button>
+                  <div className="contact-button-field">
+                    <button
+                      className="contact-cancel mintmrm-btn outline"
+                      style={{ padding: "15px" }}
+                      onClick={handleCancel}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="contact-save mintmrm-btn"
+                      onClick={createOrUpdate}
+                    >
+                      {editID == 0 ? "Save" : "Update"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -392,7 +449,7 @@ const Tags = () => {
                           <TagItem
                             key={idx}
                             list={list}
-                            deleteList={deleteList}
+                            deleteTag={deleteTag}
                             currentActive={currentActive}
                             setCurrentActive={setCurrentActive}
                             handleSelectOne={handleSelectOne}
@@ -429,6 +486,20 @@ const Tags = () => {
           </div>
         </div>
       </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
+        />
+      </div>
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+      </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

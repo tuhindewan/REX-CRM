@@ -1,23 +1,25 @@
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import CrossIcon from "../Icons/CrossIcon";
-import sample from "../sample.json";
+
 import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
   const { isClose, setIsClose, setEmailBody, emailData } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
+  const [ isEmailBuilderOpen, setIsEmailBuilderOpen ] = useState(false);
   const [dataTest, setData] = useState({});
+
   const closeSection = () => {
     setIsClose(!isClose);
   };
 
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
+    setIsEmailBuilderOpen(true)
     setIsTemplateBuilder(true);
-    setIsCloseBuilder("block");
-    setData(data);
+    setIsCloseBuilder(!isCloseBuilder);
   };
 
   // Templates selection popup close after finishing email building
@@ -26,11 +28,18 @@ export default function CampaignTemplates(props) {
       setIsClose(!isClose);
     }
   };
-
+  const emailEditorRef = useRef(null);
 
   const closeEmailBuilder = () => {
-    setIsCloseBuilder('none');
-  }
+    setIsCloseBuilder("none");
+  };
+
+  const exportHtml = () => {
+    emailEditorRef.current.editor.exportHtml((data) => {
+      const { design, html } = data;
+      console.log('exportHtml', html);
+    });
+  };
 
   return (
     <div
@@ -62,7 +71,7 @@ export default function CampaignTemplates(props) {
           <div className="template-body">
             <div
               className="template-select-section"
-              onClick={(event) => openTemplateBuilder(event, sample)}
+              onClick={openTemplateBuilder}
             >
               <Link to="">
                 <button type="submit" className="save-template mintmrm-btn ">
@@ -75,12 +84,14 @@ export default function CampaignTemplates(props) {
             <div className="template-select-section"></div>
           </div>
           <EmailBuilder
-            isOpen={isTemplateBuilder}
-            isCloseBuilder={isCloseBuilder}
-            setEmailBody={setEmailBody}
-            setIsCloseBuilder={closeEmailBuilder}
-            setCloseTemplateSelection={setCloseTemplateSelection}
-            emailData={emailData}
+              isOpen={isTemplateBuilder}
+              isCloseBuilder={isCloseBuilder}
+              isEmailBuilderOpen={isEmailBuilderOpen}
+              emailData={emailData}
+              setEmailBody={setEmailBody}
+              setIsCloseBuilder={closeEmailBuilder}
+              setCloseTemplateSelection={setCloseTemplateSelection}
+              setIsEmailBuilderOpen={setIsEmailBuilderOpen} r
           />
         </div>
       </div>

@@ -1,77 +1,28 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useRef, useState } from "react";
 import EmailEditor from "react-email-editor";
 import { Link } from "react-router-dom";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
 import ComputerIcon from "../Icons/ComputerIcon";
 import LeftArrow from "../Icons/LeftArrow";
 import MobileIcon from "../Icons/MobileIcon";
-
-
-function useHookWithRefCallback() {
-  const ref = useRef(null)
-  const setRef = useCallback(node => {
-    if (ref.current) {
-      // Make sure to cleanup any events/references added to the last instance
-    }
-
-    if (node) {
-      // Check if a node is actually passed. Otherwise node would be null.
-      // You can now do what you need to, addEventListeners, measure, etc.
-    }
-
-    // Save a reference to the node
-    ref.current = node
-    console.log(ref)
-  }, [])
-
-  return [setRef]
-}
-
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
 
 const EmailBuilder = (props) => {
   const { isCloseBuilder, setIsCloseBuilder, setEmailBody, emailData } = props;
   const emailEditorRef = useRef(null);
   const [design, setDesign] = useState({});
-  // console.log(emailEditorRef.current);
-  // emailEditorRef.current.editor.loadDesign(props.dataTest);
-  useGlobalStore.setState({
-    hideGlobalNav: true,
-  });
-
-  const [ref] = useHookWithRefCallback()
-
-  const exportHtml = () => {
-    emailEditorRef.current.editor.exportHtml(
-      (data) => {
-        const { design, html } = data;
-        setIsCloseBuilder("none");
-        props.setEmailBody(html);
-        props.setCloseTemplateSelection("hide");
-      },
-      {
-        cleanup: true,
-      }
-    );
-    emailEditorRef.current.editor.loadBlank({
-      backgroundColor: "#e7e7e7",
-    });
-  };
 
   const closeEmailBuilder = () => {
-    setIsCloseBuilder("hide");
-
-    // set the body json and html for an email
     emailEditorRef.current.editor.exportHtml((data) => {
+      console.log(data);
       setEmailBody(data);
+      setIsCloseBuilder("hide");
     });
   };
 
-  const onLoad = () => {
-    // console.log(emailEditorRef, ref)
-    // emailEditorRef.current.editor.loadDesign(emailData.email_json);
-  }
-
-
+  const onReady = () => {
+    console.log(emailEditorRef);
+    emailEditorRef.current.editor.loadDesign(emailData?.email_json);
+  };
 
   return (
     <>
@@ -92,7 +43,7 @@ const EmailBuilder = (props) => {
             </button>
 
             <div className="responsive-section">
-              <button className="computer-view">
+              <button className="computer-view active">
                 <ComputerIcon />
               </button>
               <button className="mobile-view">
@@ -100,16 +51,24 @@ const EmailBuilder = (props) => {
               </button>
             </div>
           </div>
+          <div className="navbar-right-section">
+            <button className="three-dot-btn">
+              <ThreeDotIcon />
+            </button>
+            <button className="mintmrm-btn outline">Send Test</button>
+            <button className="mintmrm-btn">Next</button>
+          </div>
         </div>
-        <div style={{ height: "100%" }}>
+        <div className="email-builder-section" style={{ height: "100%" }}>
           <EmailEditor
             minHeight={"100%"}
-            ref={ref}
-            onLoad={onLoad}
+            ref={emailEditorRef}
+            onReady={onReady}
           />
         </div>
       </div>
     </>
   );
 };
+
 export default EmailBuilder;
