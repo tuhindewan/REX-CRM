@@ -159,7 +159,6 @@ class ContactController extends BaseController {
 
             $contact ["avatar_url"] = $avatar_url;
 
-
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
         return $this->get_error_response("Failed to Get Data", 400);

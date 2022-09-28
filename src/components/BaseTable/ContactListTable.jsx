@@ -241,38 +241,6 @@ export default function ContactListTable(props) {
     } else {
       setShowAlert("block");
     }
-    // Swal.fire({
-    //   title: "Are you sure?",
-    //   text: "You won't be able to revert this!",
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonColor: "#3085d6",
-    //   cancelButtonColor: "#d33",
-    //   confirmButtonText: "Yes, delete it!",
-    // }).then(async (result) => {
-    //   if (result.isConfirmed) {
-    //     if (selected.length > 0) {
-    //       const res = await fetch(
-    //         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/`,
-    //         {
-    //           method: "DELETE",
-    //           headers: {
-    //             "Content-type": "application/json",
-    //           },
-    //           body: JSON.stringify({
-    //             contact_ids: selected,
-    //           }),
-    //         }
-    //       );
-    //       Swal.fire("Deleted!", "Contact has been deleted.", "success");
-    //       setAllSelected(false);
-    //       useGlobalStore.setState({
-    //         counterRefresh: !counterRefresh,
-    //       });
-    //       toggleRefresh();
-    //     }
-    //   }
-    // });
   }
 
   // Delete multiple contacts after delete confirmation

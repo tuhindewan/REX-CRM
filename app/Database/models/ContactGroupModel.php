@@ -103,7 +103,7 @@ class ContactGroupModel{
         
         // Return groups for list view
         try {
-            $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+            $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.slug, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
             where type='$type'
@@ -114,7 +114,7 @@ class ContactGroupModel{
             $query_results = $wpdb->get_results( $select_query );
 
             $count_query = $wpdb->prepare("SELECT COUNT(*) as total FROM (
-                SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+                SELECT count(group_id) as total_contacts, g.id, g.title, g.slug, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
             where type='$type'

@@ -34,32 +34,29 @@ class NoteController extends BaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        
         $contact_id = isset($params['contact_id']) ? $params['contact_id'] : "";
         $note_id    = isset($params['note_id']) ? $params['note_id'] : "";
-
-        $notes = isset( $params['notes'] ) ? $params['notes'] : array();
         // Note Title validation
-        $title = isset( $notes['title'] ) ? sanitize_text_field( $notes['title'] ) : '';
+        $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
         if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
 		}
 
         // Note type validation
-        $type = isset( $notes['type'] ) ? sanitize_text_field( $notes['type'] ) : '';
+        $type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : '';
         if ( empty( $type ) ) {
-			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  400);
+			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  200);
 		}
 
         // Note description validation
-        $description = isset( $notes['description'] ) ? sanitize_text_field( $notes['description'] ) : '';
+        $description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
         if ( empty( $description ) ) {
-			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  400);
+			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  200);
 		}
 
         // Note object create and insert or update to database
         try {
-            $note = new NoteData( $notes );
+            $note = new NoteData( $params );
             if($note_id){
                 $success = NoteModel::update( $note, $contact_id, $note_id );
             }else{
@@ -69,7 +66,7 @@ class NoteController extends BaseController {
             if($success) {
                 return $this->get_success_response(__( 'Note has been saved successfully', 'mrm' ), 201);
             }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
 
         } catch(Exception $e) {
             return $this->get_error_response(__( $e->getMessage(), 'mrm' ), 400);
