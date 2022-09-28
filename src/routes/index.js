@@ -104,6 +104,7 @@ const routes = [
     element: CustomFields,
     title: __("Custom Fields", "mrm"),
     // bage: 18,
+    hideInMenu: true,
   },
   {
     path: "/custom-fields/create",

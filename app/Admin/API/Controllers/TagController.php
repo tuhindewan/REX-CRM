@@ -22,6 +22,14 @@ class TagController extends BaseController {
     use Singleton;
 
     /**
+     * Tag object arguments
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    public $args;
+
+    /**
      * Get and send response to create a new tag
      * 
      * @param WP_REST_Request
@@ -37,21 +45,33 @@ class TagController extends BaseController {
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
 
         if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  400);
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
 		}
 
         $slug = sanitize_title( $title );
         // Tag avaiability check
         $exist = ContactGroupModel::is_group_exist( $slug, 'tags' );
         if ( $exist && !isset($params['tag_id']) ) {
-			return $this->get_error_response( __( 'Tag is already available', 'mrm' ),  400);
+			return $this->get_error_response( __( 'Tag is already available', 'mrm' ),  200);
 		}
 
-        // Tag object create and insert or update to database
+        // List object create and insert or update to database
+        $this->args = array(
+            'title'    => $title,
+            'slug'     => $slug,
+            'data'     => isset( $params['data'] ) ? $params['data'] : ""
+        );
+
         try {
-            $tag = new TagData( $params );
+            $tag = new TagData( $this->args );
 
             if(isset($params['tag_id'])){
+                // Check slugs for removing the duplication of same name
+                $other_slugs = ContactGroupModel::is_group_exist( $slug, "tags" );
+                $update_slug = ContactGroupModel::is_group_exist_by_id( $slug, "tags", $params['tag_id'] );
+                if ( $other_slugs && !$update_slug ) {
+                    return $this->get_error_response( __( 'List is already available', 'mrm' ), 200);
+                }
                 $success = ContactGroupModel::update( $tag, $params['tag_id'], 'tags' );
             }else{
                 $success = ContactGroupModel::insert( $tag, 'tags' );

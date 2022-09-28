@@ -251,5 +251,29 @@ class ContactGroupModel{
         }
     }
 
+
+    /**
+     * Check existing tag, list or segment on database by id
+     * 
+     * @param mixed $slug group slug
+     * @param mixed $type group type
+     * @param int   $id   group id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_group_exist_by_id( $slug, $type, $id )
+    {
+        global $wpdb;
+        $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+
+        $result  = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $group_table WHERE slug = %s AND type = %s AND id= %d",array( $slug, $type, $id ) ) );
+        if( $result ){
+            return true;
+        }
+        return false;
+    }
+
+
     
 }
