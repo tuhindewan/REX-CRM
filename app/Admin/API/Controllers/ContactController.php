@@ -64,31 +64,36 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
+
         // Email address validation
         $email = isset( $params['email'] ) ? sanitize_text_field( $params['email'] ) : '';
+        if ( empty( $email ) ) {
+            return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
+        }
+
+        if ( !is_email( $email ) ) {
+            return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
+        }
+        $exist = ContactModel::is_contact_exist( $email );
+        if($exist && !isset($params['contact_id'])){
+            return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
+        }
+        
         // Contact object create and insert or update to database
         try {
 
             if( isset( $params['contact_id']) ){
 
                 $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
+                // Existing contact email address check
+                $other_slugs = ContactModel::is_contact_exist( $email );
+                $update_slug = ContactModel::is_contact_exist_by_id( $email, $contact_id );
+                if ( $other_slugs && !$update_slug ) {
+                    return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200);
+                }
                 $contact_id = ContactModel::update( $params, $contact_id );
 
             }else{
-                // Existing contact email address check
-                if ( empty( $email ) ) {
-                    return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
-                }
-
-                if ( !is_email( $email ) ) {
-                    return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
-                }
-
-                $exist = ContactModel::is_contact_exist( $email );
-                if($exist){
-                    return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
-                }
-    
                 $contact    = new ContactData( $email, $params );
                 $contact_id = ContactModel::insert( $contact );
                 if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] ){
