@@ -1,7 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button, Notification, Table, useToaster } from "rsuite";
+import { Button, Table, useToaster } from "rsuite";
 import BaseTable from "../components/BaseTable/index";
 import Import from "../components/Icons/Import";
 import Plus from "../components/Icons/Plus";
@@ -47,27 +46,6 @@ const Contacts = () => {
   const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
     (data) => ({ label: data.toUpperCase(), value: data })
   );
-
-  async function handleDelete(id) {
-    const res = await axios.delete(`/wp-json/mrm/v1/contacts/${id}`, {
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-
-    if (res.data.code === 200) {
-      toaster.push(
-        <Notification closable type="success" header="success" duration={2000}>
-          Contact deleted
-        </Notification>,
-        {
-          placement: "bottomEnd",
-        }
-      );
-    } else {
-      //error message
-    }
-  }
 
   useEffect(() => {
     try {

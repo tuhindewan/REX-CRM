@@ -1,11 +1,11 @@
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
@@ -175,6 +175,10 @@ export default function ContactDetails() {
   const showEditMode = () => {
     setEditMode(!editMode);
   };
+
+  const [isDelete, setIsDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
 
   const validate = (event, name, value) => {
     switch (name) {
@@ -372,23 +376,31 @@ export default function ContactDetails() {
   };
 
   const handleDelete = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteSingleContact(id).then((result) => {
-          if (result.status === 200) {
-            navigate("/contacts");
-          }
-        });
-      }
-    });
+    setIsDelete("block");
+    setDeleteTitle("Delete Contact");
+    setDeleteMessage("Are you sure you want to delete the contact?");
+  };
+
+  // Delete contact after delete confirmation
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleContact(id).then((result) => {
+        if (200 === result.code) {
+          navigate("../contacts", {
+            state: {
+              status: "contact-created",
+              message: result?.message,
+            },
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
   };
 
   const handleTagListDelete = async (id) => {
@@ -1034,6 +1046,14 @@ export default function ContactDetails() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>
