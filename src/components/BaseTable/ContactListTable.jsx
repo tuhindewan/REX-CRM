@@ -9,19 +9,20 @@ import {
 import Plus from "../Icons/Plus";
 // Internal dependencies
 import Swal from "sweetalert2";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import ExportDrawer from "../ExportDrawer";
+import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
+import ExportIcon from "../Icons/ExportIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import AssignedItems from "./AssignedItems";
-import SingleContact from "./SingleContact";
-import ExportIcon from "../Icons/ExportIcon";
-import ExportDrawer from "../ExportDrawer";
 import FilterItems from "./FilterItems";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
+import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -534,13 +535,6 @@ export default function ContactListTable(props) {
               </tr>
             </thead>
             <tbody>
-              {!contactData.length && (
-                <tr>
-                  <td colspan="10" style={{ textAlign: "center" }}>
-                    No contact data found.
-                  </td>
-                </tr>
-              )}
               {contactData.map((contact, idx) => {
                 return (
                   <SingleContact
@@ -556,6 +550,15 @@ export default function ContactListTable(props) {
               })}
             </tbody>
           </table>
+          {contactData.length == 0 && (
+            <div className="mrm-empty-state-wrapper">
+              <ContactProfile />
+              <div>
+                No Contact Found{" "}
+                {search.length > 0 ? ` for the term "${search}"` : null}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {totalPages > 1 && (
