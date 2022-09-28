@@ -134,13 +134,14 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params     = MRM_Common::get_api_params_values( $request );
-    
-        $contact    = ContactModel::get( $params['contact_id'] );
+        $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
+        $contact    = ContactModel::get( $contact_id );
         
         // Get and merge tags and lists
         if( $contact ) {
             $contact    = TagController::get_tags_to_contact( $contact );
             $contact    = ListController::get_lists_to_contact( $contact );
+            $contact    = NoteController::get_notes_to_contact( $contact );
         }
         
         if($contact && isset($contact['email'])) {
@@ -158,7 +159,6 @@ class ContactController extends BaseController {
             $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=100&&d=retro';
 
             $contact ["avatar_url"] = $avatar_url;
-
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
         return $this->get_error_response("Failed to Get Data", 400);

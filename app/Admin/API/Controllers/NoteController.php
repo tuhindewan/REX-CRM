@@ -125,7 +125,9 @@ class NoteController extends BaseController {
         // Note Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $notes = NoteModel::get_all( $params['contact_id'], $offset, $perPage, $search );
+        $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
+
+        $notes = NoteModel::get_all( $contact_id, $offset, $perPage, $search );
 
         if(isset($notes)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $notes);
@@ -163,6 +165,23 @@ class NoteController extends BaseController {
     public function delete_all(WP_REST_Request $request)
     {
         
+    }
+
+
+    public static function get_notes_to_contact( $contact )
+    {
+        $contact_id = isset($contact['contact_id']) ? $contact['contact_id'] : $contact['id'];
+        $contact['notes'] = array();
+        $contact['notes'] = NoteModel::get_notes_to_contact( $contact_id );
+        $contact['notes'] = array_map(function($note){
+            $note['created_at'] = human_time_diff(strtotime($note['created_at']), time());
+            if(isset($note['created_by']) && !empty($note['created_by']))$user_meta = get_userdata($note['created_by']);
+
+            $note ["created_by"] = $user_meta->data->user_login;
+            return $note;
+        }, $contact['notes']);
+        return $contact;
+
     }
 
 }

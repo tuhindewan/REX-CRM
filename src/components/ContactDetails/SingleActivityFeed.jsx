@@ -1,10 +1,10 @@
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
 
-export default function SingleActivityFeed() {
+export default function SingleActivityFeed(props) {
   return (
     <>
       <div className="single-activity-feed">
-        <h4 className="activity-date">August 23rd</h4>
+        {/* <h4 className="activity-date">August 23rd</h4> */}
 
         <div className="feed-wrapper">
           {/* <div className="single-feed">
@@ -23,27 +23,35 @@ export default function SingleActivityFeed() {
                         <span className="feed-date">3 hours age</span>
                     </div> */}
 
-          <div className="single-feed">
-            <span className="icon icon-warning">
-              <CreateNoteIconSm />
-            </span>
-            <div className="description">
-              <b>Sathi wrote a note:</b>
-              <div className="writen-note">
-                Spoke to him today: Great passion for photography and design.
-                Fast- learning capabilities.
-              </div>
-            </div>
-            <span className="feed-date">
-              3 hours age
-              <button className="note-edit" title="Edit Note">
-                Edit
-              </button>
-              <button className="note-delete" title="Detele Note">
-                Delete
-              </button>
-            </span>
-          </div>
+          
+            {props.notes?.map((note) => {
+              return (
+                <>
+                  <div className="single-feed" key={note.id}>
+                    <span className="icon icon-warning">
+                      <CreateNoteIconSm />
+                    </span>
+                    <div className="description">
+                      <b>{note.created_by} wrote a note:</b>
+                      <div className="writen-note">
+                        {note.description?.length > 200 ? note.description.substring(0, 200) + "..." : note.description}
+                      </div>
+                    </div>
+                    <span className="feed-date">
+                      {note.created_at} ago
+                      <button className="note-edit" title="Edit Note">
+                        Edit
+                      </button>
+                      <button className="note-delete" title="Detele Note">
+                        Delete
+                      </button>
+                    </span>
+                  </div>
+                </>
+              );
+            })}
+
+          
         </div>
       </div>
     </>

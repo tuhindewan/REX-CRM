@@ -153,28 +153,20 @@ class NoteModel {
 
         // Search notes by title
 		if ( ! empty( $search ) ) {
-            $search_terms = "AND title LIKE '%" .$search. "%'";
+            $search_terms = "AND title LIKE '%%$search%%'";
 		}
 
         // Return notes for a contact in list view
-        try {
-            $select_query  = $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
-            $query_results = $wpdb->get_results( $select_query );
+        $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+        $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) ) );
 
-            $count_query = $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) );
-            $count_result = $wpdb->get_results($count_query);
-
-            $count = (int) $count_result['0']->total;
-            $totalPages = ceil($count / $limit);
-      
-            return array(
-                'data'=> $query_results,
-                'total_pages' => $totalPages,
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
-        }
+        $totalPages = ceil($count / $limit);
+    
+        return array(
+            'data'=> $results,
+            'total_pages' => $totalPages,
+            'count' => $count
+        );
     }
 
     /**
@@ -198,6 +190,14 @@ class NoteModel {
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    public static function get_notes_to_contact( $contact_id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
+        return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id ORDER BY id DESC" ), ARRAY_A );
     }
 
 

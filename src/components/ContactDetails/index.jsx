@@ -890,7 +890,7 @@ export default function ContactDetails() {
                     </div>
 
                     <div className="activities-feed-wrapper">
-                      <SingleActivityFeed />
+                      <SingleActivityFeed notes={contactData?.notes} />
                     </div>
                   </div>
                 </div>
