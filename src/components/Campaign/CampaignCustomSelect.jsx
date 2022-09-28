@@ -6,6 +6,9 @@ import OptionList from "./OptionList";
 export default function CampaignCustomSelect(props) {
   const [activeTag, setActiveTag] = useState(true);
   const [activeList, setActiveList] = useState(false);
+  const [checkList, setCheckList] = useState([]);
+  const [unSelect, setUnSelect] = useState();
+
 
   const showTag = () => {
     setActiveTag(true);
@@ -14,6 +17,18 @@ export default function CampaignCustomSelect(props) {
   const showList = () => {
     setActiveTag(false);
     setActiveList(true);
+  };
+
+  const deleteItem = (id) => {
+    const updatedItem = checkList.filter((item, index) => {
+      return index != id;
+    });
+    setCheckList(updatedItem);
+  };
+
+  const deleteAll = () => {
+    setCheckList([]);
+
   };
 
   return (
@@ -40,22 +55,29 @@ export default function CampaignCustomSelect(props) {
           List
         </button>
       </div>
-      <div className="selected-items">
+      <div
+        className={
+          checkList.length != 0 ? "selected-items" : "selected-items inactive"
+        }
+      >
         <div className="items">
-          <span>
-            Product Feed
-            <div className="cross-icon">
-              <CrossIcon />
-            </div>
-          </span>
-          <span>
-            Funnel
-            <div className="cross-icon">
-              <CrossIcon />
-            </div>
-          </span>
+          {checkList.map((item, index) => {
+            return (
+              <span key={index} id={index}>
+                {item}
+                <div className="cross-icon" onClick={(e) => deleteItem(index)}>
+                  <CrossIcon />
+                </div>
+              </span>
+            );
+          })}
         </div>
-        <button className="clear-btn">Clear</button>
+        <button
+          className={checkList.length == 0 ? "clear-btn inactive" : "clear-btn"}
+          onClick={deleteAll}
+        >
+          Clear
+        </button>
       </div>
       <div className="dropdown-body">
         <div className="searchbar">
@@ -69,9 +91,27 @@ export default function CampaignCustomSelect(props) {
           </div>
         </div>
         <div className="checkbox-options">
-          <OptionList name="product-feed" title="Product Feed" />
-          <OptionList name="funnels" title="Funnels" />
-          <OptionList name="wpvr" title="WPVR" />
+          <OptionList
+            name="product-feed"
+            title="Product Feed"
+            checkList={checkList}
+            setCheckList={setCheckList}
+            
+          />
+          <OptionList
+            name="funnels"
+            title="Funnels"
+            checkList={checkList}
+            setCheckList={setCheckList}
+            
+          />
+          <OptionList
+            name="wpvr"
+            title="WPVR"
+            checkList={checkList}
+            setCheckList={setCheckList}
+            
+          />
         </div>
       </div>
     </div>

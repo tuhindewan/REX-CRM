@@ -216,9 +216,14 @@
             }
             .selected-items {
               display: flex;
-              padding: 17px;
+              padding: 17px 17px 0 17px;
               justify-content: space-between;
               align-items: center;
+
+              &.inactive {
+                display: none;
+              }
+              
               .items {
                 display: flex;
                 gap: 7px;
@@ -258,10 +263,15 @@
                 line-height: 14px;
                 letter-spacing: -0.01em;
                 color: #ec5956;
+                display: block;
+
+                &.inactive {
+                  display: none;
+                }
               }
             }
             .dropdown-body {
-              padding: 0 16px 5px;
+              padding: 17px 16px 5px;
               .searchbar {
                 svg {
                   position: absolute;
