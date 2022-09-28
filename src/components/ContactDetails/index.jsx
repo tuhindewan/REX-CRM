@@ -211,6 +211,7 @@ export default function ContactDetails() {
     );
     const responseData = await res.json();
     const code = responseData?.code;
+    console.log(responseData);
 
     if (code === 201) {
       setShowNotification("block");
@@ -328,7 +329,20 @@ export default function ContactDetails() {
         body: JSON.stringify({ status: status }),
       }
     );
-    toggleRefresh();
+    const responseData = await res.json();
+    const code = responseData?.code;
+    if (code === 201) {
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      toggleRefresh();
+      showEditMode();
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
+    }
   };
 
   // Send Double opt-in email

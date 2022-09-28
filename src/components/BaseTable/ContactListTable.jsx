@@ -12,10 +12,8 @@ import Swal from "sweetalert2";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import ExportDrawer from "../ExportDrawer";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
-import ExportIcon from "../Icons/ExportIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
@@ -405,7 +403,7 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+          {/* <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
             <ExportIcon />
             Export
           </button>
@@ -413,7 +411,7 @@ export default function ContactListTable(props) {
             isOpenNote={isNoteForm}
             isCloseNote={isCloseNote}
             setIsCloseNote={setIsCloseNote}
-          />
+          /> */}
 
           <div className="bulk-action">
             <button className="more-option" onClick={showMoreOption}>

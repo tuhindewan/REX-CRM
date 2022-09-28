@@ -66,19 +66,22 @@ class ContactController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Email address validation
-        $email = isset( $params['email'] ) ? sanitize_text_field( $params['email'] ) : '';
-        if ( empty( $email ) ) {
-            return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
-        }
-
-        if ( !is_email( $email ) ) {
-            return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
-        }
-        $exist = ContactModel::is_contact_exist( $email );
-        if($exist && !isset($params['contact_id'])){
-            return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
+        if( isset($params['email']) ){
+            $email = sanitize_text_field( $params['email'] );
+            if ( empty( $email ) ) {
+                return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
+            }
+    
+            if ( !is_email( $email ) ) {
+                return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
+            }
+            $exist = ContactModel::is_contact_exist( $email );
+            if($exist && !isset($params['contact_id'])){
+                return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
+            }
         }
         
+
         // Contact object create and insert or update to database
         try {
 
