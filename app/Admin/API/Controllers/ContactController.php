@@ -81,6 +81,10 @@ class ContactController extends BaseController {
                     return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
                 }
 
+                if ( !is_email( $email ) ) {
+                    return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
+                }
+
                 $exist = ContactModel::is_contact_exist( $email );
                 if($exist){
                     return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
