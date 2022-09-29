@@ -97,7 +97,7 @@ class NoteModel {
                 'type'          => $note->get_type(),
                 'title'         => $note->get_title(),
                 'description'   => $note->get_description(),
-                'created_by'    => MRM_Common::get_current_user_id(),
+                'created_by'    => $note->get_created_by(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
                 'updated_at'    => current_time('mysql')), 

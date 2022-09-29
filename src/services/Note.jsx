@@ -16,6 +16,24 @@ export async function submitNote(note, contactID) {
   });
 }
 
+// Custom fields update put request
+export async function updateNote(note, contactID) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/contact/${contactID}/notes/${note.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(note),
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
+
 // Contact note delete request
 export async function deleteSingleNote(noteId, contactId) {
   return await fetch(
@@ -35,7 +53,6 @@ export async function deleteSingleNote(noteId, contactId) {
 
 // Get request for a single contact note
 export async function getSingleNote(noteId, contactId) {
-  console.log(noteId);
   return await fetch(
     `${window.MRM_Vars.api_base_url}mrm/v1/contact/${contactId}/notes/${noteId}`,
     {

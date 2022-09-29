@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getSingleNote, submitNote } from "../services/Note";
+import { getSingleNote, submitNote, updateNote } from "../services/Note";
 import CrossIcon from "./Icons/CrossIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
 
@@ -8,6 +8,7 @@ export default function NoteDrawer(props) {
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
   const [note, setNote] = useState({
     description: "",
     title: "MRM Note",
@@ -17,6 +18,7 @@ export default function NoteDrawer(props) {
 
   useEffect(() => {
     if (props?.noteId) {
+      setIsEdit(true);
       getSingleNote(props?.noteId, props?.contactId).then((response) => {
         if (200 === response.code) {
           setNote(response.data);
@@ -42,8 +44,15 @@ export default function NoteDrawer(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let result;
+    if (isEdit) {
+      note.created_by = `${window.MRM_Vars.current_userID}`;
+      result = updateNote(note, props.contactId);
+    } else {
+      result = submitNote(note, props.contactID);
+    }
 
-    submitNote(note, props.contactID).then((response) => {
+    result.then((response) => {
       if (201 === response.code) {
         setShowNotification("block");
         setMessage(response?.message);
@@ -60,18 +69,11 @@ export default function NoteDrawer(props) {
         }, 3000);
         return () => clearTimeout(timer);
       } else {
-        // Validation messages
-        if (200 == response.code) {
-          setErrors({
-            ...errors,
-            description: response?.message,
-          });
-        } else {
-          setErrors({
-            ...errors,
-            type: response?.message,
-          });
-        }
+        // Error messages
+        setErrors({
+          ...errors,
+          list: response.message,
+        });
       }
     });
   };
