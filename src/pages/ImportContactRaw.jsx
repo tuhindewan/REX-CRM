@@ -48,6 +48,11 @@ export default function ImportContactRaw() {
     }
     console.log(resJson);
   }
+
+  const routeChange = () => {
+    let path = `/contacts`;
+    navigate(path);
+  };
   return (
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
@@ -90,6 +95,12 @@ johnny@walker.com, Johny, Walker
               Type or paste your existing contacts in this box
             </span>
             <div className="csv-save-button">
+              <button
+                className="contact-cancel mintmrm-btn outline"
+                onClick={routeChange}
+              >
+                Cancel
+              </button>
               <button
                 className="contact-save mintmrm-btn"
                 onClick={uploadRawData}

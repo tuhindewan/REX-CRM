@@ -67,6 +67,10 @@ export default function ImportContactFile() {
     }
     console.log(resJson);
   }
+  const routeChange = () => {
+    let path = `/contacts`;
+    navigate(path);
+  };
   return (
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
@@ -120,6 +124,12 @@ export default function ImportContactFile() {
               </div>
             </DragAndDrop>
             <div className="csv-save-button">
+              <button
+                className="contact-cancel mintmrm-btn outline"
+                onClick={routeChange}
+              >
+                Cancel
+              </button>
               <button className="contact-save mintmrm-btn" onClick={uploadCSV}>
                 Upload
               </button>
