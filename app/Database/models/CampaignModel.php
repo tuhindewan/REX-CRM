@@ -173,10 +173,15 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-
-        return $wpdb->update( $fields_table, $email, array( 
+        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index + 1 );
+        if($campaign_email->email_index == $index + 1){
+            $wpdb->update( $fields_table, $email, array( 
                             'campaign_id' => $campaign_id, 'email_index' => $index + 1 
                         ));
+        }else{
+            self::insert_campaign_emails( $email, $campaign_id, $index );
+        }
+        return true;
     }
 
 
@@ -294,7 +299,7 @@ class CampaignModel {
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
 
         $campaign_emails_query = $wpdb->prepare("SELECT 
-                                    id,delay,sender_email,
+                                    id,delay_count,delay_value,sender_email,
                                     sender_name,email_index,email_subject,email_preview_text,email_json,
                                     template_id,email_body, created_at, updated_at
                                      FROM $campaign_emails_table  
@@ -302,12 +307,34 @@ class CampaignModel {
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         if (!empty($emails)) {
             $emails = array_map(function ($email) {
-                $email['email_json'] = unserialize($email['email_json']);
+                $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
                 return $email;
             }, $emails);
         }
 
         return $emails;
+    }
+
+
+    /**
+     * Get an email by its index for a specific campaign
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $index
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get_campaign_email_by_index($campaign_id, $index)
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        $campaign_emails_query = $wpdb->prepare("SELECT 
+                                    id,email_index
+                                     FROM $campaign_emails_table  
+                                     WHERE campaign_id = %d AND email_index = %d", $campaign_id, $index);
+        return $wpdb->get_row($campaign_emails_query);
     }
 
 
@@ -359,6 +386,24 @@ class CampaignModel {
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+
+    /**
+     * Delete a email from campaign 
+     * 
+     * @param int $campaign_id 
+     *  @param int $email_id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function remove_email_from_campaign( $campaign_id, $email_id )
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        return $wpdb->delete( $campaign_emails_table, array('id' => $email_id, 'campaign_id' => $campaign_id) );
     }
     
     

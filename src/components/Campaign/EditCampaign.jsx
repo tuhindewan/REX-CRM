@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { updateCampaignRequest } from "../../services/Campaign";
+import { deleteCampaignEmail, updateCampaignRequest } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
@@ -9,15 +9,18 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
+import DeletePopup from "../DeletePopup";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
   email_subject: "",
   email_body: "",
   email_json: "",
-  preview: "",
-  senderName: "",
-  senderEmail: "",
+  delay_count: 0,
+  delay_value: "",
+  email_preview_text: "",
+  sender_name: "",
+  sender_email: "",
   toError: null,
   senderEmailError: null,
 };
@@ -41,15 +44,46 @@ export default function EditCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
+  const [isEmailDelete, setIsEmailDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [emailID, setEmailID] = useState();
+  const [emailIndex, setEmailIndex] = useState();
+  const [refresh, setRefresh] = useState(true);
+  const [errors, setErrors] = useState({});
 
   // get the campaign id from url
   const { id } = useParams();
+
+  const names = [
+    {
+      value: "Minutes",
+      id: "minutes",
+    },
+    {
+      value: "Hours",
+      id: "hours",
+    },
+    {
+      value: "Days",
+      id: "days",
+    },
+    {
+      value: "Weeks",
+      id: "weeks",
+    },
+  ];
 
   // fetch campaign data
   const fetchCampaignData = async () => {
     const response = await fetch(`/wp-json/mrm/v1/campaigns/${id}`);
     return await response.json();
   };
+
+  // the data is fetched again whenver refresh is changed
+  function toggleRefresh() {
+    setRefresh((prev) => !prev);
+  }
 
   useEffect(() => {
     fetchCampaignData().then((res) => {
@@ -65,7 +99,7 @@ export default function EditCampaign(props) {
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
     });
-  }, []);
+  }, [refresh]);
 
   // Prepare campaign object and send post request to backend
   const updateCampaign = async () => {
@@ -92,9 +126,22 @@ export default function EditCampaign(props) {
       },
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
-      emails: emailData,
+      emails: emailData.map((email) => {
+        return {
+          email_subject: email.email_subject,
+          email_preview_text: email.email_preview_text,
+          sender_email: email.sender_email,
+          delay_count: email.delay_count,
+          delay_value: email.delay_value,
+          sender_name: email.sender_name,
+          email_body: email.email_body,
+          email_json: email.email_json,
+        };
+      }),
       campaign_id: id,
     };
+
+    console.log(campaign);
 
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {
@@ -118,15 +165,43 @@ export default function EditCampaign(props) {
   };
 
   // function for removing an email from the sequence
-  const deleteEmail = (index) => {
-    setEmailData((prevEmailData) => {
-      const copy = [...prevEmailData];
-      copy.splice(index, 1);
-      setSelectedEmailIndex(
-        index < copy.length ? index : Math.max(0, index - 1)
-      );
-      return copy;
-    });
+  const deleteEmail = (index, email_id) => {
+    setIsEmailDelete("block");
+    setDeleteTitle("Delete Sequence Email");
+    setDeleteMessage("Are you sure you want to delete the email?");
+    setEmailIndex(index);
+    setEmailID(email_id);
+  };
+
+  const onDeleteShow = async (status) => {
+    setIsEmailDelete(status);
+  };
+
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      setEmailData((prevEmailData) => {
+        const copy = [...prevEmailData];
+        copy.splice(emailIndex, 1);
+        setSelectedEmailIndex(
+          emailIndex < copy.length ? emailIndex : Math.max(0, emailIndex - 1)
+        );
+        return copy;
+      });
+
+      deleteCampaignEmail(id, emailID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsEmailDelete("none");
   };
 
   // handler function for each text field change in each email sequence
@@ -185,7 +260,7 @@ export default function EditCampaign(props) {
             <div className="add-email-section">
               {emailData.map((email, index) => {
                 return (
-                  <div key={`emails-${index}`}>
+                  <div className="email-box" key={`emails-${index}`}>
                     <div
                       className={
                         selectedEmailIndex != index
@@ -201,7 +276,7 @@ export default function EditCampaign(props) {
                       {index > 0 && (
                         <div
                           className="delete-option"
-                          onClick={() => deleteEmail(index)}
+                          onClick={() => deleteEmail(index, email.id)}
                         >
                           <Delete />
                         </div>
@@ -266,12 +341,41 @@ export default function EditCampaign(props) {
                     </div>
                   </>
                 )}
+                {selectedEmailIndex > 0 && (
+                  <div className="email-from input-item">
+                    <label>Delay</label>
+                    <input
+                      style={{
+                        border: "1px solid #e3e4e8",
+                        marginRight: "15px",
+                      }}
+                      type="number"
+                      name="delay_count"
+                      value={emailData[selectedEmailIndex]["delay_count"]}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "delay_count")
+                      }
+                    />
+                    <select
+                      style={{ maxWidth: "fit-content" }}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "delay_value")
+                      }
+                      name="delay_value"
+                      value={emailData[selectedEmailIndex]["delay_value"]}
+                    >
+                      {names.map((item) => (
+                        <option key={item.id}>{item.value}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 <div className="email-subject input-item">
                   <label>Subject:</label>
                   <input
                     type="text"
                     name="subject"
-                    value={activeEmailData.email_subject}
+                    value={emailData[selectedEmailIndex]["email_subject"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "email_subject")
                     }
@@ -288,8 +392,8 @@ export default function EditCampaign(props) {
                   <label>Preview Text</label>
                   <input
                     type="text"
-                    name="preview"
-                    value={activeEmailData.email_preview_text}
+                    name="email_preview_text"
+                    value={emailData[selectedEmailIndex]["email_preview_text"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(
                         e.target.value,
@@ -299,7 +403,8 @@ export default function EditCampaign(props) {
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]?.email_subject.length}/200
+                    {emailData[selectedEmailIndex]?.email_preview_text.length}
+                    /200
                   </span>
                   <div className="setting-section">
                     <SettingIcon />
@@ -310,7 +415,7 @@ export default function EditCampaign(props) {
                   <input
                     type="text"
                     name="senderName"
-                    value={activeEmailData.sender_name}
+                    value={emailData[selectedEmailIndex]["sender_name"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "sender_name")
                     }
@@ -319,7 +424,7 @@ export default function EditCampaign(props) {
                   <input
                     type="text"
                     name="senderEmail"
-                    value={activeEmailData.sender_email}
+                    value={emailData[selectedEmailIndex]["sender_email"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "sender_email")
                     }
@@ -360,6 +465,14 @@ export default function EditCampaign(props) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mintmrm-container" style={{ display: isEmailDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

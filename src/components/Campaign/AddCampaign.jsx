@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -7,14 +7,16 @@ import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
+import SuccessfulNotification from "../SuccessfulNotification";
 import CampaignTemplates from "./CampaignTemplates";
-
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
   subject: "",
   email_body: "",
   email_json: "",
+  delay_count: 0,
+  delay_value: "",
   preview: "",
   senderName: "",
   senderEmail: "",
@@ -26,7 +28,6 @@ export default function AddCampaign(props) {
   const emailEditorRef = useRef(null);
 
   const navigate = useNavigate();
-  const { id } = useParams();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{ ...defaultCampaignData }]);
 
@@ -42,10 +43,25 @@ export default function AddCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
-
-  // useEffect(() => {
-  //   console.log(id);
-  // }, [id]);
+  const [delay, setDelay] = useState();
+  const names = [
+    {
+      value: "Minutes",
+      id: "minutes",
+    },
+    {
+      value: "Hours",
+      id: "hours",
+    },
+    {
+      value: "Days",
+      id: "days",
+    },
+    {
+      value: "Weeks",
+      id: "weeks",
+    },
+  ];
 
   // Prepare campaign object and send post request to backend
   const saveCampaign = async () => {
@@ -73,23 +89,38 @@ export default function AddCampaign(props) {
       type: emailData.length > 1 ? "sequence" : "regular",
       status: "ongoing",
       emails: emailData.map((email) => {
+        // if (email.delay_value == "Minutes") {
+        //   email.delay = email.delay_count * 60;
+        // } else if (email.delay_value == "Hours") {
+        //   email.delay = email.delay_count * 60 * 60;
+        // } else if (email.delay_value == "Days") {
+        //   email.delay = email.delay_count * 60 * 60 * 24;
+        // } else if (email.delay_value == "Weeks") {
+        //   email.delay = email.delay_count * 60 * 60 * 24 * 7;
+        // } else {
+        //   email.delay = 0;
+        // }
         return {
           email_subject: email.subject,
           email_preview_text: email.preview,
           sender_email: email.senderEmail,
+          delay_count: email.delay_count,
+          delay_value: email.delay_value,
           sender_name: email.senderName,
           email_body: email.email_body,
           email_json: email.email_json,
         };
       }),
     };
+
     // Send POST request to save data
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
-        navigate("/campaigns", {
-          state: { status: "campaign-created", message: response?.message },
-        });
+        // navigate("/campaigns", {
+        //   state: { status: "campaign-created", message: response?.message },
+        // });
+        setResponseMessage("Campaign is saved.");
       } else {
         window.alert(response?.message);
       }
@@ -168,7 +199,7 @@ export default function AddCampaign(props) {
              */}
             {emailData.map((email, index) => {
               return (
-                <div key={`emails-${index}`}>
+                <div className="email-box" key={`emails-${index}`}>
                   <div
                     className={
                       selectedEmailIndex != index
@@ -252,6 +283,28 @@ export default function AddCampaign(props) {
                   </div>
                 </>
               )}
+              {selectedEmailIndex > 0 && (
+                <div className="email-from input-item">
+                  <label>Delay</label>
+                  <input
+                    style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
+                    type="number"
+                    name="delay_count"
+                    value={emailData[selectedEmailIndex]["delay_count"]}
+                    onChange={handleEmailFieldsChange}
+                  />
+                  <select
+                    style={{ maxWidth: "fit-content" }}
+                    onChange={handleEmailFieldsChange}
+                    name="delay_value"
+                    value={emailData[selectedEmailIndex]["delay_value"]}
+                  >
+                    {names.map((item) => (
+                      <option key={item.id}>{item.value}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="email-subject input-item">
                 <label>Subject:</label>
                 <input
@@ -280,41 +333,8 @@ export default function AddCampaign(props) {
                 <span>
                   {emailData[selectedEmailIndex]["preview"].length}/200
                 </span>
-                  <div className="setting-section">
-                    <SettingIcon />
-                  </div>
-                </div>
-                <div className="email-from input-item">
-                  <label>From</label>
-                  <input
-                      type="text"
-                      name="senderName"
-                      value={emailData[selectedEmailIndex]["senderName"]}
-                      onChange={handleEmailFieldsChange}
-                      placeholder="Enter Name"
-                  />
-                  <input
-                      type="text"
-                      name="senderEmail"
-                      value={emailData[selectedEmailIndex]["senderEmail"]}
-                      onChange={handleEmailFieldsChange}
-                      placeholder="Enter Email"
-                  />
-                </div>
-                <div className="email-design input-item">
-                  <label>Design</label>
-                  <div className="add-template-section" onClick={openTemplate}>
-                    <TemplateIcon />
-                    <Link to="">Select a Template</Link>
-                  </div>
-                  <CampaignTemplates
-                      isOpen={isTemplate}
-                      isClose={isClose}
-                      setIsClose={setIsClose}
-                      setEmailBody={setEmailBody}
-                      emailData={emailData[selectedEmailIndex]}
-                  />
-
+                <div className="setting-section">
+                  <SettingIcon />
                 </div>
               </div>
               <div className="email-from input-item">
@@ -345,6 +365,7 @@ export default function AddCampaign(props) {
                   isClose={isClose}
                   setIsClose={setIsClose}
                   setEmailBody={setEmailBody}
+                  emailData={emailData[selectedEmailIndex]}
                 />
               </div>
             </div>
@@ -359,10 +380,16 @@ export default function AddCampaign(props) {
               >
                 Save
               </button>
-              {responseMessage && <p>{responseMessage}</p>}
+              {responseMessage != "" && (
+                <SuccessfulNotification
+                  display={"block"}
+                  message="Campaign is saved."
+                />
+              )}
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 }

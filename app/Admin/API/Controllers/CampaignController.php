@@ -44,7 +44,6 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         // Campaign title validation
         if ( isset($params['title']) && empty( $params['title'] )) {
             return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
@@ -223,6 +222,29 @@ class CampaignController extends BaseController {
         }
         return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
 
+    }
+
+
+    /**
+     * Request for deleting a email from a campaign
+     * 
+     * @param WP_REST_Request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function delete_campaign_email( WP_REST_Request $request )
+    {
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+        $email_id = isset( $params['email_id'] ) ? $params['email_id'] : "";
+        
+        $success = ModelsCampaign::remove_email_from_campaign( $campaign_id, $email_id );
+        if($success) {
+            return $this->get_success_response( __( 'Campaign email has been deleted successfully', 'mrm' ), 200 );
+        }
+        return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
     }
 
 
