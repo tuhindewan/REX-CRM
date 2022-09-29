@@ -269,30 +269,9 @@ class TagController extends BaseController {
     {
         $res = array_map(function ( $tag ) use( $contact_ids ) {
 
-            // Create new tag if not exist
-            if( filter_var($tag, FILTER_VALIDATE_INT) === false ){
-
-                $slug = MRM_Common::create_slug($tag);
-                $exist = ContactGroupModel::is_group_exist( $slug, 'tags' );
-                $tag = array(
-                    'title' => $tag,
-                    'slug'  => $slug,
-                    'data'  => null
-                );
-                if(!$exist){
-                    $new_tag    = new TagData($tag);
-                    $new_tag_id = ContactGroupModel::insert( $new_tag, 'tags' );
-                }
-                
-            }
-            $tag = null;
-            if(isset($new_tag_id)){
-                $tag = $new_tag_id;
-            }
-
             $pivot_ids = array_map(function ($contact_id) use ($tag){
                 return array(
-                    'group_id'    =>  $tag,
+                    'group_id'    =>  $tag['id'],
                     'contact_id'  =>  $contact_id
                 );
             }, $contact_ids);

@@ -109,6 +109,7 @@ export default function ContactListTable(props) {
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
+  const [assignLists, setAssignLists] = useState([]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -317,8 +318,12 @@ export default function ContactListTable(props) {
   };
 
   const showListDropdown = () => {
-    setIsAssignTo(!isAssignTo);
-    setActive(!isActive);
+    if (!selected.length) {
+      setShowAlert("block");
+    } else {
+      setIsAssignTo(!isAssignTo);
+      setActive(!isActive);
+    }
   };
 
   const showAddColumnList = () => {
@@ -447,7 +452,22 @@ export default function ContactListTable(props) {
                 Delete
               </li>
             </ul>
-            <AssignedItems isActive={isAssignTo} />
+            <AssignedItems
+              selected={assignLists}
+              setSelected={setAssignLists}
+              endpoint="lists"
+              placeholder="Lists"
+              name="list"
+              listTitle="CHOOSE LIST"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              isActive={isAssignTo}
+            />
           </div>
         </div>
       </div>

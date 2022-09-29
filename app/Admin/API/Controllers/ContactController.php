@@ -281,7 +281,7 @@ class ContactController extends BaseController {
             $isTag = true;
         }
 
-        if( isset($params['tags'], $params['contact_id']) ){
+        if( isset($params['lists'], $params['contact_id']) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = true;
         }
