@@ -248,27 +248,6 @@ const Tags = () => {
       setIsDelete("block");
       setDeleteTitle("Delete Multiple");
       setDeleteMessage("Are you sure you want to delete these selected items?");
-      // if (
-      //   window.confirm("Are you sure you want to delete these selected items?")
-      // ) {
-      //   const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags/`, {
-      //     method: "DELETE",
-      //     headers: {
-      //       "Content-type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       tag_ids: selected,
-      //     }),
-      //   });
-      //   const resJson = await res.json();
-      //   // remove all selected after deletion
-      //   setAllSelected(false);
-      //   setSelected([]);
-      //   useGlobalStore.setState({
-      //     counterRefresh: !counterRefresh,
-      //   });
-      //   toggleRefresh();
-      // }
     } else {
       setShowAlert("block");
     }
