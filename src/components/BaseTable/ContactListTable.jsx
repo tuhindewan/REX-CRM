@@ -467,6 +467,7 @@ export default function ContactListTable(props) {
               showSelectedInside={false}
               allowNewCreate={true}
               isActive={isAssignTo}
+              contactIds={selected}
             />
           </div>
         </div>

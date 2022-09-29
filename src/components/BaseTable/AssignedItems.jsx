@@ -20,6 +20,7 @@ export default function AssignedItems(props) {
     showListTitle = true,
     showSelectedInside = true,
     allowNewCreate = true,
+    contactIds,
   } = props;
 
   // store retrieved
@@ -113,9 +114,42 @@ export default function AssignedItems(props) {
     }
   };
 
+  const handleAssignLists = async () => {
+    let res = null;
+    let body = {
+      lists: selected,
+      contact_ids: contactIds,
+    };
+    try {
+      // create contact
+      setLoading(true);
+      res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const resJson = await res.json();
+      if (resJson.code == 201) {
+        setSearch("");
+        setQuery("");
+        setSelected([...selected, { id: resJson.data, title: body.title }]);
+      } else {
+        window.alert(resJson.message);
+      }
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-      {console.log(selected)}
       <ul
         className={
           props.isActive
@@ -179,7 +213,7 @@ export default function AssignedItems(props) {
         {/* <div className="no-found">
           <span>No List found</span>
         </div> */}
-        <Link className="add-action" to="">
+        <Link className="add-action" to="" onClick={handleAssignLists}>
           <Plus />
           Assign {placeholder}
         </Link>
