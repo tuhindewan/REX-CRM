@@ -234,7 +234,6 @@ const Lists = () => {
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
-    console.log(query);
     async function getLists() {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`

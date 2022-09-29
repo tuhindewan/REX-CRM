@@ -8,7 +8,6 @@ export async function getLists() {
     })
     .then((data) => {
       if (200 === data.code) {
-        console.log(data.data);
         return data.data;
       }
     });
