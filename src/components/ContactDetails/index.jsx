@@ -63,9 +63,7 @@ export default function ContactDetails() {
   useEffect(() => {
     // Get lists
     getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
-      });
+      setLists(results.data);
     });
 
     // Get tags
