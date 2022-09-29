@@ -159,7 +159,7 @@ class ContactController extends BaseController {
             $avatar_url = add_query_arg( array(
                 's' => '100',
                 'd' => 'retro',
-            ), 'https://www.gravatar.com/avatar/' . md5( $contact['email']) );
+            ), esc_url( 'https://www.gravatar.com/avatar/' . md5( $contact['email'] ) ));
 
             $contact ["avatar_url"] = $avatar_url;
             return $this->get_success_response("Query Successfull", 200, $contact);

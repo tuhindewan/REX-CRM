@@ -16,7 +16,6 @@ import AlertPopup from "../AlertPopup";
 import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
-import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
@@ -545,10 +544,10 @@ export default function ContactListTable(props) {
 
       <div className="pos-relative">
         <div className="add-column">
-          <button className="add-column-btn" onClick={showAddColumnList}>
+          {/* <button className="add-column-btn" onClick={showAddColumnList}>
             <PlusCircleIcon />
             <span className="tooltip">Add Column</span>
-          </button>
+          </button> */}
           <ul
             className={
               isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
