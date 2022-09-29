@@ -48852,7 +48852,7 @@ function ConfigurationDrawer({
 const TabPane = Tabs$1.TabPane;
 function EditPanel() {
   const { height } = useEditorProps();
-  const { compact = true } = useExtensionProps();
+  const { compact = true, showBlockLayers = true } = useExtensionProps();
   return /* @__PURE__ */ React__default.createElement(Layout$1.Sider, {
     className: styles$1.blocksPanel,
     style: { paddingRight: 0, minWidth: 360 },
@@ -48872,14 +48872,7 @@ function EditPanel() {
     title: "Block"
   }, /* @__PURE__ */ React__default.createElement(FullHeightOverlayScrollbars, {
     height: `calc(${height} - 60px)`
-  }, /* @__PURE__ */ React__default.createElement(Blocks, null))), /* @__PURE__ */ React__default.createElement(TabPane, {
-    key: "1",
-    title: "Layer"
-  }, /* @__PURE__ */ React__default.createElement(FullHeightOverlayScrollbars, {
-    height: `calc(${height} - 60px)`
-  }, /* @__PURE__ */ React__default.createElement("div", {
-    style: { padding: 20 }
-  }, /* @__PURE__ */ React__default.createElement(BlockLayer, null))))), !compact && /* @__PURE__ */ React__default.createElement(ConfigurationDrawer, {
+  }, /* @__PURE__ */ React__default.createElement(Blocks, null)))), !compact && /* @__PURE__ */ React__default.createElement(ConfigurationDrawer, {
     height,
     compact: Boolean(compact)
   }));
@@ -48948,7 +48941,7 @@ const defaultCategories = [
 ];
 const StandardLayout = (props) => {
   const { height: containerHeight } = useEditorProps();
-  const { showSourceCode = true, compact = true, categories = defaultCategories } = props;
+  const { showSourceCode = true, compact = true, categories = defaultCategories, showBlockLayers = true } = props;
   const { setFocusIdx } = useFocusIdx();
   useEffect(() => {
     if (!compact) {

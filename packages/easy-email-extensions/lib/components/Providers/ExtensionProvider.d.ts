@@ -33,6 +33,7 @@ export interface ExtensionProps extends BlockLayerProps {
     }>;
     showSourceCode?: boolean;
     compact?: boolean;
+    showBlockLayers?: boolean;
 }
 export declare const ExtensionContext: React.Context<ExtensionProps>;
 export declare const ExtensionProvider: React.FC<ExtensionProps>;
