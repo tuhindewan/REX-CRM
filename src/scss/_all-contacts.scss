@@ -13,6 +13,7 @@
     width: calc(100% / 4 - 15px);
     margin-left: 20px;
     padding: 20px;
+    background-color: #ffffff;
 
     &:first-child {
       margin-left: 0;
@@ -74,6 +75,7 @@
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-between;
+    background-color: #ffffff;
 
     .left-filters {
       display: flex;
@@ -484,6 +486,9 @@
             }
           }
         }
+        tr:nth-child(odd) {
+          background-color: #ffffff;
+        }
         // tr:last-child {
         //     border-bottom: none;
         // }
@@ -544,7 +549,6 @@
     }
 
     table tbody td:first-child {
-      background: #fff;
     }
     table tr:last-child td:first-child {
       border-bottom-left-radius: 0.5rem;
@@ -576,6 +580,7 @@
     padding: 15px;
     width: 100%;
     justify-content: space-between;
+    background-color: #ffffff;
 
     .footer-show-number {
       display: flex;

@@ -1,8 +1,6 @@
 .mrm-custom-select-container {
   position: relative;
   display: inline-block;
-  margin: 5px;
-  padding: 5px 10px;
   .mrm-custom-select-btn {
     position: relative;
     font-weight: 500;
@@ -24,24 +22,13 @@
       transition: border-width 150ms ease-in-out;
       height: 5px;
       right: 10px;
-      top: 45%;
+      top: 40%;
       width: 5px;
       cursor: pointer;
     }
     &.show:before {
-      content: " ";
-      display: block;
-      position: absolute;
-      border-style: solid;
-      border-color: #686f7f;
-      border-width: 0px 1px 1px 0px;
+      top: 47%;
       transform: rotate(225deg);
-      transition: border-width 150ms ease-in-out;
-      height: 5px;
-      right: 10px;
-      top: 45%;
-      width: 5px;
-      cursor: pointer;
     }
   }
 }
@@ -50,10 +37,10 @@
 }
 
 .mrm-custom-select-dropdown {
-  width: auto ;
-  min-width: 270px ;
-  left: 10px ;
-  right: unset ;
+  width: auto;
+  min-width: 270px;
+  left: 10px;
+  right: unset;
 
   &:before {
     content: " ";

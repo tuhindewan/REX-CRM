@@ -258,7 +258,14 @@ export default function AddCampaign(props) {
                   <div className="email-to input-item">
                     <label>To:</label>
                     <button className="all-recipients" onClick={showDropDown}>
-                      All Subscriber{" "}
+                      All Subscriber
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                    <button className="all-recipients selected" onClick={showDropDown}>
+                      <span className="tags">5 Tags</span>
+                      <span className="from">from</span>
+                      <span className="lists">4 Lists.</span>
+                      <span className="recipients">300 Recipients</span>
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
                     <CampaignCustomSelect dropDown={dropDown} />
@@ -301,7 +308,6 @@ export default function AddCampaign(props) {
                 <div className="email-from input-item">
                   <label>Delay</label>
                   <input
-                    style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
                     type="number"
                     name="delay_count"
                     value={emailData[selectedEmailIndex]["delay_count"]}

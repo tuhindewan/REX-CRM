@@ -22,6 +22,7 @@ import ExportIcon from "../Icons/ExportIcon";
 import ExportDrawer from "../ExportDrawer";
 import FilterItems from "./FilterItems";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import CustomSelect from "../CustomSelect";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -88,6 +89,38 @@ export default function ContactListTable(props) {
   const location = useLocation();
 
   const [filterRequest, setFilterRequest] = useState({});
+  const [listIds, setListIds] = useState([]);
+  const [tagIds, setTagIds] = useState([]);
+  const [statusIds, setStatusIds] = useState([]);
+  const [filterElem, setFilterElem] = useState({
+    lists: [],
+    tags: [],
+    status: [],
+  });
+  useEffect(() => {
+    selectedLists.map((list) => {
+      // console.log(list);
+      setListIds([...listIds, list.id]);
+      setFilterElem((prev) => ({
+        ...prev,
+        lists: listIds,
+      }));
+    });
+    selectedTags.map((tag) => {
+      setTagIds([...tagIds, tag.id]);
+      setFilterElem((prev) => ({
+        ...prev,
+        tags: tagIds,
+      }));
+    });
+    selectedStatus.map((status) => {
+      setStatusIds([...statusIds, status.id]);
+      setFilterElem((prev)=>({
+        prev,
+        status: statusIds,
+      }));
+    });
+  }, [selectedLists, selectedStatus, selectedTags]);
 
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
@@ -315,6 +348,7 @@ export default function ContactListTable(props) {
 
   return (
     <>
+      {console.log(selectedLists)}
       <div
         className="contact-list-header"
         onClick={() => {
@@ -325,31 +359,55 @@ export default function ContactListTable(props) {
       >
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
-            <button
-              className={isLists ? "filter-btn show" : "filter-btn"}
-              onClick={showLists}
-            >
-              Lists
-            </button>
-            <FilterItems isActiveFilter={isLists} />
+            <CustomSelect
+              selected={selectedLists}
+              setSelected={setSelectedLists}
+              endpoint="/lists"
+              placeholder="Lists"
+              name="list"
+              listTitle="CHOOSE LIST"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={true}
+              allowNewCreate={true}
+            />
           </div>
           <div className="form-group left-filter">
-            <button
-              className={isTags ? "filter-btn show" : "filter-btn"}
-              onClick={showTags}
-            >
-              Tags
-            </button>
-            <FilterItems isActiveFilter={isTags} />
+            <CustomSelect
+              selected={selectedTags}
+              setSelected={setSelectedTags}
+              endpoint="/tags"
+              placeholder="Tags"
+              name="tag"
+              listTitle="CHOOSE TAG"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={true}
+              allowNewCreate={true}
+            />
           </div>
           <div className="form-group left-filter">
-            <button
-              className={isStatus ? "filter-btn show" : "filter-btn"}
-              onClick={showStatus}
-            >
-              Status
-            </button>
-            <FilterItems isActiveFilter={isStatus} />
+            <CustomSelect
+              selected={selectedStatus}
+              setSelected={setSelectedStatus}
+              endpoint="/status"
+              placeholder="Status"
+              name="status"
+              listTitle="CHOOSE Status"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={true}
+              allowNewCreate={true}
+            />
           </div>
 
           {/* <FilterBox

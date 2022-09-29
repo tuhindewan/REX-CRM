@@ -178,6 +178,30 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+
+            &.selected {
+              gap: 5px;
+              display: none;
+              .tags,
+              .from,
+              .lists,
+              .recipients {
+                padding-left: 0;
+                font-weight: 500;
+                font-size: 15px;
+                line-height: 18px;
+              }
+              .tags,
+              .lists {
+                color: #2d3149;
+              }
+              .from {
+                color: #9398a5;
+              }
+              .recipients {
+                color: #573bff;
+              }
+            }
           }
           .recipient-dropdown {
             position: absolute;
@@ -223,7 +247,7 @@
               &.inactive {
                 display: none;
               }
-              
+
               .items {
                 display: flex;
                 gap: 7px;
@@ -319,6 +343,8 @@
             input {
               width: calc(50% - 80px);
               padding-right: 15px;
+              border: 1px solid #e3e4e8;
+              margin-right: 15px;
             }
           }
           &.input-item {

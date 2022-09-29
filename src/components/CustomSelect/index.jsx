@@ -113,20 +113,37 @@ export default function CustomSelect(props) {
   // at first page load get all the available lists
   // keep fetching lists whenever user types something in the search bar
   useEffect(() => {
-    async function getItems() {
-      setLoading(true);
-      const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
-      );
-      const resJson = await res.json();
-      if (resJson.code == 200) {
-        setItems(resJson.data.data);
-        setLoading(false);
-      } else {
-        console.log(resJson);
+    if (endpoint == "/status") {
+      setItems([
+        {
+          title: "Subsbcribe",
+          id: "subsbcribe",
+        },
+        {
+          title: "Unsubscribe",
+          id: "unsubscribe",
+        },
+        {
+          title: "Pending",
+          id: "pending",
+        },
+      ]);
+    } else {
+      async function getItems() {
+        setLoading(true);
+        const res = await fetch(
+          `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
+        );
+        const resJson = await res.json();
+        if (resJson.code == 200) {
+          setItems(resJson.data.data);
+          setLoading(false);
+        } else {
+          console.log(resJson);
+        }
       }
+      if (!options) getItems();
     }
-    if (!options) getItems();
   }, [query]);
 
   // Handle new list or tag creation
@@ -183,7 +200,9 @@ export default function CustomSelect(props) {
               return (
                 <span key={item.id} className="mrm-custom-selected-items">
                   {item.title}
-                  <CrossIcon onClick={(e) => deleteSelected(e, item.id)} />
+                  <div className="cross-icon" onClick={(e) => deleteSelected(e, item.id)}>
+                    <CrossIcon />
+                  </div>
                 </span>
               );
             })}
