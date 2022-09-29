@@ -4,10 +4,13 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DragAndDrop from "../components/DragAndDrop";
 import ImportNavbar from "../components/Import/ImportNavbar";
+import WarningNotification from "../components/WarningNotification";
 export default function ImportContactFile() {
   const navigate = useNavigate();
   // stores the selected file reference
   const [file, setFile] = useState(null);
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
 
   const uploadRef = useRef(null);
 
@@ -37,11 +40,6 @@ export default function ImportContactFile() {
   }
 
   async function uploadCSV() {
-    if (!file) {
-      window.alert("Please select a csv file to import.");
-      return;
-    }
-    console.log(file);
     let formData = new FormData();
     formData.append("csv", file);
     console.log(formData.get("csv"));
@@ -63,7 +61,12 @@ export default function ImportContactFile() {
         },
       });
     } else {
-      window.alert(resJson.message);
+      setShowWarning("block");
+      setMessage(resJson.message);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
     console.log(resJson);
   }
@@ -72,6 +75,7 @@ export default function ImportContactFile() {
     navigate(path);
   };
   return (
+    <>
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
         <div className="contact-details-breadcrumb import-contact-breadcrum">
@@ -138,5 +142,7 @@ export default function ImportContactFile() {
         </div>
       </div>
     </div>
+    <WarningNotification display={showWarning} message={message} />
+    </>
   );
 }

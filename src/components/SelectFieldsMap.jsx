@@ -10,7 +10,7 @@ import React, { useState, useEffect } from "react";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
-import CustomSelect from "./CustomSelect";
+import WarningNotification from "./WarningNotification";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -25,6 +25,8 @@ export default function SelectFieldsMap() {
   const [lists, setLists] = useState([]);
   // holds selectbox currently selected tags
   const [tags, setTags] = useState([]);
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
 
   // get the state from calling component
   const state = location.state;
@@ -93,9 +95,14 @@ export default function SelectFieldsMap() {
           state: { data: resJson.data },
         });
       } else {
-        window.alert(resJson.message);
+        setShowWarning("block");
+        setMessage(resJson.message);
       }
       setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     } catch (e) {
       console.log(e);
       window.alert(e.message);
@@ -126,12 +133,13 @@ export default function SelectFieldsMap() {
 
   // handle selectbox and prepare the mapping
   function onSelect(e, name, arg1) {
+
     const updatedOptions = [...e.target.options]
       .filter((option) => option.selected)
       .map((x) => x.value);
     const selectedValue = updatedOptions[0];
-
     const idx = map.findIndex((item) => item.source == arg1);
+
     if (selectedValue == "no_import") {
       map.filter((item) => item.source != arg1);
       return;
@@ -151,6 +159,7 @@ export default function SelectFieldsMap() {
   }
 
   return (
+    <>
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
         <div className="contact-details-breadcrumb import-contact-breadcrum">
@@ -278,5 +287,7 @@ export default function SelectFieldsMap() {
         </div>
       </div>
     </div>
+    <WarningNotification display={showWarning} message={message} />
+    </>
   );
 }
