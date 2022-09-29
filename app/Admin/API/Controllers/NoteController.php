@@ -178,8 +178,7 @@ class NoteController extends BaseController {
      */
     public static function get_notes_to_contact( $contact )
     {
-        $contact_id = isset($contact['contact_id']) ? $contact['contact_id'] : $contact['id'];
-        $contact['notes'] = array();
+        $contact_id = isset($contact['id']) ? $contact['id'] : "";
         $contact['notes'] = NoteModel::get_notes_to_contact( $contact_id );
         $contact['notes'] = array_map(function($note){
 

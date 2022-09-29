@@ -301,10 +301,14 @@ class CampaignController extends BaseController {
         $campaigns['current_page'] = (int) $page;
         
         // Prepare human_time_diff for every campaign
-        $campaigns['data'] = array_map(function($campaign){
-            $campaign['created_at'] = human_time_diff(strtotime($campaign['created_at']), time());
-            return $campaign;
-        }, $campaigns['data']);
+        if(isset( $campaigns['data'] )){
+            $campaigns['data'] = array_map(function($campaign){
+                if( isset($campaign['created_at']) ){
+                    $campaign['created_at'] = human_time_diff(strtotime($campaign['created_at']), time());
+                }
+                return $campaign;
+            }, $campaigns['data']);
+        }
 
         if(isset($campaigns)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $campaigns );

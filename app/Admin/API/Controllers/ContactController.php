@@ -156,7 +156,10 @@ class ContactController extends BaseController {
 
             $contact ["added_by_login"] = $user_meta->data->user_login;
 
-            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=100&&d=retro';
+            $avatar_url = add_query_arg( array(
+                's' => '100',
+                'd' => 'retro',
+            ), 'https://www.gravatar.com/avatar/' . md5( $contact['email']) );
 
             $contact ["avatar_url"] = $avatar_url;
             return $this->get_success_response("Query Successfull", 200, $contact);

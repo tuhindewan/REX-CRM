@@ -153,6 +153,7 @@ class NoteModel {
 
         // Search notes by title
 		if ( ! empty( $search ) ) {
+            $search = $wpdb->esc_like($search);
             $search_terms = "AND title LIKE '%%$search%%'";
 		}
 
@@ -182,7 +183,7 @@ class NoteModel {
         global $wpdb;
         $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
 
-        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d",array($id) ), ARRAY_A );
+        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", array($id) ), ARRAY_A );
     }
 
 
@@ -198,7 +199,7 @@ class NoteModel {
     {
         global $wpdb;
         $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
-        return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id ORDER BY id DESC" ), ARRAY_A );
+        return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = %d ORDER BY id DESC", [$contact_id] ), ARRAY_A );
     }
 
 

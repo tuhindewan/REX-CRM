@@ -106,21 +106,21 @@ class ContactGroupModel{
             $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.slug, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
-            where type='$type'
+            where type = %s
             {$search_terms}
             group by g.id, g.title, g.data, g.created_at
             order by $order_by $order_type
-            limit $offset, $limit");
+            limit $offset, $limit", [$type]);
             $query_results = $wpdb->get_results( $select_query );
 
             $count_query = $wpdb->prepare("SELECT COUNT(*) as total FROM (
                 SELECT count(group_id) as total_contacts, g.id, g.title, g.slug, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
-            where type='$type'
+            where type=%s
             {$search_terms}
             group by g.id, g.title, g.data, g.created_at
-            ) as table1");
+            ) as table1", [$type]);
             $count_result   = $wpdb->get_results($count_query);
             
             $count = (int) $count_result['0']->total;
