@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { submitNote } from "../services/Note";
+import { useEffect, useState } from "react";
+import { getSingleNote, submitNote } from "../services/Note";
 import CrossIcon from "./Icons/CrossIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
 
@@ -14,6 +14,16 @@ export default function NoteDrawer(props) {
     type: "MRM Note",
     created_by: `${window.MRM_Vars.current_userID}`,
   });
+
+  useEffect(() => {
+    if (props?.noteId) {
+      getSingleNote(props?.noteId, props?.contactId).then((response) => {
+        if (200 === response.code) {
+          setNote(response.data);
+        }
+      });
+    }
+  }, [props?.noteId]);
 
   const closeSection = () => {
     setIsCloseNote(!isCloseNote);

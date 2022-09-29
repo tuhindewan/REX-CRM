@@ -2,6 +2,7 @@ import { useState } from "react";
 import { deleteSingleNote } from "../../services/Note";
 import DeletePopup from "../DeletePopup";
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
+import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function SingleActivityFeed(props) {
@@ -12,6 +13,8 @@ export default function SingleActivityFeed(props) {
   const [noteId, setNoteId] = useState();
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
@@ -42,6 +45,12 @@ export default function SingleActivityFeed(props) {
     setIsDelete("block");
     setDeleteTitle("Delete Note");
     setDeleteMessage("Are you sure you want to delete the note?");
+  };
+
+  const openNoteDrawer = (noteId) => {
+    setNoteId(noteId);
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
   };
 
   return (
@@ -83,7 +92,13 @@ export default function SingleActivityFeed(props) {
                   </div>
                   <span className="feed-date">
                     {note.created_at} ago
-                    <button className="note-edit" title="Edit Note">
+                    <button
+                      className="note-edit"
+                      title="Edit Note"
+                      onClick={(event) => {
+                        openNoteDrawer(note.id);
+                      }}
+                    >
                       Edit
                     </button>
                     <button
@@ -111,6 +126,15 @@ export default function SingleActivityFeed(props) {
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
+      <NoteDrawer
+        isOpenNote={isNoteForm}
+        isCloseNote={isCloseNote}
+        setIsCloseNote={setIsCloseNote}
+        refresh={refresh}
+        setRefresh={setRefresh}
+        contactId={props.contactId}
+        noteId={noteId}
+      />
     </>
   );
 }

@@ -184,8 +184,10 @@ class NoteController extends BaseController {
         $contact['notes'] = array_map(function($note){
 
             $note['created_at'] = human_time_diff( strtotime($note['created_at']), time() );
-            if(isset($note['created_by']) && !empty($note['created_by']))$user_meta = get_userdata( $note['created_by'] );
-            $note ["created_by"] = $user_meta->data->user_login;
+            if(isset($note['created_by']) && !empty($note['created_by'])){
+                $user_meta = get_userdata( $note['created_by'] );
+                $note["created_by"] = $user_meta->data->user_login;
+            }
             return $note;
 
         }, $contact['notes']);

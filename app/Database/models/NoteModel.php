@@ -182,14 +182,7 @@ class NoteModel {
         global $wpdb;
         $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
 
-        try {
-            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array($id));
-            $data = $wpdb->get_results($sql);
-            $dataJson = json_decode(json_encode($data));
-            return $dataJson;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d",array($id) ), ARRAY_A );
     }
 
 
