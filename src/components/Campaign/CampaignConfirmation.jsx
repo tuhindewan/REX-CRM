@@ -2,8 +2,8 @@ import Confirmation from "../Icons/Confirmation";
 import { Link } from "react-router-dom";
 import TooltipQuestionIcon from "../Icons/TooltipQuestionIcon";
 import EditButton from "../Icons/EditButton";
-import Facebook from "../Icons/facebook";
-import Twitter from "../Icons/twitter";
+import Facebook from "../Icons/Facebook";
+import Twitter from "../Icons/Twitter";
 import Instagram from "../Icons/Instagram";
 import Linkedin from "../Icons/Linkedin";
 
