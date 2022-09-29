@@ -115,7 +115,7 @@ export default function ContactListTable(props) {
     });
     selectedStatus.map((status) => {
       setStatusIds([...statusIds, status.id]);
-      setFilterElem((prev)=>({
+      setFilterElem((prev) => ({
         prev,
         status: statusIds,
       }));
@@ -346,9 +346,33 @@ export default function ContactListTable(props) {
     setIsCloseNote(!isCloseNote);
   };
 
+  const deleteSelectedlist = (e, id) => {
+    const index = selectedLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (index >= 0) {
+      setSelectedLists(selectedLists.filter((item) => item.id != id));
+    }
+  };
+  const deleteSelectedtag = (e, id) => {
+    const index = selectedTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (index >= 0) {
+      setSelectedTags(selectedTags.filter((item) => item.id != id));
+    }
+  };
+  const deleteSelectedstatus = (e, id) => {
+    const index = selectedStatus.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (index >= 0) {
+      setSelectedStatus(selectedStatus.filter((item) => item.id != id));
+    }
+  };
+
   return (
     <>
-      {console.log(selectedLists)}
       <div
         className="contact-list-header"
         onClick={() => {
@@ -371,7 +395,7 @@ export default function ContactListTable(props) {
               allowMultiple={true}
               showSearchBar={true}
               showListTitle={true}
-              showSelectedInside={true}
+              showSelectedInside={false}
               allowNewCreate={true}
             />
           </div>
@@ -388,7 +412,7 @@ export default function ContactListTable(props) {
               allowMultiple={true}
               showSearchBar={true}
               showListTitle={true}
-              showSelectedInside={true}
+              showSelectedInside={false}
               allowNewCreate={true}
             />
           </div>
@@ -405,34 +429,10 @@ export default function ContactListTable(props) {
               allowMultiple={true}
               showSearchBar={true}
               showListTitle={true}
-              showSelectedInside={true}
+              showSelectedInside={false}
               allowNewCreate={true}
             />
           </div>
-
-          {/* <FilterBox
-            label="Status"
-            name="status"
-            options={[
-              {
-                title: "Pending",
-                id: "pending",
-              },
-              {
-                title: "Subscribed",
-                id: "subscribed",
-              },
-              {
-                title: "Unsubscribed",
-                id: "unsubscribed",
-              },
-            ]}
-            value={status}
-            tags={false}
-            placeholder="Status"
-            multiple={false}
-            onSelect={onSelectStatus}
-          /> */}
         </div>
 
         <div className="right-buttons">
@@ -493,12 +493,48 @@ export default function ContactListTable(props) {
         </div>
       </div>
 
-      <div
-        className={
-          selectedSection ? "selected-result" : "selected-result inactive"
-        }
-      >
-        <div className="selected-items">
+      <div className={selectedLists.length == 0 && selectedTags.length == 0 && selectedStatus.length == 0 ? "selected-result inactive" : "selected-result"}>
+        {selectedLists.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedlist(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedTags.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedtag(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedStatus.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedstatus(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+
+        {/* <div className="selected-items">
           <span>Product Feed</span>
           <CrossIcon />
         </div>
@@ -512,7 +548,7 @@ export default function ContactListTable(props) {
         </div>
         <div className="clear-all">
           <span>Clear All</span>
-        </div>
+        </div> */}
       </div>
 
       <div className="pos-relative">

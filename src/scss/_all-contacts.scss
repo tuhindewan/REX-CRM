@@ -64,7 +64,6 @@
 
 .contact-list-area {
   margin-top: 30px;
-  border: 1px solid #e4e6eb;
   border-radius: 10px;
 
   //--------contact-list-header------
@@ -76,6 +75,7 @@
     align-items: center;
     justify-content: space-between;
     background-color: #ffffff;
+    border-radius: 10px 10px 0 0;
 
     .left-filters {
       display: flex;
@@ -265,6 +265,7 @@
     display: flex;
     flex-flow: row wrap;
     border-bottom: 1px solid #e2e5ed;
+    background-color: #F9FAFB;
 
     .selected-items {
       border: 1px solid #e2e5ed;
@@ -317,7 +318,6 @@
 
   //---------contact-list-body------
   .contact-list-body {
-    border-bottom: 1px solid #e2e5ed;
     position: relative;
 
     .add-column {
@@ -332,7 +332,8 @@
       right: 0;
       z-index: 2;
       background: #f9fafb;
-      padding: 9px 13px 9px;
+      border-bottom: 1px solid #e2e5ed;
+      padding: 8px 13px 9px;
 
       .add-column-btn {
         background-color: #f9fafb;
@@ -489,6 +490,9 @@
         tr:nth-child(odd) {
           background-color: #ffffff;
         }
+        tr:nth-child(even) {
+          background-color: #F9FAFB;
+        }
         // tr:last-child {
         //     border-bottom: none;
         // }
@@ -581,6 +585,7 @@
     width: 100%;
     justify-content: space-between;
     background-color: #ffffff;
+    border-radius: 0 0 10px 10px;
 
     .footer-show-number {
       display: flex;
