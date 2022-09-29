@@ -95,7 +95,6 @@ export default function ContactDetails() {
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
-        console.log(resJson.data);
         setContactData(resJson.data);
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
@@ -515,6 +514,8 @@ export default function ContactDetails() {
                   isCloseNote={isCloseNote}
                   setIsCloseNote={setIsCloseNote}
                   contactID={id}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
 
                 {/* <button className="create-mail" onClick={emailForm}>
@@ -893,6 +894,8 @@ export default function ContactDetails() {
                       <SingleActivityFeed
                         notes={contactData?.notes}
                         contactId={contactData?.id}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
                       />
                     </div>
                   </div>

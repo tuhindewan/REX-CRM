@@ -4,7 +4,7 @@ import CrossIcon from "./Icons/CrossIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function NoteDrawer(props) {
-  const { isCloseNote, setIsCloseNote } = props;
+  const { isCloseNote, setIsCloseNote, refresh, setRefresh } = props;
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -44,6 +44,11 @@ export default function NoteDrawer(props) {
           type: "MRM Note",
         });
         setErrors({});
+        setRefresh(!refresh);
+        const timer = setTimeout(() => {
+          setShowNotification("none");
+        }, 3000);
+        return () => clearTimeout(timer);
       } else {
         // Validation messages
         if (200 == response.code) {

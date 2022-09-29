@@ -5,6 +5,7 @@ import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function SingleActivityFeed(props) {
+  const { refresh, setRefresh } = props;
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
@@ -24,7 +25,12 @@ export default function SingleActivityFeed(props) {
         if (200 === response.code) {
           setShowNotification("block");
           setMessage(response?.message);
+          setRefresh(!refresh);
         }
+        const timer = setTimeout(() => {
+          setShowNotification("none");
+        }, 3000);
+        return () => clearTimeout(timer);
       });
     }
     setIsDelete("none");
