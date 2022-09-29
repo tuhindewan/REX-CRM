@@ -42,7 +42,7 @@ export default function AssignedItems(props) {
       }
     }
     if (!options) getItems();
-  }, [query]);
+  }, [query, endpoint]);
 
   // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
@@ -116,10 +116,16 @@ export default function AssignedItems(props) {
 
   const handleAssignLists = async () => {
     let res = null;
-    let body = {
-      lists: selected,
-      contact_ids: contactIds,
-    };
+    let body;
+    "lists" == endpoint
+      ? (body = {
+          lists: selected,
+          contact_ids: contactIds,
+        })
+      : (body = {
+          tags: selected,
+          contact_ids: contactIds,
+        });
     try {
       // create contact
       setLoading(true);
@@ -138,7 +144,7 @@ export default function AssignedItems(props) {
       if (resJson.code == 201) {
         setSearch("");
         setQuery("");
-        setSelected([...selected, { id: resJson.data, title: body.title }]);
+        setSelected([]);
         props.setIsAssignTo(!props.isActive);
         props.setRefresh(!props.refresh);
         props.setShowNotification("block");

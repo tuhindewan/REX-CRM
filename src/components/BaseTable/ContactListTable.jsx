@@ -81,10 +81,6 @@ export default function ContactListTable(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterParams, setFilterParams] = useState([]);
 
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
-
   const [isFilter, setIsFilter] = useState(0);
 
   const location = useLocation();
@@ -110,6 +106,8 @@ export default function ContactListTable(props) {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
   const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
+  const [selectGroup, setSelectGroup] = useState("lists");
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -223,6 +221,11 @@ export default function ContactListTable(props) {
     });
 
     if (0 == isFilter) getData();
+
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
@@ -321,6 +324,17 @@ export default function ContactListTable(props) {
     if (!selected.length) {
       setShowAlert("block");
     } else {
+      setSelectGroup("lists");
+      setIsAssignTo(!isAssignTo);
+      setActive(!isActive);
+    }
+  };
+
+  const showTagDropdown = () => {
+    if (!selected.length) {
+      setShowAlert("block");
+    } else {
+      setSelectGroup("tags");
       setIsAssignTo(!isAssignTo);
       setActive(!isActive);
     }
@@ -446,36 +460,63 @@ export default function ContactListTable(props) {
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>
-              <li onClick={showListDropdown}>Assign to tag</li>
-              <li onClick={showListDropdown}>Assign to segment</li>
+              <li onClick={showTagDropdown}>Assign to tag</li>
+              {/* <li onClick={showListDropdown}>Assign to segment</li> */}
               <li className="delete" onClick={deleteMultipleContacts}>
                 Delete
               </li>
             </ul>
-            <AssignedItems
-              selected={assignLists}
-              setSelected={setAssignLists}
-              endpoint="lists"
-              placeholder="Lists"
-              name="list"
-              listTitle="CHOOSE LIST"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={true}
-              showSelectedInside={false}
-              allowNewCreate={true}
-              isActive={isAssignTo}
-              setIsAssignTo={setIsAssignTo}
-              contactIds={selected}
-              refresh={refresh}
-              setRefresh={setRefresh}
-              setShowNotification={setShowNotification}
-              showNotification={"mone"}
-              setMessage={setMessage}
-              message={message}
-            />
+            {"lists" == selectGroup ? (
+              <AssignedItems
+                selected={assignLists}
+                setSelected={setAssignLists}
+                endpoint="lists"
+                placeholder="Lists"
+                name="list"
+                listTitle="CHOOSE LIST"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsAssignTo={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+              />
+            ) : (
+              <AssignedItems
+                selected={assignTags}
+                setSelected={setAssignTags}
+                endpoint="tags"
+                placeholder="Tags"
+                name="tag"
+                listTitle="CHOOSE Tag"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsAssignTo={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+              />
+            )}
           </div>
         </div>
       </div>
