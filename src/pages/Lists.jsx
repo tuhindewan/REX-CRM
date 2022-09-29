@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
+import AlertPopup from "../components/AlertPopup";
+import DeletePopup from "../components/DeletePopup";
 import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import { useGlobalStore } from "../hooks/useGlobalStore";
 import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
-import DeletePopup from "../components/DeletePopup";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
-import AlertPopup from "../components/AlertPopup";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -93,7 +93,6 @@ const Lists = () => {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
 
-
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
@@ -173,7 +172,6 @@ const Lists = () => {
     let res = null;
     let body = JSON.stringify({
       ...values,
-      slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
     });
     try {
       if (editID != 0) {
@@ -204,7 +202,6 @@ const Lists = () => {
         setValues({
           title: "",
           data: "",
-          slug: "",
         });
         setShowCreate(false);
         setEditID(0);
@@ -227,12 +224,16 @@ const Lists = () => {
   // Hide create form after click on cancel
   const handleCancel = () => {
     setShowCreate(false);
-  }
+    setValues({
+      title: "",
+      data: "",
+    });
+    setErrors({});
+  };
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
-    console.log(query);
     async function getLists() {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
@@ -251,14 +252,13 @@ const Lists = () => {
     return () => clearTimeout(timer);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
-
   // Get field id from child component
   const deleteList = async (list_id) => {
     setIsDelete("block");
     setDeleteTitle("Delete List");
     setDeleteMessage("Are you sure you want to delete the list?");
     setListID(list_id);
-  }
+  };
 
   // Delete list after delete confirmation
   const onDeleteStatus = async (status) => {
@@ -291,7 +291,7 @@ const Lists = () => {
     } else {
       setShowAlert("block");
     }
-  }
+  };
 
   // Delete multiple lists after delete confirmation
   const onMultiDelete = async (status) => {
@@ -365,12 +365,17 @@ const Lists = () => {
                   </div>
                   <div className="contact-button-field">
                     <button
-                      className="contact-cancel mintmrm-btn outline" onClick={handleCancel}
+                      className="contact-cancel mintmrm-btn outline"
+                      onClick={handleCancel}
                     >
                       Cancel
                     </button>
-                    <button type="submit" className="contact-save mintmrm-btn" onClick={createOrUpdate}>
-                    {editID == 0 ? "Save" : "Update"}
+                    <button
+                      type="submit"
+                      className="contact-save mintmrm-btn"
+                      onClick={createOrUpdate}
+                    >
+                      {editID == 0 ? "Save" : "Update"}
                     </button>
                   </div>
                 </div>
@@ -379,7 +384,7 @@ const Lists = () => {
           </div>
         </div>
       )}
-                 
+
       <div className="contact-list-page lists-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">
@@ -475,7 +480,7 @@ const Lists = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
-                      <th>Total Contacts</th>
+                      <th>Contacts</th>
                       <th className="">Description</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
@@ -537,7 +542,7 @@ const Lists = () => {
         />
       </div>
       <div className="mintmrm-container" style={{ display: showAlert }}>
-        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert}/>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

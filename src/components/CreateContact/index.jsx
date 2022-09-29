@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 // Internal dependencies
 import { omit } from "lodash";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import InputItem from "../InputItem/index";
 import Selectbox from "../Selectbox";
 import "./style.css";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -56,7 +56,7 @@ const CreateContact = (props) => {
       case "email":
         if (
           !new RegExp(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
           ).test(value)
         ) {
           setErrors({
@@ -115,7 +115,6 @@ const CreateContact = (props) => {
   const handleChange = (event) => {
     event.persist();
     const { name, value } = event.target;
-    validate(event, name, value);
 
     setValues((prevState) => ({
       ...prevState,

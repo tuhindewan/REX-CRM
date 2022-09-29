@@ -137,7 +137,6 @@ const Tags = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
-    console.log(values);
   }
 
   // Handle list create form submission
@@ -146,7 +145,6 @@ const Tags = () => {
       let res = null;
       let body = JSON.stringify({
         ...values,
-        slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
       });
       if (editID != 0) {
         // update contact
@@ -176,7 +174,6 @@ const Tags = () => {
         setValues({
           title: "",
           data: "",
-          slug: "",
         });
         setShowNotification("block");
         setShowCreate(false);
@@ -283,6 +280,11 @@ const Tags = () => {
   // Hide create form after click on cancel
   const handleCancel = () => {
     setShowCreate(false);
+    setValues({
+      title: "",
+      data: "",
+    });
+    setErrors({});
   };
 
   // Hide delete popup after click on cancel
@@ -351,8 +353,8 @@ const Tags = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
                       title: "Name Desc",
@@ -436,7 +438,7 @@ const Tags = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
-                      <th>Total Contacts</th>
+                      <th>Contacts</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
                     </tr>

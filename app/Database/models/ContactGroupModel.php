@@ -103,24 +103,24 @@ class ContactGroupModel{
         
         // Return groups for list view
         try {
-            $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+            $select_query  = $wpdb->prepare("SELECT count(group_id) as total_contacts, g.id, g.title, g.slug, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
-            where type='$type'
+            where type = %s
             {$search_terms}
             group by g.id, g.title, g.data, g.created_at
             order by $order_by $order_type
-            limit $offset, $limit");
+            limit $offset, $limit", [$type]);
             $query_results = $wpdb->get_results( $select_query );
 
             $count_query = $wpdb->prepare("SELECT COUNT(*) as total FROM (
-                SELECT count(group_id) as total_contacts, g.id, g.title, g.data, g.created_at
+                SELECT count(group_id) as total_contacts, g.id, g.title, g.slug, g.data, g.created_at
             from $pivot_table as p right join $group_table as g
             on p.group_id = g.id
-            where type='$type'
+            where type=%s
             {$search_terms}
             group by g.id, g.title, g.data, g.created_at
-            ) as table1");
+            ) as table1", [$type]);
             $count_result   = $wpdb->get_results($count_query);
             
             $count = (int) $count_result['0']->total;
@@ -250,6 +250,30 @@ class ContactGroupModel{
             return false;
         }
     }
+
+
+    /**
+     * Check existing tag, list or segment on database by id
+     * 
+     * @param mixed $slug group slug
+     * @param mixed $type group type
+     * @param int   $id   group id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_group_exist_by_id( $slug, $type, $id )
+    {
+        global $wpdb;
+        $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+
+        $result  = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $group_table WHERE slug = %s AND type = %s AND id= %d",array( $slug, $type, $id ) ) );
+        if( $result ){
+            return true;
+        }
+        return false;
+    }
+
 
     
 }

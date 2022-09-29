@@ -4,6 +4,7 @@ namespace Mint\MRM\DataBase\Models;
 
 use Exception;
 use Mint\MRM\DataBase\Tables\ContactNoteSchema;
+use Mint\MRM\DataBase\Tables\ContactSchema;
 use Mint\MRM\DataStores\NoteData;
 use MRM\Common\MRM_Common;
 use Mint\Mrm\Internal\Traits\Singleton;
@@ -61,12 +62,13 @@ class NoteModel {
                 'type'          => $note->get_type(),
                 'title'         => $note->get_title(),
                 'description'   => $note->get_description(),
-                'created_by'    => MRM_Common::get_current_user_id(),
+                'created_by'    => $note->get_created_by(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
                 'created_at'    => current_time('mysql')
                 )
             );
+            
             return true;
         } catch(Exception $e) {
             return false;
@@ -95,7 +97,7 @@ class NoteModel {
                 'type'          => $note->get_type(),
                 'title'         => $note->get_title(),
                 'description'   => $note->get_description(),
-                'created_by'    => MRM_Common::get_current_user_id(),
+                'created_by'    => $note->get_created_by(),
                 'status'        => $note->get_status(),
                 'is_public'     => $note->get_is_public(),
                 'updated_at'    => current_time('mysql')), 
@@ -151,28 +153,21 @@ class NoteModel {
 
         // Search notes by title
 		if ( ! empty( $search ) ) {
-            $search_terms = "AND title LIKE '%" .$search. "%'";
+            $search = $wpdb->esc_like($search);
+            $search_terms = "AND title LIKE '%%$search%%'";
 		}
 
         // Return notes for a contact in list view
-        try {
-            $select_query  = $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) );
-            $query_results = $wpdb->get_results( $select_query );
+        $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+        $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) ) );
 
-            $count_query = $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) );
-            $count_result = $wpdb->get_results($count_query);
-
-            $count = (int) $count_result['0']->total;
-            $totalPages = ceil($count / $limit);
-      
-            return array(
-                'data'=> $query_results,
-                'total_pages' => $totalPages,
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
-        }
+        $totalPages = ceil($count / $limit);
+    
+        return array(
+            'data'=> $results,
+            'total_pages' => $totalPages,
+            'count' => $count
+        );
     }
 
     /**
@@ -188,14 +183,23 @@ class NoteModel {
         global $wpdb;
         $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
 
-        try {
-            $sql = $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d",array($id));
-            $data = $wpdb->get_results($sql);
-            $dataJson = json_decode(json_encode($data));
-            return $dataJson;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", array($id) ), ARRAY_A );
+    }
+
+
+    /**
+     * Run sql query to get  notes information for a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_notes_to_contact( $contact_id )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
+        return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = %d ORDER BY id DESC", [$contact_id] ), ARRAY_A );
     }
 
 

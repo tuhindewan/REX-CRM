@@ -34,6 +34,15 @@ class CampaignController extends BaseController {
 
 
     /**
+     * Campaign array from API response
+     * 
+     * @var array
+     * @since 1.0.0
+     */
+    public $campaign_data;
+
+
+    /**
      * Get and send response to create or update a campaign
      * 
      * @param WP_REST_Request
@@ -44,13 +53,11 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        // Campaign title validation
-        if ( isset($params['title']) && empty( $params['title'] )) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
-        }
 
-        // Campaign slug create
-        $params['slug'] = isset($params['title']) ? sanitize_title( $params['title'] ): "";
+        // Assign Untitled as value if title is empty
+        if ( isset($params['title']) && empty( $params['title'] )) {
+            $params['title'] = "Untitled";
+        }
 
         // Email subject validation
         $emails = isset($params['emails']) ? $params['emails'] : array();
@@ -63,10 +70,10 @@ class CampaignController extends BaseController {
         try {
             // Update a campaign if campaign_id present on API request
             if( isset( $params['campaign_id']) ){
-                $campaign_id    = $params['campaign_id'];
-                $updated        = ModelsCampaign::update( $params, $campaign_id );
+                $campaign_id            = $params['campaign_id'];
+                $this->campaign_data    = ModelsCampaign::update( $params, $campaign_id );
 
-                if( true == $updated ){
+                if( $this->campaign_data ){
                     // Update campaign recipients into meta table
                     $recipients  = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
                     ModelsCampaign::update_campaign_recipients( $recipients, $campaign_id );
@@ -100,10 +107,9 @@ class CampaignController extends BaseController {
 
             }
             else{
-
                 // Insert campaign information
-                $campaign_id = ModelsCampaign::insert( $params );
-
+                $this->campaign_data = ModelsCampaign::insert( $params );
+                $campaign_id = isset($this->campaign_data['id']) ? $this->campaign_data['id'] : "";
                 if( $campaign_id ){
                     // Insert campaign recipients information
                     $recipients = isset($params['recipients']) ? maybe_serialize( $params['recipients']) : "";
@@ -140,11 +146,11 @@ class CampaignController extends BaseController {
             }
             
             // Send renponses back to the frontend
-            if($campaign_id) {
-                $data['campaign_id'] = $campaign_id;
+            if($this->campaign_data) {
+                $data['campaign'] = $this->campaign_data;
 
                 //test_email_sending(for dev)
-                self::send_email_to_reciepents($campaign_id);
+                self::send_email_to_reciepents($this->campaign_data['id']);
 
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
             }
@@ -293,6 +299,16 @@ class CampaignController extends BaseController {
         $campaigns   = ModelsCampaign::get_all( $offset, $perPage, $search );
 
         $campaigns['current_page'] = (int) $page;
+        
+        // Prepare human_time_diff for every campaign
+        if(isset( $campaigns['data'] )){
+            $campaigns['data'] = array_map(function($campaign){
+                if( isset($campaign['created_at']) ){
+                    $campaign['created_at'] = human_time_diff(strtotime($campaign['created_at']), time());
+                }
+                return $campaign;
+            }, $campaigns['data']);
+        }
 
         if(isset($campaigns)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $campaigns );
