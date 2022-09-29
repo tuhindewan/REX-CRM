@@ -323,11 +323,11 @@ class ContactController extends BaseController {
         }
 
         if($success && $isList && $isTag) {
-            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 201 );
         }else if ($success && $isTag){
-            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 201 );
         }else if ($success && $isList){
-            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 201 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }

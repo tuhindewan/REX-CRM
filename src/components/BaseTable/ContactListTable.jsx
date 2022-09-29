@@ -467,7 +467,14 @@ export default function ContactListTable(props) {
               showSelectedInside={false}
               allowNewCreate={true}
               isActive={isAssignTo}
+              setIsAssignTo={setIsAssignTo}
               contactIds={selected}
+              refresh={refresh}
+              setRefresh={setRefresh}
+              setShowNotification={setShowNotification}
+              showNotification={"mone"}
+              setMessage={setMessage}
+              message={message}
             />
           </div>
         </div>

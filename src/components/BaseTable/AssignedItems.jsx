@@ -139,6 +139,10 @@ export default function AssignedItems(props) {
         setSearch("");
         setQuery("");
         setSelected([...selected, { id: resJson.data, title: body.title }]);
+        props.setIsAssignTo(!props.isActive);
+        props.setRefresh(!props.refresh);
+        props.setShowNotification("block");
+        props.setMessage(resJson.message);
       } else {
         window.alert(resJson.message);
       }
