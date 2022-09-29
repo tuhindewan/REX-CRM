@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
+import LoadingIndicator from "../LoadingIndicator";
 
 export default function AssignedItems(props) {
   const {
@@ -24,23 +25,23 @@ export default function AssignedItems(props) {
   // store retrieved
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     async function getItems() {
       setLoading(true);
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}?${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
         setItems(resJson.data.data);
         setLoading(false);
-      } else {
-        console.log(resJson);
       }
     }
     if (!options) getItems();
-  }, []);
+  }, [query]);
 
   // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
@@ -71,9 +72,18 @@ export default function AssignedItems(props) {
     }
   };
 
+  // helper function to set the search query only when there are at least 3 characters or more
+  function handleSearch(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const value = e.target.value;
+    setSearch(value);
+    if (value.length >= 3) setQuery(`&search=${value}`);
+    else setQuery("");
+  }
+
   return (
     <>
-      {console.log(selected)}
       <ul
         className={
           props.isActive
@@ -88,6 +98,8 @@ export default function AssignedItems(props) {
               type="search"
               name="column-search"
               placeholder="Create or find"
+              value={search}
+              onChange={handleSearch}
             />
           </span>
         </li>
@@ -137,6 +149,7 @@ export default function AssignedItems(props) {
                 <ColumnList title={column.title} key={index} />
               </li>;
             })} */}
+        {loading && <LoadingIndicator type="table" />}
       </ul>
     </>
   );
