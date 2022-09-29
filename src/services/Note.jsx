@@ -15,3 +15,20 @@ export async function submitNote(note, contactID) {
     }
   });
 }
+
+// List delete request
+export async function deleteSingleNote(noteId, contactId) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/contact/${contactId}/notes/${noteId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

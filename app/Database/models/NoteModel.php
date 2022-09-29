@@ -193,6 +193,14 @@ class NoteModel {
     }
 
 
+    /**
+     * Run sql query to get  notes information for a contact
+     * 
+     * @param mixed $contact_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
     public static function get_notes_to_contact( $contact_id )
     {
         global $wpdb;

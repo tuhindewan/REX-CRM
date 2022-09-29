@@ -168,20 +168,28 @@ class NoteController extends BaseController {
     }
 
 
+    /**
+     * Get all notes for a specific contact
+     * 
+     * @param mixed $contact
+     * 
+     * @return array
+     * @since 1.0.0
+     */
     public static function get_notes_to_contact( $contact )
     {
         $contact_id = isset($contact['contact_id']) ? $contact['contact_id'] : $contact['id'];
         $contact['notes'] = array();
         $contact['notes'] = NoteModel::get_notes_to_contact( $contact_id );
         $contact['notes'] = array_map(function($note){
-            $note['created_at'] = human_time_diff(strtotime($note['created_at']), time());
-            if(isset($note['created_by']) && !empty($note['created_by']))$user_meta = get_userdata($note['created_by']);
 
+            $note['created_at'] = human_time_diff( strtotime($note['created_at']), time() );
+            if(isset($note['created_by']) && !empty($note['created_by']))$user_meta = get_userdata( $note['created_by'] );
             $note ["created_by"] = $user_meta->data->user_login;
             return $note;
+
         }, $contact['notes']);
         return $contact;
-
     }
 
 }
