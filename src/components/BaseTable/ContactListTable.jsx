@@ -346,6 +346,11 @@ export default function ContactListTable(props) {
     setIsCloseNote(!isCloseNote);
   };
 
+
+  const onCustomSelect = (e) => {
+
+  }
+
   const deleteSelectedlist = (e, id) => {
     const index = selectedLists.findIndex((item) => item.id == id);
 
@@ -373,6 +378,7 @@ export default function ContactListTable(props) {
 
   return (
     <>
+    {console.log(filterElem)}
       <div
         className="contact-list-header"
         onClick={() => {

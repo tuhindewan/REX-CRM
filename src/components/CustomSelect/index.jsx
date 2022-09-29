@@ -89,7 +89,6 @@ export default function CustomSelect(props) {
       if (index >= 0) setSelected([]);
       else setSelected([{ id: id, title: value }]);
     }
-    console.log(index)
     
   };
 
