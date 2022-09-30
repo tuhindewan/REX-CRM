@@ -378,7 +378,6 @@ export default function ContactListTable(props) {
 
   return (
     <>
-    {console.log(filterElem)}
       <div
         className="contact-list-header"
         onClick={() => {
