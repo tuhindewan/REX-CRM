@@ -36,6 +36,14 @@ class NoteData {
      */
     private $description;
 
+    /**
+     * Note creator
+     * 
+     * @var int
+     * @since 1.0.0
+     */
+    private $created_by;
+
 
     /**
      * Contact status
@@ -61,6 +69,7 @@ class NoteData {
         $this->description  =  isset( $args['description'] ) ? $args['description'] : "";
         $this->status       =  isset( $args['status'] ) ? $args['status'] : "";
         $this->is_public    =  isset( $args['is_public'] ) ? $args['is_public'] : "";
+        $this->created_by   =  isset( $args['created_by'] ) ? $args['created_by'] : "";
     }
 
 
@@ -121,6 +130,17 @@ class NoteData {
     public function get_is_public()
     {
         return $this->is_public;
+    }
+
+    /**
+     * Return creator ID
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_created_by()
+    {
+        return $this->created_by;
     }
 
 }

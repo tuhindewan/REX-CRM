@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
-import HoverMenu from "../HoverMenu";
-import { useNavigate } from "react-router-dom";
 
 export default function ListItem(props) {
   const navigate = useNavigate();
@@ -20,11 +20,11 @@ export default function ListItem(props) {
 
   const handleHref = async (event) => {
     event.preventDefault();
-    
+
     navigate(`/contacts?list=${id}`, {
       state: { list_id: id },
     });
-  }
+  };
 
   return (
     <tr>
@@ -40,11 +40,11 @@ export default function ListItem(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
-      <td className=""><a href="" onClick={handleHref} >{total_contacts}</a></td>
+      <td className="">{total_contacts}</td>
       <td className="">
         {data?.length > 20 ? data.substring(0, 20) + "..." : data}
       </td>
-      <td className="">{created_at}</td>
+      <td className="">{new Date(created_at).toDateString()}</td>
       <td>
         <button
           className="more-option"

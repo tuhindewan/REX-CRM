@@ -88,6 +88,9 @@ class ContactModel{
         unset($args['tags']);
         unset($args['lists']);
         unset($args['avatar_url']);
+        unset($args['created_time']);
+        unset($args['added_by_login']);
+        unset($args['avatar_url']);
 
         try {
             $wpdb->update( 
@@ -149,6 +152,29 @@ class ContactModel{
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
         $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s", array( $email ));
+        $results = $wpdb->get_results($select_query);
+        if( $results ){
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Check existing contact through an email address and contact ID
+     * 
+     * @param string $email 
+     * @param int $contact_id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function is_contact_exist_by_id( $email, $contact_id )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+
+        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s id = %d", array( $email, $contact_id ));
         $results = $wpdb->get_results($select_query);
         if( $results ){
             return true;

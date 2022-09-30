@@ -11,7 +11,13 @@ export default function AlertPopup(props) {
   };
 
   return (
-    <div class= {deleteClass ? "mintmrm-delete-alert-wrapper" : "mintmrm-delete-alert-wrapper"} >
+    <div
+      class={
+        deleteClass
+          ? "mintmrm-delete-alert-wrapper"
+          : "mintmrm-delete-alert-wrapper"
+      }
+    >
       <div class="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
           <h3>Alert</h3>
@@ -21,7 +27,7 @@ export default function AlertPopup(props) {
         </div>
         <div className="delete-confirmation-body">
           <Delete />
-          <p>Please select at least one item to delete.</p>
+          <p>Please select at least one item to bulk action.</p>
         </div>
 
         <ul class="mintmrm-delete-confirm-btn">

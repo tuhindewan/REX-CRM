@@ -97,7 +97,6 @@ class CampaignSchema {
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `title` VARCHAR(192) NULL,
-            `slug` VARCHAR(192),
             `status` ENUM('draft', 'scheduled', 'ongoing', 'completed'),
             `type` ENUM('regular', 'sequence'),
             `scheduled_at` TIMESTAMP NULL,
