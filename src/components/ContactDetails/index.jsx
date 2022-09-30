@@ -45,6 +45,7 @@ export default function ContactDetails() {
   const [isNoteForm, setIsNoteForm] = useState(true);
   const [isCloseNote, setIsCloseNote] = useState(true);
   const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
   const [isAssignTo, setIsAssignTo] = useState(false);
   const [selected, setSelected] = useState([]);
 
@@ -971,53 +972,37 @@ export default function ContactDetails() {
                     })}
 
                     {/* {contactData?.tags?.length == 0 && <span>No Tag Found  </span>} */}
-                    <button className="add-list" onClick={addTagInput}>
-                      {openTagSelectBox ? "" : <PlusIconSmall />}
-                      {openTagSelectBox ? "-" : "Add"}
+                    <button className="add-list" onClick={selectTags}>
+                      <PlusIconSmall /> Add Tag
                     </button>
                   </div>
-                  {openTagSelectBox && (
-                    // <Selectbox
-                    //   label=""
-                    //   name="tags"
-                    //   options={tags}
-                    //   values={tagListsAdder.tags}
-                    //   placeholder="Select Tags"
-                    //   tags={true}
-                    //   multiple={true}
-                    //   onSelect={onSelect}
-                    //   onRemove={onRemove}
-                    // />
-                    <>
-                      <button className="choose-tag-btn" onClick={selectTags}>
-                        Choose Tags
-                      </button>
-                      <AddItems
-                        selected={assignLists}
-                        setSelected={setAssignLists}
-                        endpoint="lists"
-                        placeholder="Lists"
-                        name="list"
-                        listTitle="CHOOSE LIST"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={true}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                        isActive={isAssignTo}
-                        setIsAssignTo={setIsAssignTo}
-                        // contactIds={selected}
-                        refresh={refresh}
-                        setRefresh={setRefresh}
-                        setShowNotification={setShowNotification}
-                        showNotification={"mone"}
-                        setMessage={setMessage}
-                        message={message}
-                      />
-                    </>
+                  {selectTag && (
+                    <AddItems
+                      selected={assignTags}
+                      setSelected={setAssignTags}
+                      endpoint="tags"
+                      placeholder="Tags"
+                      name="tag"
+                      listTitle="CHOOSE Tag"
+                      listTitleOnNotFound="No Data Found"
+                      searchPlaceHolder="Search..."
+                      allowMultiple={true}
+                      showSearchBar={true}
+                      showListTitle={true}
+                      showSelectedInside={false}
+                      allowNewCreate={true}
+                      isActive={selectTag}
+                      setIsAssignTo={setSelectTag}
+                      contactId={id}
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                      setShowNotification={setShowNotification}
+                      showNotification={"mone"}
+                      setMessage={setMessage}
+                      message={message}
+                    />
                   )}
+
                   {/* {openTagSelectBox && (
                     <button className="add-list" onClick={handleAddTag}>
                       Add Tag
