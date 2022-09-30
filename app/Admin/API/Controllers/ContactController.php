@@ -290,11 +290,11 @@ class ContactController extends BaseController {
 
 
         if($success &&  $isList && $isTag) {
-            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 201 );
         }else if ($success && $isTag){
-            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 201 );
         }else if ($success && $isList ){
-            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 201 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
@@ -544,7 +544,6 @@ class ContactController extends BaseController {
         $totalCount = 0;
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         try {
             if(isset( $params ) && empty( $params["map"] )) {
                 throw new Exception( __("Map attribute is required.", "mrm") );
@@ -585,9 +584,10 @@ class ContactController extends BaseController {
                 // combine header and values to make a contact associative array
                 $csv_contact = array_combine($header, $row);
                 $contact_args = array(
-                    'status'    => $params['status'],
-                    'source'    => 'csv',
-                    'meta_fields'   => []
+                    'status'        => $params['status'],
+                    'source'        => 'csv',
+                    'meta_fields'   => [],
+                    'created_by'    => $params['created_by']
                 );
 
                 foreach($mappings as $map) {
@@ -692,15 +692,15 @@ class ContactController extends BaseController {
                 $csv_contact = array_combine($header, $row_array);
 
                 $contact_args = array(
-                    'status'    => $params['status'],
-                    'source'    => 'raw',
-                    'meta_fields'   => []
+                    'status'        => $params['status'],
+                    'source'        => 'raw',
+                    'meta_fields'   => [],
+                    'created_by'    => $params['created_by']
                 );
 
                 foreach($mappings as $map) {
 
                     if( in_array( $map["target"], array( "first_name", "last_name", "email" ) ) ){
-                        error_log(print_r($map["source"], 1));
                         $contact_args[$map["target"]] = $csv_contact[$map["source"]];
                     } else {
                         $contact_args['meta_fields'][$map["target"]] = $csv_contact[$map["source"]];
