@@ -52,7 +52,6 @@ class ContactController extends BaseController {
      */
     public $contact_args;
 
-
     /**
      * Create a new contact or update a existing contact
      * 
@@ -420,7 +419,6 @@ class ContactController extends BaseController {
             }
 
             $import_res = MRM_Importer::create_csv_from_import( $files['csv'], $delimiter );
-
             if ( ! is_array( $import_res ) ) {
                 return $this->get_error_response( is_string( $import_res ) ? $import_res : __( 'Unknown error occurred', 'mrm' ), null, 500 );
             }
@@ -460,6 +458,9 @@ class ContactController extends BaseController {
             $params = MRM_Common::get_api_params_values($request);
             $raw = isset($params['raw']) ? $params['raw']: "";
 
+            if ( empty( $raw ) ) {
+			    return $this->get_error_response( __( "Please paste some data in the textarea.", 'mrm' ) );
+		    }
             // check for least number of characters
             if(strlen($raw) < 5) {
                 throw new Exception("Data is insufficient. Please enter at least 5 characters.");
@@ -538,7 +539,9 @@ class ContactController extends BaseController {
      * @since 1.0.0
      */
     public function import_contacts_csv( WP_REST_Request $request ) {
-
+        $skipped    = 0;
+        $exists     = 0;
+        $totalCount = 0;
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
@@ -547,10 +550,11 @@ class ContactController extends BaseController {
                 throw new Exception( __("Map attribute is required.", "mrm") );
             }
 
-            $mappings    = json_decode(json_encode($params["map"]), true);
+            $mappings = isset( $params["map"] ) ? $params["map"] : [];
 
-            $file       = MRM_IMPORT_DIR . '/' . $params['file'];
-
+            if( isset( $params['file'] ) ){
+                $file = MRM_IMPORT_DIR . '/' . $params['file'];
+            }
 
             // if the file does not exist return error
             if(!file_exists($file)) {
@@ -560,21 +564,17 @@ class ContactController extends BaseController {
             // open the file stream
             $handle = fopen($file, "r");
 
-      
             // fetch the first line
             $raw_string = fgets($handle);
 
             // parse it to and get the header
             $header = str_getcsv($raw_string);
-
-            $skipped = 0;
-            $exists = 0;
-            $totalCount = 0;
+            $header[0] = MRM_Importer::remove_utf8_bom($header[0]);
+            
             // Iterate over every line of the file
             while (($raw_string = fgets($handle)) !== false) {
                 // Parse the raw csv string as an array
                 $row = str_getcsv($raw_string);
-
 
                 // check if header and the current row has same length otherwise skip to the next iteration
                 if(count($header) !== count($row)) {
@@ -647,6 +647,7 @@ class ContactController extends BaseController {
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
+
     }
 
     /**
@@ -667,7 +668,6 @@ class ContactController extends BaseController {
             }
 
             $mappings    = json_decode(json_encode($params["map"]), true);
-
             $raw = isset($params['raw']) ? $params['raw'] : '';
             if(empty($raw) || !is_array($raw) || count($raw) <= 1) {
                 throw new Exception( __("The data is invalid.", "mrm") );
