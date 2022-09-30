@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   deleleMultipleCampaigns,
   deleteSingleCampaign,
@@ -14,6 +14,9 @@ import FilterBox from "./Filterbox";
 import Search from "./Icons/Search";
 import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
+import Pagination from "./Pagination";
+import SearchNavbar from "./SearchNavbar";
+import Plus from "./Icons/Plus";
 
 export default function AllCampaigns() {
   let navigate = useNavigate();
@@ -164,11 +167,45 @@ export default function AllCampaigns() {
     <>
       <div className="campaign-index-page">
         <CampaignsNavbar />
+        <SearchNavbar />
         <div className="campaign-list-page">
           <div className="mintmrm-container">
             <div className="campaign-list-area">
+              <div className="campaign-title-header">
+                <div className="left-section">
+                  <h2 className="campaign-title">Campaigns</h2>
+                </div>
+                <div className="right-section">
+                  <Link to="/campaigns/create">
+                    <button className="add-contact-btn mintmrm-btn ">
+                      <Plus /> Add Campaign
+                    </button>
+                  </Link>
+                </div>
+              </div>
               <div className="campaign-list-header">
                 <div className="left-filters">
+                  <h5 className="list-view">List View</h5>
+                </div>
+                <div className="right-buttons">
+                  <span className="search-section">
+                    <Search />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => {
+                        let value = e.target.value;
+                        setSearch(value);
+                        if (value.length >= 3) {
+                          setQuery(`&search=${value}`);
+                          setPage(1);
+                        } else {
+                          setQuery("");
+                        }
+                      }}
+                      placeholder="Search by title"
+                    />
+                  </span>
                   <FilterBox
                     label="Status"
                     name="Status"
@@ -188,51 +225,6 @@ export default function AllCampaigns() {
                     ]}
                     placeholder="Status"
                   />
-                </div>
-
-                <div className="right-buttons">
-                  <span className="search-section">
-                    <Search />
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => {
-                        let value = e.target.value;
-                        setSearch(value);
-                        // only set query when there are more than 3 characters
-                        if (value.length >= 3) {
-                          setQuery(`&search=${value}`);
-                          // on every new search term set the page explicitly to 1 so that results can
-                          // appear
-                          setPage(1);
-                        } else {
-                          setQuery("");
-                        }
-                      }}
-                      placeholder="Search by title"
-                    />
-                  </span>
-                  <div className="bulk-action">
-                    {/* show more options section */}
-                    <button
-                      className="more-option"
-                      onClick={() => setShowMoreOptions(!showMoreOptions)}
-                    >
-                      <ThreeDotIcon />
-
-                      <ul
-                        className={
-                          showMoreOptions
-                            ? "mintmrm-dropdown show"
-                            : "mintmrm-dropdown"
-                        }
-                      >
-                        <li className="delete" onClick={deleleMultipleCampaign}>
-                          Delete Selected
-                        </li>
-                      </ul>
-                    </button>
-                  </div>
                 </div>
               </div>
 

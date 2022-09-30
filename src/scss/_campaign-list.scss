@@ -7,18 +7,36 @@
   .campaign-list-area {
     margin-top: 30px;
 
+    .campaign-title-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      .left-section {
+        .campaign-title {
+          font-weight: 600;
+          font-size: 22px;
+          line-height: 24px;
+          color: #2d3149;
+        }
+      }
+    }
+
     .campaign-list-header {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
+      border-radius: 10px 10px 0 0;
+      background-color: #ffffff;
+      padding: 20px 24px;
 
       .left-filters {
-        .form-group {
-          label {
-            display: none;
-          }
+        .list-view {
+          font-weight: 600;
+          font-size: 18px;
+          line-height: 24px;
+          color: #2d3149;
         }
       }
       .right-buttons {
@@ -26,42 +44,62 @@
         flex-flow: row wrap;
         .search-section {
           position: relative;
+          margin-right: 12px;
           svg {
             position: absolute;
             top: 10px;
             left: 10px;
           }
           input {
-            padding: 2px 10px 2px 40px;
-            width: 200px;
+            padding: 3px 10px 3px 40px;
+            max-width: 159px;
           }
         }
-        .bulk-action {
-          position: relative;
-          .more-option {
-            background: #ffffff;
-            border: 1px solid #e4e6eb;
-            border-radius: 6px;
-            height: 34px;
-            width: 34px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin-left: 12px;
+        .form-group {
+          .mintmrm-select2-selectbox
+            .select2-container--default
+            .select2-selection--single {
+            height: 36px;
           }
-          .assigned-to.mintmrm-dropdown {
-            width: 332px !important;
+          span.select2.select2-container.select2-container--default {
+            // width: 95px !important;
+          }
+          span.select2-selection__placeholder {
+            color: #2d3149;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 14px;
+          }
+          label {
+            display: none;
+          }
+        }
+        // .bulk-action {
+        //   position: relative;
+        //   .more-option {
+        //     background: #ffffff;
+        //     border: 1px solid #e4e6eb;
+        //     border-radius: 6px;
+        //     height: 34px;
+        //     width: 34px;
+        //     padding: 0;
+        //     display: flex;
+        //     align-items: center;
+        //     justify-content: center;
+        //     cursor: pointer;
+        //     margin-left: 12px;
+        //   }
+        //   .assigned-to.mintmrm-dropdown {
+        //     width: 332px !important;
 
-            .list-title {
-              margin-bottom: 0;
-            }
-            .option-section {
-              padding: 10px 0;
-            }
-          }
-        }
+        //     .list-title {
+        //       margin-bottom: 0;
+        //     }
+        //     .option-section {
+        //       padding: 10px 0;
+        //     }
+        //   }
+        // }
       }
     }
 
@@ -103,6 +141,9 @@
           .table-row {
             display: flex;
             flex-flow: row wrap;
+            background-color: #fcfdfe;
+            border-top: 1px solid #ebedf0;
+            border-bottom: 1px solid #ebedf0;
             .table-header {
               padding: 15px 20px;
               vertical-align: middle;
@@ -123,10 +164,8 @@
         }
         .table-body {
           .table-row {
-            box-shadow: 0px 1px 2px #dadada;
-            border-radius: 6px;
+            border-bottom: 1px solid #e9eaee;
             background-color: #ffffff;
-            margin-bottom: 15px;
             display: flex;
             flex-flow: row wrap;
             padding: 8px 0px;
@@ -219,7 +258,7 @@
                 background: rgba(35, 150, 84, 0.1);
               }
               &.ongoing {
-                color: #573BFF;
+                color: #573bff;
                 background: #f4f4f4;
               }
             }
