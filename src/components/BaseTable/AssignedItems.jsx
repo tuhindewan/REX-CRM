@@ -46,7 +46,7 @@ export default function AssignedItems(props) {
 
   // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
-    const checked = selected.findIndex((item) => item.id == id) >= 0;
+    const checked = selected?.findIndex((item) => item.id == id) >= 0;
     return checked;
   };
 
