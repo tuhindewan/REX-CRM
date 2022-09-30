@@ -13,7 +13,7 @@ import CampaignTemplates from "./CampaignTemplates";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
 import CampaignCustomSelect from "./CampaignCustomSelect";
-
+import ScheduleAlert from "../ScheduleAlert";
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
   subject: "",
@@ -302,7 +302,10 @@ export default function AddCampaign(props) {
                       All Subscriber
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
-                    <button className="all-recipients selected" onClick={showDropDown}>
+                    <button
+                      className="all-recipients selected"
+                      onClick={showDropDown}
+                    >
                       <span className="tags">5 Tags</span>
                       <span className="from">from</span>
                       <span className="lists">4 Lists.</span>
@@ -441,6 +444,7 @@ export default function AddCampaign(props) {
               >
                 Publish
               </button>
+              {/* <ScheduleAlert /> */}
               <button
                 type="submit"
                 className="campaign-save mintmrm-btn"

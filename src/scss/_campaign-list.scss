@@ -1,4 +1,5 @@
 .campaign-list-page {
+  padding-bottom: 130px;
   .campaign-list-area {
     .campaign-list-body {
       border: none;
@@ -48,11 +49,17 @@
           svg {
             position: absolute;
             top: 10px;
-            left: 10px;
+            left: 12px;
+            path {
+              fill: #a4a8b5;
+            }
           }
           input {
-            padding: 3px 10px 3px 40px;
+            padding: 3px 10px 3px 32px;
             max-width: 159px;
+          }
+          input::placeholder {
+            color: #a4a8b5;
           }
         }
         .form-group {
@@ -171,7 +178,7 @@
             padding: 8px 0px;
 
             .table-data {
-              padding: 15px 20px;
+              padding: 15px 0px;
               vertical-align: middle;
               font-size: 14px;
               font-weight: 400;
@@ -252,6 +259,7 @@
               &.draft {
                 color: #121212;
                 background: #f4f4f4;
+                text-transform: capitalize;
               }
               &.completed {
                 color: #239654;

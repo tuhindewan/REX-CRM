@@ -13,7 +13,7 @@
     align-items: center;
     svg {
       path {
-        fill: #c5c7d3;
+        fill: #a4a8b5;
       }
     }
     .search-bar {
@@ -27,7 +27,7 @@
       font-weight: 500;
       font-size: 14px;
       line-height: 14px;
-      color: #c5c7d3;
+      color: #a4a8b5;
     }
   }
   .upgraded-section {
@@ -69,7 +69,7 @@
       border: 1px solid #e4e6eb;
       border-radius: 6px;
       .tooltip {
-        background: #2D3149;
+        background: #2d3149;
         border-radius: 6px;
         font-weight: 400;
         font-size: 12px;
@@ -87,8 +87,8 @@
         transition: all 0.3s ease;
       }
     }
-    .question-btn:hover{
-      .tooltip{
+    .question-btn:hover {
+      .tooltip {
         opacity: 1;
         visibility: visible;
       }

@@ -265,7 +265,7 @@
     display: flex;
     flex-flow: row wrap;
     border-bottom: 1px solid #e2e5ed;
-    background-color: #F9FAFB;
+    background-color: #f9fafb;
 
     .selected-items {
       border: 1px solid #e2e5ed;
@@ -432,7 +432,7 @@
       thead {
         th {
           background: #f9fafb;
-          padding: 13px 20px;
+          padding: 14px 24px 9px 24px;
           vertical-align: middle;
           font-weight: 500;
           font-size: 15px;
@@ -457,7 +457,7 @@
           border-bottom: 1px solid #e2e5ed;
 
           td {
-            padding: 20px 20px;
+            padding: 20px 24px;
             vertical-align: middle;
             font-size: 14px;
             font-weight: 400;
@@ -486,13 +486,17 @@
               display: inline-block;
             }
           }
+          td:last-child{
+            text-align: end;
+          }
         }
-        tr:nth-child(odd) {
+        tr {
           background-color: #ffffff;
         }
-        tr:nth-child(even) {
+        tr:hover{
           background-color: #F9FAFB;
         }
+
         // tr:last-child {
         //     border-bottom: none;
         // }
@@ -573,6 +577,9 @@
       position: sticky;
       left: 0;
       z-index: 1;
+    }
+    table tr > td:first-child {
+      // background-color: #ffffff;
     }
   }
   // ------end .contact-list-body-------
