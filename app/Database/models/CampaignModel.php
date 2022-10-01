@@ -55,13 +55,10 @@ class CampaignModel {
 
         unset($args['recipients']);
         unset($args['emails']);
-        $args['created_at'] = current_time('mysql');
+        $args['created_at'] = current_time('mysql', 1);
 
-        $inserted = $wpdb->insert( $campaign_table, $args );
-        if( $inserted ){
-            return $wpdb->insert_id;
-        }
-        return false;
+        $result = $wpdb->insert( $campaign_table, $args );
+        return $result ? self::get( $wpdb->insert_id ) : false;
     }
 
 
@@ -136,7 +133,8 @@ class CampaignModel {
         unset($args['recipients']);
         unset($args['emails']);
 
-        return $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
+        $result = $wpdb->update( $fields_table, $args, array( 'id' => $id ) );
+        return $result ? self::get( $id ) : false;
             
     }
 
@@ -190,24 +188,21 @@ class CampaignModel {
      * 
      * @param mixed $id campaign ID
      * 
-     * @return object
+     * @return array
      * @since 1.0.0
      */
     public static function get( $id )
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-        try {
-            $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", $id );
-            $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
-            $campaign_meta      = self::get_campaign_meta( $id );
-            $campaign_email     = self::get_campaign_email( $id );
-            $campaign['meta']   = $campaign_meta;
-            $campaign['emails'] = $campaign_email;
-            return $campaign;
-        } catch(\Exception $e) {
-            return false;
-        }
+
+        $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", $id );
+        $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
+        $campaign_meta      = self::get_campaign_meta( $id );
+        $campaign_email     = self::get_campaign_email( $id );
+        $campaign['meta']   = $campaign_meta;
+        $campaign['emails'] = $campaign_email;
+        return $campaign;
     }
 
 
@@ -232,33 +227,16 @@ class CampaignModel {
             $search_terms = "WHERE (`title` LIKE '%%$search%%')";
 		}
         // Prepare sql results for list view
-        try {
-            $select_query  =  "SELECT * FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
-            $campaign_query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
-
-            $results = array();
+        $results     =  $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
             
-            foreach( $campaign_query_results as $campaign_query_result ){
-                $q_id = isset($campaign_query_result['id']) ? $campaign_query_result['id'] : "";
-                $campaign_meta = self::get_campaign_meta( $q_id );
-                $campaign_email = self::get_campaign_email( $q_id );
-                $results[] = array_merge($campaign_query_result, $campaign_meta, $campaign_email);
-            }
+        $count       = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $campaign_table $search_terms" ) );
+        $total_pages = ceil($count / $limit);
 
-            $count_campaign_query    = "SELECT COUNT(*) as total FROM $campaign_table $search_terms";
-            $count_result   = $wpdb->get_results($count_campaign_query);
-            
-            $count = (int) $count_result['0']->total;
-            $total_pages = ceil($count / $limit);
-
-            return array(
-                'data'=> $results,
-                'total_pages' => $total_pages,
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
-        }
+        return [
+            'data'          => $results,
+            'total_pages'   => $total_pages,
+            'count'         => $count
+        ];
 	
     }
 
@@ -307,7 +285,7 @@ class CampaignModel {
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         if (!empty($emails)) {
             $emails = array_map(function ($email) {
-                $email['email_json'] = unserialize($email['email_json']);
+                $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
                 return $email;
             }, $emails);
         }
@@ -316,6 +294,15 @@ class CampaignModel {
     }
 
 
+    /**
+     * Get an email by its index for a specific campaign
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $index
+     * 
+     * @return object
+     * @since 1.0.0
+     */
     public static function get_campaign_email_by_index($campaign_id, $index)
     {
         global $wpdb;
@@ -325,8 +312,7 @@ class CampaignModel {
                                     id,email_index
                                      FROM $campaign_emails_table  
                                      WHERE campaign_id = %d AND email_index = %d", $campaign_id, $index);
-        $emails = $wpdb->get_row($campaign_emails_query);
-        return $emails;
+        return $wpdb->get_row($campaign_emails_query);
     }
 
 
@@ -367,17 +353,29 @@ class CampaignModel {
 
         $campaign_table  = $wpdb->prefix . CampaignSchema::$campaign_table;
 
-        try {
-            if (is_array($ids)){
-                $ids = implode(",", array_map( 'intval', $ids ));
-                $success = $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ($ids)" );
-                if ($success) return true;
-                return false;
-            }
-            return false;
-        } catch(\Exception $e) {
-            return false;
+        if ( is_array( $ids ) ){
+            $ids = implode( ",", array_map( 'intval', $ids ) );
+            return $wpdb->query( "DELETE FROM $campaign_table WHERE id IN ( $ids )" );
         }
+        return false;
+    }
+
+
+    /**
+     * Delete a email from campaign 
+     * 
+     * @param int $campaign_id 
+     *  @param int $email_id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function remove_email_from_campaign( $campaign_id, $email_id )
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        return $wpdb->delete( $campaign_emails_table, array('id' => $email_id, 'campaign_id' => $campaign_id) );
     }
     
     

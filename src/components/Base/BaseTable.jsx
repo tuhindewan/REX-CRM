@@ -5,7 +5,6 @@ import {
   Button,
   Input,
   InputGroup,
-  Pagination,
   Placeholder,
   Stack,
   Table,
@@ -13,8 +12,8 @@ import {
   Whisper,
 } from "rsuite";
 import "../../style/BaseTable.css";
-const { Column, HeaderCell, Cell } = Table;
 import ContactDetails from "../ContactDetails";
+const { Column, HeaderCell, Cell } = Table;
 
 const BaseTable = (props) => {
   const { endpoint = "/contacts", children, height = 420, leftMarkup } = props;
@@ -37,7 +36,6 @@ const BaseTable = (props) => {
       const resJson = res.data;
       const data = resJson.data.data;
       const count = resJson.data.count;
-      console.log(data);
       setContacts(data);
       setCount(count);
       setLoaded(true);

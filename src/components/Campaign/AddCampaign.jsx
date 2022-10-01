@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -8,6 +8,7 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
+import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -44,6 +45,7 @@ export default function AddCampaign(props) {
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
+  const [isValid, setIsValid] = useState(false);
   const names = [
     {
       value: "Minutes",
@@ -64,11 +66,12 @@ export default function AddCampaign(props) {
   ];
 
   // Prepare campaign object and send post request to backend
-  const saveCampaign = async () => {
-    if (campaignTitle.length < 3) {
-      alert("Please enter at least 3 characters for the campaign title.");
-      return;
-    }
+  const saveCampaign = async (status) => {
+    // Assign Untitled as value if title is empty
+    // if (0 == campaignTitle.length) {
+    //   console.log(campaignTitle.length);
+    //   setCampaignTitle("Untitled");
+    // }
 
     const campaign = {
       title: campaignTitle,
@@ -87,7 +90,8 @@ export default function AddCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: "ongoing",
+      status: status,
+      created_by: `${window.MRM_Vars.current_userID}`,
       emails: emailData.map((email) => {
         // if (email.delay_value == "Minutes") {
         //   email.delay = email.delay_count * 60;
@@ -112,15 +116,13 @@ export default function AddCampaign(props) {
         };
       }),
     };
-
     // Send POST request to save data
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
-        // navigate("/campaigns", {
-        //   state: { status: "campaign-created", message: response?.message },
-        // });
-        setResponseMessage("Campaign is saved.");
+        navigate("/campaign/edit/" + response.data.campaign.id, {
+          state: { status: "campaign-created", message: response?.message },
+        });
       } else {
         window.alert(response?.message);
       }
@@ -148,7 +150,7 @@ export default function AddCampaign(props) {
   };
 
   // handler function for each text field change in each email sequence
-  const handleEmailFieldsChange = (e) => {
+  const handleEmailFieldsChange = async (e) => {
     setEmailData((prevEmailData) => {
       const name = e.target.name;
       const value = e.target.value;
@@ -160,15 +162,15 @@ export default function AddCampaign(props) {
       return copy;
     });
   };
-  const openTemplate = () => {
+  const openTemplate = async () => {
     setIsTemplate(true);
     setIsClose(!isClose);
   };
-  const showTemplate = () => {
+  const showTemplate = async () => {
     setShowTemplates(true);
   };
 
-  const setEmailBody = (data) => {
+  const setEmailBody = async (data) => {
     const { design, html } = data;
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -177,6 +179,45 @@ export default function AddCampaign(props) {
       return copy;
     });
   };
+
+  const validate = () => {
+    if (
+      campaignTitle.length > 0 ||
+      recipientLists.length != 0 ||
+      recipientTags.length != 0 ||
+      emailData[selectedEmailIndex]["subject"].length != 0 ||
+      emailData[selectedEmailIndex]["preview"].length != 0 ||
+      emailData[selectedEmailIndex]["senderName"].length != 0 ||
+      emailData[selectedEmailIndex]["senderEmail"].length != 0 ||
+      emailData[selectedEmailIndex].email_body.length != 0 ||
+      emailData[selectedEmailIndex].email_json.length != 0
+    ) {
+      return true;
+    }
+  };
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [
+    campaignTitle,
+    recipientLists,
+    recipientTags,
+    emailData[selectedEmailIndex]["subject"],
+    emailData[selectedEmailIndex]["preview"],
+    emailData[selectedEmailIndex]["senderName"],
+    emailData[selectedEmailIndex]["senderEmail"],
+    emailData[selectedEmailIndex].email_body,
+    emailData[selectedEmailIndex].email_json,
+  ]);
+
+  let handlePublish = async () => {};
+
+  useUnload((e) => {
+    e.preventDefault();
+    e.returnValue = "";
+    console.log(e);
+  });
 
   return (
     <div className="mintmrm-add-campaign">
@@ -299,6 +340,9 @@ export default function AddCampaign(props) {
                     name="delay_value"
                     value={emailData[selectedEmailIndex]["delay_value"]}
                   >
+                    <option disabled={true} value="">
+                      --Choose delay--
+                    </option>
                     {names.map((item) => (
                       <option key={item.id}>{item.value}</option>
                     ))}
@@ -370,15 +414,20 @@ export default function AddCampaign(props) {
               </div>
             </div>
             <div className="content-save-section">
-              <button className="campaign-schedule mintmrm-btn outline">
-                Schedule
+              <button
+                className="campaign-schedule mintmrm-btn outline"
+                disabled={!isValid}
+                onClick={handlePublish}
+              >
+                Publish
               </button>
               <button
                 type="submit"
                 className="campaign-save mintmrm-btn"
-                onClick={saveCampaign}
+                onClick={() => saveCampaign("draft")}
+                disabled={!isValid}
               >
-                Save
+                Save draft
               </button>
               {responseMessage != "" && (
                 <SuccessfulNotification

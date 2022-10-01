@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { updateCampaignRequest } from "../../services/Campaign";
+import { Link, useLocation, useParams } from "react-router-dom";
+import {
+  deleteCampaignEmail,
+  updateCampaignRequest,
+} from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
+import DeletePopup from "../DeletePopup";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
+import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -43,9 +48,18 @@ export default function EditCampaign(props) {
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
+  const [isEmailDelete, setIsEmailDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [emailID, setEmailID] = useState();
+  const [emailIndex, setEmailIndex] = useState();
+  const [refresh, setRefresh] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [isValid, setIsValid] = useState(false);
 
   // get the campaign id from url
   const { id } = useParams();
+  const location = useLocation();
 
   const names = [
     {
@@ -72,6 +86,11 @@ export default function EditCampaign(props) {
     return await response.json();
   };
 
+  // the data is fetched again whenver refresh is changed
+  function toggleRefresh() {
+    setRefresh((prev) => !prev);
+  }
+
   useEffect(() => {
     fetchCampaignData().then((res) => {
       let campaign = res.data,
@@ -86,10 +105,14 @@ export default function EditCampaign(props) {
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
     });
-  }, []);
+    if ("campaign-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
+  }, [refresh]);
 
   // Prepare campaign object and send post request to backend
-  const updateCampaign = async () => {
+  const updateCampaign = async (status) => {
     if (campaignTitle.length < 3) {
       alert("Please enter at least 3 characters for the campaign title.");
       return;
@@ -112,7 +135,7 @@ export default function EditCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: "ongoing",
+      status: status,
       emails: emailData.map((email) => {
         return {
           email_subject: email.email_subject,
@@ -128,8 +151,6 @@ export default function EditCampaign(props) {
       campaign_id: id,
     };
 
-    console.log(campaign);
-
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
@@ -140,6 +161,7 @@ export default function EditCampaign(props) {
         window.alert(response?.message);
       }
     });
+    setIsValid(false);
   };
 
   // function for adding new email in the sequence
@@ -152,19 +174,48 @@ export default function EditCampaign(props) {
   };
 
   // function for removing an email from the sequence
-  const deleteEmail = (index) => {
-    setEmailData((prevEmailData) => {
-      const copy = [...prevEmailData];
-      copy.splice(index, 1);
-      setSelectedEmailIndex(
-        index < copy.length ? index : Math.max(0, index - 1)
-      );
-      return copy;
-    });
+  const deleteEmail = (index, email_id) => {
+    setIsEmailDelete("block");
+    setDeleteTitle("Delete Sequence Email");
+    setDeleteMessage("Are you sure you want to delete the email?");
+    setEmailIndex(index);
+    setEmailID(email_id);
+  };
+
+  const onDeleteShow = async (status) => {
+    setIsEmailDelete(status);
+  };
+
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      setEmailData((prevEmailData) => {
+        const copy = [...prevEmailData];
+        copy.splice(emailIndex, 1);
+        setSelectedEmailIndex(
+          emailIndex < copy.length ? emailIndex : Math.max(0, emailIndex - 1)
+        );
+        return copy;
+      });
+
+      deleteCampaignEmail(id, emailID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsEmailDelete("none");
   };
 
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = (value, key) => {
+    setIsValid(true);
     setActiveEmailData((prevState) => ({
       ...prevState,
       [key]: value,
@@ -199,6 +250,13 @@ export default function EditCampaign(props) {
     setSelectedEmailIndex(index);
     setActiveEmailData(emailData[index]);
   };
+
+  let handlePublish = async () => {};
+
+  useUnload((e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  });
 
   return (
     <>
@@ -235,7 +293,7 @@ export default function EditCampaign(props) {
                       {index > 0 && (
                         <div
                           className="delete-option"
-                          onClick={() => deleteEmail(index)}
+                          onClick={() => deleteEmail(index, email.id)}
                         >
                           <Delete />
                         </div>
@@ -259,7 +317,10 @@ export default function EditCampaign(props) {
                         type="text"
                         name="title"
                         value={campaignTitle}
-                        onChange={(e) => setCampaignTitle(e.target.value)}
+                        onChange={(e) => {
+                          setIsValid(true);
+                          setCampaignTitle(e.target.value);
+                        }}
                         placeholder="Enter Campaign title"
                       />
                     </div>
@@ -323,6 +384,9 @@ export default function EditCampaign(props) {
                       name="delay_value"
                       value={emailData[selectedEmailIndex]["delay_value"]}
                     >
+                      <option disabled={true} value="">
+                        --Choose delay--
+                      </option>
                       {names.map((item) => (
                         <option key={item.id}>{item.value}</option>
                       ))}
@@ -334,7 +398,7 @@ export default function EditCampaign(props) {
                   <input
                     type="text"
                     name="subject"
-                    value={activeEmailData.email_subject}
+                    value={emailData[selectedEmailIndex]["email_subject"]}
                     onChange={(e) =>
                       handleEmailFieldsChange(e.target.value, "email_subject")
                     }
@@ -409,21 +473,34 @@ export default function EditCampaign(props) {
                 </div>
               </div>
               <div className="content-save-section">
-                <button className="campaign-schedule mintmrm-btn outline">
-                  Schedule
+                <button
+                  className="campaign-schedule mintmrm-btn outline"
+                  disabled={!isValid}
+                  onClick={handlePublish}
+                >
+                  Publish
                 </button>
                 <button
                   type="submit"
                   className="campaign-save mintmrm-btn"
-                  onClick={updateCampaign}
+                  onClick={() => updateCampaign("draft")}
+                  disabled={!isValid}
                 >
-                  Save
+                  Save draft
                 </button>
                 {/* {responseMessage && <p>{responseMessage}</p>} */}
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div className="mintmrm-container" style={{ display: isEmailDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

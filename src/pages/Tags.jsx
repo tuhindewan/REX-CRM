@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import AlertPopup from "../components/AlertPopup";
+import DeletePopup from "../components/DeletePopup";
 import Search from "../components/Icons/Search";
-import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
-import TagItem from "../components/Tag/TagItem";
-import Pagination from "../components/Pagination";
 import TagIcon from "../components/Icons/TagIcon";
-import { useGlobalStore } from "../hooks/useGlobalStore";
+import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
+import Pagination from "../components/Pagination";
 import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
-import DeletePopup from "../components/DeletePopup";
-import { deleteSingleTag } from "../services/Tag";
-import AlertPopup from "../components/AlertPopup";
-import { deleteMultipleTagsItems } from "../services/Tag";
+import TagItem from "../components/Tag/TagItem";
+import { useGlobalStore } from "../hooks/useGlobalStore";
+import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
 
 const Tags = () => {
   // global counter update real time
@@ -138,7 +137,6 @@ const Tags = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
-    console.log(values);
   }
 
   // Handle list create form submission
@@ -147,7 +145,6 @@ const Tags = () => {
       let res = null;
       let body = JSON.stringify({
         ...values,
-        slug: values["title"].toLowerCase().replace(/[\W_]+/g, "-"),
       });
       if (editID != 0) {
         // update contact
@@ -177,7 +174,6 @@ const Tags = () => {
         setValues({
           title: "",
           data: "",
-          slug: "",
         });
         setShowNotification("block");
         setShowCreate(false);
@@ -223,7 +219,7 @@ const Tags = () => {
     setDeleteTitle("Delete Tag");
     setDeleteMessage("Are you sure you want to delete the tag?");
     setTagID(tag_id);
-  }
+  };
 
   // Delete tag after delete confirmation
   const onDeleteStatus = async (status) => {
@@ -252,27 +248,6 @@ const Tags = () => {
       setIsDelete("block");
       setDeleteTitle("Delete Multiple");
       setDeleteMessage("Are you sure you want to delete these selected items?");
-      // if (
-      //   window.confirm("Are you sure you want to delete these selected items?")
-      // ) {
-      //   const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags/`, {
-      //     method: "DELETE",
-      //     headers: {
-      //       "Content-type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       tag_ids: selected,
-      //     }),
-      //   });
-      //   const resJson = await res.json();
-      //   // remove all selected after deletion
-      //   setAllSelected(false);
-      //   setSelected([]);
-      //   useGlobalStore.setState({
-      //     counterRefresh: !counterRefresh,
-      //   });
-      //   toggleRefresh();
-      // }
     } else {
       setShowAlert("block");
     }
@@ -305,7 +280,12 @@ const Tags = () => {
   // Hide create form after click on cancel
   const handleCancel = () => {
     setShowCreate(false);
-  }
+    setValues({
+      title: "",
+      data: "",
+    });
+    setErrors({});
+  };
 
   // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
@@ -328,9 +308,7 @@ const Tags = () => {
 
             <div>
               <div className="add-contact-form">
-                <div
-                  className="contact-form-body"
-                >
+                <div className="contact-form-body">
                   <div className="form-group contact-input-field">
                     <label htmlFor="title" aria-required>
                       Tag Name
@@ -346,12 +324,18 @@ const Tags = () => {
                   </div>
                   <div className="contact-button-field">
                     <button
-                      className="contact-cancel mintmrm-btn outline" style={{ padding: "15px" }} onClick={handleCancel}
+                      className="contact-cancel mintmrm-btn outline"
+                      style={{ padding: "15px" }}
+                      onClick={handleCancel}
                     >
                       Cancel
                     </button>
-                    <button type="submit" className="contact-save mintmrm-btn" onClick={createOrUpdate}>
-                    {editID == 0 ? "Save" : "Update"}
+                    <button
+                      type="submit"
+                      className="contact-save mintmrm-btn"
+                      onClick={createOrUpdate}
+                    >
+                      {editID == 0 ? "Save" : "Update"}
                     </button>
                   </div>
                 </div>
@@ -369,8 +353,8 @@ const Tags = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
                       title: "Name Desc",
@@ -454,7 +438,7 @@ const Tags = () => {
                           <label for="bulk-select">Name</label>
                         </span>
                       </th>
-                      <th>Total Contacts</th>
+                      <th>Contacts</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
                     </tr>
@@ -515,7 +499,7 @@ const Tags = () => {
         />
       </div>
       <div className="mintmrm-container" style={{ display: showAlert }}>
-        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert}/>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>
