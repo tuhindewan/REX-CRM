@@ -23,6 +23,7 @@ import ExportDrawer from "../ExportDrawer";
 import FilterItems from "./FilterItems";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import CustomSelect from "../CustomSelect";
+import NoContactIcon from "../Icons/NoContactIcon";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -346,10 +347,7 @@ export default function ContactListTable(props) {
     setIsCloseNote(!isCloseNote);
   };
 
-
-  const onCustomSelect = (e) => {
-
-  }
+  const onCustomSelect = (e) => {};
 
   const deleteSelectedlist = (e, id) => {
     const index = selectedLists.findIndex((item) => item.id == id);
@@ -374,6 +372,11 @@ export default function ContactListTable(props) {
     if (index >= 0) {
       setSelectedStatus(selectedStatus.filter((item) => item.id != id));
     }
+  };
+  const deleteAll = () => {
+    setSelectedLists([]);
+    setSelectedTags([]);
+    setSelectedStatus([]);
   };
 
   return (
@@ -498,7 +501,15 @@ export default function ContactListTable(props) {
         </div>
       </div>
 
-      <div className={selectedLists.length == 0 && selectedTags.length == 0 && selectedStatus.length == 0 ? "selected-result inactive" : "selected-result"}>
+      <div
+        className={
+          selectedLists.length == 0 &&
+          selectedTags.length == 0 &&
+          selectedStatus.length == 0
+            ? "selected-result inactive"
+            : "selected-result"
+        }
+      >
         {selectedLists.map((item) => {
           return (
             <span key={item.id} className="mrm-custom-selected-items">
@@ -538,6 +549,9 @@ export default function ContactListTable(props) {
             </span>
           );
         })}
+        <div className="clear-all" onClick={deleteAll}>
+          <span>Clear All</span>
+        </div>
 
         {/* <div className="selected-items">
           <span>Product Feed</span>
@@ -635,7 +649,8 @@ export default function ContactListTable(props) {
             <tbody>
               {!contactData.length && (
                 <tr>
-                  <td colspan="10" style={{ textAlign: "center" }}>
+                  <td className="no-contact" colspan="10" style={{ textAlign: "center" }}>
+                    <NoContactIcon />
                     No contact data found.
                   </td>
                 </tr>

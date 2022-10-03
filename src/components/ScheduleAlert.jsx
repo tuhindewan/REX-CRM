@@ -7,20 +7,16 @@ export default function ScheduleAlert(props) {
 
   const onCancel = () => {
     setDeleteClass(true);
-    props.onDeleteShow("none");
   };
-
-  const onDelete = () => {
-    props.onDeleteStatus(true);
-  };
-
-  const onMultilpleDelete = () => {
-    props.onMultiDelete(true);
-  };
-  
 
   return (
-    <div class= {deleteClass ? "mintmrm-delete-alert-wrapper" : "mintmrm-delete-alert-wrapper"} >
+    <div
+      class={
+        deleteClass
+          ? "mintmrm-delete-alert-wrapper"
+          : "mintmrm-delete-alert-wrapper"
+      }
+    >
       <div class="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
           <h3>{props.title}</h3>
@@ -40,11 +36,7 @@ export default function ScheduleAlert(props) {
             </button>
           </li>
           <li>
-            <button
-              type="button"
-              class="btn-default delete product-trash"
-              onClick={props.selected?.length > 0 ? onMultilpleDelete : onDelete}
-            >
+            <button type="button" class="btn-default delete product-trash">
               Delete
             </button>
           </li>

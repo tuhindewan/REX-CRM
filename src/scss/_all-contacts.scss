@@ -261,11 +261,18 @@
   // ---------Filtered selected result-------
 
   .selected-result {
-    padding: 20px 0 20px 25px;
+    padding: 20px 25px;
     display: flex;
     flex-flow: row wrap;
     border-bottom: 1px solid #e2e5ed;
-    background-color: #f9fafb;
+    background-color: #ffffff;
+
+    .mrm-custom-selected-items {
+      color: #667085;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+    }
 
     .selected-items {
       border: 1px solid #e2e5ed;
@@ -332,11 +339,17 @@
       right: 0;
       z-index: 2;
       background: #f9fafb;
-      border-bottom: 1px solid #e2e5ed;
-      padding: 8px 13px 9px;
+      padding: 7px 13px 7px;
 
       .add-column-btn {
-        background-color: #f9fafb;
+        background-color: transparent;
+      }
+      .add-column-btn:hover {
+        svg {
+          path {
+            stroke: #6f6af8;
+          }
+        }
       }
 
       .tooltip {
@@ -456,6 +469,18 @@
         tr {
           border-bottom: 1px solid #e2e5ed;
 
+          .no-contact {
+            padding: 235px 500px;
+            svg {
+              display: block;
+              margin: 0 auto;
+              margin-bottom: 15px;
+            }
+          }
+          .no-contact::before{
+            border-left: 2px solid #f9fafb;
+          }
+
           td {
             padding: 20px 24px;
             vertical-align: middle;
@@ -485,16 +510,41 @@
               margin-right: 5px;
               display: inline-block;
             }
+            &.email-wrapper {
+              background-color: #ffffff;
+            }
           }
-          td:last-child{
+          // td:first-child {
+          //   border-left: 2px solid transparent;
+          // }
+
+          td:first-child::before {
+            /* border-left: 2px solid transparent; */
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            top: 0;
+            left: 0;
+            background-color: transparent;
+          }
+
+          td:last-child {
             text-align: end;
           }
         }
         tr {
           background-color: #ffffff;
         }
-        tr:hover{
-          background-color: #F9FAFB;
+        tr:hover {
+          background-color: #f9fafb;
+
+          td:first-child::before {
+            background-color: #6f6af8;
+          }
+          .email-wrapper {
+            background-color: #f9fafb;
+          }
         }
 
         // tr:last-child {
@@ -542,15 +592,16 @@
               background: rgba(236, 89, 86, 0.1);
             }
             &.pending {
-              color: #ffcc00;
-              background: rgba(236, 89, 86, 0.1);
+              color: #f7900a;
+              background: rgba(247, 144, 10, 0.1);
             }
           }
         }
 
         .action {
-          button {
+          .more-option {
             position: relative;
+            background-color: transparent;
           }
         }
       }
@@ -651,4 +702,30 @@
     }
   }
   // ------end .contact-list-footer-------
+}
+.dropdown-options {
+  .mintmrm-dropdown {
+    left: calc(100% - 90px);
+
+    .action-list {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #344054;
+      svg {
+        margin-right: 11px;
+      }
+    }
+    .action-list:hover {
+      color: #6f6af8;
+      svg {
+        path {
+          fill: #6f6af8;
+        }
+      }
+    }
+  }
 }

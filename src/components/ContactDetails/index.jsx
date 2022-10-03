@@ -438,9 +438,10 @@ export default function ContactDetails() {
                 <li>
                   <Link to={`../contacts`}>Contact</Link>
                 </li>
-                <li className="active">
+                {contactData.first_name || contactData.last_name ? <li className="active">
                   {contactData.first_name} {contactData.last_name}
-                </li>
+                </li> : <li className="active">Untitled</li> }
+                
               </ul>
             </div>
           </div>
@@ -459,29 +460,29 @@ export default function ContactDetails() {
                 </div>
 
                 <div className="author-short-details">
-                  <h2 className="author-name">
-                    {contactData.first_name} {contactData.last_name}
-                  </h2>
+                  <div className="author-name-status">
+                    {contactData.first_name || contactData.last_name ? (
+                      <h2 className="author-name">
+                        {contactData.first_name} {contactData.last_name}{" "}
+                      </h2>
+                    ) : (
+                      <h2 className="author-name">Untitled</h2>
+                    )}
+
+                    {contactData.status == "subscribed" ? (
+                      <span className="subscribe">Subscribed</span>
+                    ) : contactData.status == "unsubscribed" ? (
+                      <span className="unsubscribe">Unsubscribed</span>
+                    ) : (
+                      <span className="pending">Pending</span>
+                    )}
+                  </div>
 
                   <p>
                     Added via {contactData.added_by_login} Add on {createMonth}{" "}
                     {toOrdinalSuffix(createDay)}, {createYear} at{" "}
                     {contactData.created_time}
                   </p>
-
-                  {contactData.status == "subscribed" ? (
-                    <span className="subscribe" style={{ color: "green" }}>
-                      Subscribed
-                    </span>
-                  ) : contactData.status == "unsubscribed" ? (
-                    <span className="unsubscribe" style={{ color: "red" }}>
-                      Unsubscribed
-                    </span>
-                  ) : (
-                    <span className="pending" style={{ color: "yellow" }}>
-                      Pending
-                    </span>
-                  )}
 
                   {/* <div className="rating">
                   <span>
