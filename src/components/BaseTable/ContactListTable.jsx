@@ -21,6 +21,7 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
+import FilterItems from "./FilterItems";
 import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
@@ -349,16 +350,9 @@ export default function ContactListTable(props) {
 
   return (
     <>
-      <div
-        className="contact-list-header"
-        onClick={() => {
-          setIsLists(false);
-          setIsTags(false);
-          setIsStatus(false);
-        }}
-      >
+      <div className="contact-list-header">
         <div className="left-filters filter-box">
-          {/* <div className="form-group left-filter">
+          <div className="form-group left-filter">
             <button
               className={isLists ? "filter-btn show" : "filter-btn"}
               onClick={showLists}
@@ -384,7 +378,7 @@ export default function ContactListTable(props) {
               Status
             </button>
             <FilterItems isActiveFilter={isStatus} />
-          </div> */}
+          </div>
 
           {/* <FilterBox
             label="Status"
