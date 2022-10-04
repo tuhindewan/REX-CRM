@@ -13,6 +13,7 @@ import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
+import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
@@ -21,7 +22,6 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
-import FilterItems from "./FilterItems";
 import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
@@ -107,6 +107,49 @@ export default function ContactListTable(props) {
   const [assignLists, setAssignLists] = useState([]);
   const [assignTags, setAssignTags] = useState([]);
   const [selectGroup, setSelectGroup] = useState("lists");
+
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [listIds, setListIds] = useState([]);
+  const [tagIds, setTagIds] = useState([]);
+  const [statusIds, setStatusIds] = useState([]);
+  const [filterElem, setFilterElem] = useState({
+    lists: [],
+    tags: [],
+    status: [],
+  });
+
+  const deleteAll = () => {
+    setSelectedLists([]);
+    setSelectedTags([]);
+    setSelectedStatus([]);
+  };
+
+  useEffect(() => {
+    selectedLists.map((list) => {
+      // console.log(list);
+      setListIds([...listIds, list.id]);
+      setFilterElem((prev) => ({
+        ...prev,
+        lists: listIds,
+      }));
+    });
+    selectedTags.map((tag) => {
+      setTagIds([...tagIds, tag.id]);
+      setFilterElem((prev) => ({
+        ...prev,
+        tags: tagIds,
+      }));
+    });
+    selectedStatus.map((status) => {
+      setStatusIds([...statusIds, status.id]);
+      setFilterElem((prev) => ({
+        prev,
+        status: statusIds,
+      }));
+    });
+  }, [selectedLists, selectedStatus, selectedTags]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -348,36 +391,85 @@ export default function ContactListTable(props) {
     setIsCloseNote(!isCloseNote);
   };
 
+  const deleteSelectedlist = (e, id) => {
+    const index = selectedLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (index >= 0) {
+      setSelectedLists(selectedLists.filter((item) => item.id != id));
+    }
+  };
+  const deleteSelectedtag = (e, id) => {
+    const index = selectedTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (index >= 0) {
+      setSelectedTags(selectedTags.filter((item) => item.id != id));
+    }
+  };
+  const deleteSelectedstatus = (e, id) => {
+    const index = selectedStatus.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (index >= 0) {
+      setSelectedStatus(selectedStatus.filter((item) => item.id != id));
+    }
+  };
+
   return (
     <>
       <div className="contact-list-header">
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
-            <button
-              className={isLists ? "filter-btn show" : "filter-btn"}
-              onClick={showLists}
-            >
-              Lists
-            </button>
-            <FilterItems isActiveFilter={isLists} />
+            <CustomSelect
+              selected={selectedLists}
+              setSelected={setSelectedLists}
+              endpoint="/lists"
+              placeholder="Lists"
+              name="list"
+              listTitle="CHOOSE LIST"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+            />
           </div>
           <div className="form-group left-filter">
-            <button
-              className={isTags ? "filter-btn show" : "filter-btn"}
-              onClick={showTags}
-            >
-              Tags
-            </button>
-            <FilterItems isActiveFilter={isTags} />
+            <CustomSelect
+              selected={selectedTags}
+              setSelected={setSelectedTags}
+              endpoint="/tags"
+              placeholder="Tags"
+              name="tag"
+              listTitle="CHOOSE TAG"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+            />
           </div>
           <div className="form-group left-filter">
-            <button
-              className={isStatus ? "filter-btn show" : "filter-btn"}
-              onClick={showStatus}
-            >
-              Status
-            </button>
-            <FilterItems isActiveFilter={isStatus} />
+            <CustomSelect
+              selected={selectedStatus}
+              setSelected={setSelectedStatus}
+              endpoint="/status"
+              placeholder="Status"
+              name="status"
+              listTitle="CHOOSE Status"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+            />
           </div>
 
           {/* <FilterBox
@@ -515,22 +607,53 @@ export default function ContactListTable(props) {
 
       <div
         className={
-          selectedSection ? "selected-result" : "selected-result inactive"
+          selectedLists.length == 0 &&
+          selectedTags.length == 0 &&
+          selectedStatus.length == 0
+            ? "selected-result inactive"
+            : "selected-result"
         }
       >
-        <div className="selected-items">
-          <span>Product Feed</span>
-          <CrossIcon />
-        </div>
-        <div className="selected-items">
-          <span>Funnel</span>
-          <CrossIcon />
-        </div>
-        <div className="selected-items">
-          <span>WPVR</span>
-          <CrossIcon />
-        </div>
-        <div className="clear-all">
+        {selectedLists.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedlist(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedTags.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedtag(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedStatus.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedstatus(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        <div className="clear-all" onClick={deleteAll}>
           <span>Clear All</span>
         </div>
       </div>
