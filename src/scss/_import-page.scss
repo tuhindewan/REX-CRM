@@ -245,6 +245,10 @@
       display: flex;
       flex-flow: row wrap;
       justify-content: end;
+      
+      .contact-save {
+        margin-left: 12px;
+      }
     }
 
     .wordpress-import-section {

@@ -3,6 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 
 export default function ImportWordpress() {
+  const routeChange = () => {
+    let path = `/contacts`;
+    navigate(path);
+  };
   return (
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
@@ -62,6 +66,12 @@ export default function ImportWordpress() {
                   Save
                 </button>
               )} */}
+              <button
+                className="contact-cancel mintmrm-btn outline"
+                onClick={routeChange}
+              >
+                Cancel
+              </button>
               <button className="contact-save mintmrm-btn">Save</button>
             </div>
           </div>

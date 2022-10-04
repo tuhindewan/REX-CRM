@@ -52,7 +52,6 @@ class ContactController extends BaseController {
      */
     public $contact_args;
 
-
     /**
      * Create a new contact or update a existing contact
      * 
@@ -291,11 +290,11 @@ class ContactController extends BaseController {
 
 
         if($success &&  $isList && $isTag) {
-            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 201 );
         }else if ($success && $isTag){
-            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 201 );
         }else if ($success && $isList ){
-            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 201 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }
@@ -420,7 +419,6 @@ class ContactController extends BaseController {
             }
 
             $import_res = MRM_Importer::create_csv_from_import( $files['csv'], $delimiter );
-
             if ( ! is_array( $import_res ) ) {
                 return $this->get_error_response( is_string( $import_res ) ? $import_res : __( 'Unknown error occurred', 'mrm' ), null, 500 );
             }
@@ -460,6 +458,9 @@ class ContactController extends BaseController {
             $params = MRM_Common::get_api_params_values($request);
             $raw = isset($params['raw']) ? $params['raw']: "";
 
+            if ( empty( $raw ) ) {
+			    return $this->get_error_response( __( "Please paste some data in the textarea.", 'mrm' ) );
+		    }
             // check for least number of characters
             if(strlen($raw) < 5) {
                 throw new Exception("Data is insufficient. Please enter at least 5 characters.");
@@ -538,7 +539,9 @@ class ContactController extends BaseController {
      * @since 1.0.0
      */
     public function import_contacts_csv( WP_REST_Request $request ) {
-
+        $skipped    = 0;
+        $exists     = 0;
+        $totalCount = 0;
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
@@ -546,10 +549,11 @@ class ContactController extends BaseController {
                 throw new Exception( __("Map attribute is required.", "mrm") );
             }
 
-            $mappings    = json_decode(json_encode($params["map"]), true);
+            $mappings = isset( $params["map"] ) ? $params["map"] : [];
 
-            $file       = MRM_IMPORT_DIR . '/' . $params['file'];
-
+            if( isset( $params['file'] ) ){
+                $file = MRM_IMPORT_DIR . '/' . $params['file'];
+            }
 
             // if the file does not exist return error
             if(!file_exists($file)) {
@@ -559,21 +563,17 @@ class ContactController extends BaseController {
             // open the file stream
             $handle = fopen($file, "r");
 
-      
             // fetch the first line
             $raw_string = fgets($handle);
 
             // parse it to and get the header
             $header = str_getcsv($raw_string);
-
-            $skipped = 0;
-            $exists = 0;
-            $totalCount = 0;
+            $header[0] = MRM_Importer::remove_utf8_bom($header[0]);
+            
             // Iterate over every line of the file
             while (($raw_string = fgets($handle)) !== false) {
                 // Parse the raw csv string as an array
                 $row = str_getcsv($raw_string);
-
 
                 // check if header and the current row has same length otherwise skip to the next iteration
                 if(count($header) !== count($row)) {
@@ -584,19 +584,18 @@ class ContactController extends BaseController {
                 // combine header and values to make a contact associative array
                 $csv_contact = array_combine($header, $row);
                 $contact_args = array(
-                    'status'    => $params['status'],
-                    'source'    => 'csv',
-                    'meta_fields'   => []
+                    'status'        => $params['status'],
+                    'source'        => 'csv',
+                    'meta_fields'   => [],
+                    'created_by'    => $params['created_by']
                 );
 
                 foreach($mappings as $map) {
 
-                    $map_array = json_decode(json_encode($map), true);
-
-                    if( in_array( $map_array["target"], array( "first_name", "last_name", "email" ) ) ){
-                        $contact_args[$map_array["target"]] = $csv_contact[$map_array["source"]];
+                    if( in_array( $map["target"], array( "first_name", "last_name", "email" ) ) ){
+                        $contact_args[$map["target"]] = $csv_contact[$map["source"]];
                     } else {
-                        $contact_args['meta_fields'][$map_array["target"]] = $csv_contact[$map_array["source"]];
+                        $contact_args['meta_fields'][$map["target"]] = $csv_contact[$map["source"]];
                     }
                 }
                 if (!array_key_exists('email', $contact_args)) {
@@ -646,6 +645,7 @@ class ContactController extends BaseController {
         } catch(Exception $e) {
             return $this->get_error_response(__($e->getMessage(), "mrm"), 400);
         }
+
     }
 
     /**
@@ -657,7 +657,9 @@ class ContactController extends BaseController {
      * @since 1.0.0
      */
     public function import_contacts_raw( WP_REST_Request $request ) {
-
+        $skipped     = 0;
+        $exists      = 0;
+        $total_count = 0;
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
         try {
@@ -665,18 +667,15 @@ class ContactController extends BaseController {
                 throw new Exception( __("Please map at least one field to desired field.", "mrm") );
             }
 
-            $mappings    = json_decode(json_encode($params["map"]), true);
-
-            $raw = isset($params['raw']) ? $params['raw'] : '';
+            $mappings   = isset( $params["map"] ) ? $params["map"] : [];
+            $raw        = isset($params['raw']) ? $params['raw'] : '';
             if(empty($raw) || !is_array($raw) || count($raw) <= 1) {
                 throw new Exception( __("The data is invalid.", "mrm") );
             }
 
             $header = explode(",", trim($raw[0]));
+            // $header[0] = MRM_Importer::remove_utf8_bom($header[0]);
 
-            $skipped = 0;
-            $exists = 0;
-            $total_count = 0;
             // Iterate over every line of the file
             for ($i = 1; $i < count($raw); $i++ ) {
                 // Trim and Parse the raw  string as an array
@@ -684,26 +683,27 @@ class ContactController extends BaseController {
                 $row_array = explode(",", $row);
                 // check if header and the current row has same length otherwise skip to the next iteration
                 if(count($header) !== count($row_array)) {
+
                     $skipped++;
                     $total_count++;
                     continue;
                 }
                 // combine header and values to make a contact associative array
                 $csv_contact = array_combine($header, $row_array);
+
                 $contact_args = array(
-                    'status'    => $params['status'],
-                    'source'    => 'raw',
-                    'meta_fields'   => []
+                    'status'        => $params['status'],
+                    'source'        => 'raw',
+                    'meta_fields'   => [],
+                    'created_by'    => $params['created_by']
                 );
 
-                
                 foreach($mappings as $map) {
-                    $map_array = json_decode(json_encode($map), true);
 
-                    if( in_array( $map_array["target"], array( "first_name", "last_name", "email" ) ) ){
-                        $contact_args[$map_array["target"]] = $csv_contact[$map_array["source"]];
+                    if( in_array( $map["target"], array( "first_name", "last_name", "email" ) ) ){
+                        $contact_args[$map["target"]] = $csv_contact[$map["source"]];
                     } else {
-                        $contact_args['meta_fields'][$map_array["target"]] = $csv_contact[$map_array["source"]];
+                        $contact_args['meta_fields'][$map["target"]] = $csv_contact[$map["source"]];
                     }
                 }
                 if (!array_key_exists('email', $contact_args)) {

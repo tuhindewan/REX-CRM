@@ -44,6 +44,10 @@ export default function ContactDetails() {
   const [isClose, setIsClose] = useState(true);
   const [isNoteForm, setIsNoteForm] = useState(true);
   const [isCloseNote, setIsCloseNote] = useState(true);
+  const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
+  const [isAssignTo, setIsAssignTo] = useState(false);
+  const [selected, setSelected] = useState([]);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -409,7 +413,16 @@ export default function ContactDetails() {
         body: JSON.stringify({ groups: [id] }),
       }
     );
+    const resJson = await res.json();
+    if (resJson.code == 200) {
+      setShowNotification("block");
+      setMessage(resJson.message);
+    }
     toggleRefresh();
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   const selectTags = () => {
@@ -960,30 +973,37 @@ export default function ContactDetails() {
                     })}
 
                     {/* {contactData?.tags?.length == 0 && <span>No Tag Found  </span>} */}
-                    <button className="add-list" onClick={addTagInput}>
-                      {openTagSelectBox ? "" : <PlusIconSmall />}
-                      {openTagSelectBox ? "-" : "Add"}
+                    <button className="add-list" onClick={selectTags}>
+                      <PlusIconSmall /> Add Tag
                     </button>
                   </div>
-                  {openTagSelectBox && (
-                    // <Selectbox
-                    //   label=""
-                    //   name="tags"
-                    //   options={tags}
-                    //   values={tagListsAdder.tags}
-                    //   placeholder="Select Tags"
-                    //   tags={true}
-                    //   multiple={true}
-                    //   onSelect={onSelect}
-                    //   onRemove={onRemove}
-                    // />
-                    <>
-                      <button className="choose-tag-btn" onClick={selectTags}>
-                        Choose Tags
-                      </button>
-                      <AddItems isActive={selectTag} />
-                    </>
+                  {selectTag && (
+                    <AddItems
+                      selected={assignTags}
+                      setSelected={setAssignTags}
+                      endpoint="tags"
+                      placeholder="Tags"
+                      name="tag"
+                      listTitle="CHOOSE Tag"
+                      listTitleOnNotFound="No Data Found"
+                      searchPlaceHolder="Search..."
+                      allowMultiple={true}
+                      showSearchBar={true}
+                      showListTitle={true}
+                      showSelectedInside={false}
+                      allowNewCreate={true}
+                      isActive={selectTag}
+                      setIsAssignTo={setSelectTag}
+                      contactId={id}
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                      setShowNotification={setShowNotification}
+                      showNotification={"mone"}
+                      setMessage={setMessage}
+                      message={message}
+                    />
                   )}
+
                   {/* {openTagSelectBox && (
                     <button className="add-list" onClick={handleAddTag}>
                       Add Tag
@@ -1012,32 +1032,36 @@ export default function ContactDetails() {
                       );
                     })}
                     {/* {contactData?.lists?.length == 0 && (
-                    <span>No List Found  </span>
-                  )} */}
-                    <button className="add-list" onClick={addListInput}>
-                      {openListSelectBox ? "" : <PlusIconSmall />}
-                      {openListSelectBox ? "-" : "Add"}
+                      <span>No List Found </span>
+                    )} */}
+                    <button className="add-list" onClick={selectLists}>
+                      <PlusIconSmall /> Add List
                     </button>
                   </div>
-                  {openListSelectBox && (
-                    // <Selectbox
-                    //   label=""
-                    //   name="lists"
-                    //   options={lists}
-                    //   values={tagListsAdder.lists}
-                    //   placeholder="Select Lists"
-                    //   tags={true}
-                    //   multiple={true}
-                    //   onSelect={onSelect}
-                    //   onRemove={onRemove}
-                    // />
-                    <>
-                      <button className="choose-tag-btn" onClick={selectLists}>
-                        Choose Tags
-                      </button>
-                      <AddItems isActive={selectList} />
-                    </>
-                  )}
+                  <AddItems
+                    selected={assignLists}
+                    setSelected={setAssignLists}
+                    endpoint="lists"
+                    placeholder="List"
+                    name="list"
+                    listTitle="CHOOSE LIST"
+                    listTitleOnNotFound="No Data Found"
+                    searchPlaceHolder="Search..."
+                    allowMultiple={true}
+                    showSearchBar={true}
+                    showListTitle={true}
+                    showSelectedInside={false}
+                    allowNewCreate={true}
+                    setIsAssignTo={setSelectList}
+                    contactId={id}
+                    refresh={refresh}
+                    setRefresh={setRefresh}
+                    setShowNotification={setShowNotification}
+                    showNotification={"mone"}
+                    setMessage={setMessage}
+                    message={message}
+                    isActive={selectList}
+                  />
                   {/* {openListSelectBox && (
                     <button className="add-list" onClick={handleAddList}>
                       Add List

@@ -10,7 +10,6 @@ import NoCampaign from "./Campaign/NoCampaign";
 import SingleCampaign from "./Campaign/SingleCampaign";
 import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
-import FilterBox from "./Filterbox";
 import Search from "./Icons/Search";
 import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
@@ -206,7 +205,8 @@ export default function AllCampaigns() {
                       placeholder="Search by title"
                     />
                   </span>
-                  <FilterBox
+                  
+                  {/* <FilterBox
                     label="Status"
                     name="Status"
                     options={[
@@ -224,7 +224,7 @@ export default function AllCampaigns() {
                       },
                     ]}
                     placeholder="Status"
-                  />
+                  /> */}
                 </div>
               </div>
 

@@ -58,7 +58,7 @@ export default function AssignedItems(props) {
     // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected.findIndex((item) => item.id == id);
+    const index = selected?.findIndex((item) => item.id == id);
     // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
