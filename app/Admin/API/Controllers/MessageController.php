@@ -45,50 +45,44 @@ class MessageController extends BaseController {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         $this->args = array(
             'email_address'     => isset( $params['email_address'] )   ? sanitize_text_field( $params['email_address'] )    : NULL,
             'email_subject'     => isset( $params['email_subject'] )   ? sanitize_text_field( $params['email_subject'] )    : NULL,
             'email_body'        => isset( $params['email_body'] )      ? $params['email_body']                              : NULL,
-            'type'              => isset( $params['type'] )            ? sanitize_text_field( $params['type'] )             : NULL,
-            'contact_id'        => isset( $params['contact_id'] )      ? sanitize_text_field( $params['contact_id'] )       : NULL
+            'contact_id'        => isset( $params['contact_id'] )      ? sanitize_text_field( $params['contact_id'] )       : NULL,
+            'sender_id'         => isset( $params['sender_id'] )       ? sanitize_text_field( $params['sender_id'] )        : NULL
         );
 
-        // Prepare message data
-        $message = new MessageData( $this->args );
         // Email address valiation
-        if ( 'email' === $this->args['type'] && empty( $this->args['email_address'] ) ) {
+        if ( empty( $this->args['email_address'] ) ) {
 
-			return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ), 200 );
 		}
 
         // Email subject validation
-        if ( 'email' === $this->args['type'] && empty( $this->args['email_subject'] ) ) {
+        if ( empty( $this->args['email_subject'] ) ) {
 
-			return $this->get_error_response( __( 'Email subject is mandatory', 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Email subject is mandatory', 'mrm' ), 200 );
 		}
 
         // Email body validation
 		if ( empty( $this->args['email_body'] ) ) {
 
-			return $this->get_error_response( __( 'Message is mandatory', 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Email body is mandatory', 'mrm' ), 200 );
 		}
 
-        
-        /**
-        * TODO: We will get last insert id when we will complete campaign module
-        * 
-        */
-        $interaction_id = 1;
+        // Prepare message data
+        $message = new MessageData( $this->args );
 
-        MessageModel::insert( $message, $interaction_id );
+        
+        MessageModel::insert( $message );
 
         $sent = $this->send_message( $message );
 
         if( true == $sent ){
-            return $this->get_success_response( __( 'Email has been sent', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Email has been sent', 'mrm' ), 201 );
         }
-        return $this->get_error_response(__( 'Email not sent', 'mrm' ), 400);
+        return $this->get_error_response(__( 'Email not sent', 'mrm' ), 200);
 
     }
 

@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { submitEmail } from "../services/Message";
 import CrossIcon from "./Icons/CrossIcon";
 
 export default function EmailDrawer(props) {
   const { isClose, setIsClose, contact } = props;
+  const [errors, setErrors] = useState({});
+
   const [email, setEmail] = useState({
-    email_address: contact.email,
     email_subject: "",
     email_body: "",
     sender_id: `${window.MRM_Vars.current_userID}`,
@@ -18,10 +20,26 @@ export default function EmailDrawer(props) {
     event.persist();
     const { name, value } = event.target;
 
-    setNote((prevState) => ({
+    setEmail((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    email.email_address = contact.email;
+
+    submitEmail(email, contact.id).then((response) => {
+      if (201 === response.code) {
+      } else {
+        // Error messages
+        setErrors({
+          ...errors,
+          email: response.message,
+        });
+      }
+    });
   };
   return (
     <>
@@ -48,44 +66,48 @@ export default function EmailDrawer(props) {
           {/* <!-- /.drawer-header --> */}
 
           <div className="drawer-body">
-            <div className="body-wrapper">
-              <div className="email-to">
-                <span className="">To:</span>
-                <input
-                  type="text"
-                  disabled
-                  name="email_address"
-                  value={contact.email}
-                />
+            <form onSubmit={handleSubmit}>
+              <div className="body-wrapper">
+                <div className="email-to">
+                  <span className="">To:</span>
+                  <input
+                    type="text"
+                    disabled
+                    name="email_address"
+                    value={contact.email}
+                    onChange={handleOnChange}
+                  />
+                </div>
+                <div className="email-subject">
+                  <span className="">Subject:</span>
+                  <input
+                    type="text"
+                    value={email.email_subject}
+                    name="email_subject"
+                    onChange={handleOnChange}
+                  />
+                </div>
+                <div className="email-body">
+                  <textarea
+                    value={email.email_body}
+                    name="email_body"
+                    onChange={handleOnChange}
+                  />
+                  <p className="error-message">{errors?.email}</p>
+                </div>
+                <div className="body-footer">
+                  <button
+                    className="contact-cancel mintmrm-btn outline"
+                    onClick={closeSection}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="contact-save mintmrm-btn ">
+                    Save
+                  </button>
+                </div>
               </div>
-              <div className="email-subject">
-                <span className="">Subject:</span>
-                <input
-                  type="text"
-                  value={email.email_subject}
-                  name="email_subject"
-                  onChange={handleOnChange}
-                />
-              </div>
-              <div className="email-body">
-                <textarea
-                  value={email.email_body}
-                  name="email_body"
-                  onChange={handleOnChange}
-                />
-              </div>
-              <div className="body-footer">
-                <button
-                  className="contact-cancel mintmrm-btn outline"
-                  onClick={closeSection}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="contact-save mintmrm-btn ">
-                  Save
-                </button>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
