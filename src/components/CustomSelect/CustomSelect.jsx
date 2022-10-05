@@ -30,6 +30,8 @@ export default function CustomSelect(props) {
     showListTitle = true,
     showSelectedInside = true,
     allowNewCreate = true,
+    setFilterAdder,
+    filterAdder,
   } = props;
   const buttonRef = useRef(null);
   const customSelectUUID = useRef(Math.random());
@@ -44,6 +46,12 @@ export default function CustomSelect(props) {
 
   // loading or not
   const [loading, setLoading] = useState(false);
+
+  // const [filterAdder, setFilterAdder] = useState({
+  //   lists: [],
+  //   tags: [],
+  //   status: [],
+  // });
 
   // function used for either showing or hiding the dropdown
   function toggleActive(event) {
@@ -75,19 +83,37 @@ export default function CustomSelect(props) {
     // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    let name = e.target.name;
     const index = selected.findIndex((item) => item.id == id);
 
-    // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
+        // already in selected list so remove it from the array
         setSelected(selected.filter((item) => item.id != id));
+
+        setFilterAdder((prev) => ({
+          ...prev,
+          [name]: filterAdder[name].filter((item) => {
+            return item != id;
+          }),
+        }));
       } else {
         // add id to the array
         setSelected([...selected, { id: id, title: value }]);
+        setFilterAdder((prev) => ({
+          ...prev,
+          [name]: [...prev[name], id],
+        }));
       }
     } else {
       if (index >= 0) setSelected([]);
-      else setSelected([{ id: id, title: value }]);
+      else {
+        setSelected([{ id: id, title: value }]);
+        setFilterAdder((prev) => ({
+          ...prev,
+          [name]: [...prev[name], id],
+        }));
+      }
     }
   };
 
@@ -99,7 +125,6 @@ export default function CustomSelect(props) {
 
   const deleteSelected = (e, id) => {
     const index = selected.findIndex((item) => item.id == id);
-
     // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
@@ -180,6 +205,7 @@ export default function CustomSelect(props) {
 
   return (
     <>
+      {/* {console.log(filterAdder)} */}
       <div className="mrm-custom-select-container" key="container">
         <button
           className={
@@ -282,7 +308,7 @@ export default function CustomSelect(props) {
                   <div class="mintmrm-checkbox">
                     <input
                       type="checkbox"
-                      name={item.id}
+                      name={props.name}
                       id={item.id}
                       value={item.title}
                       onChange={handleSelectOne}

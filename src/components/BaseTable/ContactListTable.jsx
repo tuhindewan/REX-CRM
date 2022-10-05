@@ -126,30 +126,30 @@ export default function ContactListTable(props) {
     setSelectedStatus([]);
   };
 
-  useEffect(() => {
-    selectedLists.map((list) => {
-      // console.log(list);
-      setListIds([...listIds, list.id]);
-      setFilterElem((prev) => ({
-        ...prev,
-        lists: listIds,
-      }));
-    });
-    selectedTags.map((tag) => {
-      setTagIds([...tagIds, tag.id]);
-      setFilterElem((prev) => ({
-        ...prev,
-        tags: tagIds,
-      }));
-    });
-    selectedStatus.map((status) => {
-      setStatusIds([...statusIds, status.id]);
-      setFilterElem((prev) => ({
-        prev,
-        status: statusIds,
-      }));
-    });
-  }, [selectedLists, selectedStatus, selectedTags]);
+  // useEffect(() => {
+  //   selectedLists.map((list) => {
+  //     // console.log(list);
+  //     setListIds([...listIds, list.id]);
+  //     setFilterAdder((prev) => ({
+  //       ...prev,
+  //       lists: listIds,
+  //     }));
+  //   });
+  //   selectedTags.map((tag) => {
+  //     setTagIds([...tagIds, tag.id]);
+  //     setFilterAdder((prev) => ({
+  //       ...prev,
+  //       tags: tagIds,
+  //     }));
+  //   });
+  //   selectedStatus.map((status) => {
+  //     setStatusIds([...statusIds, status.id]);
+  //     setFilterAdder((prev) => ({
+  //       prev,
+  //       status: statusIds,
+  //     }));
+  //   });
+  // }, [selectedLists, selectedStatus, selectedTags]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -426,7 +426,7 @@ export default function ContactListTable(props) {
               setSelected={setSelectedLists}
               endpoint="/lists"
               placeholder="Lists"
-              name="list"
+              name="lists"
               listTitle="CHOOSE LIST"
               listTitleOnNotFound="No Data Found"
               searchPlaceHolder="Search..."
@@ -435,6 +435,8 @@ export default function ContactListTable(props) {
               showListTitle={true}
               showSelectedInside={false}
               allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
             />
           </div>
           <div className="form-group left-filter">
@@ -443,7 +445,7 @@ export default function ContactListTable(props) {
               setSelected={setSelectedTags}
               endpoint="/tags"
               placeholder="Tags"
-              name="tag"
+              name="tags"
               listTitle="CHOOSE TAG"
               listTitleOnNotFound="No Data Found"
               searchPlaceHolder="Search..."
@@ -452,6 +454,8 @@ export default function ContactListTable(props) {
               showListTitle={true}
               showSelectedInside={false}
               allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
             />
           </div>
           <div className="form-group left-filter">
@@ -469,6 +473,8 @@ export default function ContactListTable(props) {
               showListTitle={true}
               showSelectedInside={false}
               allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
             />
           </div>
 
