@@ -142,7 +142,7 @@ class CustomFieldController extends BaseController {
 
 
     /**
-     * TODO: complete this function in order to delete multilple fields
+     * Delete multiple custom fields
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -150,7 +150,15 @@ class CustomFieldController extends BaseController {
      */
     public function delete_all( WP_REST_Request $request ){
 
-        
+        // Get values from API
+        $params  = MRM_Common::get_api_params_values( $request );
+
+        $success = CustomFieldModel::destroy_all( $params['field_ids'] );
+        if($success) {
+            return $this->get_success_response(__( 'Fields has been deleted successfully', 'mrm' ), 200);
+        }
+
+        return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
     }
 
 
