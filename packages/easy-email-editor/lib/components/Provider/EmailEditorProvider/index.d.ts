@@ -8,4 +8,4 @@ export interface EmailEditorProviderProps<T extends IEmailTemplate = any> extend
     onSubmit?: Config<IEmailTemplate, Partial<IEmailTemplate>>['onSubmit'];
     validationSchema?: Config<IEmailTemplate, Partial<IEmailTemplate>>['validate'];
 }
-export declare const EmailEditorProvider: <T extends unknown>(props: EmailEditorProviderProps<any> & T) => JSX.Element | null;
+export declare const EmailEditorProvider: <T extends (...rest: any[]) => any = any>(props: EmailEditorProviderProps<any> & T) => JSX.Element | null;

@@ -69,10 +69,11 @@ class AdminAssets {
             MRM_PLUGIN_NAME,
             'MRM_Vars',
             array(
-                'ajaxurl' 			=> admin_url( 'admin-ajax.php' ),
-                'api_base_url' 		=> get_rest_url(),
-                'nonce' 			=> wp_create_nonce('wp_rest'),
-                'current_userID'    => get_current_user_id() 
+                'ajaxurl' 			    => admin_url( 'admin-ajax.php' ),
+                'api_base_url' 		    => get_rest_url(),
+                'nonce' 			    => wp_create_nonce('wp_rest'),
+                'current_userID'        => get_current_user_id(),
+                'editor_data_source'    => $this->get_editor_source()
             )
         );
     }
@@ -157,5 +158,56 @@ class AdminAssets {
      */
     private function maybe_mrm_page( $hook ) {
         return  'toplevel_page_mrm-admin' === $hook;
+    }
+
+
+    /**
+     * get editor source data
+     *
+     * @since 1.0.0
+     * @return array
+     */
+    private function get_editor_source() {
+        //get product categories for email builder
+        $categories = $this->get_formatted_wc_categories();
+        return apply_filters('plugin_hook_name', array(
+            'product_categories' => $categories
+        ));
+    }
+
+
+    /**
+     * Get the WooCommerce product categories
+     *
+     * @return array
+     * @since 1.0.0
+     */
+    private function get_formatted_wc_categories() {
+        $taxonomy     = 'product_cat';
+        $orderby      = 'name';
+        $show_count   = 0;
+        $pad_counts   = 0;
+        $hierarchical = 1;
+        $title        = '';
+        $empty        = 0;
+
+        $args = array(
+            'taxonomy'     => $taxonomy,
+            'orderby'      => $orderby,
+            'show_count'   => $show_count,
+            'pad_counts'   => $pad_counts,
+            'hierarchical' => $hierarchical,
+            'title_li'     => $title,
+            'hide_empty'   => $empty
+        );
+        $product_categories = get_categories( $args );
+        $wc_categories      = [];
+        foreach ( $product_categories as $product_cat ) {
+            $wc_categories[] = array(
+                'value' => $product_cat->term_id,
+                'label' => $product_cat->name
+            );
+        }
+        return $wc_categories;
     }
 }

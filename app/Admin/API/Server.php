@@ -3,6 +3,7 @@ namespace Mint\MRM\Admin\API;
 
 
 use Mint\MRM\Admin\API\Controllers\MRM_Contact_Controller;
+use Mint\MRM\Admin\API\Controllers\ProductController;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
@@ -48,6 +49,8 @@ class Server {
      */
     public function rest_api_init()
     {
+        // Codes needs to be audited. Need to follow WP way here
+
         foreach ($this->get_rest_namespaces() as $namespace => $controllers) {
             foreach ($controllers as $controller_name => $route_class) {
                 $route_class_name = "\Mint\\MRM\\Admin\\API\\Routes\\".$route_class;
@@ -55,6 +58,20 @@ class Server {
                 $this->routes[ $namespace ][ $controller_name ]->register_routes();
             }
         }
+
+//        $product_controller = new ProductController();
+//        $product_controller->register_routes();
+
+
+        register_rest_field( array('product'),
+            'featured_image_url',
+            array(
+                'get_callback'    => array($this, 'get_rest_featured_image'),
+                'update_callback' => null,
+                'schema'          => null,
+            )
+        );
+
     }
 
 
@@ -92,5 +109,13 @@ class Server {
             'campaigns'      =>  'campaignRoute'
 		));
     }
-    
+
+
+    public function get_rest_featured_image( $object, $field_name, $request ) {
+        if( $object['featured_media'] ){
+            $img = wp_get_attachment_image_src( $object['featured_media'], 'app-thumb' );
+            return $img[0];
+        }
+        return false;
+    }
 }

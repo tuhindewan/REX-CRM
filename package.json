@@ -20,6 +20,7 @@
     "easy-email-editor": "/Users/ar/Local Sites/mrm/app/public/wp-content/plugins/mrm/packages/easy-email-editor",
     "easy-email-extensions": "/Users/ar/Local Sites/mrm/app/public/wp-content/plugins/mrm/packages/easy-email-extensions",
     "jquery": "^3.6.1",
+    "loadash": "^1.0.0",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

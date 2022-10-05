@@ -35978,6 +35978,7 @@ function enhancer(Component2, changeAdapter) {
     const _a = props, {
       name: name2,
       onChangeAdapter,
+      onFieldValueChange,
       valueAdapter,
       inline,
       label,
@@ -35993,6 +35994,7 @@ function enhancer(Component2, changeAdapter) {
     } = _a, rest = __objRest(_a, [
       "name",
       "onChangeAdapter",
+      "onFieldValueChange",
       "valueAdapter",
       "inline",
       "label",
@@ -36032,6 +36034,7 @@ function enhancer(Component2, changeAdapter) {
         setCurrentValue(newVal);
         debounceCallbackChange(newVal);
         onBlur3();
+        props.onFieldValueChange && (onFieldValueChange == null ? void 0 : onFieldValueChange(e));
       }, [onBlur3]);
       if (!wrapper2)
         return /* @__PURE__ */ React__default.createElement(Component2, __spreadProps(__spreadValues({}, rest), {

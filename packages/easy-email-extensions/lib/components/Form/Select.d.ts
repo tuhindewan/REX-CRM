@@ -7,5 +7,6 @@ export interface SelectProps extends ArcoSelectProps {
     }>;
     onChange?: (val: string) => void;
     value: string;
+    onChangeHandler?: (val: string) => void;
 }
 export declare function Select(props: SelectProps): JSX.Element;

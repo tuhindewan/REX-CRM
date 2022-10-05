@@ -5,25 +5,11 @@ import LeftArrow from "../Icons/LeftArrow";
 import MobileIcon from "../Icons/MobileIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 
-const Editor = React.lazy(() => import("../Editor/Editor"));
+const Editor = React.lazy(() => import("../../Editor/Editor"));
 
 
 const EmailBuilder = (props) => {
   const { isCloseBuilder, setIsCloseBuilder, setEmailBody, emailData } = props;
-  const emailEditorRef = useRef(null);
-  const [design, setDesign] = useState({});
-
-  const closeEmailBuilder = () => {
-    emailEditorRef.current.editor.exportHtml((data) => {
-      setEmailBody(data);
-      setIsCloseBuilder("hide");
-    });
-  };
-
-  const onReady = () => {
-    console.log(emailEditorRef);
-    emailEditorRef.current.editor.loadDesign(emailData?.email_json);
-  };
 
   return (
     <>

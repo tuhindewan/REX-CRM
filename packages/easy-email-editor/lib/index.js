@@ -6861,6 +6861,16 @@ Stack.Item = Item;
 function classnames(...rest) {
   return rest.filter((item) => typeof item === "string").join(" ");
 }
+var index$2 = "";
+const Button = (props) => {
+  return /* @__PURE__ */ React.createElement("button", {
+    onClick: props.onClick,
+    className: classnames("easy-email-editor-button", props.noBorder && "easy-email-editor-noBorder"),
+    title: props.title,
+    disabled: props.disabled,
+    type: "button"
+  }, props.children);
+};
 function IconFont(props) {
   var _a;
   return /* @__PURE__ */ React.createElement("div", {
@@ -6877,16 +6887,6 @@ function IconFont(props) {
     className: classnames("iconfont", props.iconName)
   });
 }
-var index$2 = "";
-const Button = (props) => {
-  return /* @__PURE__ */ React.createElement("button", {
-    onClick: props.onClick,
-    className: classnames("easy-email-editor-button", props.noBorder && "easy-email-editor-noBorder"),
-    title: props.title,
-    disabled: props.disabled,
-    type: "button"
-  }, props.children);
-};
 function ToolsPanel() {
   const { redo, undo, redoable, undoable } = useBlock();
   return /* @__PURE__ */ React.createElement(Stack, null, /* @__PURE__ */ React.createElement(Button, {
@@ -6911,6 +6911,59 @@ function ToolsPanel() {
     }
   })), /* @__PURE__ */ React.createElement(Stack.Item, null));
 }
+var index$1 = "";
+const Tabs = (props) => {
+  const [activeTab, setActiveTab] = useState(props.defaultActiveTab || "");
+  const onClick = useCallback((nextTab) => {
+    var _a, _b;
+    if (!props.onBeforeChange) {
+      setActiveTab(nextTab);
+      (_a = props.onChange) == null ? void 0 : _a.call(props, nextTab);
+    }
+    if (props.onBeforeChange) {
+      const next = props.onBeforeChange(activeTab, nextTab);
+      if (next) {
+        setActiveTab(nextTab);
+        (_b = props.onChange) == null ? void 0 : _b.call(props, nextTab);
+      }
+    }
+  }, [activeTab, props]);
+  useEffect(() => {
+    if (props.activeTab) {
+      setActiveTab(props.activeTab);
+    }
+  }, [props.activeTab]);
+  return /* @__PURE__ */ React.createElement("div", {
+    style: props.style,
+    className: props.className
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "easy-email-editor-tabWrapper"
+  }, /* @__PURE__ */ React.createElement(Stack, {
+    distribution: "equalSpacing",
+    alignment: "center"
+  }, /* @__PURE__ */ React.createElement(Stack, {
+    alignment: "center"
+  }, React.Children.map(props.children, (item, index2) => {
+    return /* @__PURE__ */ React.createElement("div", {
+      key: item.key,
+      onClick: () => onClick(item.key),
+      className: classnames("easy-email-editor-tabItem", !activeTab && index2 === 0 && "easy-email-editor-tabActiveItem", activeTab === item.key && "easy-email-editor-tabActiveItem")
+    }, /* @__PURE__ */ React.createElement(Button, {
+      noBorder: true
+    }, item.props.tab));
+  })), props.tabBarExtraContent)), React.Children.map(props.children, (item, index2) => {
+    const visible = !activeTab && index2 === 0 || item.key === activeTab;
+    return /* @__PURE__ */ React.createElement("div", {
+      style: {
+        display: visible ? void 0 : "none",
+        height: "calc(100% - 50px)"
+      }
+    }, item);
+  }));
+};
+const TabPane = (props) => {
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, props.children);
+};
 function useActiveTab() {
   const { activeTab, setActiveTab } = useContext(BlocksContext);
   return {
@@ -7499,7 +7552,6 @@ function getInsertPosition(params) {
         const prevParent = getParentByIdx(context, parentData.parentIdx);
         if (prevParent) {
           const isLeft = directionPosition.horizontal.direction === "left";
-          console.log("idx", parentData.parentIdx);
           return {
             parentIdx: getParentIdx(parentData.parentIdx),
             insertIndex: isLeft ? getIndexByIdx(parentData.parentIdx) : getIndexByIdx(parentData.parentIdx) + 1,
@@ -8125,59 +8177,6 @@ function EditEmailPreview() {
     ref: setContainerRef
   }, /* @__PURE__ */ React.createElement(MjmlDomRender, null)), /* @__PURE__ */ React.createElement(ShadowStyle, null)), [activeTab]);
 }
-var index$1 = "";
-const Tabs = (props) => {
-  const [activeTab, setActiveTab] = useState(props.defaultActiveTab || "");
-  const onClick = useCallback((nextTab) => {
-    var _a, _b;
-    if (!props.onBeforeChange) {
-      setActiveTab(nextTab);
-      (_a = props.onChange) == null ? void 0 : _a.call(props, nextTab);
-    }
-    if (props.onBeforeChange) {
-      const next = props.onBeforeChange(activeTab, nextTab);
-      if (next) {
-        setActiveTab(nextTab);
-        (_b = props.onChange) == null ? void 0 : _b.call(props, nextTab);
-      }
-    }
-  }, [activeTab, props]);
-  useEffect(() => {
-    if (props.activeTab) {
-      setActiveTab(props.activeTab);
-    }
-  }, [props.activeTab]);
-  return /* @__PURE__ */ React.createElement("div", {
-    style: props.style,
-    className: props.className
-  }, /* @__PURE__ */ React.createElement("div", {
-    className: "easy-email-editor-tabWrapper"
-  }, /* @__PURE__ */ React.createElement(Stack, {
-    distribution: "equalSpacing",
-    alignment: "center"
-  }, /* @__PURE__ */ React.createElement(Stack, {
-    alignment: "center"
-  }, React.Children.map(props.children, (item, index2) => {
-    return /* @__PURE__ */ React.createElement("div", {
-      key: item.key,
-      onClick: () => onClick(item.key),
-      className: classnames("easy-email-editor-tabItem", !activeTab && index2 === 0 && "easy-email-editor-tabActiveItem", activeTab === item.key && "easy-email-editor-tabActiveItem")
-    }, /* @__PURE__ */ React.createElement(Button, {
-      noBorder: true
-    }, item.props.tab));
-  })), props.tabBarExtraContent)), React.Children.map(props.children, (item, index2) => {
-    const visible = !activeTab && index2 === 0 || item.key === activeTab;
-    return /* @__PURE__ */ React.createElement("div", {
-      style: {
-        display: visible ? void 0 : "none",
-        height: "calc(100% - 50px)"
-      }
-    }, item);
-  }));
-};
-const TabPane = (props) => {
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, props.children);
-};
 var index = "";
 var iconfont = "";
 window.global = window;
@@ -8205,7 +8204,14 @@ const EmailEditor = () => {
       minWidth: 640,
       height: containerHeight
     }
-  }, /* @__PURE__ */ React.createElement(Tabs, {
+  }, /* @__PURE__ */ React.createElement(Button, {
+    title: "undo"
+  }, /* @__PURE__ */ React.createElement(IconFont, {
+    iconName: "icon-undo",
+    style: {
+      cursor: "inherit"
+    }
+  })), /* @__PURE__ */ React.createElement(Tabs, {
     activeTab,
     onBeforeChange: onBeforeChangeTab,
     onChange: onChangeTab,

@@ -13,6 +13,7 @@ export interface EnhancerProps<T> extends Partial<FieldProps<T, any>> {
     required?: boolean;
     valueAdapter?: (value: any) => any;
     onChangeAdapter?: (value: any) => any;
+    onFieldValueChange?: (value: any) => any;
     validate?: (value: any) => string | undefined | Promise<string | undefined>;
     wrapper?: boolean;
     size?: InputProps['size'];

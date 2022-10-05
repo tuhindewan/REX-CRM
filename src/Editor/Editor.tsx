@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import {
     EmailEditor,
     EmailEditorProvider,
@@ -14,19 +15,18 @@ import {
 import 'easy-email-editor/lib/style.css';
 import 'easy-email-extensions/lib/style.css';
 import '@arco-themes/react-easy-email-theme-purple/css/arco.css';
-
+import { CustomBlocksType } from './CustomBlocks/constant';
+import './CustomBlocks';
 import {
     AdvancedType
 } from 'easy-email-core';
 
 import { FormApi } from 'final-form';
+import { isEqual } from 'lodash';
 
 /**
  * internal dependencies
  */
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-
-
 
 const defaultCategories: ExtensionProps['categories'] = [
     {
@@ -58,12 +58,9 @@ const defaultCategories: ExtensionProps['categories'] = [
             {
                 type: AdvancedType.WRAPPER,
             },
-            // {
-            //     type: CustomBlocksType.PRODUCT_RECOMMENDATION,
-            // },
-            // {
-            //     type: CustomBlocksType.PRODUCT_BLOCK,
-            // }
+            {
+                type: CustomBlocksType.PRODUCT_BLOCK,
+            },
         ],
     },
     {
@@ -112,15 +109,7 @@ const fontList = [
     'Courier New',
     'Georgia',
     'Lato',
-    'Montserrat',
-    '黑体',
-    '仿宋',
-    '楷体',
-    '标楷体',
-    '华文仿宋',
-    '华文楷体',
-    '宋体',
-    '微软雅黑',
+    'Montserrat'
 ].map(item => ({ value: item, label: item }));
 
 const socialIcons = [
@@ -169,6 +158,10 @@ const socialIcons = [
 
 export default function Editor() {
 
+    const [ dataSource, setDataSource ] = useState({
+        productsList: []
+    });
+
     const _initialValues = {
         type: "page",
         subject: 'Welcome to Easy-email',
@@ -203,9 +196,26 @@ export default function Editor() {
 
     if (!initialValues) return null;
 
-    useEffect(() => {
-        console.log(initialValues)
-    })
+    const { id }    = useParams();
+    const emailID   = '1';
+
+    const fetchProduct = async (args) => {
+        let rest_url    = `${window.MRM_Vars.api_base_url}wp/v2/product/?` + encodeData(args);
+        const response  = await fetch(rest_url);
+        return await response.json();
+    }
+
+
+    const saveEmailContent = async (values) => {
+        const response = await fetch(
+            `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${id}/email/${emailID}`,
+            {
+                method: 'POST',
+                body: JSON.stringify(values),
+            }
+        )
+    }
+
 
     // trigger function for email data saving
     const onSubmit = useCallback(
@@ -213,14 +223,37 @@ export default function Editor() {
             values: IEmailTemplate,
             form: FormApi<IEmailTemplate, Partial<IEmailTemplate>>,
         ) => {
+            if (id) {
+                const isChanged = !(
+                    isEqual(initialValues?.content, values.content) &&
+                    isEqual(initialValues?.subTitle, values?.subTitle) &&
+                    isEqual(initialValues?.subject, values?.subject)
+                );
 
+
+            }
     }, []);
 
 
-    // image upload API/Logic will be placed here. Remember to return string
-    const onUploadImage = async (data: Blob) => {
-        return 'true';
-    };
+    function encodeData(data) {
+        return Object.keys(data).map(function(key) {
+            return [key, data[key]].map(encodeURIComponent).join("=");
+        }).join("&");
+    }
+
+
+
+
+    // on change event if user selects category from category dropdown
+    // of custom product block
+    const onChangeCategory = async (value) => {
+        fetchProduct({product_cat: value}).then(products => {
+            setDataSource({
+                ...dataSource,
+                productsList: products
+            });
+        });
+    }
 
     return (
         <>
@@ -231,7 +264,8 @@ export default function Editor() {
                 autoComplete
                 enabledLogic
                 fontList={fontList}
-                onUploadImage={onUploadImage}
+                mergeTags={dataSource}
+                onChangeCategory={onChangeCategory}
                 socialIcons={socialIcons}
                 onSubmit={onSubmit}
             >
@@ -239,9 +273,6 @@ export default function Editor() {
                     return (
                         <div>
                             <div className="navbar-right-section">
-                                <button className="three-dot-btn">
-                                    <ThreeDotIcon />
-                                </button>
                                 <button className="mintmrm-btn outline">Send Test</button>
                                 <button className="mintmrm-btn">Next</button>
                                 <button className="mintmrm-btn" onClick={() => submit()}>Save</button>
