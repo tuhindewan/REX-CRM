@@ -74,7 +74,6 @@ const CustomFields = () => {
   useEffect(() => {
     getCustomFields(orderBy, orderType, page, perPage, query).then(
       (results) => {
-        console.log(results);
         setCustomFields(results.data);
         setCount(results.count);
         setTotalPages(results.total_pages);
@@ -189,6 +188,17 @@ const CustomFields = () => {
     setIsDelete("none");
   };
 
+  // function to handle order by select component change
+  function handleOrderBy(e, name, arg1) {
+    const updatedOptions = [...e.target.options]
+      .filter((option) => option.selected)
+      .map((x) => x.value);
+    const selectedValue = updatedOptions[0];
+    const order = selectedValue.split("+"); // order is an array with order by and order type
+    setOrderBy(order[0]);
+    setOrderType(order[1]);
+  }
+
   return (
     <>
       <FieldNav />
@@ -201,17 +211,27 @@ const CustomFields = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name",
-                      id: "name",
+                      title: "Name Asc",
+                      id: "title+asc",
                     },
                     {
-                      title: "Date Created",
-                      id: "date-created",
+                      title: "Name Desc",
+                      id: "title+desc",
+                    },
+                    {
+                      title: "Date Created Asc",
+                      id: "created_at+asc",
+                    },
+                    {
+                      title: "Date Created Desc",
+                      id: "created_at+desc",
                     },
                   ]}
                   tags={false}
-                  placeholder="Name"
+                  placeholder="Field"
                   multiple={false}
+                  onSelect={handleOrderBy}
+                  onRemove={handleOrderBy}
                 />
               </div>
               <div className="right-buttons">
