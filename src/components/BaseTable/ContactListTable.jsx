@@ -369,6 +369,12 @@ export default function ContactListTable(props) {
     // already in selected list so remove it from the array
     if (index >= 0) {
       setSelectedLists(selectedLists.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        lists: prev.lists.filter((item) => {
+          return item != id;
+        }),
+      }));
       // setFilterAdder(filterAdder.lists.filter((item) => item != id));
     }
   };
@@ -378,6 +384,12 @@ export default function ContactListTable(props) {
     // already in selected list so remove it from the array
     if (index >= 0) {
       setSelectedTags(selectedTags.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        tags: prev.tags.filter((item) => {
+          return item != id;
+        }),
+      }));
     }
   };
   const deleteSelectedstatus = (e, id) => {
@@ -386,11 +398,18 @@ export default function ContactListTable(props) {
     // already in selected list so remove it from the array
     if (index >= 0) {
       setSelectedStatus(selectedStatus.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        status: prev.status.filter((item) => {
+          return item != id;
+        }),
+      }));
     }
   };
 
   return (
     <>
+      {console.log(filterAdder)}
       <div className="contact-list-header">
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
