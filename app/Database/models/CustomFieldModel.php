@@ -81,16 +81,21 @@ class CustomFieldModel{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all()
+    public static function get_all( $offset = 0, $limit = 20, $search = '', $order_by = 'id', $order_type = 'DESC'  )
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
+        if ( ! empty( $search ) ) {
+            $search = $wpdb->esc_like($search);
+            $search_terms = "WHERE `title` LIKE '%%$search%%'";
+		}
+
         // Return field froups for list view
         try {
-            $select_query  = $wpdb->prepare( "SELECT * FROM $fields_table ORDER BY id ASC" );
+            $select_query  = $wpdb->prepare( "SELECT * FROM $fields_table {$search_terms} ORDER BY $order_by $order_type
+            LIMIT $offset, $limit" );
             $query_results = $wpdb->get_results( $select_query );
-      
             return array(
                 'data' => $query_results
             );

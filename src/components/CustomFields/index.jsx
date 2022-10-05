@@ -62,19 +62,29 @@ const CustomFields = () => {
   const [showAlert, setShowAlert] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
+  const [query, setQuery] = useState("");
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
+  // search input value is stored here
+  const [search, setSearch] = useState("");
 
   // Fetch all custom fields
   useEffect(() => {
-    getCustomFields().then((results) => {
-      setCustomFields(results.data);
-      setCount(results.count);
-      setTotalPages(results.total_pages);
-    });
+    getCustomFields(orderBy, orderType, page, perPage, query).then(
+      (results) => {
+        console.log(results);
+        setCustomFields(results.data);
+        setCount(results.count);
+        setTotalPages(results.total_pages);
+      }
+    );
     if ("field-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
-  }, [refresh]);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   // Get field id from child component
   const deleteField = async (field_id) => {
@@ -208,7 +218,24 @@ const CustomFields = () => {
                 {/* search input */}
                 <span className="search-section">
                   <Search />
-                  <input type="text" placeholder="Search..." />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      setSearch(value);
+                      // only set query when there are more than 3 characters
+                      if (value.length >= 3) {
+                        setQuery(`&search=${value}`);
+                        // on every new search term set the page explicitly to 1 so that results can
+                        // appear
+                        setPage(1);
+                      } else {
+                        setQuery("");
+                      }
+                    }}
+                  />
                 </span>
                 {/* show more options section */}
                 <div className="bulk-action">
