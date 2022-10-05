@@ -80,7 +80,7 @@ class MessageController extends BaseController {
         $sent = $this->send_message( $message );
 
         if( true == $sent ){
-            return $this->get_success_response( __( 'Email has been sent', 'mrm' ), 201 );
+            return $this->get_success_response( __( 'Email has been sent successfully', 'mrm' ), 201 );
         }
         return $this->get_error_response(__( 'Email not sent', 'mrm' ), 200);
 
@@ -118,18 +118,18 @@ class MessageController extends BaseController {
 
     /**
      * Send a message to contact
-     * 
+     * TODO: Here we have static values, it will be dynamic after finishig up the Settings module
      * @param mixed $message
      * @return bool|WP_REST_response
      * @since 1.0.0
      */
     public function send_message( $message )
     {
-        $to     = $message->get_receiver_email();
+        $to      = $message->get_receiver_email();
 
         $subject = $message->get_email_subject();
 
-        $body = $message->get_email_body();
+        $body    = $message->get_email_body();
 
         $headers = array(
 			'MIME-Version: 1.0',
@@ -141,13 +141,10 @@ class MessageController extends BaseController {
         $headers[] = 'Reply-To:  ' . 'mrm@coderex.co';
 
         try {
-            $result = wp_mail( $to, $subject, $body, $headers );
-            return $result;
-
+            return wp_mail( $to, $subject, $body, $headers );
         } catch(\Exception $e) {
             return false;
         }
-
     }
 
 

@@ -539,6 +539,8 @@ export default function ContactDetails() {
                   isClose={isClose}
                   setIsClose={setIsClose}
                   contact={contactData}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
 
                 <button className="more-option" onClick={shoMoreOption}>

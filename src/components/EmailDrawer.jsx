@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { submitEmail } from "../services/Message";
 import CrossIcon from "./Icons/CrossIcon";
+import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function EmailDrawer(props) {
-  const { isClose, setIsClose, contact } = props;
+  const { isClose, setIsClose, contact, refresh, setRefresh } = props;
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
 
   const [email, setEmail] = useState({
     email_subject: "",
@@ -32,6 +35,19 @@ export default function EmailDrawer(props) {
 
     submitEmail(email, contact.id).then((response) => {
       if (201 === response.code) {
+        setShowNotification("block");
+        setMessage(response.message);
+        setIsClose(!isClose);
+        setErrors({});
+        setEmail({
+          email_subject: "",
+          email_body: "",
+        });
+        setRefresh(!refresh);
+        const timer = setTimeout(() => {
+          setShowNotification("none");
+        }, 3000);
+        return () => clearTimeout(timer);
       } else {
         // Error messages
         setErrors({
@@ -93,9 +109,9 @@ export default function EmailDrawer(props) {
                     name="email_body"
                     onChange={handleOnChange}
                   />
-                  <p className="error-message">{errors?.email}</p>
                 </div>
                 <div className="body-footer">
+                  <p className="error-message">{errors?.email}</p>
                   <button
                     className="contact-cancel mintmrm-btn outline"
                     onClick={closeSection}
@@ -111,6 +127,7 @@ export default function EmailDrawer(props) {
           </div>
         </div>
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }
