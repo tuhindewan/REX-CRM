@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import { getWordPressRoles } from "../services/Import";
+import ColumnItems from "../components/ContactDetails/ColumnItems";
 
 export default function ImportWordpress() {
 
@@ -50,26 +51,13 @@ export default function ImportWordpress() {
                 <input type="checkbox" name="all-user-roles" id="all-user-roles" />
                 <label for="all-user-roles">All user roles</label>
               </div>
-              <div className="mintmrm-checkbox">
-                <input type="checkbox" name="administrator" id="administrator" />
-                <label for="administrator">Administrator</label>
-              </div>
-              <div className="mintmrm-checkbox">
-                <input type="checkbox" name="editor" id="editor" />
-                <label for="editor">Editor</label>
-              </div>
-              <div className="mintmrm-checkbox">
-                <input type="checkbox" name="author" id="author" />
-                <label for="author">Author</label>
-              </div>
-              <div className="mintmrm-checkbox">
-                <input type="checkbox" name="contributor" id="contributor" />
-                <label for="contributor">Contributor</label>
-              </div>
-              <div className="mintmrm-checkbox">
-                <input type="checkbox" name="subscriber" id="subscriber" />
-                <label for="subscriber">Subscriber</label>
-              </div>
+              {roles.map( (role) => {
+                return(
+                  <div className="mintmrm-checkbox" key={role.role}>
+                    <ColumnItems name={role.role} id={role.role} title={role.name} />
+                  </div>
+                )
+              })}
             </div>
 
             <div className="csv-save-button">
