@@ -26,7 +26,7 @@ export default function Selectbox(props) {
     element.on("select2:unselect", function (e) {
       props.onRemove(e, props.name);
     });
-  }, [props]);
+  }, []);
 
   return (
     <>

@@ -585,6 +585,7 @@
         border-radius: 10px;
         padding: 20px;
         margin-bottom: 20px;
+        position: relative;
 
         .title {
           font-weight: 500;
@@ -658,8 +659,8 @@
         }
 
         .mintmrm-dropdown {
-          top: auto;
-          right: 193px;
+          top: calc(100% - 5px);
+          left: 15px;
           width: 298px;
           .option-section {
             margin-bottom: 10px;

@@ -1,16 +1,10 @@
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  Redirect,
-  Navigate,
-} from "react-router-dom";
-import Selectbox from "./Selectbox";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
-import CustomSelect from "./CustomSelect";
+import Selectbox from "./Selectbox";
+import WarningNotification from "./WarningNotification";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -25,6 +19,8 @@ export default function SelectFieldsMap() {
   const [lists, setLists] = useState([]);
   // holds selectbox currently selected tags
   const [tags, setTags] = useState([]);
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
 
   // get the state from calling component
   const state = location.state;
@@ -32,8 +28,6 @@ export default function SelectFieldsMap() {
   // if current path is /contacts/import/csv/map replace the map and send back to /contacts/import/csv
   // this url will also be used for posting fetch request endpoint /contacts/import/csv for file and /contacts/import/raw for raw data
   const returnUrl = location.pathname.replace("/map", "");
-
-  
 
   //   if no data is recieved through state object
   //   force redirect to previous import page
@@ -75,6 +69,7 @@ export default function SelectFieldsMap() {
       body.raw = state.data.raw;
     }
     if (!body["status"]) body["status"] = ["pending"];
+    body.created_by = `${window.MRM_Vars.current_userID}`;
     try {
       let res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1${returnUrl}`,
@@ -93,9 +88,14 @@ export default function SelectFieldsMap() {
           state: { data: resJson.data },
         });
       } else {
-        window.alert(resJson.message);
+        setShowWarning("block");
+        setMessage(resJson.message);
       }
       setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     } catch (e) {
       console.log(e);
       window.alert(e.message);
@@ -130,8 +130,8 @@ export default function SelectFieldsMap() {
       .filter((option) => option.selected)
       .map((x) => x.value);
     const selectedValue = updatedOptions[0];
-
     const idx = map.findIndex((item) => item.source == arg1);
+
     if (selectedValue == "no_import") {
       map.filter((item) => item.source != arg1);
       return;
@@ -151,132 +151,135 @@ export default function SelectFieldsMap() {
   }
 
   return (
-    <div className="mintmrm-import-page">
-      <div className="mintmrm-header">
-        <div className="contact-details-breadcrumb import-contact-breadcrum">
-          <div className="import-cotainer">
-            <div className="mintmrm-container">
-              <ul className="mintmrm-breadcrumb">
-                <li>
-                  <a href="">Contact</a>
-                </li>
-                <li className="active">Import</li>
-              </ul>
+    <>
+      <div className="mintmrm-import-page">
+        <div className="mintmrm-header">
+          <div className="contact-details-breadcrumb import-contact-breadcrum">
+            <div className="import-cotainer">
+              <div className="mintmrm-container">
+                <ul className="mintmrm-breadcrumb">
+                  <li>
+                    <a href="">Contact</a>
+                  </li>
+                  <li className="active">Import</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="mintmrm-container">
-        <div className="import-wrapper">
-          <ImportNavbar />
-          <div className="import-tabs-content upload-section">
-            <h3>Select Fields to Map</h3>
-            <span className="csv-title">
-              Select which fields you wish to synchronize to their destinations.
-            </span>
-            <form className="select-field-form" action="">
-              <div className="select-field-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Column To Import</th>
-                      <th>Map Into Field</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {headers.map((header, idx) => {
-                      return (
-                        <tr key={idx}>
-                          <td>{header}</td>
-                          <td>
-                            <Selectbox
-                              label=""
-                              name={`field-${idx}`}
-                              options={selectOptions}
-                              onSelect={onSelect}
-                              placeholder="Do not import this field"
-                              arg1={header} // arg1 is passed as the header
-                            />
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-              <div className="profile-section">
-                <h3>Contact Profile</h3>
-
-                <div className="contact-profile">
-                  <Selectbox
-                    label="Status"
-                    name="status"
-                    options={[
-                      {
-                        title: "Pending",
-                        id: "pending",
-                      },
-                      {
-                        title: "Subscribed",
-                        id: "subscribed",
-                      },
-                      {
-                        title: "Unsubscribed",
-                        id: "unsubscribed",
-                      },
-                    ]}
-                    tags={false}
-                    placeholder="Select Status"
-                    multiple={false}
-                    onSelect={handleExtraFields}
-                  />
-                  <Selectbox
-                    label="Lists"
-                    name="lists"
-                    options={lists}
-                    placeholder="Select List"
-                    tags={false}
-                    multiple={true}
-                    onSelect={handleExtraFields}
-                  />
-                  <Selectbox
-                    label="Tags"
-                    name="tags"
-                    options={tags}
-                    placeholder="Select Tags"
-                    tags={false}
-                    multiple={true}
-                    onSelect={handleExtraFields}
-                  />
-                  
+        <div className="mintmrm-container">
+          <div className="import-wrapper">
+            <ImportNavbar />
+            <div className="import-tabs-content upload-section">
+              <h3>Select Fields to Map</h3>
+              <span className="csv-title">
+                Select which fields you wish to synchronize to their
+                destinations.
+              </span>
+              <form className="select-field-form" action="">
+                <div className="select-field-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Column To Import</th>
+                        <th>Map Into Field</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {headers.map((header, idx) => {
+                        return (
+                          <tr key={idx}>
+                            <td>{header}</td>
+                            <td>
+                              <Selectbox
+                                label=""
+                                name={`field-${idx}`}
+                                options={selectOptions}
+                                onSelect={onSelect}
+                                placeholder="Do not import this field"
+                                arg1={header} // arg1 is passed as the header
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-            </form>
+                <div className="profile-section">
+                  <h3>Contact Profile</h3>
 
-            <div className="import-button">
-              <Link to={returnUrl}>
-                <button className="mintmrm-btn outline cancel-btn">
-                  Cancel
+                  <div className="contact-profile">
+                    <Selectbox
+                      label="Status"
+                      name="status"
+                      options={[
+                        {
+                          title: "Pending",
+                          id: "pending",
+                        },
+                        {
+                          title: "Subscribed",
+                          id: "subscribed",
+                        },
+                        {
+                          title: "Unsubscribed",
+                          id: "unsubscribed",
+                        },
+                      ]}
+                      tags={false}
+                      placeholder="Select Status"
+                      multiple={false}
+                      onSelect={handleExtraFields}
+                    />
+                    <Selectbox
+                      label="Lists"
+                      name="lists"
+                      options={lists}
+                      placeholder="Select List"
+                      tags={false}
+                      multiple={true}
+                      onSelect={handleExtraFields}
+                    />
+                    <Selectbox
+                      label="Tags"
+                      name="tags"
+                      options={tags}
+                      placeholder="Select Tags"
+                      tags={false}
+                      multiple={true}
+                      onSelect={handleExtraFields}
+                    />
+                  </div>
+                </div>
+              </form>
+
+              <div className="import-button">
+                <Link to={returnUrl}>
+                  <button className="mintmrm-btn outline cancel-btn">
+                    Cancel
+                  </button>
+                </Link>
+
+                <button
+                  className="import-confirm-button mintmrm-btn"
+                  onClick={() => importContacts(map)}
+                  loading={loading}
+                >
+                  Import
+                  {loading && (
+                    <span
+                      className="mintmrm-loader"
+                      style={{ display: "block" }}
+                    ></span>
+                  )}
                 </button>
-              </Link>
-
-              <button
-                className="import-confirm-button mintmrm-btn"
-                onClick={() => importContacts(map)}
-                loading={loading}
-              >
-                Import
-                {loading && (
-                  <span
-                    className="mintmrm-loader"
-                    style={{ display: "block" }}
-                  ></span>
-                )}
-              </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <WarningNotification display={showWarning} message={message} />
+    </>
   );
 }
