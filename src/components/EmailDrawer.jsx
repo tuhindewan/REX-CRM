@@ -17,6 +17,7 @@ export default function EmailDrawer(props) {
 
   const closeSection = () => {
     setIsClose(!isClose);
+    setErrors({});
   };
 
   const handleOnChange = async (event) => {
@@ -82,48 +83,49 @@ export default function EmailDrawer(props) {
           {/* <!-- /.drawer-header --> */}
 
           <div className="drawer-body">
-            <form onSubmit={handleSubmit}>
-              <div className="body-wrapper">
-                <div className="email-to">
-                  <span className="">To:</span>
-                  <input
-                    type="text"
-                    disabled
-                    name="email_address"
-                    value={contact.email}
-                    onChange={handleOnChange}
-                  />
-                </div>
-                <div className="email-subject">
-                  <span className="">Subject:</span>
-                  <input
-                    type="text"
-                    value={email.email_subject}
-                    name="email_subject"
-                    onChange={handleOnChange}
-                  />
-                </div>
-                <div className="email-body">
-                  <textarea
-                    value={email.email_body}
-                    name="email_body"
-                    onChange={handleOnChange}
-                  />
-                </div>
-                <div className="body-footer">
-                  <p className="error-message">{errors?.email}</p>
-                  <button
-                    className="contact-cancel mintmrm-btn outline"
-                    onClick={closeSection}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="contact-save mintmrm-btn ">
-                    Save
-                  </button>
-                </div>
+            <div className="body-wrapper">
+              <div className="email-to">
+                <span className="">To:</span>
+                <input
+                  type="text"
+                  disabled
+                  name="email_address"
+                  value={contact.email}
+                  onChange={handleOnChange}
+                />
               </div>
-            </form>
+              <div className="email-subject">
+                <span className="">Subject:</span>
+                <input
+                  type="text"
+                  value={email.email_subject}
+                  name="email_subject"
+                  onChange={handleOnChange}
+                />
+              </div>
+              <div className="email-body">
+                <textarea
+                  value={email.email_body}
+                  name="email_body"
+                  onChange={handleOnChange}
+                />
+              </div>
+              <div className="body-footer">
+                <p className="error-message">{errors?.email}</p>
+                <button
+                  className="contact-cancel mintmrm-btn outline"
+                  onClick={closeSection}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="contact-save mintmrm-btn "
+                >
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
