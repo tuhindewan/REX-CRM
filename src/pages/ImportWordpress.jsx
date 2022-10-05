@@ -6,7 +6,12 @@ import ColumnItems from "../components/ContactDetails/ColumnItems";
 
 export default function ImportWordpress() {
 
+  const navigate = useNavigate();
   const [roles, setRoles] = useState([]);
+  // The select all checkbox
+  const [allSelected, setAllSelected] = useState(false);
+  // single selected array which holds selected roles ids
+  const [selected, setSelected] = useState([]);
 
   //Fetch roles from the native WordPress
   useEffect(() => {
@@ -15,6 +20,30 @@ export default function ImportWordpress() {
     });
   }, []);
 
+  // Handle all checkbox selection
+  const handleSelectAll = (event) => {
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      setSelected(roles.map((role) => role.role));
+    }
+    setAllSelected(!allSelected);
+  }
+
+  // Handle single role selection and set to an array state
+  const handleSelectOne = (e) => {
+    if (selected.includes(e.target.id)) {
+      // already in selected list so remove it from the array
+      setSelected(selected.filter((element) => element != e.target.id));
+      // corner case where one item is deselected so hide all checked
+      setAllSelected(false);
+    } else {
+      // add id to the array
+      setSelected([...selected, e.target.id]);
+    }
+  };
+
+  // Redirect to contacts list view 
   const routeChange = () => {
     let path = `/contacts`;
     navigate(path);
@@ -48,13 +77,13 @@ export default function ImportWordpress() {
             <div className="wordpress-import-section">
               <p>Select User Roles</p>
               <div className="mintmrm-checkbox">
-                <input type="checkbox" name="all-user-roles" id="all-user-roles" />
+                <input type="checkbox" name="all-user-roles" id="all-user-roles" onChange={handleSelectAll} checked={allSelected} />
                 <label for="all-user-roles">All user roles</label>
               </div>
               {roles.map( (role) => {
                 return(
                   <div className="mintmrm-checkbox" key={role.role}>
-                    <ColumnItems name={role.role} id={role.role} title={role.name} />
+                    <ColumnItems name={role.role} id={role.role} title={role.name} selected={selected} handleSelectOne={handleSelectOne} />
                   </div>
                 )
               })}
