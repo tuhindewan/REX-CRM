@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
   deleteSingleCustomField,
   getCustomFields,
 } from "../../services/CustomField";
 import DeletePopup from "../DeletePopup";
-import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import TagIcon from "../Icons/TagIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
+import FieldNav from "./FieldNav";
 import SingleField from "./SingleField";
 
 const CustomFields = () => {
@@ -21,14 +21,7 @@ const CustomFields = () => {
   const location = useLocation();
   // set navbar Buttons
   useGlobalStore.setState({
-    navbarMarkup: (
-      <Link to="/custom-fields/create">
-        <button className="add-contact-btn mintmrm-btn ">
-          <Plus /> Add Field
-        </button>
-      </Link>
-    ),
-    hideGlobalNav: false,
+    hideGlobalNav: true,
   });
 
   const [customFields, setCustomFields] = useState([]);
@@ -137,6 +130,7 @@ const CustomFields = () => {
 
   return (
     <>
+      <FieldNav />
       <div className="contact-list-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">

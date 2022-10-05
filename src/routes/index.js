@@ -12,6 +12,7 @@ import ImportConfirmation from "../components/ImportConfirmation";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import SelectFieldsMap from "../components/SelectFieldsMap";
+import Settings from "../components/Setting";
 import CreateTag from "../components/Tag/CreateTag";
 import UpdateTag from "../components/Tag/UpdateTag";
 import Contacts from "../pages/Contacts";
@@ -98,11 +99,17 @@ const routes = [
     title: __("Tags", "mrm"),
     // bage: 18,
   },
+  {
+    path: "/settings/",
+    element: Settings,
+    hideInMenu: true,
+  },
   ,
   {
     path: "/custom-fields",
     element: CustomFields,
     title: __("Custom Fields", "mrm"),
+    settingsMenu: true,
     // bage: 18,
     hideInMenu: true,
   },
