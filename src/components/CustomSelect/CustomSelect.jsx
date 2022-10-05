@@ -32,6 +32,7 @@ export default function CustomSelect(props) {
     allowNewCreate = true,
     setFilterAdder,
     filterAdder,
+    filterRequest,
   } = props;
   const buttonRef = useRef(null);
   const customSelectUUID = useRef(Math.random());
@@ -46,12 +47,7 @@ export default function CustomSelect(props) {
 
   // loading or not
   const [loading, setLoading] = useState(false);
-
-  // const [filterAdder, setFilterAdder] = useState({
-  //   lists: [],
-  //   tags: [],
-  //   status: [],
-  // });
+  const [groups, setGroups] = useState([]);
 
   // function used for either showing or hiding the dropdown
   function toggleActive(event) {
@@ -119,9 +115,17 @@ export default function CustomSelect(props) {
 
   // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
-    const checked = selected.findIndex((item) => item.id == id) >= 0;
+    const checked = groups?.findIndex((item) => item == id) >= 0;
     return checked;
   };
+
+  useEffect(() => {
+    const lists = filterRequest?.lists_ids;
+    const tags = filterRequest?.tags_ids;
+    const status = filterRequest?.status;
+    const all_groups = lists?.concat(status, tags);
+    setGroups(all_groups);
+  }, [filterRequest]);
 
   const deleteSelected = (e, id) => {
     const index = selected.findIndex((item) => item.id == id);
@@ -205,7 +209,6 @@ export default function CustomSelect(props) {
 
   return (
     <>
-      {/* {console.log(filterAdder)} */}
       <div className="mrm-custom-select-container" key="container">
         <button
           className={

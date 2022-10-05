@@ -4,6 +4,7 @@ import {
   Link,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
 import Plus from "../Icons/Plus";
@@ -30,8 +31,6 @@ export default function ContactListTable(props) {
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
 
-  const { endpoint = "contacts" } = props;
-  const [contacts, setContacts] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
@@ -50,14 +49,13 @@ export default function ContactListTable(props) {
   const [contactData, setContactData] = useState([]);
   const [filterContact, setFilterContact] = useState([]);
 
-  const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
 
-  const [lists, setLists] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [listsdata, setLists] = useState([]);
+  const [tagsdata, setTags] = useState([]);
 
   const [filterData, setFilterData] = useState({});
 
@@ -83,6 +81,7 @@ export default function ContactListTable(props) {
   const [isFilter, setIsFilter] = useState(0);
 
   const location = useLocation();
+  let { lists_ids, tags_ids, status } = useParams();
 
   const [filterRequest, setFilterRequest] = useState({});
 
@@ -111,14 +110,9 @@ export default function ContactListTable(props) {
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState([]);
-  const [listIds, setListIds] = useState([]);
-  const [tagIds, setTagIds] = useState([]);
-  const [statusIds, setStatusIds] = useState([]);
-  const [filterElem, setFilterElem] = useState({
-    lists: [],
-    tags: [],
-    status: [],
-  });
+  const [filteredStatus, setFilteredStatus] = useState([]);
+  const [filteredLists, setFilteredLists] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
 
   const deleteAll = () => {
     setSelectedLists([]);
@@ -126,66 +120,48 @@ export default function ContactListTable(props) {
     setSelectedStatus([]);
   };
 
-  // useEffect(() => {
-  //   selectedLists.map((list) => {
-  //     // console.log(list);
-  //     setListIds([...listIds, list.id]);
-  //     setFilterAdder((prev) => ({
-  //       ...prev,
-  //       lists: listIds,
-  //     }));
-  //   });
-  //   selectedTags.map((tag) => {
-  //     setTagIds([...tagIds, tag.id]);
-  //     setFilterAdder((prev) => ({
-  //       ...prev,
-  //       tags: tagIds,
-  //     }));
-  //   });
-  //   selectedStatus.map((status) => {
-  //     setStatusIds([...statusIds, status.id]);
-  //     setFilterAdder((prev) => ({
-  //       prev,
-  //       status: statusIds,
-  //     }));
-  //   });
-  // }, [selectedLists, selectedStatus, selectedTags]);
-
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-
-    setFilterAdder((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
-
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setFilterAdder((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
-  };
-
   useEffect(() => {
-    //console.log(filterAdder);
-
     setSearchParams(filterAdder);
-    setFilterParams(searchParams);
-
-    //  navigate(`${location.pathname}/${filterData}`);
   }, [filterAdder]);
 
   useEffect(() => {
     setFilterData(queryString.parse(location.search));
-  }, [filterParams]);
+    navigate(`${location.pathname}${location.search}`);
+  }, [searchParams]);
 
   useEffect(() => {
-    //console.log("getFilter");
+    let tags_array = [];
+    let lists_array = [];
+    let status_array = [];
 
+    tags_array =
+      typeof filterData.tags == "string"
+        ? filterData.tags.split(" ")
+        : filterData.tags;
+
+    lists_array =
+      typeof filterData.lists == "string"
+        ? filterData.lists.split(" ")
+        : filterData.lists;
+
+    status_array =
+      typeof filterData.status == "string"
+        ? filterData.status.split(" ")
+        : filterData.status;
+
+    setFilterRequest({
+      tags_ids: tags_array,
+      lists_ids: lists_array,
+      status: status_array,
+    });
+
+    filterData.status ? setFilteredStatus(filterData.status) : "";
+    filterData.tags ? setFilteredTags(filterData.tags) : "";
+    filterData.lists ? setFilteredLists(filterData.lists) : "";
+    setFilterPage(1);
+  }, [filterData]);
+
+  useEffect(() => {
     const getFilter = async () => {
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
@@ -208,7 +184,6 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setFilterCount(data.data.count);
             setFilterTotalPages(data.data.total_pages);
-            // setFilterPerPage(data.total_pages);
             setLoaded(true);
           }
         });
@@ -223,12 +198,10 @@ export default function ContactListTable(props) {
       setIsFilter(1);
     } else {
       setIsFilter(0);
-      // toggleRefresh();
     }
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
-    //console.log("Normal Data")
     async function getData() {
       setLoaded(false);
       await fetch(
@@ -244,7 +217,6 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setCount(data.data.count);
             setTotalPages(data.data.total_pages);
-            // setPerPage(data.total_pages);
             setLoaded(true);
           }
         });
@@ -397,6 +369,7 @@ export default function ContactListTable(props) {
     // already in selected list so remove it from the array
     if (index >= 0) {
       setSelectedLists(selectedLists.filter((item) => item.id != id));
+      // setFilterAdder(filterAdder.lists.filter((item) => item != id));
     }
   };
   const deleteSelectedtag = (e, id) => {
@@ -437,6 +410,7 @@ export default function ContactListTable(props) {
               allowNewCreate={true}
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
+              filterRequest={filterRequest}
             />
           </div>
           <div className="form-group left-filter">
@@ -456,6 +430,7 @@ export default function ContactListTable(props) {
               allowNewCreate={true}
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
+              filterRequest={filterRequest}
             />
           </div>
           <div className="form-group left-filter">
@@ -475,32 +450,9 @@ export default function ContactListTable(props) {
               allowNewCreate={true}
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
+              filterRequest={filterRequest}
             />
           </div>
-
-          {/* <FilterBox
-            label="Status"
-            name="status"
-            options={[
-              {
-                title: "Pending",
-                id: "pending",
-              },
-              {
-                title: "Subscribed",
-                id: "subscribed",
-              },
-              {
-                title: "Unsubscribed",
-                id: "unsubscribed",
-              },
-            ]}
-            value={status}
-            tags={false}
-            placeholder="Status"
-            multiple={false}
-            onSelect={onSelectStatus}
-          /> */}
         </div>
 
         <div className="right-buttons">
