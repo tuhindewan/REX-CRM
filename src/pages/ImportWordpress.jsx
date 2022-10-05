@@ -1,13 +1,25 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
+import { getWordPressRoles } from "../services/Import";
 
 export default function ImportWordpress() {
+
+  const [roles, setRoles] = useState([]);
+
+  //Fetch roles from the native WordPress
+  useEffect(() => {
+    getWordPressRoles().then((response) => {
+      setRoles(response)
+    });
+  }, []);
+
   const routeChange = () => {
     let path = `/contacts`;
     navigate(path);
   };
   return (
+    <>
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
         <div className="contact-details-breadcrumb import-contact-breadcrum">
@@ -77,6 +89,6 @@ export default function ImportWordpress() {
           </div>
         </div>
       </div>
-    </div>
+    </div></>
   );
 }
