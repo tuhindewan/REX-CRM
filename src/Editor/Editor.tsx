@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import {
     EmailEditor,
@@ -18,11 +18,12 @@ import '@arco-themes/react-easy-email-theme-purple/css/arco.css';
 import { CustomBlocksType } from './CustomBlocks/constant';
 import './CustomBlocks';
 import {
-    AdvancedType
+    AdvancedType,
+    IBlockData
 } from 'easy-email-core';
 
 import { FormApi } from 'final-form';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 
 /**
  * internal dependencies
@@ -162,9 +163,13 @@ export default function Editor() {
         productsList: []
     });
 
-    const _initialValues = {
+    const [builderData, setBuilderData] = useState(null);
+
+    const [shouldCallAPI, setShouldCallAPI] = useState(true)
+
+    let defaultValues = {
         type: "page",
-        subject: 'Welcome to Easy-email',
+        subject: 'Welcome to MINT CRM email',
         subTitle: 'Nice to meet you!',
         content: {
             "type": "page",
@@ -192,12 +197,29 @@ export default function Editor() {
         }
     }
 
-    const [initialValues, setInitialValues] = useState(_initialValues)
-
-    if (!initialValues) return null;
 
     const { id }    = useParams();
     const emailID   = '1';
+
+
+    /**
+     * set initial value
+     */
+    const initialValues: IEmailTemplate | null = useMemo(() => {
+        if ( !builderData ) return defaultValues;
+        const sourceData = cloneDeep(builderData) as IBlockData;
+
+        return sourceData;
+    }, [builderData]);
+
+
+    useEffect(() => {
+        if ( !shouldCallAPI ) return;
+        fetchEmailBuilderData().then(res => {
+            setShouldCallAPI(false)
+            setBuilderData(res?.email_body)
+        });
+    });
 
     const fetchProduct = async (args) => {
         let rest_url    = `${window.MRM_Vars.api_base_url}wp/v2/product/?` + encodeData(args);
@@ -206,18 +228,41 @@ export default function Editor() {
     }
 
 
+    const fetchEmailBuilderData = async () => {
+        let rest_url    = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailID}`;
+        const response  = await fetch(rest_url);
+        return await response.json();
+    }
+
+
+    /**
+     * save email builder data
+     *
+     * @param values
+     * @since 1.0.0
+     */
     const saveEmailContent = async (values) => {
         const response = await fetch(
-            `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${id}/email/${emailID}`,
+            `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailID}`,
             {
                 method: 'POST',
-                body: JSON.stringify(values),
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    'email_body' : values,
+                    'status'     : 'published'
+                }),
             }
         )
     }
 
 
-    // trigger function for email data saving
+    /**
+     * on submit hook for email builder data saving
+     *
+     * @since 1.0.0
+     */
     const onSubmit = useCallback(
         async (
             values: IEmailTemplate,
@@ -229,10 +274,16 @@ export default function Editor() {
                     isEqual(initialValues?.subTitle, values?.subTitle) &&
                     isEqual(initialValues?.subject, values?.subject)
                 );
-
-
+                if (!isChanged) {
+                    form.restart(values);
+                    return;
+                }
+                saveEmailContent(values).then( response => {
+                    console.log(response)
+                });
             }
-    }, []);
+    }, []
+    );
 
 
     function encodeData(data) {

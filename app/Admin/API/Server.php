@@ -58,20 +58,6 @@ class Server {
                 $this->routes[ $namespace ][ $controller_name ]->register_routes();
             }
         }
-
-//        $product_controller = new ProductController();
-//        $product_controller->register_routes();
-
-
-        register_rest_field( array('product'),
-            'featured_image_url',
-            array(
-                'get_callback'    => array($this, 'get_rest_featured_image'),
-                'update_callback' => null,
-                'schema'          => null,
-            )
-        );
-
     }
 
 
@@ -97,16 +83,17 @@ class Server {
     protected function get_routes()
     {
         return apply_filters( 'mrm/rest_api_routes', array(
-            'lists'         =>  'ListRoute',
-            'segments'      =>  'SegmentRoute',
-            'tags'          =>  'TagRoute',
-            'notes'         =>  'NoteRoute',
-            'contacts'      =>  'ContactRoute',
-            'workflows'     =>  'WorkflowRoute',
-            'field-groups'  =>  'FieldGroupRoute',
-            'custom-fields' =>  'CustomFieldRoute',
-            'general'       =>  'generalRoute',
-            'campaigns'      =>  'campaignRoute'
+            'lists'             =>  'ListRoute',
+            'segments'          =>  'SegmentRoute',
+            'tags'              =>  'TagRoute',
+            'notes'             =>  'NoteRoute',
+            'contacts'          =>  'ContactRoute',
+            'workflows'         =>  'WorkflowRoute',
+            'field-groups'      =>  'FieldGroupRoute',
+            'custom-fields'     =>  'CustomFieldRoute',
+            'general'           =>  'generalRoute',
+            'campaigns'         =>  'campaignRoute',
+            'campaign-emails'   =>  'CampaignEmailRoute',
 		));
     }
 
