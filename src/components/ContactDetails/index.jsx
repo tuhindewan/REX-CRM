@@ -6,8 +6,10 @@ import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import DeletePopup from "../DeletePopup";
+import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
+import EmailIcon from "../Icons/EmailIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
@@ -516,14 +518,15 @@ export default function ContactDetails() {
                   setRefresh={setRefresh}
                 />
 
-                {/* <button className="create-mail" onClick={emailForm}>
+                <button className="create-mail" onClick={emailForm}>
                   <EmailIcon />
                 </button>
                 <EmailDrawer
                   isOpen={isEmailForm}
                   isClose={isClose}
                   setIsClose={setIsClose}
-                /> */}
+                  contact={contactData}
+                />
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />
