@@ -118,6 +118,14 @@ export default function ContactListTable(props) {
     setSelectedLists([]);
     setSelectedTags([]);
     setSelectedStatus([]);
+    setFilterRequest({});
+    setFilterData({});
+    setFilterAdder({
+      lists: [],
+      tags: [],
+      status: [],
+    });
+    navigate("/contacts");
   };
 
   useEffect(() => {
@@ -409,7 +417,6 @@ export default function ContactListTable(props) {
 
   return (
     <>
-      {console.log(filterAdder)}
       <div className="contact-list-header">
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
