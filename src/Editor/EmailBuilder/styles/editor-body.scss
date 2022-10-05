@@ -1,0 +1,156 @@
+.mrm-email-editor {
+    & > .arco-card {
+        margin: 30px;
+        width: calc(100% - 60px);
+        border: none;
+        background: transparent;
+    }
+
+    .arco-card-body {
+        & > .arco-layout {
+            width: 100%!important;
+
+            & > .arco-layout {
+                border-right: 30px solid #f6f8fa;
+                background: var(--color-bg-2);
+            }
+        }
+    }
+
+    aside.arco-layout-sider {
+        box-shadow: none;
+        border-radius: 10px 10px 0 0;
+
+        .arco-col > label {
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 1;
+            letter-spacing: -0.01em;
+            color: #2D3149;
+            margin-bottom: 9px;
+        }
+
+        .arco-drawer-wrapper {
+            & > .arco-drawer,
+            & > .arco-drawer-mask {
+                border-radius: 10px 10px 0 0;
+            }
+
+            & > .arco-drawer-mask {
+                background-color: transparent;
+            }
+        }
+
+
+        //-------text align control------
+        .mrm-stylish-radio {
+            .arco-radio-group {
+                border: 1px solid #E4E6EB;
+                border-radius: 6px;
+
+                .arco-radio {
+                    padding: 10px;
+                    margin: 0;
+                    display: block;
+                    border-right: 1px solid #E4E6EB;
+
+                    &.arco-radio-checked {
+                        background-color: #E4E6EB;
+                    }
+
+                    .arco-radio-icon-hover {
+                        display: none;
+                    }
+
+                    .arco-radio-text {
+                        width: 20px;
+                        height: 20px;
+                        display: block;
+                        margin: 0 auto;
+                    }
+                }
+
+                ._Stack_1jdgv_1 {
+                    width: 100%;
+                    margin: 0;
+
+                    & > ._Item_1jdgv_8 {
+                        flex: 1;
+                        text-align: center;
+                        margin: 0;
+
+                        &:first-child {
+                            .arco-radio {
+                                border-radius: 6px 0 0 6px;
+                            }
+                        }
+
+                        &:last-child {
+                            .arco-radio {
+                                border-right: 0;
+                                border-radius: 0 6px 6px 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //----font style control-----
+        .mrm-font-style-setting {
+            .arco-radio-group .arco-radio .arco-radio-text {
+                width: 100%;
+            }
+        }
+
+        //----inline label style-----
+        .mrm-inline-label {
+            & > .arco-space > .arco-space-item {
+                margin-bottom: 15px!important;
+            }
+
+            .arco-col > label {
+                margin-bottom: 0;
+            }
+
+            .arco-row {
+                .arco-col:first-child {
+                    width: 140px;
+                    flex: 0 0 140px;
+                    padding-right: 10px;
+                }
+                .arco-col:nth-child(2) {
+                    width: calc(100% - 140px);
+                    flex: 0 0 calc(100% - 140px);
+                }
+            }
+
+            .arco-select-view,
+            .arco-input,
+            .arco-input-group > .arco-input-inner-wrapper {
+                border-radius: 6px;
+                outline: none;
+                box-shadow: none;
+                border-color: #ddd;
+                background: transparent;
+            }
+
+            &.color-label .arco-input {
+                border-radius: 0 6px 6px 0;
+            }
+        }
+
+        .mrm-inline-padding-wrapper {
+            & > ._Stack_1jdgv_1 {
+                & > ._Item_1jdgv_8:first-child {
+                    margin-top: 10px;
+                    margin-bottom: 8px;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid #ddd;
+                }
+            }
+        }
+
+    }
+
+}

@@ -3,11 +3,20 @@
  */
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { Button } from '@arco-design/web-react';
+import { IconGithub, IconMoonFill, IconSunFill } from '@arco-design/web-react/icon';
+import './EmailBuilder/styles/common.scss';
+
 import {
     EmailEditor,
     EmailEditorProvider,
-    IEmailTemplate
+    IEmailTemplate,
 } from 'easy-email-editor';
+
+import { DesktopEmailPreview } from './EmailBuilder/components/EmailEditor/components/DesktopEmailPreview';
+import { MobileEmailPreview } from './EmailBuilder/components/EmailEditor/components/MobileEmailPreview';
+import { EditEmailPreview } from './EmailBuilder/components/EmailEditor/components/EditEmailPreview';
+
 import {
     ExtensionProps,
     StandardLayout
@@ -28,6 +37,12 @@ import { cloneDeep, isEqual } from 'lodash';
 /**
  * internal dependencies
  */
+//----icon components----
+import DoubleAngleLeftIcon from './EmailBuilder/Icon/DoubleAngleLeftIcon';
+import MoreOptionIcon from './EmailBuilder/Icon/MoreOptionIcon';
+import DesktopIocn from './EmailBuilder/Icon/DesktopIocn';
+import MobileIcon from './EmailBuilder/Icon/MobileIcon';
+import EditIcon from './EmailBuilder/Icon/EditIcon';
 
 const defaultCategories: ExtensionProps['categories'] = [
     {
@@ -163,6 +178,12 @@ export default function Editor() {
         productsList: []
     });
 
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    const [showMore, setShowMore] = useState(false);
+
+    const [activePreview, setActivePreview] = useState('edit');
+
     const [builderData, setBuilderData] = useState(null);
 
     const [shouldCallAPI, setShouldCallAPI] = useState(true)
@@ -286,6 +307,12 @@ export default function Editor() {
     );
 
 
+    // const isSubmitting = useLoading([
+    //     template.loadings.create,
+    //     template.loadings.updateById,
+    // ]);
+
+
     function encodeData(data) {
         return Object.keys(data).map(function(key) {
             return [key, data[key]].map(encodeURIComponent).join("=");
@@ -293,6 +320,23 @@ export default function Editor() {
     }
 
 
+    // const onExportHtml = (values: IEmailTemplate) => {
+    //     pushEvent({ event: 'HtmlExport' });
+    //     const html = mjml(
+    //         JsonToMjml({
+    //             data: values.content,
+    //             mode: 'production',
+    //             context: values.content,
+    //             dataSource: mergeTags,
+    //         }),
+    //         {
+    //             beautify: true,
+    //             validationLevel: 'soft',
+    //         },
+    //     ).html;
+    //
+    //     copy(html);
+    // };
 
 
     // on change event if user selects category from category dropdown
@@ -323,17 +367,74 @@ export default function Editor() {
                 {({ values }, { submit }) => {
                     return (
                         <div>
-                            <div className="navbar-right-section">
-                                <button className="mintmrm-btn outline">Send Test</button>
-                                <button className="mintmrm-btn">Next</button>
-                                <button className="mintmrm-btn" onClick={() => submit()}>Save</button>
+                            <div className="mrm-editor-header" style={{ background: 'var(--color-bg-2)' }} >
+                                <div className="header-left">
+                                    <Button className='back-from-editor' title='Back'>
+                                        <DoubleAngleLeftIcon />
+                                    </Button>
+
+                                    <div className="responsive-check">
+                                        <Button className="edit-mode" title='Edit Mode' onClick={ e=> setActivePreview('edit')} >
+                                            <EditIcon />
+                                        </Button>
+
+                                        <Button className="desktop-mode" title='Desktop View' onClick={ e=> setActivePreview('pc')} >
+                                            <DesktopIocn />
+                                        </Button>
+
+                                        <Button className="mobile-mode" title='Mobile View' onClick={ e=> setActivePreview('mobile')} >
+                                            <MobileIcon />
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className='header-right'>
+                                    <Button
+                                        className="mood-change-btn"
+                                        onClick={() => setIsDarkMode(v => !v)}
+                                        shape='circle'
+                                        type='text'
+                                        icon={isDarkMode ? <IconMoonFill /> : <IconSunFill />}
+                                    ></Button>
+
+                                    <Button
+                                        className={showMore ? 'more-option show-option-list': 'more-option'}
+                                        // onClick={showMoreOption}
+                                    >
+                                        <MoreOptionIcon />
+                                        <ul className="more-option-list">
+                                            <li>
+                                                <Button onClick={() => onExportHtml(values)}>Export html</Button>
+                                                {/*<Button onClick={openMergeTagsModal}>Update mergeTags</Button>*/}
+                                                {/*<Button onClick={() => onExportMJML(values)}>Export MJML</Button>*/}
+                                                <Button onClick={() => onExportHtml(values)}>Export html</Button>
+                                            </li>
+                                        </ul>
+                                    </Button>
+
+                                    <Button
+                                        // onClick={() => openModal(values, mergeTags)}
+                                    >
+                                        Send Test
+                                    </Button>
+
+                                    <Button
+                                        // loading={isSubmitting}
+                                        type='primary'
+                                        onClick={() => submit}
+                                    >
+                                        Save
+                                    </Button>
+                                </div>
                             </div>
                             <StandardLayout
                                 compact={false}
                                 showSourceCode={false}
                                 categories={defaultCategories}
                             >
-                                <EmailEditor />
+                                {'edit'   === activePreview && <EditEmailPreview />}
+                                {'pc'     === activePreview && <DesktopEmailPreview/>}
+                                {'mobile' === activePreview && <MobileEmailPreview/>}
                             </StandardLayout>
                         </div>
                     );

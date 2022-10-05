@@ -4,6 +4,7 @@ export interface RadioGroupProps extends ArcoRadioGroupProps {
     options: Array<{
         value: string;
         label: React.ReactNode;
+        icon?: string;
     }>;
     onChange?: (value: string) => void;
     value?: string;

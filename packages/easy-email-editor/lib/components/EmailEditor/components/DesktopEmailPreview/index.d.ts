@@ -1,1 +1,1 @@
-export declare function DesktopEmailPreview(): JSX.Element;
+export declare const DesktopEmailPreview: () => JSX.Element;

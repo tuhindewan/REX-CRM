@@ -35959,17 +35959,19 @@ function Select(props) {
 }
 function RadioGroup(props) {
   const _a = props, { type, vertical } = _a, rest = __objRest(_a, ["type", "vertical"]);
-  return /* @__PURE__ */ React__default.createElement(Radio.Group, __spreadProps(__spreadValues({}, rest), {
+  return /* @__PURE__ */ React__default.createElement(Radio.Group, {
     style: lodash.exports.merge({ width: "100%" }, rest.style),
     value: rest.value,
     onChange: rest.onChange
-  }), /* @__PURE__ */ React__default.createElement(Stack$4, {
+  }, /* @__PURE__ */ React__default.createElement(Stack$4, {
     vertical,
     spacing: "extraTight"
   }, rest.options.map((item2, index2) => /* @__PURE__ */ React__default.createElement(Radio, {
     key: index2,
     value: item2.value
-  }, item2.label))));
+  }, item2.icon && /* @__PURE__ */ React__default.createElement("img", {
+    src: item2.icon
+  }), !item2.icon && item2.label))));
 }
 let primaryId = 0;
 const parse = (v) => v;
@@ -36850,28 +36852,36 @@ function Padding(props = {}) {
     }, /* @__PURE__ */ React__default.createElement(TextStyle, {
       variation: "strong"
     }, title2), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      span: 11
+      span: 24
+    }, /* @__PURE__ */ React__default.createElement("div", {
+      className: "mrm-inline-label"
     }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
       label: "Top",
       name: "top"
-    })), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      offset: 1,
-      span: 11
+    })), /* @__PURE__ */ React__default.createElement("div", {
+      className: "mrm-inline-label"
     }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
       label: "Left",
       name: "left"
-    }))), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      span: 11
+    })), /* @__PURE__ */ React__default.createElement("div", {
+      className: "mrm-inline-label"
     }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
       label: "Bottom",
       name: "bottom"
-    })), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      offset: 1,
-      span: 11
+    })), /* @__PURE__ */ React__default.createElement("div", {
+      className: "mrm-inline-label"
     }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
       label: "Right",
       name: "right"
-    })))), /* @__PURE__ */ React__default.createElement(PaddingChangeWrapper, {
+    }))), /* @__PURE__ */ React__default.createElement(Grid.Col, {
+      offset: 1,
+      span: 11
+    })), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
+      span: 11
+    }), /* @__PURE__ */ React__default.createElement(Grid.Col, {
+      offset: 1,
+      span: 11
+    }))), /* @__PURE__ */ React__default.createElement(PaddingChangeWrapper, {
       onChange: onChancePadding
     }));
   });
@@ -37557,15 +37567,21 @@ function Color({
 const options$6 = [
   {
     value: "left",
-    label: "left"
+    label: "left",
+    isIcon: true,
+    icon: "data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzJEMzE0OSIgZD0iTTIuNDk3IDMuMzMzaDE1YS44MzMuODMzIDAgMDAwLTEuNjY2aC0xNWEuODMzLjgzMyAwIDEwMCAxLjY2NnptMCA1aDEwYS44MzMuODMzIDAgMDAwLTEuNjY2aC0xMGEuODMzLjgzMyAwIDEwMCAxLjY2NnptMCA1aDE1YS44MzMuODMzIDAgMDAwLTEuNjY2aC0xNWEuODMzLjgzMyAwIDEwMCAxLjY2NnptMCA1aDEwYS44MzMuODMzIDAgMDAwLTEuNjY2aC0xMGEuODMzLjgzMyAwIDEwMCAxLjY2NnoiLz48L3N2Zz4="
   },
   {
     value: "center",
-    label: "center"
+    label: "center",
+    isIcon: true,
+    icon: "data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMTggMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzJEMzE0OSIgZD0iTTEzLjE2NCAxMy40MTdhLjgzMy44MzMgMCAwMTAgMS42NjZINC44MzFhLjgzMy44MzMgMCAwMS0uODM0LS44MzNjMC0uNDQuMzY1LS44MzMuODM0LS44MzNoOC4zMzN6bTMuMzMzLTQuMTY3YS44MzMuODMzIDAgMDEwIDEuNjY3aC0xNWEuODMzLjgzMyAwIDExMC0xLjY2N2gxNXptLTMuMzMzLTQuMTY3YS44MzMuODMzIDAgMDEwIDEuNjY3SDQuODMxYS44MzMuODMzIDAgMDEtLjgzNC0uODMzYzAtLjQ0LjM0Mi0uODM0LjgzNC0uODM0aDguMzMzek0xNi40OTcuOTE3Yy40NiAwIC44MzQuMzczLjgzNC44MzMgMCAuNDQtLjM4Ny44MzMtLjgzNC44MzNoLTE1YS44MzMuODMzIDAgMTEwLTEuNjY2aDE1eiIvPjwvc3ZnPg=="
   },
   {
     value: "right",
-    label: "right"
+    label: "right",
+    isIcon: true,
+    icon: "data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzJEMzE0OSIgZD0iTTE3LjQ5NyAxLjY2N2gtMTVhLjgzMy44MzMgMCAxMDAgMS42NjZoMTVhLjgzMy44MzMgMCAwMDAtMS42NjZ6bTAgNi42NjZhLjgzMy44MzMgMCAwMDAtMS42NjZoLTEwYS44MzMuODMzIDAgMTAwIDEuNjY2aDEwek0xLjY2NCAxMi41YS44MzMuODMzIDAgMDAuODMzLjgzM2gxNWEuODMzLjgzMyAwIDAwMC0xLjY2NmgtMTVhLjgzMy44MzMgMCAwMC0uODMzLjgzM3ptMTYuNjY2IDVhLjgzNC44MzQgMCAwMC0uODMzLS44MzNoLTEwYS44MzMuODMzIDAgMTAwIDEuNjY2aDEwYS44MzMuODMzIDAgMDAuODM0LS44MzN6Ii8+PC9zdmc+"
   }
 ];
 function Align({ inline }) {
@@ -37704,51 +37720,64 @@ function Text() {
   }, /* @__PURE__ */ React__default.createElement(CollapseWrapper, {
     defaultActiveKey: ["0", "1", "2"]
   }, /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
-    name: "0",
-    header: "Dimension"
-  }, /* @__PURE__ */ React__default.createElement(Space$1, {
-    direction: "vertical"
-  }, /* @__PURE__ */ React__default.createElement(Height, null), /* @__PURE__ */ React__default.createElement(Padding, null))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
-    name: "1",
-    header: "Color"
-  }, /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(Color, null)), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    offset: 1,
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(ContainerBackgroundColor, {
-    title: "Background color"
-  })))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "2",
     header: "Typography"
   }, /* @__PURE__ */ React__default.createElement(Space$1, {
     direction: "vertical"
   }, /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(FontFamily, null)), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    offset: 1,
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(FontSize$1, null))), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(LineHeight, null)), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    offset: 1,
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(LetterSpacing, null))), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(TextDecoration, null)), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    offset: 1,
-    span: 11
-  }, /* @__PURE__ */ React__default.createElement(FontWeight, null))), /* @__PURE__ */ React__default.createElement(Align, null), /* @__PURE__ */ React__default.createElement(FontStyle, null), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
+    span: 24
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(FontFamily, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(FontSize$1, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(LineHeight, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(LetterSpacing, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(TextDecoration, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(FontWeight, null)))), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-stylish-radio mrm-text-align-setting"
+  }, /* @__PURE__ */ React__default.createElement(Align, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-stylish-radio mrm-font-style-setting"
+  }, /* @__PURE__ */ React__default.createElement(FontStyle, null)), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
     span: 11
   }), /* @__PURE__ */ React__default.createElement(Grid.Col, {
     offset: 1,
     span: 11
   })))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+    name: "0",
+    header: "Dimension"
+  }, /* @__PURE__ */ React__default.createElement(Space$1, {
+    direction: "vertical"
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(Height, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-padding-wrapper"
+  }, /* @__PURE__ */ React__default.createElement(Padding, null)))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+    name: "1",
+    header: "Color"
+  }, /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
+    span: 24
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label color-label"
+  }, /* @__PURE__ */ React__default.createElement(Color, null))), /* @__PURE__ */ React__default.createElement(Grid.Col, {
+    offset: 0,
+    span: 24
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label color-label"
+  }, /* @__PURE__ */ React__default.createElement(ContainerBackgroundColor, {
+    title: "Background color"
+  }))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "4",
     header: "Extra"
   }, /* @__PURE__ */ React__default.createElement(Grid.Col, {
     span: 24
-  }, /* @__PURE__ */ React__default.createElement(ClassName, null)))), /* @__PURE__ */ React__default.createElement(HtmlEditor, {
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-inline-label"
+  }, /* @__PURE__ */ React__default.createElement(ClassName, null))))), /* @__PURE__ */ React__default.createElement(HtmlEditor, {
     visible,
     setVisible
   }));
@@ -37817,7 +37846,9 @@ function Image$1() {
     span: 11
   }, /* @__PURE__ */ React__default.createElement(Height, null))), /* @__PURE__ */ React__default.createElement(Padding, null), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
     span: 24
-  }, /* @__PURE__ */ React__default.createElement(Align, null))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-stylish-radio mrm-text-align-setting"
+  }, /* @__PURE__ */ React__default.createElement(Align, null)))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "2",
     header: "Link"
   }, /* @__PURE__ */ React__default.createElement(Stack$4, {
@@ -38283,7 +38314,11 @@ function Button() {
   }, /* @__PURE__ */ React__default.createElement(TextDecoration, null)), /* @__PURE__ */ React__default.createElement(Grid.Col, {
     offset: 1,
     span: 11
-  }, /* @__PURE__ */ React__default.createElement(LetterSpacing, null))), /* @__PURE__ */ React__default.createElement(Align, null), /* @__PURE__ */ React__default.createElement(FontStyle, null))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  }, /* @__PURE__ */ React__default.createElement(LetterSpacing, null))), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-stylish-radio mrm-text-align-setting"
+  }, /* @__PURE__ */ React__default.createElement(Align, null)), /* @__PURE__ */ React__default.createElement("div", {
+    className: "mrm-stylish-radio mrm-font-style-setting"
+  }, /* @__PURE__ */ React__default.createElement(FontStyle, null)))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "3",
     header: "Border"
   }, /* @__PURE__ */ React__default.createElement(Border, null)), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {

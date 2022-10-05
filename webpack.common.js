@@ -41,7 +41,12 @@ const webpackConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: [{
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true
+          }
+        }],
         exclude: /node_modules/,
       },
       {
@@ -104,6 +109,7 @@ const webpackConfig = {
       '~': path.resolve( __dirname + '/src' ),
       $: 'jQuery',
       jquery: 'jQuery',
+      '@': path.resolve('./packages/easy-email-editor/src'),
     },
   },
   plugins: [
