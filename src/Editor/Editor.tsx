@@ -198,9 +198,11 @@ export default function Editor(props) {
 
     const [builderData, setBuilderData] = useState(null);
 
-    const [shouldCallAPI, setShouldCallAPI] = useState(true)
+    const [shouldCallAPI, setShouldCallAPI] = useState(true);
 
-    const [emailLoader, setEmailLoader] = useState(false)
+    const [emailLoader, setEmailLoader] = useState(false);
+
+    const [testMailModal, setTestMailModal] = useState(false);
 
     let defaultValues = {
         type: "page",
@@ -415,31 +417,38 @@ export default function Editor(props) {
         setIsTemplate(false)
     }
 
+    const sendTestMailModal = () => {
+        setTestMailModal(true);
+    }
+
+    const onCancel = () => {
+        setTestMailModal(false);
+    };
+
     return (
         <>
             <div className={emailLoader ? 'email-builder-loader show-loader': 'email-builder-loader'}>
                 <span className="mintmrm-loader"></span>
             </div>
 
-            <div className="mintmrm-delete-alert-wrapper">
+            <div className={testMailModal ? 'mintmrm-delete-alert-wrapper show-modal': 'mintmrm-delete-alert-wrapper'}>
                 <div className="mintmrm-delete-confirmation">
                     <div className="delete-confirmation-header">
-                        <h3>Alert</h3>
+                        <h3>Send Test E-mail</h3>
                         <div className="cross-icon" onClick={onCancel}>
                             <CrossIcon />
                         </div>
                     </div>
 
                     <div className="delete-confirmation-body">
-                        <Delete />
-                        <p>Please select at least one item to bulk action.</p>
+                        <div className="form-group">
+                            <input type="email" name="email" />
+                        </div>
                     </div>
 
                     <ul className="mintmrm-delete-confirm-btn">
                         <li>
-                            <button className="btn-default cancel" onClick={onCancel}>
-                            Ok
-                            </button>
+                            <button className="btn-default cancel" > Ok </button>
                         </li>
                     </ul>
                 </div>
@@ -506,9 +515,7 @@ export default function Editor(props) {
                                             </ul>
                                         </Button>
 
-                                        <Button
-                                            // onClick={() => openModal(values, mergeTags)}
-                                        >
+                                        <Button onClick={() => sendTestMailModal()} >
                                             Send Test
                                         </Button>
 
