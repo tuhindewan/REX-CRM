@@ -262,6 +262,8 @@ export default function Editor(props) {
     }
 
 
+
+
     /**
      * save email builder data
      *
@@ -269,7 +271,6 @@ export default function Editor(props) {
      * @since 1.0.0
      */
     const saveEmailContent = async (values) => {
-
         if ( isNewCampaign ) {
             const response = await fetch(
                 `${window.MRM_Vars.api_base_url}mrm/v1/campaign/email/create`,

@@ -11,7 +11,6 @@ export default function CampaignTemplates(props) {
   const [ isEmailBuilderOpen, setIsEmailBuilderOpen ] = useState(false);
   const [dataTest, setData] = useState({});
 
-  console.log(props)
   const closeSection = () => {
     setIsClose(!isClose);
   };

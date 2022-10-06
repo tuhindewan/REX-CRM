@@ -17,14 +17,15 @@ const EmailBuilder = (props) => {
       >
         <div className="email-builder-section" style={{ height: "100%" }}>
           <Suspense fallback={<div>Loading</div>}>
-            <Editor
-                selectedEmailIndex  = {selectedEmailIndex}
-                emailData           = {emailData}
-                campaignData        = {campaignData}
-                isNewCampaign       = {isNewCampaign}
-                setIsTemplate       = {setIsTemplate}
-                setIsCloseBuilder   = {setIsCloseBuilder}
-            />
+              {!isCloseBuilder && <Editor
+                  selectedEmailIndex  = {selectedEmailIndex}
+                  emailData           = {emailData}
+                  campaignData        = {campaignData}
+                  isNewCampaign       = {isNewCampaign}
+                  setIsTemplate       = {setIsTemplate}
+                  setIsCloseBuilder   = {setIsCloseBuilder}
+              />}
+
           </Suspense>
         </div>
       </div>
