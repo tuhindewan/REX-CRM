@@ -400,11 +400,14 @@ class ContactController extends BaseController {
 
         $csv_mimes = MRM_Common::csv_mimes();
         
+        $file_csv_type      = isset( $files['csv']['type'] ) ? $files['csv']['type'] : "";
+        $file_csv_tmp_name  = isset( $files['csv']['tmp_name'] ) ? $files['csv']['tmp_name'] : "";
+        $files_csv = isset( $files['csv'] ) ? $files['csv'] : "";
         // CSV file upload validation
         if ( empty( $files ) || 
-            ! is_array( $files['csv'] ) || 
-            ! is_uploaded_file( $files['csv']['tmp_name'] ) || 
-            ! in_array( $files['csv']['type'], $csv_mimes ) 
+            ! is_array( $files_csv ) || 
+            ! is_uploaded_file( $file_csv_tmp_name ) || 
+            ! in_array( $file_csv_type, $csv_mimes ) 
             ) {
 			return $this->get_error_response( __( 'Please upload a CSV first', 'mrm' ) );
 		}
@@ -418,7 +421,8 @@ class ContactController extends BaseController {
                 $delimiter = ';';
             }
 
-            $import_res = MRM_Importer::create_csv_from_import( $files['csv'], $delimiter );
+            
+            $import_res = MRM_Importer::create_csv_from_import( $files_csv, $delimiter );
             if ( ! is_array( $import_res ) ) {
                 return $this->get_error_response( is_string( $import_res ) ? $import_res : __( 'Unknown error occurred', 'mrm' ), null, 500 );
             }
@@ -568,7 +572,9 @@ class ContactController extends BaseController {
 
             // parse it to and get the header
             $header = str_getcsv($raw_string);
-            $header[0] = MRM_Importer::remove_utf8_bom($header[0]);
+            if( isset( $header[0] ) ){
+                $header[0] = MRM_Importer::remove_utf8_bom($header[0]);
+            }
             
             // Iterate over every line of the file
             while (($raw_string = fgets($handle)) !== false) {
@@ -583,19 +589,24 @@ class ContactController extends BaseController {
                 }
                 // combine header and values to make a contact associative array
                 $csv_contact = array_combine($header, $row);
+
+                $status     = isset( $params['status'] ) ? $params['status'] : "";
+                $created_by = isset( $params['created_by'] ) ? $params['created_by'] : "";
                 $contact_args = array(
-                    'status'        => $params['status'],
+                    'status'        => $status,
                     'source'        => 'csv',
                     'meta_fields'   => [],
-                    'created_by'    => $params['created_by']
+                    'created_by'    => $created_by
                 );
 
                 foreach($mappings as $map) {
+                    $target = isset( $map["target"] ) ? $map["target"] : "";
+                    $source = isset( $map["source"] ) ? $map["source"] : "";
 
-                    if( in_array( $map["target"], array( "first_name", "last_name", "email" ) ) ){
-                        $contact_args[$map["target"]] = $csv_contact[$map["source"]];
+                    if( in_array( $target, array( "first_name", "last_name", "email" ) ) ){
+                        $contact_args[$target] = $csv_contact[$source];
                     } else {
-                        $contact_args['meta_fields'][$map["target"]] = $csv_contact[$map["source"]];
+                        $contact_args['meta_fields'][$target] = $csv_contact[$source];
                     }
                 }
                 if (!array_key_exists('email', $contact_args)) {
@@ -673,13 +684,16 @@ class ContactController extends BaseController {
                 throw new Exception( __("The data is invalid.", "mrm") );
             }
 
-            $header = explode(",", trim($raw[0]));
-            // $header[0] = MRM_Importer::remove_utf8_bom($header[0]);
+            if( isset($raw[0]) ){
+                $header = explode(",", trim($raw[0]));
+            }
 
             // Iterate over every line of the file
             for ($i = 1; $i < count($raw); $i++ ) {
                 // Trim and Parse the raw  string as an array
-                $row = trim($raw[$i]);
+                if( isset( $raw[$i] ) ){
+                    $row = trim($raw[$i]);
+                }
                 $row_array = explode(",", $row);
                 // check if header and the current row has same length otherwise skip to the next iteration
                 if(count($header) !== count($row_array)) {
@@ -691,19 +705,25 @@ class ContactController extends BaseController {
                 // combine header and values to make a contact associative array
                 $csv_contact = array_combine($header, $row_array);
 
+                $status     = isset( $params['status'] ) ? $params['status'] : "";
+                $created_by = isset( $params['created_by'] ) ? $params['created_by'] : "";
+
                 $contact_args = array(
-                    'status'        => $params['status'],
+                    'status'        => $status,
                     'source'        => 'raw',
                     'meta_fields'   => [],
-                    'created_by'    => $params['created_by']
+                    'created_by'    => $created_by
                 );
 
                 foreach($mappings as $map) {
 
-                    if( in_array( $map["target"], array( "first_name", "last_name", "email" ) ) ){
-                        $contact_args[$map["target"]] = $csv_contact[$map["source"]];
+                    $target = isset( $map["target"] ) ? $map["target"] : "";
+                    $source = isset( $map["source"] ) ? $map["source"] : "";
+
+                    if( in_array( $target, array( "first_name", "last_name", "email" ) ) ){
+                        $contact_args[$target] = $csv_contact[$source];
                     } else {
-                        $contact_args['meta_fields'][$map["target"]] = $csv_contact[$map["source"]];
+                        $contact_args['meta_fields'][$target] = $csv_contact[$source];
                     }
                 }
                 if (!array_key_exists('email', $contact_args)) {
