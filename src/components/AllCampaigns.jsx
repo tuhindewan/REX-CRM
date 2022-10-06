@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 import {
   deleleMultipleCampaigns,
   deleteSingleCampaign,
@@ -8,16 +9,17 @@ import {
 import AlertPopup from "./AlertPopup";
 import NoCampaign from "./Campaign/NoCampaign";
 import SingleCampaign from "./Campaign/SingleCampaign";
-import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
+import Plus from "./Icons/Plus";
 import Search from "./Icons/Search";
-import ThreeDotIcon from "./Icons/ThreeDotIcon";
-import SuccessfulNotification from "./SuccessfulNotification";
 import Pagination from "./Pagination";
 import SearchNavbar from "./SearchNavbar";
-import Plus from "./Icons/Plus";
+import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {
+  useGlobalStore.setState({
+    hideGlobalNav: true,
+  });
   let navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [campaigns, setCampaigns] = useState([]);
@@ -165,7 +167,7 @@ export default function AllCampaigns() {
   return (
     <>
       <div className="campaign-index-page">
-        <CampaignsNavbar />
+        {/* <CampaignsNavbar /> */}
         <SearchNavbar />
         <div className="campaign-list-page">
           <div className="mintmrm-container">
@@ -205,7 +207,7 @@ export default function AllCampaigns() {
                       placeholder="Search by title"
                     />
                   </span>
-                  
+
                   {/* <FilterBox
                     label="Status"
                     name="Status"
