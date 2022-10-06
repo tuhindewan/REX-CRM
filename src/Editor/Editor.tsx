@@ -48,6 +48,7 @@ import MoreOptionIcon from './Icon/MoreOptionIcon';
 import DesktopIcon from './Icon/DesktopIcon';
 import MobileIcon from './Icon/MobileIcon';
 import EditIcon from './Icon/EditIcon';
+import CrossIcon from "./Icon/CrossIcon";
 
 const defaultCategories: ExtensionProps['categories'] = [
     {
@@ -418,6 +419,30 @@ export default function Editor(props) {
         <>
             <div className={emailLoader ? 'email-builder-loader show-loader': 'email-builder-loader'}>
                 <span className="mintmrm-loader"></span>
+            </div>
+
+            <div className="mintmrm-delete-alert-wrapper">
+                <div className="mintmrm-delete-confirmation">
+                    <div className="delete-confirmation-header">
+                        <h3>Alert</h3>
+                        <div className="cross-icon" onClick={onCancel}>
+                            <CrossIcon />
+                        </div>
+                    </div>
+
+                    <div className="delete-confirmation-body">
+                        <Delete />
+                        <p>Please select at least one item to bulk action.</p>
+                    </div>
+
+                    <ul className="mintmrm-delete-confirm-btn">
+                        <li>
+                            <button className="btn-default cancel" onClick={onCancel}>
+                            Ok
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div className='mrm-email-editor'>
