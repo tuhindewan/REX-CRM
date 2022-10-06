@@ -58,6 +58,8 @@
     width: 100%;
     padding: 18px;
     margin: 8px 0px;
+    display: flex;
+    justify-content: center;
   }
   .upload-section {
     h3,
@@ -243,6 +245,10 @@
       display: flex;
       flex-flow: row wrap;
       justify-content: end;
+      
+      .contact-save {
+        margin-left: 12px;
+      }
     }
 
     .wordpress-import-section {
@@ -263,7 +269,7 @@
           color: #6a707c;
         }
       }
-      .mintmrm-checkbox:last-child{
+      .mintmrm-checkbox:last-child {
         margin-bottom: 0;
       }
     }

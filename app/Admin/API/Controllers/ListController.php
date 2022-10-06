@@ -207,30 +207,8 @@ class ListController extends BaseController {
     {
         $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
 
-            // Create new list if not exist
-
-            if( filter_var($list, FILTER_VALIDATE_INT) === false ){
-
-                $slug   = MRM_Common::create_slug($list);
-                $exist  = ContactGroupModel::is_group_exist( $slug, 'lists' );
-                $list   = array(
-                    'title' => $list,
-                    'slug'  => $slug,
-                    'data'  => null
-                );
-                if(!$exist){
-                    $new_list    = new ListData($list);
-                    $new_list_id = ContactGroupModel::insert( $new_list, 'lists' );
-                }
-
-            }
-
-            if(isset($new_list_id)){
-                $list = $new_list_id;
-            }
-
             return array(
-                'group_id'    =>  $list,
+                'group_id'    =>  $list['id'],
                 'contact_id'  =>  $contact_id
             );
 
