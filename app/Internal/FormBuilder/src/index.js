@@ -8,6 +8,7 @@ import './styles.scss';
 domReady( function() {
 	const settings = window.getmrmsetting || {};
 	registerCoreBlocks();
+
 	render( <Editor settings={ settings } />, document.getElementById( 'mrm-block-editor' ) );
 } );
 
