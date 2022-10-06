@@ -1,15 +1,15 @@
 export default function OptionList(props) {
-  const { checkList, setCheckList,  } = props;
+  const { checkItem, setCheckItem,  } = props;
 
   const handleChange = (e) => {
-    let updatedList = [...checkList];
+    let updatedList = [...checkItem];
     if (e.target.checked) {
-      updatedList = [...checkList, e.target.value];
-      // setCheckList([...checkList, e.target.value]);
+      updatedList = [...checkItem, e.target.value];
+      // setCheckItem([...checkItem, e.target.value]);
     } else {
-      updatedList.splice(checkList.indexOf(e.target.value), 1);
+      updatedList.splice(checkItem.indexOf(e.target.value), 1);
     }
-    setCheckList(updatedList);
+    setCheckItem(updatedList);
     // console.log(updatedList);
   };
   return (
@@ -20,6 +20,7 @@ export default function OptionList(props) {
         id={props.name}
         value={props.title}
         onChange={handleChange}
+        
         
       />
 

@@ -151,7 +151,6 @@ export default function SingleContact(props) {
                   >
                     <li
                       className="action-list"
-                      style={{ display: "flex" }}
                       onClick={handleUpdate}
                     >
                       <EyeIcon />

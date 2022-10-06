@@ -468,7 +468,7 @@ export default function ContactDetails() {
                   <img
                     src={contactData.avatar_url}
                     alt="contact-author-img"
-                    style={{ "border-radius": "50%" }}
+                    style={{ borderRadius: "50%" }}
                   />
                 </div>
 

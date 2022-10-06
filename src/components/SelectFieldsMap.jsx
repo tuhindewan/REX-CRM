@@ -5,6 +5,8 @@ import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
 import Selectbox from "./Selectbox";
 import WarningNotification from "./WarningNotification";
+import CustomSelect from "./CustomSelect";
+import SelectDropdown from "./SelectDropdown";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -21,6 +23,9 @@ export default function SelectFieldsMap() {
   const [tags, setTags] = useState([]);
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   // get the state from calling component
   const state = location.state;
@@ -191,14 +196,9 @@ export default function SelectFieldsMap() {
                           <tr key={idx}>
                             <td>{header}</td>
                             <td>
-                              <Selectbox
-                                label=""
-                                name={`field-${idx}`}
-                                options={selectOptions}
-                                onSelect={onSelect}
-                                placeholder="Do not import this field"
-                                arg1={header} // arg1 is passed as the header
-                              />
+                              <div className="form-group map-dropdown">
+                                <SelectDropdown options={selectOptions} />
+                              </div>
                             </td>
                           </tr>
                         );
@@ -210,46 +210,60 @@ export default function SelectFieldsMap() {
                   <h3>Contact Profile</h3>
 
                   <div className="contact-profile">
-                    <Selectbox
-                      label="Status"
-                      name="status"
-                      options={[
-                        {
-                          title: "Pending",
-                          id: "pending",
-                        },
-                        {
-                          title: "Subscribed",
-                          id: "subscribed",
-                        },
-                        {
-                          title: "Unsubscribed",
-                          id: "unsubscribed",
-                        },
-                      ]}
-                      tags={false}
-                      placeholder="Select Status"
-                      multiple={false}
-                      onSelect={handleExtraFields}
-                    />
-                    <Selectbox
-                      label="Lists"
-                      name="lists"
-                      options={lists}
-                      placeholder="Select List"
-                      tags={false}
-                      multiple={true}
-                      onSelect={handleExtraFields}
-                    />
-                    <Selectbox
-                      label="Tags"
-                      name="tags"
-                      options={tags}
-                      placeholder="Select Tags"
-                      tags={false}
-                      multiple={true}
-                      onSelect={handleExtraFields}
-                    />
+                    <div className="form-group status-dropdown">
+                      <label>Status</label>
+                      <CustomSelect
+                        selected={selectedStatus}
+                        setSelected={setSelectedStatus}
+                        endpoint="/status"
+                        placeholder="Select Status"
+                        name="status"
+                        listTitle="CHOOSE Status"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={false}
+                        showSearchBar={true}
+                        showListTitle={false}
+                        showSelectedInside={false}
+                        allowNewCreate={false}
+                      />
+                    </div>
+                    <div className="form-group status-dropdown">
+                      <label>Lists</label>
+                      <CustomSelect
+                        selected={selectedLists}
+                        setSelected={setSelectedLists}
+                        endpoint="/lists"
+                        placeholder="Lists"
+                        name="list"
+                        listTitle="CHOOSE LIST"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={false}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
+                      />
+                    </div>
+                    <div className="form-group status-dropdown">
+                      <label>Tags</label>
+                      <CustomSelect
+                        selected={selectedTags}
+                        setSelected={setSelectedTags}
+                        endpoint="/tags"
+                        placeholder="Tags"
+                        name="tag"
+                        listTitle="CHOOSE TAG"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={false}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </form>

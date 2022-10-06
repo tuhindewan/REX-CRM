@@ -89,7 +89,6 @@ export default function CustomSelect(props) {
       if (index >= 0) setSelected([]);
       else setSelected([{ id: id, title: value }]);
     }
-    
   };
 
   // function used for checking whether the current item is selected or not
@@ -183,6 +182,7 @@ export default function CustomSelect(props) {
     <>
       <div className="mrm-custom-select-container" key="container">
         <button
+          type="button"
           className={
             activeCustomSelect == customSelectUUID.current &&
             !hideAllCustomSelect
@@ -201,7 +201,10 @@ export default function CustomSelect(props) {
               return (
                 <span key={item.id} className="mrm-custom-selected-items">
                   {item.title}
-                  <div className="cross-icon" onClick={(e) => deleteSelected(e, item.id)}>
+                  <div
+                    className="cross-icon"
+                    onClick={(e) => deleteSelected(e, item.id)}
+                  >
                     <CrossIcon />
                   </div>
                 </span>

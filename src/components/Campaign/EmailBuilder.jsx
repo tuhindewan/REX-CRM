@@ -20,7 +20,6 @@ const EmailBuilder = (props) => {
   };
 
   const onReady = () => {
-    console.log(emailEditorRef);
     emailEditorRef.current.editor.loadDesign(emailData?.email_json);
   };
 

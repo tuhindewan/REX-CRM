@@ -88,6 +88,7 @@ const Tags = () => {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Set values from list form
   const handleChange = (e) => {
@@ -296,6 +297,12 @@ const Tags = () => {
   const onShowAlert = async (status) => {
     setShowAlert(status);
   };
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+  const handleSelect = () => {
+    setShowDropdown(false);
+  };
 
   return (
     <>
@@ -324,15 +331,14 @@ const Tags = () => {
                   </div>
                   <div className="contact-button-field">
                     <button
-                      className="contact-cancel mintmrm-btn outline"
-                      style={{ padding: "15px" }}
+                      className="import-cancel mintmrm-btn outline"
                       onClick={handleCancel}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="contact-save mintmrm-btn"
+                      className="import-save mintmrm-btn"
                       onClick={createOrUpdate}
                     >
                       {editID == 0 ? "Save" : "Update"}
@@ -350,30 +356,30 @@ const Tags = () => {
             <div className="contact-list-header">
               <div className="left-filters">
                 <p className="sort-by">Sort by</p>
-                <Selectbox
-                  options={[
-                    {
-                      title: "Name Asc",
-                      id: "title+asc",
-                    },
-                    {
-                      title: "Name Desc",
-                      id: "title+desc",
-                    },
-                    {
-                      title: "Date Created Asc",
-                      id: "created_at+asc",
-                    },
-                    {
-                      title: "Date Created Desc",
-                      id: "created_at+desc",
-                    },
-                  ]}
-                  tags={false}
-                  placeholder="Field"
-                  multiple={false}
-                  onSelect={handleOrderBy}
-                />
+                <div className="sort-by-dropdown">
+                  <button
+                    className={
+                      showDropdown
+                        ? "drop-down-button show"
+                        : "drop-down-button"
+                    }
+                    onClick={handleDropdown}
+                  >
+                    Name
+                  </button>
+                  <ul
+                    className={
+                      showDropdown
+                        ? "mintmrm-dropdown show"
+                        : "mintmrm-dropdown"
+                    }
+                  >
+                    <li onClick={handleSelect}>Name Asc</li>
+                    <li onClick={handleSelect}>Name Desc</li>
+                    <li onClick={handleSelect}>Date Created Asc</li>
+                    <li onClick={handleSelect}>Date Created Desc</li>
+                  </ul>
+                </div>
               </div>
               <div className="right-buttons">
                 {/* search input */}
@@ -413,9 +419,7 @@ const Tags = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li className="delete" onClick={deleteMultipleList}>
-                        Delete Selected
-                      </li>
+                      <li onClick={deleteMultipleList}>Delete Selected</li>
                     </ul>
                   </button>
                 </div>

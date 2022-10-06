@@ -1,4 +1,3 @@
-// External dependencies
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +9,8 @@ import { getTags } from "../../services/Tag";
 import InputItem from "../InputItem/index";
 import Selectbox from "../Selectbox";
 import "./style.css";
+import AddItemDropdown from "../AddItemDropdown";
+import CustomSelect from "../CustomSelect";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -35,6 +36,10 @@ const CreateContact = (props) => {
 
   // tags
   const [tags, setTags] = useState([]);
+
+  const [isActiveList, setIsActiveList] = useState(false);
+  const [isActiveTag, setIsActiveTag] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState([]);
 
   // Fetch lists & tags
   useEffect(() => {
@@ -145,6 +150,14 @@ const CreateContact = (props) => {
     let path = `/contacts`;
     navigate(path);
   };
+  const handleTag = () => {
+    setIsActiveTag(!isActiveTag);
+    setIsActiveList(false);
+  };
+  const handleList = () => {
+    setIsActiveList(!isActiveList);
+    setIsActiveTag(false);
+  };
 
   return (
     <div className="create-contact">
@@ -176,7 +189,7 @@ const CreateContact = (props) => {
                 values={contactData.last_name}
                 handleChange={handleChange}
               />
-              <Selectbox
+              {/* <Selectbox
                 label="Status"
                 name="status"
                 options={[
@@ -198,29 +211,53 @@ const CreateContact = (props) => {
                 placeholder="Select Status"
                 multiple={false}
                 onSelect={onSelect}
-              />
-              <Selectbox
-                label="Lists"
-                name="lists"
-                options={lists}
-                value={contactData.lists}
-                placeholder="Select List"
-                tags={true}
-                multiple={true}
-                onSelect={onSelect}
-                onRemove={onRemove}
-              />
-              <Selectbox
-                label="Tags"
-                name="tags"
-                options={tags}
-                value={contactData.tags}
-                placeholder="Select Tags"
-                tags={true}
-                multiple={true}
-                onSelect={onSelect}
-                onRemove={onRemove}
-              />
+              /> */}
+              <div className="form-group status-dropdown">
+                <label>Status</label>
+                <CustomSelect
+                  selected={selectedStatus}
+                  setSelected={setSelectedStatus}
+                  endpoint="/status"
+                  placeholder="Select Status"
+                  name="status"
+                  listTitle="CHOOSE Status"
+                  listTitleOnNotFound="No Data Found"
+                  searchPlaceHolder="Search..."
+                  allowMultiple={false}
+                  showSearchBar={true}
+                  showListTitle={false}
+                  showSelectedInside={false}
+                  allowNewCreate={false}
+                />
+              </div>
+              <div className="form-group lists-dropdown">
+                <label>Lists</label>
+                <button
+                  type="button"
+                  className={isActiveList ? "drop-down-button show" : "drop-down-button"}
+                  onClick={handleList}
+                >
+                  Select List
+                </button>
+                <AddItemDropdown
+                  isActive={isActiveList}
+                  setIsActive={setIsActiveList}
+                />
+              </div>
+              <div className="form-group tags-dropdown">
+                <label>Lists</label>
+                <button
+                  type="button"
+                  className={isActiveTag ? "drop-down-button show" : "drop-down-button"}
+                  onClick={handleTag}
+                >
+                  Select List
+                </button>
+                <AddItemDropdown
+                  isActive={isActiveTag}
+                  setIsActive={setIsActiveTag}
+                />
+              </div>
             </div>
 
             <div className="contact-button-field">

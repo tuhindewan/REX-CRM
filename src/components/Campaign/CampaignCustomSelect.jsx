@@ -7,8 +7,8 @@ export default function CampaignCustomSelect(props) {
   const [activeTag, setActiveTag] = useState(true);
   const [activeList, setActiveList] = useState(false);
   const [checkList, setCheckList] = useState([]);
+  const [checktag, setChecktag] = useState([]);
   const [unSelect, setUnSelect] = useState();
-
 
   const showTag = () => {
     setActiveTag(true);
@@ -20,15 +20,21 @@ export default function CampaignCustomSelect(props) {
   };
 
   const deleteItem = (id) => {
-    const updatedItem = checkList.filter((item, index) => {
+    const updatedListItem = checkList.filter((item, index) => {
       return index != id;
     });
-    setCheckList(updatedItem);
+    const updatedTagItem = checktag.filter((item, index) => {
+      return index != id;
+    });
+    setCheckList(updatedListItem);
+    setChecktag(updatedTagItem);
   };
 
-  const deleteAll = () => {
+  const deleteAllTag = () => {
+    setChecktag([]);
+  };
+  const deleteAllList = () => {
     setCheckList([]);
-
   };
 
   return (
@@ -55,65 +61,132 @@ export default function CampaignCustomSelect(props) {
           List
         </button>
       </div>
-      <div
-        className={
-          checkList.length != 0 ? "selected-items" : "selected-items inactive"
-        }
-      >
-        <div className="items">
-          {checkList.map((item, index) => {
-            return (
-              <span key={index} id={index}>
-                {item}
-                <div className="cross-icon" onClick={(e) => deleteItem(index)}>
-                  <CrossIcon />
-                </div>
-              </span>
-            );
-          })}
-        </div>
-        <button
-          className={checkList.length == 0 ? "clear-btn inactive" : "clear-btn"}
-          onClick={deleteAll}
+      {activeTag ? <div className="options-section">
+        <div
+          className={
+            checktag.length != 0 ? "selected-items" : "selected-items inactive"
+          }
         >
-          Clear
-        </button>
-      </div>
-      <div className="dropdown-body">
-        <div className="searchbar">
-          <div class="pos-relative">
-            <Search />
-            <input
-              className="recipient-input"
-              type="search"
-              placeholder="Search tag"
+          <div className="items">
+            {checktag.map((item, index) => {
+              return (
+                <span key={index} id={index}>
+                  {item}
+                  <div
+                    className="cross-icon"
+                    onClick={(e) => deleteItem(index)}
+                  >
+                    <CrossIcon />
+                  </div>
+                </span>
+              );
+            })}
+          </div>
+          <button
+            className={
+              checktag.length == 0 ? "clear-btn inactive" : "clear-btn"
+            }
+            onClick={deleteAllTag}
+          >
+            Clear
+          </button>
+        </div>
+        <div className="dropdown-body">
+          <div className="searchbar">
+            <div class="pos-relative">
+              <Search />
+              <input
+                className="recipient-input"
+                type="search"
+                placeholder="Search tag"
+              />
+            </div>
+          </div>
+          <div className="checkbox-options">
+            <OptionList
+              name="product-feed"
+              title="Product Feed"
+              checkItem={checktag}
+              setCheckItem={setChecktag}
+            />
+            <OptionList
+              name="funnels"
+              title="Funnels"
+              checkItem={checktag}
+              setCheckItem={setChecktag}
+            />
+            <OptionList
+              name="wpvr"
+              title="WPVR"
+              checkItem={checktag}
+              setCheckItem={setChecktag}
             />
           </div>
         </div>
-        <div className="checkbox-options">
-          <OptionList
-            name="product-feed"
-            title="Product Feed"
-            checkList={checkList}
-            setCheckList={setCheckList}
-            
-          />
-          <OptionList
-            name="funnels"
-            title="Funnels"
-            checkList={checkList}
-            setCheckList={setCheckList}
-            
-          />
-          <OptionList
-            name="wpvr"
-            title="WPVR"
-            checkList={checkList}
-            setCheckList={setCheckList}
-            
-          />
+      </div> : null}
+      {activeList ? <div className="options-section">
+        <div
+          className={
+            checkList.length != 0 ? "selected-items" : "selected-items inactive"
+          }
+        >
+          <div className="items">
+            {checkList.map((item, index) => {
+              return (
+                <span key={index} id={index}>
+                  {item}
+                  <div
+                    className="cross-icon"
+                    onClick={(e) => deleteItem(index)}
+                  >
+                    <CrossIcon />
+                  </div>
+                </span>
+              );
+            })}
+          </div>
+          <button
+            className={
+              checkList.length == 0 ? "clear-btn inactive" : "clear-btn"
+            }
+            onClick={deleteAllList}
+          >
+            Clear
+          </button>
         </div>
-      </div>
+        <div className="dropdown-body">
+          <div className="searchbar">
+            <div class="pos-relative">
+              <Search />
+              <input
+                className="recipient-input"
+                type="search"
+                placeholder="Search tag"
+              />
+            </div>
+          </div>
+          <div className="checkbox-options">
+            <OptionList
+              name="comilla"
+              title="Comilla"
+              checkItem={checkList}
+              setCheckItem={setCheckList}
+            />
+            <OptionList
+              name="dhaka"
+              title="Dhaka"
+              checkItem={checkList}
+              setCheckItem={setCheckList}
+            />
+            <OptionList
+              name="vip"
+              title="Vip"
+              checkItem={checkList}
+              setCheckItem={setCheckList}
+            />
+          </div>
+        </div>
+      </div> : null}
     </div>
   );
 }
