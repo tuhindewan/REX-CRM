@@ -39,6 +39,8 @@ import {
 } from 'easy-email-core';
 
 
+import {copy} from './utils/copy'
+
 import { CustomBlocksType } from './CustomBlocks/constant';
 import './CustomBlocks';
 
@@ -237,7 +239,6 @@ export default function Editor(props) {
     const initialValues: { subTitle: string; subject: string; type: string; content: { data: { value: { fonts: any[]; headStyles: any[]; headAttributes: string; responsive: boolean; "font-size": string; "line-height": string; "font-family": string; "text-color": string; breakpoint: string } }; children: any[]; attributes: { "background-color": string; "css-class": string; width: string }; type: string } } | IBlockData<any, any> = useMemo(() => {
         if ( !builderData ) return defaultValues;
         const sourceData = cloneDeep(builderData) as IBlockData;
-
         return sourceData;
     }, [builderData]);
 
@@ -250,6 +251,16 @@ export default function Editor(props) {
             setBuilderData(res?.email_data?.json_data)
         });
     });
+
+
+    // enable dark mode
+    useEffect(() => {
+        if (isDarkMode) {
+            document.body.setAttribute('arco-theme', 'dark');
+        } else {
+            document.body.removeAttribute('arco-theme');
+        }
+    }, [isDarkMode]);
 
     const fetchProduct = async (args) => {
         let rest_url    = `${window.MRM_Vars.api_base_url}wp/v2/product/?` + encodeData(args);
@@ -367,23 +378,35 @@ export default function Editor(props) {
     }
 
 
-    // const onExportHtml = (values: IEmailTemplate) => {
-    //     pushEvent({ event: 'HtmlExport' });
-    //     const html = mjml(
-    //         JsonToMjml({
-    //             data: values.content,
-    //             mode: 'production',
-    //             context: values.content,
-    //             dataSource: mergeTags,
-    //         }),
-    //         {
-    //             beautify: true,
-    //             validationLevel: 'soft',
-    //         },
-    //     ).html;
-    //
-    //     copy(html);
-    // };
+    // export data as HTML format
+    const onExportHtml = (values: IEmailTemplate) => {
+        const html = mjml(
+            JsonToMjml({
+                data: values.content,
+                mode: 'production',
+                context: values.content,
+            }),
+            {
+                beautify: true,
+                validationLevel: 'soft',
+            },
+        ).html;
+
+        copy(html);
+    };
+
+
+    // export data as MJML format
+    const onExportMJML = (values: IEmailTemplate) => {
+        const html = JsonToMjml({
+            data: values.content,
+            mode: 'production',
+            context: values.content,
+        });
+
+        copy(html);
+    };
+
 
 
     // on change event if user selects category from category dropdown
@@ -396,6 +419,12 @@ export default function Editor(props) {
             });
         });
     }
+
+
+    //-----show more option click function-------
+    const showMoreOption = () => {
+        setShowMore(!showMore);
+    };
 
 
 
@@ -457,24 +486,22 @@ export default function Editor(props) {
 
                                         <Button
                                             className={showMore ? 'more-option show-option-list': 'more-option'}
-                                            // onClick={showMoreOption}
+                                            onClick={showMoreOption}
                                         >
                                             <MoreOptionIcon />
                                             <ul className="more-option-list">
                                                 <li>
                                                     <Button onClick={() => onExportHtml(values)}>Export html</Button>
-                                                    {/*<Button onClick={openMergeTagsModal}>Update mergeTags</Button>*/}
-                                                    {/*<Button onClick={() => onExportMJML(values)}>Export MJML</Button>*/}
-                                                    <Button onClick={() => onExportHtml(values)}>Export html</Button>
+                                                    <Button onClick={() => onExportMJML(values)}>Export MJML</Button>
                                                 </li>
                                             </ul>
                                         </Button>
 
-                                        <Button
-                                            // onClick={() => openModal(values, mergeTags)}
-                                        >
-                                            Send Test
-                                        </Button>
+                                        {/*<Button*/}
+                                        {/*    // onClick={() => openModal(values, mergeTags)}*/}
+                                        {/*>*/}
+                                        {/*    Send Test*/}
+                                        {/*</Button>*/}
 
                                         <Button
                                             // loading={isSubmitting}
