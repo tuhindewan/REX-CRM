@@ -46,20 +46,21 @@ class CampaignEmailController extends BaseController {
         );
 
         $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
-        if ( !$email ) {
-            $response   = array(
-                'success'   => false,
-                'message'   => 'No email data found!'
-            );
-            return rest_ensure_response($response);
+        $is_new = true;
+        if ( $email ) {
+            $is_new   = false;
         }
-        $is_new   = CampaignEmailBuilderModel::is_new_email_template($email->id) ? true : false;
 
         if ( $is_new ) {
+
+            // save the email first
+            $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
+
             CampaignEmailBuilderModel::insert(array(
-                'email_id'  => $email->id,
-                'status'    => 'published',
-                'email_body' => serialize($params['email_body'])
+                'email_id'      => $email_id,
+                'status'        => 'published',
+                'email_body' => $params['email_body'],
+                'json_data'  => serialize($params['json_data']),
             ));
             $response['message'] = __( 'Data successfully inserted', 'mrm' );
         } else {
@@ -67,11 +68,13 @@ class CampaignEmailController extends BaseController {
                 $email->id,
                 array(
                     'status'    => 'published',
-                    'email_body' => serialize($params['email_body'])
+                    'email_body' => $params['email_body'],
+                    'json_data'  => serialize($params['json_data']),
                 )
             );
             $response['message'] = __( 'Data successfully updated', 'mrm' );
         }
+        $response['campaign_id']    = $params['campaign_id'];
         return rest_ensure_response($response);
     }
 
@@ -162,9 +165,11 @@ class CampaignEmailController extends BaseController {
         CampaignEmailBuilderModel::insert(array(
             'email_id'   => $email_id,
             'status'     => 'published',
-            'email_body' => serialize($params['email_body'])
+            'email_body' => $params['email_body'],
+            'json_data'  => serialize($params['json_data']),
         ));
         $response['message'] = __( 'Data successfully inserted', 'mrm' );
+        $response['campaign_id']    = $campaign_id;
         return rest_ensure_response($response);
     }
 

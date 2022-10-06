@@ -53,12 +53,12 @@ class CampaignEmailBuilderSchema {
     public function create_campaign_email_builder_table( $table, $charsetCollate )
     {
         global $wpdb;
-        $campaign_email_table = $wpdb->prefix.'mrm_campaign_emails';
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `email_id` BIGINT UNSIGNED NOT NULL,
             `status` ENUM('draft', 'published'),
             `email_body` longtext,
+            `json_data` longtext,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL
          ) $charsetCollate;";

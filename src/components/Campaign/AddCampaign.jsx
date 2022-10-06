@@ -394,29 +394,30 @@ export default function AddCampaign(props) {
                 </div>
 
               </div>
-
-              <div className="content-save-section">
-                <button
-                  className="campaign-schedule mintmrm-btn outline"
-                  disabled={!isValid}
-                  onClick={handlePublish}
-                >
-                  Publish
-                </button>
-                <button
-                  type="submit"
-                  className="campaign-save mintmrm-btn"
-                  onClick={() => saveCampaign("draft")}
-                  disabled={!isValid}
-                >
-                  Save draft
-                </button>
-                {responseMessage != "" && (
-                  <SuccessfulNotification
-                    display={"block"}
-                    message="Campaign is saved."
-                  />
-                )}
+              <div className="email-from input-item">
+                <label>From</label>
+                <input
+                  type="text"
+                  name="senderName"
+                  value={emailData[selectedEmailIndex]["senderName"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Enter Name"
+                />
+                <input
+                  type="text"
+                  name="senderEmail"
+                  value={emailData[selectedEmailIndex]["senderEmail"]}
+                  onChange={handleEmailFieldsChange}
+                  placeholder="Enter Email"
+                />
+              </div>
+              <div className="email-design input-item">
+                <label>Design</label>
+                <div className="add-template-section" onClick={openTemplate}>
+                  <TemplateIcon />
+                  <Link to="">Select a Template</Link>
+                </div>
+                
               </div>
             </div>
 
@@ -432,6 +433,7 @@ export default function AddCampaign(props) {
         emailData         ={emailData[selectedEmailIndex]}
         setIsClose        ={setIsClose}
         setEmailBody      ={setEmailBody}
+        setIsTemplate     = {setIsTemplate}
         campaignData      ={
           {
             title: campaignTitle,
