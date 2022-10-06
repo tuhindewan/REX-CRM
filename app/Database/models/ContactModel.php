@@ -342,15 +342,8 @@ class ContactModel{
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-        try {
-            $contacts_query     = $wpdb->prepare("SELECT `email` FROM $contacts_table WHERE id = %d",array( $id ));
-            $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
-            
-            return $contacts_results[0];
-        
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->get_row( $wpdb->prepare( "SELECT `email` FROM $contacts_table WHERE id = %d",array( $id ) ), ARRAY_A );
+
     }
 
 

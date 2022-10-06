@@ -391,7 +391,7 @@ class CampaignModel {
      *
      * @param $campaign_id
      * @param $email_index
-     * @return string|null
+     * @return object|array
      *
      * @since 1.0.0
      */

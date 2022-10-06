@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -10,7 +10,6 @@ import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
-
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
   subject: "",
@@ -26,7 +25,6 @@ const defaultCampaignData = {
 };
 
 export default function AddCampaign(props) {
-
   const navigate = useNavigate();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{ ...defaultCampaignData }]);
@@ -94,7 +92,8 @@ export default function AddCampaign(props) {
           delay_count: email.delay_count,
           delay_value: email.delay_value,
           sender_name: email.senderName,
-          email_body: email.email_body,
+          // email_body: email.email_body,
+          email_body: "Dummy Email Body",
           email_json: email.email_json,
         };
       }),
@@ -272,6 +271,21 @@ export default function AddCampaign(props) {
                   </div>
                   <div className="email-to input-item">
                     <label>To:</label>
+                    {/* <button className="all-recipients" onClick={showDropDown}>
+                      All Subscriber
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                    <button
+                      className="all-recipients selected"
+                      onClick={showDropDown}
+                    >
+                      <span className="tags">5 Tags</span>
+                      <span className="from">from</span>
+                      <span className="lists">4 Lists.</span>
+                      <span className="recipients">300 Recipients</span>
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button> */}
+                    {/* <CampaignCustomSelect dropDown={dropDown} /> */}
                     <div>
                       <CustomSelect
                         selected={recipientLists}
@@ -388,48 +402,46 @@ export default function AddCampaign(props) {
                   <Link to="">Select a Template</Link>
                 </div>
                 <CampaignTemplates
-                  isOpen            ={isTemplate}
-                  isClose           ={isClose}
-                  isNewCampaign     ={true}
+                  isOpen={isTemplate}
+                  isClose={isClose}
+                  isNewCampaign={true}
                   selectedEmailIndex={selectedEmailIndex}
-                  emailData         ={emailData[selectedEmailIndex]}
-                  setIsClose        ={setIsClose}
-                  setEmailBody      ={setEmailBody}
-                  setIsTemplate     = {setIsTemplate}
-                  campaignData      ={
-                    {
-                      title: campaignTitle,
-                      recipients: {
-                        lists: recipientLists.map((list) => {
-                          return {
-                            id: list.id,
-                            title: list.title,
-                          };
-                        }),
-                        tags: recipientTags.map((tag) => {
-                          return {
-                            id: tag.id,
-                            title: tag.title,
-                          };
-                        }),
-                      },
-                      type: emailData.length > 1 ? "sequence" : "regular",
-                      status: status,
-                      created_by: `${window.MRM_Vars.current_userID}`,
-                      emails: emailData.map((email) => {
+                  emailData={emailData[selectedEmailIndex]}
+                  setIsClose={setIsClose}
+                  setEmailBody={setEmailBody}
+                  setIsTemplate={setIsTemplate}
+                  campaignData={{
+                    title: campaignTitle,
+                    recipients: {
+                      lists: recipientLists.map((list) => {
                         return {
-                          email_subject: email.subject,
-                          email_preview_text: email.preview,
-                          sender_email: email.senderEmail,
-                          delay_count: email.delay_count,
-                          delay_value: email.delay_value,
-                          sender_name: email.senderName,
-                          email_body: email.email_body,
-                          email_json: email.email_json,
+                          id: list.id,
+                          title: list.title,
                         };
                       }),
-                    }
-                  }
+                      tags: recipientTags.map((tag) => {
+                        return {
+                          id: tag.id,
+                          title: tag.title,
+                        };
+                      }),
+                    },
+                    type: emailData.length > 1 ? "sequence" : "regular",
+                    status: status,
+                    created_by: `${window.MRM_Vars.current_userID}`,
+                    emails: emailData.map((email) => {
+                      return {
+                        email_subject: email.subject,
+                        email_preview_text: email.preview,
+                        sender_email: email.senderEmail,
+                        delay_count: email.delay_count,
+                        delay_value: email.delay_value,
+                        sender_name: email.senderName,
+                        email_body: email.email_body,
+                        email_json: email.email_json,
+                      };
+                    }),
+                  }}
                 />
               </div>
             </div>

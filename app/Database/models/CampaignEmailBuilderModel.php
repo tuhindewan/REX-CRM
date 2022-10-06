@@ -86,7 +86,7 @@ class CampaignEmailBuilderModel {
         $email_builder_table    = $wpdb->prefix . CampaignEmailBuilderSchema::$table_name;
         $select_query           = $wpdb->prepare("SELECT * FROM $email_builder_table WHERE email_id=%s", $id );
         $email                  = $wpdb->get_row( $select_query );
-        $email->email_body      = unserialize($email->email_body);
+        $email->email_body      = maybe_unserialize($email->email_body);
         return $email;
     }
 

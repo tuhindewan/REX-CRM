@@ -44,20 +44,20 @@ class CampaignEmailController extends BaseController {
             'success'   => true,
             'message'   => ''
         );
-
+        
         $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
+        error_log(print_r($email, 1));
         $is_new = true;
         if ( $email ) {
             $is_new   = false;
         }
-
-        if ( $is_new ) {
+        if ( !$is_new ) {
 
             // save the email first
-            $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
+            // $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
 
             CampaignEmailBuilderModel::insert(array(
-                'email_id'      => $email_id,
+                'email_id'      => $email->id,
                 'status'        => 'published',
                 'email_body' => $params['email_body'],
                 'json_data'  => serialize($params['json_data']),
