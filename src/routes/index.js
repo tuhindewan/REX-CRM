@@ -8,6 +8,7 @@ import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";
+import FormEditor from "../components/Form/FormEditor";
 import ImportConfirmation from "../components/ImportConfirmation";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
@@ -21,7 +22,6 @@ import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
-
 
 const routes = [
   {
@@ -139,7 +139,7 @@ const routes = [
   {
     path: "/campaigns/",
     element: AllCampaigns,
-    hideInMenu:true
+    hideInMenu: true,
   },
   // {
   //   path: "/campaigns/sequences",
@@ -166,10 +166,15 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path        : "/campaign/edit/:id",
-    element     : EditCampaign,
-    hideInMenu  : true,
-  }
+    path: "/campaign/edit/:id",
+    element: EditCampaign,
+    hideInMenu: true,
+  },
+  {
+    path: "/form-editor/",
+    element: FormEditor,
+    hideInMenu: true,
+  },
 ];
 
 export default routes;
