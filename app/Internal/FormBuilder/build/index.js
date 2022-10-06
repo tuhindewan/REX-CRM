@@ -1156,75 +1156,579 @@ icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement
 
 /***/ }),
 
-/***/ "./src/components/email-field-block/index.js":
-/*!***************************************************!*\
-  !*** ./src/components/email-field-block/index.js ***!
-  \***************************************************/
+/***/ "./src/components/first-name-block/attributes.js":
+/*!*******************************************************!*\
+  !*** ./src/components/first-name-block/attributes.js ***!
+  \*******************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _attributes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./attributes */ "./src/components/email-field-block/attributes.js");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./src/components/email-field-block/edit.js");
-/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon */ "./src/components/email-field-block/icon.js");
-/* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./block */ "./src/components/email-field-block/block.js");
+const attributes = {
+  formLayout: {
+    type: 'string',
+    default: ''
+  },
+  firstName: {
+    type: 'boolean',
+    default: false
+  },
+  firstNameLabel: {
+    type: 'string',
+    default: 'First Name'
+  },
+  firstNamePlaceholder: {
+    type: 'string',
+    default: 'First Name'
+  },
+  isRequiredName: {
+    type: 'boolean',
+    default: false
+  },
+  inputFieldIcon: {
+    type: 'boolean',
+    default: true
+  },
+  fieldLabel: {
+    type: 'boolean',
+    default: false
+  },
+  requiredMark: {
+    type: 'boolean',
+    default: true
+  },
+  rowSpacing: {
+    type: 'number',
+    default: 12
+  },
+  labelTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group > label'
+    }]
+  },
+  labelColor: {
+    type: 'string',
+    default: '#363B4E'
+  },
+  labelSpacing: {
+    type: 'number',
+    default: 7
+  },
+  inputTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]'
+    }]
+  },
+  device: {
+    type: 'string',
+    default: 'md'
+  },
+  inputTextColor: {
+    type: 'string',
+    default: '#7A8B9A'
+  },
+  inputBgColor: {
+    type: 'string',
+    default: '#ffffff'
+  },
+  inputBorderRadius: {
+    type: 'number',
+    default: 5
+  },
+  inputPaddingTop: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingRight: {
+    type: 'integer',
+    default: 40
+  },
+  inputPaddingBottom: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingLeft: {
+    type: 'integer',
+    default: 14
+  },
+  inputBorderStyle: {
+    type: 'string',
+    default: 'solid'
+  },
+  inputBorderWidth: {
+    type: 'number',
+    default: 1
+  },
+  inputBorderColor: {
+    type: 'string',
+    default: '#DFE1E8'
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (attributes);
+
+/***/ }),
+
+/***/ "./src/components/first-name-block/block.js":
+/*!**************************************************!*\
+  !*** ./src/components/first-name-block/block.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
 /**
- * BLOCK: Basic with ESNext
- *
- * Registering a basic block with Gutenberg.
- * Simple block, renders and saves the same content without any interactivity.
- *
- * Using inline styles - no external stylesheet needed.  Not recommended!
- * because all of these styles will appear in `post_content`.
+ * External dependencies
  */
 
 
 
 
-
- // import '../../components/FieldRender';
-// Save CSS in Database/File
-
 const {
-  __
-} = wp.i18n; // const nonce = window.getwpf_block_object.nonce;
-// apiFetch.use(apiFetch.createNonceMiddleware(nonce));
-
+  RawHTML,
+  Component,
+  useEffect
+} = wp.element;
 const {
-  registerBlockType
-} = wp.blocks;
+  RichText
+} = wp.blockEditor;
 /**
- * Register Basic Block.
- *
- * Registers a new block provided a unique name and an object defining its
- * behavior. Once registered, the block is made available as an option to any
- * editor interface where blocks are implemented.
- *
- * @param  {string}   name     Block name.
- * @param  {Object}   settings Block settings.
- * @return {?WPBlock}          The block, if it has been successfully
- *                             registered; otherwise `undefined`.
+ * Internal dependencies
  */
 
-function EmailBlock() {
-  registerBlockType("mrmformfield/email-field-block", {
-    title: __("Email Field", "mrm"),
-    category: "common",
-    icon: _icon__WEBPACK_IMPORTED_MODULE_4__["default"].pricing,
-    supports: {
-      align: ['left', 'right', 'center']
-    },
-    attributes: _attributes__WEBPACK_IMPORTED_MODULE_2__["default"],
-    edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"],
-    save: _block__WEBPACK_IMPORTED_MODULE_5__["default"]
-  });
+const mrmFirstName = _ref => {
+  let {
+    attributes: {
+      formLayout,
+      firstNameLabel,
+      firstNamePlaceholder,
+      isRequiredName,
+      fieldLabel,
+      requiredMark,
+      inputBgColor,
+      inputTextColor,
+      inputBorderRadius,
+      inputPaddingTop,
+      inputPaddingRight,
+      inputPaddingBottom,
+      inputPaddingLeft,
+      inputBorderStyle,
+      inputBorderWidth,
+      inputBorderColor,
+      rowSpacing,
+      labelColor,
+      labelSpacing
+    }
+  } = _ref;
+  let layout = formLayout;
+  let fieldSpacing = {
+    marginBottom: rowSpacing + 'px'
+  };
+  let labelStyle = {
+    color: labelColor,
+    marginBottom: labelSpacing + 'px'
+  };
+  let checkboxLabelColor = {
+    color: labelColor
+  };
+  let inputStyle = {
+    backgroundColor: inputBgColor,
+    color: inputTextColor,
+    borderRadius: inputBorderRadius + 'px',
+    paddingTop: inputPaddingTop + 'px',
+    paddingRight: inputPaddingRight + 'px',
+    paddingBottom: inputPaddingBottom + 'px',
+    paddingLeft: inputPaddingLeft + 'px',
+    borderStyle: inputBorderStyle,
+    borderWidth: inputBorderWidth + 'px',
+    borderColor: inputBorderColor
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm mrm-optin-form mrm-gutenberg-optin-form-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `mrm-optin-form-wrapper ${layout}`
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-optin-form-group first-name",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "mrm-first-name",
+    style: labelStyle
+  }, firstNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(firstNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('First Name', 'mrm'), requiredMark && isRequiredName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "input-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    name: "first_name",
+    id: "mrm-first-name",
+    placeholder: firstNamePlaceholder,
+    required: isRequiredName,
+    style: inputStyle
+  })))))));
+};
+
+mrmFirstName.propTypes = {
+  attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
+};
+/* harmony default export */ __webpack_exports__["default"] = (mrmFirstName);
+
+/***/ }),
+
+/***/ "./src/components/first-name-block/edit.js":
+/*!*************************************************!*\
+  !*** ./src/components/first-name-block/edit.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+const {
+  withSelect,
+  withDispatch,
+  useSelect,
+  useDispatch
+} = wp.data;
+const {
+  Component,
+  RawHTML,
+  useEffect,
+  useState
+} = wp.element;
+const {
+  compose
+} = wp.compose;
+const {
+  TextControl,
+  SelectControl,
+  RangeControl,
+  TextareaControl,
+  Button,
+  Panel,
+  ToggleControl,
+  FormToggle,
+  PanelBody,
+  RadioGroup,
+  RadioControl,
+  Radio
+} = wp.components;
+const {
+  InspectorControls,
+  ColorPalette,
+  RichText,
+  useBlockProps,
+  BlockControls,
+  BlockAlignmentToolbar
+} = wp.blockEditor;
+const {
+  useEntityProp
+} = wp.coreData;
+/**
+ * Internal dependencies
+ */
+
+class Editor extends Component {
+  static propTypes = {
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+  };
+  onChangeAttribute = (key, value) => {
+    this.props.setAttributes({ ...this.props.attributes,
+      [key]: value
+    });
+  };
+  onChangePadding = (type, attribute, value) => {
+    this.props.setAttributes({
+      [attribute]: value
+    });
+  };
+  formFields = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props,
+        firstName = attributes.firstName,
+        firstNameLabel = attributes.firstNameLabel,
+        firstNamePlaceholder = attributes.firstNamePlaceholder,
+        isRequiredName = attributes.isRequiredName;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "First Name",
+      className: "inner-pannel"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "First Name Label",
+      value: firstNameLabel,
+      onChange: state => this.props.setAttributes({
+        firstNameLabel: state
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "First Name Placeholder",
+      value: firstNamePlaceholder,
+      onChange: state => this.props.setAttributes({
+        firstNamePlaceholder: state
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+      label: "Is Required First Name",
+      checked: isRequiredName,
+      onChange: state => setAttributes({
+        isRequiredName: state
+      })
+    }));
+  };
+  formStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props,
+        labelTypography = attributes.labelTypography,
+        device = attributes.device;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Form Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      value: attributes.labelColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.labelSpacing,
+      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
+    }));
+  };
+  inputFieldStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props,
+        inputTypography = attributes.inputTypography,
+        device = attributes.device;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Input Field Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      value: attributes.inputTextColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      value: attributes.inputBgColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.inputBorderRadius,
+      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      value: attributes.inputBorderStyle,
+      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      options: [{
+        value: 'none',
+        label: 'None'
+      }, {
+        value: 'solid',
+        label: 'Solid'
+      }, {
+        value: 'Dashed',
+        label: 'dashed'
+      }, {
+        value: 'Dotted',
+        label: 'dotted'
+      }, {
+        value: 'Double',
+        label: 'double'
+      }]
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.inputBorderWidth,
+      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      allowReset: true,
+      min: 0,
+      max: 5,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }));
+  };
+  getInspectorControls = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
+      key: "mrm-mrm-form-inspector-controls"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      id: "mrm-block-inspected-inspector-control-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
+  };
+
+  render() {
+    const {
+      attributes: {
+        firstNameLabel,
+        firstNamePlaceholder,
+        isRequiredName,
+        fieldLabel,
+        requiredMark,
+        buttonAlign,
+        inputBgColor,
+        inputTextColor,
+        inputBorderRadius,
+        inputPaddingTop,
+        inputPaddingRight,
+        inputPaddingBottom,
+        inputPaddingLeft,
+        inputBorderStyle,
+        inputBorderWidth,
+        inputBorderColor,
+        rowSpacing,
+        labelColor,
+        labelSpacing
+      }
+    } = this.props;
+    let fieldSpacing = {
+      marginBottom: rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: labelColor,
+      marginBottom: labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: labelColor
+    };
+    let inputStyle = {
+      backgroundColor: inputBgColor,
+      color: inputTextColor,
+      borderRadius: inputBorderRadius + 'px',
+      paddingTop: inputPaddingTop + 'px',
+      paddingRight: inputPaddingRight + 'px',
+      paddingBottom: inputPaddingBottom + 'px',
+      paddingLeft: inputPaddingLeft + 'px',
+      borderStyle: inputBorderStyle,
+      borderWidth: inputBorderWidth + 'px',
+      borderColor: inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm mrm-optin-form mrm-gutenberg-optin-form-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-mrm-form-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-mrm-form-group first-name",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: "mrm-first-name",
+      style: labelStyle
+    }, firstNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(firstNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('First Name', 'mrm'), requiredMark && isRequiredName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "input-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "text",
+      name: "first_name",
+      id: "mrm-first-name",
+      placeholder: firstNamePlaceholder,
+      required: isRequiredName,
+      style: inputStyle
+    })))))));
+  }
+
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (EmailBlock);
+/* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
+
+/***/ }),
+
+/***/ "./src/components/first-name-block/icon.js":
+/*!*************************************************!*\
+  !*** ./src/components/first-name-block/icon.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const icons = {};
+icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  id: "Layer_1",
+  enableBackground: "new 0 0 48 48",
+  height: "512",
+  viewBox: "0 0 48 48",
+  width: "512",
+  xmlns: "http://www.w3.org/2000/svg"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
+}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
+})))));
+/* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
 
@@ -1259,6 +1763,811 @@ function Header() {
     className: "mrm-from-builder-header__title"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Block Editor', 'getdavesbe')));
 }
+
+/***/ }),
+
+/***/ "./src/components/last-name-block/attributes.js":
+/*!******************************************************!*\
+  !*** ./src/components/last-name-block/attributes.js ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const attributes = {
+  formLayout: {
+    type: 'string',
+    default: ''
+  },
+  firstName: {
+    type: 'boolean',
+    default: false
+  },
+  firstNameLabel: {
+    type: 'string',
+    default: 'First Name'
+  },
+  firstNamePlaceholder: {
+    type: 'string',
+    default: 'First Name'
+  },
+  isRequiredName: {
+    type: 'boolean',
+    default: false
+  },
+  lastName: {
+    type: 'boolean',
+    default: false
+  },
+  lastNameLabel: {
+    type: 'string',
+    default: 'Last Name'
+  },
+  lastNamePlaceholder: {
+    type: 'string',
+    default: 'Last Name'
+  },
+  isRequiredLastName: {
+    type: 'boolean',
+    default: false
+  },
+  emailLabel: {
+    type: 'string',
+    default: 'Email'
+  },
+  emailPlaceholder: {
+    type: 'string',
+    default: 'Email'
+  },
+  phone: {
+    type: 'boolean',
+    default: false
+  },
+  phoneLabel: {
+    type: 'string',
+    default: 'Phone'
+  },
+  phonePlaceholder: {
+    type: 'string',
+    default: 'Phone'
+  },
+  isRequiredPhone: {
+    type: 'boolean',
+    default: false
+  },
+  websiteUrl: {
+    type: 'boolean',
+    default: false
+  },
+  websiteUrlLabel: {
+    type: 'string',
+    default: 'Website Url'
+  },
+  websiteUrlPlaceholder: {
+    type: 'string',
+    default: 'Website Url'
+  },
+  isRequiredWebsiteUrl: {
+    type: 'boolean',
+    default: false
+  },
+  message: {
+    type: 'boolean',
+    default: false
+  },
+  messageLabel: {
+    type: 'string',
+    default: 'Message'
+  },
+  messagePlaceholder: {
+    type: 'string',
+    default: 'Write your message here...'
+  },
+  isRequiredMessage: {
+    type: 'boolean',
+    default: false
+  },
+  acceptance_checkbox: {
+    type: 'boolean',
+    default: false
+  },
+  acceptanceCheckboxText: {
+    type: 'string',
+    default: 'I have read and agree the Terms & Condition.'
+  },
+  isRequiredAcceptance: {
+    type: 'boolean',
+    default: false
+  },
+  registration_checkbox: {
+    type: 'boolean',
+    default: false
+  },
+  data_to_checkout: {
+    type: 'boolean',
+    default: false
+  },
+  registration_permission: {
+    type: 'boolean',
+    default: false
+  },
+  registrationPermissionCheckboxText: {
+    type: 'string',
+    default: 'I agree to be registered as a subscriber.'
+  },
+  inputFieldIcon: {
+    type: 'boolean',
+    default: true
+  },
+  fieldLabel: {
+    type: 'boolean',
+    default: false
+  },
+  requiredMark: {
+    type: 'boolean',
+    default: true
+  },
+  enable_recaptcha: {
+    type: 'boolean',
+    default: false
+  },
+  recaptcha_site_key: {
+    type: 'string',
+    default: ''
+  },
+  recaptcha_secret_key: {
+    type: 'string',
+    default: ''
+  },
+  recapcha_token: {
+    type: 'string',
+    default: ''
+  },
+  rowSpacing: {
+    type: 'number',
+    default: 12
+  },
+  labelTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group > label'
+    }]
+  },
+  labelColor: {
+    type: 'string',
+    default: '#363B4E'
+  },
+  labelSpacing: {
+    type: 'number',
+    default: 7
+  },
+  inputTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]'
+    }]
+  },
+  device: {
+    type: 'string',
+    default: 'md'
+  },
+  inputTextColor: {
+    type: 'string',
+    default: '#7A8B9A'
+  },
+  inputBgColor: {
+    type: 'string',
+    default: '#ffffff'
+  },
+  inputBorderRadius: {
+    type: 'number',
+    default: 5
+  },
+  inputPaddingTop: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingRight: {
+    type: 'integer',
+    default: 40
+  },
+  inputPaddingBottom: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingLeft: {
+    type: 'integer',
+    default: 14
+  },
+  inputBorderStyle: {
+    type: 'string',
+    default: 'solid'
+  },
+  inputBorderWidth: {
+    type: 'number',
+    default: 1
+  },
+  inputBorderColor: {
+    type: 'string',
+    default: '#DFE1E8'
+  },
+  buttonTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group .btn-default'
+    }]
+  },
+  buttonTextColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonBgColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonHvrTextColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonHvrBgColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonBorderRadius: {
+    type: 'number',
+    default: 5
+  },
+  buttonPaddingTop: {
+    type: 'integer',
+    default: 12
+  },
+  buttonPaddingRight: {
+    type: 'integer',
+    default: 20
+  },
+  buttonPaddingBottom: {
+    type: 'integer',
+    default: 13
+  },
+  buttonPaddingLeft: {
+    type: 'integer',
+    default: 20
+  },
+  buttonBorderStyle: {
+    type: 'string',
+    default: 'none'
+  },
+  buttonBorderWidth: {
+    type: 'number',
+    default: 1
+  },
+  buttonBorderColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonHvrBorderColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonText: {
+    type: 'string',
+    default: 'Submit'
+  },
+  buttonAlign: {
+    type: 'string',
+    default: 'center'
+  },
+  postAction: {
+    type: 'string',
+    default: 'notification'
+  },
+  notification: {
+    type: 'string',
+    default: ''
+  },
+  redirect_action: {
+    type: 'string',
+    default: 'next_step'
+  },
+  redirect_url: {
+    type: 'string',
+    default: ''
+  },
+  adminEmail: {
+    type: 'string',
+    default: ''
+  },
+  emailSubject: {
+    type: 'string',
+    default: ''
+  },
+  customFieldTitle: {
+    type: '',
+    default: 'New Field'
+  },
+  customFieldSlug: {
+    type: '',
+    default: 'Field Slug'
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (attributes);
+
+/***/ }),
+
+/***/ "./src/components/last-name-block/block.js":
+/*!*************************************************!*\
+  !*** ./src/components/last-name-block/block.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+/**
+ * External dependencies
+ */
+
+
+
+
+const {
+  RawHTML,
+  Component,
+  useEffect
+} = wp.element;
+const {
+  RichText
+} = wp.blockEditor;
+/**
+ * Internal dependencies
+ */
+
+const mrmLastName = _ref => {
+  let {
+    attributes: {
+      formLayout,
+      lastNameLabel,
+      lastNamePlaceholder,
+      isRequiredLastName,
+      fieldLabel,
+      requiredMark,
+      inputBgColor,
+      inputTextColor,
+      inputBorderRadius,
+      inputPaddingTop,
+      inputPaddingRight,
+      inputPaddingBottom,
+      inputPaddingLeft,
+      inputBorderStyle,
+      inputBorderWidth,
+      inputBorderColor,
+      rowSpacing,
+      labelColor,
+      labelSpacing
+    }
+  } = _ref;
+  let layout = formLayout;
+  let fieldSpacing = {
+    marginBottom: rowSpacing + 'px'
+  };
+  let labelStyle = {
+    color: labelColor,
+    marginBottom: labelSpacing + 'px'
+  };
+  let checkboxLabelColor = {
+    color: labelColor
+  };
+  let inputStyle = {
+    backgroundColor: inputBgColor,
+    color: inputTextColor,
+    borderRadius: inputBorderRadius + 'px',
+    paddingTop: inputPaddingTop + 'px',
+    paddingRight: inputPaddingRight + 'px',
+    paddingBottom: inputPaddingBottom + 'px',
+    paddingLeft: inputPaddingLeft + 'px',
+    borderStyle: inputBorderStyle,
+    borderWidth: inputBorderWidth + 'px',
+    borderColor: inputBorderColor
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm mrm-gutenberg-last-name-form-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `mrm-last-form-wrapper ${layout}`
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-optin-form-group last-name",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "wpfnl-optin-form-group last-name",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wpfnl-last-name",
+    style: labelStyle
+  }, lastNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(lastNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Last Name', 'wpfnl'), requiredMark && isRequiredLastName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "input-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    name: "last_name",
+    id: "wpfnl-last-name",
+    placeholder: lastNamePlaceholder,
+    required: isRequiredLastName,
+    style: inputStyle
+  }))))))));
+};
+
+mrmLastName.propTypes = {
+  attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
+};
+/* harmony default export */ __webpack_exports__["default"] = (mrmLastName);
+
+/***/ }),
+
+/***/ "./src/components/last-name-block/edit.js":
+/*!************************************************!*\
+  !*** ./src/components/last-name-block/edit.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+const {
+  withSelect,
+  withDispatch,
+  useSelect,
+  useDispatch
+} = wp.data;
+const {
+  Component,
+  RawHTML,
+  useEffect,
+  useState
+} = wp.element;
+const {
+  compose
+} = wp.compose;
+const {
+  TextControl,
+  SelectControl,
+  RangeControl,
+  TextareaControl,
+  Button,
+  Panel,
+  ToggleControl,
+  FormToggle,
+  PanelBody,
+  RadioGroup,
+  RadioControl,
+  Radio
+} = wp.components;
+const {
+  InspectorControls,
+  ColorPalette,
+  RichText,
+  useBlockProps,
+  BlockControls,
+  BlockAlignmentToolbar
+} = wp.blockEditor;
+const {
+  useEntityProp
+} = wp.coreData;
+/**
+ * Internal dependencies
+ */
+
+class Editor extends Component {
+  static propTypes = {
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+  };
+  onChangeOBProps = (key, value) => {
+    this.props.setAttributes({
+      adminEmail: { ...this.props.attributes.adminEmail,
+        [key]: value
+      }
+    });
+    setTimeout(() => {
+      this.loadCheckoutMarkup();
+    }, 0);
+  };
+  onChangeAttribute = (key, value) => {
+    this.props.setAttributes({ ...this.props.attributes,
+      [key]: value
+    });
+  };
+  onChangePadding = (type, attribute, value) => {
+    this.props.setAttributes({
+      [attribute]: value
+    });
+  };
+  onChangeLayout = value => {
+    this.props.setAttributes({
+      formLayout: value
+    });
+  };
+  formFields = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props,
+        lastNameLabel = attributes.lastNameLabel,
+        lastNamePlaceholder = attributes.lastNamePlaceholder,
+        isRequiredLastName = attributes.isRequiredLastName;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Last Name",
+      className: "inner-pannel"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "Last Name Label",
+      value: lastNameLabel,
+      onChange: state => this.props.setAttributes({
+        lastNameLabel: state
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "Last Name Placeholder Text",
+      value: lastNamePlaceholder,
+      onChange: state => this.props.setAttributes({
+        lastNamePlaceholder: state
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+      label: "Is Required Last Name",
+      checked: isRequiredLastName,
+      onChange: state => setAttributes({
+        isRequiredLastName: state
+      })
+    }));
+  };
+  formStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props,
+        labelTypography = attributes.labelTypography,
+        device = attributes.device;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Form Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      value: attributes.labelColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.labelSpacing,
+      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
+    }));
+  };
+  inputFieldStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Input Field Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      value: attributes.inputTextColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      value: attributes.inputBgColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.inputBorderRadius,
+      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      value: attributes.inputBorderStyle,
+      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      options: [{
+        value: 'none',
+        label: 'None'
+      }, {
+        value: 'solid',
+        label: 'Solid'
+      }, {
+        value: 'Dashed',
+        label: 'dashed'
+      }, {
+        value: 'Dotted',
+        label: 'dotted'
+      }, {
+        value: 'Double',
+        label: 'double'
+      }]
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.inputBorderWidth,
+      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      allowReset: true,
+      min: 0,
+      max: 5,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }));
+  };
+  getInspectorControls = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
+      key: "mrm-mrm-form-inspector-controls"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      id: "mrm-block-inspected-inspector-control-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
+  };
+
+  render() {
+    const {
+      attributes: {
+        lastNameLabel,
+        lastNamePlaceholder,
+        isRequiredLastName,
+        requiredMark,
+        inputBgColor,
+        inputTextColor,
+        inputBorderRadius,
+        inputPaddingTop,
+        inputPaddingRight,
+        inputPaddingBottom,
+        inputPaddingLeft,
+        inputBorderStyle,
+        inputBorderWidth,
+        inputBorderColor,
+        rowSpacing,
+        labelColor,
+        labelSpacing
+      }
+    } = this.props;
+    let fieldSpacing = {
+      marginBottom: rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: labelColor,
+      marginBottom: labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: labelColor
+    };
+    let inputStyle = {
+      backgroundColor: inputBgColor,
+      color: inputTextColor,
+      borderRadius: inputBorderRadius + 'px',
+      paddingTop: inputPaddingTop + 'px',
+      paddingRight: inputPaddingRight + 'px',
+      paddingBottom: inputPaddingBottom + 'px',
+      paddingLeft: inputPaddingLeft + 'px',
+      borderStyle: inputBorderStyle,
+      borderWidth: inputBorderWidth + 'px',
+      borderColor: inputBorderColor
+    }; // display the map selector
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm mrm-gutenberg-last-name-form-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: `mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-mrm-form-group last-name",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: "mrm-last-name",
+      style: labelStyle
+    }, lastNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(lastNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Last Name', 'mrm'), requiredMark && isRequiredLastName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "input-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "text",
+      name: "last_name",
+      id: "mrm-last-name",
+      placeholder: lastNamePlaceholder,
+      required: isRequiredLastName,
+      style: inputStyle
+    })))))));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
+
+/***/ }),
+
+/***/ "./src/components/last-name-block/icon.js":
+/*!************************************************!*\
+  !*** ./src/components/last-name-block/icon.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const icons = {};
+icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  id: "Layer_1",
+  enableBackground: "new 0 0 48 48",
+  height: "512",
+  viewBox: "0 0 48 48",
+  width: "512",
+  xmlns: "http://www.w3.org/2000/svg"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
+}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
+})))));
+/* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
 
@@ -2596,17 +3905,6 @@ module.exports = window["React"];
 
 /***/ }),
 
-/***/ "@wordpress/api-fetch":
-/*!**********************************!*\
-  !*** external ["wp","apiFetch"] ***!
-  \**********************************/
-/***/ (function(module) {
-
-"use strict";
-module.exports = window["wp"]["apiFetch"];
-
-/***/ }),
-
 /***/ "@wordpress/block-editor":
 /*!*************************************!*\
   !*** external ["wp","blockEditor"] ***!
@@ -3046,13 +4344,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_library__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-library */ "@wordpress/block-library");
 /* harmony import */ var _wordpress_block_library__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_library__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor */ "./src/editor.js");
-/* harmony import */ var _components_email_field_block_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/email-field-block/index */ "./src/components/email-field-block/index.js");
-/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
-/* harmony import */ var _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/email-field-block/icon */ "./src/components/email-field-block/icon.js");
-/* harmony import */ var _components_email_field_block_attributes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/email-field-block/attributes */ "./src/components/email-field-block/attributes.js");
-/* harmony import */ var _components_email_field_block_edit__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/email-field-block/edit */ "./src/components/email-field-block/edit.js");
-/* harmony import */ var _components_email_field_block_block__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/email-field-block/block */ "./src/components/email-field-block/block.js");
-
+/* harmony import */ var _styles_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+/* harmony import */ var _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/email-field-block/icon */ "./src/components/email-field-block/icon.js");
+/* harmony import */ var _components_email_field_block_attributes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/email-field-block/attributes */ "./src/components/email-field-block/attributes.js");
+/* harmony import */ var _components_email_field_block_edit__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/email-field-block/edit */ "./src/components/email-field-block/edit.js");
+/* harmony import */ var _components_email_field_block_block__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/email-field-block/block */ "./src/components/email-field-block/block.js");
+/* harmony import */ var _components_first_name_block_block__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/first-name-block/block */ "./src/components/first-name-block/block.js");
+/* harmony import */ var _components_first_name_block_icon__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/first-name-block/icon */ "./src/components/first-name-block/icon.js");
+/* harmony import */ var _components_first_name_block_attributes__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./components/first-name-block/attributes */ "./src/components/first-name-block/attributes.js");
+/* harmony import */ var _components_first_name_block_edit__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components/first-name-block/edit */ "./src/components/first-name-block/edit.js");
+/* harmony import */ var _components_last_name_block_block__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/last-name-block/block */ "./src/components/last-name-block/block.js");
+/* harmony import */ var _components_last_name_block_icon__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/last-name-block/icon */ "./src/components/last-name-block/icon.js");
+/* harmony import */ var _components_last_name_block_attributes__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./components/last-name-block/attributes */ "./src/components/last-name-block/attributes.js");
+/* harmony import */ var _components_last_name_block_edit__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./components/last-name-block/edit */ "./src/components/last-name-block/edit.js");
 
 
 
@@ -3064,6 +4368,17 @@ const {
 const {
   __
 } = wp.i18n;
+ //Email
+
+
+
+
+ // Firstname
+
+
+
+
+ //last Name
 
 
 
@@ -3075,13 +4390,35 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
   registerBlockType("mrmformfield/email-field-block", {
     title: __("Email Field", "mrm"),
     category: "common",
-    icon: _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_6__["default"].pricing,
+    icon: _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_5__["default"].pricing,
     supports: {
       align: ['left', 'right', 'center']
     },
-    attributes: _components_email_field_block_attributes__WEBPACK_IMPORTED_MODULE_7__["default"],
-    edit: _components_email_field_block_edit__WEBPACK_IMPORTED_MODULE_8__["default"],
-    save: _components_email_field_block_block__WEBPACK_IMPORTED_MODULE_9__["default"]
+    attributes: _components_email_field_block_attributes__WEBPACK_IMPORTED_MODULE_6__["default"],
+    edit: _components_email_field_block_edit__WEBPACK_IMPORTED_MODULE_7__["default"],
+    save: _components_email_field_block_block__WEBPACK_IMPORTED_MODULE_8__["default"]
+  });
+  registerBlockType("mrmformfield/first-name-block", {
+    title: __("First Name", "mrm"),
+    category: "common",
+    icon: _components_first_name_block_icon__WEBPACK_IMPORTED_MODULE_10__["default"].pricing,
+    supports: {
+      align: ['left', 'right', 'center']
+    },
+    attributes: _components_first_name_block_attributes__WEBPACK_IMPORTED_MODULE_11__["default"],
+    edit: _components_first_name_block_edit__WEBPACK_IMPORTED_MODULE_12__["default"],
+    save: _components_first_name_block_block__WEBPACK_IMPORTED_MODULE_9__["default"]
+  });
+  registerBlockType("mrmformfield/last-name-block", {
+    title: __("Last Name", "mrm"),
+    category: "common",
+    icon: _components_last_name_block_icon__WEBPACK_IMPORTED_MODULE_14__["default"].pricing,
+    supports: {
+      align: ['left', 'right', 'center']
+    },
+    attributes: _components_last_name_block_attributes__WEBPACK_IMPORTED_MODULE_15__["default"],
+    edit: _components_last_name_block_edit__WEBPACK_IMPORTED_MODULE_16__["default"],
+    save: _components_last_name_block_block__WEBPACK_IMPORTED_MODULE_13__["default"]
   });
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
     settings: settings
