@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
-import { getWordPressRoles } from "../services/Import";
+import { getWordPressRoles, submitWordPressRoles } from "../services/Import";
 import ColumnItems from "../components/ContactDetails/ColumnItems";
+import WarningNotification from "../components/WarningNotification";
 
 export default function ImportWordpress() {
 
@@ -12,6 +13,8 @@ export default function ImportWordpress() {
   const [allSelected, setAllSelected] = useState(false);
   // single selected array which holds selected roles ids
   const [selected, setSelected] = useState([]);
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
 
   //Fetch roles from the native WordPress
   useEffect(() => {
@@ -31,17 +34,37 @@ export default function ImportWordpress() {
   }
 
   // Handle single role selection and set to an array state
-  const handleSelectOne = (e) => {
-    if (selected.includes(e.target.id)) {
+  const handleSelectOne = (event) => {
+    if (selected.includes(event.target.id)) {
       // already in selected list so remove it from the array
-      setSelected(selected.filter((element) => element != e.target.id));
+      setSelected(selected.filter((element) => element != event.target.id));
       // corner case where one item is deselected so hide all checked
       setAllSelected(false);
     } else {
       // add id to the array
-      setSelected([...selected, e.target.id]);
+      setSelected([...selected, event.target.id]);
     }
   };
+
+  const handleSave = (event) => {
+    submitWordPressRoles(selected).then((response) => {
+      if ( 201 == response.code ) {
+        // navigate("/contacts/import/csv/map", {
+        //   state: {
+        //     data: resJson.data,
+        //     type: "csv",
+        //   },
+        // });
+      } else {
+        setShowWarning("block");
+        setMessage(response.message);
+        const timer = setTimeout(() => {
+          setShowWarning("none");
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    });
+  }
 
   // Redirect to contacts list view 
   const routeChange = () => {
@@ -101,11 +124,13 @@ export default function ImportWordpress() {
               >
                 Cancel
               </button>
-              <button className="contact-save mintmrm-btn">Save</button>
+              <button className="contact-save mintmrm-btn" onClick={handleSave}>Save</button>
             </div>
           </div>
         </div>
       </div>
-    </div></>
+    </div>
+    <WarningNotification display={showWarning} message={message} />
+    </>
   );
 }

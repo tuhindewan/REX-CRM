@@ -809,12 +809,11 @@ class ContactController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
 
         try {
-            if(!isset( $params ) || !isset( $params["roles"] )) {
-                throw new Exception(__("Roles attribute is required.", "mrm"));
+            if(isset( $params["roles"] ) && empty( $params["roles"] ) ) {
+                return $this->get_error_response( __( 'Roles attribute is required.', 'mrm' ), 200 );
             }
 
             $wp_users = MRM_Importer::get_wp_users( $params["roles"] );
-
             foreach( $wp_users as $wp_user ) {
                 $user_data      = $wp_user->data;
                 if( isset( $user_data ) ){
@@ -829,6 +828,7 @@ class ContactController extends BaseController {
                                                 "source"        => 'WordPress'
                                             )
                                         );
+
 
                 $exists = ContactModel::is_contact_exist( $email );
                 if(!$exists) {
@@ -846,10 +846,10 @@ class ContactController extends BaseController {
                 }
                 
             }
-            return $this->get_success_response(__( "Import has been successful", "mrm" ), 200);
+            return $this->get_success_response(__( "Import has been successful", "mrm" ), 201);
 
         } catch(Exception $e) {
-            return $this->get_error_response(__( $e->getMessage(), "mrm" ), 400);
+            return $this->get_error_response(__( $e->getMessage(), "mrm" ), 200);
         }
     }
 
