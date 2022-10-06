@@ -2571,6 +2571,1870 @@ icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement
 
 /***/ }),
 
+/***/ "./src/components/mrm-button-block/attributes.js":
+/*!*******************************************************!*\
+  !*** ./src/components/mrm-button-block/attributes.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const attributes = {
+  formLayout: {
+    type: 'string',
+    default: ''
+  },
+  firstName: {
+    type: 'boolean',
+    default: false
+  },
+  firstNameLabel: {
+    type: 'string',
+    default: 'First Name'
+  },
+  firstNamePlaceholder: {
+    type: 'string',
+    default: 'First Name'
+  },
+  isRequiredName: {
+    type: 'boolean',
+    default: false
+  },
+  lastName: {
+    type: 'boolean',
+    default: false
+  },
+  lastNameLabel: {
+    type: 'string',
+    default: 'Last Name'
+  },
+  lastNamePlaceholder: {
+    type: 'string',
+    default: 'Last Name'
+  },
+  isRequiredLastName: {
+    type: 'boolean',
+    default: false
+  },
+  emailLabel: {
+    type: 'string',
+    default: 'Email'
+  },
+  emailPlaceholder: {
+    type: 'string',
+    default: 'Email'
+  },
+  phone: {
+    type: 'boolean',
+    default: false
+  },
+  phoneLabel: {
+    type: 'string',
+    default: 'Phone'
+  },
+  phonePlaceholder: {
+    type: 'string',
+    default: 'Phone'
+  },
+  isRequiredPhone: {
+    type: 'boolean',
+    default: false
+  },
+  websiteUrl: {
+    type: 'boolean',
+    default: false
+  },
+  websiteUrlLabel: {
+    type: 'string',
+    default: 'Website Url'
+  },
+  websiteUrlPlaceholder: {
+    type: 'string',
+    default: 'Website Url'
+  },
+  isRequiredWebsiteUrl: {
+    type: 'boolean',
+    default: false
+  },
+  message: {
+    type: 'boolean',
+    default: false
+  },
+  messageLabel: {
+    type: 'string',
+    default: 'Message'
+  },
+  messagePlaceholder: {
+    type: 'string',
+    default: 'Write your message here...'
+  },
+  isRequiredMessage: {
+    type: 'boolean',
+    default: false
+  },
+  acceptance_checkbox: {
+    type: 'boolean',
+    default: false
+  },
+  acceptanceCheckboxText: {
+    type: 'string',
+    default: 'I have read and agree the Terms & Condition.'
+  },
+  isRequiredAcceptance: {
+    type: 'boolean',
+    default: false
+  },
+  registration_checkbox: {
+    type: 'boolean',
+    default: false
+  },
+  data_to_checkout: {
+    type: 'boolean',
+    default: false
+  },
+  registration_permission: {
+    type: 'boolean',
+    default: false
+  },
+  registrationPermissionCheckboxText: {
+    type: 'string',
+    default: 'I agree to be registered as a subscriber.'
+  },
+  inputFieldIcon: {
+    type: 'boolean',
+    default: true
+  },
+  fieldLabel: {
+    type: 'boolean',
+    default: false
+  },
+  requiredMark: {
+    type: 'boolean',
+    default: true
+  },
+  enable_recaptcha: {
+    type: 'boolean',
+    default: false
+  },
+  recaptcha_site_key: {
+    type: 'string',
+    default: ''
+  },
+  recaptcha_secret_key: {
+    type: 'string',
+    default: ''
+  },
+  recapcha_token: {
+    type: 'string',
+    default: ''
+  },
+  rowSpacing: {
+    type: 'number',
+    default: 12
+  },
+  labelTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group > label'
+    }]
+  },
+  labelColor: {
+    type: 'string',
+    default: '#363B4E'
+  },
+  labelSpacing: {
+    type: 'number',
+    default: 7
+  },
+  inputTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]'
+    }]
+  },
+  device: {
+    type: 'string',
+    default: 'md'
+  },
+  inputTextColor: {
+    type: 'string',
+    default: '#7A8B9A'
+  },
+  inputBgColor: {
+    type: 'string',
+    default: '#ffffff'
+  },
+  inputBorderRadius: {
+    type: 'number',
+    default: 5
+  },
+  inputPaddingTop: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingRight: {
+    type: 'integer',
+    default: 40
+  },
+  inputPaddingBottom: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingLeft: {
+    type: 'integer',
+    default: 14
+  },
+  inputBorderStyle: {
+    type: 'string',
+    default: 'solid'
+  },
+  inputBorderWidth: {
+    type: 'number',
+    default: 1
+  },
+  inputBorderColor: {
+    type: 'string',
+    default: '#DFE1E8'
+  },
+  buttonTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group .btn-default'
+    }]
+  },
+  buttonTextColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonBgColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonHvrTextColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonHvrBgColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonBorderRadius: {
+    type: 'number',
+    default: 5
+  },
+  buttonPaddingTop: {
+    type: 'integer',
+    default: 12
+  },
+  buttonPaddingRight: {
+    type: 'integer',
+    default: 20
+  },
+  buttonPaddingBottom: {
+    type: 'integer',
+    default: 13
+  },
+  buttonPaddingLeft: {
+    type: 'integer',
+    default: 20
+  },
+  buttonBorderStyle: {
+    type: 'string',
+    default: 'none'
+  },
+  buttonBorderWidth: {
+    type: 'number',
+    default: 1
+  },
+  buttonBorderColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonHvrBorderColor: {
+    type: 'string',
+    default: ''
+  },
+  buttonText: {
+    type: 'string',
+    default: 'Submit'
+  },
+  buttonAlign: {
+    type: 'string',
+    default: 'center'
+  },
+  postAction: {
+    type: 'string',
+    default: 'notification'
+  },
+  notification: {
+    type: 'string',
+    default: ''
+  },
+  redirect_action: {
+    type: 'string',
+    default: 'next_step'
+  },
+  redirect_url: {
+    type: 'string',
+    default: ''
+  },
+  adminEmail: {
+    type: 'string',
+    default: ''
+  },
+  emailSubject: {
+    type: 'string',
+    default: ''
+  },
+  customFieldTitle: {
+    type: '',
+    default: 'New Field'
+  },
+  customFieldSlug: {
+    type: '',
+    default: 'Field Slug'
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (attributes);
+
+/***/ }),
+
+/***/ "./src/components/mrm-button-block/block.js":
+/*!**************************************************!*\
+  !*** ./src/components/mrm-button-block/block.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+/**
+ * External dependencies
+ */
+
+
+
+
+const {
+  RawHTML,
+  Component,
+  useEffect
+} = wp.element;
+const {
+  RichText
+} = wp.blockEditor;
+/**
+ * Internal dependencies
+ */
+
+const mrmButton = _ref => {
+  let {
+    attributes: {
+      formLayout,
+      buttonText,
+      rowSpacing,
+      buttonTextColor,
+      buttonBgColor,
+      buttonBorderRadius,
+      buttonPaddingTop,
+      buttonPaddingRight,
+      buttonPaddingBottom,
+      buttonPaddingLeft,
+      buttonBorderStyle,
+      buttonBorderWidth,
+      buttonBorderColor
+    }
+  } = _ref;
+  let layout = formLayout;
+  let fieldSpacing = {
+    marginBottom: rowSpacing + 'px'
+  };
+  let buttonStyle = {
+    backgroundColor: buttonBgColor,
+    color: buttonTextColor + ' !important',
+    borderRadius: buttonBorderRadius + 'px',
+    paddingTop: buttonPaddingTop + 'px',
+    paddingRight: buttonPaddingRight + 'px',
+    paddingBottom: buttonPaddingBottom + 'px',
+    paddingLeft: buttonPaddingLeft + 'px',
+    borderStyle: buttonBorderStyle,
+    borderWidth: buttonBorderWidth + 'px',
+    borderColor: buttonBorderColor
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm mrm-optin-form mrm-gutenberg-optin-form-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    method: "post"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `mrm-optin-form-wrapper ${layout}`
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-optin-form-group submit",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
+    className: "mrm-submit-button",
+    tagName: "button",
+    type: "submit",
+    style: buttonStyle,
+    value: buttonText
+  }))))));
+};
+
+mrmButton.propTypes = {
+  attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
+};
+/* harmony default export */ __webpack_exports__["default"] = (mrmButton);
+
+/***/ }),
+
+/***/ "./src/components/mrm-button-block/edit.js":
+/*!*************************************************!*\
+  !*** ./src/components/mrm-button-block/edit.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+const {
+  withSelect,
+  withDispatch,
+  useSelect,
+  useDispatch
+} = wp.data;
+const {
+  Component,
+  RawHTML,
+  useEffect,
+  useState
+} = wp.element;
+const {
+  compose
+} = wp.compose;
+const {
+  TextControl,
+  SelectControl,
+  RangeControl,
+  TextareaControl,
+  Button,
+  Panel,
+  ToggleControl,
+  FormToggle,
+  PanelBody,
+  RadioGroup,
+  RadioControl,
+  Radio
+} = wp.components;
+const {
+  InspectorControls,
+  ColorPalette,
+  RichText,
+  useBlockProps,
+  BlockControls,
+  BlockAlignmentToolbar
+} = wp.blockEditor;
+const {
+  useEntityProp
+} = wp.coreData;
+/**
+ * Internal dependencies
+ */
+
+class Editor extends Component {
+  static propTypes = {
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+  };
+  onChangeAttribute = (key, value) => {
+    this.props.setAttributes({ ...this.props.attributes,
+      [key]: value
+    });
+  };
+  onChangePadding = (type, attribute, value) => {
+    this.props.setAttributes({
+      [attribute]: value
+    });
+  };
+  onChangeLayout = value => {
+    this.props.setAttributes({
+      formLayout: value
+    });
+  };
+  buttonText = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Button Text",
+      className: "inner-pannel"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "Button Text",
+      value: attributes.buttonText,
+      onChange: state => setAttributes({
+        buttonText: state
+      })
+    }));
+  };
+  buttonStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Button Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: buttonTextColor => this.onChangeAttribute('buttonTextColor', buttonTextColor),
+      value: attributes.buttonTextColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: buttonBgColor => this.onChangeAttribute('buttonBgColor', buttonBgColor),
+      value: attributes.buttonBgColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.buttonBorderRadius,
+      onChange: btnRadius => this.onChangeAttribute('buttonBorderRadius', btnRadius),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      value: attributes.buttonBorderStyle,
+      onChange: buttonBorderStyle => this.onChangeAttribute('buttonBorderStyle', buttonBorderStyle),
+      options: [{
+        value: 'none',
+        label: 'None'
+      }, {
+        value: 'solid',
+        label: 'Solid'
+      }, {
+        value: 'Dashed',
+        label: 'dashed'
+      }, {
+        value: 'Dotted',
+        label: 'dotted'
+      }, {
+        value: 'Double',
+        label: 'double'
+      }]
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.buttonBorderWidth,
+      onChange: btnBorder => this.onChangeAttribute('buttonBorderWidth', btnBorder),
+      allowReset: true,
+      min: 0,
+      max: 5,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: buttonBorderColor => this.onChangeAttribute('buttonBorderColor', buttonBorderColor),
+      value: attributes.buttonBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }));
+  };
+  getInspectorControls = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
+      key: "mrm-mrm-form-inspector-controls"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      id: "mrm-block-inspected-inspector-control-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.buttonText(), this.buttonStyle())));
+  };
+
+  render() {
+    const {
+      attributes: {
+        buttonText,
+        buttonAlign,
+        rowSpacing,
+        buttonTextColor,
+        buttonBgColor,
+        buttonBorderRadius,
+        buttonPaddingTop,
+        buttonPaddingRight,
+        buttonPaddingBottom,
+        buttonPaddingLeft,
+        buttonBorderStyle,
+        buttonBorderWidth,
+        buttonBorderColor
+      }
+    } = this.props;
+    let fieldSpacing = {
+      marginBottom: rowSpacing + 'px'
+    };
+    let buttonStyle = {
+      backgroundColor: buttonBgColor,
+      color: buttonTextColor,
+      borderRadius: buttonBorderRadius + 'px',
+      paddingTop: buttonPaddingTop + 'px',
+      paddingRight: buttonPaddingRight + 'px',
+      paddingBottom: buttonPaddingBottom + 'px',
+      paddingLeft: buttonPaddingLeft + 'px',
+      borderStyle: buttonBorderStyle,
+      borderWidth: buttonBorderWidth + 'px',
+      borderColor: buttonBorderColor
+    }; // display the map selector
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm mrm-gutenberg-mrm-form-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+      method: "post"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: `mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-mrm-form-group submit",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockAlignmentToolbar, {
+      value: buttonAlign,
+      onChange: newAlign => this.props.setAttributes({
+        buttonAlign: newAlign
+      }),
+      controls: ["left", "center", "right"]
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
+      className: "mrm-submit-button",
+      tagName: "button",
+      type: "button",
+      value: buttonText,
+      style: buttonStyle,
+      onChange: content => this.props.setAttributes({
+        buttonText: content
+      }),
+      placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Submit', 'mrm')
+    }))))));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
+
+/***/ }),
+
+/***/ "./src/components/mrm-button-block/icon.js":
+/*!*************************************************!*\
+  !*** ./src/components/mrm-button-block/icon.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const icons = {};
+icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  id: "Layer_1",
+  enableBackground: "new 0 0 48 48",
+  height: "512",
+  viewBox: "0 0 48 48",
+  width: "512",
+  xmlns: "http://www.w3.org/2000/svg"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
+}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
+})))));
+/* harmony default export */ __webpack_exports__["default"] = (icons);
+
+/***/ }),
+
+/***/ "./src/components/mrm-custom-field/attributes.js":
+/*!*******************************************************!*\
+  !*** ./src/components/mrm-custom-field/attributes.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const attributes = {
+  field_type: {
+    type: 'string',
+    default: 'text'
+  },
+  field_name: {
+    type: 'string',
+    default: ''
+  },
+  field_label: {
+    type: 'string',
+    default: ''
+  },
+  field_require: {
+    type: 'boolean',
+    default: false
+  },
+  create_button: {
+    type: 'boolean',
+    default: true
+  },
+  field_slug: {
+    type: 'string',
+    default: ''
+  },
+  selectOption: {
+    type: 'array',
+    default: [// {
+      //     value: '',
+      //     label: '--Select--'
+      // },
+    ]
+  },
+  select_option_name: {
+    type: 'string',
+    default: ''
+  },
+  select_option_name_slug: {
+    type: 'string',
+    default: ''
+  },
+  radioOption: {
+    type: 'array',
+    default: []
+  },
+  radio_option_name: {
+    type: 'string',
+    default: ''
+  },
+  formLayout: {
+    type: 'string',
+    default: ''
+  },
+  firstName: {
+    type: 'boolean',
+    default: false
+  },
+  firstNameLabel: {
+    type: 'string',
+    default: 'First Name'
+  },
+  firstNamePlaceholder: {
+    type: 'string',
+    default: 'First Name'
+  },
+  isRequiredName: {
+    type: 'boolean',
+    default: false
+  },
+  inputFieldIcon: {
+    type: 'boolean',
+    default: true
+  },
+  fieldLabel: {
+    type: 'boolean',
+    default: false
+  },
+  requiredMark: {
+    type: 'boolean',
+    default: true
+  },
+  rowSpacing: {
+    type: 'number',
+    default: 12
+  },
+  labelTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group > label'
+    }]
+  },
+  labelColor: {
+    type: 'string',
+    default: '#363B4E'
+  },
+  labelSpacing: {
+    type: 'number',
+    default: 7
+  },
+  inputTypography: {
+    type: 'object',
+    default: {},
+    style: [{
+      selector: '.wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]'
+    }]
+  },
+  device: {
+    type: 'string',
+    default: 'md'
+  },
+  inputTextColor: {
+    type: 'string',
+    default: '#7A8B9A'
+  },
+  inputBgColor: {
+    type: 'string',
+    default: '#ffffff'
+  },
+  inputBorderRadius: {
+    type: 'number',
+    default: 5
+  },
+  inputPaddingTop: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingRight: {
+    type: 'integer',
+    default: 40
+  },
+  inputPaddingBottom: {
+    type: 'integer',
+    default: 11
+  },
+  inputPaddingLeft: {
+    type: 'integer',
+    default: 14
+  },
+  inputBorderStyle: {
+    type: 'string',
+    default: 'solid'
+  },
+  inputBorderWidth: {
+    type: 'number',
+    default: 1
+  },
+  inputBorderColor: {
+    type: 'string',
+    default: '#DFE1E8'
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (attributes);
+
+/***/ }),
+
+/***/ "./src/components/mrm-custom-field/block.js":
+/*!**************************************************!*\
+  !*** ./src/components/mrm-custom-field/block.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+/**
+ * External dependencies
+ */
+
+
+
+
+const {
+  RawHTML,
+  Component,
+  useEffect
+} = wp.element;
+const {
+  RichText
+} = wp.blockEditor;
+/**
+ * Internal dependencies
+ */
+
+const mrmCustomField = _ref => {
+  let {
+    attributes: {
+      field_type,
+      field_name,
+      field_label,
+      field_require,
+      selectOption,
+      select_option_name_slug,
+      radioOption,
+      field_slug,
+      rowSpacing,
+      labelColor,
+      labelSpacing,
+      inputBgColor,
+      inputTextColor,
+      inputBorderRadius,
+      inputPaddingTop,
+      inputPaddingRight,
+      inputPaddingBottom,
+      inputPaddingLeft,
+      inputBorderStyle,
+      inputBorderWidth,
+      inputBorderColor
+    }
+  } = _ref;
+  let fieldSpacing = {
+    marginBottom: rowSpacing + 'px'
+  };
+  let labelStyle = {
+    color: labelColor,
+    marginBottom: labelSpacing + 'px'
+  };
+  let checkboxLabelColor = {
+    color: labelColor
+  };
+  let inputStyle = {
+    backgroundColor: inputBgColor,
+    color: inputTextColor,
+    borderRadius: inputBorderRadius + 'px',
+    paddingTop: inputPaddingTop + 'px',
+    paddingRight: inputPaddingRight + 'px',
+    paddingBottom: inputPaddingBottom + 'px',
+    paddingLeft: inputPaddingLeft + 'px',
+    borderStyle: inputBorderStyle,
+    borderWidth: inputBorderWidth + 'px',
+    borderColor: inputBorderColor
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm mrm-gutenberg-form-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-form-wrapper"
+  }, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-form-group text",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "mrm-email",
+    style: labelStyle
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "input-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    name: field_name,
+    id: field_name,
+    placeholder: field_name,
+    required: field_require,
+    style: inputStyle
+  })))), field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-input-group",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: field_slug,
+    style: labelStyle
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    id: field_slug,
+    name: field_slug,
+    placeholder: field_name,
+    required: field_require,
+    rows: "4",
+    cols: "50",
+    style: inputStyle
+  })), field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-form-group date",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "mrm-date",
+    style: labelStyle
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "input-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "date",
+    name: field_name,
+    id: field_name,
+    placeholder: field_name,
+    required: field_require,
+    style: inputStyle
+  })))), field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-form-group radio"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    key: `mrm-${field_label}`,
+    className: "mrm-radio-group"
+  }, radioOption.map((option, index) => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "radio",
+      id: option.value,
+      name: option.value,
+      required: field_require,
+      style: inputStyle
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: field_slug,
+      style: labelStyle
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")));
+  }))), field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    key: `mrm-${field_label}`,
+    className: "mrm-checkbox-group",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "checkbox",
+    id: field_slug,
+    name: field_slug,
+    required: field_require,
+    style: inputStyle
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: field_slug,
+    style: checkboxLabelColor
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*"))), field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "mrm-form-group select"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    key: `mrm-${field_label}`,
+    className: "mrm-input-group",
+    style: fieldSpacing
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: field_slug,
+    style: labelStyle
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "required-mark"
+  }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    name: field_slug,
+    id: field_slug,
+    style: inputStyle
+  }, selectOption.map((option, index) => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: option.value
+    }, option.label);
+  })))))));
+};
+
+mrmCustomField.propTypes = {
+  attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
+};
+/* harmony default export */ __webpack_exports__["default"] = (mrmCustomField);
+
+/***/ }),
+
+/***/ "./src/components/mrm-custom-field/edit.js":
+/*!*************************************************!*\
+  !*** ./src/components/mrm-custom-field/edit.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+const {
+  withSelect,
+  withDispatch,
+  useSelect,
+  useDispatch
+} = wp.data;
+const {
+  Component,
+  RawHTML,
+  useEffect,
+  useState
+} = wp.element;
+const {
+  compose
+} = wp.compose;
+const {
+  TextControl,
+  SelectControl,
+  RangeControl,
+  TextareaControl,
+  Button,
+  Panel,
+  ToggleControl,
+  FormToggle,
+  PanelBody,
+  RadioGroup,
+  RadioControl,
+  Radio
+} = wp.components;
+const {
+  InspectorControls,
+  ColorPalette,
+  RichText,
+  useBlockProps,
+  BlockControls,
+  BlockAlignmentToolbar
+} = wp.blockEditor;
+const {
+  useEntityProp
+} = wp.coreData;
+/**
+ * Internal dependencies
+ */
+
+class Editor extends Component {
+  static propTypes = {
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+  };
+  onChangeAttribute = (key, value) => {
+    this.props.setAttributes({ ...this.props.attributes,
+      [key]: value
+    });
+  };
+  onChangePadding = (type, attribute, value) => {
+    this.props.setAttributes({
+      [attribute]: value
+    });
+  };
+  selectOptionList = () => {};
+  addNewRadioOption = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    const slug_name = this.makeSlug(attributes.field_name);
+    let defaultOption = {
+      value: slug_name,
+      label: 'label'
+    };
+
+    if ('radio' === attributes.field_type) {
+      attributes.radioOption.push(defaultOption);
+      setAttributes(attributes.radioOption);
+    }
+  };
+  customFields = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Custom Field",
+      className: "inner-pannel"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      label: "Field Type",
+      value: attributes.field_type,
+      onChange: select_type => this.onChangeAttribute('field_type', select_type),
+      options: [{
+        value: 'text',
+        label: 'Text'
+      }, {
+        value: 'textarea',
+        label: 'Text Area'
+      }, {
+        value: 'radio',
+        label: 'Radio Button'
+      }, {
+        value: 'checkbox',
+        label: 'Checkbox'
+      }, {
+        value: 'select',
+        label: 'Select'
+      }, {
+        value: 'date',
+        label: 'Date'
+      }]
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "Field Name",
+      value: attributes.field_name,
+      onChange: state => setAttributes({
+        field_name: state
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: " Field Label",
+      value: attributes.field_label,
+      onChange: state => setAttributes({
+        field_label: state
+      })
+    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      label: "Option Name" // value={ attributes.select_option_name }
+      ,
+      onChange: state => setAttributes({
+        select_option_name: state
+      })
+    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      onClick: () => {
+        this.addNewOption();
+      },
+      className: "components-button is-primary is-default mrm-action-button",
+      role: "button"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New Option')), attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+        value: option.value // onChange={ (state ) => setAttributes({ value: state }) }
+        ,
+        onChange: val => this.onChangeOptionField(option, val, index)
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        key: `mrm-delete-button-${index}`,
+        onClick: val => this.deleteOption(option, val, index),
+        className: "button  mrm-action-button",
+        title: "Delete Option",
+        role: "button"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('x')));
+    }), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      onClick: () => {
+        this.addNewRadioOption();
+      },
+      className: "components-button is-primary is-default mrm-action-button",
+      role: "button"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New')), attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+        value: option.label // onChange={ (state ) => setAttributes({ value: state }) }
+        ,
+        onChange: val => this.onChangeRadioLabelField(option, val, index)
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        key: `mrm-delete-button-${index}`,
+        onClick: val => this.deleteRadioButtonOption(option, val, index),
+        className: "button  mrm-action-button",
+        title: "Delete Option",
+        role: "button"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('x')));
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+      label: "Require",
+      checked: attributes.field_require,
+      onChange: state => setAttributes({
+        field_require: state
+      })
+    }));
+  };
+  onChangeRadioValueField = (option, val, index) => {
+    const {
+      setAttributes,
+      attributes: {
+        radioOption
+      }
+    } = this.props;
+    option.value = val;
+    const modifiedOption = radioOption.map((value, thisIndex) => {
+      if (index === thisIndex) {
+        value = { ...radioOption[index],
+          ...option
+        };
+      }
+
+      return value;
+    });
+    setAttributes({
+      radioOption: modifiedOption
+    });
+  };
+  onChangeRadioLabelField = (option, val, index) => {
+    const {
+      setAttributes,
+      attributes: {
+        radioOption
+      }
+    } = this.props;
+    option.label = val;
+    const modifiedOption = radioOption.map((value, thisIndex) => {
+      if (index === thisIndex) {
+        value = { ...radioOption[index],
+          ...option
+        };
+      }
+
+      return value;
+    });
+    setAttributes({
+      radioOption: modifiedOption
+    });
+  };
+  onChangeOptionField = (option, val, index) => {
+    const {
+      setAttributes,
+      attributes: {
+        selectOption
+      }
+    } = this.props;
+    option.label = val;
+    option.value = val;
+    const modifiedOption = selectOption.map((value, thisIndex) => {
+      if (index === thisIndex) {
+        value = { ...selectOption[index],
+          ...option
+        };
+      }
+
+      return value;
+    });
+    setAttributes({
+      selectOption: modifiedOption
+    });
+  };
+  deleteOption = (option, val, index) => {
+    const {
+      setAttributes,
+      attributes
+    } = this.props;
+
+    if (index > -1) {
+      // only splice array when item is found
+      attributes.selectOption.splice(index, 1); // 2nd parameter means remove one item only
+
+      setAttributes(attributes.selectOption);
+    }
+  };
+  deleteRadioButtonOption = (option, val, index) => {
+    const {
+      setAttributes,
+      attributes
+    } = this.props;
+
+    if (index > -1) {
+      // only splice array when item is found
+      attributes.radioOption.splice(index, 1); // 2nd parameter means remove one item only
+
+      setAttributes(attributes.radioOption);
+    }
+  };
+  addNewOption = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    const slug_name = this.makeSlug(attributes.select_option_name);
+    let defaultOption = {
+      value: slug_name,
+      label: attributes.select_option_name
+    };
+
+    if ('select' === attributes.field_type) {
+      attributes.selectOption.push(defaultOption);
+      setAttributes(attributes.selectOption);
+    }
+  };
+  formStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Form Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      value: attributes.labelColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.labelSpacing,
+      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
+    }));
+  };
+  inputFieldStyle = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props,
+        inputTypography = attributes.inputTypography,
+        device = attributes.device;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: "Input Field Style",
+      initialOpen: false
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      value: attributes.inputTextColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      value: attributes.inputBgColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.inputBorderRadius,
+      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      value: attributes.inputBorderStyle,
+      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      options: [{
+        value: 'none',
+        label: 'None'
+      }, {
+        value: 'solid',
+        label: 'Solid'
+      }, {
+        value: 'Dashed',
+        label: 'dashed'
+      }, {
+        value: 'Dotted',
+        label: 'dotted'
+      }, {
+        value: 'Double',
+        label: 'double'
+      }]
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.inputBorderWidth,
+      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      allowReset: true,
+      min: 0,
+      max: 5,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }));
+  };
+  getInspectorControls = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
+      key: "mrm-mrm-form-inspector-controls"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      id: "mrm-block-inspected-inspector-control-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), this.inputFieldStyle())));
+  };
+  /**
+   * Render Text Field
+   * @param attributes
+   * @returns {JSX.Element}
+   */
+
+  renderTextField = attributes => {
+    const slug_name = this.makeSlug(attributes.field_name);
+    this.props.setAttributes({
+      field_slug: slug_name
+    });
+    let fieldSpacing = {
+      marginBottom: attributes.rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: attributes.labelColor,
+      marginBottom: attributes.labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: attributes.labelColor
+    };
+    let inputStyle = {
+      backgroundColor: attributes.inputBgColor,
+      color: attributes.inputTextColor,
+      borderRadius: attributes.inputBorderRadius + 'px',
+      paddingTop: attributes.inputPaddingTop + 'px',
+      paddingRight: attributes.inputPaddingRight + 'px',
+      paddingBottom: attributes.inputPaddingBottom + 'px',
+      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderStyle: attributes.inputBorderStyle,
+      borderWidth: attributes.inputBorderWidth + 'px',
+      borderColor: attributes.inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: `mrm-${attributes.field_label}`,
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: "mrm-text-field",
+      style: labelStyle
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "input-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "text",
+      name: attributes.field_slug,
+      id: attributes.field_slug,
+      placeholder: attributes.field_name,
+      required: attributes.field_require,
+      style: inputStyle
+    })))));
+  };
+  /**
+   * Render Textarea Field
+   * @param attributes
+   * @returns {JSX.Element}
+   */
+
+  renderTextareaField = attributes => {
+    const slug_name = this.makeSlug(attributes.field_name);
+    this.props.setAttributes({
+      field_slug: slug_name
+    });
+    let fieldSpacing = {
+      marginBottom: attributes.rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: attributes.labelColor,
+      marginBottom: attributes.labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: attributes.labelColor
+    };
+    let inputStyle = {
+      backgroundColor: attributes.inputBgColor,
+      color: attributes.inputTextColor,
+      borderRadius: attributes.inputBorderRadius + 'px',
+      paddingTop: attributes.inputPaddingTop + 'px',
+      paddingRight: attributes.inputPaddingRight + 'px',
+      paddingBottom: attributes.inputPaddingBottom + 'px',
+      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderStyle: attributes.inputBorderStyle,
+      borderWidth: attributes.inputBorderWidth + 'px',
+      borderColor: attributes.inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: `mrm-${attributes.field_label}`,
+      className: "mrm-input-group",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: attributes.field_slug,
+      style: labelStyle
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+      id: attributes.field_slug,
+      name: attributes.field_slug,
+      placeholder: attributes.field_name,
+      required: attributes.field_require,
+      rows: "4",
+      cols: "50",
+      style: inputStyle
+    })));
+  };
+  /**
+   * Render Textarea Field
+   * @param attributes
+   * @returns {JSX.Element}
+   */
+
+  renderDateField = attributes => {
+    const slug_name = this.makeSlug(attributes.field_name);
+    this.props.setAttributes({
+      field_slug: slug_name
+    });
+    let fieldSpacing = {
+      marginBottom: attributes.rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: attributes.labelColor,
+      marginBottom: attributes.labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: attributes.labelColor
+    };
+    let inputStyle = {
+      backgroundColor: attributes.inputBgColor,
+      color: attributes.inputTextColor,
+      borderRadius: attributes.inputBorderRadius + 'px',
+      paddingTop: attributes.inputPaddingTop + 'px',
+      paddingRight: attributes.inputPaddingRight + 'px',
+      paddingBottom: attributes.inputPaddingBottom + 'px',
+      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderStyle: attributes.inputBorderStyle,
+      borderWidth: attributes.inputBorderWidth + 'px',
+      borderColor: attributes.inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: `mrm-${attributes.field_label}`,
+      className: "mrm-input-group",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: attributes.field_slug,
+      style: labelStyle
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "date",
+      id: attributes.field_slug,
+      name: attributes.field_slug,
+      required: attributes.field_require,
+      style: inputStyle
+    })));
+  };
+  /**
+   * Render Select Field
+   * @param attributes
+   * @returns {JSX.Element}
+   */
+
+  renderSelectField = attributes => {
+    const slug_name = this.makeSlug(attributes.field_name);
+    this.props.setAttributes({
+      field_slug: slug_name
+    });
+    let fieldSpacing = {
+      marginBottom: attributes.rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: attributes.labelColor,
+      marginBottom: attributes.labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: attributes.labelColor
+    };
+    let inputStyle = {
+      backgroundColor: attributes.inputBgColor,
+      color: attributes.inputTextColor,
+      borderRadius: attributes.inputBorderRadius + 'px',
+      paddingTop: attributes.inputPaddingTop + 'px',
+      paddingRight: attributes.inputPaddingRight + 'px',
+      paddingBottom: attributes.inputPaddingBottom + 'px',
+      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderStyle: attributes.inputBorderStyle,
+      borderWidth: attributes.inputBorderWidth + 'px',
+      borderColor: attributes.inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: `mrm-${attributes.field_label}`,
+      className: "mrm-input-group",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: attributes.field_slug,
+      style: labelStyle
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+      name: attributes.field_slug,
+      id: attributes.field_slug,
+      style: inputStyle
+    }, attributes.selectOption.map((value, index) => {
+      return this.renderSelectOption(value, index);
+    }))));
+  };
+  /**
+   * Render Select Option
+   * @param option
+   * @param index
+   * @returns {JSX.Element}
+   */
+
+  renderSelectOption = (option, index) => {
+    const {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: option.value
+    }, option.label));
+  };
+  renderCheckboxField = attributes => {
+    const slug_name = this.makeSlug(attributes.field_name);
+    this.props.setAttributes({
+      field_slug: slug_name
+    });
+    let fieldSpacing = {
+      marginBottom: attributes.rowSpacing + 'px'
+    };
+    let labelStyle = {
+      color: attributes.labelColor,
+      marginBottom: attributes.labelSpacing + 'px'
+    };
+    let checkboxLabelColor = {
+      color: attributes.labelColor
+    };
+    let inputStyle = {
+      backgroundColor: attributes.inputBgColor,
+      color: attributes.inputTextColor,
+      borderRadius: attributes.inputBorderRadius + 'px',
+      paddingTop: attributes.inputPaddingTop + 'px',
+      paddingRight: attributes.inputPaddingRight + 'px',
+      paddingBottom: attributes.inputPaddingBottom + 'px',
+      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderStyle: attributes.inputBorderStyle,
+      borderWidth: attributes.inputBorderWidth + 'px',
+      borderColor: attributes.inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: `mrm-${attributes.field_label}`,
+      className: "mrm-checkbox-group",
+      style: fieldSpacing
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "checkbox",
+      id: attributes.field_slug,
+      name: attributes.field_slug,
+      required: attributes.field_require,
+      style: inputStyle
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: attributes.field_slug,
+      style: checkboxLabelColor
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*"))));
+  };
+  renderRadioOption = (option, index) => {
+    const {
+      attributes,
+      setAttributes
+    } = this.props;
+    let labelStyle = {
+      color: attributes.labelColor,
+      marginBottom: attributes.labelSpacing + 'px'
+    };
+    let inputStyle = {
+      backgroundColor: attributes.inputBgColor,
+      color: attributes.inputTextColor,
+      borderRadius: attributes.inputBorderRadius + 'px',
+      paddingTop: attributes.inputPaddingTop + 'px',
+      paddingRight: attributes.inputPaddingRight + 'px',
+      paddingBottom: attributes.inputPaddingBottom + 'px',
+      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderStyle: attributes.inputBorderStyle,
+      borderWidth: attributes.inputBorderWidth + 'px',
+      borderColor: attributes.inputBorderColor
+    };
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "radio",
+      id: option.value,
+      name: option.value,
+      required: attributes.field_require,
+      style: inputStyle
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: attributes.field_slug,
+      style: labelStyle
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "required-mark"
+    }, "*")));
+  };
+  renderRadioField = attributes => {
+    const slug_name = this.makeSlug(attributes.field_name);
+    this.props.setAttributes({
+      field_slug: slug_name
+    });
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: `mrm-${attributes.field_label}`,
+      className: "mrm-input-group mrm-radio-group"
+    }, attributes.radioOption.map((option, index) => {
+      return this.renderRadioOption(option, index);
+    })));
+  };
+  /**
+   * Make Slug when render text
+   * @param values
+   * @returns {string}
+   */
+
+  makeSlug = values => {
+    const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
+    return slug;
+  };
+
+  render() {
+    const {
+      attributes,
+      setAttributes
+    } = this.props;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
+
+/***/ }),
+
+/***/ "./src/components/mrm-custom-field/icon.js":
+/*!*************************************************!*\
+  !*** ./src/components/mrm-custom-field/icon.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const icons = {};
+icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  id: "Layer_1",
+  enableBackground: "new 0 0 48 48",
+  height: "512",
+  viewBox: "0 0 48 48",
+  width: "512",
+  xmlns: "http://www.w3.org/2000/svg"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
+}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
+})))));
+/* harmony default export */ __webpack_exports__["default"] = (icons);
+
+/***/ }),
+
 /***/ "./src/components/notices/index.js":
 /*!*****************************************!*\
   !*** ./src/components/notices/index.js ***!
@@ -4357,6 +6221,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_last_name_block_icon__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/last-name-block/icon */ "./src/components/last-name-block/icon.js");
 /* harmony import */ var _components_last_name_block_attributes__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./components/last-name-block/attributes */ "./src/components/last-name-block/attributes.js");
 /* harmony import */ var _components_last_name_block_edit__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./components/last-name-block/edit */ "./src/components/last-name-block/edit.js");
+/* harmony import */ var _components_mrm_button_block_block__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./components/mrm-button-block/block */ "./src/components/mrm-button-block/block.js");
+/* harmony import */ var _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./components/mrm-button-block/icon */ "./src/components/mrm-button-block/icon.js");
+/* harmony import */ var _components_mrm_button_block_attributes__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./components/mrm-button-block/attributes */ "./src/components/mrm-button-block/attributes.js");
+/* harmony import */ var _components_mrm_button_block_edit__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./components/mrm-button-block/edit */ "./src/components/mrm-button-block/edit.js");
+/* harmony import */ var _components_mrm_custom_field_block__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./components/mrm-custom-field/block */ "./src/components/mrm-custom-field/block.js");
+/* harmony import */ var _components_mrm_custom_field_icon__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./components/mrm-custom-field/icon */ "./src/components/mrm-custom-field/icon.js");
+/* harmony import */ var _components_mrm_custom_field_attributes__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./components/mrm-custom-field/attributes */ "./src/components/mrm-custom-field/attributes.js");
+/* harmony import */ var _components_mrm_custom_field_edit__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./components/mrm-custom-field/edit */ "./src/components/mrm-custom-field/edit.js");
 
 
 
@@ -4379,6 +6251,16 @@ const {
 
 
  //last Name
+
+
+
+
+ //Button
+
+
+
+
+ // Custom Field
 
 
 
@@ -4419,6 +6301,28 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     attributes: _components_last_name_block_attributes__WEBPACK_IMPORTED_MODULE_15__["default"],
     edit: _components_last_name_block_edit__WEBPACK_IMPORTED_MODULE_16__["default"],
     save: _components_last_name_block_block__WEBPACK_IMPORTED_MODULE_13__["default"]
+  });
+  registerBlockType("mrmformfield/mrm-button-block", {
+    title: __("MRM Button", "mrm"),
+    category: "common",
+    icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].pricing,
+    supports: {
+      align: ['left', 'right', 'center']
+    },
+    attributes: _components_mrm_button_block_attributes__WEBPACK_IMPORTED_MODULE_19__["default"],
+    edit: _components_mrm_button_block_edit__WEBPACK_IMPORTED_MODULE_20__["default"],
+    save: _components_mrm_button_block_block__WEBPACK_IMPORTED_MODULE_17__["default"]
+  });
+  registerBlockType("mrmformfield/mrm-custom-field", {
+    title: __("MRM Custom Field", "mrm"),
+    category: "common",
+    icon: _components_mrm_custom_field_icon__WEBPACK_IMPORTED_MODULE_22__["default"].pricing,
+    supports: {
+      align: ['left', 'right', 'center']
+    },
+    attributes: _components_mrm_custom_field_attributes__WEBPACK_IMPORTED_MODULE_23__["default"],
+    edit: _components_mrm_custom_field_edit__WEBPACK_IMPORTED_MODULE_24__["default"],
+    save: _components_mrm_custom_field_block__WEBPACK_IMPORTED_MODULE_21__["default"]
   });
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
     settings: settings

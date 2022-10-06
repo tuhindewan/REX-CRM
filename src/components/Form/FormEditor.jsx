@@ -10,14 +10,15 @@ const FormEditor = () => {
 
   return (
     <>
-      <form>
         <div className="add-contact-form">
           <div className="contact-form-body">
             <InputItem label="Title" name="form_title" />
+            <button type="submit" className="contact-save mintmrm-btn ">
+              Save
+            </button>
             <div id="mrm-block-editor" className="getdave-sbe-block-editor block-editor"></div>
           </div>
         </div>
-      </form>
     </>
   );
 };
