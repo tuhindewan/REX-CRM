@@ -136,7 +136,6 @@ class MRM_Importer {
 
         // Get and formatting editable roles  
 		$editable_roles = get_editable_roles();
-		
         if ( ! is_array( $editable_roles ) || empty( $editable_roles ) ) {
 			return __( 'WordPress user roles not found', 'mrm' );
 		}

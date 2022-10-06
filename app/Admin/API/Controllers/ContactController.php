@@ -814,43 +814,98 @@ class ContactController extends BaseController {
             }
 
             $wp_users = MRM_Importer::get_wp_users( $params["roles"] );
-            foreach( $wp_users as $wp_user ) {
+
+            $contacts = array_map(function( $wp_user ){
                 $user_data      = $wp_user->data;
+
                 if( isset( $user_data ) ){
                     $user_metadata  = $user_data->usermeta;
                     $email          = $user_data->user_email;
-                }
-                
-                $contact = new ContactData( $email, array(
-                                                "first_name"    => $user_metadata['first_name'],
-                                                "last_name"     => $user_metadata['last_name'],
-                                                "status"        => $params['status'],
-                                                "source"        => 'WordPress'
-                                            )
-                                        );
-
-
-                $exists = ContactModel::is_contact_exist( $email );
-                if(!$exists) {
-                    
-                    $contact_id = ContactModel::insert( $contact );
-
-                    if(isset($params['tags'])){
-                        TagController::set_tags_to_contact( $params['tags'], $contact_id );
-                    }
-        
-                    if(isset($params['lists'])){
-                        ListController::set_lists_to_contact( $params['lists'], $contact_id );
-                    }
+                    $id             = $user_data->ID;
+                    $user_registered= $user_data->user_registered;
+                    $user_pass      = $user_data->user_pass;
+                    $user_login     = $user_data->user_login;
 
                 }
-                
-            }
-            return $this->get_success_response(__( "Import has been successful", "mrm" ), 201);
-
+                return array_merge([
+                    "user_email"        => $email,
+                    "id"                => $id,
+                    "user_registered"   => $user_registered,
+                    "user_pass"         => $user_pass,
+                    "user_login"        => $user_login
+                ], $user_metadata);
+            }, $wp_users);
+            return $this->get_success_response(__( "Import has been successful", "mrm" ), 201, $contacts);
         } catch(Exception $e) {
             return $this->get_error_response(__( $e->getMessage(), "mrm" ), 200);
         }
+    }
+
+
+    /**
+     * Insert native WP users as contacts into database
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function insert_native_wp_contacts( WP_REST_Request $request )
+    {
+        $skipped     = 0;
+        $exists      = 0;
+        $total_count = 0;
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $contacts = isset( $params['contacts'] ) ? $params['contacts'] : [];
+        try {
+            foreach( $contacts as $contact ) {  
+                $contact = new ContactData( $contact['user_email'], array(
+                                                                "first_name"    => $contact['first_name'],
+                                                                "last_name"     => $contact['last_name'],
+                                                                "status"        => $params['status'],
+                                                                "source"        => 'WordPress',
+                                                                "created_by"    => $params['created_by'],
+                                                                "wp_user_id"    => $contact['id']
+                                                            ));
+                $contact_email = trim($contact->get_email());   
+                if ($contact_email && is_email( $contact_email )) {
+                    $exists = ContactModel::is_contact_exist( $contact_email );
+
+                    if(!$exists) {
+                        $contact_id = ContactModel::insert( $contact );
+        
+                        if(isset($params['tags'])){
+                            TagController::set_tags_to_contact( $params['tags'], $contact_id );
+                        }
+            
+                        if(isset($params['lists'])){
+                            ListController::set_lists_to_contact( $params['lists'], $contact_id );
+                        }
+        
+                    }else {
+                        $exists++;
+                    }
+                }else {
+                    $skipped++;
+                }                                     
+                $total_count++;
+            }
+            /**
+             * Prepare data for sucess response
+             */
+            $result = array(
+                'total'                => $total_count,
+                'skipped'              => $skipped,
+                'existing_contacts'    => $exists,
+            );
+            return $this->get_success_response(__("Import contact has been successful", "mrm"), 201, $result);
+        } catch (\Throwable $th) {
+            return $this->get_error_response(__( $th->getMessage(), "mrm" ), 200);
+        }
+
+        
     }
 
 
