@@ -6,6 +6,7 @@ namespace Mint\MRM\Internal\FormBuilder;
 Class FormBuilderHelper {
     public function __construct()
     {
+        new GetMRM_Block_Manager;
         add_action( 'admin_enqueue_scripts', array($this,'mrm_block_editor_init') );
     }
 
