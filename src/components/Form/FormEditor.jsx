@@ -17,9 +17,8 @@ const FormEditor = () => {
       <form>
         <div className="add-contact-form">
           <div className="contact-form-body">
-            <h1>hksdfjghskdjfgh</h1>
             <InputItem label="Title" name="form_title" />
-            <div id="getdave-sbe-block-editor" className="getdave-sbe-block-editor block-editor"></div>
+            <div id="mrm-block-editor" className="getdave-sbe-block-editor block-editor"></div>
           </div>
         </div>
       </form>
