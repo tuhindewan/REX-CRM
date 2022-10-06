@@ -895,6 +895,10 @@ class ContactController extends BaseController {
 
                     if(!$exists) {
                         $contact_id = ContactModel::insert( $contact );
+                        $status = isset( $params['status'] ) ? $params['status'][0] : "pending";
+                        if( 'pending' == $status){
+                            MessageController::get_instance()->send_double_opt_in( $contact_id );
+                        }
         
                         if(isset($params['tags'])){
                             TagController::set_tags_to_contact( $params['tags'], $contact_id );
