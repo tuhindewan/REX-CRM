@@ -247,7 +247,7 @@ export default function Editor(props) {
         if (!id) return;
         fetchEmailBuilderData().then(res => {
             setShouldCallAPI(false)
-            setBuilderData(res?.email_data?.email_body)
+            setBuilderData(res?.email_data?.json_data)
         });
     });
 
