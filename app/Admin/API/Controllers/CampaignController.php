@@ -150,7 +150,7 @@ class CampaignController extends BaseController {
                 $data['campaign'] = $this->campaign_data;
 
                 //test_email_sending(for dev)
-                self::send_email_to_reciepents($this->campaign_data['id']);
+                self::send_email_to_reciepents($this->campaign_data);
 
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
             }
@@ -382,29 +382,55 @@ class CampaignController extends BaseController {
     /**
      * Function use to send email
      * 
-     * @param WP_REST_Request
+     * @param array $campaign
      * @return WP_REST_Response
      * @since 1.0.0 
      */
-    public function send_email_to_reciepents($campaign_id)
+    public function send_email_to_reciepents($campaign)
     {
+        $campaign_id = isset( $campaign['id'] ) ? $campaign['id'] : "";
         $recipients_emails = self::get_reciepents_email($campaign_id);
+        $recipients = array_map(function($recipients_email){
+            return $recipients_email['email'];
+        }, $recipients_emails);
 
-        // TODO : We have all the contacts email here and email send_time.
-        // TODO : Time to run CRON and start sending email here.
+        $email = isset( $campaign['emails'] ) ? $campaign['emails'][0] : [];
+        
+        $sender_email   = isset( $email['sender_email'] ) ? $email['sender_email'] : "";
+        $sender_name    = isset( $email['sender_name'] ) ? $email['sender_name'] : "";
+        $email_subject  = isset( $email['email_subject'] ) ? $email['email_subject'] : "";
+        $email_body     = isset( $email['email_body'] ) ? $email['email_body'] : "";
+        $headers = array(
+			'MIME-Version: 1.0',
+			'Content-type: text/html;charset=UTF-8'
+		);
+
+		$from    = '';
+        $from = 'From: '. $sender_name;
+        $headers[] = $from . ' <' . $sender_email . '>';
+        $headers[] = 'Reply-To:  ' . $sender_email;
+
+        try {
+            foreach( $recipients as $recipient ){
+                wp_mail( $recipient, $email_subject, "Dummy Email Body", $headers );
+            }
+
+        } catch(\Exception $e) {
+            return false;
+        }
     }
+
 
     /**
      * Function use to get recipients
      * 
      * @param WP_REST_Request
-     * @return WP_REST_Response
+     * @return array
      * @since 1.0.0 
      */
     public function get_reciepents_email($campaign_id)
     {
         $all_receipents = ModelsCampaign::get_campaign_meta($campaign_id);
-
         $group_ids = [];
 
         if( isset($all_receipents['recipients']['lists'], $all_receipents['recipients']['tags']) ){
@@ -414,13 +440,12 @@ class CampaignController extends BaseController {
             (isset($all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
             $group_ids = []);
         }
-
         $contact_ids = [];
 
         foreach ($group_ids as $group_id){
-            array_push($contact_ids,ContactGroupPivotModel::get_contacts_to_group($group_id));
+            $id = isset( $group_id['id'] ) ? $group_id['id'] : "";
+            array_push($contact_ids,ContactGroupPivotModel::get_contacts_to_group($id));
         }
-
         $recipients_ids = [];
 
         foreach ($contact_ids as $contact_id){

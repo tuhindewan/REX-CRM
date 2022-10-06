@@ -112,7 +112,8 @@ export default function AddCampaign(props) {
           delay_count: email.delay_count,
           delay_value: email.delay_value,
           sender_name: email.senderName,
-          email_body: email.email_body,
+          // email_body: email.email_body,
+          email_body: "Dummy Email Body",
           email_json: email.email_json,
         };
       }),
