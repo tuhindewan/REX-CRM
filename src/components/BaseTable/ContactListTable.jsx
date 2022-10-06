@@ -78,7 +78,7 @@ export default function ContactListTable(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterParams, setFilterParams] = useState([]);
 
-  const [isFilter, setIsFilter] = useState(0);
+  const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
   let { lists_ids, tags_ids, status } = useParams();
@@ -143,17 +143,17 @@ export default function ContactListTable(props) {
     let status_array = [];
 
     tags_array =
-      typeof filterData.tags == "string"
+      "string" == typeof filterData.tags
         ? filterData.tags.split(" ")
         : filterData.tags;
 
     lists_array =
-      typeof filterData.lists == "string"
+      "string" == typeof filterData.lists
         ? filterData.lists.split(" ")
         : filterData.lists;
 
     status_array =
-      typeof filterData.status == "string"
+      "string" == typeof filterData.status
         ? filterData.status.split(" ")
         : filterData.status;
 
@@ -203,9 +203,9 @@ export default function ContactListTable(props) {
       filterRequest.status != undefined
     ) {
       getFilter();
-      setIsFilter(1);
+      setIsFilter(true);
     } else {
-      setIsFilter(0);
+      setIsFilter(false);
     }
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
@@ -242,7 +242,7 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (0 == isFilter) getData();
+    if (false == isFilter) getData();
 
     const timer = setTimeout(() => {
       setShowNotification("none");
@@ -375,7 +375,7 @@ export default function ContactListTable(props) {
     const index = selectedLists.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
-    if (index >= 0) {
+    if (0 <= index) {
       setSelectedLists(selectedLists.filter((item) => item.id != id));
       setFilterAdder((prev) => ({
         ...prev,
@@ -390,7 +390,7 @@ export default function ContactListTable(props) {
     const index = selectedTags.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
-    if (index >= 0) {
+    if (0 <= index) {
       setSelectedTags(selectedTags.filter((item) => item.id != id));
       setFilterAdder((prev) => ({
         ...prev,
@@ -404,7 +404,7 @@ export default function ContactListTable(props) {
     const index = selectedStatus.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
-    if (index >= 0) {
+    if (0 <= index) {
       setSelectedStatus(selectedStatus.filter((item) => item.id != id));
       setFilterAdder((prev) => ({
         ...prev,
@@ -747,7 +747,7 @@ export default function ContactListTable(props) {
       </div>
       {totalPages > 1 && (
         <div className="contact-list-footer">
-          {isFilter === 0 ? (
+          {false === isFilter ? (
             <Pagination
               currentPage={page}
               pageSize={perPage}
