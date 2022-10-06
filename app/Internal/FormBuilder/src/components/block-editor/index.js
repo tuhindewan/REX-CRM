@@ -53,10 +53,10 @@ function BlockEditor( { settings: _settings } ) {
 
 		if ( storedBlocks?.length ) {
 			handleUpdateBlocks(() => parse(storedBlocks));
-			createInfoNotice( 'Blocks loaded', {
-				type: 'snackbar',
-				isDismissible: true,
-			} );
+			// createInfoNotice( 'Blocks loaded', {
+			// 	type: 'snackbar',
+			// 	isDismissible: true,
+			// } );
 		}
 	}, [] );
 

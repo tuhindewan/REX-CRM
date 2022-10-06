@@ -1,6 +1,6 @@
-/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************/
 /**
  * Colors
  */
@@ -73,7 +73,7 @@
  */
 .getdavesbe-header {
   align-items: center;
-  background: white;
+  background: #fff;
   border-bottom: 1px solid #ddd;
   display: flex;
   height: 60px;
@@ -149,7 +149,7 @@ body.is-fullscreen-mode .getdavesbe-header {
 }
 
 .getdavesbe-sidebar {
-  background: white;
+  background: #fff;
   border-left: 1px solid #ddd;
   bottom: 0;
   color: #1e1e1e;
@@ -207,7 +207,7 @@ body.is-fullscreen-mode .getdavesbe-header {
 }
 
 html.wp-toolbar {
-  background: white;
+  background: #fff;
 }
 
 body.block-editor-page {
@@ -220,9 +220,6 @@ body.block-editor-page #wpcontent {
 }
 body.block-editor-page #wpbody-content {
   padding-bottom: 0;
-}
-body.block-editor-page #wpbody-content > div:not(.block-editor):not(#screen-meta) {
-  display: none;
 }
 body.block-editor-page #wpfooter {
   display: none;

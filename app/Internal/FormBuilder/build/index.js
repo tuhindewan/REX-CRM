@@ -310,11 +310,10 @@ function BlockEditor(_ref) {
     const storedBlocks = window.localStorage.getItem('getdavesbeBlocks');
 
     if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
-      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
-      createInfoNotice('Blocks loaded', {
-        type: 'snackbar',
-        isDismissible: true
-      });
+      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks)); // createInfoNotice( 'Blocks loaded', {
+      // 	type: 'snackbar',
+      // 	isDismissible: true,
+      // } );
     }
   }, []);
   /**
