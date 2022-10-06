@@ -1,6 +1,6 @@
 .mintmrm-template-alert-wrapper {
   position: fixed;
-  top: 0;
+  top: 32px;
   right: 0;
   padding: 15px;
   width: calc(100% - 160px);
@@ -47,6 +47,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        cursor: pointer;
+        
         svg {
           path {
             fill: #686f7f;

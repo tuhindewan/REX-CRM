@@ -26,6 +26,7 @@ export default function CampaignConfirmation() {
               </Link>
             </div>
           </div>
+          
           <div className="confirmation-footer-section">
             <div className="share-campaign">
               <h5 className="title">Share Your Campaign</h5>
