@@ -22,6 +22,15 @@ class ListController extends BaseController {
     use Singleton;
 
     /**
+     * List object arguments
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    public $args;
+
+
+    /**
      * Function used to handle create  or update requests
      *
      * @param WP_REST_Request $request
@@ -31,26 +40,39 @@ class ListController extends BaseController {
      */
     public function create_or_update( WP_REST_Request $request ){
 
-        // Get values from API
+        // Get values from the API request
         $params = MRM_Common::get_api_params_values( $request );
+
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
+            return $this->get_error_response( __( 'List name is mandatory', 'mrm' ), 200);
         }
 
+        // List avaiability check
         $slug = sanitize_title( $title );
-        // list avaiability check
         $exist = ContactGroupModel::is_group_exist( $slug, "lists" );
         if ( $exist && !isset($params['list_id'])) {
-            return $this->get_error_response( __( 'List is already available', 'mrm' ),  200);
+            return $this->get_error_response( __( 'List is already available', 'mrm' ), 200);
         }
 
         // List object create and insert or update to database
-        try {
-            $list = new ListData( $params );
+        $this->args = array(
+            'title'    => $title,
+            'slug'     => $slug,
+            'data'     => isset( $params['data'] ) ? $params['data'] : ""
+        );
 
-            if(isset( $params['list_id']) ) {
+        try {
+            $list = new ListData( $this->args );
+
+            if( isset( $params['list_id']) ) {
+                // Check slugs for removing the duplication of same name
+                $other_slugs = ContactGroupModel::is_group_exist( $slug, "lists" );
+                $update_slug = ContactGroupModel::is_group_exist_by_id( $slug, "lists", $params['list_id'] );
+                if ( $other_slugs && !$update_slug ) {
+                    return $this->get_error_response( __( 'List is already available', 'mrm' ), 200);
+                }
                 $success = ContactGroupModel::update( $list, $params['list_id'], "lists" );
             } else {
                 $success = ContactGroupModel::insert( $list, "lists" );
@@ -65,6 +87,7 @@ class ListController extends BaseController {
             return $this -> get_error_response(__( 'List is not valid', 'mrm' ), 200);
         }
     }
+
 
 
     /**
@@ -213,7 +236,6 @@ class ListController extends BaseController {
 
 
         }, $lists);
-
         return ContactPivotController::set_groups_to_contact( $pivot_ids );
 
     }
@@ -231,30 +253,9 @@ class ListController extends BaseController {
     {
         $res = array_map(function ( $list ) use( $contact_ids ) {
 
-            // Create new list if not exist
-            if( filter_var($list, FILTER_VALIDATE_INT) === false ){
-
-                $slug = MRM_Common::create_slug($list);
-                $exist = ContactGroupModel::is_group_exist( $slug, 'lists' );
-                $list = array(
-                    'title' => $list,
-                    'slug'  => $slug,
-                    'data'  => null
-                );
-                if(!$exist){
-                    $new_list    = new ListData($list);
-                    $new_list_id = ContactGroupModel::insert( $new_list, 'lists' );
-                }
-                
-            }
-            $list = null;
-            if(isset($new_list_id)){
-                $list = $new_list_id;
-            }
-
             $pivot_ids = array_map(function ($contact_id) use ($list){
                 return array(
-                    'group_id'    =>  $list,
+                    'group_id'    =>  $list['id'],
                     'contact_id'  =>  $contact_id
                 );
             }, $contact_ids);

@@ -8,20 +8,21 @@ import {
 } from "react-router-dom";
 import Plus from "../Icons/Plus";
 // Internal dependencies
-import Swal from "sweetalert2";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import AlertPopup from "../AlertPopup";
+import DeletePopup from "../DeletePopup";
+import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
-import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
+import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
-import SingleContact from "./SingleContact";
-import ExportIcon from "../Icons/ExportIcon";
-import ExportDrawer from "../ExportDrawer";
 import FilterItems from "./FilterItems";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
+import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -79,10 +80,6 @@ export default function ContactListTable(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterParams, setFilterParams] = useState([]);
 
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
-
   const [isFilter, setIsFilter] = useState(0);
 
   const location = useLocation();
@@ -91,6 +88,8 @@ export default function ContactListTable(props) {
 
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -101,6 +100,13 @@ export default function ContactListTable(props) {
 
   const [isNoteForm, setIsNoteForm] = useState(true);
   const [isCloseNote, setIsCloseNote] = useState(true);
+  const [showAlert, setShowAlert] = useState("none");
+  const [isDelete, setIsDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
+  const [selectGroup, setSelectGroup] = useState("lists");
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -214,6 +220,11 @@ export default function ContactListTable(props) {
     });
 
     if (0 == isFilter) getData();
+
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [perPage, page, query, refresh, isFilter]);
 
   const toggleRefresh = () => {
@@ -226,39 +237,48 @@ export default function ContactListTable(props) {
   };
 
   async function deleteMultipleContacts() {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        if (selected.length > 0) {
-          const res = await fetch(
-            `${window.MRM_Vars.api_base_url}mrm/v1/contacts/`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-type": "application/json",
-              },
-              body: JSON.stringify({
-                contact_ids: selected,
-              }),
-            }
-          );
-          Swal.fire("Deleted!", "Contact has been deleted.", "success");
+    if (selected.length > 0) {
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
+    } else {
+      setShowAlert("block");
+    }
+  }
+
+  // Delete multiple contacts after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleContactsItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
           setAllSelected(false);
+          setSelected([]);
           useGlobalStore.setState({
             counterRefresh: !counterRefresh,
           });
-          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
         }
-      }
-    });
-  }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
 
   const handleSelectOne = (e) => {
     if (selected.includes(e.target.id)) {
@@ -300,8 +320,23 @@ export default function ContactListTable(props) {
   };
 
   const showListDropdown = () => {
-    setIsAssignTo(!isAssignTo);
-    setActive(!isActive);
+    if (!selected.length) {
+      setShowAlert("block");
+    } else {
+      setSelectGroup("lists");
+      setIsAssignTo(!isAssignTo);
+      setActive(!isActive);
+    }
+  };
+
+  const showTagDropdown = () => {
+    if (!selected.length) {
+      setShowAlert("block");
+    } else {
+      setSelectGroup("tags");
+      setIsAssignTo(!isAssignTo);
+      setActive(!isActive);
+    }
   };
 
   const showAddColumnList = () => {
@@ -404,7 +439,7 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+          {/* <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
             <ExportIcon />
             Export
           </button>
@@ -412,7 +447,7 @@ export default function ContactListTable(props) {
             isOpenNote={isNoteForm}
             isCloseNote={isCloseNote}
             setIsCloseNote={setIsCloseNote}
-          />
+          /> */}
 
           <div className="bulk-action">
             <button className="more-option" onClick={showMoreOption}>
@@ -424,13 +459,63 @@ export default function ContactListTable(props) {
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>
-              <li onClick={showListDropdown}>Assign to tag</li>
-              <li onClick={showListDropdown}>Assign to segment</li>
+              <li onClick={showTagDropdown}>Assign to tag</li>
+              {/* <li onClick={showListDropdown}>Assign to segment</li> */}
               <li className="delete" onClick={deleteMultipleContacts}>
                 Delete
               </li>
             </ul>
-            <AssignedItems isActive={isAssignTo} />
+            {"lists" == selectGroup ? (
+              <AssignedItems
+                selected={assignLists}
+                setSelected={setAssignLists}
+                endpoint="lists"
+                placeholder="Lists"
+                name="list"
+                listTitle="CHOOSE LIST"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsAssignTo={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+              />
+            ) : (
+              <AssignedItems
+                selected={assignTags}
+                setSelected={setAssignTags}
+                endpoint="tags"
+                placeholder="Tags"
+                name="tag"
+                listTitle="CHOOSE Tag"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsAssignTo={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -459,10 +544,10 @@ export default function ContactListTable(props) {
 
       <div className="pos-relative">
         <div className="add-column">
-          <button className="add-column-btn" onClick={showAddColumnList}>
+          {/* <button className="add-column-btn" onClick={showAddColumnList}>
             <PlusCircleIcon />
             <span className="tooltip">Add Column</span>
-          </button>
+          </button> */}
           <ul
             className={
               isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
@@ -534,13 +619,6 @@ export default function ContactListTable(props) {
               </tr>
             </thead>
             <tbody>
-              {!contactData.length && (
-                <tr>
-                  <td colspan="10" style={{ textAlign: "center" }}>
-                    No contact data found.
-                  </td>
-                </tr>
-              )}
               {contactData.map((contact, idx) => {
                 return (
                   <SingleContact
@@ -556,6 +634,15 @@ export default function ContactListTable(props) {
               })}
             </tbody>
           </table>
+          {contactData.length == 0 && (
+            <div className="mrm-empty-state-wrapper">
+              <ContactProfile />
+              <div>
+                No Contact Found{" "}
+                {search.length > 0 ? ` for the term "${search}"` : null}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {totalPages > 1 && (
@@ -569,6 +656,19 @@ export default function ContactListTable(props) {
           />
         </div>
       )}
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
+        />
+      </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }

@@ -3,28 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "../DeletePopup";
 import NoCampaign from "./NoCampaign";
 // Internal dependencies
-import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleCampaign } from "../../services/Campaign";
-import Plus from "../Icons/Plus";
+import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleCampaign from "./SingleCampaign";
 
 export default function CampaignListTable(props) {
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
-
-  //set navbar Buttons
-  useGlobalStore.setState({
-    navbarMarkup: (
-      <Link to="/campaigns/create">
-        <button className="add-contact-btn mintmrm-btn ">
-          <Plus /> Add Campaign
-        </button>
-      </Link>
-    ),
-    hideGlobalNav: false,
-  });
 
   let navigate = useNavigate();
   const location = useLocation();
@@ -35,23 +22,6 @@ export default function CampaignListTable(props) {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
-  // refresh the whole list if this boolean changes
-  const [refresh, setRefresh] = useState(true);
-  const [campaigns, setCampaigns] = useState([]);
-
-  // useEffect(() => {
-  //   getAllCampaigns().then((results) => {
-  //     setCampaigns(results.data);
-  //     if ("campaign-created" == location.state?.status) {
-  //       setShowNotification("block");
-  //       setMessage(location.state?.message);
-  //     }
-  //   });
-  //   const timer = setTimeout(() => {
-  //     setShowNotification("none");
-  //   }, 3000);
-  //   return () => clearTimeout(timer);
-  // }, [refresh]);
 
   // Navigate to campaign edit page
   function editField(campaign) {
@@ -94,11 +64,6 @@ export default function CampaignListTable(props) {
     setIsDelete("none");
   };
 
-  // the data is fetched again whenver refresh is changed
-  function toggleRefresh() {
-    setRefresh((prev) => !prev);
-  }
-
   return (
     <>
       <div className="campaign-list-table">
@@ -140,6 +105,17 @@ export default function CampaignListTable(props) {
               );
             })}
           </div>
+          {props.totalPages > 1 && (
+            <div className="table-footer">
+              <Pagination
+                currentPage={props.currentPage}
+                pageSize={props.pageSize}
+                onPageChange={props.onPageChange}
+                totalCount={props.totalCount}
+                totalPages={props.totalPages}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>

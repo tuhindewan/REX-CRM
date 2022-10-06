@@ -33,6 +33,10 @@ const BaseTable = () => {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [refresh]);
 
   <NavBar refresh={refresh} />;

@@ -66,26 +66,37 @@ class ContactController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
 
         // Email address validation
-        $email = isset( $params['email'] ) ? sanitize_text_field( $params['email'] ) : '';
+        if( isset($params['email']) ){
+            $email = sanitize_text_field( $params['email'] );
+            if ( empty( $email ) ) {
+                return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
+            }
+    
+            if ( !is_email( $email ) ) {
+                return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
+            }
+            $exist = ContactModel::is_contact_exist( $email );
+            if($exist && !isset($params['contact_id'])){
+                return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
+            }
+        }
+        
+
         // Contact object create and insert or update to database
         try {
 
             if( isset( $params['contact_id']) ){
 
                 $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
+                // Existing contact email address check
+                $other_slugs = ContactModel::is_contact_exist( $email );
+                $update_slug = ContactModel::is_contact_exist_by_id( $email, $contact_id );
+                if ( $other_slugs && !$update_slug ) {
+                    return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200);
+                }
                 $contact_id = ContactModel::update( $params, $contact_id );
 
             }else{
-                // Existing contact email address check
-                if ( empty( $email ) ) {
-                    return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
-                }
-
-                $exist = ContactModel::is_contact_exist( $email );
-                if($exist){
-                    return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
-                }
-    
                 $contact    = new ContactData( $email, $params );
                 $contact_id = ContactModel::insert( $contact );
                 if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] ){
@@ -123,13 +134,14 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params     = MRM_Common::get_api_params_values( $request );
-    
-        $contact    = ContactModel::get( $params['contact_id'] );
+        $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
+        $contact    = ContactModel::get( $contact_id );
         
         // Get and merge tags and lists
         if( $contact ) {
             $contact    = TagController::get_tags_to_contact( $contact );
             $contact    = ListController::get_lists_to_contact( $contact );
+            $contact    = NoteController::get_notes_to_contact( $contact );
         }
         
         if($contact && isset($contact['email'])) {
@@ -144,11 +156,12 @@ class ContactController extends BaseController {
 
             $contact ["added_by_login"] = $user_meta->data->user_login;
 
-            $avatar_url = 'https://www.gravatar.com/avatar/' . md5( $contact['email']) . '?s=100&&d=retro';
+            $avatar_url = add_query_arg( array(
+                's' => '100',
+                'd' => 'retro',
+            ), esc_url( 'https://www.gravatar.com/avatar/' . md5( $contact['email'] ) ));
 
             $contact ["avatar_url"] = $avatar_url;
-
-
             return $this->get_success_response("Query Successfull", 200, $contact);
         }
         return $this->get_error_response("Failed to Get Data", 400);
@@ -271,7 +284,7 @@ class ContactController extends BaseController {
             $isTag = true;
         }
 
-        if( isset($params['tags'], $params['contact_id']) ){
+        if( isset($params['lists'], $params['contact_id']) ){
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = true;
         }
@@ -313,11 +326,11 @@ class ContactController extends BaseController {
         }
 
         if($success && $isList && $isTag) {
-            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag and List has been added Successfully', 'mrm' ), 201 );
         }else if ($success && $isTag){
-            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Tag has been added Successfully', 'mrm' ), 201 );
         }else if ($success && $isList){
-            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'List has been added Successfully', 'mrm' ), 201 );
         }
         return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
     }

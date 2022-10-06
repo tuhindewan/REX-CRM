@@ -1,11 +1,12 @@
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import DeletePopup from "../DeletePopup";
+import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
@@ -13,15 +14,10 @@ import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
-import Selectbox from "../Selectbox";
+import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AddItems from "./AddItems";
-import EmailDrawer from "../EmailDrawer";
-import NoteDrawer from "../NoteDrawer";
 import SingleActivityFeed from "./SingleActivityFeed";
-import FilterItems from "../BaseTable/FilterItems";
-import CreateNoteIcon from "../Icons/CreateNoteIcon";
-import EmailIcon from "../Icons/EmailIcon";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -67,9 +63,7 @@ export default function ContactDetails() {
   useEffect(() => {
     // Get lists
     getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
-      });
+      setLists(results.data);
     });
 
     // Get tags
@@ -177,23 +171,12 @@ export default function ContactDetails() {
     setEditMode(!editMode);
   };
 
+  const [isDelete, setIsDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+
   const validate = (event, name, value) => {
     switch (name) {
-      case "email":
-        if (
-          !new RegExp(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          ).test(value)
-        ) {
-          setErrors({
-            ...errors,
-            email: "Enter a valid email address",
-          });
-        } else {
-          let newObj = omit(errors, "email");
-          setErrors(newObj);
-        }
-        break;
       case "phone_number":
         if (
           !new RegExp(
@@ -215,12 +198,6 @@ export default function ContactDetails() {
   };
 
   const handleUpdate = async () => {
-    if (Object.keys(errors).length !== 0) {
-      return window.alert(
-        errors["email"] ? errors["email"] : errors["phone_number"]
-      );
-    }
-
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
       {
@@ -231,8 +208,22 @@ export default function ContactDetails() {
         body: JSON.stringify(contactData),
       }
     );
-    toggleRefresh();
-    showEditMode();
+    const responseData = await res.json();
+    const code = responseData?.code;
+    console.log(responseData);
+
+    if (code === 201) {
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      toggleRefresh();
+      showEditMode();
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
+    }
   };
 
   //to open input field to add new tag to a contact
@@ -337,7 +328,20 @@ export default function ContactDetails() {
         body: JSON.stringify({ status: status }),
       }
     );
-    toggleRefresh();
+    const responseData = await res.json();
+    const code = responseData?.code;
+    if (code === 201) {
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      toggleRefresh();
+      showEditMode();
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
+    }
   };
 
   // Send Double opt-in email
@@ -367,23 +371,31 @@ export default function ContactDetails() {
   };
 
   const handleDelete = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteSingleContact(id).then((result) => {
-          if (result.status === 200) {
-            navigate("/contacts");
-          }
-        });
-      }
-    });
+    setIsDelete("block");
+    setDeleteTitle("Delete Contact");
+    setDeleteMessage("Are you sure you want to delete the contact?");
+  };
+
+  // Delete contact after delete confirmation
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleContact(id).then((result) => {
+        if (200 === result.code) {
+          navigate("../contacts", {
+            state: {
+              status: "contact-created",
+              message: result?.message,
+            },
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
   };
 
   const handleTagListDelete = async (id) => {
@@ -499,16 +511,19 @@ export default function ContactDetails() {
                   isOpenNote={isNoteForm}
                   isCloseNote={isCloseNote}
                   setIsCloseNote={setIsCloseNote}
+                  contactID={id}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
 
-                <button className="create-mail" onClick={emailForm}>
+                {/* <button className="create-mail" onClick={emailForm}>
                   <EmailIcon />
                 </button>
                 <EmailDrawer
                   isOpen={isEmailForm}
                   isClose={isClose}
                   setIsClose={setIsClose}
-                />
+                /> */}
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />
@@ -847,7 +862,7 @@ export default function ContactDetails() {
                   >
                     <div className="activities-header">
                       <h4 className="title">Activity Feed</h4>
-                      <Selectbox
+                      {/* <Selectbox
                         name="type"
                         options={[
                           {
@@ -870,13 +885,16 @@ export default function ContactDetails() {
                         onSelect={onSelect}
                         error={errors?.type}
                         index="profile-activity"
-                      />
+                      /> */}
                     </div>
 
                     <div className="activities-feed-wrapper">
-                      <SingleActivityFeed />
-                      <SingleActivityFeed />
-                      <SingleActivityFeed />
+                      <SingleActivityFeed
+                        notes={contactData?.notes}
+                        contactId={contactData?.id}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1029,6 +1047,14 @@ export default function ContactDetails() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onDeleteStatus={onDeleteStatus}
+        />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>
