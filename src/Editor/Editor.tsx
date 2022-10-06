@@ -4,45 +4,47 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@arco-design/web-react';
-import { IconGithub, IconMoonFill, IconSunFill } from '@arco-design/web-react/icon';
-import './EmailBuilder/styles/common.scss';
+import {  IconMoonFill, IconSunFill } from '@arco-design/web-react/icon';
+import { FormApi } from 'final-form';
+import { cloneDeep, isEqual } from 'lodash';
 
+import 'easy-email-editor/lib/style.css';
+import 'easy-email-extensions/lib/style.css';
+import '@arco-themes/react-easy-email-theme-purple/css/arco.css';
+import './styles/common.scss';
+
+/**
+ * internal dependencies
+ */
 import {
-    EmailEditor,
     EmailEditorProvider,
     IEmailTemplate,
+    DesktopEmailPreview,
+    MobileEmailPreview,
+    EditEmailPreview
 } from 'easy-email-editor';
 
-import { DesktopEmailPreview } from './EmailBuilder/components/EmailEditor/components/DesktopEmailPreview';
-import { MobileEmailPreview } from './EmailBuilder/components/EmailEditor/components/MobileEmailPreview';
-import { EditEmailPreview } from './EmailBuilder/components/EmailEditor/components/EditEmailPreview';
 
 import {
     ExtensionProps,
     StandardLayout
 } from 'easy-email-extensions';
-import 'easy-email-editor/lib/style.css';
-import 'easy-email-extensions/lib/style.css';
-import '@arco-themes/react-easy-email-theme-purple/css/arco.css';
-import { CustomBlocksType } from './CustomBlocks/constant';
-import './CustomBlocks';
+
 import {
     AdvancedType,
     IBlockData
 } from 'easy-email-core';
 
-import { FormApi } from 'final-form';
-import { cloneDeep, isEqual } from 'lodash';
 
-/**
- * internal dependencies
- */
+import { CustomBlocksType } from './CustomBlocks/constant';
+import './CustomBlocks';
+
 //----icon components----
-import DoubleAngleLeftIcon from './EmailBuilder/Icon/DoubleAngleLeftIcon';
-import MoreOptionIcon from './EmailBuilder/Icon/MoreOptionIcon';
-import DesktopIocn from './EmailBuilder/Icon/DesktopIocn';
-import MobileIcon from './EmailBuilder/Icon/MobileIcon';
-import EditIcon from './EmailBuilder/Icon/EditIcon';
+import DoubleAngleLeftIcon from './Icon/DoubleAngleLeftIcon';
+import MoreOptionIcon from './Icon/MoreOptionIcon';
+import DesktopIcon from './Icon/DesktopIcon';
+import MobileIcon from './Icon/MobileIcon';
+import EditIcon from './Icon/EditIcon';
 
 const defaultCategories: ExtensionProps['categories'] = [
     {
@@ -226,7 +228,7 @@ export default function Editor() {
     /**
      * set initial value
      */
-    const initialValues: IEmailTemplate | null = useMemo(() => {
+    const initialValues: { subTitle: string; subject: string; type: string; content: { data: { value: { fonts: any[]; headStyles: any[]; headAttributes: string; responsive: boolean; "font-size": string; "line-height": string; "font-family": string; "text-color": string; breakpoint: string } }; children: any[]; attributes: { "background-color": string; "css-class": string; width: string }; type: string } } | IBlockData<any, any> = useMemo(() => {
         if ( !builderData ) return defaultValues;
         const sourceData = cloneDeep(builderData) as IBlockData;
 
@@ -352,94 +354,96 @@ export default function Editor() {
 
     return (
         <>
-            <EmailEditorProvider
-                data={initialValues}
-                height={'calc(100vh - 65px)'}
-                dashed={false}
-                autoComplete
-                enabledLogic
-                fontList={fontList}
-                mergeTags={dataSource}
-                onChangeCategory={onChangeCategory}
-                socialIcons={socialIcons}
-                onSubmit={onSubmit}
-            >
-                {({ values }, { submit }) => {
-                    return (
-                        <div>
-                            <div className="mrm-editor-header" style={{ background: 'var(--color-bg-2)' }} >
-                                <div className="header-left">
-                                    <Button className='back-from-editor' title='Back'>
-                                        <DoubleAngleLeftIcon />
-                                    </Button>
-
-                                    <div className="responsive-check">
-                                        <Button className="edit-mode" title='Edit Mode' onClick={ e=> setActivePreview('edit')} >
-                                            <EditIcon />
+            <div className='mrm-email-editor'>
+                <EmailEditorProvider
+                    data={initialValues}
+                    height={'calc(100vh - 65px)'}
+                    dashed={false}
+                    autoComplete
+                    enabledLogic
+                    fontList={fontList}
+                    mergeTags={dataSource}
+                    onChangeCategory={onChangeCategory}
+                    socialIcons={socialIcons}
+                    onSubmit={onSubmit}
+                >
+                    {({ values }, { submit }) => {
+                        return (
+                            <div>
+                                <div className="mrm-editor-header" style={{ background: 'var(--color-bg-2)' }} >
+                                    <div className="header-left">
+                                        <Button className='back-from-editor' title='Back'>
+                                            <DoubleAngleLeftIcon />
                                         </Button>
 
-                                        <Button className="desktop-mode" title='Desktop View' onClick={ e=> setActivePreview('pc')} >
-                                            <DesktopIocn />
+                                        <div className="responsive-check">
+                                            <Button className="edit-mode" title='Edit Mode' onClick={ e=> setActivePreview('edit')} >
+                                                <EditIcon />
+                                            </Button>
+
+                                            <Button className="desktop-mode" title='Desktop View' onClick={ e=> setActivePreview('pc')} >
+                                                <DesktopIcon />
+                                            </Button>
+
+                                            <Button className="mobile-mode" title='Mobile View' onClick={ e=> setActivePreview('mobile')} >
+                                                <MobileIcon />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <div className='header-right'>
+                                        <Button
+                                            className="mood-change-btn"
+                                            onClick={() => setIsDarkMode(v => !v)}
+                                            shape='circle'
+                                            type='text'
+                                            icon={isDarkMode ? <IconMoonFill /> : <IconSunFill />}
+                                        ></Button>
+
+                                        <Button
+                                            className={showMore ? 'more-option show-option-list': 'more-option'}
+                                            // onClick={showMoreOption}
+                                        >
+                                            <MoreOptionIcon />
+                                            <ul className="more-option-list">
+                                                <li>
+                                                    <Button onClick={() => onExportHtml(values)}>Export html</Button>
+                                                    {/*<Button onClick={openMergeTagsModal}>Update mergeTags</Button>*/}
+                                                    {/*<Button onClick={() => onExportMJML(values)}>Export MJML</Button>*/}
+                                                    <Button onClick={() => onExportHtml(values)}>Export html</Button>
+                                                </li>
+                                            </ul>
                                         </Button>
 
-                                        <Button className="mobile-mode" title='Mobile View' onClick={ e=> setActivePreview('mobile')} >
-                                            <MobileIcon />
+                                        <Button
+                                            // onClick={() => openModal(values, mergeTags)}
+                                        >
+                                            Send Test
+                                        </Button>
+
+                                        <Button
+                                            // loading={isSubmitting}
+                                            type='primary'
+                                            onClick={() => submit}
+                                        >
+                                            Save
                                         </Button>
                                     </div>
                                 </div>
-
-                                <div className='header-right'>
-                                    <Button
-                                        className="mood-change-btn"
-                                        onClick={() => setIsDarkMode(v => !v)}
-                                        shape='circle'
-                                        type='text'
-                                        icon={isDarkMode ? <IconMoonFill /> : <IconSunFill />}
-                                    ></Button>
-
-                                    <Button
-                                        className={showMore ? 'more-option show-option-list': 'more-option'}
-                                        // onClick={showMoreOption}
-                                    >
-                                        <MoreOptionIcon />
-                                        <ul className="more-option-list">
-                                            <li>
-                                                <Button onClick={() => onExportHtml(values)}>Export html</Button>
-                                                {/*<Button onClick={openMergeTagsModal}>Update mergeTags</Button>*/}
-                                                {/*<Button onClick={() => onExportMJML(values)}>Export MJML</Button>*/}
-                                                <Button onClick={() => onExportHtml(values)}>Export html</Button>
-                                            </li>
-                                        </ul>
-                                    </Button>
-
-                                    <Button
-                                        // onClick={() => openModal(values, mergeTags)}
-                                    >
-                                        Send Test
-                                    </Button>
-
-                                    <Button
-                                        // loading={isSubmitting}
-                                        type='primary'
-                                        onClick={() => submit}
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
+                                <StandardLayout
+                                    compact={false}
+                                    showSourceCode={false}
+                                    categories={defaultCategories}
+                                >
+                                    {'edit'   === activePreview && <EditEmailPreview />}
+                                    {'pc'     === activePreview && <DesktopEmailPreview/>}
+                                    {'mobile' === activePreview && <MobileEmailPreview/>}
+                                </StandardLayout>
                             </div>
-                            <StandardLayout
-                                compact={false}
-                                showSourceCode={false}
-                                categories={defaultCategories}
-                            >
-                                {'edit'   === activePreview && <EditEmailPreview />}
-                                {'pc'     === activePreview && <DesktopEmailPreview/>}
-                                {'mobile' === activePreview && <MobileEmailPreview/>}
-                            </StandardLayout>
-                        </div>
-                    );
-                }}
-            </EmailEditorProvider>
+                        );
+                    }}
+                </EmailEditorProvider>
+            </div>
         </>
     )
 }
