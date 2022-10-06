@@ -214,7 +214,6 @@ class TagController extends BaseController {
 
     /**
      * Add tags to new contact
-     * 
      * @param array $tags
      * @param int $contact_id
      * 
