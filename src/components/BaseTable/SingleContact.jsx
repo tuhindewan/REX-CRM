@@ -148,8 +148,12 @@ export default function SingleContact(props) {
                         : "mintmrm-dropdown"
                     }
                   >
-                    <li style={{ display: "flex" }} onClick={handleUpdate}>
-                      <span> View </span>
+                    <li
+                      className="action-list"
+                      onClick={handleUpdate}
+                    >
+                      <EyeIcon />
+                      View
                     </li>
                     <li
                       className="delete"

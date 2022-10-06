@@ -164,6 +164,7 @@ export default function CustomSelect(props) {
     <>
       <div className="mrm-custom-select-container" key="container">
         <button
+          type="button"
           className={
             activeCustomSelect == customSelectUUID.current &&
             !hideAllCustomSelect
@@ -182,7 +183,12 @@ export default function CustomSelect(props) {
               return (
                 <span key={item.id} className="mrm-custom-selected-items">
                   {item.title}
-                  <CrossIcon onClick={(e) => deleteSelected(e, item.id)} />
+                  <div
+                    className="cross-icon"
+                    onClick={(e) => deleteSelected(e, item.id)}
+                  >
+                    <CrossIcon />
+                  </div>
                 </span>
               );
             })}
