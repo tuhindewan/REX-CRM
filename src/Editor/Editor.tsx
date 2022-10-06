@@ -174,7 +174,9 @@ const socialIcons = [
     },
 ];
 
-export default function Editor() {
+export default function Editor(props) {
+
+    const { selectedEmailIndex, emailData, isNewCampaign, campaignData } = props;
 
     const [ dataSource, setDataSource ] = useState({
         productsList: []
@@ -220,10 +222,7 @@ export default function Editor() {
         }
     }
 
-
-    const { id }    = useParams();
-    const emailID   = '1';
-
+    const { id }        = useParams();
 
     /**
      * set initial value
@@ -240,7 +239,7 @@ export default function Editor() {
         if ( !shouldCallAPI ) return;
         fetchEmailBuilderData().then(res => {
             setShouldCallAPI(false)
-            setBuilderData(res?.email_body)
+            setBuilderData(res?.email_data?.email_body)
         });
     });
 
@@ -252,7 +251,7 @@ export default function Editor() {
 
 
     const fetchEmailBuilderData = async () => {
-        let rest_url    = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailID}`;
+        let rest_url    = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex+1}`;
         const response  = await fetch(rest_url);
         return await response.json();
     }
@@ -265,19 +264,38 @@ export default function Editor() {
      * @since 1.0.0
      */
     const saveEmailContent = async (values) => {
-        const response = await fetch(
-            `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailID}`,
-            {
-                method: 'POST',
-                headers: {
-                    "Content-type": "application/json",
-                },
-                body: JSON.stringify({
-                    'email_body' : values,
-                    'status'     : 'published'
-                }),
-            }
-        )
+
+        if ( isNewCampaign ) {
+            const response = await fetch(
+                `${window.MRM_Vars.api_base_url}mrm/v1/campaign/email/create`,
+                {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        'email_body'    : values,
+                        'status'        : 'published',
+                        'email_index'   : selectedEmailIndex,
+                        'campaign_data' : campaignData
+                    }),
+                }
+            )
+        } else {
+            const response = await fetch(
+                `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex+1}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        'email_body' : values,
+                        'status'     : 'published',
+                    }),
+                }
+            )
+        }
     }
 
 
@@ -301,10 +319,10 @@ export default function Editor() {
                     form.restart(values);
                     return;
                 }
-                saveEmailContent(values).then( response => {
-                    console.log(response)
-                });
             }
+            saveEmailContent(values).then( response => {
+                console.log(response)
+            });
     }, []
     );
 
@@ -424,7 +442,7 @@ export default function Editor() {
                                         <Button
                                             // loading={isSubmitting}
                                             type='primary'
-                                            onClick={() => submit}
+                                            onClick={() => submit()}
                                         >
                                             Save
                                         </Button>

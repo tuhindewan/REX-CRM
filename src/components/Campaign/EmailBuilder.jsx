@@ -1,15 +1,9 @@
-import React, { useRef, useState, Suspense } from "react";
-import { Link } from "react-router-dom";
-import ComputerIcon from "../Icons/ComputerIcon";
-import LeftArrow from "../Icons/LeftArrow";
-import MobileIcon from "../Icons/MobileIcon";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-
+import React, { Suspense } from "react";
 const Editor = React.lazy(() => import("../../Editor/Editor"));
 
 
 const EmailBuilder = (props) => {
-  const { isCloseBuilder, setIsCloseBuilder, setEmailBody, emailData } = props;
+  const { isCloseBuilder, selectedEmailIndex, emailData, isNewCampaign, campaignData } = props;
 
   return (
     <>
@@ -23,7 +17,12 @@ const EmailBuilder = (props) => {
       >
         <div className="email-builder-section" style={{ height: "100%" }}>
           <Suspense fallback={<div>Loading</div>}>
-            <Editor/>
+            <Editor
+                selectedEmailIndex  = {selectedEmailIndex}
+                emailData           = {emailData}
+                campaignData        = {campaignData}
+                isNewCampaign       = {isNewCampaign}
+            />
           </Suspense>
         </div>
       </div>

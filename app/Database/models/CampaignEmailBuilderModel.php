@@ -3,6 +3,7 @@
 namespace Mint\MRM\DataBase\Models;
 
 use Mint\MRM\DataBase\Tables\CampaignEmailBuilderSchema;
+use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
@@ -82,10 +83,11 @@ class CampaignEmailBuilderModel {
     public static function get( $id )
     {
         global $wpdb;
-        $email_builder_table = $wpdb->prefix . CampaignEmailBuilderSchema::$table_name;
-        $select_query   = $wpdb->prepare("SELECT * FROM $email_builder_table WHERE email_id = %d", $id );
-        $campaign       = $wpdb->get_row( $select_query );
-        $campaign->email_body = unserialize($campaign->email_body);
-        return $campaign;
+        $email_builder_table    = $wpdb->prefix . CampaignEmailBuilderSchema::$table_name;
+        $select_query           = $wpdb->prepare("SELECT * FROM $email_builder_table WHERE email_id=%s", $id );
+        $email                  = $wpdb->get_row( $select_query );
+        $email->email_body      = unserialize($email->email_body);
+        return $email;
     }
+
 }

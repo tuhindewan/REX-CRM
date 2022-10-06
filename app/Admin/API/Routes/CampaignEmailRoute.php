@@ -50,12 +50,21 @@ class CampaignEmailRoute {
 
         $this->controller = CampaignEmailController::get_instance();
 
-        /**
-         * Campaign email crud operations
-         *
-         * @since 1.0.0
-         */
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)/email/(?P<email_id>[\d]+)', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/email/create/' , [
+            array(
+                'methods' => WP_REST_Server::EDITABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_email'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ),
+        ]);
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)/email/(?P<email_index>[\d]+)', [
             array(
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [

@@ -3,6 +3,7 @@
 namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
+use Mint\MRM\DataBase\Models\CampaignModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Common\MRM_Common;
@@ -38,22 +39,32 @@ class CampaignEmailController extends BaseController {
      * @since 1.0.0
      */
     public function create_or_update( WP_REST_Request $request ) {
-        $params     = MRM_Common::get_api_params_values( $request );
-        $is_new     = CampaignEmailBuilderModel::is_new_email_template($params['email_id']) ? true : false;
+        $params = MRM_Common::get_api_params_values( $request );
         $response   = array(
             'success'   => true,
             'message'   => ''
         );
+
+        $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
+        if ( !$email ) {
+            $response   = array(
+                'success'   => false,
+                'message'   => 'No email data found!'
+            );
+            return rest_ensure_response($response);
+        }
+        $is_new   = CampaignEmailBuilderModel::is_new_email_template($email->id) ? true : false;
+
         if ( $is_new ) {
             CampaignEmailBuilderModel::insert(array(
-                'email_id'  => $params['email_id'],
+                'email_id'  => $email->id,
                 'status'    => 'published',
                 'email_body' => serialize($params['email_body'])
             ));
             $response['message'] = __( 'Data successfully inserted', 'mrm' );
         } else {
             CampaignEmailBuilderModel::update(
-                $params['email_id'],
+                $email->id,
                 array(
                     'status'    => 'published',
                     'email_body' => serialize($params['email_body'])
@@ -80,13 +91,29 @@ class CampaignEmailController extends BaseController {
         // TODO: Implement delete_all() method.
     }
 
+
     /**
      * @inheritDoc
      */
     public function get_single(WP_REST_Request $request) {
         $params     = MRM_Common::get_api_params_values( $request );
-        return CampaignEmailBuilderModel::get($params['email_id']);
+        $email      = CampaignModel::get_email_by_index($params['campaign_id'], $params['email_index']);
+        $response   = array(
+            'success'   => true,
+            'message'   => ''
+        );
+        if ( !$email ) {
+            $response   = array(
+                'success'   => false,
+                'message'   => 'No email data found!'
+            );
+            return rest_ensure_response($response);
+        }
+        $email_builder_data     = CampaignEmailBuilderModel::get($email->id);
+        $response['email_data'] = $email_builder_data;
+        return rest_ensure_response($response);
     }
+
 
     /**
      * @inheritDoc
@@ -95,4 +122,50 @@ class CampaignEmailController extends BaseController {
     {
         // TODO: Implement get_all() method.
     }
+
+
+    /**
+     * We followed three steps to save a new email for a campaign.
+     *
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_Error|\WP_REST_Response
+     *
+     * @since 1.0.0
+     */
+    public function create_email( WP_REST_Request $request ) {
+        $params         = MRM_Common::get_api_params_values( $request );
+        $email_index    = isset($params['email_index']) ? $params['email_index'] : null;
+        $response   = array(
+            'success'   => true,
+            'message'   => ''
+        );
+
+        if (is_null($email_index)) {
+            return rest_ensure_response(array(
+                'success'   => false,
+                'message'   => 'There is something wrong. Email index of this campaign not found. Try again.'
+            ));
+        }
+
+        // Step #1
+        $campaign = CampaignModel::insert($params['campaign_data']);
+        $campaign_id    = $campaign['id'];
+
+        $params['campaign_data'][$email_index]['campaign_id'] = $campaign_id;
+
+        // Step #2
+        $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$email_index], $campaign_id, $email_index );
+
+
+        // Step #3
+        CampaignEmailBuilderModel::insert(array(
+            'email_id'   => $email_id,
+            'status'     => 'published',
+            'email_body' => serialize($params['email_body'])
+        ));
+        $response['message'] = __( 'Data successfully inserted', 'mrm' );
+        return rest_ensure_response($response);
+    }
+
 }

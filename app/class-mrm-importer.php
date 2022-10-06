@@ -112,7 +112,7 @@ class MRM_Importer {
 	 *
 	 * @return string
 	 */
-	private static function remove_utf8_bom( $string ) {
+	public static function remove_utf8_bom( $string ) {
 		if ( 'efbbbf' === substr( bin2hex( $string ), 0, 6 ) ) {
 			$string = substr( $string, 3 );
 		}

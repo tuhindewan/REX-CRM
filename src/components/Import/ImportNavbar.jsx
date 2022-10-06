@@ -1,5 +1,4 @@
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 export default function ImportNavbar() {
   const location = useLocation();
   return (
@@ -24,7 +23,7 @@ export default function ImportNavbar() {
             Paste Your Data
           </button>
         </Link>
-        <Link to="/contacts/import/mailchimp">
+        {/* <Link to="/contacts/import/mailchimp">
           <button
             className={`mintmrm-btn upload-button ${
               location.pathname.includes("mailchimp") ? "" : "outline"
@@ -32,8 +31,8 @@ export default function ImportNavbar() {
           >
             Import From MailChimp
           </button>
-        </Link>
-        <Link to="/contacts/import/wordpress">
+        </Link> */}
+        {/* <Link to="/contacts/import/wordpress">
           <button
             className={`mintmrm-btn upload-button ${
               location.pathname.includes("wordpress") ? "" : "outline"
@@ -41,7 +40,7 @@ export default function ImportNavbar() {
           >
             Wordpress users
           </button>
-        </Link>
+        </Link> */}
       </div>
     </>
   );

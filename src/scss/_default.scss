@@ -27,7 +27,7 @@
     min-width: 190px;
     border-radius: 6px;
     display: block;
-    border: 1px solid #e4e6eb;
+    border: 1px solid #ebedf0;
 
     &::-webkit-input-placeholder,
     &::-moz-placeholder,
@@ -83,7 +83,8 @@
   input[type="submit"],
   button[type="submit"],
   .mintmrm-btn {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     border: 1px solid transparent;
     color: #fff;
     font-style: normal;
@@ -175,7 +176,7 @@
     margin: 0 auto;
   }
 
-  .mintmrm-container.import-cotainer{
+  .mintmrm-container.import-cotainer {
     padding-bottom: 85px;
   }
 
