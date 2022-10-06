@@ -208,7 +208,7 @@ class ListController extends BaseController {
         $pivot_ids = array_map(function ( $list ) use( $contact_id ) {
 
             return array(
-                'group_id'    =>  $list['id'],
+                'group_id'    =>  isset( $list['id'] ) ? $list['id'] : $list,
                 'contact_id'  =>  $contact_id
             );
 
