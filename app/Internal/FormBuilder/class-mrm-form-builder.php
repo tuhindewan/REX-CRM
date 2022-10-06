@@ -6,7 +6,7 @@ namespace Mint\MRM\Internal\FormBuilder;
 Class FormBuilderHelper {
     public function __construct()
     {
-        add_action( 'admin_enqueue_scripts', array($this,'mrm_block_editor_init') );     
+        add_action( 'admin_enqueue_scripts', array($this,'mrm_block_editor_init') );
     }
 
     public function mrm_block_editor_init( $hook ) {
@@ -32,7 +32,7 @@ Class FormBuilderHelper {
         $script_url        = plugins_url( $script_path, __FILE__ );
      
         wp_enqueue_script( $script_handle, $script_url, $script_asset['dependencies'], $script_asset['version'] );
-     
+
         $settings = $this->get_block_editor_settings();
         wp_add_inline_script( $script_handle, 'window.getmrmsetting = ' . wp_json_encode( $settings ) . ';' );
      
