@@ -58,6 +58,13 @@ class AdminAssets {
             MRM_VERSION,
             true
         );
+//        wp_enqueue_script(
+//            MRM_PLUGIN_NAME.'-easy-email',
+//            MRM_DIR_URL.'/assets/admin/dist/chunks/573.min.js',
+//            array(),
+//            MRM_VERSION,
+//            true
+//        );
         wp_enqueue_script(
             MRM_PLUGIN_NAME,
             self::get_url('main', 'js'),

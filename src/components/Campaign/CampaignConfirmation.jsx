@@ -26,6 +26,7 @@ export default function CampaignConfirmation() {
               </Link>
             </div>
           </div>
+
           <div className="confirmation-footer-section">
             <div className="share-campaign">
               <h5 className="title">Share Your Campaign</h5>
@@ -51,6 +52,7 @@ export default function CampaignConfirmation() {
                 </div>
               </div>
             </div>
+
             <div className="social-media">
               <h5 className="title">Add A Social Post To Your Campaign</h5>
               <div className="campaign-link">
@@ -60,6 +62,7 @@ export default function CampaignConfirmation() {
                 <Linkedin />
               </div>
             </div>
+            
           </div>
         </div>
       </div>

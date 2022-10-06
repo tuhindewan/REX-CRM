@@ -50,6 +50,7 @@ import MoreOptionIcon from './Icon/MoreOptionIcon';
 import DesktopIcon from './Icon/DesktopIcon';
 import MobileIcon from './Icon/MobileIcon';
 import EditIcon from './Icon/EditIcon';
+import CrossIcon from "./Icon/CrossIcon";
 
 const defaultCategories: ExtensionProps['categories'] = [
     {
@@ -201,6 +202,8 @@ export default function Editor(props) {
 
     const [shouldCallAPI, setShouldCallAPI] = useState(true)
 
+    const [emailLoader, setEmailLoader] = useState(false)
+
     let defaultValues = {
         type: "page",
         subject: 'Welcome to MINT CRM email',
@@ -347,6 +350,8 @@ export default function Editor(props) {
             values: IEmailTemplate,
             form: FormApi<IEmailTemplate, Partial<IEmailTemplate>>,
         ) => {
+            setEmailLoader(true);
+            
             if (id) {
                 const isChanged = !(
                     isEqual(initialValues?.content, values.content) &&
@@ -355,13 +360,16 @@ export default function Editor(props) {
                 );
                 if (!isChanged) {
                     form.restart(values);
+                    setEmailLoader(false);
                     return;
                 }
             }
             saveEmailContent(values).then( response => {
                 setCampaignId(response.campaign_id);
+                setEmailLoader(false);
             });
-    }, []
+
+        }, []
     );
 
 
@@ -438,6 +446,34 @@ export default function Editor(props) {
 
     return (
         <>
+            <div className={emailLoader ? 'email-builder-loader show-loader': 'email-builder-loader'}>
+                <span className="mintmrm-loader"></span>
+            </div>
+
+            <div className="mintmrm-delete-alert-wrapper">
+                {/*<div className="mintmrm-delete-confirmation">*/}
+                {/*    <div className="delete-confirmation-header">*/}
+                {/*        <h3>Alert</h3>*/}
+                {/*        <div className="cross-icon" onClick={onCancel}>*/}
+                {/*            <CrossIcon />*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+
+                {/*    <div className="delete-confirmation-body">*/}
+                {/*        <Delete />*/}
+                {/*        <p>Please select at least one item to bulk action.</p>*/}
+                {/*    </div>*/}
+
+                {/*    <ul className="mintmrm-delete-confirm-btn">*/}
+                {/*        <li>*/}
+                {/*            <button className="btn-default cancel" onClick={onCancel}>*/}
+                {/*            Ok*/}
+                {/*            </button>*/}
+                {/*        </li>*/}
+                {/*    </ul>*/}
+                {/*</div>*/}
+            </div>
+
             <div className='mrm-email-editor'>
                 <EmailEditorProvider
                     data={initialValues}
@@ -453,7 +489,7 @@ export default function Editor(props) {
                 >
                     {({ values }, { submit }) => {
                         return (
-                            <div>
+                            <>
                                 <div className="mrm-editor-header" style={{ background: 'var(--color-bg-2)' }} >
                                     <div className="header-left">
                                         <Button className='back-from-editor' title='Back' onClick={backToCampaign}>
@@ -512,6 +548,7 @@ export default function Editor(props) {
                                         </Button>
                                     </div>
                                 </div>
+
                                 <StandardLayout
                                     compact={false}
                                     showSourceCode={false}
@@ -521,7 +558,7 @@ export default function Editor(props) {
                                     {'pc'     === activePreview && <DesktopEmailPreview/>}
                                     {'mobile' === activePreview && <MobileEmailPreview/>}
                                 </StandardLayout>
-                            </div>
+                            </>
                         );
                     }}
                 </EmailEditorProvider>

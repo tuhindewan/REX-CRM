@@ -203,262 +203,247 @@ export default function AddCampaign(props) {
   });
 
   return (
-    <div className="mintmrm-add-campaign">
-      <div className="add-campaign-breadcrumb">
-        <div className="mintmrm-container">
-          <ul className="mintmrm-breadcrumb">
-            <li>
-              <Link to="/campaigns">Campaigns</Link>
-            </li>
-            <li className="active">Add Campaign</li>
-          </ul>
+    <>
+      <div className="mintmrm-add-campaign">
+        <div className="add-campaign-breadcrumb">
+          <div className="mintmrm-container">
+            <ul className="mintmrm-breadcrumb">
+              <li>
+                <Link to="/campaigns">Campaigns</Link>
+              </li>
+              <li className="active">Add Campaign</li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <div className="mintmrm-container">
-        <div className="add-campaign-wrapper">
-          <div className="add-email-section">
-            {/**
-             * loop through email data state and render the side buttons for each email sequence
-             */}
-            {emailData.map((email, index) => {
-              return (
-                <div className="email-box" key={`emails-${index}`}>
-                  <div
-                    className={
-                      selectedEmailIndex != index
-                        ? "email-select-section"
-                        : "email-select-section selected"
-                    }
-                    onClick={() => setSelectedEmailIndex(index)}
-                  >
-                    <div className="icon-section">
-                      <InboxIcon />
-                    </div>
-                    <h5>Email {index + 1}</h5>
-                    {index > 0 && (
-                      <div
-                        className="delete-option"
-                        onClick={() => deleteEmail(index)}
-                      >
-                        <Delete />
-                      </div>
-                    )}
-                  </div>
-                  <div className="link-line"></div>
-                </div>
-              );
-            })}
-            <div className="add-another-email" onClick={addNextEmail}>
-              <Plus />
-            </div>
-          </div>
-          <div className="email-content-section">
-            <div className="email-container">
+        <div className="mintmrm-container">
+          <div className="add-campaign-wrapper">
+            
+            <div className="add-email-section">
               {/**
-               * only shows the title and recipients list on first email sequnce form
+               * loop through email data state and render the side buttons for each email sequence
                */}
-              {selectedEmailIndex == 0 && (
-                <>
-                  <div className="email-title input-item">
-                    <label>Title</label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={campaignTitle}
-                      onChange={(e) => setCampaignTitle(e.target.value)}
-                      placeholder="Enter Campaign title"
-                    />
+              {emailData.map((email, index) => {
+                return (
+                  <div className="email-box" key={`emails-${index}`}>
+                    <div
+                      className={
+                        selectedEmailIndex != index
+                          ? "email-select-section"
+                          : "email-select-section selected"
+                      }
+                      onClick={() => setSelectedEmailIndex(index)}
+                    >
+                      <div className="icon-section">
+                        <InboxIcon />
+                      </div>
+                      <h5>Email {index + 1}</h5>
+                      {index > 0 && (
+                        <div
+                          className="delete-option"
+                          onClick={() => deleteEmail(index)}
+                        >
+                          <Delete />
+                        </div>
+                      )}
+                    </div>
+                    <div className="link-line"></div>
                   </div>
-                  <div className="email-to input-item">
-                    <label>To:</label>
-                    <div>
-                      <CustomSelect
-                        selected={recipientLists}
-                        setSelected={setRecipientLists}
-                        endpoint="/lists"
-                        placeholder="Lists"
-                        name="list"
-                        listTitle="CHOOSE LIST"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={true}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                      />
-                      <CustomSelect
-                        selected={recipientTags}
-                        setSelected={setRecipientTags}
-                        endpoint="/tags"
-                        placeholder="Tags"
-                        name="tag"
-                        listTitle="CHOOSE TAG"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={true}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
+                );
+              })}
+              <div className="add-another-email" onClick={addNextEmail}>
+                <Plus />
+              </div>
+            </div>
+            
+            <div className="email-content-section">
+              <div className="email-container">
+                {/**
+                 * only shows the title and recipients list on first email sequnce form
+                 */}
+                {selectedEmailIndex == 0 && (
+                  <>
+                    <div className="email-title input-item">
+                      <label>Title</label>
+                      <input
+                        type="text"
+                        name="title"
+                        value={campaignTitle}
+                        onChange={(e) => setCampaignTitle(e.target.value)}
+                        placeholder="Enter Campaign title"
                       />
                     </div>
+                    <div className="email-to input-item">
+                      <label>To:</label>
+                      <div>
+                        <CustomSelect
+                          selected={recipientLists}
+                          setSelected={setRecipientLists}
+                          endpoint="/lists"
+                          placeholder="Lists"
+                          name="list"
+                          listTitle="CHOOSE LIST"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={true}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                        <CustomSelect
+                          selected={recipientTags}
+                          setSelected={setRecipientTags}
+                          endpoint="/tags"
+                          placeholder="Tags"
+                          name="tag"
+                          listTitle="CHOOSE TAG"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={true}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+                {selectedEmailIndex > 0 && (
+                  <div className="email-from input-item">
+                    <label>Delay</label>
+                    <input
+                      style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
+                      type="number"
+                      name="delay_count"
+                      value={emailData[selectedEmailIndex]["delay_count"]}
+                      onChange={handleEmailFieldsChange}
+                    />
+                    <select
+                      style={{ maxWidth: "fit-content" }}
+                      onChange={handleEmailFieldsChange}
+                      name="delay_value"
+                      value={emailData[selectedEmailIndex]["delay_value"]}
+                    >
+                      <option disabled={true} value="">
+                        --Choose delay--
+                      </option>
+                      {names.map((item) => (
+                        <option key={item.id}>{item.value}</option>
+                      ))}
+                    </select>
                   </div>
-                </>
-              )}
-              {selectedEmailIndex > 0 && (
-                <div className="email-from input-item">
-                  <label>Delay</label>
+                )}
+                <div className="email-subject input-item">
+                  <label>Subject:</label>
                   <input
-                    style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
-                    type="number"
-                    name="delay_count"
-                    value={emailData[selectedEmailIndex]["delay_count"]}
+                    type="text"
+                    name="subject"
+                    value={emailData[selectedEmailIndex]["subject"]}
                     onChange={handleEmailFieldsChange}
+                    placeholder="Be Specific and concise to spark interest"
                   />
-                  <select
-                    style={{ maxWidth: "fit-content" }}
+                  <span>
+                    {emailData[selectedEmailIndex]["subject"].length}/200
+                  </span>
+                  <div className="setting-section">
+                    <SettingIcon />
+                  </div>
+                </div>
+                <div className="email-preview input-item">
+                  <label>Preview Text</label>
+                  <input
+                    type="text"
+                    name="preview"
+                    value={emailData[selectedEmailIndex]["preview"]}
                     onChange={handleEmailFieldsChange}
-                    name="delay_value"
-                    value={emailData[selectedEmailIndex]["delay_value"]}
-                  >
-                    <option disabled={true} value="">
-                      --Choose delay--
-                    </option>
-                    {names.map((item) => (
-                      <option key={item.id}>{item.value}</option>
-                    ))}
-                  </select>
+                    placeholder="Write a summary of your email to display after the subject line"
+                  />
+                  <span>
+                    {emailData[selectedEmailIndex]["preview"].length}/200
+                  </span>
+                  <div className="setting-section">
+                    <SettingIcon />
+                  </div>
                 </div>
-              )}
-              <div className="email-subject input-item">
-                <label>Subject:</label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={emailData[selectedEmailIndex]["subject"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Be Specific and concise to spark interest"
-                />
-                <span>
-                  {emailData[selectedEmailIndex]["subject"].length}/200
-                </span>
-                <div className="setting-section">
-                  <SettingIcon />
+                <div className="email-from input-item">
+                  <label>From</label>
+                  <input
+                    type="text"
+                    name="senderName"
+                    value={emailData[selectedEmailIndex]["senderName"]}
+                    onChange={handleEmailFieldsChange}
+                    placeholder="Enter Name"
+                  />
+                  <input
+                    type="text"
+                    name="senderEmail"
+                    value={emailData[selectedEmailIndex]["senderEmail"]}
+                    onChange={handleEmailFieldsChange}
+                    placeholder="Enter Email"
+                  />
                 </div>
-              </div>
-              <div className="email-preview input-item">
-                <label>Preview Text</label>
-                <input
-                  type="text"
-                  name="preview"
-                  value={emailData[selectedEmailIndex]["preview"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Write a summary of your email to display after the subject line"
-                />
-                <span>
-                  {emailData[selectedEmailIndex]["preview"].length}/200
-                </span>
-                <div className="setting-section">
-                  <SettingIcon />
+
+                <div className="email-design input-item">
+                  <label>Design</label>
+                  <div className="add-template-section" onClick={openTemplate}>
+                    <TemplateIcon />
+                    <Link to="">Select a Template</Link>
+                  </div>
                 </div>
-              </div>
-              <div className="email-from input-item">
-                <label>From</label>
-                <input
-                  type="text"
-                  name="senderName"
-                  value={emailData[selectedEmailIndex]["senderName"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Name"
-                />
-                <input
-                  type="text"
-                  name="senderEmail"
-                  value={emailData[selectedEmailIndex]["senderEmail"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Email"
-                />
-              </div>
-              <div className="email-design input-item">
-                <label>Design</label>
-                <div className="add-template-section" onClick={openTemplate}>
-                  <TemplateIcon />
-                  <Link to="">Select a Template</Link>
-                </div>
-                <CampaignTemplates
-                  isOpen            ={isTemplate}
-                  isClose           ={isClose}
-                  isNewCampaign     ={true}
-                  selectedEmailIndex={selectedEmailIndex}
-                  emailData         ={emailData[selectedEmailIndex]}
-                  setIsClose        ={setIsClose}
-                  setEmailBody      ={setEmailBody}
-                  setIsTemplate     = {setIsTemplate}
-                  campaignData      ={
-                    {
-                      title: campaignTitle,
-                      recipients: {
-                        lists: recipientLists.map((list) => {
-                          return {
-                            id: list.id,
-                            title: list.title,
-                          };
-                        }),
-                        tags: recipientTags.map((tag) => {
-                          return {
-                            id: tag.id,
-                            title: tag.title,
-                          };
-                        }),
-                      },
-                      type: emailData.length > 1 ? "sequence" : "regular",
-                      status: status,
-                      created_by: `${window.MRM_Vars.current_userID}`,
-                      emails: emailData.map((email) => {
-                        return {
-                          email_subject: email.subject,
-                          email_preview_text: email.preview,
-                          sender_email: email.senderEmail,
-                          delay_count: email.delay_count,
-                          delay_value: email.delay_value,
-                          sender_name: email.senderName,
-                          email_body: email.email_body,
-                          email_json: email.email_json,
-                        };
-                      }),
-                    }
-                  }
-                />
+
               </div>
             </div>
-            <div className="content-save-section">
-              <button
-                className="campaign-schedule mintmrm-btn outline"
-                disabled={!isValid}
-                onClick={handlePublish}
-              >
-                Publish
-              </button>
-              <button
-                type="submit"
-                className="campaign-save mintmrm-btn"
-                onClick={() => saveCampaign("draft")}
-                disabled={!isValid}
-              >
-                Save draft
-              </button>
-              {responseMessage != "" && (
-                <SuccessfulNotification
-                  display={"block"}
-                  message="Campaign is saved."
-                />
-              )}
-            </div>
+
           </div>
         </div>
       </div>
-    </div>
+      
+      <CampaignTemplates
+        isOpen            ={isTemplate}
+        isClose           ={isClose}
+        isNewCampaign     ={true}
+        selectedEmailIndex={selectedEmailIndex}
+        emailData         ={emailData[selectedEmailIndex]}
+        setIsClose        ={setIsClose}
+        setEmailBody      ={setEmailBody}
+        setIsTemplate     = {setIsTemplate}
+        campaignData      ={
+          {
+            title: campaignTitle,
+            recipients: {
+              lists: recipientLists.map((list) => {
+                return {
+                  id: list.id,
+                  title: list.title,
+                };
+              }),
+              tags: recipientTags.map((tag) => {
+                return {
+                  id: tag.id,
+                  title: tag.title,
+                };
+              }),
+            },
+            type: emailData.length > 1 ? "sequence" : "regular",
+            status: status,
+            created_by: `${window.MRM_Vars.current_userID}`,
+            emails: emailData.map((email) => {
+              return {
+                email_subject: email.subject,
+                email_preview_text: email.preview,
+                sender_email: email.senderEmail,
+                delay_count: email.delay_count,
+                delay_value: email.delay_value,
+                sender_name: email.senderName,
+                email_body: email.email_body,
+                email_json: email.email_json,
+              };
+            }),
+          }
+        }
+      />
+    </>
   );
 }
