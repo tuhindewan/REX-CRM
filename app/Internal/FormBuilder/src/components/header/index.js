@@ -6,13 +6,13 @@ import { __ } from '@wordpress/i18n';
 export default function Header() {
 	return (
 		<div
-			className="getdavesbe-header"
+			className="mrm-from-builder-header"
 			role="region"
-			aria-label={ __( 'Standalone Editor top bar.', 'getdavesbe' ) }
+			aria-label={ __( 'Form Header.', 'getdavesbe' ) }
 			tabIndex="-1"
 		>
-			<h1 className="getdavesbe-header__title">
-				{ __( 'Standalone Block Editor', 'getdavesbe' ) }
+			<h1 className="mrm-from-builder-header__title">
+				{ __( 'Form Block Editor', 'getdavesbe' ) }
 			</h1>
 		</div>
 	);

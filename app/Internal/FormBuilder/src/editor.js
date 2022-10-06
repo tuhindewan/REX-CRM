@@ -18,10 +18,11 @@ import Notices from './components/notices';
 import Header from './components/header';
 import Sidebar from './components/sidebar';
 import BlockEditor from './components/block-editor';
+import {Fragment} from "@wordpress/element";
 
 function Editor( { settings } ) {
 	return (
-		<>
+		<div className="mrm-editor-builder">
 			<FullscreenMode isActive={false} />
 			<SlotFillProvider>
 				<DropZoneProvider>
@@ -41,7 +42,7 @@ function Editor( { settings } ) {
 					</FocusReturnProvider>
 				</DropZoneProvider>
 			</SlotFillProvider>
-		</>
+		</div>
 	);
 }
 

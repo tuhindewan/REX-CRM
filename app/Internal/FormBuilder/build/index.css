@@ -1,6 +1,6 @@
-/*!****************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
-  \****************************************************************************************************************************************************************************************************************************************/
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************/
 /**
  * Colors
  */
@@ -73,7 +73,7 @@
  */
 .getdavesbe-header {
   align-items: center;
-  background: #fff;
+  background: white;
   border-bottom: 1px solid #ddd;
   display: flex;
   height: 60px;
@@ -149,7 +149,7 @@ body.is-fullscreen-mode .getdavesbe-header {
 }
 
 .getdavesbe-sidebar {
-  background: #fff;
+  background: white;
   border-left: 1px solid #ddd;
   bottom: 0;
   color: #1e1e1e;
@@ -207,7 +207,7 @@ body.is-fullscreen-mode .getdavesbe-header {
 }
 
 html.wp-toolbar {
-  background: #fff;
+  background: white;
 }
 
 body.block-editor-page {
@@ -237,7 +237,7 @@ body.block-editor-page .media-frame select.attachment-filters:last-of-type {
   max-width: 100%;
 }
 
-.getdave-sbe-block-editor {
+.mrm-form-builder-block-editor {
   position: absolute;
   top: 0;
   right: 0;
@@ -259,13 +259,13 @@ body.block-editor-page .media-frame select.attachment-filters:last-of-type {
   }
 }
 
-.getdave-sbe-block-editor,
+.mrm-form-builder-block-editor,
 .components-modal__frame {
   box-sizing: border-box;
 }
-.getdave-sbe-block-editor *,
-.getdave-sbe-block-editor *::before,
-.getdave-sbe-block-editor *::after,
+.mrm-form-builder-block-editor *,
+.mrm-form-builder-block-editor *::before,
+.mrm-form-builder-block-editor *::after,
 .components-modal__frame *,
 .components-modal__frame *::before,
 .components-modal__frame *::after {
