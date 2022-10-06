@@ -48,7 +48,7 @@ export default function ListItem(props) {
       <td>
         <button
           className="more-option"
-          style={{ background: "transparent", position: "relative" }}
+          style={{ background: "white", position: "relative" }}
           onClick={() => {
             setCurrentActive((prevActive) => {
               // if current list item is already active then hide the overlay menu by setting current active to 0
