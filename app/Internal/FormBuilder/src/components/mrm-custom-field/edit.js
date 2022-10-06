@@ -1,0 +1,751 @@
+import React from "react";
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
+import {__} from "@wordpress/i18n";
+const {
+    withSelect,
+    withDispatch,
+    useSelect,
+    useDispatch
+} = wp.data;
+const {
+    Component,
+    RawHTML,
+    useEffect,
+    useState
+} = wp.element;
+const { compose } = wp.compose;
+const {
+    TextControl,
+    SelectControl,
+    RangeControl,
+    TextareaControl,
+    Button,
+    Panel,
+    ToggleControl,
+    FormToggle,
+    PanelBody,
+    RadioGroup,
+    RadioControl,
+    Radio,
+} = wp.components;
+const {
+    InspectorControls,
+    ColorPalette,
+    RichText,
+    useBlockProps,
+    BlockControls,
+    BlockAlignmentToolbar
+} = wp.blockEditor;
+
+const {useEntityProp} = wp.coreData;
+/**
+ * Internal dependencies
+ */
+
+
+class Editor extends Component {
+
+    static propTypes = {
+        attributes      : PropTypes.object.isRequired,
+        isSelected      : PropTypes.bool.isRequired,
+        name            : PropTypes.string.isRequired,
+        setAttributes   : PropTypes.func.isRequired,
+    };
+
+    onChangeAttribute = (key, value) => {
+        this.props.setAttributes({
+            ...this.props.attributes,
+            [key]: value
+        })
+    }
+
+    onChangePadding = ( type, attribute, value ) => {
+        this.props.setAttributes({
+            [attribute] : value
+        });
+    }
+
+    selectOptionList = () => {
+
+    }
+
+    addNewRadioOption = () => {
+        let { attributes, setAttributes } 	= this.props;
+        const slug_name =  this.makeSlug(attributes.field_name)
+        let defaultOption = {
+            value : slug_name,
+            label: 'label'
+        }
+        if('radio' === attributes.field_type) {
+            attributes.radioOption.push(defaultOption)
+            setAttributes(attributes.radioOption)
+        }
+    }
+
+    customFields = () =>{
+        let { attributes, setAttributes } 	= this.props;
+
+        return (
+            <PanelBody title="Custom Field" className="inner-pannel">
+                <SelectControl
+                    label="Field Type"
+                    value={attributes.field_type}
+                    onChange={ select_type => this.onChangeAttribute( 'field_type', select_type )}
+                    options={[
+                        {
+                            value: 'text',
+                            label: 'Text'
+                        },
+                        {
+                            value: 'textarea',
+                            label: 'Text Area'
+                        },
+                        {
+                            value: 'radio',
+                            label: 'Radio Button'
+                        },
+                        {
+                            value: 'checkbox',
+                            label: 'Checkbox'
+                        },
+                        {
+                            value: 'select',
+                            label: 'Select'
+                        },
+                        {
+                            value: 'date',
+                            label: 'Date'
+                        }
+                    ]}
+                />
+                <TextControl
+                    label="Field Name"
+                    value={ attributes.field_name }
+                    onChange={ (state ) => setAttributes({ field_name: state }) }
+                />
+                <TextControl
+                    label=" Field Label"
+                    value={ attributes.field_label }
+                    onChange={ (state ) => setAttributes({ field_label: state }) }
+                />
+                {attributes.field_type == 'select' && <TextControl
+                    label="Option Name"
+                    // value={ attributes.select_option_name }
+                    onChange={ (state ) => setAttributes({ select_option_name: state }) }
+                />}
+                {attributes.field_type == 'select' &&   <button onClick={() => {
+                    this.addNewOption()
+                }} className="components-button is-primary is-default mrm-action-button" role="button">
+                {__('Add New Option')}
+                    </button>
+                }
+                { attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
+                        return (
+                            <>
+                            <TextControl
+                                value={ option.value }
+                                // onChange={ (state ) => setAttributes({ value: state }) }
+                                onChange={val => this.onChangeOptionField(option,val, index )}
+                            />
+                            <button
+                                key={`mrm-delete-button-${index}`}
+                                onClick={val => this.deleteOption(option, val, index)}
+                                className="button  mrm-action-button"
+                                title="Delete Option"
+                                role="button" >
+                                {__('x')}
+                            </button>
+                            </>
+                        )
+                })}
+
+                {attributes.field_type == 'radio' &&   <button onClick={() => {
+                    this.addNewRadioOption()
+                }} className="components-button is-primary is-default mrm-action-button" role="button">
+                    {__('Add New')}
+                </button>
+                }
+                { attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
+                    return (
+                        <>
+                            <TextControl
+                                value={ option.label }
+                                // onChange={ (state ) => setAttributes({ value: state }) }
+                                onChange={val => this.onChangeRadioLabelField(option,val, index )}
+                            />
+                            <button
+                                key={`mrm-delete-button-${index}`}
+                                onClick={val => this.deleteRadioButtonOption(option, val, index)}
+                                className="button  mrm-action-button"
+                                title="Delete Option"
+                                role="button" >
+                                {__('x')}
+                            </button>
+                        </>
+                    )
+                })}
+
+
+                <ToggleControl
+                    label="Require"
+                    checked={ attributes.field_require }
+                    onChange={ (state ) => setAttributes({ field_require: state }) }
+                />
+            </PanelBody>
+        )
+    }
+    onChangeRadioValueField = (option,val, index) =>{
+        const {
+            setAttributes,
+            attributes:{
+                radioOption,
+            }
+        } = this.props;
+        option.value = val;
+        const modifiedOption = radioOption.map((value, thisIndex) => {
+            if (index === thisIndex) {
+                value = { ...radioOption[index], ...option }
+            }
+            return value
+        })
+        setAttributes({ radioOption: modifiedOption });
+    }
+    onChangeRadioLabelField = (option,val, index) =>{
+        const {
+            setAttributes,
+            attributes:{
+                radioOption,
+            }
+        } = this.props;
+        option.label = val;
+        const modifiedOption = radioOption.map((value, thisIndex) => {
+            if (index === thisIndex) {
+                value = { ...radioOption[index], ...option }
+            }
+            return value
+        })
+        setAttributes({ radioOption: modifiedOption });
+    }
+    onChangeOptionField = (option,val, index) => {
+        const {
+            setAttributes,
+            attributes:{
+                selectOption,
+            }
+        } = this.props;
+        option.label = val;
+        option.value = val;
+        const modifiedOption = selectOption.map((value, thisIndex) => {
+            if (index === thisIndex) {
+                value = { ...selectOption[index], ...option }
+            }
+            return value
+        })
+        setAttributes({ selectOption: modifiedOption });
+    }
+    deleteOption = (option, val, index) => {
+        const {
+            setAttributes,
+            attributes
+        } = this.props;
+        if (index > -1) { // only splice array when item is found
+            attributes.selectOption.splice(index,1); // 2nd parameter means remove one item only
+            setAttributes(attributes.selectOption)
+        }
+
+
+    }
+    deleteRadioButtonOption = (option, val, index) => {
+        const {
+            setAttributes,
+            attributes
+        } = this.props;
+        if (index > -1) { // only splice array when item is found
+            attributes.radioOption.splice(index,1); // 2nd parameter means remove one item only
+            setAttributes(attributes.radioOption)
+        }
+
+
+    }
+
+    addNewOption = () =>{
+        let { attributes, setAttributes } 	= this.props;
+        const slug_name =  this.makeSlug(attributes.select_option_name)
+        let defaultOption = {
+                value: slug_name,
+                label: attributes.select_option_name
+            }
+        if('select' === attributes.field_type) {
+            attributes.selectOption.push(defaultOption)
+            setAttributes(attributes.selectOption)
+        }
+    }
+    formStyle = () => {
+        let { attributes, setAttributes } 	= this.props
+
+        return (
+            <PanelBody title="Form Style" initialOpen={false}>
+                <label className="blocks-base-control__label">Row Spacing</label>
+                <RangeControl
+                    value={ attributes.rowSpacing }
+                    onChange={ rowSpacing => this.onChangeAttribute( 'rowSpacing', rowSpacing )}
+                    allowReset={true}
+                    min={0}
+                    max={50}
+                    step={1}
+                />
+
+                <hr className="mrm-hr"/>
+                <label className="blocks-base-control__label">Label Color</label>
+                <ColorPalette
+                    onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
+                    value = { attributes.labelColor }
+                />
+
+                <label className="blocks-base-control__label">Label Spacing</label>
+                <RangeControl
+                    value={ attributes.labelSpacing }
+                    onChange={ labelSpacing => this.onChangeAttribute( 'labelSpacing', labelSpacing )}
+                    allowReset={true}
+                    min={0}
+                    max={50}
+                    step={1}
+                />
+            </PanelBody>
+
+        )
+    }
+
+    inputFieldStyle = () => {
+        let { attributes, setAttributes } 	= this.props,
+            inputTypography = attributes.inputTypography,
+            device = attributes.device;
+
+        return (
+            <PanelBody title="Input Field Style" initialOpen={false}>
+
+                <label className="blocks-base-control__label">Text Color</label>
+                <ColorPalette
+                    onChange={ inputTextColor => this.onChangeAttribute( 'inputTextColor', inputTextColor )}
+                    value = { attributes.inputTextColor }
+                />
+
+                <label className="blocks-base-control__label">Background Color</label>
+                <ColorPalette
+                    onChange={ inputBgColor => this.onChangeAttribute( 'inputBgColor', inputBgColor )}
+                    value = { attributes.inputBgColor }
+                />
+
+                <hr className="mrm-hr"/>
+
+                <label className="blocks-base-control__label">Border Radius</label>
+                <RangeControl
+                    value={ attributes.inputBorderRadius }
+                    onChange={ radius => this.onChangeAttribute( 'inputBorderRadius', radius )}
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+
+                <label className="blocks-base-control__label">Border Style</label>
+                <SelectControl
+                    value={attributes.inputBorderStyle}
+                    onChange={ inputBorderStyle => this.onChangeAttribute( 'inputBorderStyle', inputBorderStyle )}
+                    options={[
+                        {
+                            value: 'none',
+                            label: 'None'
+                        },
+                        {
+                            value: 'solid',
+                            label: 'Solid'
+                        },
+                        {
+                            value: 'Dashed',
+                            label: 'dashed'
+                        },
+                        {
+                            value: 'Dotted',
+                            label: 'dotted'
+                        },
+                        {
+                            value: 'Double',
+                            label: 'double'
+                        }
+                    ]}
+                />
+
+                <label className="blocks-base-control__label">Border Width</label>
+                <RangeControl
+                    value={ attributes.inputBorderWidth }
+                    onChange={ border => this.onChangeAttribute( 'inputBorderWidth', border )}
+                    allowReset={true}
+                    min={0}
+                    max={5}
+                    step={1}
+                />
+
+                <label className="blocks-base-control__label">Border Color</label>
+                <ColorPalette
+                    onChange={ inputBorderColor => this.onChangeAttribute( 'inputBorderColor', inputBorderColor )}
+                    value = { attributes.inputBorderColor }
+                />
+
+                <hr className="mrm-hr"/>
+
+            </PanelBody>
+        )
+    }
+    getInspectorControls = () => {
+        return (
+            <InspectorControls key="mrm-mrm-form-inspector-controls">
+                <div id="mrm-block-inspected-inspector-control-wrapper">
+                    <Panel>
+                        {this.customFields()}
+                        {this.formStyle()}
+                        {this.inputFieldStyle()}
+                    </Panel>
+                </div>
+            </InspectorControls>
+        );
+    };
+    /**
+     * Render Text Field
+     * @param attributes
+     * @returns {JSX.Element}
+     */
+    renderTextField = (attributes) => {
+       const slug_name =  this.makeSlug(attributes.field_name)
+        this.props.setAttributes({ field_slug: slug_name })
+        let fieldSpacing = {
+            marginBottom:  attributes.rowSpacing+'px',
+        }
+
+        let labelStyle = {
+            color:  attributes.labelColor,
+            marginBottom:  attributes.labelSpacing+'px',
+        }
+
+        let checkboxLabelColor = {
+            color:  attributes.labelColor,
+        }
+
+        let inputStyle = {
+            backgroundColor: attributes.inputBgColor,
+            color:  attributes.inputTextColor,
+            borderRadius:  attributes.inputBorderRadius+'px',
+            paddingTop:  attributes.inputPaddingTop+'px',
+            paddingRight:  attributes.inputPaddingRight+'px',
+            paddingBottom:  attributes.inputPaddingBottom+'px',
+            paddingLeft:  attributes.inputPaddingLeft+'px',
+            borderStyle:  attributes.inputBorderStyle,
+            borderWidth:  attributes.inputBorderWidth+'px',
+            borderColor:  attributes.inputBorderColor,
+        }
+
+
+        return (
+            <Fragment>
+                <div key={`mrm-${attributes.field_label}`} style={fieldSpacing}>
+                    <label htmlFor="mrm-text-field" style={labelStyle}>
+                        {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
+                        {attributes.field_require && <span className="required-mark">*</span>}
+                    </label>
+                    <div>
+                        <span className="input-wrapper">
+                         <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} style={inputStyle} />
+                        </span>
+                    </div>
+                </div>
+            </Fragment>
+        )
+    }
+    /**
+     * Render Textarea Field
+     * @param attributes
+     * @returns {JSX.Element}
+     */
+    renderTextareaField = (attributes) => {
+       const slug_name =  this.makeSlug(attributes.field_name)
+        this.props.setAttributes({ field_slug: slug_name })
+        let fieldSpacing = {
+            marginBottom:  attributes.rowSpacing+'px',
+        }
+
+        let labelStyle = {
+            color:  attributes.labelColor,
+            marginBottom:  attributes.labelSpacing+'px',
+        }
+
+        let checkboxLabelColor = {
+            color:  attributes.labelColor,
+        }
+
+        let inputStyle = {
+            backgroundColor: attributes.inputBgColor,
+            color:  attributes.inputTextColor,
+            borderRadius:  attributes.inputBorderRadius+'px',
+            paddingTop:  attributes.inputPaddingTop+'px',
+            paddingRight:  attributes.inputPaddingRight+'px',
+            paddingBottom:  attributes.inputPaddingBottom+'px',
+            paddingLeft:  attributes.inputPaddingLeft+'px',
+            borderStyle:  attributes.inputBorderStyle,
+            borderWidth:  attributes.inputBorderWidth+'px',
+            borderColor:  attributes.inputBorderColor,
+        }
+        return (
+            <Fragment>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                    <label htmlFor={attributes.field_slug} style={labelStyle}>
+                        {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
+                        {attributes.field_require && <span className="required-mark">*</span>}
+                    </label>
+                    <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
+
+                </div>
+            </Fragment>
+        )
+    }
+    /**
+     * Render Textarea Field
+     * @param attributes
+     * @returns {JSX.Element}
+     */
+    renderDateField = (attributes) => {
+       const slug_name =  this.makeSlug(attributes.field_name)
+        this.props.setAttributes({ field_slug: slug_name })
+        let fieldSpacing = {
+            marginBottom:  attributes.rowSpacing+'px',
+        }
+
+        let labelStyle = {
+            color:  attributes.labelColor,
+            marginBottom:  attributes.labelSpacing+'px',
+        }
+
+        let checkboxLabelColor = {
+            color:  attributes.labelColor,
+        }
+
+        let inputStyle = {
+            backgroundColor: attributes.inputBgColor,
+            color:  attributes.inputTextColor,
+            borderRadius:  attributes.inputBorderRadius+'px',
+            paddingTop:  attributes.inputPaddingTop+'px',
+            paddingRight:  attributes.inputPaddingRight+'px',
+            paddingBottom:  attributes.inputPaddingBottom+'px',
+            paddingLeft:  attributes.inputPaddingLeft+'px',
+            borderStyle:  attributes.inputBorderStyle,
+            borderWidth:  attributes.inputBorderWidth+'px',
+            borderColor:  attributes.inputBorderColor,
+        }
+        return (
+            <Fragment>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                    <label htmlFor={attributes.field_slug} style={labelStyle}>
+                        {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
+                        {attributes.field_require && <span className="required-mark">*</span>}
+                    </label>
+                    <input type="date" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle}/>
+
+                </div>
+            </Fragment>
+        )
+    }
+    /**
+     * Render Select Field
+     * @param attributes
+     * @returns {JSX.Element}
+     */
+    renderSelectField = (attributes) => {
+       const slug_name =  this.makeSlug(attributes.field_name)
+        this.props.setAttributes({ field_slug: slug_name })
+        let fieldSpacing = {
+            marginBottom:  attributes.rowSpacing+'px',
+        }
+
+        let labelStyle = {
+            color:  attributes.labelColor,
+            marginBottom:  attributes.labelSpacing+'px',
+        }
+
+        let checkboxLabelColor = {
+            color:  attributes.labelColor,
+        }
+
+        let inputStyle = {
+            backgroundColor: attributes.inputBgColor,
+            color:  attributes.inputTextColor,
+            borderRadius:  attributes.inputBorderRadius+'px',
+            paddingTop:  attributes.inputPaddingTop+'px',
+            paddingRight:  attributes.inputPaddingRight+'px',
+            paddingBottom:  attributes.inputPaddingBottom+'px',
+            paddingLeft:  attributes.inputPaddingLeft+'px',
+            borderStyle:  attributes.inputBorderStyle,
+            borderWidth:  attributes.inputBorderWidth+'px',
+            borderColor:  attributes.inputBorderColor,
+        }
+        return (
+            <Fragment>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                    <label htmlFor={attributes.field_slug} style={labelStyle}>
+                        {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
+                        {attributes.field_require && <span className="required-mark">*</span>}
+                    </label>
+                    <select name={attributes.field_slug} id={attributes.field_slug} style={inputStyle} >
+                        {attributes.selectOption.map((value, index) => {
+                            return (
+                                    this.renderSelectOption(value, index, )
+                            )
+                        })}
+
+                    </select>
+
+                </div>
+            </Fragment>
+        )
+    }
+
+    /**
+     * Render Select Option
+     * @param option
+     * @param index
+     * @returns {JSX.Element}
+     */
+    renderSelectOption = (option, index) => {
+        const { attributes, setAttributes } 	= this.props;
+
+        return (
+            <Fragment>
+                <option value={option.value}>{option.label}</option>
+            </Fragment>
+        )
+    }
+
+    renderCheckboxField = (attributes) => {
+        const slug_name =  this.makeSlug(attributes.field_name)
+        this.props.setAttributes({ field_slug: slug_name })
+        let fieldSpacing = {
+            marginBottom:  attributes.rowSpacing+'px',
+        }
+
+        let labelStyle = {
+            color:  attributes.labelColor,
+            marginBottom:  attributes.labelSpacing+'px',
+        }
+
+        let checkboxLabelColor = {
+            color:  attributes.labelColor,
+        }
+
+        let inputStyle = {
+            backgroundColor: attributes.inputBgColor,
+            color:  attributes.inputTextColor,
+            borderRadius:  attributes.inputBorderRadius+'px',
+            paddingTop:  attributes.inputPaddingTop+'px',
+            paddingRight:  attributes.inputPaddingRight+'px',
+            paddingBottom:  attributes.inputPaddingBottom+'px',
+            paddingLeft:  attributes.inputPaddingLeft+'px',
+            borderStyle:  attributes.inputBorderStyle,
+            borderWidth:  attributes.inputBorderWidth+'px',
+            borderColor:  attributes.inputBorderColor,
+        }
+        return (
+            <Fragment>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-checkbox-group" style={fieldSpacing}>
+
+                    <input type="checkbox" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle} />
+                    <label htmlFor={attributes.field_slug} style={checkboxLabelColor}>
+                        {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
+                        {attributes.field_require && <span className="required-mark">*</span>}
+                    </label>
+                </div>
+            </Fragment>
+        )
+    }
+
+    renderRadioOption = (option, index) =>{
+        const { attributes ,setAttributes} = this.props
+        let labelStyle = {
+            color:  attributes.labelColor,
+            marginBottom:  attributes.labelSpacing+'px',
+        }
+
+        let inputStyle = {
+            backgroundColor: attributes.inputBgColor,
+            color:  attributes.inputTextColor,
+            borderRadius:  attributes.inputBorderRadius+'px',
+            paddingTop:  attributes.inputPaddingTop+'px',
+            paddingRight:  attributes.inputPaddingRight+'px',
+            paddingBottom:  attributes.inputPaddingBottom+'px',
+            paddingLeft:  attributes.inputPaddingLeft+'px',
+            borderStyle:  attributes.inputBorderStyle,
+            borderWidth:  attributes.inputBorderWidth+'px',
+            borderColor:  attributes.inputBorderColor,
+        }
+        return (
+            <div>
+                <input type="radio" id={option.value} name={option.value} required={attributes.field_require} style={inputStyle}/>
+                <label htmlFor={attributes.field_slug} style={labelStyle}>
+                    {option.label ? __(option.label,'mrm') : __('','mrm')}
+                    {attributes.field_require && <span className="required-mark">*</span>}
+                </label>
+            </div>
+
+        )
+    }
+    renderRadioField = (attributes) => {
+        const slug_name =  this.makeSlug(attributes.field_name)
+        this.props.setAttributes({ field_slug: slug_name })
+        return (
+            <Fragment>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group mrm-radio-group">
+
+                    {attributes.radioOption.map((option,index) => {
+                        return (
+                            this.renderRadioOption( option,index )
+                        )
+
+                    })}
+                </div>
+            </Fragment>
+
+        )
+    }
+    /**
+     * Make Slug when render text
+     * @param values
+     * @returns {string}
+     */
+    makeSlug = (values) =>{
+        const slug =  values.toLowerCase().replace(/[\W_]+/g, "-");
+        return slug
+    }
+    render() {
+        const {
+            attributes,
+            setAttributes
+        } = this.props;
+        return (
+
+            <>
+                { this.getInspectorControls() }
+                {attributes.field_type == 'text' && <div>{this.renderTextField(attributes)}</div>}
+                {attributes.field_type == 'textarea' && <div>{this.renderTextareaField(attributes)}</div>}
+                {attributes.field_type == 'date' && <div>{this.renderDateField(attributes)}</div>}
+                {attributes.field_type == 'select' && <div>{this.renderSelectField(attributes)}</div>}
+                {attributes.field_type == 'checkbox' && <div>{this.renderCheckboxField(attributes)}</div>}
+                {attributes.field_type == 'radio' && <div>{this.renderRadioField(attributes)}</div>}
+
+            </>
+
+
+        );
+    }
+}
+
+export default compose( [
+] )( Editor );
