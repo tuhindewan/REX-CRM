@@ -172,11 +172,14 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index + 1 );
+        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index );
         if($campaign_email->email_index == $index + 1){
-            $wpdb->update( $fields_table, $email, array( 
-                            'campaign_id' => $campaign_id, 'email_index' => $index + 1 
-                        ));
+            $wpdb->update(
+                $fields_table,
+                $email,
+                array(
+                    'campaign_id' => $campaign_id, 'email_index' => $index + 1
+                ));
         }else{
             self::insert_campaign_emails( $email, $campaign_id, $index );
         }

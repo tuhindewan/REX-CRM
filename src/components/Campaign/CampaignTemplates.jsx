@@ -5,12 +5,13 @@ import CrossIcon from "../Icons/CrossIcon";
 import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
-  const { isClose, setIsClose, setEmailBody, emailData, selectedEmailIndex, isNewCampaign, campaignData } = props;
+  const { isClose, setIsClose, setEmailBody, emailData, selectedEmailIndex, isNewCampaign, campaignData, setIsTemplate } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [ isEmailBuilderOpen, setIsEmailBuilderOpen ] = useState(false);
   const [dataTest, setData] = useState({});
 
+  console.log(props)
   const closeSection = () => {
     setIsClose(!isClose);
   };
@@ -94,6 +95,7 @@ export default function CampaignTemplates(props) {
             selectedEmailIndex        ={selectedEmailIndex}
             setEmailBody              ={setEmailBody}
             setIsEmailBuilderOpen     ={setIsEmailBuilderOpen}
+            setIsTemplate             ={setIsTemplate}
             setIsCloseBuilder         ={closeEmailBuilder}
             setCloseTemplateSelection ={setCloseTemplateSelection}
           />

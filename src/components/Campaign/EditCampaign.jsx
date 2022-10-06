@@ -470,6 +470,7 @@ export default function EditCampaign(props) {
                       selectedEmailIndex  ={selectedEmailIndex}
                       emailData           ={emailData[selectedEmailIndex]}
                       setEmailBody        ={setEmailBody}
+                      setIsTemplate     = {setIsTemplate}
                       campaignData        ={
                         {
                           title: campaignTitle,

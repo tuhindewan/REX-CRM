@@ -2,7 +2,7 @@
  * External dependencies
  */
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import { Button } from '@arco-design/web-react';
 import {  IconMoonFill, IconSunFill } from '@arco-design/web-react/icon';
 import { FormApi } from 'final-form';
@@ -176,11 +176,15 @@ const socialIcons = [
 
 export default function Editor(props) {
 
-    const { selectedEmailIndex, emailData, isNewCampaign, campaignData } = props;
+    const { selectedEmailIndex, emailData, isNewCampaign, campaignData, setIsTemplate, setIsCloseBuilder } = props;
+
+    const [campaignId, setCampaignId] = useState(0)
 
     const [ dataSource, setDataSource ] = useState({
         productsList: []
     });
+
+    let navigate = useNavigate();
 
     const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -222,7 +226,7 @@ export default function Editor(props) {
         }
     }
 
-    const { id }        = useParams();
+    const {id}  = useParams();
 
     /**
      * set initial value
@@ -237,6 +241,7 @@ export default function Editor(props) {
 
     useEffect(() => {
         if ( !shouldCallAPI ) return;
+        if (!id) return;
         fetchEmailBuilderData().then(res => {
             setShouldCallAPI(false)
             setBuilderData(res?.email_data?.email_body)
@@ -281,20 +286,24 @@ export default function Editor(props) {
                     }),
                 }
             )
+            return await response.json();
         } else {
             const response = await fetch(
-                `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex+1}`,
+                `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex}`,
                 {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json",
                     },
                     body: JSON.stringify({
-                        'email_body' : values,
-                        'status'     : 'published',
+                        'email_body'    : values,
+                        'status'        : 'published',
+                        'email_index'   : selectedEmailIndex,
+                        'campaign_data' : campaignData
                     }),
                 }
             )
+            return await response.json();
         }
     }
 
@@ -321,7 +330,7 @@ export default function Editor(props) {
                 }
             }
             saveEmailContent(values).then( response => {
-                console.log(response)
+                setCampaignId(response.campaign_id);
             });
     }, []
     );
@@ -370,6 +379,16 @@ export default function Editor(props) {
         });
     }
 
+
+
+    const backToCampaign = (e) => {
+        if (!id) {
+            navigate(`/campaign/edit/${campaignId}`)
+        }
+        setIsCloseBuilder('none');
+        setIsTemplate(false)
+    }
+
     return (
         <>
             <div className='mrm-email-editor'>
@@ -390,12 +409,12 @@ export default function Editor(props) {
                             <div>
                                 <div className="mrm-editor-header" style={{ background: 'var(--color-bg-2)' }} >
                                     <div className="header-left">
-                                        <Button className='back-from-editor' title='Back'>
+                                        <Button className='back-from-editor' title='Back' onClick={backToCampaign}>
                                             <DoubleAngleLeftIcon />
                                         </Button>
 
                                         <div className="responsive-check">
-                                            <Button className="edit-mode" title='Edit Mode' onClick={ e=> setActivePreview('edit')} >
+                                            <Button className="edit-mode" title='Edit Mode' onClick={ e => setActivePreview('edit')} >
                                                 <EditIcon />
                                             </Button>
 

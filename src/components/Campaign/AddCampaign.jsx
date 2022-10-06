@@ -395,6 +395,7 @@ export default function AddCampaign(props) {
                   emailData         ={emailData[selectedEmailIndex]}
                   setIsClose        ={setIsClose}
                   setEmailBody      ={setEmailBody}
+                  setIsTemplate     = {setIsTemplate}
                   campaignData      ={
                     {
                       title: campaignTitle,

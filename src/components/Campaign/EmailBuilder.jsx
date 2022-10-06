@@ -3,7 +3,7 @@ const Editor = React.lazy(() => import("../../Editor/Editor"));
 
 
 const EmailBuilder = (props) => {
-  const { isCloseBuilder, selectedEmailIndex, emailData, isNewCampaign, campaignData } = props;
+  const { isCloseBuilder, selectedEmailIndex, emailData, isNewCampaign, campaignData, setIsTemplate, setIsCloseBuilder } = props;
 
   return (
     <>
@@ -22,6 +22,8 @@ const EmailBuilder = (props) => {
                 emailData           = {emailData}
                 campaignData        = {campaignData}
                 isNewCampaign       = {isNewCampaign}
+                setIsTemplate       = {setIsTemplate}
+                setIsCloseBuilder   = {setIsCloseBuilder}
             />
           </Suspense>
         </div>
