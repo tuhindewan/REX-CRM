@@ -12,6 +12,9 @@ import 'easy-email-editor/lib/style.css';
 import 'easy-email-extensions/lib/style.css';
 import '@arco-themes/react-easy-email-theme-purple/css/arco.css';
 import './styles/common.scss';
+import mjml from 'mjml-browser';
+import mustache from 'mustache';
+
 
 /**
  * internal dependencies
@@ -32,7 +35,7 @@ import {
 
 import {
     AdvancedType,
-    IBlockData
+    IBlockData, JsonToMjml
 } from 'easy-email-core';
 
 
@@ -271,6 +274,18 @@ export default function Editor(props) {
      * @since 1.0.0
      */
     const saveEmailContent = async (values) => {
+        const mjmlContent = JsonToMjml({
+            data: values.content,
+            mode: 'production',
+            context: values.content,
+        });
+
+        const html = mjml(mustache.render(mjmlContent, {}), {
+            beautify            : true,
+            validationLevel     : 'soft',
+        }).html;
+
+
         if ( isNewCampaign ) {
             const response = await fetch(
                 `${window.MRM_Vars.api_base_url}mrm/v1/campaign/email/create`,
@@ -280,7 +295,8 @@ export default function Editor(props) {
                         "Content-type": "application/json",
                     },
                     body: JSON.stringify({
-                        'email_body'    : values,
+                        'email_body'    : html,
+                        'json_data'     : values,
                         'status'        : 'published',
                         'email_index'   : selectedEmailIndex,
                         'campaign_data' : campaignData
@@ -289,7 +305,7 @@ export default function Editor(props) {
             )
             return await response.json();
         } else {
-            const response = await fetch(
+            const response = await fetch (
                 `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex}`,
                 {
                     method: 'POST',
@@ -297,7 +313,8 @@ export default function Editor(props) {
                         "Content-type": "application/json",
                     },
                     body: JSON.stringify({
-                        'email_body'    : values,
+                        'email_body'    : html,
+                        'json_data'     : values,
                         'status'        : 'published',
                         'email_index'   : selectedEmailIndex,
                         'campaign_data' : campaignData
