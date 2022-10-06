@@ -8,7 +8,7 @@ export default function ({ children, elementRef, x = 100, y = 100 }) {
     ? elementRef.current.getBoundingClientRect().y + window.scrollY + y
     : y;
   return (
-    <div className="dropdown-options"
+    <div
       style={{
         position: "absolute",
         left: xPos,

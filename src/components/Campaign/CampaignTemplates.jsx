@@ -1,15 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import CrossIcon from "../Icons/CrossIcon";
+
 import EmailBuilder from "./EmailBuilder";
-import LeftArrow from "../Icons/LeftArrow";
-import RightArrow from "../Icons/RightArrow";
 
 export default function CampaignTemplates(props) {
   const { isClose, setIsClose, setEmailBody, emailData } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
-  const [isEmailBuilderOpen, setIsEmailBuilderOpen] = useState(false);
+  const [ isEmailBuilderOpen, setIsEmailBuilderOpen ] = useState(false);
   const [dataTest, setData] = useState({});
 
   const closeSection = () => {
@@ -18,7 +17,7 @@ export default function CampaignTemplates(props) {
 
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
-    setIsEmailBuilderOpen(true);
+    setIsEmailBuilderOpen(true)
     setIsTemplateBuilder(true);
     setIsCloseBuilder(!isCloseBuilder);
   };
@@ -38,7 +37,7 @@ export default function CampaignTemplates(props) {
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-      console.log("exportHtml", html);
+      console.log('exportHtml', html);
     });
   };
 
@@ -71,105 +70,28 @@ export default function CampaignTemplates(props) {
           </div>
           <div className="template-body">
             <div
-              className="template-select-section from-scratch"
+              className="template-select-section"
               onClick={openTemplateBuilder}
             >
-              <Link to="" className="create-scratch mintmrm-btn">
-                Start From Scratch
+              <Link to="">
+                <button type="submit" className="save-template mintmrm-btn ">
+                  Start From Scratch
+                </button>
               </Link>
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div className="template-image-wrapper"></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
             </div>
-            <div className="template-select-section">
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div
-                    className="template-image-wrapper"
-                    style={{
-                      backgroundImage: `url("https://templates.getwpfunnels.com/wp-content/uploads/2022/02/Consultancy-screen-shot-op-470x1024.jpeg")`,
-                    }}
-                  ></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
-            </div>
-            <div className="template-select-section">
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div className="template-image-wrapper"></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
-            </div>
-            <div className="template-select-section">
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div className="template-image-wrapper"></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
-            </div>
-            <div className="template-select-section">
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div className="template-image-wrapper"></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
-            </div>
-            <div className="template-select-section">
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div className="template-image-wrapper"></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
-            </div>
-            <div className="template-select-section">
-              <div className="mrm-single-remote-wrapper">
-                <div className="mrm-single-remote-template">
-                  <div className="template-image-wrapper"></div>
-                </div>
-                <div className="mrm-template-info">
-                  <span className="title">Sunglasses</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="template-footer">
-            <div className="left-arrow">
-              <LeftArrow />
-            </div>
-            <div className="right-arrow active">
-              <RightArrow />
-            </div>
+            <div className="template-select-section"></div>
+            <div className="template-select-section"></div>
+            <div className="template-select-section"></div>
           </div>
           <EmailBuilder
-            isOpen={isTemplateBuilder}
-            isCloseBuilder={isCloseBuilder}
-            isEmailBuilderOpen={isEmailBuilderOpen}
-            emailData={emailData}
-            setEmailBody={setEmailBody}
-            setIsCloseBuilder={closeEmailBuilder}
-            setCloseTemplateSelection={setCloseTemplateSelection}
-            setIsEmailBuilderOpen={setIsEmailBuilderOpen}
-            r
+              isOpen={isTemplateBuilder}
+              isCloseBuilder={isCloseBuilder}
+              isEmailBuilderOpen={isEmailBuilderOpen}
+              emailData={emailData}
+              setEmailBody={setEmailBody}
+              setIsCloseBuilder={closeEmailBuilder}
+              setCloseTemplateSelection={setCloseTemplateSelection}
+              setIsEmailBuilderOpen={setIsEmailBuilderOpen} r
           />
         </div>
       </div>

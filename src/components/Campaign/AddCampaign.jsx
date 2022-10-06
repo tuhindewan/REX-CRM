@@ -10,10 +10,7 @@ import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
-import DownArrowIcon from "../Icons/DownArrowIcon";
-import UpArrowIcon from "../Icons/UpArrowIcon";
-import CampaignCustomSelect from "./CampaignCustomSelect";
-import ScheduleAlert from "../ScheduleAlert";
+
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
   subject: "",
@@ -48,8 +45,6 @@ export default function AddCampaign(props) {
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
-  const [dropDown, setDropDown] = useState(false);
-
   const [isValid, setIsValid] = useState(false);
   const names = [
     {
@@ -185,10 +180,6 @@ export default function AddCampaign(props) {
     });
   };
 
-  const showDropDown = () => {
-    setDropDown(!dropDown);
-  };
-
   const validate = () => {
     if (
       campaignTitle.length > 0 ||
@@ -298,23 +289,8 @@ export default function AddCampaign(props) {
                   </div>
                   <div className="email-to input-item">
                     <label>To:</label>
-                    <button className="all-recipients" onClick={showDropDown}>
-                      All Subscriber
-                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                    </button>
-                    <button
-                      className="all-recipients selected"
-                      onClick={showDropDown}
-                    >
-                      <span className="tags">5 Tags</span>
-                      <span className="from">from</span>
-                      <span className="lists">4 Lists.</span>
-                      <span className="recipients">300 Recipients</span>
-                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                    </button>
-                    <CampaignCustomSelect dropDown={dropDown} />
                     <div>
-                      {/* <CustomSelect
+                      <CustomSelect
                         selected={recipientLists}
                         setSelected={setRecipientLists}
                         endpoint="/lists"
@@ -326,7 +302,7 @@ export default function AddCampaign(props) {
                         allowMultiple={true}
                         showSearchBar={true}
                         showListTitle={true}
-                        showSelectedInside={true}
+                        showSelectedInside={false}
                         allowNewCreate={true}
                       />
                       <CustomSelect
@@ -341,9 +317,9 @@ export default function AddCampaign(props) {
                         allowMultiple={true}
                         showSearchBar={true}
                         showListTitle={true}
-                        showSelectedInside={true}
+                        showSelectedInside={false}
                         allowNewCreate={true}
-                      /> */}
+                      />
                     </div>
                   </div>
                 </>
@@ -352,6 +328,7 @@ export default function AddCampaign(props) {
                 <div className="email-from input-item">
                   <label>Delay</label>
                   <input
+                    style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
                     type="number"
                     name="delay_count"
                     value={emailData[selectedEmailIndex]["delay_count"]}
@@ -444,7 +421,6 @@ export default function AddCampaign(props) {
               >
                 Publish
               </button>
-              {/* <ScheduleAlert /> */}
               <button
                 type="submit"
                 className="campaign-save mintmrm-btn"

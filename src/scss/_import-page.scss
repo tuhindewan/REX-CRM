@@ -58,8 +58,6 @@
     width: 100%;
     padding: 18px;
     margin: 8px 0px;
-    display: flex;
-    justify-content: center;
   }
   .upload-section {
     h3,
@@ -269,7 +267,7 @@
           color: #6a707c;
         }
       }
-      .mintmrm-checkbox:last-child {
+      .mintmrm-checkbox:last-child{
         margin-bottom: 0;
       }
     }
