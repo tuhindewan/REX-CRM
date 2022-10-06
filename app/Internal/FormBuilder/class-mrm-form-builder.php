@@ -34,7 +34,7 @@ Class FormBuilderHelper {
         wp_enqueue_script( $script_handle, $script_url, $script_asset['dependencies'], $script_asset['version'] );
      
         $settings = $this->get_block_editor_settings();
-        wp_add_inline_script( $script_handle, 'window.getdaveSbeSettings = ' . wp_json_encode( $settings ) . ';' );
+        wp_add_inline_script( $script_handle, 'window.getmrmsetting = ' . wp_json_encode( $settings ) . ';' );
      
         wp_add_inline_script(
            'wp-blocks',

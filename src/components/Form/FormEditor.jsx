@@ -7,10 +7,6 @@ const FormEditor = () => {
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
 
-  useEffect(() => {
-    const el = document.getElementById("form-block-id");
-    console.log(el);
-  }, []);
 
   return (
     <>

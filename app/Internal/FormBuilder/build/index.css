@@ -148,7 +148,7 @@ body.is-fullscreen-mode .getdavesbe-header {
   padding: 0 20px;
 }
 
-.getdavesbe-sidebar {
+.mrm-form-builder-sidebar {
   background: white;
   border-left: 1px solid #ddd;
   bottom: 0;
@@ -162,7 +162,7 @@ body.is-fullscreen-mode .getdavesbe-header {
   z-index: 100000;
 }
 @media (min-width: 600px) {
-  .getdavesbe-sidebar {
+  .mrm-form-builder-sidebar {
     -webkit-overflow-scrolling: touch;
     height: auto;
     overflow: auto;
@@ -170,25 +170,25 @@ body.is-fullscreen-mode .getdavesbe-header {
   }
 }
 @media (min-width: 782px) {
-  .getdavesbe-sidebar {
+  .mrm-form-builder-sidebar {
     top: 92px;
   }
 }
 @media (min-width: 600px) {
-  .getdavesbe-sidebar {
+  .mrm-form-builder-sidebar {
     display: block;
   }
 }
-.getdavesbe-sidebar > .components-panel {
+.mrm-form-builder-sidebar > .components-panel {
   border-left: 0;
   border-right: 0;
   margin-bottom: -1px;
   margin-top: -1px;
 }
-.getdavesbe-sidebar > .components-panel > .components-panel__header {
+.mrm-form-builder-sidebar > .components-panel > .components-panel__header {
   background: #ddd;
 }
-.getdavesbe-sidebar .block-editor-block-inspector__card {
+.mrm-form-builder-sidebar .block-editor-block-inspector__card {
   margin: 0;
 }
 

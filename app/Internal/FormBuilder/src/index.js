@@ -6,7 +6,7 @@ import Editor from './editor';
 import './styles.scss';
 
 domReady( function() {
-	const settings = window.getdaveSbeSettings || {};
+	const settings = window.getmrmsetting || {};
 	registerCoreBlocks();
 	render( <Editor settings={ settings } />, document.getElementById( 'mrm-block-editor' ) );
 } );

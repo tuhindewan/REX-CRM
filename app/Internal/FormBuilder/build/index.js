@@ -450,7 +450,7 @@ const {
 
 function Sidebar() {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "getdavesbe-sidebar",
+    className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Standalone Block Editor advanced settings.'),
     tabIndex: "-1"
@@ -1051,7 +1051,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
-  const settings = window.getdaveSbeSettings || {};
+  const settings = window.getmrmsetting || {};
   (0,_wordpress_block_library__WEBPACK_IMPORTED_MODULE_2__.registerCoreBlocks)();
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
     settings: settings
