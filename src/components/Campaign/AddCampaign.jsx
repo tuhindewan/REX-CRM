@@ -394,31 +394,6 @@ export default function AddCampaign(props) {
                 </div>
 
               </div>
-              <div className="email-from input-item">
-                <label>From</label>
-                <input
-                  type="text"
-                  name="senderName"
-                  value={emailData[selectedEmailIndex]["senderName"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Name"
-                />
-                <input
-                  type="text"
-                  name="senderEmail"
-                  value={emailData[selectedEmailIndex]["senderEmail"]}
-                  onChange={handleEmailFieldsChange}
-                  placeholder="Enter Email"
-                />
-              </div>
-              <div className="email-design input-item">
-                <label>Design</label>
-                <div className="add-template-section" onClick={openTemplate}>
-                  <TemplateIcon />
-                  <Link to="">Select a Template</Link>
-                </div>
-                
-              </div>
             </div>
 
           </div>

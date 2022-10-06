@@ -7,11 +7,11 @@
   height: 100%;
   background: rgba(51, 51, 51, 0.2);
   z-index: 999;
-  // display: flex;
-  // flex-flow: row wrap;
-  // align-items: center;
-  // justify-content: center;
-  // display: none;
+  
+  
+  &.email-builder-editor {
+    padding: 0;
+  }
 
   .mintmrm-template-confirmation {
     background: #f6f6f6;
