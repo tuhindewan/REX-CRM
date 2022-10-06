@@ -121,13 +121,13 @@ export default function EditCampaign(props) {
     const campaign = {
       title: campaignTitle,
       recipients: {
-        lists: recipientLists.map((list) => {
+        lists: recipientLists?.map((list) => {
           return {
             id: list.id,
             title: list.title,
           };
         }),
-        tags: recipientTags.map((tag) => {
+        tags: recipientTags?.map((tag) => {
           return {
             id: tag.id,
             title: tag.title,
@@ -260,6 +260,7 @@ export default function EditCampaign(props) {
 
   return (
     <>
+      {console.log(emailData)}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
@@ -405,7 +406,7 @@ export default function EditCampaign(props) {
                     placeholder="Be Specific and concise to spark interest"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]?.email_subject.length}/200
+                    {emailData[selectedEmailIndex]?.email_subject?.length}/200
                   </span>
                   <div className="setting-section">
                     <SettingIcon />
@@ -426,7 +427,7 @@ export default function EditCampaign(props) {
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]?.email_preview_text.length}
+                    {emailData[selectedEmailIndex]?.email_preview_text?.length}
                     /200
                   </span>
                   <div className="setting-section">
@@ -463,48 +464,46 @@ export default function EditCampaign(props) {
 
                   {!isClose && (
                     <CampaignTemplates
-                      isOpen              ={isTemplate}
-                      isClose             ={isClose}
-                      setIsClose          ={setIsClose}
-                      isNewCampaign       ={false}
-                      selectedEmailIndex  ={selectedEmailIndex}
-                      emailData           ={emailData[selectedEmailIndex]}
-                      setEmailBody        ={setEmailBody}
-                      setIsTemplate     = {setIsTemplate}
-                      campaignData        ={
-                        {
-                          title: campaignTitle,
-                          recipients: {
-                            lists: recipientLists?.map((list) => {
-                              return {
-                                id: list.id,
-                                title: list.title,
-                              };
-                            }),
-                            tags: recipientTags?.map((tag) => {
-                              return {
-                                id: tag.id,
-                                title: tag.title,
-                              };
-                            }),
-                          },
-                          type: emailData.length > 1 ? "sequence" : "regular",
-                          status: status,
-                          created_by: `${window.MRM_Vars.current_userID}`,
-                          emails: emailData.map((email) => {
+                      isOpen={isTemplate}
+                      isClose={isClose}
+                      setIsClose={setIsClose}
+                      isNewCampaign={false}
+                      selectedEmailIndex={selectedEmailIndex}
+                      emailData={emailData[selectedEmailIndex]}
+                      setEmailBody={setEmailBody}
+                      setIsTemplate={setIsTemplate}
+                      campaignData={{
+                        title: campaignTitle,
+                        recipients: {
+                          lists: recipientLists?.map((list) => {
                             return {
-                              email_subject: email.subject,
-                              email_preview_text: email.preview,
-                              sender_email: email.senderEmail,
-                              delay_count: email.delay_count,
-                              delay_value: email.delay_value,
-                              sender_name: email.senderName,
-                              email_body: email.email_body,
-                              email_json: email.email_json,
+                              id: list.id,
+                              title: list.title,
                             };
                           }),
-                        }
-                      }
+                          tags: recipientTags?.map((tag) => {
+                            return {
+                              id: tag.id,
+                              title: tag.title,
+                            };
+                          }),
+                        },
+                        type: emailData.length > 1 ? "sequence" : "regular",
+                        status: status,
+                        created_by: `${window.MRM_Vars.current_userID}`,
+                        emails: emailData.map((email) => {
+                          return {
+                            email_subject: email.subject,
+                            email_preview_text: email.preview,
+                            sender_email: email.senderEmail,
+                            delay_count: email.delay_count,
+                            delay_value: email.delay_value,
+                            sender_name: email.senderName,
+                            email_body: email.email_body,
+                            email_json: email.email_json,
+                          };
+                        }),
+                      }}
                     />
                   )}
                 </div>

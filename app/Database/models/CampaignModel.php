@@ -110,7 +110,7 @@ class CampaignModel {
         $email['campaign_id']   = $campaign_id;
         $email['created_at']    = current_time('mysql');
         $email['email_index']   = $index;
-        $email['email_json']    = $email['email_json'] ? serialize($email['email_json']) : '';
+        $email['email_json']    = isset($email['email_json']) ? serialize($email['email_json']) : '';
         $inserted = $wpdb->insert( $fields_table, $email );
         if( $inserted ){
             return $wpdb->insert_id;
