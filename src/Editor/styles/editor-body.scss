@@ -1,3 +1,14 @@
+.email-builder-editor {
+    .mintmrm-delete-alert-wrapper {
+        padding: 0;
+        display: none;
+
+        &.show-modal {
+            display: flex;
+        }
+    }
+}
+
 .email-builder-loader {
     position: absolute;
     top: 0;
