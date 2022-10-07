@@ -9,7 +9,6 @@ function Settings() {
   });
   return (
     <div className="contact-list-page">
-      {/* <SettingsNav /> */}
       <div className="mintmrm-container">
         <h2 class="conatct-heading">Settings</h2>
         <div className="contact-info-wrapper">
