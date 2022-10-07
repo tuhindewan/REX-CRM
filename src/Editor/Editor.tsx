@@ -452,10 +452,14 @@ export default function Editor(props) {
   };
 
   const backToCampaign = (e) => {
+    console.log(campaignId);
+
     if (!id) {
-      navigate(`/campaigns/create`);
-    } else {
       navigate(`/campaign/edit/${campaignId}`);
+    }
+
+    if (0 == campaignId) {
+      navigate(`/campaigns/create`);
     }
     setIsCloseBuilder("none");
     setIsTemplate(false);
