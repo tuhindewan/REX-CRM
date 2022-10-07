@@ -1,6 +1,8 @@
 <?php
 
 
+use Mint\MRM\DataBase\Models\FormModel;
+
 class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 
     protected $defaults = array(
@@ -22,26 +24,18 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 
     public function show_form_markup()
     {
-        if( isset($_POST['post_id']) && !empty($_POST['post_id'])){
+//        if( isset($_POST['post_id']) && !empty($_POST['post_id'])){
             $form_id = $_POST['post_id'];
-            $arrg = array(
-                'p' =>  $form_id,
-                'post_type' => 'mrmform'
-            );
 
-            $get_post = new WP_Query($arrg);
-            $form_data = get_option('_mrm_form_data');
+            $get_form_data_by_id = FormModel::get(1);
             ob_start();
             $output = '';
-            $output .= $form_data[0];
-//            while ( $get_post->have_posts() ) : $get_post->the_post();
-//                the_content();
-//	        endwhile;
+            $output .= $get_form_data_by_id["form_body"];
 
             $output .=  ob_get_clean();
             echo $output;
             die();
-        }
+//        }
     }
     /**
      * Render the Featured Product block.
