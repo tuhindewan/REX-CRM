@@ -12,6 +12,7 @@ import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
 import ThreeDotIcon from "./Icons/ThreeDotIcon";
+import Pagination from "./Pagination";
 import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {

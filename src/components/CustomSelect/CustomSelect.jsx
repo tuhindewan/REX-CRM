@@ -145,12 +145,12 @@ export default function CustomSelect(props) {
     if (endpoint == "/status") {
       setItems([
         {
-          title: "Subsbcribe",
-          id: "subsbcribe",
+          title: "Subscribed",
+          id: "subscribed",
         },
         {
-          title: "Unsubscribe",
-          id: "unsubscribe",
+          title: "Unsubscribed",
+          id: "unsubscribed",
         },
         {
           title: "Pending",

@@ -158,7 +158,7 @@ class MRM_Importer {
     public static function get_wp_users( $roles = array() )
     {
         $users = get_users(
-            array('role_in'    => $roles,
+            array('role__in'    => $roles,
                 'orderby' => 'ID',
                 'order'   => 'ASC'
             )
