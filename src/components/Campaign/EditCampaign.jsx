@@ -463,11 +463,48 @@ export default function EditCampaign(props) {
 
                   {!isClose && (
                     <CampaignTemplates
-                      isOpen={isTemplate}
-                      isClose={isClose}
-                      setIsClose={setIsClose}
-                      setEmailBody={setEmailBody}
-                      emailData={emailData[selectedEmailIndex]}
+                      isOpen              ={isTemplate}
+                      isClose             ={isClose}
+                      setIsClose          ={setIsClose}
+                      isNewCampaign       ={false}
+                      selectedEmailIndex  ={selectedEmailIndex}
+                      emailData           ={emailData[selectedEmailIndex]}
+                      setEmailBody        ={setEmailBody}
+                      setIsTemplate     = {setIsTemplate}
+                      campaignData        ={
+                        {
+                          title: campaignTitle,
+                          recipients: {
+                            lists: recipientLists?.map((list) => {
+                              return {
+                                id: list.id,
+                                title: list.title,
+                              };
+                            }),
+                            tags: recipientTags?.map((tag) => {
+                              return {
+                                id: tag.id,
+                                title: tag.title,
+                              };
+                            }),
+                          },
+                          type: emailData.length > 1 ? "sequence" : "regular",
+                          status: status,
+                          created_by: `${window.MRM_Vars.current_userID}`,
+                          emails: emailData.map((email) => {
+                            return {
+                              email_subject: email.subject,
+                              email_preview_text: email.preview,
+                              sender_email: email.senderEmail,
+                              delay_count: email.delay_count,
+                              delay_value: email.delay_value,
+                              sender_name: email.senderName,
+                              email_body: email.email_body,
+                              email_json: email.email_json,
+                            };
+                          }),
+                        }
+                      }
                     />
                   )}
                 </div>

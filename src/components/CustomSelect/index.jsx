@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
-import CrossIcon from "../Icons/CrossIcon";
 
 export default function CustomSelect(props) {
   // global state reference for whether to hide all dropdown
@@ -113,37 +112,20 @@ export default function CustomSelect(props) {
   // at first page load get all the available lists
   // keep fetching lists whenever user types something in the search bar
   useEffect(() => {
-    if (endpoint == "/status") {
-      setItems([
-        {
-          title: "Subsbcribe",
-          id: "subsbcribe",
-        },
-        {
-          title: "Unsubscribe",
-          id: "unsubscribe",
-        },
-        {
-          title: "Pending",
-          id: "pending",
-        },
-      ]);
-    } else {
-      async function getItems() {
-        setLoading(true);
-        const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
-        );
-        const resJson = await res.json();
-        if (resJson.code == 200) {
-          setItems(resJson.data.data);
-          setLoading(false);
-        } else {
-          console.log(resJson);
-        }
+    async function getItems() {
+      setLoading(true);
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        setItems(resJson.data.data);
+        setLoading(false);
+      } else {
+        console.log(resJson);
       }
-      if (!options) getItems();
     }
+    if (!options) getItems();
   }, [query]);
 
   // Handle new list or tag creation
@@ -195,7 +177,7 @@ export default function CustomSelect(props) {
           {placeholder}
         </button>
         {/**code for showing selected items inside the tags container still needs to fix css issues */}
-        <div className="mrm-selected-items-container">
+        {/* <div className="mrm-selected-items-container">
           {showSelectedInside &&
             selected.map((item) => {
               return (
@@ -210,7 +192,7 @@ export default function CustomSelect(props) {
                 </span>
               );
             })}
-        </div>
+        </div> */}
         <ul
           className={
             activeCustomSelect == customSelectUUID.current &&

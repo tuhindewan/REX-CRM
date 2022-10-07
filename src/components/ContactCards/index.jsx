@@ -9,9 +9,7 @@ export default function ContactCards(props) {
           <p>{props.cardTitle}</p>
         </Link>
       </div>
-      <h3 className="total-contact-numbers">
-        {props.totalAmount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-      </h3>
+      <h3 className="total-contact-numbers">{props.totalAmount}</h3>
     </div>
   );
 }

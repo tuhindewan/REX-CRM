@@ -18,4 +18,8 @@
 @import 'drawer';
 @import "custom-select";
 @import "shimmer";
-@import "mrm-navbar";
+
+
+.arco-layout-has-sider {
+  width: 100% !important;
+}

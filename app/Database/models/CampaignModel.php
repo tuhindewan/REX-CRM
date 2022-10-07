@@ -50,14 +50,18 @@ class CampaignModel {
      */
     public static function insert( $args )
     {
+        error_log(print_r($args,1));
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-
         unset($args['recipients']);
         unset($args['emails']);
         $args['created_at'] = current_time('mysql', 1);
+        $args['title']      = $args['title'] ? $args['title'] : 'No title';
 
-        $result = $wpdb->insert( $campaign_table, $args );
+        $result = $wpdb->insert(
+            $campaign_table,
+            $args
+        );
         return $result ? self::get( $wpdb->insert_id ) : false;
     }
 
@@ -105,7 +109,7 @@ class CampaignModel {
 
         $email['campaign_id']   = $campaign_id;
         $email['created_at']    = current_time('mysql');
-        $email['email_index']   = $index + 1;
+        $email['email_index']   = $index;
         $email['email_json']    = $email['email_json'] ? serialize($email['email_json']) : '';
         $inserted = $wpdb->insert( $fields_table, $email );
         if( $inserted ){
@@ -171,11 +175,14 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index + 1 );
-        if($campaign_email->email_index == $index + 1){
-            $wpdb->update( $fields_table, $email, array( 
-                            'campaign_id' => $campaign_id, 'email_index' => $index + 1 
-                        ));
+        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index );
+        if($campaign_email->email_index == $index){
+            $wpdb->update(
+                $fields_table,
+                $email,
+                array(
+                    'campaign_id' => $campaign_id, 'email_index' => $index
+                ));
         }else{
             self::insert_campaign_emails( $email, $campaign_id, $index );
         }
@@ -377,6 +384,21 @@ class CampaignModel {
 
         return $wpdb->delete( $campaign_emails_table, array('id' => $email_id, 'campaign_id' => $campaign_id) );
     }
-    
-    
+
+
+    /**
+     * Get campaign email id by email index of that campaign
+     *
+     * @param $campaign_id
+     * @param $email_index
+     * @return string|null
+     *
+     * @since 1.0.0
+     */
+    public static function get_email_by_index( $campaign_id, $email_index ) {
+        global $wpdb;
+        $email_table    = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND email_index=%s", $campaign_id, $email_index );
+        return $wpdb->get_row( $select_query );
+    }
 }
