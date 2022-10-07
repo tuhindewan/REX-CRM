@@ -214,7 +214,6 @@ class TagController extends BaseController {
 
     /**
      * Add tags to new contact
-     * 
      * @param array $tags
      * @param int $contact_id
      * 
@@ -224,9 +223,8 @@ class TagController extends BaseController {
     public static function set_tags_to_contact( $tags, $contact_id )
     {
         $pivot_ids = array_map(function ( $tag ) use( $contact_id ) {
-
             return array(
-                'group_id'    =>  $tag['id'],
+                'group_id'    =>  isset( $tag['id'] ) ? $tag['id'] : $tag,
                 'contact_id'  =>  $contact_id
             );
             

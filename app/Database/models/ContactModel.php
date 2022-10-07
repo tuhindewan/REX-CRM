@@ -48,6 +48,7 @@ class ContactModel{
                 'source'        =>  $contact->get_source(),
                 'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_by'    =>  $contact->get_created_by(),
+                'wp_user_id'    =>  $contact->get_wp_user_id(),
                 'created_at'    =>  current_time('mysql')
             )); 
 
