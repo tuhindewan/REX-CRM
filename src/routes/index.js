@@ -12,6 +12,7 @@ import ImportConfirmation from "../components/ImportConfirmation";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import SelectFieldsMap from "../components/SelectFieldsMap";
+import Settings from "../components/Setting";
 import CreateTag from "../components/Tag/CreateTag";
 import UpdateTag from "../components/Tag/UpdateTag";
 import WordPressFieldMap from "../components/WordPressFieldMap";
@@ -22,7 +23,6 @@ import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
-
 
 const routes = [
   {
@@ -174,6 +174,11 @@ const routes = [
   {
     path        : "/campaign/edit/:id",
     element     : EditCampaign,
+    hideInMenu  : true,
+  },
+  {
+    path        : "/settings",
+    element     : Settings,
     hideInMenu  : true,
   }
 ];
