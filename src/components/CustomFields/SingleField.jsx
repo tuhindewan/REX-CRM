@@ -32,7 +32,7 @@ export default function SingleField(props) {
       </td>
       <td className="">{slug}</td>
       <td className="">{type}</td>
-      <td className="">{new Date(created_at).toDateString()}</td>
+      <td className="">{created_at}</td>
       <td>
         <button
           className="more-option"

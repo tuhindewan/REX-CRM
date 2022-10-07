@@ -81,21 +81,16 @@ class CustomFieldModel{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $offset = 0, $limit = 20, $search = '', $order_by = 'id', $order_type = 'DESC'  )
+    public static function get_all()
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
-        if ( ! empty( $search ) ) {
-            $search = $wpdb->esc_like($search);
-            $search_terms = "WHERE `title` LIKE '%%$search%%'";
-		}
-
         // Return field froups for list view
         try {
-            $select_query  = $wpdb->prepare( "SELECT * FROM $fields_table {$search_terms} ORDER BY $order_by $order_type
-            LIMIT $offset, $limit" );
+            $select_query  = $wpdb->prepare( "SELECT * FROM $fields_table ORDER BY id ASC" );
             $query_results = $wpdb->get_results( $select_query );
+      
             return array(
                 'data' => $query_results
             );
@@ -121,30 +116,6 @@ class CustomFieldModel{
 
         try {
             $wpdb->delete( $fields_table, ['id' => $id], ["%d"] );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
-    }
-
-
-    /**
-     * Delete multiple custom fields from the database
-     * 
-     * @param array $ids multiple field ids
-     * 
-     * @return bool
-     * @since 1.0.0
-     */
-    public static function destroy_all( $ids )
-    {
-        global $wpdb;
-
-        $fields_table  = $wpdb->prefix . CustomFieldSchema::$table_name;
-
-        try {
-            $ids = implode(",", array_map( 'intval', $ids ));
-            $wpdb->query( "DELETE FROM {$fields_table} WHERE id IN ($ids)" );
             return true;
         } catch(\Exception $e) {
             return false;

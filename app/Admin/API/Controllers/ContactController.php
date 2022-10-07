@@ -63,6 +63,7 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
+
         // Email address validation
         if( isset($params['email']) ){
             $email = sanitize_text_field( $params['email'] );
