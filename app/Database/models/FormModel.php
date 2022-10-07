@@ -148,7 +148,7 @@ class FormModel {
         $form_table = $wpdb->prefix . FormSchema::$table_name;
         $search_terms = null;
 
-        // Search notes by title
+        // Search form by title
 		if ( ! empty( $search ) ) {
             $search = $wpdb->esc_like($search);
             $search_terms = "WHERE title LIKE '%%$search%%'";
@@ -157,7 +157,7 @@ class FormModel {
         // Prepare sql results for list view
         try {
             
-            // Return notes for a contact in list view
+            // Return forms for a contact in list view
             $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
             $count_query   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $form_table", array(  ) ) );
             
@@ -177,9 +177,9 @@ class FormModel {
     }
 
     /**
-     * Run SQL Query to get a single note information
+     * Run SQL Query to get a single form information
      * 
-     * @param mixed $id Note ID
+     * @param mixed $id Form ID
      * 
      * @return object
      * @since 1.0.0
@@ -187,7 +187,7 @@ class FormModel {
     public static function get( $id )
     {
         global $wpdb;
-        $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
+        $table_name = $wpdb->prefix . FormSchema::$table_name;
 
         return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", array($id) ), ARRAY_A );
     }

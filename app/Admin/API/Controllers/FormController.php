@@ -133,7 +133,7 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $group = FormModel::get( $params['list_id'] );
+        $group = FormModel::get( $params['form_id'] );
 
         if(isset($group)) {
             return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $group);
