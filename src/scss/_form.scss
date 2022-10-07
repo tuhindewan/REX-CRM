@@ -13,3 +13,14 @@
   display: flex;
   justify-content: end;
 }
+
+.form-items {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  .left-items {
+    display: flex;
+    gap: 5px;
+    display: flex;
+  }
+}

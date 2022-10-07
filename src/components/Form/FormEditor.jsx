@@ -84,11 +84,13 @@ const FormEditor = (props) => {
     const responseData = await res.json();
   };
 
-  const handleFormPosition = (param) => {
+  const [positionName, setPositionName] = useState("");
+  const handleFormPosition = (param, name) => {
     setValues((prevState) => ({
       ...prevState,
       form_position: param,
     }));
+    setPositionName(name);
     setToggleDropdown(false);
   };
 
@@ -117,69 +119,80 @@ const FormEditor = (props) => {
             handleChange={handleChange}
             value={formData.title}
           />
-          <div style={{ position: "relative" }}>
-            <button
-              className="mintmrm-btn outline"
-              onClick={() => setToggleDropdown(!toggleDropdown)}
-            >
-              Form Position
-            </button>
-            <ul
-              className={
-                toggleDropdown ? "mintmrm-dropdown show" : "mintmrm-dropdown "
-              }
-              style={{ position: "absolute", top: "100px", left: "0px" }}
-            >
-              <li onClick={() => handleFormPosition("fly_in")}>Fly-In</li>
-              <li onClick={() => handleFormPosition("pop_up")}>Pop-Up</li>
-            </ul>
+
+          <div className="form-items">
+            <div className="left-items">
+              <div style={{ position: "relative" }}>
+                <button
+                  className="mintmrm-btn outline"
+                  onClick={() => setToggleDropdown(!toggleDropdown)}
+                >
+                  {formData.form_position ? positionName : "Form Position"}
+                </button>
+                <ul
+                  className={
+                    toggleDropdown
+                      ? "mintmrm-dropdown show"
+                      : "mintmrm-dropdown "
+                  }
+                  style={{ position: "absolute", top: "100px", left: "0px" }}
+                >
+                  <li onClick={() => handleFormPosition("fly_in", "Fly-In")}>
+                    Fly-In
+                  </li>
+                  <li onClick={() => handleFormPosition("pop_up", "Pop-Up")}>
+                    Pop-Up
+                  </li>
+                </ul>
+              </div>
+
+              <div className="form-group">
+                <CustomSelect
+                  selected={selectedTags}
+                  setSelected={setSelectedTags}
+                  endpoint="/tags"
+                  placeholder="Tags"
+                  name="tag"
+                  listTitle="CHOOSE TAG"
+                  listTitleOnNotFound="No Data Found"
+                  searchPlaceHolder="Search..."
+                  allowMultiple={true}
+                  showSearchBar={true}
+                  showListTitle={true}
+                  showSelectedInside={false}
+                  allowNewCreate={true}
+                />
+              </div>
+
+              <div className="form-group">
+                <CustomSelect
+                  selected={selectedLists}
+                  setSelected={setSelectedLists}
+                  endpoint="/lists"
+                  placeholder="Lists"
+                  name="list"
+                  listTitle="CHOOSE List"
+                  listTitleOnNotFound="No Data Found"
+                  searchPlaceHolder="Search..."
+                  allowMultiple={true}
+                  showSearchBar={true}
+                  showListTitle={true}
+                  showSelectedInside={false}
+                  allowNewCreate={true}
+                />
+              </div>
+            </div>
+
+            <div className="right-section">
+              <button
+                type="submit"
+                className="contact-save mintmrm-btn "
+                onClick={saveForm}
+              >
+                Save
+              </button>
+            </div>
           </div>
-
-          <div>{formData.form_position}</div>
-
-          <div className="form-group">
-            <CustomSelect
-              selected={selectedTags}
-              setSelected={setSelectedTags}
-              endpoint="/tags"
-              placeholder="Tags"
-              name="tag"
-              listTitle="CHOOSE TAG"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={true}
-              showSelectedInside={false}
-              allowNewCreate={true}
-            />
-          </div>
-
-          <div className="form-group">
-            <CustomSelect
-              selected={selectedLists}
-              setSelected={setSelectedLists}
-              endpoint="/lists"
-              placeholder="Lists"
-              name="list"
-              listTitle="CHOOSE List"
-              listTitleOnNotFound="No Data Found"
-              searchPlaceHolder="Search..."
-              allowMultiple={true}
-              showSearchBar={true}
-              showListTitle={true}
-              showSelectedInside={false}
-              allowNewCreate={true}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="contact-save mintmrm-btn "
-            onClick={saveForm}
-          >
-            Save
-          </button>
           <div
             id="mrm-block-editor"
             className="getdave-sbe-block-editor block-editor"
