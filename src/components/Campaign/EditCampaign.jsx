@@ -178,28 +178,29 @@ export default function EditCampaign(props) {
   const validate = () => {
     if (
       campaignTitle.length > 0 &&
-      recipientLists.length != 0 &&
-      recipientTags.length != 0 &&
+      recipientLists?.length != 0 &&
+      recipientTags?.length != 0 &&
       emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
       emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
       emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
       emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
-      emailData[selectedEmailIndex].email_body.length != 0
+      emailData[selectedEmailIndex].email_body?.length != 0
     ) {
       return true;
     }
   };
 
   const validatePublish = () => {
+    console.log(emailData[selectedEmailIndex]);
     if (
       campaignTitle.length > 0 &&
-      recipientLists.length != 0 &&
-      recipientTags.length != 0 &&
-      emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
-      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
-      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
-      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
-      emailData[selectedEmailIndex].email_body.length != 0
+      recipientLists?.length != 0 &&
+      recipientTags?.length != 0 &&
+      emailData[selectedEmailIndex]["email_subject"]?.length != null &&
+      emailData[selectedEmailIndex]["email_preview_text"]?.length != null &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != null &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != null &&
+      emailData[selectedEmailIndex].email_body?.length != null
     ) {
       return true;
     }
@@ -569,7 +570,7 @@ export default function EditCampaign(props) {
                 <button
                   className="campaign-schedule mintmrm-btn outline"
                   disabled={!isPublishValid}
-                  onClick={handlePublish}
+                  onClick={() => updateCampaign("ongoing")}
                 >
                   Publish
                 </button>

@@ -471,7 +471,7 @@ export default function AddCampaign(props) {
               <button
                 className="campaign-schedule mintmrm-btn outline"
                 disabled={!isPublishValid}
-                onClick={handlePublish}
+                onClick={() => saveCampaign("ongoing")}
               >
                 Publish
               </button>

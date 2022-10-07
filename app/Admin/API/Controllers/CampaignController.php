@@ -149,10 +149,11 @@ class CampaignController extends BaseController {
             // Send renponses back to the frontend
             if($this->campaign_data) {
                 $data['campaign'] = $this->campaign_data;
-
-                //test_email_sending(for dev)
-                self::send_email_to_reciepents($this->campaign_data);
-
+                
+                if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                    //test_email_sending(for dev)
+                    self::send_email_to_reciepents($this->campaign_data);
+                }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
             }
             return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);

@@ -152,6 +152,9 @@ class CampaignEmailController extends BaseController {
         }
 
         // Step #1
+        if( isset( $params['campaign_data']['status'] ) && null == $params['campaign_data']['status'] ){
+            $params['campaign_data']['status'] = "draft";
+        }
         $campaign = CampaignModel::insert($params['campaign_data']);
         $campaign_id    = $campaign['id'];
 

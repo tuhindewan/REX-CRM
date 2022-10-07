@@ -1,14 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CrossIcon from "../Icons/CrossIcon";
 
 import EmailBuilder from "./EmailBuilder";
 
 export default function CampaignTemplates(props) {
-  const { isClose, setIsClose, setEmailBody, emailData, selectedEmailIndex, isNewCampaign, campaignData, setIsTemplate } = props;
+  const {
+    isClose,
+    setIsClose,
+    setEmailBody,
+    emailData,
+    selectedEmailIndex,
+    isNewCampaign,
+    campaignData,
+    setIsTemplate,
+  } = props;
+
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
-  const [ isEmailBuilderOpen, setIsEmailBuilderOpen ] = useState(false);
+  const [isEmailBuilderOpen, setIsEmailBuilderOpen] = useState(false);
   const [dataTest, setData] = useState({});
 
   const closeSection = () => {
@@ -17,7 +27,7 @@ export default function CampaignTemplates(props) {
 
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
-    setIsEmailBuilderOpen(true)
+    setIsEmailBuilderOpen(true);
     setIsTemplateBuilder(true);
     setIsCloseBuilder(!isCloseBuilder);
   };
@@ -34,11 +44,10 @@ export default function CampaignTemplates(props) {
     setIsCloseBuilder("none");
   };
 
-
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-      console.log('exportHtml', html);
+      console.log("exportHtml", html);
     });
   };
 
@@ -85,18 +94,18 @@ export default function CampaignTemplates(props) {
             <div className="template-select-section"></div>
           </div>
           <EmailBuilder
-            isOpen                    ={isTemplateBuilder}
-            isCloseBuilder            ={isCloseBuilder}
-            isEmailBuilderOpen        ={isEmailBuilderOpen}
-            isNewCampaign             ={isNewCampaign}
-            emailData                 ={emailData}
-            campaignData              ={campaignData}
-            selectedEmailIndex        ={selectedEmailIndex}
-            setEmailBody              ={setEmailBody}
-            setIsEmailBuilderOpen     ={setIsEmailBuilderOpen}
-            setIsTemplate             ={setIsTemplate}
-            setIsCloseBuilder         ={closeEmailBuilder}
-            setCloseTemplateSelection ={setCloseTemplateSelection}
+            isOpen={isTemplateBuilder}
+            isCloseBuilder={isCloseBuilder}
+            isEmailBuilderOpen={isEmailBuilderOpen}
+            isNewCampaign={isNewCampaign}
+            emailData={emailData}
+            campaignData={campaignData}
+            selectedEmailIndex={selectedEmailIndex}
+            setEmailBody={setEmailBody}
+            setIsEmailBuilderOpen={setIsEmailBuilderOpen}
+            setIsTemplate={setIsTemplate}
+            setIsCloseBuilder={closeEmailBuilder}
+            setCloseTemplateSelection={setCloseTemplateSelection}
           />
         </div>
       </div>
