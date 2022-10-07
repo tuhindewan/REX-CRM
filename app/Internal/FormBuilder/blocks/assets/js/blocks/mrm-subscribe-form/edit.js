@@ -54,8 +54,8 @@ class Editor extends Component {
         setAttributes   : PropTypes.func.isRequired,
     };
     componentDidMount() {
-        wp.apiFetch( { path : 'mrm/v1/forms' } ).then( response => {
-            const form_list = response.data.data;
+        wp.apiFetch( { path : 'mrm/v1/forms/form-list' } ).then( response => {
+            const form_list = response.data;
 
             this.props.setAttributes({form_list_data: form_list});
         } );

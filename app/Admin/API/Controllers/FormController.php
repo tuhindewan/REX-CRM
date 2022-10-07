@@ -137,6 +137,9 @@ class FormController extends BaseController {
         $forms = FormModel::get_all_id_title();
 
         $form_data = [];
+        $list_none = array('value' => 0, 'label' => 'None');
+        array_push($form_data, $list_none);
+
         foreach ( $forms['data'] as $form){
             $forms_ob = array(
                 'value' => $form['id'],

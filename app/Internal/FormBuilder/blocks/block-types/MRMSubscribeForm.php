@@ -24,10 +24,10 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 
     public function show_form_markup()
     {
-//        if( isset($_POST['post_id']) && !empty($_POST['post_id'])){
+        if( isset($_POST['post_id']) && !empty($_POST['post_id'])){
             $form_id = $_POST['post_id'];
 
-            $get_form_data_by_id = FormModel::get(1);
+            $get_form_data_by_id = FormModel::get($form_id);
             ob_start();
             $output = '';
             $output .= $get_form_data_by_id["form_body"];
@@ -35,7 +35,7 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
             $output .=  ob_get_clean();
             echo $output;
             die();
-//        }
+        }
     }
     /**
      * Render the Featured Product block.
