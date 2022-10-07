@@ -333,7 +333,7 @@ function BlockEditor(_ref) {
   }
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "getdavesbe-block-editor"
+    className: "get-mrm-block-editor"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
     value: blocks,
     onInput: handleUpdateBlocks,
@@ -342,7 +342,7 @@ function BlockEditor(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_7__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "editor-styles-wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorKeyboardShortcuts, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.WritingFlow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.ObserveTyping, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockList, {
-    className: "getdavesbe-block-editor__block-list"
+    className: "get-mrm-block-editor__block-list"
   })))))));
 }
 
@@ -1757,11 +1757,9 @@ function Header() {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-from-builder-header",
     role: "region",
-    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Header.', 'getdavesbe'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Header.', 'mrm'),
     tabIndex: "-1"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", {
-    className: "mrm-from-builder-header__title"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Block Editor', 'getdavesbe')));
+  });
 }
 
 /***/ }),
@@ -2976,13 +2974,11 @@ const mrmButton = _ref => {
     borderColor: buttonBorderColor
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "mrm mrm-optin-form mrm-gutenberg-optin-form-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
-    method: "post"
+    className: "mrm mrm-gutenberg-mrm-form-wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: `mrm-optin-form-wrapper ${layout}`
+    className: "mrm-form-wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "mrm-optin-form-group submit",
+    className: "mrm-form-group submit",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
     className: "mrm-submit-button",
@@ -2990,7 +2986,7 @@ const mrmButton = _ref => {
     type: "submit",
     style: buttonStyle,
     value: buttonText
-  }))))));
+  })))));
 };
 
 mrmButton.propTypes = {
@@ -3082,11 +3078,6 @@ class Editor extends Component {
   onChangePadding = (type, attribute, value) => {
     this.props.setAttributes({
       [attribute]: value
-    });
-  };
-  onChangeLayout = value => {
-    this.props.setAttributes({
-      formLayout: value
     });
   };
   buttonText = () => {
@@ -3217,10 +3208,8 @@ class Editor extends Component {
 
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-gutenberg-mrm-form-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
-      method: "post"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`
+      className: "mrm-mrm-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-mrm-form-group submit",
       style: fieldSpacing
@@ -3240,7 +3229,7 @@ class Editor extends Component {
         buttonText: content
       }),
       placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Submit', 'mrm')
-    }))))));
+    })))));
   }
 
 }
@@ -4497,13 +4486,13 @@ __webpack_require__.r(__webpack_exports__);
 const {
   Slot: InspectorSlot,
   Fill: InspectorFill
-} = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.createSlotFill)('StandAloneBlockEditorSidebarInspector');
+} = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.createSlotFill)('MRMBlockEditorSidebarInspector');
 
 function Sidebar() {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
-    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Standalone Block Editor advanced settings.'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('MRM Block Editor advanced settings.'),
     tabIndex: "-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Panel, {
     header: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Inspector')

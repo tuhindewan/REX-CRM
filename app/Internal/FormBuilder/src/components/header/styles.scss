@@ -1,4 +1,4 @@
-.getdavesbe-header {
+.get-mrm-header {
 	align-items: center;
 	background: white;
 	border-bottom: 1px solid $gray-200;
@@ -10,7 +10,7 @@
 	position: sticky;
 	right: 0;
 	top: 0;
-	// z-index: z-index(".getdavesbe-header");
+	// z-index: z-index(".get-mrm-header");
 
 	// On mobile, the main content area has to scroll,
 	// otherwise you can invoke the over-scroll bounce on the non-scrolling container.
@@ -25,9 +25,9 @@
 	}
 }
 
-@include editor-left(".getdavesbe-header");
+@include editor-left(".get-mrm-header");
 
-.getdavesbe-header__title {
+.get-mrm-header__title {
 	font-size: 16px;
 	padding: 0 20px;
 }

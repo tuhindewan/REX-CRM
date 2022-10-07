@@ -52,10 +52,9 @@ const mrmButton = ({
 
     return (
         <>
-            <div className="mrm mrm-optin-form mrm-gutenberg-optin-form-wrapper">
-                <form method="post">
-                    <div className={`mrm-optin-form-wrapper ${layout}`} >
-                        <div className="mrm-optin-form-group submit" style={fieldSpacing}>
+            <div className="mrm mrm-gutenberg-mrm-form-wrapper">
+                    <div className="mrm-form-wrapper" >
+                        <div className="mrm-form-group submit" style={fieldSpacing}>
                             <RichText.Content
                                 className='mrm-submit-button'
                                 tagName="button"
@@ -63,10 +62,8 @@ const mrmButton = ({
                                 style={ buttonStyle }
                                 value={ buttonText }
                             />
-
                         </div>
                     </div>
-                </form>
             </div>
         </>
     )

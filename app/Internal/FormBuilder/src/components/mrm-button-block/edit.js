@@ -66,13 +66,6 @@ class Editor extends Component {
             [attribute] : value
         });
     }
-
-    onChangeLayout = (value) => {
-        this.props.setAttributes({
-            formLayout  : value,
-        })
-    }
-
     buttonText = () =>{
         let { attributes, setAttributes } 	= this.props;
 
@@ -222,8 +215,7 @@ class Editor extends Component {
                 { this.getInspectorControls() }
 
                 <div className="mrm mrm-gutenberg-mrm-form-wrapper">
-                    <form method="post">
-                        <div className={`mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`}>
+                    <div className="mrm-mrm-form-wrapper">
                             <div className="mrm-mrm-form-group submit" style={fieldSpacing}>
                                 <BlockControls>
                                     <BlockAlignmentToolbar
@@ -244,7 +236,6 @@ class Editor extends Component {
 
                             </div>
                         </div>
-                    </form>
                 </div>
             </>
 

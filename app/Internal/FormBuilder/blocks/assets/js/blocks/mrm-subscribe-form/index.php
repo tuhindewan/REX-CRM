@@ -71,10 +71,9 @@ class MRM_Subscribe_form
         $form_placement = get_post_meta($attributes['form_id'],'mrm_form_replace_position',true);
         $html .= '<div>
         <div id="mrm-'.$form_placement.'">
-                <form action="" data-id="'.$attributes['form_id'].'">
+                <form data-id="'.$attributes['form_id'].'" method="post">
                 '.$attributes['render_block'].'
-        
-        </form>
+                </form>
     </div>
 
 </div>';

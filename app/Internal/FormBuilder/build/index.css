@@ -71,7 +71,7 @@
 /**
  * Breakpoints & Media Queries
  */
-.getdavesbe-header {
+.get-mrm-header {
   align-items: center;
   background: white;
   border-bottom: 1px solid #ddd;
@@ -84,66 +84,66 @@
   top: 0;
 }
 @media (min-width: 600px) {
-  .getdavesbe-header {
+  .get-mrm-header {
     padding: 24px;
     position: fixed;
     top: 46px;
   }
 }
 @media (min-width: 782px) {
-  .getdavesbe-header {
+  .get-mrm-header {
     top: 32px;
   }
 }
 
-.getdavesbe-header { /* Set left position when auto-fold is not on the body element. */
+.get-mrm-header { /* Set left position when auto-fold is not on the body element. */
   left: 0;
 }
 @media (min-width: 783px) {
-  .getdavesbe-header {
+  .get-mrm-header {
     left: 160px;
   }
 }
 
-.auto-fold .getdavesbe-header { /* Auto fold is when on smaller breakpoints, nav menu auto collapses. */ }
+.auto-fold .get-mrm-header { /* Auto fold is when on smaller breakpoints, nav menu auto collapses. */ }
 @media (min-width: 783px) {
-  .auto-fold .getdavesbe-header {
+  .auto-fold .get-mrm-header {
     left: 36px;
   }
 }
 @media (min-width: 961px) {
-  .auto-fold .getdavesbe-header {
+  .auto-fold .get-mrm-header {
     left: 160px;
   }
 }
 
 /* Sidebar manually collapsed. */
-.folded .getdavesbe-header {
+.folded .get-mrm-header {
   left: 0;
 }
 @media (min-width: 783px) {
-  .folded .getdavesbe-header {
+  .folded .get-mrm-header {
     left: 36px;
   }
 }
 
 /* Mobile menu opened. */
 @media (max-width: 783px) {
-  .auto-fold .wp-responsive-open .getdavesbe-header {
+  .auto-fold .wp-responsive-open .get-mrm-header {
     left: 190px;
   }
 }
 /* In small screens with responsive menu expanded there is small white space. */
 @media (max-width: 600px) {
-  .auto-fold .wp-responsive-open .getdavesbe-header {
+  .auto-fold .wp-responsive-open .get-mrm-header {
     margin-left: -18px;
   }
 }
-body.is-fullscreen-mode .getdavesbe-header {
+body.is-fullscreen-mode .get-mrm-header {
   left: 0 !important;
 }
 
-.getdavesbe-header__title {
+.get-mrm-header__title {
   font-size: 16px;
   padding: 0 20px;
 }
@@ -192,17 +192,17 @@ body.is-fullscreen-mode .getdavesbe-header {
   margin: 0;
 }
 
-.getdavesbe-block-editor__block-list {
+.get-mrm-block-editor__block-list {
   padding-bottom: 48px;
   padding-top: 53px;
   margin-left: auto;
   margin-right: auto;
 }
-.getdavesbe-block-editor__block-list .block-editor-block-list__block {
+.get-mrm-block-editor__block-list .block-editor-block-list__block {
   margin-left: auto;
   margin-right: auto;
 }
-.getdavesbe-block-editor__block-list .wp-block {
+.get-mrm-block-editor__block-list .wp-block {
   max-width: 580px;
 }
 

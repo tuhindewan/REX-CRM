@@ -8,12 +8,12 @@ export default function Header() {
 		<div
 			className="mrm-from-builder-header"
 			role="region"
-			aria-label={ __( 'Form Header.', 'getdavesbe' ) }
+			aria-label={ __( 'Form Header.', 'mrm' ) }
 			tabIndex="-1"
 		>
-			<h1 className="mrm-from-builder-header__title">
-				{ __( 'Form Block Editor', 'getdavesbe' ) }
-			</h1>
+			{/*<h1 className="mrm-from-builder-header__title">*/}
+			{/*	{ __( 'Form Block Editor', 'mrm' ) }*/}
+			{/*</h1>*/}
 		</div>
 	);
 }

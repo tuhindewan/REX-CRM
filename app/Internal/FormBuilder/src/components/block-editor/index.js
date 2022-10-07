@@ -76,7 +76,7 @@ function BlockEditor( { settings: _settings } ) {
 	}
 
 	return (
-		<div className="getdavesbe-block-editor">
+		<div className="get-mrm-block-editor">
 			<ShortcutProvider>
 				<BlockEditorProvider
 					value={ blocks }
@@ -91,7 +91,7 @@ function BlockEditor( { settings: _settings } ) {
 						<BlockEditorKeyboardShortcuts />
 						<WritingFlow>
 							<ObserveTyping>
-								<BlockList className="getdavesbe-block-editor__block-list" />
+								<BlockList className="get-mrm-block-editor__block-list" />
 							</ObserveTyping>
 						</WritingFlow>
 					</div>

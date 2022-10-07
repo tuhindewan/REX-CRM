@@ -4,15 +4,7 @@
 class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 
     protected $defaults = array(
-        'outline'   => 'fill',
-        'buttonColor'   => 'red',
-        'buttonRadius'   => 5,
-        'paddingTopBottom'   => 14,
-        'paddingLeftRight'   => 25,
-        'buttonFontSize'   => '18',
-        'borderStyle'   => 'solid',
-        'borderWidth'   => 1,
-        'borderColor'   => '#39414d',
+
     );
 
     /**
@@ -77,18 +69,7 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
      */
     protected function get_generated_dynamic_styles( $attributes, $post ) {
         $selectors = array(
-            '.wpfunnels-landing-block' => array(
-                'background-color'  => $attributes['buttonColor'],
-                'border-radius'     => $attributes['buttonRadius'],
-                'padding-top'       => $attributes['paddingTopBottom'],
-                'padding-bottom'    => $attributes['paddingTopBottom'],
-                'padding-left'      => $attributes['paddingLeftRight'],
-                'padding-right'     => $attributes['paddingLeftRight'],
-                'font-size'         => $attributes['buttonFontSize'],
-                'border-style'      => $attributes['borderStyle'],
-                'border-width'      => $attributes['borderWidth'],
-                'border-color'      => $attributes['borderColor'],
-            ),
+
         );
         return $this->generate_css($selectors);
     }
