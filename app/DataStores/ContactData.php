@@ -168,7 +168,7 @@ class ContactData {
     private $meta_fields;
 
 
-    public function __construct( $email, $args )
+    public function __construct( $email, $args = [] )
     {
         $this->email            =  $email;
         $this->first_name       =  isset($args['first_name'])       ? sanitize_text_field( $args['first_name'] )        : '';
