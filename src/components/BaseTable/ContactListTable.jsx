@@ -4,6 +4,7 @@ import {
   Link,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
 import Plus from "../Icons/Plus";
@@ -13,6 +14,7 @@ import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
+import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
@@ -29,8 +31,6 @@ export default function ContactListTable(props) {
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
 
-  const { endpoint = "contacts" } = props;
-  const [contacts, setContacts] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
@@ -49,14 +49,13 @@ export default function ContactListTable(props) {
   const [contactData, setContactData] = useState([]);
   const [filterContact, setFilterContact] = useState([]);
 
-  const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
 
-  const [lists, setLists] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [listsdata, setLists] = useState([]);
+  const [tagsdata, setTags] = useState([]);
 
   const [filterData, setFilterData] = useState({});
 
@@ -79,9 +78,10 @@ export default function ContactListTable(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterParams, setFilterParams] = useState([]);
 
-  const [isFilter, setIsFilter] = useState(0);
+  const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
+  let { lists_ids, tags_ids, status } = useParams();
 
   const [filterRequest, setFilterRequest] = useState({});
 
@@ -107,41 +107,69 @@ export default function ContactListTable(props) {
   const [assignTags, setAssignTags] = useState([]);
   const [selectGroup, setSelectGroup] = useState("lists");
 
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [filteredStatus, setFilteredStatus] = useState([]);
+  const [filteredLists, setFilteredLists] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
 
-    setFilterAdder((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
-
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setFilterAdder((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
+  const deleteAll = () => {
+    setSelectedLists([]);
+    setSelectedTags([]);
+    setSelectedStatus([]);
+    setFilterRequest({});
+    setFilterData({});
+    setFilterAdder({
+      lists: [],
+      tags: [],
+      status: [],
+    });
+    navigate("/contacts");
   };
 
   useEffect(() => {
-    //console.log(filterAdder);
-
     setSearchParams(filterAdder);
-    setFilterParams(searchParams);
-
-    //  navigate(`${location.pathname}/${filterData}`);
   }, [filterAdder]);
 
   useEffect(() => {
     setFilterData(queryString.parse(location.search));
-  }, [filterParams]);
+    navigate(`${location.pathname}${location.search}`);
+  }, [searchParams]);
 
   useEffect(() => {
-    //console.log("getFilter");
+    let tags_array = [];
+    let lists_array = [];
+    let status_array = [];
 
+    tags_array =
+      "string" == typeof filterData.tags
+        ? filterData.tags.split(" ")
+        : filterData.tags;
+
+    lists_array =
+      "string" == typeof filterData.lists
+        ? filterData.lists.split(" ")
+        : filterData.lists;
+
+    status_array =
+      "string" == typeof filterData.status
+        ? filterData.status.split(" ")
+        : filterData.status;
+
+    setFilterRequest({
+      tags_ids: tags_array,
+      lists_ids: lists_array,
+      status: status_array,
+    });
+
+    filterData.status ? setFilteredStatus(filterData.status) : "";
+    filterData.tags ? setFilteredTags(filterData.tags) : "";
+    filterData.lists ? setFilteredLists(filterData.lists) : "";
+    setFilterPage(1);
+  }, [filterData]);
+
+  useEffect(() => {
     const getFilter = async () => {
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
@@ -164,7 +192,6 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setFilterCount(data.data.count);
             setFilterTotalPages(data.data.total_pages);
-            // setFilterPerPage(data.total_pages);
             setLoaded(true);
           }
         });
@@ -176,15 +203,13 @@ export default function ContactListTable(props) {
       filterRequest.status != undefined
     ) {
       getFilter();
-      setIsFilter(1);
+      setIsFilter(true);
     } else {
-      setIsFilter(0);
-      // toggleRefresh();
+      setIsFilter(false);
     }
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
-    //console.log("Normal Data")
     async function getData() {
       setLoaded(false);
       await fetch(
@@ -200,7 +225,6 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setCount(data.data.count);
             setTotalPages(data.data.total_pages);
-            // setPerPage(data.total_pages);
             setLoaded(true);
           }
         });
@@ -218,7 +242,7 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (0 == isFilter) getData();
+    if (false == isFilter) getData();
 
     const timer = setTimeout(() => {
       setShowNotification("none");
@@ -347,68 +371,114 @@ export default function ContactListTable(props) {
     setIsCloseNote(!isCloseNote);
   };
 
+  const deleteSelectedlist = (e, id) => {
+    const index = selectedLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setSelectedLists(selectedLists.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        lists: prev.lists.filter((item) => {
+          return item != id;
+        }),
+      }));
+      // setFilterAdder(filterAdder.lists.filter((item) => item != id));
+    }
+  };
+  const deleteSelectedtag = (e, id) => {
+    const index = selectedTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setSelectedTags(selectedTags.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        tags: prev.tags.filter((item) => {
+          return item != id;
+        }),
+      }));
+    }
+  };
+  const deleteSelectedstatus = (e, id) => {
+    const index = selectedStatus.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setSelectedStatus(selectedStatus.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        status: prev.status.filter((item) => {
+          return item != id;
+        }),
+      }));
+    }
+  };
+
   return (
     <>
-      <div
-        className="contact-list-header"
-        onClick={() => {
-          setIsLists(false);
-          setIsTags(false);
-          setIsStatus(false);
-        }}
-      >
+      <div className="contact-list-header">
         <div className="left-filters filter-box">
-          {/* <div className="form-group left-filter">
-            <button
-              className={isLists ? "filter-btn show" : "filter-btn"}
-              onClick={showLists}
-            >
-              Lists
-            </button>
-            <FilterItems isActiveFilter={isLists} />
+          <div className="form-group left-filter">
+            <CustomSelect
+              selected={selectedLists}
+              setSelected={setSelectedLists}
+              endpoint="/lists"
+              placeholder="Lists"
+              name="lists"
+              listTitle="CHOOSE LIST"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+            />
           </div>
           <div className="form-group left-filter">
-            <button
-              className={isTags ? "filter-btn show" : "filter-btn"}
-              onClick={showTags}
-            >
-              Tags
-            </button>
-            <FilterItems isActiveFilter={isTags} />
+            <CustomSelect
+              selected={selectedTags}
+              setSelected={setSelectedTags}
+              endpoint="/tags"
+              placeholder="Tags"
+              name="tags"
+              listTitle="CHOOSE TAG"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+            />
           </div>
           <div className="form-group left-filter">
-            <button
-              className={isStatus ? "filter-btn show" : "filter-btn"}
-              onClick={showStatus}
-            >
-              Status
-            </button>
-            <FilterItems isActiveFilter={isStatus} />
-          </div> */}
-
-          {/* <FilterBox
-            label="Status"
-            name="status"
-            options={[
-              {
-                title: "Pending",
-                id: "pending",
-              },
-              {
-                title: "Subscribed",
-                id: "subscribed",
-              },
-              {
-                title: "Unsubscribed",
-                id: "unsubscribed",
-              },
-            ]}
-            value={status}
-            tags={false}
-            placeholder="Status"
-            multiple={false}
-            onSelect={onSelectStatus}
-          /> */}
+            <CustomSelect
+              selected={selectedStatus}
+              setSelected={setSelectedStatus}
+              endpoint="/status"
+              placeholder="Status"
+              name="status"
+              listTitle="CHOOSE Status"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+            />
+          </div>
         </div>
 
         <div className="right-buttons">
@@ -521,22 +591,53 @@ export default function ContactListTable(props) {
 
       <div
         className={
-          selectedSection ? "selected-result" : "selected-result inactive"
+          selectedLists.length == 0 &&
+          selectedTags.length == 0 &&
+          selectedStatus.length == 0
+            ? "selected-result inactive"
+            : "selected-result"
         }
       >
-        <div className="selected-items">
-          <span>Product Feed</span>
-          <CrossIcon />
-        </div>
-        <div className="selected-items">
-          <span>Funnel</span>
-          <CrossIcon />
-        </div>
-        <div className="selected-items">
-          <span>WPVR</span>
-          <CrossIcon />
-        </div>
-        <div className="clear-all">
+        {selectedLists.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedlist(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedTags.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedtag(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedStatus.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedstatus(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        <div className="clear-all" onClick={deleteAll}>
           <span>Clear All</span>
         </div>
       </div>
@@ -646,13 +747,23 @@ export default function ContactListTable(props) {
       </div>
       {totalPages > 1 && (
         <div className="contact-list-footer">
-          <Pagination
-            currentPage={page}
-            pageSize={perPage}
-            onPageChange={setPage}
-            totalCount={count}
-            totalPages={totalPages}
-          />
+          {false === isFilter ? (
+            <Pagination
+              currentPage={page}
+              pageSize={perPage}
+              onPageChange={setPage}
+              totalCount={count}
+              totalPages={totalPages}
+            />
+          ) : (
+            <Pagination
+              currentPage={filterPage}
+              pageSize={filterPerPage}
+              onPageChange={setFilterPage}
+              totalCount={filterCount}
+              totalPages={filterTotalPages}
+            />
+          )}
         </div>
       )}
       <div className="mintmrm-container" style={{ display: showAlert }}>
