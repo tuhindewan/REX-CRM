@@ -46,7 +46,6 @@ class CampaignEmailController extends BaseController {
         );
         
         $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
-        error_log(print_r($email, 1));
         $is_new = true;
         if ( $email ) {
             $is_new   = false;
@@ -155,13 +154,18 @@ class CampaignEmailController extends BaseController {
         if( isset( $params['campaign_data']['status'] ) && null == $params['campaign_data']['status'] ){
             $params['campaign_data']['status'] = "draft";
         }
+
         $campaign = CampaignModel::insert($params['campaign_data']);
         $campaign_id    = $campaign['id'];
 
-        $params['campaign_data'][$email_index]['campaign_id'] = $campaign_id;
+        // Insert campaign recipients information
+        $recipients = isset($params['campaign_data']['recipients']) ? maybe_serialize( $params['campaign_data']['recipients']) : "";
+        CampaignModel::insert_campaign_recipients( $recipients, $campaign_id );
 
+        $params['campaign_data'][$email_index]['campaign_id'] = $campaign_id;
+        $emailData = isset($params['campaign_data']['emails'][0]) ? $params['campaign_data']['emails'][0] : "";
         // Step #2
-        $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$email_index], $campaign_id, $email_index );
+        $email_id = CampaignModel::insert_campaign_emails( $emailData, $campaign_id, $email_index );
 
 
         // Step #3

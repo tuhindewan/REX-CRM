@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import HoverMenu from "../HoverMenu";
+import Delete from "../Icons/Delete";
+import EditIcon from "../Icons/EditIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 
@@ -78,10 +80,11 @@ export default function ListItem(props) {
                       editList(props.list);
                     }}
                   >
-                    {" "}
+                    <EditIcon />
                     Edit
                   </li>
-                  <li className="delete" onClick={() => deleteList(id)}>
+                  <li onClick={() => deleteList(id)}>
+                    <Delete />
                     Delete
                   </li>
                 </ul>

@@ -1,17 +1,15 @@
 .mintmrm-template-alert-wrapper {
   position: fixed;
-  top: 0;
+  top: 32px;
   right: 0;
   padding: 15px;
   width: calc(100% - 160px);
   height: 100%;
   background: rgba(51, 51, 51, 0.2);
   z-index: 999;
-  // display: flex;
-  // flex-flow: row wrap;
-  // align-items: center;
-  // justify-content: center;
-  // display: none;
+  &.email-builder-editor {
+    padding: 0;
+  }
 
   .mintmrm-template-confirmation {
     background: #f6f6f6;
@@ -47,6 +45,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        cursor: pointer;
         svg {
           path {
             fill: #686f7f;

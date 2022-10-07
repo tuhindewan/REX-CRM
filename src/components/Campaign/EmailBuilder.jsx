@@ -11,7 +11,7 @@ const EmailBuilder = (props) => {
         style={{ display: isCloseBuilder }}
         className={
           props.isOpen && !isCloseBuilder
-            ? "mintmrm-template-alert-wrapper"
+            ? "mintmrm-template-alert-wrapper email-builder-editor"
             : "mintmrm-template-alert-wrapper"
         }
       >

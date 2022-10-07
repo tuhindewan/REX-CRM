@@ -30,10 +30,13 @@ import { ExtensionProps, StandardLayout } from "easy-email-extensions";
 
 import { AdvancedType, IBlockData, JsonToMjml } from "easy-email-core";
 
+import { copy } from "./utils/copy";
+
 import "./CustomBlocks";
 import { CustomBlocksType } from "./CustomBlocks/constant";
 
 //----icon components----
+import CrossIcon from "./Icon/CrossIcon";
 import DesktopIcon from "./Icon/DesktopIcon";
 import DoubleAngleLeftIcon from "./Icon/DoubleAngleLeftIcon";
 import EditIcon from "./Icon/EditIcon";
@@ -196,6 +199,11 @@ export default function Editor(props) {
 
   const [shouldCallAPI, setShouldCallAPI] = useState(true);
 
+  const [emailLoader, setEmailLoader] = useState(false);
+
+  const [testMailModal, setTestMailModal] = useState(false);
+  const [testEmail, setTestEmail] = useState("");
+
   let defaultValues = {
     type: "page",
     subject: "Welcome to MINT CRM email",
@@ -260,7 +268,6 @@ export default function Editor(props) {
     | IBlockData<any, any> = useMemo(() => {
     if (!builderData) return defaultValues;
     const sourceData = cloneDeep(builderData) as IBlockData;
-
     return sourceData;
   }, [builderData]);
 
@@ -272,6 +279,15 @@ export default function Editor(props) {
       setBuilderData(res?.email_data?.json_data);
     });
   });
+
+  // enable dark mode
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.setAttribute("arco-theme", "dark");
+    } else {
+      document.body.removeAttribute("arco-theme");
+    }
+  }, [isDarkMode]);
 
   const fetchProduct = async (args) => {
     let rest_url =
@@ -320,6 +336,7 @@ export default function Editor(props) {
             status: "published",
             email_index: selectedEmailIndex,
             campaign_data: campaignData,
+            emailData: emailData,
           }),
         }
       );
@@ -355,6 +372,8 @@ export default function Editor(props) {
       values: IEmailTemplate,
       form: FormApi<IEmailTemplate, Partial<IEmailTemplate>>
     ) => {
+      setEmailLoader(true);
+
       if (id) {
         const isChanged = !(
           isEqual(initialValues?.content, values.content) &&
@@ -363,11 +382,13 @@ export default function Editor(props) {
         );
         if (!isChanged) {
           form.restart(values);
+          setEmailLoader(false);
           return;
         }
       }
       saveEmailContent(values).then((response) => {
         setCampaignId(response.campaign_id);
+        setEmailLoader(false);
       });
     },
     []
@@ -386,23 +407,33 @@ export default function Editor(props) {
       .join("&");
   }
 
-  // const onExportHtml = (values: IEmailTemplate) => {
-  //     pushEvent({ event: 'HtmlExport' });
-  //     const html = mjml(
-  //         JsonToMjml({
-  //             data: values.content,
-  //             mode: 'production',
-  //             context: values.content,
-  //             dataSource: mergeTags,
-  //         }),
-  //         {
-  //             beautify: true,
-  //             validationLevel: 'soft',
-  //         },
-  //     ).html;
-  //
-  //     copy(html);
-  // };
+  // export data as HTML format
+  const onExportHtml = (values: IEmailTemplate) => {
+    const html = mjml(
+      JsonToMjml({
+        data: values.content,
+        mode: "production",
+        context: values.content,
+      }),
+      {
+        beautify: true,
+        validationLevel: "soft",
+      }
+    ).html;
+
+    copy(html);
+  };
+
+  // export data as MJML format
+  const onExportMJML = (values: IEmailTemplate) => {
+    const html = JsonToMjml({
+      data: values.content,
+      mode: "production",
+      context: values.content,
+    });
+
+    copy(html);
+  };
 
   // on change event if user selects category from category dropdown
   // of custom product block
@@ -415,6 +446,11 @@ export default function Editor(props) {
     });
   };
 
+  //-----show more option click function-------
+  const showMoreOption = () => {
+    setShowMore(!showMore);
+  };
+
   const backToCampaign = (e) => {
     if (!id) {
       navigate(`/campaign/edit/${campaignId}`);
@@ -423,8 +459,69 @@ export default function Editor(props) {
     setIsTemplate(false);
   };
 
+  const sendTestMailModal = () => {
+    setTestMailModal(true);
+  };
+
+  const onCancel = () => {
+    setTestMailModal(false);
+  };
+
+  const onChangeEmailField = (e) => {
+    setTestEmail(e.target.value);
+  };
+
+  const sendTestEmail = (e) => {};
   return (
     <>
+      <div
+        className={
+          emailLoader
+            ? "email-builder-loader show-loader"
+            : "email-builder-loader"
+        }
+      >
+        <span className="mintmrm-loader"></span>
+      </div>
+
+      <div
+        className={
+          testMailModal
+            ? "mintmrm-delete-alert-wrapper show-modal"
+            : "mintmrm-delete-alert-wrapper"
+        }
+      >
+        <div className="mintmrm-delete-confirmation">
+          <div className="delete-confirmation-header">
+            <h3>Send Test E-mail</h3>
+            <div className="cross-icon" onClick={onCancel}>
+              <CrossIcon />
+            </div>
+          </div>
+
+          <div className="delete-confirmation-body">
+            <div className="form-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter a test email"
+                onChange={onChangeEmailField}
+                value={testEmail}
+              />
+            </div>
+          </div>
+
+          <ul className="mintmrm-delete-confirm-btn">
+            <li>
+              <button className="btn-default cancel" onClick={sendTestEmail}>
+                {" "}
+                Ok{" "}
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <div className="mrm-email-editor">
         <EmailEditorProvider
           data={initialValues}
@@ -440,7 +537,7 @@ export default function Editor(props) {
         >
           {({ values }, { submit }) => {
             return (
-              <div>
+              <>
                 <div
                   className="mrm-editor-header"
                   style={{ background: "var(--color-bg-2)" }}
@@ -496,7 +593,7 @@ export default function Editor(props) {
                           ? "more-option show-option-list"
                           : "more-option"
                       }
-                      // onClick={showMoreOption}
+                      onClick={showMoreOption}
                     >
                       <MoreOptionIcon />
                       <ul className="more-option-list">
@@ -504,21 +601,16 @@ export default function Editor(props) {
                           <Button onClick={() => onExportHtml(values)}>
                             Export html
                           </Button>
-                          {/*<Button onClick={openMergeTagsModal}>Update mergeTags</Button>*/}
-                          {/*<Button onClick={() => onExportMJML(values)}>Export MJML</Button>*/}
-                          <Button onClick={() => onExportHtml(values)}>
-                            Export html
+                          <Button onClick={() => onExportMJML(values)}>
+                            Export MJML
                           </Button>
                         </li>
                       </ul>
                     </Button>
 
-                    <Button
-                    // onClick={() => openModal(values, mergeTags)}
-                    >
+                    <Button onClick={() => sendTestMailModal()}>
                       Send Test
                     </Button>
-
                     <Button
                       // loading={isSubmitting}
                       type="primary"
@@ -528,6 +620,7 @@ export default function Editor(props) {
                     </Button>
                   </div>
                 </div>
+
                 <StandardLayout
                   compact={false}
                   showSourceCode={false}
@@ -537,7 +630,7 @@ export default function Editor(props) {
                   {"pc" === activePreview && <DesktopEmailPreview />}
                   {"mobile" === activePreview && <MobileEmailPreview />}
                 </StandardLayout>
-              </div>
+              </>
             );
           }}
         </EmailEditorProvider>

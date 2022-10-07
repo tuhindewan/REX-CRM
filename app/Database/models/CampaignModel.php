@@ -50,7 +50,6 @@ class CampaignModel {
      */
     public static function insert( $args )
     {
-        error_log(print_r($args,1));
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
         unset($args['recipients']);
