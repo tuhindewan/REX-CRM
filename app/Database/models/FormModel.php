@@ -133,39 +133,47 @@ class FormModel {
 
 
     /**
-     * SQL query to get all notes for a contact with pagination
+     * Run SQL query to get or search contacts from database
      * 
-     * @param mixed $contact_id
      * @param int $offset
      * @param int $limit
      * @param string $search
-     * 
-     * @return array|bool
+     * @param array $filters
+     * @return array
      * @since 1.0.0
      */
-    public static function get_all( $contact_id, $offset = 0, $limit = 10, $search = '' ){
-
+    public static function get_all( $offset = 0, $limit = 10, $search = '' )
+    {
         global $wpdb;
-        $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
+        $form_table = $wpdb->prefix . FormSchema::$table_name;
         $search_terms = null;
 
         // Search notes by title
 		if ( ! empty( $search ) ) {
             $search = $wpdb->esc_like($search);
-            $search_terms = "AND title LIKE '%%$search%%'";
+            $search_terms = "WHERE title LIKE '%%$search%%'";
 		}
+        
+        // Prepare sql results for list view
+        try {
+            
+            // Return notes for a contact in list view
+            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+            $count_query   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $form_table", array(  ) ) );
+            
+            $count = (int) $count_query;
+            $total_pages = ceil($count / $limit);
 
-        // Return notes for a contact in list view
-        $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = $contact_id {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
-        $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name WHERE contact_id = %d", array( $contact_id ) ) );
 
-        $totalPages = ceil($count / $limit);
-    
-        return array(
-            'data'=> $results,
-            'total_pages' => $totalPages,
-            'count' => $count
-        );
+            return array(
+                'data'        => $select_query,
+                'total_pages' => $total_pages,
+                'count'       => $count
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+	
     }
 
     /**
