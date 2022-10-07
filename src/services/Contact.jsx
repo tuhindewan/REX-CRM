@@ -39,18 +39,3 @@ export async function deleteMultipleContactsItems(selected) {
     }
   });
 }
-
-// Contact create POST request
-export async function createContact(contact) {
-  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts`, {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(contact),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-  });
-}

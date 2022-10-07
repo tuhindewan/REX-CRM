@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
-  deleteMultipleFieldItems,
   deleteSingleCustomField,
   getCustomFields,
 } from "../../services/CustomField";
-import AlertPopup from "../AlertPopup";
 import DeletePopup from "../DeletePopup";
+import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import TagIcon from "../Icons/TagIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
-import FieldNav from "./FieldNav";
 import SingleField from "./SingleField";
 
 const CustomFields = () => {
@@ -23,11 +21,16 @@ const CustomFields = () => {
   const location = useLocation();
   // set navbar Buttons
   useGlobalStore.setState({
-    hideGlobalNav: true,
+    navbarMarkup: (
+      <Link to="/custom-fields/create">
+        <button className="add-contact-btn mintmrm-btn ">
+          <Plus /> Add Field
+        </button>
+      </Link>
+    ),
+    hideGlobalNav: false,
   });
 
-  // global counter update real time
-  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [customFields, setCustomFields] = useState([]);
   const [showNotification, setShowNotification] = useState("none");
   const [isDelete, setIsDelete] = useState("none");
@@ -59,37 +62,21 @@ const CustomFields = () => {
 
   const [fieldID, setFieldID] = useState();
   const [errors, setErrors] = useState({});
-  const [showAlert, setShowAlert] = useState("none");
-  const [deleteTitle, setDeleteTitle] = useState("");
-  const [deleteMessage, setDeleteMessage] = useState("");
-  const [query, setQuery] = useState("");
-  // order by which field
-  const [orderBy, setOrderBy] = useState("id");
-  // order type asc or desc
-  const [orderType, setOrderType] = useState("desc");
-  // search input value is stored here
-  const [search, setSearch] = useState("");
 
   // Fetch all custom fields
   useEffect(() => {
-    getCustomFields(orderBy, orderType, page, perPage, query).then(
-      (results) => {
-        setCustomFields(results.data);
-        setCount(results.count);
-        setTotalPages(results.total_pages);
-      }
-    );
+    getCustomFields().then((results) => {
+      setCustomFields(results.data);
+    });
     if ("field-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
-  }, [page, perPage, query, refresh, orderBy, orderType]);
+  }, [refresh]);
 
   // Get field id from child component
   const deleteField = async (field_id) => {
     setIsDelete("block");
-    setDeleteTitle("Delete List");
-    setDeleteMessage("Are you sure you want to delete the list?");
     setFieldID(field_id);
   };
 
@@ -148,60 +135,8 @@ const CustomFields = () => {
     setRefresh((prev) => !prev);
   };
 
-  // Hide alert popup after click on ok
-  const onShowAlert = async (status) => {
-    setShowAlert(status);
-  };
-
-  // Multiple selection confirmation
-  const deleteMultipleFields = async () => {
-    if (selected.length > 0) {
-      setIsDelete("block");
-      setDeleteTitle("Delete Multiple");
-      setDeleteMessage("Are you sure you want to delete these selected items?");
-    } else {
-      setShowAlert("block");
-    }
-  };
-
-  // Delete multiple lists after delete confirmation
-  const onMultiDelete = async (status) => {
-    if (status) {
-      deleteMultipleFieldItems(selected).then((response) => {
-        if (200 === response.code) {
-          setShowNotification("block");
-          setMessage(response.message);
-          toggleRefresh();
-          setAllSelected(false);
-          setSelected([]);
-          useGlobalStore.setState({
-            counterRefresh: !counterRefresh,
-          });
-        } else {
-          setErrors({
-            ...errors,
-            title: response?.message,
-          });
-        }
-      });
-    }
-    setIsDelete("none");
-  };
-
-  // function to handle order by select component change
-  function handleOrderBy(e, name, arg1) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    const selectedValue = updatedOptions[0];
-    const order = selectedValue.split("+"); // order is an array with order by and order type
-    setOrderBy(order[0]);
-    setOrderType(order[1]);
-  }
-
   return (
     <>
-      <FieldNav />
       <div className="contact-list-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">
@@ -211,51 +146,24 @@ const CustomFields = () => {
                 <Selectbox
                   options={[
                     {
-                      title: "Name Asc",
-                      id: "title+asc",
+                      title: "Name",
+                      id: "name",
                     },
                     {
-                      title: "Name Desc",
-                      id: "title+desc",
-                    },
-                    {
-                      title: "Date Created Asc",
-                      id: "created_at+asc",
-                    },
-                    {
-                      title: "Date Created Desc",
-                      id: "created_at+desc",
+                      title: "Date Created",
+                      id: "date-created",
                     },
                   ]}
                   tags={false}
-                  placeholder="Field"
+                  placeholder="Name"
                   multiple={false}
-                  onSelect={handleOrderBy}
-                  onRemove={handleOrderBy}
                 />
               </div>
               <div className="right-buttons">
                 {/* search input */}
                 <span className="search-section">
                   <Search />
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => {
-                      let value = e.target.value;
-                      setSearch(value);
-                      // only set query when there are more than 3 characters
-                      if (value.length >= 3) {
-                        setQuery(`&search=${value}`);
-                        // on every new search term set the page explicitly to 1 so that results can
-                        // appear
-                        setPage(1);
-                      } else {
-                        setQuery("");
-                      }
-                    }}
-                  />
+                  <input type="text" placeholder="Search..." />
                 </span>
                 {/* show more options section */}
                 <div className="bulk-action">
@@ -272,9 +180,7 @@ const CustomFields = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li className="delete" onClick={deleteMultipleFields}>
-                        Delete Selected
-                      </li>
+                      <li className="delete">Delete Selected</li>
                     </ul>
                   </button>
                 </div>
@@ -331,32 +237,25 @@ const CustomFields = () => {
                 )}
               </div>
             </div>
-            {totalPages > 1 && (
-              <div className="contact-list-footer">
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              </div>
-            )}
+            <div className="contact-list-footer">
+              <Pagination
+                currentPage={page}
+                pageSize={perPage}
+                onPageChange={setPage}
+                totalCount={count}
+                totalPages={totalPages}
+              />
+            </div>
           </div>
         </div>
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup
-          title={deleteTitle}
-          message={deleteMessage}
+          title="Delete Custom Field"
+          message="Are you sure you want to delete the Field?"
           onDeleteShow={onDeleteShow}
           onDeleteStatus={onDeleteStatus}
-          onMultiDelete={onMultiDelete}
-          selected={selected}
         />
-      </div>
-      <div className="mintmrm-container" style={{ display: showAlert }}>
-        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
     </>

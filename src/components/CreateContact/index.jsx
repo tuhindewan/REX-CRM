@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 // Internal dependencies
 import { omit } from "lodash";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { createContact } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import InputItem from "../InputItem/index";
@@ -85,20 +84,31 @@ const CreateContact = (props) => {
       });
     }
 
-    createContact(contactData).then((response) => {
-      if (201 === response.code) {
-        // Navigate user with success message
-        navigate("../contacts", {
-          state: { status: "contact-created", message: response?.message },
-        });
-      } else {
-        // Validation messages
-        setErrors({
-          ...errors,
-          email: response?.message,
-        });
-      }
+    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(contactData),
     });
+    const responseData = await res.json();
+    const code = responseData?.code;
+
+    if (code === 201) {
+      // Navigate user with success message
+      navigate("../contacts", {
+        state: { status: "contact-created", message: responseData?.message },
+      });
+      useGlobalStore.setState({
+        counterRefresh: !counterRefresh,
+      });
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
+    }
   };
 
   // Set values from contact form

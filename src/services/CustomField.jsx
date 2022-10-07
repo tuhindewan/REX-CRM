@@ -1,14 +1,6 @@
 // Return all custom fields from the database
-export async function getCustomFields(
-  orderBy,
-  orderType,
-  page,
-  perPage,
-  query
-) {
-  return fetch(
-    `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
-  )
+export async function getCustomFields() {
+  return fetch(window.MRM_Vars.api_base_url + "mrm/v1/custom-fields/")
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -65,23 +57,6 @@ export async function updateCustomFields(customField) {
       body: JSON.stringify(customField),
     }
   ).then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-  });
-}
-
-// Multiple custom fields delete request
-export async function deleteMultipleFieldItems(selected) {
-  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/`, {
-    method: "DELETE",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify({
-      field_ids: selected,
-    }),
-  }).then((response) => {
     if (response.ok) {
       return response.json();
     }
