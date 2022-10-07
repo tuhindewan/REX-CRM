@@ -228,6 +228,8 @@ export default function AddCampaign(props) {
     console.log(e);
   });
 
+
+
   return (
     <div className="mintmrm-add-campaign">
       <div className="add-campaign-breadcrumb">
