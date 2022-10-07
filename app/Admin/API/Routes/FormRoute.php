@@ -138,6 +138,27 @@ class FormRoute{
             ],
         ]);
 
+
+        /**
+         * Route for from list only id and title
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base. '/form-list', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_all_id_title'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
     }
 
 }

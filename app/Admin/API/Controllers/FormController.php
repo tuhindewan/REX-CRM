@@ -122,6 +122,38 @@ class FormController extends BaseController {
 
 
     /**
+     * Function used to handle paginated get all forms only title and id
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_all_id_title( WP_REST_Request $request ){
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+
+        $forms = FormModel::get_all_id_title();
+
+        $form_data = [];
+        foreach ( $forms['data'] as $form){
+            $forms_ob = array(
+                'value' => $form['id'],
+                'label' => $form['title']
+            );
+            array_push($form_data,$forms_ob);
+        }
+
+
+        if(isset($forms)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $form_data);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+    }
+
+
+    /**
      * Function used to handle a single get request
      *
      * @param WP_REST_Request $request

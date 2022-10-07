@@ -133,7 +133,7 @@ class FormModel {
 
 
     /**
-     * Run SQL query to get or search contacts from database
+     * Run SQL query to get or search forms from database
      * 
      * @param int $offset
      * @param int $limit
@@ -169,6 +169,32 @@ class FormModel {
                 'data'        => $select_query,
                 'total_pages' => $total_pages,
                 'count'       => $count
+            );
+        } catch(\Exception $e) {
+            return NULL;
+        }
+    }
+
+
+    /**
+     * Run SQL query to get or search forms id and title only
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_all_id_title( )
+    {
+        global $wpdb;
+        $form_table = $wpdb->prefix . FormSchema::$table_name;
+
+
+        // Prepare sql results for list view
+        try {        
+            // Return forms for a contact in list view
+            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT `id`,`title` FROM $form_table ORDER BY id DESC", array( ) ), ARRAY_A );
+
+            return array(
+                'data'        => $select_query
             );
         } catch(\Exception $e) {
             return NULL;
