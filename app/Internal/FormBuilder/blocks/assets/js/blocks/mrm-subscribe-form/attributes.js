@@ -8,10 +8,7 @@ const attributes = {
         default: [{
             value: "0",
             label: "Select MRM Form"
-        },{
-            value: "1",
-            label: "Demo Select"
-        },]
+        }]
     },
     render_block: {
         type : 'string',
