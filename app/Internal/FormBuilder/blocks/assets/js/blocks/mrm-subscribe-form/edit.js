@@ -54,9 +54,9 @@ class Editor extends Component {
         setAttributes   : PropTypes.func.isRequired,
     };
     componentDidMount() {
-        wp.apiFetch( { path : 'mrm/v1/form-list' } ).then( data => {
-            this.props.setAttributes({form_list_data: data});
-        } );
+        // wp.apiFetch( { path : 'mrm/v1/form-list' } ).then( data => {
+        //     this.props.setAttributes({form_list_data: data});
+        // } );
     }
     onChangeAttribute = (key, value) => {
         this.props.setAttributes({

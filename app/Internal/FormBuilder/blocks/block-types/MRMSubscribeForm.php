@@ -38,11 +38,14 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
             );
 
             $get_post = new WP_Query($arrg);
+            $form_data = get_option('_mrm_form_data');
             ob_start();
             $output = '';
-            while ( $get_post->have_posts() ) : $get_post->the_post();
-                the_content();
-	        endwhile;
+            $output .= $form_data[0];
+//            while ( $get_post->have_posts() ) : $get_post->the_post();
+//                the_content();
+//	        endwhile;
+
             $output .=  ob_get_clean();
             echo $output;
             die();

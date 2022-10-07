@@ -8,7 +8,16 @@ const FormEditor = () => {
   const [selectedTags, setSelectedTags] = useState([]);
 
   const  saveForm = () =>{
-    const content = document.getElementById('mrm-block-editor')
+    const storedBlocks = window.localStorage.getItem( 'getmrmblocks' );
+    const res =  fetch(`${window.MRM_Vars.api_base_url}mrm/v1/save-mrm-form/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(storedBlocks),
+    });
+    // const responseData =  res.json();
+    // const code = responseData?.code;
 
   }
 

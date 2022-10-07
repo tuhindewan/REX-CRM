@@ -3,10 +3,15 @@
 namespace Mint\MRM\Internal\FormBuilder;
 
 
+use MRM\Common\MRM_Common;
+use WP_REST_Request;
+
 Class FormBuilderHelper {
     public function __construct()
     {
         new GetMRM_Block_Manager;
+        new MRM_Subscribe_form;
+        add_action('rest_api_init', [$this,'mrm_rest_data_route']);
         add_action( 'admin_enqueue_scripts', array($this,'mrm_block_editor_init') );
     }
 
@@ -57,9 +62,7 @@ Class FormBuilderHelper {
         $settings = array(
             'disableCustomColors'    => get_theme_support( 'disable-custom-colors' ),
             'disableCustomFontSizes' => get_theme_support( 'disable-custom-font-sizes' ),
-            // 'imageSizes'             => $available_image_sizes,
             'isRTL'                  => is_rtl(),
-            // 'maxUploadFileSize'      => $max_upload_size,
             '__experimentalBlockPatterns' => []
         );
         list( $color_palette, ) = (array) get_theme_support( 'editor-color-palette' );
@@ -73,6 +76,34 @@ Class FormBuilderHelper {
 
         return $settings;
     }
+    /**
+     * Form Save API Route
+     */
+    public function mrm_rest_data_route()
+    {
+        register_rest_route('mrm/v1', '/save-mrm-form/', array(
+            'methods' => 'POST',
+            'callback' => [$this,'mrm_form_rest_data_set'],
+            'permission_callback' => [$this,'mrm_rest_route_permission']
+        ));
+    }
+
+    /**
+     * MRM rest route permission
+     * @return bool
+     */
+    public function mrm_rest_route_permission()
+    {
+        return true;
+    }
+
+    public function mrm_form_rest_data_set(WP_REST_Request $request)
+    {
+        $params = MRM_Common::get_api_params_values( $request );
+
+        update_option('_mrm_form_data',$params);
+    }
+
 
 
 
