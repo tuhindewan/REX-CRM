@@ -166,7 +166,7 @@ class CampaignController extends BaseController {
     /**
      * Get and send response to send campaign email 
      * 
-     * @param WP_REST_Request
+     * @param int $campaign_id
      * @return WP_REST_Response
      * @since 1.0.0
      */

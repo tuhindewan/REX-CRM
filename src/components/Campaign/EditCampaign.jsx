@@ -56,6 +56,7 @@ export default function EditCampaign(props) {
   const [refresh, setRefresh] = useState(true);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const [isPublishValid, setIsPublishValid] = useState(false);
 
   // get the campaign id from url
   const { id } = useParams();
@@ -109,6 +110,10 @@ export default function EditCampaign(props) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [refresh]);
 
   // Prepare campaign object and send post request to backend
@@ -162,8 +167,59 @@ export default function EditCampaign(props) {
         window.alert(response?.message);
       }
     });
-    setIsValid(false);
+    const isValid = validate();
+    setIsValid(isValid);
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
+
+  const validate = () => {
+    if (
+      campaignTitle.length > 0 &&
+      recipientLists.length != 0 &&
+      recipientTags.length != 0 &&
+      emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
+      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
+      emailData[selectedEmailIndex].email_body.length != 0
+    ) {
+      return true;
+    }
+  };
+
+  const validatePublish = () => {
+    if (
+      campaignTitle.length > 0 &&
+      recipientLists.length != 0 &&
+      recipientTags.length != 0 &&
+      emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
+      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
+      emailData[selectedEmailIndex].email_body.length != 0
+    ) {
+      return true;
+    }
+  };
+
+  useEffect(() => {
+    const isPublishValid = validatePublish();
+    setIsPublishValid(isPublishValid);
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [
+    campaignTitle,
+    recipientLists,
+    recipientTags,
+    emailData[selectedEmailIndex]["email_subject"],
+    emailData[selectedEmailIndex]["email_preview_text"],
+    emailData[selectedEmailIndex]["sender_name"],
+    emailData[selectedEmailIndex]["sender_email"],
+    emailData[selectedEmailIndex].email_body,
+  ]);
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
@@ -261,7 +317,7 @@ export default function EditCampaign(props) {
 
   return (
     <>
-      {console.log(emailData)}
+      {/* {console.log(emailData)} */}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
@@ -512,7 +568,7 @@ export default function EditCampaign(props) {
               <div className="content-save-section">
                 <button
                   className="campaign-schedule mintmrm-btn outline"
-                  disabled={!isValid}
+                  disabled={!isPublishValid}
                   onClick={handlePublish}
                 >
                   Publish

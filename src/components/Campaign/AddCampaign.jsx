@@ -44,6 +44,7 @@ export default function AddCampaign(props) {
   const [dropDown, setDropDown] = useState(false);
 
   const [isValid, setIsValid] = useState(false);
+  const [isPublishValid, setIsPublishValid] = useState(false);
   const names = [
     {
       value: "Minutes",
@@ -143,6 +144,7 @@ export default function AddCampaign(props) {
       copy[selectedEmailIndex][name] = value;
       return copy;
     });
+    validatePublish();
   };
   const openTemplate = async () => {
     setIsTemplate(true);
@@ -171,14 +173,31 @@ export default function AddCampaign(props) {
       emailData[selectedEmailIndex]["preview"].length != 0 ||
       emailData[selectedEmailIndex]["senderName"].length != 0 ||
       emailData[selectedEmailIndex]["senderEmail"].length != 0 ||
-      emailData[selectedEmailIndex].email_body.length != 0 ||
-      emailData[selectedEmailIndex].email_json.length != 0
+      emailData[selectedEmailIndex].email_body.length != 0
+    ) {
+      return true;
+    }
+  };
+
+  const validatePublish = () => {
+    console.log(emailData[selectedEmailIndex].email_body);
+    if (
+      campaignTitle.length > 0 &&
+      recipientLists.length != 0 &&
+      recipientTags.length != 0 &&
+      emailData[selectedEmailIndex]["subject"].length != 0 &&
+      emailData[selectedEmailIndex]["preview"].length != 0 &&
+      emailData[selectedEmailIndex]["senderName"].length != 0 &&
+      emailData[selectedEmailIndex]["senderEmail"].length != 0 &&
+      emailData[selectedEmailIndex].email_body.length != 0
     ) {
       return true;
     }
   };
 
   useEffect(() => {
+    const isPublishValid = validatePublish();
+    setIsPublishValid(isPublishValid);
     const isValid = validate();
     setIsValid(isValid);
   }, [
@@ -265,7 +284,10 @@ export default function AddCampaign(props) {
                       type="text"
                       name="title"
                       value={campaignTitle}
-                      onChange={(e) => setCampaignTitle(e.target.value)}
+                      onChange={(e) => {
+                        validatePublish();
+                        setCampaignTitle(e.target.value);
+                      }}
                       placeholder="Enter Campaign title"
                     />
                   </div>
@@ -448,7 +470,7 @@ export default function AddCampaign(props) {
             <div className="content-save-section">
               <button
                 className="campaign-schedule mintmrm-btn outline"
-                disabled={!isValid}
+                disabled={!isPublishValid}
                 onClick={handlePublish}
               >
                 Publish

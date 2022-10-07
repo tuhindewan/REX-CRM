@@ -195,7 +195,7 @@ class CampaignModel {
      * 
      * @param mixed $id campaign ID
      * 
-     * @return array
+     * @return object
      * @since 1.0.0
      */
     public static function get( $id )
