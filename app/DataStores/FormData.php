@@ -61,6 +61,14 @@ class FormData {
      */
     private $template_id;
 
+    /**
+     * Form creator id
+     * 
+     * @var array
+     * @since 1.0.0
+     */
+    private $created_by;
+
 
     public function __construct( $args )
     {
@@ -70,6 +78,7 @@ class FormData {
         $this->status  = isset($args['status'])  ? $args['status']  : NULL;
         $this->group_ids  = isset($args['group_ids'])  ? $args['group_ids']  : NULL;
         $this->template_id  = isset($args['template_id'])  ? $args['template_id']  : NULL;
+        $this->created_by  = isset($args['created_by'])  ? $args['created_by']  : NULL;
     }
 
 

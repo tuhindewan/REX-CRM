@@ -109,10 +109,10 @@ class FormController extends BaseController {
 
 
 
-        // List Search keyword
+        // Form Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = FormModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
+        $groups = FormModel::get_all( $offset, $perPage, $search);
 
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
