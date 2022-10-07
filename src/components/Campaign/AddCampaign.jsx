@@ -181,8 +181,7 @@ export default function AddCampaign(props) {
   const validatePublish = () => {
     if (
       campaignTitle.length > 0 &&
-      recipientLists.length != 0 &&
-      recipientTags.length != 0 &&
+      (recipientLists.length != 0 || recipientTags.length != 0) &&
       emailData[selectedEmailIndex]["subject"].length != 0 &&
       emailData[selectedEmailIndex]["preview"].length != 0 &&
       emailData[selectedEmailIndex]["senderName"].length != 0 &&

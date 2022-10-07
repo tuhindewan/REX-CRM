@@ -40,12 +40,15 @@ class CampaignEmailController extends BaseController {
      */
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
+
         $response   = array(
             'success'   => true,
             'message'   => ''
         );
         
         $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
+        $emailData = isset($params['campaign_data']['emails'][0]) ? $params['campaign_data']['emails'][0] : "";
+        $email_id = CampaignModel::update_campaign_emails( $emailData, $params['campaign_id'], $params['email_index'] );
         $is_new = true;
         if ( $email ) {
             $is_new   = false;
@@ -137,6 +140,7 @@ class CampaignEmailController extends BaseController {
      */
     public function create_email( WP_REST_Request $request ) {
         $params         = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
         $email_index    = isset($params['email_index']) ? $params['email_index'] : null;
         $response   = array(
             'success'   => true,

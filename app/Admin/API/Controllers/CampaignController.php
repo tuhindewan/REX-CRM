@@ -62,11 +62,11 @@ class CampaignController extends BaseController {
 
         // Email subject validation
         $emails = isset($params['emails']) ? $params['emails'] : array();
-        foreach( $emails as $index => $email ){
-            if ( isset($email['email_subject']) && empty( $email['email_subject'] )) {
-                return $this->get_error_response( __( 'Subject is missing on email '. ($index+1), 'mrm' ),  200);
-            }
-        }
+        // foreach( $emails as $index => $email ){
+        //     if ( isset($email['email_subject']) && empty( $email['email_subject'] )) {
+        //         return $this->get_error_response( __( 'Subject is missing on email '. ($index+1), 'mrm' ),  200);
+        //     }
+        // }
 
         try {
             // Update a campaign if campaign_id present on API request
@@ -149,7 +149,6 @@ class CampaignController extends BaseController {
             // Send renponses back to the frontend
             if($this->campaign_data) {
                 $data['campaign'] = $this->campaign_data;
-                
                 if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
                     //test_email_sending(for dev)
                     self::send_email_to_reciepents($this->campaign_data);

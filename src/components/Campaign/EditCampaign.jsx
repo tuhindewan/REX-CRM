@@ -57,6 +57,7 @@ export default function EditCampaign(props) {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
+  const [campaignStatus, setCampaignStatus] = useState("");
 
   // get the campaign id from url
   const { id } = useParams();
@@ -105,6 +106,7 @@ export default function EditCampaign(props) {
       setActiveEmailData(emails[0]);
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
+      setCampaignStatus(campaign.status);
     });
     if ("campaign-created" == location.state?.status) {
       setShowNotification("block");
@@ -178,8 +180,7 @@ export default function EditCampaign(props) {
   const validate = () => {
     if (
       campaignTitle.length > 0 &&
-      recipientLists?.length != 0 &&
-      recipientTags?.length != 0 &&
+      (recipientLists?.length != 0 || recipientTags?.length != 0) &&
       emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
       emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
       emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
@@ -191,11 +192,9 @@ export default function EditCampaign(props) {
   };
 
   const validatePublish = () => {
-    console.log(emailData[selectedEmailIndex]);
     if (
       campaignTitle.length > 0 &&
-      recipientLists?.length != 0 &&
-      recipientTags?.length != 0 &&
+      (recipientLists?.length != 0 || recipientTags?.length != 0) &&
       emailData[selectedEmailIndex]["email_subject"]?.length != null &&
       emailData[selectedEmailIndex]["email_preview_text"]?.length != null &&
       emailData[selectedEmailIndex]["sender_name"]?.length != null &&
@@ -209,8 +208,8 @@ export default function EditCampaign(props) {
   useEffect(() => {
     const isPublishValid = validatePublish();
     setIsPublishValid(isPublishValid);
-    const isValid = validate();
-    setIsValid(isValid);
+    // const isValid = validate();
+    // setIsValid(isValid);
   }, [
     campaignTitle,
     recipientLists,
@@ -551,12 +550,12 @@ export default function EditCampaign(props) {
                         created_by: `${window.MRM_Vars.current_userID}`,
                         emails: emailData.map((email) => {
                           return {
-                            email_subject: email.subject,
-                            email_preview_text: email.preview,
-                            sender_email: email.senderEmail,
+                            email_subject: email.email_subject,
+                            email_preview_text: email.email_preview_text,
+                            sender_email: email.sender_email,
                             delay_count: email.delay_count,
                             delay_value: email.delay_value,
-                            sender_name: email.senderName,
+                            sender_name: email.sender_name,
                             email_body: email.email_body,
                             email_json: email.email_json,
                           };
@@ -567,21 +566,30 @@ export default function EditCampaign(props) {
                 </div>
               </div>
               <div className="content-save-section">
-                <button
-                  className="campaign-schedule mintmrm-btn outline"
-                  disabled={!isPublishValid}
-                  onClick={() => updateCampaign("ongoing")}
-                >
-                  Publish
-                </button>
-                <button
-                  type="submit"
-                  className="campaign-save mintmrm-btn"
-                  onClick={() => updateCampaign("draft")}
-                  disabled={!isValid}
-                >
-                  Save draft
-                </button>
+                {"ongoing" == campaignStatus ? (
+                  <button className="campaign-save mintmrm-btn" disabled={true}>
+                    On Going
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="campaign-schedule mintmrm-btn outline"
+                      disabled={!isPublishValid}
+                      onClick={() => updateCampaign("ongoing")}
+                    >
+                      Publish
+                    </button>
+                    <button
+                      type="submit"
+                      className="campaign-save mintmrm-btn"
+                      onClick={() => updateCampaign("draft")}
+                      disabled={!isValid}
+                    >
+                      Save draft
+                    </button>
+                  </>
+                )}
+
                 {/* {responseMessage && <p>{responseMessage}</p>} */}
               </div>
             </div>

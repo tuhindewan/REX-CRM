@@ -453,6 +453,8 @@ export default function Editor(props) {
 
   const backToCampaign = (e) => {
     if (!id) {
+      navigate(`/campaigns/create`);
+    } else {
       navigate(`/campaign/edit/${campaignId}`);
     }
     setIsCloseBuilder("none");
