@@ -13,6 +13,7 @@
     width: calc(100% / 4 - 15px);
     margin-left: 20px;
     padding: 20px;
+    background-color: #ffffff;
 
     &:first-child {
       margin-left: 0;
@@ -63,7 +64,6 @@
 
 .contact-list-area {
   margin-top: 30px;
-  border: 1px solid #e4e6eb;
   border-radius: 10px;
 
   //--------contact-list-header------
@@ -74,6 +74,8 @@
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-between;
+    background-color: #ffffff;
+    border-radius: 10px 10px 0 0;
 
     .left-filters {
       display: flex;
@@ -259,10 +261,18 @@
   // ---------Filtered selected result-------
 
   .selected-result {
-    padding: 20px 0 20px 25px;
+    padding: 20px 25px;
     display: flex;
     flex-flow: row wrap;
     border-bottom: 1px solid #e2e5ed;
+    background-color: #ffffff;
+
+    .mrm-custom-selected-items {
+      color: #667085;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+    }
 
     .selected-items {
       border: 1px solid #e2e5ed;
@@ -315,7 +325,6 @@
 
   //---------contact-list-body------
   .contact-list-body {
-    border-bottom: 1px solid #e2e5ed;
     position: relative;
 
     .add-column {
@@ -330,10 +339,17 @@
       right: 0;
       z-index: 2;
       background: #f9fafb;
-      padding: 9px 13px 9px;
+      padding: 7px 13px 7px;
 
       .add-column-btn {
-        background-color: #f9fafb;
+        background-color: transparent;
+      }
+      .add-column-btn:hover {
+        svg {
+          path {
+            stroke: #6f6af8;
+          }
+        }
       }
 
       .tooltip {
@@ -429,7 +445,7 @@
       thead {
         th {
           background: #f9fafb;
-          padding: 13px 20px;
+          padding: 14px 24px 9px 24px;
           vertical-align: middle;
           font-weight: 500;
           font-size: 15px;
@@ -453,8 +469,20 @@
         tr {
           border-bottom: 1px solid #e2e5ed;
 
+          .no-contact {
+            padding: 235px 500px;
+            svg {
+              display: block;
+              margin: 0 auto;
+              margin-bottom: 15px;
+            }
+          }
+          .no-contact::before {
+            border-left: 2px solid #f9fafb;
+          }
+
           td {
-            padding: 20px 20px;
+            padding: 20px 24px;
             vertical-align: middle;
             font-size: 14px;
             font-weight: 400;
@@ -482,8 +510,43 @@
               margin-right: 5px;
               display: inline-block;
             }
+            &.email-wrapper {
+              background-color: #ffffff;
+            }
+          }
+          // td:first-child {
+          //   border-left: 2px solid transparent;
+          // }
+
+          td:first-child::before {
+            /* border-left: 2px solid transparent; */
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            top: 0;
+            left: 0;
+            background-color: transparent;
+          }
+
+          td:last-child {
+            text-align: end;
           }
         }
+        tr {
+          background-color: #ffffff;
+        }
+        tr:hover {
+          background-color: #f9fafb;
+
+          td:first-child::before {
+            background-color: #6f6af8;
+          }
+          .email-wrapper {
+            background-color: #f9fafb;
+          }
+        }
+
         // tr:last-child {
         //     border-bottom: none;
         // }
@@ -529,22 +592,22 @@
               background: rgba(236, 89, 86, 0.1);
             }
             &.pending {
-              color: #ffcc00;
-              background: rgba(236, 89, 86, 0.1);
+              color: #f7900a;
+              background: rgba(247, 144, 10, 0.1);
             }
           }
         }
 
         .action {
-          button {
+          .more-option {
             position: relative;
+            background-color: transparent;
           }
         }
       }
     }
 
     table tbody td:first-child {
-      background: #fff;
     }
     table tr:last-child td:first-child {
       border-bottom-left-radius: 0.5rem;
@@ -566,6 +629,9 @@
       left: 0;
       z-index: 1;
     }
+    table tr > td:first-child {
+      // background-color: #ffffff;
+    }
   }
   // ------end .contact-list-body-------
 
@@ -576,6 +642,8 @@
     padding: 15px;
     width: 100%;
     justify-content: space-between;
+    background-color: #ffffff;
+    border-radius: 0 0 10px 10px;
 
     .footer-show-number {
       display: flex;
@@ -634,4 +702,22 @@
     }
   }
   // ------end .contact-list-footer-------
+}
+.dropdown-options {
+  .mintmrm-dropdown {
+    left: calc(100% - 90px);
+
+    .action-list {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #344054;
+    }
+    .action-list:hover {
+      color: #6f6af8;
+    }
+  }
 }

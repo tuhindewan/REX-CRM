@@ -6,6 +6,8 @@ import DeletePopup from "../DeletePopup";
 import HoverMenu from "../HoverMenu";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
+import EyeIcon from "../Icons/EyeIcon";
+import Delete from "../Icons/Delete";
 
 export default function SingleContact(props) {
   // global counter update real time
@@ -129,7 +131,6 @@ export default function SingleContact(props) {
         <td className="action">
           <button
             className="more-option"
-            style={{ background: "white", position: "relative" }}
             onClick={() => {
               setActive((prev) => !prev);
               setCurrentActive(contact.id);
@@ -156,11 +157,12 @@ export default function SingleContact(props) {
                       View
                     </li>
                     <li
-                      className="delete"
+                      className="action-list"
                       onClick={() => {
                         handleDelete();
                       }}
                     >
+                      <Delete />
                       Delete
                     </li>
                   </ul>
