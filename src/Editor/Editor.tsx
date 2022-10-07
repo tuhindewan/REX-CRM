@@ -464,6 +464,13 @@ export default function Editor(props) {
     const sendTestEmail = (e) => {
 
     }
+
+
+    const onUploadImage = async (blob: Blob) => {
+
+    };
+
+
     return (
         <>
             <div className={emailLoader ? 'email-builder-loader show-loader': 'email-builder-loader'}>
@@ -506,6 +513,7 @@ export default function Editor(props) {
                     onChangeCategory={onChangeCategory}
                     socialIcons={socialIcons}
                     onSubmit={onSubmit}
+                    onUploadImage={onUploadImage}
                 >
                     {({ values }, { submit }) => {
                         return (
