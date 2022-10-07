@@ -464,7 +464,6 @@ export default function Editor(props) {
     const sendTestEmail = (e) => {
 
     }
-
     return (
         <>
             <div className={emailLoader ? 'email-builder-loader show-loader': 'email-builder-loader'}>
