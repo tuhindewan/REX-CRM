@@ -41,6 +41,7 @@ class FormSchema implements Schema{
             `title` VARCHAR(255),
             `form_body` longtext,
             `form_position` VARCHAR(255),
+            `group_ids` VARCHAR(1000),
             `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
             `template_id` bigint(20) unsigned NULL,
             `created_by` BIGINT(20),

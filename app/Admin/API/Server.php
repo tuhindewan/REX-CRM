@@ -89,7 +89,8 @@ class Server {
             'field-groups'  =>  'FieldGroupRoute',
             'custom-fields' =>  'CustomFieldRoute',
             'general'       =>  'generalRoute',
-            'campaigns'      =>  'campaignRoute'
+            'campaigns'     =>  'campaignRoute',
+            'forms'         =>  'FormRoute'
 		));
     }
     
