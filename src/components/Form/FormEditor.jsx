@@ -8,6 +8,12 @@ const FormEditor = () => {
     title: "",
   });
 
+  // useEffect(() => {
+  //   // Update the document title using the browser API
+  //   console.log(document.getElementById( 'mrm-block-editor' ));
+  //
+  // });
+
 // Set values from Title form
   const handleChange = (event) => {
     event.persist();
