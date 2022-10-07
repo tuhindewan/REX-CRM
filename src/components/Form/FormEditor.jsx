@@ -21,8 +21,9 @@ const FormEditor = () => {
 
   }
 
-  return (
-    <>
+  return(
+      <>
+
         <div className="add-contact-form">
           <div className="contact-form-body">
             <InputItem label="Title" name="form_title" />
@@ -32,8 +33,9 @@ const FormEditor = () => {
             <div id="mrm-block-editor" className="getdave-sbe-block-editor block-editor"></div>
           </div>
         </div>
-    </>
-  );
+
+      </>
+  )
 };
 
 export default FormEditor;

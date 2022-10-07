@@ -649,7 +649,11 @@ export default function ContactListTable(props) {
             <tbody>
               {!contactData.length && (
                 <tr>
-                  <td className="no-contact" colspan="10" style={{ textAlign: "center" }}>
+                  <td
+                    className="no-contact"
+                    colspan="10"
+                    style={{ textAlign: "center" }}
+                  >
                     <NoContactIcon />
                     No contact data found.
                   </td>
