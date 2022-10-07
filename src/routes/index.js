@@ -22,6 +22,7 @@ import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
+import FormIndex from "../components/Form";
 
 const routes = [
   {
@@ -172,6 +173,11 @@ const routes = [
   },
   {
     path: "/form-editor/",
+    element: FormIndex,
+    hideInMenu: true,
+  },
+  {
+    path: "/form-builder/",
     element: FormEditor,
     hideInMenu: true,
   },
