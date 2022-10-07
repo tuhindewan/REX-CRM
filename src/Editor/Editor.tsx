@@ -336,7 +336,6 @@ export default function Editor(props) {
             status: "published",
             email_index: selectedEmailIndex,
             campaign_data: campaignData,
-            emailData: emailData,
           }),
         }
       );
@@ -452,8 +451,6 @@ export default function Editor(props) {
   };
 
   const backToCampaign = (e) => {
-    console.log(campaignId);
-
     if (!id) {
       navigate(`/campaign/edit/${campaignId}`);
     }
@@ -461,6 +458,7 @@ export default function Editor(props) {
     if (0 == campaignId) {
       navigate(`/campaigns/create`);
     }
+
     setIsCloseBuilder("none");
     setIsTemplate(false);
   };
@@ -478,6 +476,9 @@ export default function Editor(props) {
   };
 
   const sendTestEmail = (e) => {};
+
+  const onUploadImage = async (blob: Blob) => {};
+
   return (
     <>
       <div
@@ -540,6 +541,7 @@ export default function Editor(props) {
           onChangeCategory={onChangeCategory}
           socialIcons={socialIcons}
           onSubmit={onSubmit}
+          onUploadImage={onUploadImage}
         >
           {({ values }, { submit }) => {
             return (

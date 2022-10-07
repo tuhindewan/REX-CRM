@@ -54,7 +54,6 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         // Assign Untitled as value if title is empty
         if ( isset($params['title']) && empty( $params['title'] )) {
             $params['title'] = "Untitled";
@@ -397,6 +396,7 @@ class CampaignController extends BaseController {
         $email = isset( $campaign['emails'][0] ) ? $campaign['emails'][0] : [];
         
         $email_builder = CampaignEmailBuilderModel::get($email['id']);
+        error_log(print_r($email_builder, 1));
         $sender_email   = isset( $email['sender_email'] ) ? $email['sender_email'] : "";
         $sender_name    = isset( $email['sender_name'] ) ? $email['sender_name'] : "";
         $email_subject  = isset( $email['email_subject'] ) ? $email['email_subject'] : "";
