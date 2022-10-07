@@ -55,13 +55,22 @@ class MessageData {
     private $contact_id;
 
 
+    /**
+     * Sender ID 
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $sender_id;
+
+
     public function __construct( $args )
     {
-        $this->email_address    = $args['email_address'];
-        $this->email_subject    = $args['email_subject'];
-        $this->email_body       = $args['email_body'];
-        $this->contact_id       = $args['contact_id'];
-        $this->type             = $args['type'];
+        $this->email_address    = isset( $args['email_address'] ) ? $args['email_address'] : "";
+        $this->email_subject    = isset( $args['email_subject'] ) ? $args['email_subject'] : "";
+        $this->email_body       = isset( $args['email_body'] ) ? $args['email_body'] : "";
+        $this->contact_id       = isset( $args['contact_id'] ) ? $args['contact_id'] : "";
+        $this->sender_id        = isset( $args['sender_id'] ) ? $args['sender_id'] : "";
     }
 
 
@@ -121,11 +130,24 @@ class MessageData {
      * Return receiver ID
      * 
      * @param void
-     * @return string
+     * @return int
      * @since 1.0.0
      */
     public function get_receiver_id()
     {
         return $this->contact_id;
+    }
+
+
+    /**
+     * Return sender ID
+     * 
+     * @param void
+     * @return int
+     * @since 1.0.0
+     */
+    public function get_sender_id()
+    {
+        return $this->sender_id;
     }
 }
