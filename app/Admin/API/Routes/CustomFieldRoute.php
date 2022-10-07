@@ -79,7 +79,18 @@ class CustomFieldRoute{
                     $this->controller ,
                     'rest_permissions_check'
                 ] ,
-            ]
+            ],
+            [
+                'methods' => \WP_REST_Server::DELETABLE,
+                'callback' => [
+                    $this->controller ,
+                    'delete_all'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
         ]);
 
         /**

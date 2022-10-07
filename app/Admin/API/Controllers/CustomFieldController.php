@@ -142,7 +142,7 @@ class CustomFieldController extends BaseController {
 
 
     /**
-     * TODO: complete this function in order to delete multilple fields
+     * Delete multiple custom fields
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -150,7 +150,16 @@ class CustomFieldController extends BaseController {
      */
     public function delete_all( WP_REST_Request $request ){
 
-        
+        // Get values from API
+        $params  = MRM_Common::get_api_params_values( $request );
+
+        $ids = isset( $params['field_ids'] ) ? $params['field_ids'] : [];
+        $success = CustomFieldModel::destroy_all( $ids );
+        if($success) {
+            return $this->get_success_response(__( 'Fields has been deleted successfully', 'mrm' ), 200);
+        }
+
+        return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
     }
 
 
@@ -163,15 +172,33 @@ class CustomFieldController extends BaseController {
      */
     public function get_all( WP_REST_Request $request ){
 
-       // Get values from API
-       $params = MRM_Common::get_api_params_values( $request );
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
 
-       $fields = CustomFieldModel::get_all();
+        $page       =  isset($params['page']) ? absint( $params['page'] ) : 1;
+        $perPage    =  isset($params['per-page']) ? absint( $params['per-page'] ) : 25;
+        $offset     =  ($page - 1) * $perPage;
 
-       if(isset($fields)) {
-           return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
-       }
-       return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+        $order_by = isset($params['order-by']) ? strtolower($params['order-by']) : 'id';
+        $order_type = isset($params['order-type']) ? strtolower($params['order-type']) : 'desc';
+
+        // valid order by fields and types
+        $allowed_order_by_fields = array("title", "created_at");
+        $allowed_order_by_types = array("asc", "desc");
+
+        // validate order by fields or use default otherwise
+        $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
+        $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
+
+        // Search keyword
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+
+        $fields = CustomFieldModel::get_all( $offset, $perPage, $search, $order_by, $order_type );
+
+        if(isset($fields)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
 
     }
 
