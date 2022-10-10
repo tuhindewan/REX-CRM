@@ -256,20 +256,23 @@ class FormModel {
         global $wpdb;
         $form_meta_table = $wpdb->prefix . FormMetaSchema::$table_name;
 
-        foreach( $args['meta_fields'] as $key => $value ){
-            if( self::is_form_meta_exist( $form_id, $key ) ){
-                $wpdb->update( $form_meta_table, array(
-                    'meta_value'    => $value
-                ), array( 'meta_key' => $key , 'form_id' => $form_id ));
-            }else{
-                $wpdb->insert( $form_meta_table, array(
-                    'form_id'       => $form_id,
-                    'meta_key'      => $key,
-                    'meta_value'    => $value
-                ));
-                
-            }
+        if (isset($args['meta_fields']))
+        {
+            foreach( $args['meta_fields'] as $key => $value ){
+                if( self::is_form_meta_exist( $form_id, $key ) ){
+                    $wpdb->update( $form_meta_table, array(
+                        'meta_value'    => $value
+                    ), array( 'meta_key' => $key , 'form_id' => $form_id ));
+                }else{
+                    $wpdb->insert( $form_meta_table, array(
+                        'form_id'       => $form_id,
+                        'meta_key'      => $key,
+                        'meta_value'    => $value
+                    ));
+                    
+                }
             
+            }
         }
     }
 
