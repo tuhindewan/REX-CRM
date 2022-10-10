@@ -74,7 +74,7 @@ export default function CustomSelect(props) {
     // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected.findIndex((item) => item.id == id);
+    const index = selected?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (allowMultiple) {
@@ -92,12 +92,12 @@ export default function CustomSelect(props) {
 
   // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
-    const checked = selected.findIndex((item) => item.id == id) >= 0;
+    const checked = selected?.findIndex((item) => item.id == id) >= 0;
     return checked;
   };
 
   const deleteSelected = (e, id) => {
-    const index = selected.findIndex((item) => item.id == id);
+    const index = selected?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (allowMultiple) {
@@ -164,6 +164,7 @@ export default function CustomSelect(props) {
     <>
       <div className="mrm-custom-select-container" key="container">
         <button
+          type="button"
           className={
             activeCustomSelect == customSelectUUID.current &&
             !hideAllCustomSelect
@@ -182,7 +183,12 @@ export default function CustomSelect(props) {
               return (
                 <span key={item.id} className="mrm-custom-selected-items">
                   {item.title}
-                  <CrossIcon onClick={(e) => deleteSelected(e, item.id)} />
+                  <div
+                    className="cross-icon"
+                    onClick={(e) => deleteSelected(e, item.id)}
+                  >
+                    <CrossIcon />
+                  </div>
                 </span>
               );
             })}

@@ -3,6 +3,7 @@ namespace Mint\MRM\Admin\API;
 
 
 use Mint\MRM\Admin\API\Controllers\MRM_Contact_Controller;
+use Mint\MRM\Admin\API\Controllers\ProductController;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 defined( 'ABSPATH' ) || exit;
@@ -48,6 +49,8 @@ class Server {
      */
     public function rest_api_init()
     {
+        // Codes needs to be audited. Need to follow WP way here
+
         foreach ($this->get_rest_namespaces() as $namespace => $controllers) {
             foreach ($controllers as $controller_name => $route_class) {
                 $route_class_name = "\Mint\\MRM\\Admin\\API\\Routes\\".$route_class;
@@ -80,17 +83,26 @@ class Server {
     protected function get_routes()
     {
         return apply_filters( 'mrm/rest_api_routes', array(
-            'lists'         =>  'ListRoute',
-            'segments'      =>  'SegmentRoute',
-            'tags'          =>  'TagRoute',
-            'notes'         =>  'NoteRoute',
-            'contacts'      =>  'ContactRoute',
-            'workflows'     =>  'WorkflowRoute',
-            'field-groups'  =>  'FieldGroupRoute',
-            'custom-fields' =>  'CustomFieldRoute',
-            'general'       =>  'generalRoute',
-            'campaigns'      =>  'campaignRoute'
+            'lists'             =>  'ListRoute',
+            'segments'          =>  'SegmentRoute',
+            'tags'              =>  'TagRoute',
+            'notes'             =>  'NoteRoute',
+            'contacts'          =>  'ContactRoute',
+            'workflows'         =>  'WorkflowRoute',
+            'field-groups'      =>  'FieldGroupRoute',
+            'custom-fields'     =>  'CustomFieldRoute',
+            'general'           =>  'GeneralRoute',
+            'campaigns'         =>  'campaignRoute',
+            'campaign-emails'   =>  'CampaignEmailRoute',
 		));
     }
-    
+
+
+    public function get_rest_featured_image( $object, $field_name, $request ) {
+        if( $object['featured_media'] ){
+            $img = wp_get_attachment_image_src( $object['featured_media'], 'app-thumb' );
+            return $img[0];
+        }
+        return false;
+    }
 }

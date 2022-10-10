@@ -28,7 +28,8 @@ class Model {
             'message'               => 'MessageSchema',
             'work_flow'             => 'WorkFlowSchema',
             'custom_fields'         => 'CustomFieldSchema',
-            'campaign_schema'       => 'CampaignSchema'
+            'campaign_schema'       => 'CampaignSchema',
+            'campaign_email_builder_schema'       => 'CampaignEmailBuilderSchema',
         ));
     }
 

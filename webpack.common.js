@@ -40,6 +40,16 @@ const webpackConfig = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: [{
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true
+          }
+        }],
+        exclude: /node_modules/,
+      },
+      {
         test: require.resolve("jquery"),
         loader: "expose-loader",
         options: {
@@ -99,6 +109,7 @@ const webpackConfig = {
       '~': path.resolve( __dirname + '/src' ),
       $: 'jQuery',
       jquery: 'jQuery',
+      '@': path.resolve('./packages/easy-email-editor/src'),
     },
   },
   plugins: [
@@ -108,7 +119,7 @@ const webpackConfig = {
     new MiniCssExtractPlugin({
       filename: "css/admin.css", // relative to output.path
     }),
-  ]
+  ],
 };
 
 module.exports = webpackConfig;

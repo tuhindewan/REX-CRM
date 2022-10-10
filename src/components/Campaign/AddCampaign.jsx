@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
@@ -7,7 +7,6 @@ import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
-import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
 
@@ -26,8 +25,6 @@ const defaultCampaignData = {
 };
 
 export default function AddCampaign(props) {
-  const emailEditorRef = useRef(null);
-
   const navigate = useNavigate();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{ ...defaultCampaignData }]);
@@ -45,7 +42,10 @@ export default function AddCampaign(props) {
   const [isTemplate, setIsTemplate] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
+  const [dropDown, setDropDown] = useState(false);
+
   const [isValid, setIsValid] = useState(false);
+  const [isPublishValid, setIsPublishValid] = useState(false);
   const names = [
     {
       value: "Minutes",
@@ -67,12 +67,6 @@ export default function AddCampaign(props) {
 
   // Prepare campaign object and send post request to backend
   const saveCampaign = async (status) => {
-    // Assign Untitled as value if title is empty
-    // if (0 == campaignTitle.length) {
-    //   console.log(campaignTitle.length);
-    //   setCampaignTitle("Untitled");
-    // }
-
     const campaign = {
       title: campaignTitle,
       recipients: {
@@ -93,17 +87,6 @@ export default function AddCampaign(props) {
       status: status,
       created_by: `${window.MRM_Vars.current_userID}`,
       emails: emailData.map((email) => {
-        // if (email.delay_value == "Minutes") {
-        //   email.delay = email.delay_count * 60;
-        // } else if (email.delay_value == "Hours") {
-        //   email.delay = email.delay_count * 60 * 60;
-        // } else if (email.delay_value == "Days") {
-        //   email.delay = email.delay_count * 60 * 60 * 24;
-        // } else if (email.delay_value == "Weeks") {
-        //   email.delay = email.delay_count * 60 * 60 * 24 * 7;
-        // } else {
-        //   email.delay = 0;
-        // }
         return {
           email_subject: email.subject,
           email_preview_text: email.preview,
@@ -111,7 +94,8 @@ export default function AddCampaign(props) {
           delay_count: email.delay_count,
           delay_value: email.delay_value,
           sender_name: email.senderName,
-          email_body: email.email_body,
+          // email_body: email.email_body,
+          email_body: "Dummy Email Body",
           email_json: email.email_json,
         };
       }),
@@ -161,6 +145,7 @@ export default function AddCampaign(props) {
       copy[selectedEmailIndex][name] = value;
       return copy;
     });
+    validatePublish();
   };
   const openTemplate = async () => {
     setIsTemplate(true);
@@ -180,6 +165,10 @@ export default function AddCampaign(props) {
     });
   };
 
+  const showDropDown = () => {
+    setDropDown(!dropDown);
+  };
+
   const validate = () => {
     if (
       campaignTitle.length > 0 ||
@@ -189,14 +178,29 @@ export default function AddCampaign(props) {
       emailData[selectedEmailIndex]["preview"].length != 0 ||
       emailData[selectedEmailIndex]["senderName"].length != 0 ||
       emailData[selectedEmailIndex]["senderEmail"].length != 0 ||
-      emailData[selectedEmailIndex].email_body.length != 0 ||
-      emailData[selectedEmailIndex].email_json.length != 0
+      emailData[selectedEmailIndex].email_body.length != 0
+    ) {
+      return true;
+    }
+  };
+
+  const validatePublish = () => {
+    if (
+      campaignTitle.length > 0 &&
+      (recipientLists.length != 0 || recipientTags.length != 0) &&
+      emailData[selectedEmailIndex]["subject"].length != 0 &&
+      emailData[selectedEmailIndex]["preview"].length != 0 &&
+      emailData[selectedEmailIndex]["senderName"].length != 0 &&
+      emailData[selectedEmailIndex]["senderEmail"].length != 0 &&
+      emailData[selectedEmailIndex].email_body.length != 0
     ) {
       return true;
     }
   };
 
   useEffect(() => {
+    const isPublishValid = validatePublish();
+    setIsPublishValid(isPublishValid);
     const isValid = validate();
     setIsValid(isValid);
   }, [
@@ -216,7 +220,6 @@ export default function AddCampaign(props) {
   useUnload((e) => {
     e.preventDefault();
     e.returnValue = "";
-    console.log(e);
   });
 
   return (
@@ -289,6 +292,22 @@ export default function AddCampaign(props) {
                   </div>
                   <div className="email-to input-item">
                     <label>To:</label>
+                    {/* <button className="all-recipients" onClick={showDropDown}>
+                      All Subscriber
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                    <button
+                      className="all-recipients selected"
+                      onClick={showDropDown}
+                    >
+                      <span className="tags">5 Tags</span>
+                      <span className="from">from</span>
+                      <span className="lists">4 Lists.</span>
+                      <span className="recipients">300 Recipients</span>
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                    <CampaignCustomSelect dropDown={dropDown} />
+                    <div></div> */}
                     <div>
                       <CustomSelect
                         selected={recipientLists}
@@ -328,7 +347,6 @@ export default function AddCampaign(props) {
                 <div className="email-from input-item">
                   <label>Delay</label>
                   <input
-                    style={{ border: "1px solid #e3e4e8", marginRight: "15px" }}
                     type="number"
                     name="delay_count"
                     value={emailData[selectedEmailIndex]["delay_count"]}
@@ -407,20 +425,60 @@ export default function AddCampaign(props) {
                 <CampaignTemplates
                   isOpen={isTemplate}
                   isClose={isClose}
+                  isNewCampaign={true}
+                  selectedEmailIndex={selectedEmailIndex}
+                  emailData={emailData[selectedEmailIndex]}
                   setIsClose={setIsClose}
                   setEmailBody={setEmailBody}
-                  emailData={emailData[selectedEmailIndex]}
+                  setIsTemplate={setIsTemplate}
+                  campaignData={{
+                    title: campaignTitle,
+                    recipients: {
+                      lists: recipientLists.map((list) => {
+                        return {
+                          id: list.id,
+                          title: list.title,
+                        };
+                      }),
+                      tags: recipientTags.map((tag) => {
+                        return {
+                          id: tag.id,
+                          title: tag.title,
+                        };
+                      }),
+                    },
+                    type: emailData.length > 1 ? "sequence" : "regular",
+                    status: status,
+                    created_by: `${window.MRM_Vars.current_userID}`,
+                    emails: emailData.map((email) => {
+                      return {
+                        email_subject: email.subject,
+                        email_preview_text: email.preview,
+                        sender_email: email.senderEmail,
+                        delay_count: email.delay_count,
+                        delay_value: email.delay_value,
+                        sender_name: email.senderName,
+                        email_body: email.email_body,
+                        email_json: email.email_json,
+                      };
+                    }),
+                  }}
                 />
               </div>
             </div>
             <div className="content-save-section">
-              <button
-                className="campaign-schedule mintmrm-btn outline"
-                disabled={!isValid}
-                onClick={handlePublish}
-              >
-                Publish
-              </button>
+              {isPublishValid ? (
+                <button
+                  className="campaign-schedule mintmrm-btn outline"
+                  // disabled={!isPublishValid}
+                  onClick={handlePublish}
+                >
+                  Publish
+                </button>
+              ) : (
+                ""
+              )}
+              {/* <ScheduleAlert /> */}
               <button
                 type="submit"
                 className="campaign-save mintmrm-btn"

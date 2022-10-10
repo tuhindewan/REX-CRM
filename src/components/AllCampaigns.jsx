@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 import {
   deleleMultipleCampaigns,
   deleteSingleCampaign,
@@ -11,11 +12,13 @@ import SingleCampaign from "./Campaign/SingleCampaign";
 import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
-import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import Pagination from "./Pagination";
 import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {
+  useGlobalStore.setState({
+    hideGlobalNav: true,
+  });
   let navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [campaigns, setCampaigns] = useState([]);
@@ -164,6 +167,7 @@ export default function AllCampaigns() {
     <>
       <div className="campaign-index-page">
         <CampaignsNavbar />
+        {/* <SearchNavbar /> */}
         <div className="campaign-list-page">
           <div className="mintmrm-container">
             <div className="campaign-list-area">
@@ -212,27 +216,26 @@ export default function AllCampaigns() {
                       placeholder="Search by title"
                     />
                   </span>
-                  <div className="bulk-action">
-                    {/* show more options section */}
-                    <button
-                      className="more-option"
-                      onClick={() => setShowMoreOptions(!showMoreOptions)}
-                    >
-                      <ThreeDotIcon />
 
-                      <ul
-                        className={
-                          showMoreOptions
-                            ? "mintmrm-dropdown show"
-                            : "mintmrm-dropdown"
-                        }
-                      >
-                        <li className="delete" onClick={deleleMultipleCampaign}>
-                          Delete Selected
-                        </li>
-                      </ul>
-                    </button>
-                  </div>
+                  {/* <FilterBox
+                    label="Status"
+                    name="Status"
+                    options={[
+                      {
+                        title: "Pending",
+                        id: "pending",
+                      },
+                      {
+                        title: "Subscribed",
+                        id: "subscribed",
+                      },
+                      {
+                        title: "Unsubscribed",
+                        id: "unsubscribed",
+                      },
+                    ]}
+                    placeholder="Status"
+                  /> */}
                 </div>
               </div>
 

@@ -67,8 +67,6 @@
     border-top: 1px solid #e5e8f3;
     border-left: 1px solid #e5e8f3;
   }
-  li.single-column {
-  }
   li.searchbar {
     background: transparent;
     padding: 8px 8px 20px;
@@ -150,4 +148,7 @@
   color: #6f6af8 !important;
   background: rgba(111, 106, 248, 0.1);
   margin: 2px 0px;
+}
+.single-column{
+  list-style: none;
 }

@@ -222,6 +222,9 @@
     word-break: break-all;
     color: #e03535;
   }
+  .inactive {
+    display: none;
+  }
 
   .top-align {
     align-items: flex-start;
