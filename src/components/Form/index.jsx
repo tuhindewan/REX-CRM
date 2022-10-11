@@ -6,6 +6,9 @@ import Portal from "../Portal";
 import Plus from "../Icons/Plus";
 import Selectbox from "../Selectbox";
 import Search from "../Icons/Search";
+import FormIconXL from "../Icons/FormIconXL";
+import FormIconSM from "../Icons/FormIconSM";
+import CopyIcon from "../Icons/CopyIcon";
 
 export default function FormIndex(props) {
   const [formData, setFormData] = useState({});
@@ -37,6 +40,7 @@ export default function FormIndex(props) {
   // refresh the whole list if this boolean changes
   const [refresh, setRefresh] = useState(true);
 
+
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
@@ -56,134 +60,219 @@ export default function FormIndex(props) {
     //   setShowNotification("none");
     // }, 3000);
     // return () => clearTimeout(timer);
+
+
   }, [page, perPage, query, refresh]);
 
   return (
     <>
-      <Link
-        className="add-form-btn"
-        to="/form-builder/"
-        state={{ reload: true }}
-      >
-        <button className=" mintmrm-btn ">
-          <Plus /> Add Form
-        </button>
-      </Link>
+      <div className="form-list-page">
+        
+        <div className="contact-list-page form-list">
+          <div className="mintmrm-container">
 
-      <div className="contact-list-page tags-page">
-        <div className="mintmrm-container">
-          <div className="contact-list-area">
-            <div className="contact-list-header">
-              <div className="right-buttons">
-                {/* search input */}
-                <span className="search-section">
-                  <Search />
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    // value={search}
-                    // onChange={(e) => {
-                    //   let value = e.target.value;
-                    //   setSearch(value);
-                    //   // only set query when there are more than 3 characters
-                    //   if (value.length >= 3) {
-                    //     setQuery(`&search=${value}`);
-                    //     // on every new search term set the page explicitly to 1 so that results can
-                    //     // appear
-                    //     setPage(1);
-                    //   } else {
-                    //     setQuery("");
-                    //   }
-                    // }}
-                  />
-                </span>
-                    {/* <div className="bulk-action">
-                    <button
-                        className="more-option"
-                        onClick={() => setShowMoreOptions(!showMoreOptions)}
-                    >
-                        <ThreeDotIcon />
+            <div className="form-title-header">
+              <div className="left-section">
+                <h2>Forms</h2>
+              </div>
 
-                        <ul
-                        className={
-                            showMoreOptions
-                            ? "mintmrm-dropdown show"
-                            : "mintmrm-dropdown"
-                        }
-                        >
-                        <li className="delete"
-                            onClick={deleteMultipleList}>
-                            Delete Selected
-                        </li>
-                        </ul>
-                    </button>
-                    </div> */}
+              <div className="right-section">
+                <Link
+                  className="add-form-btn mintmrm-btn"
+                  to="/form-builder/"
+                  state={{ reload: true }}
+                >
+                  <Plus /> Add Form
+                </Link>
               </div>
             </div>
-            <div className="contact-list-body">
-              <div class="contact-list-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th className="">
-                        <span class="mintmrm-checkbox no-title">
-                          <input
-                            type="checkbox"
-                            name="bulk-select"
-                            id="bulk-select"
-                            // onChange={handleSelectAll}
-                            // checked={allSelected}
-                          />
-                          <label for="bulk-select">Name</label>
-                        </span>
-                      </th>
-                      <th>Contacts</th>
-                      <th className="creation-date">Creation Date</th>
-                      <th className="action"></th>
-                    </tr>
-                  </thead>
 
-                  <tbody>
-                    {/* {formData.length > 0 &&
-                        formData.map((form, idx) => {
-                        return (
-                          <TagItem
-                            key={idx}
-                            list={form}
-                            deleteTag={deleteTag}
-                            currentActive={currentActive}
-                            setCurrentActive={setCurrentActive}
-                            handleSelectOne={handleSelectOne}
-                            selected={selected}
-                            editList={editList}
-                          />
-                        );
-                      })} */}
-                  </tbody>
-                </table>
-                {/* List empty or search not found ui */}
-                {/* {lists.length == 0 && (
-                  <div className="mrm-empty-state-wrapper">
-                    <TagIcon />
-                    <div>
-                      No Tags Found{" "}
-                      {search.length > 0 ? ` for the term "${search}"` : null}
-                    </div>
+            <div className="contact-list-area">
+
+              <div className="contact-list-header">
+                <h4 className="header-title">List View</h4>
+
+                <div className="right-buttons">
+                  <div className="sorting">
+                    <h5>Sort by</h5>
+                    <select name="sort-by" id="">
+                      <option value="">Date</option>
+                      <option value="">Date</option>
+                      <option value="">Date</option>
+                      <option value="">Date</option>
+                    </select>
                   </div>
-                )} */}
+
+                  <span className="search-section">
+                    <Search />
+                    <input type="text" placeholder="Search..." />
+                  </span>
+                </div>
               </div>
+              
+              <div className="contact-list-body">
+                <div class="contact-list-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th className="form-name">
+                          <span class="mintmrm-checkbox no-title">
+                            <input
+                              type="checkbox"
+                              name="bulk-select"
+                              id="bulk-select"
+                              // onChange={handleSelectAll}
+                              // checked={allSelected}
+                            />
+                            <label for="bulk-select">Forms Name</label>
+                          </span>
+                        </th>
+                        <th className="view">View</th>
+                        <th className="signup">Signup</th>
+                        <th className="shortcode">Shortcode</th>
+                        <th className="status">Status</th>
+                        <th className="action"></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td className="form-name">
+                          <div class="name-checkbox">
+                            <span class="mintmrm-checkbox no-title">
+                              <input type="checkbox" name="form1" id="form1" />
+                              <label for="form1"></label>
+                            </span>
+
+                            <div className="name-wrapper">
+                              <span className="icon"><FormIconSM/></span>
+
+                              <span className="name">
+                                <a href="">Collaboration Request</a>
+                                <small>2 days ago</small>
+                              </span>
+                            </div>
+                          </div>
+
+                        </td>
+
+                        <td className="view">453</td>
+
+                        <td className="signup">45</td>
+
+                        <td className="shortcode">
+                          <span id="myTooltip"></span>
+                          <div className="shortcode-wrapper">
+                            <input type="text" value='[mondcrm id="8"]' id="shortcode1" />
+                            <button type="button" className="copy">
+                              <CopyIcon/>
+                            </button>
+                          </div>
+                        </td>
+
+                        <td className="status">
+                          <span className="wpfnl-switcher">
+                            <input type="checkbox" name="status" id="form-status" />
+                            <label htmlFor="form-status"></label>
+                          </span>
+                        </td>
+
+                        <td className="action">
+                          <button className="more-option">
+                            <ThreeDotIcon/>
+
+                            <ul className="mintmrm-dropdown">
+                              <li>Edit</li>
+                              <li>Delete</li>
+                            </ul>
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="form-name">
+                          <div class="name-checkbox">
+                            <span class="mintmrm-checkbox no-title">
+                              <input type="checkbox" name="form1" id="form1" />
+                              <label for="form1"></label>
+                            </span>
+
+                            <div className="name-wrapper">
+                              <span className="icon"><FormIconSM/></span>
+
+                              <span className="name">
+                                <a href="">Collaboration Request</a>
+                                <small>2 days ago</small>
+                              </span>
+                            </div>
+                          </div>
+
+                        </td>
+
+                        <td className="view">453</td>
+
+                        <td className="signup">45</td>
+
+                        <td className="shortcode">
+                          <div className="shortcode-wrapper">
+                            <input type="text" value='[mondcrm id="8"]' />
+                            <button type="button" className="copy"><CopyIcon/></button>
+                          </div>
+                        </td>
+
+                        <td className="status">
+                          <span className="wpfnl-switcher">
+                            <input type="checkbox" name="status" id="form-status" />
+                            <label htmlFor="form-status"></label>
+                          </span>
+                        </td>
+
+                        <td className="action">
+                          <button className="more-option">
+                            <ThreeDotIcon/>
+
+                            <ul className="mintmrm-dropdown">
+                              <li>Edit</li>
+                              <li>Delete</li>
+                            </ul>
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="no-data">
+                        <td colSpan={6}>
+                          <FormIconXL/>
+                          <h5>No Forms found</h5>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+
+                  {/* List empty or search not found ui */}
+                  {/* {lists.length == 0 && (
+                    <div className="mrm-empty-state-wrapper">
+                      <TagIcon />
+                      <div>
+                        No Tags Found{" "}
+                        {search.length > 0 ? ` for the term "${search}"` : null}
+                      </div>
+                    </div>
+                  )} */}
+                </div>
+              </div>
+              {totalPages > 1 && (
+                <div className="contact-list-footer">
+                  <Pagination
+                    currentPage={page}
+                    pageSize={perPage}
+                    onPageChange={setPage}
+                    totalCount={count}
+                    totalPages={totalPages}
+                  />
+                </div>
+              )}
             </div>
-            {/* {totalPages > 1 && (
-              <div className="contact-list-footer">
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              </div>
-            )} */}
           </div>
         </div>
       </div>
