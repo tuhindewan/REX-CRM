@@ -4,7 +4,6 @@ namespace Mint\MRM\DataBase\Models;
 
 use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactGroupSchema;
-use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
