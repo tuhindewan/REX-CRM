@@ -69,6 +69,17 @@ class ContactColumnRoute{
                 $this->controller ,
                 'rest_permissions_check'
             ]
+        ],
+        [
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [
+                $this->controller ,
+                'save_contact_columns'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ]
         ]
 
     ]);

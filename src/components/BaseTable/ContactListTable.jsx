@@ -114,6 +114,7 @@ export default function ContactListTable(props) {
   const [filteredLists, setFilteredLists] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
   const [listColumns, setListColumns] = useState([]);
+  const [columns, setColumns] = useState([]);
 
   const deleteAll = () => {
     setSelectedLists([]);
@@ -434,6 +435,31 @@ export default function ContactListTable(props) {
     }
   };
 
+  const saveColumnList = async () => {
+    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        contact_columns: columns,
+      }),
+    });
+    const responseData = await res.json();
+    const code = responseData?.code;
+    if (code === 201) {
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      toggleRefresh();
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
+    }
+  };
+
   return (
     <>
       <div className="contact-list-header">
@@ -688,7 +714,12 @@ export default function ContactListTable(props) {
             {listColumns.map((column) => {
               return (
                 <li className="single-column" key={column.id}>
-                  <ColumnList title={column.value} id={column.id} />
+                  <ColumnList
+                    title={column.value}
+                    id={column.id}
+                    selected={columns}
+                    setSelected={setColumns}
+                  />
                 </li>
               );
             })}
@@ -698,7 +729,9 @@ export default function ContactListTable(props) {
                 Default
               </button>
               <button className="mintmrm-btn outline cancel-btn">Cancel</button>
-              <button className="mintmrm-btn save-btn">Save</button>
+              <button className="mintmrm-btn save-btn" onClick={saveColumnList}>
+                Save
+              </button>
             </li>
           </ul>
         </div>
