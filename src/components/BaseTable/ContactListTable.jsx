@@ -1,13 +1,11 @@
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import {
-  Link,
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import Plus from "../Icons/Plus";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteMultipleContactsItems } from "../../services/Contact";
@@ -18,11 +16,13 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
+import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
 
 export default function ContactListTable(props) {
@@ -113,6 +113,7 @@ export default function ContactListTable(props) {
   const [filteredStatus, setFilteredStatus] = useState([]);
   const [filteredLists, setFilteredLists] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
+  const [listColumns, setListColumns] = useState([]);
 
   const deleteAll = () => {
     setSelectedLists([]);
@@ -249,6 +250,24 @@ export default function ContactListTable(props) {
     }, 3000);
     return () => clearTimeout(timer);
   }, [perPage, page, query, refresh, isFilter]);
+
+  useEffect(() => {
+    async function getColumns() {
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (200 == data.code) {
+            setListColumns(data.data);
+          }
+        });
+    }
+
+    getColumns();
+  }, []);
 
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
@@ -644,10 +663,10 @@ export default function ContactListTable(props) {
 
       <div className="pos-relative">
         <div className="add-column">
-          {/* <button className="add-column-btn" onClick={showAddColumnList}>
+          <button className="add-column-btn" onClick={showAddColumnList}>
             <PlusCircleIcon />
             <span className="tooltip">Add Column</span>
-          </button> */}
+          </button>
           <ul
             className={
               isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
@@ -666,26 +685,21 @@ export default function ContactListTable(props) {
 
             <li className="list-title">Choose columns</li>
 
-            <Link className="add-action" to="">
-              <Plus />
-              Add Column
-            </Link>
+            {listColumns.map((column) => {
+              return (
+                <li className="single-column" key={column.id}>
+                  <ColumnList title={column.value} id={column.id} />
+                </li>
+              );
+            })}
 
-            {/* {contactListColumns.map((column, index) => {
-                  <li className="single-column">
-                    <ColumnList title={column.title} key={index} />
-                  </li>;
-                })} */}
-
-            {/* <li className="button-area">
+            <li className="button-area">
               <button className="mintmrm-btn outline default-btn">
                 Default
               </button>
-              <button className="mintmrm-btn outline cancel-btn">
-                Cancel
-              </button>
+              <button className="mintmrm-btn outline cancel-btn">Cancel</button>
               <button className="mintmrm-btn save-btn">Save</button>
-            </li> */}
+            </li>
           </ul>
         </div>
         <div className="contact-list-table">

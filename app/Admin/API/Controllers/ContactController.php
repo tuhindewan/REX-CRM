@@ -11,8 +11,7 @@ use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 use Mint\MRM\Constants;
 use MailchimpMarketing;
-
-
+use Mint\MRM\Internal\Constants as InternalConstants;
 
 /**
  * @author [MRM Team]
@@ -1101,6 +1100,13 @@ class ContactController extends BaseController {
     public function get_total_count($request)
     {
         return ContactModel::get_instance()->get_total_count( $request );
+    }
+
+
+    public function get_columns( WP_REST_Request $request  )
+    {
+        $columns = InternalConstants::$contact_list_columns;
+        return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $columns );
     }
 
 
