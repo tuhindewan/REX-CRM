@@ -68,7 +68,7 @@ class FormModel {
                 )
             );
 
-            $insert_id = $wpdb->insert_id;  
+            $insert_id = !empty( $wpdb->insert_id ) ? $wpdb->insert_id : '';  
 
             if( !empty( $form->get_meta_fields() && !empty($insert_id))){
                 $meta_fields['meta_fields'] = $form->get_meta_fields();
