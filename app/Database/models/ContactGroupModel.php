@@ -89,7 +89,7 @@ class ContactGroupModel{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $type, $offset = 0, $limit = 20, $search = '', $order_by = 'id', $order_type = 'DESC' )
+    public static function get_all( $type, $offset = 0, $limit = 20, $search = '', $order_by = 'title', $order_type = 'ASC' )
     {
         global $wpdb;
         $group_table    = $wpdb->prefix . ContactGroupSchema::$table_name;
