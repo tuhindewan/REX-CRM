@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
+import Delete from "../components/Icons/Delete";
 import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
@@ -47,10 +47,10 @@ const Lists = () => {
   const [page, setPage] = useState(1);
 
   // order by which field
-  const [orderBy, setOrderBy] = useState("id");
+  const [orderBy, setOrderBy] = useState("title");
 
   // order type asc or desc
-  const [orderType, setOrderType] = useState("desc");
+  const [orderType, setOrderType] = useState("asc");
 
   // total count of results
   const [count, setCount] = useState(0);
@@ -93,6 +93,7 @@ const Lists = () => {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [sortButtonName, setSortButtonName] = useState("Name Asc");
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -330,8 +331,19 @@ const Lists = () => {
   const handleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
-  const handleSelect = () => {
+  const handleSelect = (event, order_by, order_type) => {
     setShowDropdown(false);
+    setOrderBy(order_by);
+    setOrderType(order_type);
+    if (order_by == "title" && order_type == "asc") {
+      setSortButtonName("Name Asc");
+    } else if (order_by == "title" && order_type == "desc") {
+      setSortButtonName("Name Desc");
+    } else if (order_by == "created_at" && order_type == "asc") {
+      setSortButtonName("Date Created Asc");
+    } else {
+      setSortButtonName("Date Created Desc");
+    }
   };
 
   return (
@@ -407,7 +419,7 @@ const Lists = () => {
                     }
                     onClick={handleDropdown}
                   >
-                    Name
+                    {sortButtonName}
                   </button>
                   <ul
                     className={
@@ -416,10 +428,30 @@ const Lists = () => {
                         : "mintmrm-dropdown"
                     }
                   >
-                    <li onClick={handleSelect}>Name Asc</li>
-                    <li onClick={handleSelect}>Name Desc</li>
-                    <li onClick={handleSelect}>Date Created Asc</li>
-                    <li onClick={handleSelect}>Date Created Desc</li>
+                    <li
+                      onClick={(event) => handleSelect(event, "title", "asc")}
+                    >
+                      Name Asc
+                    </li>
+                    <li
+                      onClick={(event) => handleSelect(event, "title", "desc")}
+                    >
+                      Name Desc
+                    </li>
+                    <li
+                      onClick={(event) =>
+                        handleSelect(event, "created_at", "asc")
+                      }
+                    >
+                      Date Created Asc
+                    </li>
+                    <li
+                      onClick={(event) =>
+                        handleSelect(event, "created_at", "desc")
+                      }
+                    >
+                      Date Created Desc
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -461,7 +493,9 @@ const Lists = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li onClick={deleteMultipleList}>Delete Selected</li>
+                      <li onClick={deleteMultipleList}>
+                        <Delete /> Delete Selected
+                      </li>
                     </ul>
                   </button>
                 </div>

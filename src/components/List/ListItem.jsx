@@ -20,14 +20,6 @@ export default function ListItem(props) {
   } = props;
   const menuButtonRef = useRef(null);
 
-  const handleHref = async (event) => {
-    event.preventDefault();
-
-    navigate(`/contacts?list=${id}`, {
-      state: { list_id: id },
-    });
-  };
-
   return (
     <tr>
       <td>
@@ -50,7 +42,6 @@ export default function ListItem(props) {
       <td>
         <button
           className="more-option"
-          style={{ background: "white", position: "relative" }}
           onClick={() => {
             setCurrentActive((prevActive) => {
               // if current list item is already active then hide the overlay menu by setting current active to 0

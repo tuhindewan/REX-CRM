@@ -552,7 +552,7 @@ ul.mintmrm-dropdown {
     display: flex;
     align-items: center;
 
-    svg{
+    svg {
       margin-right: 12px;
     }
 
@@ -589,11 +589,10 @@ ul.mintmrm-dropdown {
     }
   }
 
-  
-
   li.searchbar {
     background: transparent;
     padding: 8px 8px 20px;
+    display: list-item;
 
     svg {
       position: absolute;
@@ -1199,4 +1198,3 @@ ul.mintmrm-dropdown {
 .successful-notification.inactive {
   display: none;
 }
-

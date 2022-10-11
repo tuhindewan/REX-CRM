@@ -4,7 +4,6 @@ namespace Mint\MRM\DataBase\Models;
 
 use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactGroupSchema;
-use MRM\DB\Tables\MRM_Contact_Group_Pivot_Table;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
@@ -89,7 +88,7 @@ class ContactGroupModel{
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $type, $offset = 0, $limit = 20, $search = '', $order_by = 'id', $order_type = 'DESC' )
+    public static function get_all( $type, $offset = 0, $limit = 20, $search = '', $order_by = 'title', $order_type = 'ASC' )
     {
         global $wpdb;
         $group_table    = $wpdb->prefix . ContactGroupSchema::$table_name;

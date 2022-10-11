@@ -45,8 +45,12 @@ class TagController extends BaseController {
         $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
 
         if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
+			return $this->get_error_response( __( 'Tag name is mandatory', 'mrm' ),  200);
 		}
+
+        if ( strlen( $title ) > 60 ) {
+            return $this->get_error_response( __( 'Tag name is to long', 'mrm' ), 200);
+        }
 
         $slug = sanitize_title( $title );
         // Tag avaiability check
@@ -55,7 +59,7 @@ class TagController extends BaseController {
 			return $this->get_error_response( __( 'Tag is already available', 'mrm' ),  200);
 		}
 
-        // List object create and insert or update to database
+        // Tag object create and insert or update to database
         $this->args = array(
             'title'    => $title,
             'slug'     => $slug,
@@ -70,7 +74,7 @@ class TagController extends BaseController {
                 $other_slugs = ContactGroupModel::is_group_exist( $slug, "tags" );
                 $update_slug = ContactGroupModel::is_group_exist_by_id( $slug, "tags", $params['tag_id'] );
                 if ( $other_slugs && !$update_slug ) {
-                    return $this->get_error_response( __( 'List is already available', 'mrm' ), 200);
+                    return $this->get_error_response( __( 'Tag is already available', 'mrm' ), 200);
                 }
                 $success = ContactGroupModel::update( $tag, $params['tag_id'], 'tags' );
             }else{

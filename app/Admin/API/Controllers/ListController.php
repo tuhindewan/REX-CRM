@@ -45,8 +45,12 @@ class ListController extends BaseController {
 
         // List title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
-        if (empty($title)) {
+        if ( empty( $title ) ) {
             return $this->get_error_response( __( 'List name is mandatory', 'mrm' ), 200);
+        }
+
+        if ( strlen( $title ) > 60 ) {
+            return $this->get_error_response( __( 'List name is to long', 'mrm' ), 200);
         }
 
         // List avaiability check
