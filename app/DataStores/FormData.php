@@ -88,7 +88,7 @@ class FormData {
         $this->group_ids        = isset($args['group_ids'])     ? $args['group_ids']     : NULL;
         $this->template_id      = isset($args['template_id'])   ? $args['template_id']   : NULL;
         $this->created_by       = isset($args['created_by'])    ? $args['created_by']    : NULL;
-        $this->meta_fields      = isset($args['meta_fields'])   ? $args['meta_fields']   : array();; 
+        $this->meta_fields      = isset($args['meta_fields'])   ? $args['meta_fields']   : array();
     }
 
 

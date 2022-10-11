@@ -190,9 +190,11 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = FormModel::destroy( $params['form_id'] );
-        if( $success ) {
-            return $this->get_success_response( __( 'Form has been deleted successfully', 'mrm' ), 200 );
+        if (isset($params['form_id'])){
+            $success = FormModel::destroy( $params['form_id'] );
+            if($success) {
+                return $this->get_success_response(__( 'Forms has been deleted successfully', 'mrm' ), 200);
+            }
         }
 
         return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
@@ -210,11 +212,13 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = FormModel::destroy_all( $params['form_ids'] );
-        if($success) {
-            return $this->get_success_response(__( 'Forms has been deleted successfully', 'mrm' ), 200);
+        if (isset($params['form_ids'])){
+            $success = FormModel::destroy_all( $params['form_ids'] );
+            if($success) {
+                return $this->get_success_response(__( 'Forms has been deleted successfully', 'mrm' ), 200);
+            }
         }
-
+        
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
 
     }
