@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
+import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
 import TagIcon from "../components/Icons/TagIcon";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
@@ -450,7 +451,10 @@ const Tags = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li onClick={deleteMultipleList}>Delete Selected</li>
+                      <li onClick={deleteMultipleList}>
+                        <Delete />
+                        Delete Selected
+                      </li>
                     </ul>
                   </button>
                 </div>
