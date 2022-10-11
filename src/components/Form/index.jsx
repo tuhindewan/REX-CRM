@@ -74,6 +74,7 @@ export default function FormIndex(props) {
 
   return (
     <>
+      {console.log(formData)}
       <div className="form-list-page">
         <div className="contact-list-page form-list">
           <div className="mintmrm-container">
@@ -199,8 +200,16 @@ export default function FormIndex(props) {
                           </button>
                         </td>
                       </tr> */}
+                      {formData.length === 0 && (
+                        <tr className="no-data">
+                          <td colSpan={6}>
+                            <FormIconXL />
+                            <h5>No Forms found</h5>
+                          </td>
+                        </tr>
+                      )}
 
-                      {formData.length > 0 &&
+                      {formData.length > 0 ? (
                         formData.map((form) => {
                           return (
                             <tr key={form.id}>
@@ -232,7 +241,9 @@ export default function FormIndex(props) {
 
                               {/* <td className="view">453</td> */}
 
-                              <td className="signup">45</td>
+                              <td className="signup">
+                                {form.meta_fields?.sign_up}
+                              </td>
 
                               <td className="shortcode">
                                 <span id="myTooltip"></span>
@@ -271,9 +282,8 @@ export default function FormIndex(props) {
                               </td>
                             </tr>
                           );
-                        })}
-
-                      {formData.length == 0 && (
+                        })
+                      ) : (
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
