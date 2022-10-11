@@ -109,11 +109,10 @@ class FormController extends BaseController {
         $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
 
 
-
         // Form Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = FormModel::get_all( $offset, $perPage, $search);
+        $groups = FormModel::get_all( $offset, $perPage, $search, $order_by, $order_type);
 
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);

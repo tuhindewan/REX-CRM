@@ -185,7 +185,7 @@ class FormModel {
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $offset = 0, $limit = 10, $search = '' )
+    public static function get_all( $offset = 0, $limit = 10, $search = '' , $order_by = 'id', $order_type = 'DESC')
     {
         global $wpdb;
         $form_table = $wpdb->prefix . FormSchema::$table_name;
@@ -200,8 +200,8 @@ class FormModel {
         // Prepare sql results for list view
         try {
             
-            // Return forms for a contact in list view
-            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+            // Return forms in list view
+            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY $order_by $order_type LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
             $count_query   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $form_table", array(  ) ) );
             
             $count = (int) $count_query;
