@@ -44,7 +44,6 @@ class ContactForm {
         $attributes = shortcode_atts(
             array(
                 'id' 					    => 0,
-                'form_placement' 			=> 'pop_up',
                 'class'					    => ''
             ),
             $attributes
@@ -77,7 +76,7 @@ class ContactForm {
         $output = '';
         ob_start();?>
         <div>
-            <div id="mrm-<?php echo $form_data['form_position'] ?>">
+            <div id="mrm-<?php echo $form_data['form_position'] ?>" class="<?php echo $this->attributes['class'] ?>">
                 <form method="post" id="mrm-form">
                     <input hidden name="form_id" value="<?php echo $form_data['id'] ?>" />
                     <?php echo  $form_data['form_body'] ?>
