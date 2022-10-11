@@ -31,7 +31,6 @@ export default function SingleContact(props) {
     handleSelectOne,
     selected,
   } = props;
-
   const handleDelete = () => {
     setIsDelete("block");
     setDeleteTitle("Delete Contact");
@@ -62,7 +61,6 @@ export default function SingleContact(props) {
   };
 
   const handleUpdate = () => {
-    //console.log(contact.id);
     navigate(`/contacts/update/${contact.id}`);
   };
 
@@ -86,47 +84,82 @@ export default function SingleContact(props) {
           </div>
         </td>
 
-        <td className="first-name">{contact.first_name}</td>
+        <td className="first-name">{contact.first_name ? contact.first_name : "-"}</td>
 
-        <td className="last-name">{contact.last_name}</td>
+        <td className="last-name">{contact.last_name ? contact.last_name : "-"}</td>
 
-        <td className="list">
-          {contact.lists.map((list, idx) => {
+        {props.columns.map((column) => {
+          if(column.id == "lists"){
             return (
-              <span className="list-item" key={list.id}>
-                {list.title}
-              </span>
+              <td className="list">
+                {contact.lists.length > 0 ? contact.lists.map((list) => {
+                  return (
+                    <span className="list-item" key={list.id}>
+                      {list.title}
+                    </span>
+                  );
+                }) : "-"}
+              </td>
             );
-          })}
-        </td>
+          }
 
-        <td className="tag">
-          {contact.tags.map((tag, idx) => {
+          if(column.id == "tags"){
             return (
-              <span className="tag-item" key={tag.id}>
-                {tag.title}
-              </span>
+              <td className="tag">
+                {contact.tags.length > 0 ? contact.tags.map((tag) => {
+                  return (
+                    <span className="tag-item" key={tag.id}>
+                      {tag.title}
+                    </span>
+                  );
+                }) : "-"}
+              </td>
             );
-          })}
-        </td>
+          }
 
-        <td className="last-activity">
-          {contact.last_activity ? contact.last_activity : "-"}
-        </td>
+          if(column.id == "status"){
+            return (
+              <td className="status">
+                <span className={contact.status}>
+                  {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+                </span>
+              </td>
+            );
+          }
 
-        <td className="status">
-          <span className={contact.status}>
-            {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
-          </span>
-        </td>
+          if(column.id == "last_activity"){
+            return (
+              <td className="last-activity">
+                {contact.last_activity ? contact.last_activity : "-"}
+              </td>
+            );
+          }
 
-        <td className="phone-number">
-          {contact?.meta_fields?.phone_number
-            ? contact?.meta_fields?.phone_number
+          if(column.id == "source"){
+            return (
+              <td className="source">
+                <td className="source">{contact.source ? contact.source : "-"}</td>
+              </td>
+            );
+          }
+
+          if(column.id in contact?.meta_fields){
+            return (
+              <td className={column.id}>
+                {contact?.meta_fields?.[column.id]
+            ? contact?.meta_fields?.[column.id]
             : "-"}
-        </td>
-
-        <td className="source">{contact.source ? contact.source : "-"}</td>
+              </td>
+            );
+          }else{
+            return(
+              <td className={column.id}>
+                 -
+              </td>
+            )
+          }
+                  
+        })}
 
         <td className="action">
           <button

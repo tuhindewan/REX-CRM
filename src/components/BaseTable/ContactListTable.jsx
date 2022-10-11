@@ -267,7 +267,22 @@ export default function ContactListTable(props) {
         });
     }
 
+    async function getStoredColumns() {
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (200 == data.code) {
+            setColumns(data.data);
+          }
+        });
+    }
+
     getColumns();
+    getStoredColumns()
   }, []);
 
   const toggleRefresh = () => {
@@ -760,16 +775,10 @@ export default function ContactListTable(props) {
                 {columns.map((column) => {
                   return (
                     <th key={column.id} className={column.id}>
-                      {column.value}
+                      {column.title}
                     </th>
                   );
                 })}
-
-                {/* <th className="tag">Tag</th>
-                <th className="last-activity">Last Activity</th>
-                <th className="status">Status</th>
-                <th className="phone-number">Phone Number</th>
-                <th className="source">Source</th> */}
                 <th className="action"></th>
               </tr>
             </thead>
@@ -784,6 +793,7 @@ export default function ContactListTable(props) {
                     setCurrentActive={setCurrentActive}
                     handleSelectOne={handleSelectOne}
                     selected={selected}
+                    columns={columns}
                   />
                 );
               })}

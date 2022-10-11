@@ -71,7 +71,7 @@ class Constants{
             "value" => "Timezone"
         ],
         [
-            "id"    => "company_name",
+            "id"    => "company",
             "value" => "Company Name"
         ],
         [
@@ -83,29 +83,29 @@ class Constants{
             "value" => "Date of Birth"
         ],
         [
-            "id"    => "address_line_1",
-            "value" => "Address Line 1"
+            "id"    => "address",
+            "value" => "Address"
         ],
-        [
-            "id"    => "address_line_2",
-            "value" => "Address Line 2"
-        ],
-        [
-            "id"    => "postal_code",
-            "value" => "Postal Code"
-        ],
-        [
-            "id"    => "city",
-            "value" => "City"
-        ],
-        [
-            "id"    => "state",
-            "value" => "State"
-        ],
-        [
-            "id"    => "country",
-            "value" => "Country"
-        ]
+        // [
+        //     "id"    => "address_line_2",
+        //     "value" => "Address Line 2"
+        // ],
+        // [
+        //     "id"    => "postal_code",
+        //     "value" => "Postal Code"
+        // ],
+        // [
+        //     "id"    => "city",
+        //     "value" => "City"
+        // ],
+        // [
+        //     "id"    => "state",
+        //     "value" => "State"
+        // ],
+        // [
+        //     "id"    => "country",
+        //     "value" => "Country"
+        // ]
     );
 
     /*

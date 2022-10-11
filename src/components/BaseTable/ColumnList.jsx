@@ -9,7 +9,6 @@ export default function ColumnList(props) {
     if (index >= 0) {
       props.setSelected(props.selected.filter((item) => item.id != id));
     } else {
-      // add id to the array
       props.setSelected([...props.selected, { id: id, title: value }]);
     }
   };
@@ -22,6 +21,7 @@ export default function ColumnList(props) {
         id={props.id}
         onChange={handleSelectOne}
         value={props.title}
+        checked={props.selected?.findIndex((item) => item.id == props.id) >= 0}
       />
       <label for={props.id}>{props.title}</label>
     </span>

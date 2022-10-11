@@ -1121,5 +1121,11 @@ class ContactController extends BaseController {
         return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 200 );
     }
 
+    public function get_stored_columns(WP_REST_Request $request)
+    {
+        $contact_columns = get_option('mrm_contact_columns');
+        return $this->get_success_response( __( 'Query successfully', 'mrm' ), 200, maybe_unserialize($contact_columns) );
+    }
+
 
 }

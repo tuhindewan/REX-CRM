@@ -58,31 +58,45 @@ class ContactColumnRoute{
          * @return void
          * @since 1.0.0
         */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
-        [
-            'methods' => \WP_REST_Server::READABLE,
-            'callback' => [
-                $this->controller ,
-                'get_columns'
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_columns'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
             ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'save_contact_columns'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
             ]
-        ],
-        [
-            'methods' => \WP_REST_Server::CREATABLE,
-            'callback' => [
-                $this->controller ,
-                'save_contact_columns'
-            ],
-            'permission_callback' => [
-                $this->controller ,
-                'rest_permissions_check'
-            ]
-        ]
 
-    ]);
+        ]);
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/stored', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_stored_columns'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ]
+            ]
+        ]);
 
     }
 
