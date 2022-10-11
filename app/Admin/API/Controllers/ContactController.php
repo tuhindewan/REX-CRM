@@ -11,6 +11,7 @@ use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 use Mint\MRM\Constants;
 use MailchimpMarketing;
+use Mint\MRM\DataBase\Models\CustomFieldModel;
 use Mint\MRM\Internal\Constants as InternalConstants;
 
 /**
@@ -1103,13 +1104,35 @@ class ContactController extends BaseController {
     }
 
 
+    /**
+     * Return columns array for contact index page
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
     public function get_columns( WP_REST_Request $request  )
     {
         $columns = InternalConstants::$contact_list_columns;
-        return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $columns );
+        $custom_fields = CustomFieldModel::get_all();
+        $fields = array_map(function($custom_field){
+                            return [
+                                "id"    => $custom_field['slug'],
+                                "value" => $custom_field['title']
+                            ];
+                        }, $custom_fields['data']);
+        $list_columns = array_merge($columns, $fields);
+        return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $list_columns );
     }
 
 
+    /**
+     * Save column hide/show information on wp_options table
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
     public function save_contact_columns( WP_REST_Request $request ) 
     {
         $params = MRM_Common::get_api_params_values( $request );
@@ -1120,11 +1143,20 @@ class ContactController extends BaseController {
         }
         return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 200 );
     }
+    
 
+    /**
+     * Return stored column information from wp_options table
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
     public function get_stored_columns(WP_REST_Request $request)
     {
         $contact_columns = get_option('mrm_contact_columns');
-        return $this->get_success_response( __( 'Query successfully', 'mrm' ), 200, maybe_unserialize($contact_columns) );
+        $columns = maybe_unserialize($contact_columns);
+        return $this->get_success_response( __( 'Query successfully', 'mrm' ), 200, $columns );
     }
 
 
