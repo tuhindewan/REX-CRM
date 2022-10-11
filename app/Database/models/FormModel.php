@@ -129,20 +129,11 @@ class FormModel {
     {
         global $wpdb;
         $form_table         = $wpdb->prefix . FormSchema::$table_name;
-        $form_meta_table    = $wpdb->prefix .FormMetaSchema::$table_name;
-
 
         if (!self::is_form_exist($id)){
             return false;
         }
-
-        try {
-            $wpdb->delete($form_table, array('id' => $id) );
-            $wpdb->delete($form_meta_table,array('form_id' => $id));
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->delete($form_table, array('id' => $id) );
     }
 
 
@@ -158,18 +149,12 @@ class FormModel {
     {
         global $wpdb;
         $form_table                 =   $wpdb->prefix . FormSchema::$table_name;
-        $form_meta_table            =   $wpdb->prefix . FormMetaSchema::$table_name;
-        if (is_array($form_ids) && count($form_ids) > 0)
+        if ( is_array( $form_ids ) && count( $form_ids ) > 0 )
         {
-            try {
-                $forms_ids = implode( ',', array_map( 'intval', $form_ids ) );
+            
+            $forms_ids = implode( ',', array_map( 'intval', $form_ids ) );
 
-                $wpdb->query( "DELETE FROM $form_table WHERE id IN($forms_ids)" );
-                $wpdb->query( "DELETE FROM $form_meta_table WHERE form_id IN($forms_ids)" );
-                return true;
-            } catch(\Exception $e) {
-                return false;
-            }
+            return $wpdb->query( "DELETE FROM $form_table WHERE id IN($forms_ids)" );
         }
         return false;
     }
