@@ -26,12 +26,6 @@ export default function FormIndex(props) {
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
 
-  // list values for sending to backend
-  const [values, setValues] = useState({
-    title: "",
-    data: "",
-  });
-
   // search input value is stored here
   const [search, setSearch] = useState("");
 
@@ -40,6 +34,39 @@ export default function FormIndex(props) {
 
   // refresh the whole list if this boolean changes
   const [refresh, setRefresh] = useState(true);
+
+  // current active menu id, whenever a option button is selected this
+  // var tracks the current id of
+  const [currentActive, setCurrentActive] = useState(0);
+
+  // the select all checkbox
+  const [allSelected, setAllSelected] = useState(false);
+
+  // single selected array which holds selected ids
+  const [selected, setSelected] = useState([]);
+
+  // handler for all item click
+  const handleSelectAll = (e) => {
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      setSelected(formData.map((form) => form.id));
+    }
+    setAllSelected(!allSelected);
+  };
+
+  // handler for one single item click
+  const handleSelectOne = (e) => {
+    if (selected.includes(e.target.id)) {
+      // already in selected list so remove it from the array
+      setSelected(selected.filter((element) => element != e.target.id));
+      // corner case where one item is deselected so hide all checked
+      setAllSelected(false);
+    } else {
+      // add id to the array
+      setSelected([...selected, e.target.id]);
+    }
+  };
 
   //get current date
   const date = new Date();
@@ -74,7 +101,6 @@ export default function FormIndex(props) {
 
   return (
     <>
-      {console.log(formData)}
       <div className="form-list-page">
         <div className="contact-list-page form-list">
           <div className="mintmrm-container">
@@ -102,8 +128,8 @@ export default function FormIndex(props) {
                   <div className="sorting">
                     <h5>Sort by</h5>
                     <select name="sort-by" id="">
-                      <option value="">Date</option>
-                      <option value="">Title</option>
+                      <option value="created_at">Date</option>
+                      <option value="title">Title</option>
                     </select>
                   </div>
 
@@ -125,8 +151,8 @@ export default function FormIndex(props) {
                               type="checkbox"
                               name="bulk-select"
                               id="bulk-select"
-                              // onChange={handleSelectAll}
-                              // checked={allSelected}
+                              onChange={handleSelectAll}
+                              checked={allSelected}
                             />
                             <label for="bulk-select">Forms Name</label>
                           </span>
@@ -218,10 +244,12 @@ export default function FormIndex(props) {
                                   <span class="mintmrm-checkbox no-title">
                                     <input
                                       type="checkbox"
-                                      name="form1"
-                                      id="form1"
+                                      name={form.id}
+                                      id={form.id}
+                                      onChange={handleSelectOne}
+                                      checked={selected.includes(form.id)}
                                     />
-                                    <label for="form1"></label>
+                                    <label for={form.id}></label>
                                   </span>
 
                                   <div className="name-wrapper">
@@ -250,7 +278,7 @@ export default function FormIndex(props) {
                                 <div className="shortcode-wrapper">
                                   <input
                                     type="text"
-                                    value='[mondcrm id="8"]'
+                                    value={'[mondcrm id="' + form.id + '"]'}
                                     id="shortcode1"
                                   />
                                   <button type="button" className="copy">
