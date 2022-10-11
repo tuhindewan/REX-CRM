@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
 import Selectbox from "../Selectbox";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+
+import ComputerIcon from "../Icons/ComputerIcon";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
+import MobileIcon from "../Icons/MobileIcon";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import SettingIcon from "../Icons/SettingIcon";
 
 const FormEditor = (props) => {
   // lists
@@ -15,6 +22,8 @@ const FormEditor = (props) => {
 
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+
+  const [moreOption, setMoreOption] = useState(false);
 
   // Fetch lists & tags
   useEffect(() => {
@@ -109,9 +118,46 @@ const FormEditor = (props) => {
     }));
   }, [selectedLists, selectedTags]);
 
+
+  //-------show more option click function-------
+  const clickShowOption = () => {
+    setMoreOption(current => !current);
+  };
+
   return (
     <>
-      <div className="add-contact-form">
+      <div className="form-editor-page">
+        <div className="form-editor-topbar">
+          <div className="topbar-left">
+            <button className="back-button">
+              <Link to="">
+                <DoubleAngleLeftIcon />
+              </Link>
+            </button>
+
+            <div className="responsive-section">
+              <button className="computer-view active">
+                <ComputerIcon />
+              </button>
+              <button className="mobile-view">
+                <MobileIcon />
+              </button>
+            </div>
+          </div>
+
+          <div className="topbar-right">
+            <button className={moreOption ? 'three-dot-btn show' : 'three-dot-btn'} onClick={clickShowOption}>
+              <ThreeDotIcon />
+              <ul className="mintmrm-dropdown">
+                <li>Save as Draft</li>
+                <li>Change Template</li>
+              </ul>
+            </button>
+            <button className="mintmrm-btn settings"><SettingIcon/></button>
+            <button className="mintmrm-btn enable">Enable</button>
+          </div>
+        </div>
+
         <div className="contact-form-body">
           <InputItem
             label="Title"
@@ -198,6 +244,7 @@ const FormEditor = (props) => {
             className="getdave-sbe-block-editor block-editor"
           ></div>
         </div>
+
       </div>
     </>
   );

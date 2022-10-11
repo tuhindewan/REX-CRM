@@ -11,7 +11,7 @@ const { Slot: InspectorSlot, Fill: InspectorFill } = createSlotFill(
 function Sidebar() {
 	return (
 		<div
-			className="mrm-form-builder-sidebar"
+			className="mrm-form-buil der-sidebar"
 			role="region"
 			aria-label={ __( 'MRM Block Editor advanced settings.' ) }
 			tabIndex="-1"

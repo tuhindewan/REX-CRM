@@ -1,0 +1,123 @@
+.form-editor-page {
+    height: 100vh;
+
+    .form-editor-topbar {
+        box-shadow: 0px 1px 1px #b6b9bf4d;
+        display: flex;
+        align-items: center;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        padding: 18px 30px;
+        background: #fff;
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+
+            .back-button {
+                width: 40px;
+                height: 40px;
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #E4E6EB;
+                border-radius: 6px;
+                background: transparent;
+
+                &:hover {
+                    background: #FCFDFE;
+                }
+
+                svg {
+                    display: block;
+                }
+            }
+
+            .responsive-section {
+                border: 1px solid #E4E6EB;
+                border-radius: 6px;
+                margin-left: 15px;
+    
+                button {
+                    height: 38px;
+                    padding: 6px;
+                    width: 40px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0;
+                    border: none;
+                    border-right: 1px solid #E4E6EB;
+                    border-radius: 0;
+                    background: transparent;
+    
+                    &:last-child {
+                        border-right: 0;
+                        border-radius: 0 6px 6px 0;
+                    }
+                    &:first-child {
+                        border-radius: 6px 0 0 6px;
+                    }
+    
+                    &:hover {
+                        background: #FCFDFE!important;
+                    }
+                }
+            }
+    
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+
+            button {
+                width: 40px;
+                height: 40px;
+                padding: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 15px;
+                background-color: transparent;
+                border: 1px solid #E9EAEE;
+                border-radius: 6px;
+                position: relative;
+
+                &:hover {
+                    background: #F6F8FA;
+                }
+
+                &.enable {
+                    background-color: $primary-color;
+                    width: auto;
+                    padding: 6px 15px;
+
+                    &:hover {
+                        box-shadow: 0px 10px 16px rgba(189, 193, 200, 0.5);
+                    }
+                }
+
+                .mintmrm-dropdown {
+                    width: 175px;
+                    right: inherit;
+                    left: 0;
+
+                    &:before {
+                        right: inherit;
+                        left: 14px;
+                    }
+                }
+
+                &.show {
+                    .mintmrm-dropdown {
+                        display: block;
+                    }   
+                }
+            }
+        }
+
+
+    }
+}
