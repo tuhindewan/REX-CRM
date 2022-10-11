@@ -35,6 +35,8 @@ class FormMetaSchema implements Schema{
     {
         global $wpdb;
         $table = $wpdb->prefix . self::$table_name;
+        $form_table = $wpdb-> prefix . FormSchema::$table_name;
+
         return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `form_id` BIGINT UNSIGNED NOT NULL,
@@ -43,6 +45,8 @@ class FormMetaSchema implements Schema{
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             FOREIGN KEY (form_id)
+            REFERENCES `{$form_table}` (id)
+            ON DELETE CASCADE
          ) ";
     }
 }

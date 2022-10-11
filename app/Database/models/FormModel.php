@@ -68,8 +68,9 @@ class FormModel {
                 )
             );
 
-            $insert_id = $wpdb->insert_id;
-            if( !empty( $form->get_meta_fields() )){
+            $insert_id = !empty( $wpdb->insert_id ) ? $wpdb->insert_id : '';  
+
+            if( !empty( $form->get_meta_fields() && !empty($insert_id))){
                 $meta_fields['meta_fields'] = $form->get_meta_fields();
                 self::update_meta_fields( $insert_id, $meta_fields );
             }
@@ -127,16 +128,35 @@ class FormModel {
     public static function destroy( $id )
     {
         global $wpdb;
-        $form_table = $wpdb->prefix . FormSchema::$table_name;
-        $form_meta_table             =   $wpdb->prefix .FormMetaSchema::$table_name;
+        $form_table         = $wpdb->prefix . FormSchema::$table_name;
 
-        try {
-            $wpdb->delete( $form_table, array('id' => $id) );
-            $wpdb->delete($form_meta_table,array('form_id' => $id));
-            return true;
-        } catch(\Exception $e) {
+        if (!self::is_form_exist($id)){
             return false;
         }
+        return $wpdb->delete($form_table, array('id' => $id) );
+    }
+
+
+    /**
+     * Delete multiple forms
+     * 
+     * @param array $form_ids form id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy_all($form_ids)
+    {
+        global $wpdb;
+        $form_table                 =   $wpdb->prefix . FormSchema::$table_name;
+        if ( is_array( $form_ids ) && count( $form_ids ) > 0 )
+        {
+            
+            $forms_ids = implode( ',', array_map( 'intval', $form_ids ) );
+
+            return $wpdb->query( "DELETE FROM $form_table WHERE id IN($forms_ids)" );
+        }
+        return false;
     }
 
 
@@ -150,7 +170,7 @@ class FormModel {
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $offset = 0, $limit = 10, $search = '' )
+    public static function get_all( $offset = 0, $limit = 10, $search = '' , $order_by = 'id', $order_type = 'DESC')
     {
         global $wpdb;
         $form_table = $wpdb->prefix . FormSchema::$table_name;
@@ -165,8 +185,8 @@ class FormModel {
         // Prepare sql results for list view
         try {
             
-            // Return forms for a contact in list view
-            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY id DESC LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+            // Return forms in list view
+            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY $order_by $order_type LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
             $count_query   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $form_table", array(  ) ) );
             
             $count = (int) $count_query;
