@@ -179,7 +179,7 @@ class FormController extends BaseController {
 
 
     /**
-     * Function used to handle delete requests
+     * Function used to handle delete single form requests
      *
      * @param WP_REST_Request $request
      * @return WP_REST_Response
@@ -189,9 +189,9 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = FormModel::destroy( $params['list_id'] );
+        $success = FormModel::destroy( $params['form_id'] );
         if( $success ) {
-            return $this->get_success_response( __( 'List has been deleted successfully', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'Form has been deleted successfully', 'mrm' ), 200 );
         }
 
         return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );

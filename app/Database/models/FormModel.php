@@ -127,11 +127,16 @@ class FormModel {
     public static function destroy( $id )
     {
         global $wpdb;
-        $form_table = $wpdb->prefix . FormSchema::$table_name;
-        $form_meta_table             =   $wpdb->prefix .FormMetaSchema::$table_name;
+        $form_table         = $wpdb->prefix . FormSchema::$table_name;
+        $form_meta_table    = $wpdb->prefix .FormMetaSchema::$table_name;
+
+
+        if (!self::is_form_exist($id)){
+            return false;
+        }
 
         try {
-            $wpdb->delete( $form_table, array('id' => $id) );
+            $wpdb->delete($form_table, array('id' => $id) );
             $wpdb->delete($form_meta_table,array('form_id' => $id));
             return true;
         } catch(\Exception $e) {
