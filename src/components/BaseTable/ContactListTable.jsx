@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   useLocation,
   useNavigate,
@@ -50,6 +50,7 @@ export default function ContactListTable(props) {
   const [filterContact, setFilterContact] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [searchColumns, setSearchColumns] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
@@ -115,6 +116,16 @@ export default function ContactListTable(props) {
   const [filteredTags, setFilteredTags] = useState([]);
   const [listColumns, setListColumns] = useState([]);
   const [columns, setColumns] = useState([]);
+
+  const filteredColumns = useMemo(() => {
+    if (searchColumns) {
+      return listColumns.filter(
+        (item) =>
+          item.value.toLowerCase().indexOf(searchColumns.toLocaleLowerCase()) > -1
+      );
+    }
+    return listColumns;
+  }, [searchColumns, listColumns]);
 
   const deleteAll = () => {
     setSelectedLists([]);
@@ -398,6 +409,10 @@ export default function ContactListTable(props) {
   };
 
   const showAddColumnList = () => {
+    setAddColumn(!isAddColumn);
+  };
+
+  const hideAddColumnList = () => {
     setAddColumn(!isAddColumn);
   };
 
@@ -721,30 +736,37 @@ export default function ContactListTable(props) {
                   type="search"
                   name="column-search"
                   placeholder="Search..."
+                  value={searchColumns}
+                  onChange={(e) => setSearchColumns(e.target.value)}
                 />
               </span>
             </li>
 
             <li className="list-title">Choose columns</li>
 
-            {listColumns.map((column) => {
-              return (
-                <li className="single-column" key={column.id}>
-                  <ColumnList
-                    title={column.value}
-                    id={column.id}
-                    selected={columns}
-                    setSelected={setColumns}
-                  />
-                </li>
-              );
-            })}
+            {filteredColumns.length > 0 ? (
+              filteredColumns &&
+              filteredColumns.map((column) => {
+                return (
+                  <li className="single-column" key={column.id}>
+                    <ColumnList
+                      title={column.value}
+                      id={column.id}
+                      selected={columns}
+                      setSelected={setColumns}
+                    />
+                  </li>
+                );
+              })
+            ) : (
+              <div>No Column Found</div>
+            )}
 
             <li className="button-area">
-              <button className="mintmrm-btn outline default-btn">
+              {/* <button className="mintmrm-btn outline default-btn">
                 Default
-              </button>
-              <button className="mintmrm-btn outline cancel-btn">Cancel</button>
+              </button> */}
+              <button className="mintmrm-btn outline cancel-btn"onClick={hideAddColumnList} >Cancel</button>
               <button className="mintmrm-btn save-btn" onClick={saveColumnList}>
                 Save
               </button>

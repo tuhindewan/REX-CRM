@@ -89,9 +89,10 @@ export default function SingleContact(props) {
         <td className="last-name">{contact.last_name ? contact.last_name : "-"}</td>
 
         {props.columns.map((column) => {
+          
           if(column.id == "lists"){
             return (
-              <td className="list">
+              <td className="list" key={column.id}>
                 {contact.lists.length > 0 ? contact.lists.map((list) => {
                   return (
                     <span className="list-item" key={list.id}>
@@ -105,7 +106,7 @@ export default function SingleContact(props) {
 
           if(column.id == "tags"){
             return (
-              <td className="tag">
+              <td className="tag" key={column.id}>
                 {contact.tags.length > 0 ? contact.tags.map((tag) => {
                   return (
                     <span className="tag-item" key={tag.id}>
@@ -119,7 +120,7 @@ export default function SingleContact(props) {
 
           if(column.id == "status"){
             return (
-              <td className="status">
+              <td className="status" key={column.id}>
                 <span className={contact.status}>
                   {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
                 </span>
@@ -129,7 +130,7 @@ export default function SingleContact(props) {
 
           if(column.id == "last_activity"){
             return (
-              <td className="last-activity">
+              <td className="last-activity" key={column.id}>
                 {contact.last_activity ? contact.last_activity : "-"}
               </td>
             );
@@ -137,7 +138,7 @@ export default function SingleContact(props) {
 
           if(column.id == "source"){
             return (
-              <td className="source">
+              <td className="source" key={column.id}>
                 <td className="source">{contact.source ? contact.source : "-"}</td>
               </td>
             );
@@ -145,7 +146,7 @@ export default function SingleContact(props) {
 
           if(column.id in contact?.meta_fields){
             return (
-              <td className={column.id}>
+              <td className={column.id} key={column.id}>
                 {contact?.meta_fields?.[column.id]
             ? contact?.meta_fields?.[column.id]
             : "-"}
@@ -153,7 +154,7 @@ export default function SingleContact(props) {
             );
           }else{
             return(
-              <td className={column.id}>
+              <td className={column.id} key={column.id}>
                  -
               </td>
             )
