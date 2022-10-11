@@ -68,7 +68,8 @@ class FormModel {
                 )
             );
 
-            $insert_id = $wpdb->insert_id;
+            $insert_id = $wpdb->insert_id;  
+
             if( !empty( $form->get_meta_fields() )){
                 $meta_fields['meta_fields'] = $form->get_meta_fields();
                 self::update_meta_fields( $insert_id, $meta_fields );
@@ -138,6 +139,32 @@ class FormModel {
         try {
             $wpdb->delete($form_table, array('id' => $id) );
             $wpdb->delete($form_meta_table,array('form_id' => $id));
+            return true;
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Delete multiple forms
+     * 
+     * @param array $form_ids form id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function destroy_all($form_ids)
+    {
+        global $wpdb;
+        $form_table                 =   $wpdb->prefix . FormSchema::$table_name;
+        $form_meta_table            =   $wpdb->prefix . FormMetaSchema::$table_name;
+
+        try {
+            $forms_ids = implode( ',', array_map( 'intval', $form_ids ) );
+
+            $wpdb->query( "DELETE FROM $form_table WHERE id IN($forms_ids)" );
+            $wpdb->query( "DELETE FROM $form_meta_table WHERE form_id IN($forms_ids)" );
             return true;
         } catch(\Exception $e) {
             return false;
@@ -260,6 +287,8 @@ class FormModel {
     {
         global $wpdb;
         $form_meta_table = $wpdb->prefix . FormMetaSchema::$table_name;
+
+        //error_log(print_r($args,1));
 
         if (isset($args['meta_fields']))
         {

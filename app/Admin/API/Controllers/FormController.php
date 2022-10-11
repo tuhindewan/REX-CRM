@@ -56,8 +56,9 @@ class FormController extends BaseController {
             'form_position'  => isset( $params['form_position'] ) ? $params['form_position'] : "",
             'status'         => isset( $params['status'] ) ? $params['status'] : "",
             'group_ids'      => isset( $params['group_ids'] ) ? $params['group_ids'] : "",
+            'meta_fields'    => isset( $params['meta_fields'] ) ? $params['meta_fields'] : [],
         );
-
+        
         try {
             $form = new FormData( $this->args );
 
@@ -209,10 +210,10 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // $success = FormModel::destroy_all( $params['list_ids'] );
-        // if($success) {
-        //     return $this->get_success_response(__( 'Lists has been deleted successfully', 'mrm' ), 200);
-        // }
+        $success = FormModel::destroy_all( $params['form_ids'] );
+        if($success) {
+            return $this->get_success_response(__( 'Forms has been deleted successfully', 'mrm' ), 200);
+        }
 
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
 
