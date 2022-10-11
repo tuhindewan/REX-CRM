@@ -1113,10 +1113,10 @@ class ContactController extends BaseController {
     public function save_contact_columns( WP_REST_Request $request ) 
     {
         $params = MRM_Common::get_api_params_values( $request );
-        $contact_columns = isset( $params['contact_columns'] ) ? maybe_serialize( $params['contact_columns'] ) : [];
-        $success = update_option('mrm_contact_columns', $contact_columns);
+        $contact_columns = isset( $params['contact_columns'] ) ? $params['contact_columns'] : [];
+        $success = update_option('mrm_contact_columns', maybe_serialize($contact_columns));
         if($success){
-            return $this->get_success_response( __( 'Columns has been save successfully', 'mrm' ), 201 );
+            return $this->get_success_response( __( 'Columns has been save successfully', 'mrm' ), 201, $contact_columns );
         }
         return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 200 );
     }

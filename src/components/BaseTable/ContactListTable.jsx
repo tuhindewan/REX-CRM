@@ -450,6 +450,7 @@ export default function ContactListTable(props) {
     if (code === 201) {
       setShowNotification("block");
       setMessage(responseData?.message);
+      setColumns(responseData.data);
       toggleRefresh();
     } else {
       // Validation messages
@@ -756,12 +757,19 @@ export default function ContactListTable(props) {
 
                 <th className="last-name">Last Name</th>
 
-                <th className="list">List</th>
-                <th className="tag">Tag</th>
+                {columns.map((column) => {
+                  return (
+                    <th key={column.id} className={column.id}>
+                      {column.value}
+                    </th>
+                  );
+                })}
+
+                {/* <th className="tag">Tag</th>
                 <th className="last-activity">Last Activity</th>
                 <th className="status">Status</th>
                 <th className="phone-number">Phone Number</th>
-                <th className="source">Source</th>
+                <th className="source">Source</th> */}
                 <th className="action"></th>
               </tr>
             </thead>
