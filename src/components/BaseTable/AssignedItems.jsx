@@ -57,7 +57,7 @@ export default function AssignedItems(props) {
     // there might be either id and value for input checkboxes
     // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
-    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    let id = e.target.dataset.customId;
     const index = selected?.findIndex((item) => item.id == id);
     // already in selected list so remove it from the array
     if (allowMultiple) {
@@ -202,6 +202,7 @@ export default function AssignedItems(props) {
                       id={item.id}
                       value={item.title}
                       onChange={handleSelectOne}
+                      data-custom-id={item.id}
                       checked={checked}
                     />
 

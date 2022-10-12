@@ -4,6 +4,8 @@ import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import DeletePopup from "../DeletePopup";
 import HoverMenu from "../HoverMenu";
+import Delete from "../Icons/Delete";
+import EyeIcon from "../Icons/EyeIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 import EyeIcon from "../Icons/EyeIcon";
@@ -36,7 +38,6 @@ export default function SingleContact(props) {
     handleSelectOne,
     selected,
   } = props;
-
   const handleDelete = () => {
     setIsDelete("block");
     setDeleteTitle("Delete Contact");
@@ -67,7 +68,6 @@ export default function SingleContact(props) {
   };
 
   const handleUpdate = () => {
-    //console.log(contact.id);
     navigate(`/contacts/update/${contact.id}`);
   };
 
@@ -96,47 +96,92 @@ export default function SingleContact(props) {
           </div>
         </td>
 
-        <td className="first-name">{contact.first_name}</td>
+        <td className="first-name">
+          {contact.first_name ? contact.first_name : "-"}
+        </td>
 
-        <td className="last-name">{contact.last_name}</td>
+        <td className="last-name">
+          {contact.last_name ? contact.last_name : "-"}
+        </td>
 
-        <td className="list">
-          {contact.lists.map((list, idx) => {
+        {props.columns.map((column) => {
+          if ("lists" == column.id) {
             return (
-              <span className="list-item" key={list.id}>
-                {list.title}
-              </span>
+              <td className="list" key={column.id}>
+                {contact.lists.length
+                  ? contact.lists.map((list) => {
+                      return (
+                        <span className="list-item" key={list.id}>
+                          {list.title}
+                        </span>
+                      );
+                    })
+                  : "-"}
+              </td>
             );
-          })}
-        </td>
+          }
 
-        <td className="tag">
-          {contact.tags.map((tag, idx) => {
+          if ("tags" == column.id) {
             return (
-              <span className="tag-item" key={tag.id}>
-                {tag.title}
-              </span>
+              <td className="tag" key={column.id}>
+                {contact.tags.length
+                  ? contact.tags.map((tag) => {
+                      return (
+                        <span className="tag-item" key={tag.id}>
+                          {tag.title}
+                        </span>
+                      );
+                    })
+                  : "-"}
+              </td>
             );
-          })}
-        </td>
+          }
 
-        <td className="last-activity">
-          {contact.last_activity ? contact.last_activity : "-"}
-        </td>
+          if ("status" == column.id) {
+            return (
+              <td className="status" key={column.id}>
+                <span className={contact.status}>
+                  {contact.status.charAt(0).toUpperCase() +
+                    contact.status.slice(1)}
+                </span>
+              </td>
+            );
+          }
 
-        <td className="status">
-          <span className={contact.status}>
-            {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
-          </span>
-        </td>
+          if ("last_activity" == column.id) {
+            return (
+              <td className="last-activity" key={column.id}>
+                {contact.last_activity ? contact.last_activity : "-"}
+              </td>
+            );
+          }
 
-        <td className="phone-number">
-          {contact?.meta_fields?.phone_number
-            ? contact?.meta_fields?.phone_number
-            : "-"}
-        </td>
+          if ("source" == column.id) {
+            return (
+              <td className="source" key={column.id}>
+                <td className="source">
+                  {contact.source ? contact.source : "-"}
+                </td>
+              </td>
+            );
+          }
 
-        <td className="source">{contact.source ? contact.source : "-"}</td>
+          if (column.id in Object.assign({}, contact?.meta_fields)) {
+            return (
+              <td className={column.id} key={column.id}>
+                {contact?.meta_fields?.[column.id]
+                  ? contact?.meta_fields?.[column.id]
+                  : "-"}
+              </td>
+            );
+          } else {
+            return (
+              <td className={column.id} key={column.id}>
+                -
+              </td>
+            );
+          }
+        })}
 
         <td className="action">
           <button

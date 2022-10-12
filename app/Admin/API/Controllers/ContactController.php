@@ -11,8 +11,8 @@ use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 use Mint\MRM\Constants;
 use MailchimpMarketing;
-
-
+use Mint\MRM\DataBase\Models\CustomFieldModel;
+use Mint\MRM\Internal\Constants as InternalConstants;
 
 /**
  * @author [MRM Team]
@@ -89,7 +89,7 @@ class ContactController extends BaseController {
                 // Existing contact email address check
                 $other_slugs = ContactModel::is_contact_exist( $email );
                 $update_slug = ContactModel::is_contact_exist_by_id( $email, $contact_id );
-                if ( $other_slugs && !$update_slug ) {
+                if ( $other_slugs && !$update_slug ) {                    
                     return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200);
                 }
                 $contact_id = ContactModel::update( $params, $contact_id );
@@ -1100,6 +1100,63 @@ class ContactController extends BaseController {
     public function get_total_count($request)
     {
         return ContactModel::get_instance()->get_total_count( $request );
+    }
+
+
+    /**
+     * Return columns array for contact index page
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_columns( )
+    {
+        $columns = InternalConstants::$contact_list_columns;
+
+        $custom_fields = CustomFieldModel::get_all();
+        $custom_fields_data = isset( $custom_fields['data'] ) ? $custom_fields['data'] : [];
+        $fields = array_map(function($custom_field){
+                            return [
+                                "id"    => $custom_field['slug'],
+                                "value" => $custom_field['title']
+                            ];
+                        }, $custom_fields_data);
+
+        $list_columns = array_merge($columns, $fields);
+        return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $list_columns );
+    }
+
+
+    /**
+     * Save column hide/show information on wp_options table
+     * 
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function save_contact_columns( WP_REST_Request $request ) 
+    {
+        $params = MRM_Common::get_api_params_values( $request );
+        $contact_columns = isset( $params['contact_columns'] ) ? $params['contact_columns'] : [];
+        $success = update_option('mrm_contact_columns', maybe_serialize($contact_columns));
+        if($success){
+            return $this->get_success_response( __( 'Columns has been save successfully', 'mrm' ), 201, $contact_columns );
+        }
+        return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 400 );
+    }
+
+
+    /**
+     * Return stored column information from wp_options table
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_stored_columns()
+    {
+        $contact_columns = get_option('mrm_contact_columns');
+        $columns = maybe_unserialize($contact_columns);
+        return $this->get_success_response( __( 'Query successfully', 'mrm' ), 200, $columns );
     }
 
 
