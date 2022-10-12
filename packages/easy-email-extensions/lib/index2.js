@@ -36753,7 +36753,8 @@ function Page() {
     defaultActiveKey: ["0", "1"]
   }, /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "1",
-    header: "Theme Setting"
+    header: "Theme Setting",
+    className: "page-block-item"
   }, /* @__PURE__ */ React__default.createElement(Stack$4, {
     vertical: true,
     spacing: "tight"
@@ -36795,13 +36796,13 @@ function Page() {
   }, /* @__PURE__ */ React__default.createElement(ColorPickerField, {
     label: "Content background",
     name: `${focusIdx2}.data.value.content-background-color`
-  })))), /* @__PURE__ */ React__default.createElement("div", {
+  })), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label color-label"
   }, /* @__PURE__ */ React__default.createElement(TextAreaField, {
     autoSize: true,
     label: "User style",
     name: `${focusIdx2}.data.value.user-style.content`
-  })), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null), /* @__PURE__ */ React__default.createElement(AddFont, null), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null))))));
+  })))), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null), /* @__PURE__ */ React__default.createElement(AddFont, null), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null), /* @__PURE__ */ React__default.createElement(Stack$4.Item, null))))));
 }
 function Padding(props = {}) {
   const { title: title2 = "Padding", attributeName = "padding", name: name2 } = props;
@@ -36857,34 +36858,20 @@ function Padding(props = {}) {
     }, title2), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
       span: 24
     }, /* @__PURE__ */ React__default.createElement("div", {
-      className: "mrm-inline-label"
+      className: "mrm-inline-label mrm-padding-wrapper"
     }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
       label: "Top",
       name: "top"
-    })), /* @__PURE__ */ React__default.createElement("div", {
-      className: "mrm-inline-label"
-    }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
-      label: "Left",
-      name: "left"
-    })), /* @__PURE__ */ React__default.createElement("div", {
-      className: "mrm-inline-label"
-    }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
-      label: "Bottom",
-      name: "bottom"
-    })), /* @__PURE__ */ React__default.createElement("div", {
-      className: "mrm-inline-label"
-    }, /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
+    }), /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
       label: "Right",
       name: "right"
-    }))), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      offset: 1,
-      span: 11
-    })), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      span: 11
-    }), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-      offset: 1,
-      span: 11
-    }))), /* @__PURE__ */ React__default.createElement(PaddingChangeWrapper, {
+    }), /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
+      label: "Bottom",
+      name: "bottom"
+    }), /* @__PURE__ */ React__default.createElement(InputWithUnitField, {
+      label: "Left",
+      name: "left"
+    }))))), /* @__PURE__ */ React__default.createElement(PaddingChangeWrapper, {
       onChange: onChancePadding
     }));
   });
@@ -37748,16 +37735,11 @@ function Text() {
     className: "mrm-inline-label"
   }, /* @__PURE__ */ React__default.createElement(TextDecoration, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label"
-  }, /* @__PURE__ */ React__default.createElement(FontWeight, null)))), /* @__PURE__ */ React__default.createElement("div", {
+  }, /* @__PURE__ */ React__default.createElement(FontWeight, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-stylish-radio mrm-inline-label mrm-text-align-setting"
   }, /* @__PURE__ */ React__default.createElement(Align, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-stylish-radio mrm-inline-label mrm-font-style-setting"
-  }, /* @__PURE__ */ React__default.createElement(FontStyle, null)), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 11
-  }), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    offset: 1,
-    span: 11
-  })))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  }, /* @__PURE__ */ React__default.createElement(FontStyle, null)))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "0",
     header: "Dimension"
   }, /* @__PURE__ */ React__default.createElement(Space$1, {
@@ -37795,13 +37777,15 @@ function Text() {
 function Link() {
   const { focusIdx: focusIdx2 } = useFocusIdx();
   return useMemo(() => {
-    return /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
+    return /* @__PURE__ */ React__default.createElement(Grid.Row, {
+      className: "mrm-link-wrapper"
+    }, /* @__PURE__ */ React__default.createElement(Grid.Col, {
       span: 24
     }, /* @__PURE__ */ React__default.createElement("div", {
-      className: "mrm-inline-label"
+      className: "mrm-inline-label href-label"
     }, /* @__PURE__ */ React__default.createElement(TextField, {
       prefix: /* @__PURE__ */ React__default.createElement(IconLink$1, null),
-      label: /* @__PURE__ */ React__default.createElement("span", null, "Href\xA0\xA0\xA0"),
+      label: /* @__PURE__ */ React__default.createElement("span", null, "Link\xA0\xA0\xA0"),
       name: `${focusIdx2}.attributes.href`
     }))), /* @__PURE__ */ React__default.createElement(Grid.Col, {
       offset: 0,
@@ -37833,7 +37817,8 @@ function Image$1() {
     defaultActiveKey: ["0", "1", "2", "3", "4"]
   }, /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "1",
-    header: "Setting"
+    header: "Setting",
+    className: "image-bg-wrapper"
   }, /* @__PURE__ */ React__default.createElement(Stack$4, {
     vertical: true,
     spacing: "tight"
@@ -37861,11 +37846,9 @@ function Image$1() {
     className: "mrm-inline-label"
   }, /* @__PURE__ */ React__default.createElement(Width, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label"
-  }, /* @__PURE__ */ React__default.createElement(Height, null)))), /* @__PURE__ */ React__default.createElement("div", {
+  }, /* @__PURE__ */ React__default.createElement(Height, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-padding-wrapper"
-  }, /* @__PURE__ */ React__default.createElement(Padding, null)), /* @__PURE__ */ React__default.createElement(Grid.Row, null, /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 24
-  }, /* @__PURE__ */ React__default.createElement("div", {
+  }, /* @__PURE__ */ React__default.createElement(Padding, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-stylish-radio mrm-inline-label mrm-text-align-setting"
   }, /* @__PURE__ */ React__default.createElement(Align, null)))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "2",
@@ -37891,14 +37874,12 @@ function Image$1() {
   }, /* @__PURE__ */ React__default.createElement(TextField, {
     label: "alt",
     name: `${focusIdx2}.attributes.alt`
-  })))), /* @__PURE__ */ React__default.createElement(Grid.Col, {
-    span: 24
-  }, /* @__PURE__ */ React__default.createElement("div", {
+  })), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label"
   }, /* @__PURE__ */ React__default.createElement(TextField, {
-    label: "class name",
+    label: "Class Name",
     name: `${focusIdx2}.attributes.css-class`
-  }))))));
+  })))))));
 }
 function Group() {
   return /* @__PURE__ */ React__default.createElement(AttributesPanelWrapper, null, /* @__PURE__ */ React__default.createElement(CollapseWrapper, {
@@ -38267,7 +38248,8 @@ function Button() {
     name: "-1",
     header: "Setting"
   }, /* @__PURE__ */ React__default.createElement(Space$1, {
-    direction: "vertical"
+    direction: "vertical",
+    className: "mrm-button-setting-wrapper"
   }, /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label"
   }, /* @__PURE__ */ React__default.createElement(TextField, {
@@ -38284,7 +38266,7 @@ function Button() {
       })
     }))),
     name: `${focusIdx2}.data.value.content`
-  })), /* @__PURE__ */ React__default.createElement(Link, null))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  }))), /* @__PURE__ */ React__default.createElement(Link, null)), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "0",
     header: "Dimension"
   }, /* @__PURE__ */ React__default.createElement(Space$1, {
@@ -38294,8 +38276,6 @@ function Button() {
   }, /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label"
   }, /* @__PURE__ */ React__default.createElement(Width, null)), /* @__PURE__ */ React__default.createElement("div", {
-    className: "mrm-inline-label"
-  }, /* @__PURE__ */ React__default.createElement(FontWeight, null)))), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-padding-wrapper"
   }, /* @__PURE__ */ React__default.createElement(Padding, {
     title: "Padding",
@@ -38305,7 +38285,7 @@ function Button() {
   }, /* @__PURE__ */ React__default.createElement(Padding, {
     title: "Inner padding",
     attributeName: "inner-padding"
-  })))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  })))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "1",
     header: "Color"
   }, /* @__PURE__ */ React__default.createElement(Space$1, {
@@ -38343,11 +38323,11 @@ function Button() {
     className: "mrm-inline-label"
   }, /* @__PURE__ */ React__default.createElement(TextDecoration, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-inline-label"
-  }, /* @__PURE__ */ React__default.createElement(LetterSpacing, null)))), /* @__PURE__ */ React__default.createElement("div", {
+  }, /* @__PURE__ */ React__default.createElement(LetterSpacing, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-stylish-radio mrm-inline-label mrm-text-align-setting"
   }, /* @__PURE__ */ React__default.createElement(Align, null)), /* @__PURE__ */ React__default.createElement("div", {
     className: "mrm-stylish-radio mrm-inline-label mrm-font-style-setting"
-  }, /* @__PURE__ */ React__default.createElement(FontStyle, null)))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  }, /* @__PURE__ */ React__default.createElement(FontStyle, null)))))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "3",
     header: "Border"
   }, /* @__PURE__ */ React__default.createElement(Border, null)), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
@@ -38380,7 +38360,8 @@ function Divider() {
     className: "mrm-inline-padding-wrapper"
   }, /* @__PURE__ */ React__default.createElement(Padding, null)))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "2",
-    header: "Border"
+    header: "Border",
+    className: "divider-border-item"
   }, /* @__PURE__ */ React__default.createElement(Stack$4, {
     wrap: false,
     spacing: "tight"
@@ -38423,16 +38404,18 @@ function Wrapper() {
     vertical: true,
     spacing: "tight"
   }, /* @__PURE__ */ React__default.createElement("div", {
-    className: "mrm-inline-padding-wrapper"
+    className: "mrm-inline-padding-wrapper wrapper-block-padding"
   }, /* @__PURE__ */ React__default.createElement(Padding, null)))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "1",
-    header: "Background"
+    header: "Background",
+    className: "wrapper-block-bg-wrapper"
   }, /* @__PURE__ */ React__default.createElement(Stack$4, {
     vertical: true,
     spacing: "tight"
   }, /* @__PURE__ */ React__default.createElement(Background, null))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "2",
-    header: "Border"
+    header: "Border",
+    className: "wrapper-block-border-item"
   }, /* @__PURE__ */ React__default.createElement(Stack$4, {
     vertical: true,
     spacing: "tight"
@@ -38473,7 +38456,7 @@ function Spacer() {
     name: "2",
     header: "Background"
   }, /* @__PURE__ */ React__default.createElement("div", {
-    className: "mrm-inline-label color-label"
+    className: "mrm-inline-label color-label mrm-spacer-bgcolor-wrapper"
   }, /* @__PURE__ */ React__default.createElement(ContainerBackgroundColor, {
     title: "Background color"
   }))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
@@ -39085,16 +39068,18 @@ function Social() {
     name: "2",
     header: "Social item",
     contentStyle: { padding: 10 }
+  }, /* @__PURE__ */ React__default.createElement("div", {
+    className: "social-item-wrapper"
   }, /* @__PURE__ */ React__default.createElement(EditGridTabField, {
     tabPosition: "top",
     name: `${focusIdx2}.data.value.elements`,
-    label: "tessttt",
+    label: "",
     labelHidden: true,
     renderItem: (item2, index2) => /* @__PURE__ */ React__default.createElement(SocialElement, {
       item: item2,
       index: index2
     })
-  })), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
+  }))), /* @__PURE__ */ React__default.createElement(Collapse$1.Item, {
     name: "0",
     header: "Dimension"
   }, /* @__PURE__ */ React__default.createElement(Space$1, {

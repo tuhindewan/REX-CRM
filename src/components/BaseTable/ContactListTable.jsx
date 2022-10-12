@@ -24,6 +24,9 @@ import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import SingleContact from "./SingleContact";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
+import ExportIcon from "../Icons/ExportIcon";
+import ExportDrawer from "../ExportDrawer";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -508,7 +511,7 @@ export default function ContactListTable(props) {
             ""
           )}
 
-          {/* <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
             <ExportIcon />
             Export
           </button>
@@ -516,7 +519,7 @@ export default function ContactListTable(props) {
             isOpenNote={isNoteForm}
             isCloseNote={isCloseNote}
             setIsCloseNote={setIsCloseNote}
-          /> */}
+          />
 
           <div className="bulk-action">
             <button className="more-option" onClick={showMoreOption}>
@@ -644,10 +647,10 @@ export default function ContactListTable(props) {
 
       <div className="pos-relative">
         <div className="add-column">
-          {/* <button className="add-column-btn" onClick={showAddColumnList}>
+          <button className="add-column-btn" onClick={showAddColumnList}>
             <PlusCircleIcon />
             <span className="tooltip">Add Column</span>
-          </button> */}
+          </button>
           <ul
             className={
               isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"

@@ -72,10 +72,7 @@ const defaultCategories: ExtensionProps["categories"] = [
       },
       {
         type: AdvancedType.WRAPPER,
-      },
-      {
-        type: CustomBlocksType.PRODUCT_BLOCK,
-      },
+      }
     ],
   },
   {
@@ -587,13 +584,13 @@ export default function Editor(props) {
                   </div>
 
                   <div className="header-right">
-                    <Button
-                      className="mood-change-btn"
-                      onClick={() => setIsDarkMode((v) => !v)}
-                      shape="circle"
-                      type="text"
-                      icon={isDarkMode ? <IconMoonFill /> : <IconSunFill />}
-                    ></Button>
+                    {/*<Button*/}
+                    {/*  className="mood-change-btn"*/}
+                    {/*  onClick={() => setIsDarkMode((v) => !v)}*/}
+                    {/*  shape="circle"*/}
+                    {/*  type="text"*/}
+                    {/*  icon={isDarkMode ? <IconMoonFill /> : <IconSunFill />}*/}
+                    {/*></Button>*/}
 
                     <Button
                       className={
