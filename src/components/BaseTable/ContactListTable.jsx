@@ -437,6 +437,7 @@ export default function ContactListTable(props) {
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
               filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
           <div className="form-group left-filter">
@@ -457,6 +458,7 @@ export default function ContactListTable(props) {
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
               filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
           <div className="form-group left-filter">
@@ -477,6 +479,7 @@ export default function ContactListTable(props) {
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
               filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
         </div>
@@ -555,6 +558,7 @@ export default function ContactListTable(props) {
                 showNotification={"mone"}
                 setMessage={setMessage}
                 message={message}
+                prefix="assign"
               />
             ) : (
               <AssignedItems
@@ -580,6 +584,7 @@ export default function ContactListTable(props) {
                 showNotification={"mone"}
                 setMessage={setMessage}
                 message={message}
+                prefix="assign"
               />
             )}
           </div>
