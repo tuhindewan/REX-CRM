@@ -81,8 +81,7 @@ export default function ContactListTable(props) {
   const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
-  let { lists_ids, tags_ids, status } = useParams();
-
+  let { lists, tags_ids, status } = useParams();
   const [filterRequest, setFilterRequest] = useState({});
 
   // global counter update real time
