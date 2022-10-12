@@ -4,10 +4,10 @@ import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import DeletePopup from "../DeletePopup";
 import HoverMenu from "../HoverMenu";
+import Delete from "../Icons/Delete";
+import EyeIcon from "../Icons/EyeIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
-import EyeIcon from "../Icons/EyeIcon";
-import Delete from "../Icons/Delete";
 
 export default function SingleContact(props) {
   // global counter update real time
@@ -84,51 +84,59 @@ export default function SingleContact(props) {
           </div>
         </td>
 
-        <td className="first-name">{contact.first_name ? contact.first_name : "-"}</td>
+        <td className="first-name">
+          {contact.first_name ? contact.first_name : "-"}
+        </td>
 
-        <td className="last-name">{contact.last_name ? contact.last_name : "-"}</td>
+        <td className="last-name">
+          {contact.last_name ? contact.last_name : "-"}
+        </td>
 
         {props.columns.map((column) => {
-          
-          if(column.id == "lists"){
+          if ("lists" == column.id) {
             return (
               <td className="list" key={column.id}>
-                {contact.lists.length > 0 ? contact.lists.map((list) => {
-                  return (
-                    <span className="list-item" key={list.id}>
-                      {list.title}
-                    </span>
-                  );
-                }) : "-"}
+                {contact.lists.length
+                  ? contact.lists.map((list) => {
+                      return (
+                        <span className="list-item" key={list.id}>
+                          {list.title}
+                        </span>
+                      );
+                    })
+                  : "-"}
               </td>
             );
           }
 
-          if(column.id == "tags"){
+          if ("tags" == column.id) {
             return (
               <td className="tag" key={column.id}>
-                {contact.tags.length > 0 ? contact.tags.map((tag) => {
-                  return (
-                    <span className="tag-item" key={tag.id}>
-                      {tag.title}
-                    </span>
-                  );
-                }) : "-"}
+                {contact.tags.length
+                  ? contact.tags.map((tag) => {
+                      return (
+                        <span className="tag-item" key={tag.id}>
+                          {tag.title}
+                        </span>
+                      );
+                    })
+                  : "-"}
               </td>
             );
           }
 
-          if(column.id == "status"){
+          if ("status" == column.id) {
             return (
               <td className="status" key={column.id}>
                 <span className={contact.status}>
-                  {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+                  {contact.status.charAt(0).toUpperCase() +
+                    contact.status.slice(1)}
                 </span>
               </td>
             );
           }
 
-          if(column.id == "last_activity"){
+          if ("last_activity" == column.id) {
             return (
               <td className="last-activity" key={column.id}>
                 {contact.last_activity ? contact.last_activity : "-"}
@@ -136,15 +144,17 @@ export default function SingleContact(props) {
             );
           }
 
-          if(column.id == "source"){
+          if ("source" == column.id) {
             return (
               <td className="source" key={column.id}>
-                <td className="source">{contact.source ? contact.source : "-"}</td>
+                <td className="source">
+                  {contact.source ? contact.source : "-"}
+                </td>
               </td>
             );
           }
-          
-          if(column.id in Object.assign({}, contact?.meta_fields)){
+
+          if (column.id in Object.assign({}, contact?.meta_fields)) {
             return (
               <td className={column.id} key={column.id}>
                 {contact?.meta_fields?.[column.id]
@@ -152,14 +162,13 @@ export default function SingleContact(props) {
                   : "-"}
               </td>
             );
-          }else{
-            return(
+          } else {
+            return (
               <td className={column.id} key={column.id}>
-                 -
+                -
               </td>
-            )
+            );
           }
-                  
         })}
 
         <td className="action">
@@ -183,10 +192,7 @@ export default function SingleContact(props) {
                         : "mintmrm-dropdown"
                     }
                   >
-                    <li
-                      className="action-list"
-                      onClick={handleUpdate}
-                    >
+                    <li className="action-list" onClick={handleUpdate}>
                       <EyeIcon />
                       View
                     </li>

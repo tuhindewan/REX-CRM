@@ -86,7 +86,7 @@ class CustomFieldModel{
         global $wpdb;
         $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
-        if ( ! empty( $search ) ) {
+        if ( !empty( $search ) ) {
             $search = $wpdb->esc_like($search);
             $search_terms = "WHERE `title` LIKE '%%$search%%'";
 		}

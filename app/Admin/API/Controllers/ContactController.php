@@ -1107,20 +1107,22 @@ class ContactController extends BaseController {
     /**
      * Return columns array for contact index page
      * 
-     * @param WP_REST_Request $request
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function get_columns( WP_REST_Request $request  )
+    public function get_columns( )
     {
         $columns = InternalConstants::$contact_list_columns;
+
         $custom_fields = CustomFieldModel::get_all();
+        $custom_fields_data = isset( $custom_fields['data'] ) ? $custom_fields['data'] : [];
         $fields = array_map(function($custom_field){
                             return [
                                 "id"    => $custom_field['slug'],
                                 "value" => $custom_field['title']
                             ];
-                        }, $custom_fields['data']);
+                        }, $custom_fields_data);
+
         $list_columns = array_merge($columns, $fields);
         return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $list_columns );
     }
@@ -1141,18 +1143,17 @@ class ContactController extends BaseController {
         if($success){
             return $this->get_success_response( __( 'Columns has been save successfully', 'mrm' ), 201, $contact_columns );
         }
-        return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 200 );
+        return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 400 );
     }
 
 
     /**
      * Return stored column information from wp_options table
      * 
-     * @param WP_REST_Request $request
      * @return WP_REST_Response
      * @since 1.0.0
      */
-    public function get_stored_columns(WP_REST_Request $request)
+    public function get_stored_columns()
     {
         $contact_columns = get_option('mrm_contact_columns');
         $columns = maybe_unserialize($contact_columns);

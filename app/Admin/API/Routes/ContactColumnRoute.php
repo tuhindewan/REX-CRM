@@ -53,7 +53,7 @@ class ContactColumnRoute{
         $this->controller = ContactController::get_instance();
 
         /**
-         * Get columns for cpntact index page
+         * Get columns for contact index page
          * 
          * @return void
          * @since 1.0.0
