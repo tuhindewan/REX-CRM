@@ -10,6 +10,12 @@ import FormIconXL from "../Icons/FormIconXL";
 import FormIconSM from "../Icons/FormIconSM";
 import CopyIcon from "../Icons/CopyIcon";
 import Pagination from "../Pagination";
+import EyeIcon from "../Icons/EyeIcon";
+import Delete from "../Icons/Delete";
+import SuccessfulNotification from "../SuccessfulNotification";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import DeletePopup from "../DeletePopup";
+import AlertPopup from "../AlertPopup";
 
 export default function FormIndex(props) {
   const [formData, setFormData] = useState({});
@@ -44,6 +50,47 @@ export default function FormIndex(props) {
 
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
+
+  const [isActive, setActive] = useState(false);
+
+  const menuButtonRef = useRef(null);
+
+  const [isBulkAction, setBulkAction] = useState(false);
+
+  const [errors, setErrors] = useState({});
+
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+  const [isDelete, setIsDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [showAlert, setShowAlert] = useState("none");
+
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
+  // the data is fetched again whenver refresh is changed
+  function toggleRefresh() {
+    setRefresh(!refresh);
+  }
+
+  const showMoreOption = () => {
+    setActive(!isActive);
+  };
+
+  const showBulkAction = () => {
+    setBulkAction(!isBulkAction);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
 
   // handler for all item click
   const handleSelectAll = (e) => {
@@ -93,11 +140,79 @@ export default function FormIndex(props) {
       }
     }
     getForms();
-    // const timer = setTimeout(() => {
-    //   setShowNotification("none");
-    // }, 3000);
-    // return () => clearTimeout(timer);
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [page, perPage, query, refresh]);
+
+  const deleteForm = async (formId) => {
+    setIsDelete("block");
+    setDeleteTitle("Delete List");
+    setDeleteMessage("Are you sure you want to delete the list?");
+  };
+
+  // Delete form after delete confirmation
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleList(listID).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Multiple selection confirmation
+  const deleteMultipleList = async () => {
+    if (selected.length > 0) {
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
+    } else {
+      setShowAlert("block");
+    }
+  };
+
+  // Delete multiple lists after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status && selected.length > 0) {
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          form_ids: selected,
+        }),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (200 === response.code) {
+            setShowNotification("block");
+            setMessage(response.message);
+            toggleRefresh();
+            setAllSelected(false);
+            setSelected([]);
+            showBulkAction(false);
+          } else {
+            setErrors({
+              ...errors,
+              title: response?.message,
+            });
+          }
+        });
+    }
+    setIsDelete("none");
+  };
 
   return (
     <>
@@ -137,6 +252,23 @@ export default function FormIndex(props) {
                     <Search />
                     <input type="text" placeholder="Search..." />
                   </span>
+
+                  <div className="bulk-action">
+                    <button className="more-option" onClick={showBulkAction}>
+                      <ThreeDotIcon />
+                    </button>
+                    <ul
+                      className={
+                        isBulkAction
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li className="delete" onClick={deleteMultipleList}>
+                        Delete
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -259,9 +391,15 @@ export default function FormIndex(props) {
 
                                     <span className="name">
                                       <a href="">{form.title}</a>
-                                      <small>
-                                        {getDaysAgo(form.created_at)} days ago
-                                      </small>
+                                      {getDaysAgo(form.created_at) > 1 ? (
+                                        <small>
+                                          {getDaysAgo(form.created_at)} days ago
+                                        </small>
+                                      ) : (
+                                        <small>
+                                          {getDaysAgo(form.created_at)} day ago
+                                        </small>
+                                      )}
                                     </span>
                                   </div>
                                 </div>
@@ -299,13 +437,57 @@ export default function FormIndex(props) {
                               </td>
 
                               <td className="action">
-                                <button className="more-option">
+                                <button
+                                  className="more-option"
+                                  onClick={() => {
+                                    setCurrentActive((prevActive) => {
+                                      // if current list item is already active then hide the overlay menu by setting current active to 0
+                                      if (prevActive == form.id) {
+                                        return 0;
+                                      } else {
+                                        // show current active as ususal
+                                        return form.id;
+                                      }
+                                    });
+                                  }}
+                                >
                                   <ThreeDotIcon />
 
-                                  <ul className="mintmrm-dropdown">
+                                  {currentActive == form.id && ( // only show the menu if both active and current active points to this listitem
+                                    <ul
+                                      className={
+                                        currentActive == form.id
+                                          ? "mintmrm-dropdown show"
+                                          : "mintmrm-dropdown"
+                                      }
+                                    >
+                                      <li
+                                        className="action-list"
+                                        style={{ display: "flex" }}
+                                      >
+                                        <EyeIcon />
+                                        Edit
+                                      </li>
+                                      <li
+                                        className="action-list"
+                                        onClick={deleteForm(form.id)}
+                                      >
+                                        <Delete />
+                                        Delete
+                                      </li>
+                                    </ul>
+                                  )}
+
+                                  {/* <ul
+                                    className={
+                                      currentActive == form.id && isActive
+                                        ? "mintmrm-dropdown show"
+                                        : "mintmrm-dropdown"
+                                    }
+                                  >
                                     <li>Edit</li>
                                     <li>Delete</li>
-                                  </ul>
+                                  </ul> */}
                                 </button>
                               </td>
                             </tr>
@@ -348,6 +530,20 @@ export default function FormIndex(props) {
             </div>
           </div>
         </div>
+        <div className="mintmrm-container" style={{ display: isDelete }}>
+          <DeletePopup
+            title={deleteTitle}
+            message={deleteMessage}
+            onDeleteShow={onDeleteShow}
+            onDeleteStatus={onDeleteStatus}
+            onMultiDelete={onMultiDelete}
+            selected={selected}
+          />
+        </div>
+        <div className="mintmrm-container" style={{ display: showAlert }}>
+          <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+        </div>
+        <SuccessfulNotification display={showNotification} message={message} />
       </div>
     </>
   );
