@@ -101,11 +101,14 @@
               label {
                 padding-bottom: 0;
               }
-              label::after{
+              label::after {
                 left: 5px;
               }
             }
           }
+        }
+        .add-contact-status {
+          top: 90px !important;
         }
       }
 
@@ -149,5 +152,3 @@
     }
   }
 }
-
-

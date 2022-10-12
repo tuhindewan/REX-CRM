@@ -7,7 +7,6 @@ import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../AddItemDropdown";
-import CustomSelect from "../CustomSelect";
 import InputItem from "../InputItem/index";
 import "./style.css";
 
@@ -34,7 +33,6 @@ const CreateContact = (props) => {
 
   const [isActiveList, setIsActiveList] = useState(false);
   const [isActiveTag, setIsActiveTag] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState([]);
   const [assignLists, setAssignLists] = useState([]);
   const [assignTags, setAssignTags] = useState([]);
   const [refresh, setRefresh] = useState();
@@ -42,6 +40,8 @@ const CreateContact = (props) => {
   const toggleRefresh = () => {
     setRefresh(!refresh);
   };
+  const [isActiveStatus, setIsActiveStatus] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState();
 
   // Fetch lists & tags
   useEffect(() => {
@@ -93,7 +93,8 @@ const CreateContact = (props) => {
 
     contactData.lists = assignLists;
     contactData.tags = assignTags;
-
+    contactData.status = [selectedStatus];
+    console.log(contactData);
     const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
       method: "POST",
       headers: {
@@ -158,10 +159,31 @@ const CreateContact = (props) => {
   const handleTag = () => {
     setIsActiveTag(!isActiveTag);
     setIsActiveList(false);
+    setIsActiveStatus(false);
   };
   const handleList = () => {
     setIsActiveList(!isActiveList);
     setIsActiveTag(false);
+    setIsActiveStatus(false);
+  };
+  const handleStatus = () => {
+    setIsActiveStatus(!isActiveStatus);
+    setIsActiveTag(false);
+    setIsActiveList(false);
+  };
+  const handleSelectStatus = (title) => {
+    if ("Pending" == title) {
+      setSelectedStatus("pending");
+    } else if ("Subscribe" == title) {
+      setSelectedStatus("subscribed");
+    } else {
+      setSelectedStatus("unsubscribed");
+    }
+    setIsActiveStatus(false);
+  };
+
+  const capitalizeFirst = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   return (
@@ -219,21 +241,34 @@ const CreateContact = (props) => {
               /> */}
               <div className="form-group status-dropdown">
                 <label>Status</label>
-                <CustomSelect
-                  selected={selectedStatus}
-                  setSelected={setSelectedStatus}
-                  endpoint="/status"
-                  placeholder="Select Status"
-                  name="status"
-                  listTitle="CHOOSE Status"
-                  listTitleOnNotFound="No Data Found"
-                  searchPlaceHolder="Search..."
-                  allowMultiple={false}
-                  showSearchBar={true}
-                  showListTitle={false}
-                  showSelectedInside={false}
-                  allowNewCreate={false}
-                />
+                <button
+                  type="button"
+                  className={
+                    isActiveStatus
+                      ? "drop-down-button show"
+                      : "drop-down-button"
+                  }
+                  onClick={handleStatus}
+                >
+                  {selectedStatus
+                    ? capitalizeFirst(selectedStatus)
+                    : "Select Status"}
+                </button>
+                <ul
+                  className={
+                    isActiveStatus
+                      ? "add-contact-status mintmrm-dropdown show"
+                      : "add-contact-status mintmrm-dropdown"
+                  }
+                >
+                  <li onClick={() => handleSelectStatus("Pending")}>Pending</li>
+                  <li onClick={() => handleSelectStatus("Subscribe")}>
+                    Subscribe
+                  </li>
+                  <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                    Unsubscribe
+                  </li>
+                </ul>
               </div>
               <div className="form-group lists-dropdown">
                 <label>Lists</label>
