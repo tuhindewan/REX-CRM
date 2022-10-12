@@ -28,6 +28,7 @@ const FormEditor = (props) => {
 
   const [moreOption, setMoreOption] = useState(false);
   const [listDropdown, setListDropdown] = useState(false);
+  const [settingsPannel, setSettingsPannel] = useState(false);
 
   // Fetch lists & tags
   useEffect(() => {
@@ -133,6 +134,11 @@ const FormEditor = (props) => {
     setListDropdown(current => !current);
   };
 
+  //-------settings pannel open function-------
+  const showSettingsPannel = () => {
+    setSettingsPannel(current => !current);
+  };
+
   return (
     <>
       <div className="form-editor-page">
@@ -162,7 +168,7 @@ const FormEditor = (props) => {
                 <li>Change Template</li>
               </ul>
             </button>
-            <button className="mintmrm-btn settings"><SettingIcon/></button>
+            <button className="mintmrm-btn settings" onClick={showSettingsPannel}><SettingIcon/></button>
             <button className="mintmrm-btn enable">Enable</button>
           </div>
         </div>
@@ -189,87 +195,10 @@ const FormEditor = (props) => {
               </div>
             </div>
 
-            {/* <div className="form-items">
-              <div className="left-items">
-                <div style={{ position: "relative" }}>
-                  <button
-                    className="mintmrm-btn outline"
-                    onClick={() => setToggleDropdown(!toggleDropdown)}
-                  >
-                    {formData.form_position ? positionName : "Form Position"}
-                  </button>
-                  <ul
-                    className={
-                      toggleDropdown
-                        ? "mintmrm-dropdown show"
-                        : "mintmrm-dropdown "
-                    }
-                    style={{ position: "absolute", top: "100px", left: "0px" }}
-                  >
-                    <li onClick={() => handleFormPosition("fly_in", "Fly-In")}>
-                      Fly-In
-                    </li>
-                    <li onClick={() => handleFormPosition("pop_up", "Pop-Up")}>
-                      Pop-Up
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="form-group">
-                  <CustomSelect
-                    selected={selectedTags}
-                    setSelected={setSelectedTags}
-                    endpoint="/tags"
-                    placeholder="Tags"
-                    name="tag"
-                    listTitle="CHOOSE TAG"
-                    listTitleOnNotFound="No Data Found"
-                    searchPlaceHolder="Search..."
-                    allowMultiple={true}
-                    showSearchBar={true}
-                    showListTitle={true}
-                    showSelectedInside={false}
-                    allowNewCreate={true}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <CustomSelect
-                    selected={selectedLists}
-                    setSelected={setSelectedLists}
-                    endpoint="/lists"
-                    placeholder="Lists"
-                    name="list"
-                    listTitle="CHOOSE List"
-                    listTitleOnNotFound="No Data Found"
-                    searchPlaceHolder="Search..."
-                    allowMultiple={true}
-                    showSearchBar={true}
-                    showListTitle={true}
-                    showSelectedInside={false}
-                    allowNewCreate={true}
-                  />
-                </div>
-              </div>
-
-              <div className="right-section">
-                <button
-                  type="submit"
-                  className="contact-save mintmrm-btn "
-                  onClick={saveForm}
-                >
-                  Save
-                </button>
-              </div>
-            </div> */}
-
           </div>
 
+          <div id="mrm-block-editor" className={settingsPannel ? 'getdave-sbe-block-editor block-editor show-settings-pannel' : 'getdave-sbe-block-editor block-editor'} ></div>
 
-          <div
-            id="mrm-block-editor"
-            className="getdave-sbe-block-editor block-editor"
-          ></div>
         </div>
 
       </div>

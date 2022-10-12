@@ -310,43 +310,4 @@
         }
     }
 
-    .interface-interface-skeleton__body {
-        display: flex;
-        flex-flow: row wrap;
-
-        .interface-interface-skeleton__content {
-            width: calc(100% - 385px);
-            background: #E6E6E6;
-            border-radius: 10px;
-            padding: 30px;
-
-            .editor-styles-wrapper {
-                width: 677px;
-                margin: 0 auto;
-            }
-        }
-
-        .interface-interface-skeleton__sidebar {
-            width: calc(385px - 35px );
-            margin-left: 35px;
-
-            .mrm-form-builder-sidebar {
-                background: #FFFFFF;
-                box-shadow: 0px 1px 1px rgb(182 185 191 / 30%);
-                border-radius: 6px;
-            }
-
-            .components-panel__header {
-                border-bottom: 1px solid #E9EAEE;
-                background: #fff!important;
-                text-align: center;
-                padding: 10px;
-                height: 58px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-    }
-
 }
