@@ -1,11 +1,30 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Search from "./Icons/Search";
 import Plus from "./Icons/Plus";
+import Search from "./Icons/Search";
 
 export default function AddItemDropdown(props) {
+  const {
+    selected,
+    setSelected,
+    endpoint,
+    items,
+    allowMultiple,
+    allowNewCreate,
+    name,
+  } = props;
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+
+  const filteredItems = useMemo(() => {
+    if (search) {
+      return items.filter(
+        (item) =>
+          item.title.toLowerCase().indexOf(search.toLocaleLowerCase()) > -1
+      );
+    }
+    return items;
+  }, [search, items]);
 
   function handleSearch(e) {
     e.stopPropagation();
@@ -15,6 +34,57 @@ export default function AddItemDropdown(props) {
     if (value.length >= 3) setQuery(`&search=${value}`);
     else setQuery("");
   }
+
+  const checkIfSelected = (id) => {
+    const checked = selected?.findIndex((item) => item == id) >= 0;
+    return checked;
+  };
+
+  // Select or unselect items from the list
+  const handleSelectOne = (e) => {
+    e.stopPropagation();
+    let value = e.target.value ? e.target.value : e.target.dataset.customValue;
+    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    const index = selected?.findIndex((item) => item == id);
+    if (allowMultiple) {
+      if (index >= 0) {
+        setSelected(selected.filter((item) => item != id));
+      } else {
+        setSelected([...selected, id]);
+      }
+    } else {
+      if (index >= 0) setSelected([]);
+      else setSelected([id]);
+    }
+  };
+
+  // Handle new list or tag creation
+  const addNewItem = async () => {
+    let res = null;
+    let body = {
+      title: search,
+    };
+
+    try {
+      res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const resJson = await res.json();
+      if (resJson.code == 201) {
+        setSearch("");
+        setSelected([...selected, resJson.data]);
+      } else {
+      }
+    } catch (e) {
+    } finally {
+    }
+  };
+
   return (
     <>
       <ul
@@ -32,49 +102,49 @@ export default function AddItemDropdown(props) {
               name="column-search"
               placeholder="Create or find"
               value={search}
-              onChange={handleSearch}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </span>
         </li>
         <li className="list-title">Choose List</li>
         <div className="option-section">
-          <li className="single-column">
-            <div class="mintmrm-checkbox">
-              <input
-                type="checkbox"
-                name="product-feed"
-                id="product-feed"
-                value="Product Feed"
-              />
+          {filteredItems?.length > 0 &&
+            filteredItems.map((item, index) => {
+              let checked = checkIfSelected(item.id);
+              return (
+                <li
+                  key={index}
+                  className={
+                    checked
+                      ? "single-column mrm-custom-select-single-column-selected"
+                      : "single-column"
+                  }
+                >
+                  <div class="mintmrm-checkbox">
+                    <input
+                      type="checkbox"
+                      name={item.id}
+                      id={item.id}
+                      value={item.title}
+                      onChange={handleSelectOne}
+                      checked={checked}
+                    />
 
-              <label for="product-feed" className="mrm-custom-select-label">
-                Product Feed
-              </label>
-            </div>
-          </li>
-          <li className="single-column">
-            <div class="mintmrm-checkbox">
-              <input
-                type="checkbox"
-                name="funnels"
-                id="funnels"
-                value="Funnels"
-              />
-
-              <label for="funnels" className="mrm-custom-select-label">
-                Funnels
-              </label>
-            </div>
-          </li>
-          <li className="single-column">
-            <div class="mintmrm-checkbox">
-              <input type="checkbox" name="wpvr" id="wpvr" value="WPVR" />
-              <label for="wpvr" className="mrm-custom-select-label">
-                WPVR
-              </label>
-            </div>
-          </li>
+                    <label for={item.id} className="mrm-custom-select-label">
+                      {item.title}
+                    </label>
+                  </div>
+                </li>
+              );
+            })}
         </div>
+        {filteredItems?.length == 0 && allowNewCreate && (
+          <>
+            <button className="mrm-custom-select-add-btn" onClick={addNewItem}>
+              {`+ Create new ${name} "${search}"`}
+            </button>
+          </>
+        )}
         {/* <div className="no-found">
           <span>No List found</span>
         </div> */}

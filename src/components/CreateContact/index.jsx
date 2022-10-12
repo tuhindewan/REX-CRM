@@ -6,11 +6,10 @@ import { omit } from "lodash";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import InputItem from "../InputItem/index";
-import Selectbox from "../Selectbox";
-import "./style.css";
 import AddItemDropdown from "../AddItemDropdown";
 import CustomSelect from "../CustomSelect";
+import InputItem from "../InputItem/index";
+import "./style.css";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -30,16 +29,14 @@ const CreateContact = (props) => {
   });
 
   const [errors, setErrors] = useState({});
-
-  // lists
   const [lists, setLists] = useState([]);
-
-  // tags
   const [tags, setTags] = useState([]);
 
   const [isActiveList, setIsActiveList] = useState(false);
   const [isActiveTag, setIsActiveTag] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState([]);
+  const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
 
   // Fetch lists & tags
   useEffect(() => {
@@ -88,6 +85,9 @@ const CreateContact = (props) => {
         email: errors["emails"],
       });
     }
+
+    contactData.lists = assignLists;
+    contactData.tags = assignTags;
 
     const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
       method: "POST",
@@ -160,11 +160,11 @@ const CreateContact = (props) => {
   };
 
   return (
-    <div className="create-contact">
-      <div className="contact-container">
-        <h2 className="conatct-heading">Add Contact</h2>
+    <>
+      <div className="create-contact">
+        <div className="contact-container">
+          <h2 className="conatct-heading">Add Contact</h2>
 
-        <form onSubmit={handleSubmit}>
           <div className="add-contact-form">
             <div className="contact-form-body">
               <InputItem
@@ -234,7 +234,9 @@ const CreateContact = (props) => {
                 <label>Lists</label>
                 <button
                   type="button"
-                  className={isActiveList ? "drop-down-button show" : "drop-down-button"}
+                  className={
+                    isActiveList ? "drop-down-button show" : "drop-down-button"
+                  }
                   onClick={handleList}
                 >
                   Select List
@@ -242,13 +244,22 @@ const CreateContact = (props) => {
                 <AddItemDropdown
                   isActive={isActiveList}
                   setIsActive={setIsActiveList}
+                  selected={assignLists}
+                  setSelected={setAssignLists}
+                  endpoint="lists"
+                  items={lists}
+                  allowMultiple={true}
+                  allowNewCreate={true}
+                  name="list"
                 />
               </div>
               <div className="form-group tags-dropdown">
                 <label>Lists</label>
                 <button
                   type="button"
-                  className={isActiveTag ? "drop-down-button show" : "drop-down-button"}
+                  className={
+                    isActiveTag ? "drop-down-button show" : "drop-down-button"
+                  }
                   onClick={handleTag}
                 >
                   Select List
@@ -256,6 +267,13 @@ const CreateContact = (props) => {
                 <AddItemDropdown
                   isActive={isActiveTag}
                   setIsActive={setIsActiveTag}
+                  selected={assignTags}
+                  setSelected={setAssignTags}
+                  endpoint="tags"
+                  items={tags}
+                  allowMultiple={true}
+                  allowNewCreate={true}
+                  name="tag"
                 />
               </div>
             </div>
@@ -267,14 +285,18 @@ const CreateContact = (props) => {
               >
                 Cancel
               </button>
-              <button type="submit" className="contact-save mintmrm-btn ">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="contact-save mintmrm-btn "
+              >
                 Save
               </button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
