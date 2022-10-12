@@ -33,6 +33,7 @@ export default function CustomSelect(props) {
     setFilterAdder,
     filterAdder,
     filterRequest,
+    prefix,
   } = props;
   const buttonRef = useRef(null);
   const customSelectUUID = useRef(Math.random());
@@ -74,11 +75,8 @@ export default function CustomSelect(props) {
   // handler for one single item click for both list item and checkbox rendering
   const handleSelectOne = (e) => {
     e.stopPropagation();
-    // since this function is handling input for both checkboxes and li elements
-    // there might be either id and value for input checkboxes
-    // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
-    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    let id = e.target.dataset.customId;
     let name = e.target.name;
     const index = selected.findIndex((item) => item.id == id);
 
@@ -123,7 +121,9 @@ export default function CustomSelect(props) {
     const lists = filterRequest?.lists_ids;
     const tags = filterRequest?.tags_ids;
     const status = filterRequest?.status;
-    const all_groups = lists?.concat(status, tags);
+
+    const empty_groups = [];
+    const all_groups = empty_groups?.concat(status, tags, lists);
     setGroups(all_groups);
   }, [filterRequest]);
 
@@ -312,13 +312,17 @@ export default function CustomSelect(props) {
                     <input
                       type="checkbox"
                       name={props.name}
-                      id={item.id}
+                      id={prefix + item.id}
                       value={item.title}
+                      data-custom-id={item.id}
                       onChange={handleSelectOne}
                       checked={checked}
                     />
 
-                    <label for={item.id} className="mrm-custom-select-label">
+                    <label
+                      for={prefix + item.id}
+                      className="mrm-custom-select-label"
+                    >
                       {item.title}
                     </label>
                   </div>

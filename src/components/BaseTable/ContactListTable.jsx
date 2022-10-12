@@ -85,8 +85,7 @@ export default function ContactListTable(props) {
   const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
-  let { lists_ids, tags_ids, status } = useParams();
-
+  let { lists, tags_ids, status } = useParams();
   const [filterRequest, setFilterRequest] = useState({});
 
   // global counter update real time
@@ -516,6 +515,7 @@ export default function ContactListTable(props) {
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
               filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
           <div className="form-group left-filter">
@@ -536,6 +536,7 @@ export default function ContactListTable(props) {
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
               filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
           <div className="form-group left-filter">
@@ -556,36 +557,34 @@ export default function ContactListTable(props) {
               setFilterAdder={setFilterAdder}
               filterAdder={filterAdder}
               filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
         </div>
 
         <div className="right-buttons">
-          {!isFilter ? (
-            <span className="search-section">
-              <Search />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => {
-                  let value = e.target.value;
-                  setSearch(value);
-                  // only set query when there are more than 3 characters
-                  if (value.length >= 3) {
-                    setQuery(encodeURI(`&search=${value}`));
-                    // on every new search term set the page explicitly to 1 so that results can
-                    // appear
-                    setPage(1);
-                  } else {
-                    setQuery("");
-                  }
-                }}
-                placeholder="Search..."
-              />
-            </span>
-          ) : (
-            ""
-          )}
+          <span className="search-section">
+            <Search />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                let value = e.target.value;
+                setSearch(value);
+                setFilterSearch(value);
+                // only set query when there are more than 3 characters
+                if (value.length >= 3) {
+                  setQuery(encodeURI(`&search=${value}`));
+                  // on every new search term set the page explicitly to 1 so that results can
+                  // appear
+                  setPage(1);
+                } else {
+                  setQuery("");
+                }
+              }}
+              placeholder="Search..."
+            />
+          </span>
 
           <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
             <ExportIcon />
@@ -637,6 +636,7 @@ export default function ContactListTable(props) {
                 showNotification={"mone"}
                 setMessage={setMessage}
                 message={message}
+                prefix="assign"
               />
             ) : (
               <AssignedItems
@@ -662,6 +662,7 @@ export default function ContactListTable(props) {
                 showNotification={"mone"}
                 setMessage={setMessage}
                 message={message}
+                prefix="assign"
               />
             )}
           </div>

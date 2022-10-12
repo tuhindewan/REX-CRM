@@ -263,12 +263,12 @@ class ContactModel{
         // Search contacts by email, first name or last name
 		if ( ! empty( $search ) ) {
             $search = $wpdb->esc_like($search);
-            $search_terms = "WHERE (`hash` LIKE '%$search%' 
-             OR `email` LIKE '%$search%'
-             OR concat(`first_name`, ' ', `last_name`)LIKE '%$search%'
-             OR `source` LIKE '%$search%' 
-             OR `status` LIKE '%$search%' 
-             OR `stage` LIKE '%$search%')";
+            $search_terms = "WHERE (`hash` LIKE '%%$search%%' 
+             OR `email` LIKE '%%$search%%'
+             OR concat(`first_name`, ' ', `last_name`)LIKE '%%$search%%'
+             OR `source` LIKE '%%$search%%' 
+             OR `status` LIKE '%%$search%%' 
+             OR `stage` LIKE '%%$search%%')";
 		}
         
         // Prepare sql results for list view
@@ -483,10 +483,10 @@ class ContactModel{
             $select_query = $wpdb->prepare("SELECT * FROM $contact_table
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
             LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
-            WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
-                 `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
-                 OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%') $and $contact_filter_query
+            WHERE (`hash` LIKE '%%$search%%' OR `email` LIKE '%%$search%%' OR
+                 `first_name` LIKE '%%$search%%' OR `last_name` LIKE '%%$search%%' 
+                 OR `source` LIKE '%%$search%%' OR `status` LIKE '%%$search%%' OR 
+                 `stage` LIKE '%%$search%%') $and $contact_filter_query
                  GROUP BY $contact_table.id
                 LIMIT $offset, $limit
             " );
@@ -497,10 +497,10 @@ class ContactModel{
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
             LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
             WHERE 
-            (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
-                 `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
-                 OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%') $and $contact_filter_query
+            (`hash` LIKE '%%$search%%' OR `email` LIKE '%%$search%%' OR
+                 `first_name` LIKE '%%$search%%' OR `last_name` LIKE '%%$search%%' 
+                 OR `source` LIKE '%%$search%%' OR `status` LIKE '%%$search%%' OR 
+                 `stage` LIKE '%%$search%%') $and $contact_filter_query
                 GROUP BY $contact_table.id
             " );
 
