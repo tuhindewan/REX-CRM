@@ -216,7 +216,6 @@ export default function ContactDetails() {
     );
     const responseData = await res.json();
     const code = responseData?.code;
-    console.log(responseData);
 
     if (code === 201) {
       setShowNotification("block");

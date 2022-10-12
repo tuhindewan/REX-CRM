@@ -1,13 +1,11 @@
 import queryString from "query-string";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
-  Link,
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import Plus from "../Icons/Plus";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteMultipleContactsItems } from "../../services/Contact";
@@ -18,11 +16,13 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
+import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
+import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import ExportIcon from "../Icons/ExportIcon";
@@ -53,6 +53,7 @@ export default function ContactListTable(props) {
   const [filterContact, setFilterContact] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [searchColumns, setSearchColumns] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
@@ -116,6 +117,18 @@ export default function ContactListTable(props) {
   const [filteredStatus, setFilteredStatus] = useState([]);
   const [filteredLists, setFilteredLists] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
+  const [listColumns, setListColumns] = useState([]);
+  const [columns, setColumns] = useState([]);
+
+  const filteredColumns = useMemo(() => {
+    if (searchColumns) {
+      return listColumns.filter(
+        (item) =>
+          item.value.toLowerCase().indexOf(searchColumns.toLocaleLowerCase()) > -1
+      );
+    }
+    return listColumns;
+  }, [searchColumns, listColumns]);
 
   const deleteAll = () => {
     setSelectedLists([]);
@@ -253,6 +266,39 @@ export default function ContactListTable(props) {
     return () => clearTimeout(timer);
   }, [perPage, page, query, refresh, isFilter]);
 
+  useEffect(() => {
+    async function getColumns() {
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (200 == data.code) {
+            setListColumns(data.data);
+          }
+        });
+    }
+
+    async function getStoredColumns() {
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (200 == data.code) {
+            setColumns(data.data);
+          }
+        });
+    }
+
+    getColumns();
+    getStoredColumns()
+  }, []);
+
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
   };
@@ -369,6 +415,10 @@ export default function ContactListTable(props) {
     setAddColumn(!isAddColumn);
   };
 
+  const hideAddColumnList = () => {
+    setAddColumn(!isAddColumn);
+  };
+
   const noteForm = () => {
     setIsNoteForm(true);
     setIsCloseNote(!isCloseNote);
@@ -415,6 +465,32 @@ export default function ContactListTable(props) {
           return item != id;
         }),
       }));
+    }
+  };
+
+  const saveColumnList = async () => {
+    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        contact_columns: columns,
+      }),
+    });
+    const responseData = await res.json();
+    const code = responseData?.code;
+    if (code === 201) {
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      setColumns(responseData.data);
+      toggleRefresh();
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
     }
   };
 
@@ -663,32 +739,41 @@ export default function ContactListTable(props) {
                   type="search"
                   name="column-search"
                   placeholder="Search..."
+                  value={searchColumns}
+                  onChange={(e) => setSearchColumns(e.target.value)}
                 />
               </span>
             </li>
 
             <li className="list-title">Choose columns</li>
 
-            <Link className="add-action" to="">
-              <Plus />
-              Add Column
-            </Link>
+            {filteredColumns.length > 0 ? (
+              filteredColumns &&
+              filteredColumns.map((column) => {
+                return (
+                  <li className="single-column" key={column.id}>
+                    <ColumnList
+                      title={column.value}
+                      id={column.id}
+                      selected={columns}
+                      setSelected={setColumns}
+                    />
+                  </li>
+                );
+              })
+            ) : (
+              <div>No Column Found</div>
+            )}
 
-            {/* {contactListColumns.map((column, index) => {
-                  <li className="single-column">
-                    <ColumnList title={column.title} key={index} />
-                  </li>;
-                })} */}
-
-            {/* <li className="button-area">
-              <button className="mintmrm-btn outline default-btn">
+            <li className="button-area">
+              {/* <button className="mintmrm-btn outline default-btn">
                 Default
+              </button> */}
+              <button className="mintmrm-btn outline cancel-btn"onClick={hideAddColumnList} >Cancel</button>
+              <button className="mintmrm-btn save-btn" onClick={saveColumnList}>
+                Save
               </button>
-              <button className="mintmrm-btn outline cancel-btn">
-                Cancel
-              </button>
-              <button className="mintmrm-btn save-btn">Save</button>
-            </li> */}
+            </li>
           </ul>
         </div>
         <div className="contact-list-table">
@@ -712,12 +797,13 @@ export default function ContactListTable(props) {
 
                 <th className="last-name">Last Name</th>
 
-                <th className="list">List</th>
-                <th className="tag">Tag</th>
-                <th className="last-activity">Last Activity</th>
-                <th className="status">Status</th>
-                <th className="phone-number">Phone Number</th>
-                <th className="source">Source</th>
+                {columns.map((column) => {
+                  return (
+                    <th key={column.id} className={column.id}>
+                      {column.title}
+                    </th>
+                  );
+                })}
                 <th className="action"></th>
               </tr>
             </thead>
@@ -732,6 +818,7 @@ export default function ContactListTable(props) {
                     setCurrentActive={setCurrentActive}
                     handleSelectOne={handleSelectOne}
                     selected={selected}
+                    columns={columns}
                   />
                 );
               })}
