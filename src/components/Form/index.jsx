@@ -270,11 +270,6 @@ export default function FormIndex(props) {
                 <div className="right-buttons">
                   <div className="sorting">
                     <h5>Sort by</h5>
-
-                    {/* <select name="sort-by" id="">
-                      <option value="created_at">Date</option>
-                      <option value="title">Title</option>
-                    </select> */}
                     <div className="pos-relative">
                       <button
                         onClick={() => setToggleDropdown(!toggleDropdown)}
