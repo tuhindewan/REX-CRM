@@ -6,11 +6,9 @@ import { omit } from "lodash";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import InputItem from "../InputItem/index";
-import Selectbox from "../Selectbox";
-import "./style.css";
 import AddItemDropdown from "../AddItemDropdown";
-import CustomSelect from "../CustomSelect";
+import InputItem from "../InputItem/index";
+import "./style.css";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -30,15 +28,18 @@ const CreateContact = (props) => {
   });
 
   const [errors, setErrors] = useState({});
-
-  // lists
   const [lists, setLists] = useState([]);
-
-  // tags
   const [tags, setTags] = useState([]);
 
   const [isActiveList, setIsActiveList] = useState(false);
   const [isActiveTag, setIsActiveTag] = useState(false);
+  const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
+  const [refresh, setRefresh] = useState();
+
+  const toggleRefresh = () => {
+    setRefresh(!refresh);
+  };
   const [isActiveStatus, setIsActiveStatus] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState();
 
@@ -55,7 +56,7 @@ const CreateContact = (props) => {
     getTags().then((results) => {
       setTags(results.data);
     });
-  }, []);
+  }, [refresh]);
 
   const validate = (event, name, value) => {
     switch (name) {
@@ -90,6 +91,10 @@ const CreateContact = (props) => {
       });
     }
 
+    contactData.lists = assignLists;
+    contactData.tags = assignTags;
+    contactData.status = [selectedStatus];
+    console.log(contactData);
     const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
       method: "POST",
       headers: {
@@ -166,17 +171,27 @@ const CreateContact = (props) => {
     setIsActiveTag(false);
     setIsActiveList(false);
   };
-  const handleSelectStatus = (title) =>{
-    setSelectedStatus(title);
-    setIsActiveStatus(false); 
-  }
+  const handleSelectStatus = (title) => {
+    if ("Pending" == title) {
+      setSelectedStatus("pending");
+    } else if ("Subscribe" == title) {
+      setSelectedStatus("subscribed");
+    } else {
+      setSelectedStatus("unsubscribed");
+    }
+    setIsActiveStatus(false);
+  };
+
+  const capitalizeFirst = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
 
   return (
-    <div className="create-contact">
-      <div className="contact-container">
-        <h2 className="conatct-heading">Add Contact</h2>
+    <>
+      <div className="create-contact">
+        <div className="contact-container">
+          <h2 className="conatct-heading">Add Contact</h2>
 
-        <form onSubmit={handleSubmit}>
           <div className="add-contact-form">
             <div className="contact-form-body">
               <InputItem
@@ -235,7 +250,9 @@ const CreateContact = (props) => {
                   }
                   onClick={handleStatus}
                 >
-                  {selectedStatus ? selectedStatus : "Select Status"}
+                  {selectedStatus
+                    ? capitalizeFirst(selectedStatus)
+                    : "Select Status"}
                 </button>
                 <ul
                   className={
@@ -262,11 +279,21 @@ const CreateContact = (props) => {
                   }
                   onClick={handleList}
                 >
-                  Select List
+                  Select Lists
                 </button>
                 <AddItemDropdown
                   isActive={isActiveList}
                   setIsActive={setIsActiveList}
+                  selected={assignLists}
+                  setSelected={setAssignLists}
+                  endpoint="lists"
+                  items={lists}
+                  allowMultiple={true}
+                  allowNewCreate={true}
+                  name="list"
+                  title="CHOOSE LIST"
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
               </div>
               <div className="form-group tags-dropdown">
@@ -278,11 +305,21 @@ const CreateContact = (props) => {
                   }
                   onClick={handleTag}
                 >
-                  Select List
+                  Select Tags
                 </button>
                 <AddItemDropdown
                   isActive={isActiveTag}
                   setIsActive={setIsActiveTag}
+                  selected={assignTags}
+                  setSelected={setAssignTags}
+                  endpoint="tags"
+                  items={tags}
+                  allowMultiple={true}
+                  allowNewCreate={true}
+                  name="tag"
+                  title="CHOOSE TAG"
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
               </div>
             </div>
@@ -294,14 +331,18 @@ const CreateContact = (props) => {
               >
                 Cancel
               </button>
-              <button type="submit" className="contact-save mintmrm-btn ">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="contact-save mintmrm-btn "
+              >
                 Save
               </button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
