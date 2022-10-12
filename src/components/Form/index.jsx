@@ -76,10 +76,12 @@ export default function FormIndex(props) {
     setRefresh(!refresh);
   }
 
+  // to show dropdown options
   const showMoreOption = () => {
     setActive(!isActive);
   };
 
+  // to show bulk select options
   const showBulkAction = () => {
     setBulkAction(!isBulkAction);
   };
@@ -148,6 +150,7 @@ export default function FormIndex(props) {
     return () => clearTimeout(timer);
   }, [page, perPage, query, refresh]);
 
+  // confirmation for delete and set form id to prepare deletation
   const deleteForm = (formId) => {
     setIsDelete("block");
     setDeleteTitle("Delete List");
@@ -366,7 +369,7 @@ export default function FormIndex(props) {
                                 <div className="shortcode-wrapper">
                                   <input
                                     type="text"
-                                    value={'[mondcrm id="' + form.id + '"]'}
+                                    value={'[mintmrm id="' + form.id + '"]'}
                                     id="shortcode1"
                                   />
                                   <button type="button" className="copy">
@@ -425,17 +428,6 @@ export default function FormIndex(props) {
                                       </li>
                                     </ul>
                                   )}
-
-                                  {/* <ul
-                                    className={
-                                      currentActive == form.id && isActive
-                                        ? "mintmrm-dropdown show"
-                                        : "mintmrm-dropdown"
-                                    }
-                                  >
-                                    <li>Edit</li>
-                                    <li>Delete</li>
-                                  </ul> */}
                                 </button>
                               </td>
                             </tr>
@@ -451,17 +443,6 @@ export default function FormIndex(props) {
                       )}
                     </tbody>
                   </table>
-
-                  {/* List empty or search not found ui */}
-                  {/* {lists.length == 0 && (
-                    <div className="mrm-empty-state-wrapper">
-                      <TagIcon />
-                      <div>
-                        No Tags Found{" "}
-                        {search.length > 0 ? ` for the term "${search}"` : null}
-                      </div>
-                    </div>
-                  )} */}
                 </div>
               </div>
               {totalPages > 1 && (
