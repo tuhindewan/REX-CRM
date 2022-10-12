@@ -92,6 +92,7 @@ class ContactModel{
         unset($args['created_time']);
         unset($args['added_by_login']);
         unset($args['avatar_url']);
+        unset($args['notes']);
 
         try {
             $wpdb->update( 
@@ -175,7 +176,7 @@ class ContactModel{
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s id = %d", array( $email, $contact_id ));
+        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s AND id = %d", array( $email, $contact_id ));
         $results = $wpdb->get_results($select_query);
         if( $results ){
             return true;

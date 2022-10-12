@@ -90,7 +90,7 @@ class ContactController extends BaseController {
                 // Existing contact email address check
                 $other_slugs = ContactModel::is_contact_exist( $email );
                 $update_slug = ContactModel::is_contact_exist_by_id( $email, $contact_id );
-                if ( $other_slugs && !$update_slug ) {
+                if ( $other_slugs && !$update_slug ) {                    
                     return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200);
                 }
                 $contact_id = ContactModel::update( $params, $contact_id );
