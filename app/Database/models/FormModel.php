@@ -364,7 +364,7 @@ class FormModel {
         $table_name = $wpdb->prefix . FormMetaSchema::$table_name;
 
         try {
-            $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE form_id = %d AND meta_key=%s", array( $form_od, $meta_key ));
+            $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE form_id = %d AND meta_key=%s", array( $form_id, $meta_key ));
             $results = $wpdb->get_results($select_query);
             if( !empty($results) ){
                 return true;
@@ -373,6 +373,42 @@ class FormModel {
             return false;
 
         }
+        
+    }
+
+
+    /**
+     * SQL query to update status for a form
+     * 
+     * @param $object       Form object
+     * @param $form_id      Form id
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function form_status_update(  FormData $form, $form_id ){
+
+        global $wpdb;
+        $form_table = $wpdb->prefix . FormSchema::$table_name;
+
+        if ( "" !== $form->get_status() ){
+            $args['status'] = $form->get_status();
+        }else {
+            return false;
+        }
+        
+        $args['updated_at'] = current_time('mysql');
+
+        try {
+            $wpdb->update( 
+                $form_table, 
+                $args, 
+                array( 'ID' => $form_id )
+            );
+        }catch(\Exception $e){
+            return false;
+        }
+        return true;
         
     }
 }

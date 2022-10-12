@@ -242,6 +242,10 @@ export default function FormIndex(props) {
     setToggleDropdown(false);
   };
 
+  const handleStatus = (id, status) => {
+    console.log(status);
+  };
+
   return (
     <>
       <div className="form-list-page">
@@ -429,12 +433,37 @@ export default function FormIndex(props) {
 
                               <td className="status">
                                 <span className="wpfnl-switcher">
-                                  <input
-                                    type="checkbox"
-                                    name="status"
-                                    id="form-status"
-                                  />
-                                  <label htmlFor="form-status"></label>
+                                  {"1" === form.status ? (
+                                    <>
+                                      <input
+                                        type="checkbox"
+                                        name="status"
+                                        id={"form-status-" + form.id}
+                                        onChange={() =>
+                                          handleStatus(form.id, form.status)
+                                        }
+                                        checked={true}
+                                      />
+                                      <label
+                                        htmlFor={"form-status-" + form.id}
+                                      ></label>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <input
+                                        type="checkbox"
+                                        name="status"
+                                        id={"form-status-" + form.id}
+                                        onChange={() =>
+                                          handleStatus(form.id, form.status)
+                                        }
+                                        checked={false}
+                                      />
+                                      <label
+                                        htmlFor={"form-status-" + form.id}
+                                      ></label>
+                                    </>
+                                  )}
                                 </span>
                               </td>
 
