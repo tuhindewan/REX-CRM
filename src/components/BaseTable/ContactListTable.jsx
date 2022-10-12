@@ -24,7 +24,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
-import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import ExportIcon from "../Icons/ExportIcon";
 import ExportDrawer from "../ExportDrawer";
 
@@ -280,27 +279,29 @@ export default function ContactListTable(props) {
         });
     }
 
-    async function getStoredColumns() {
-      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          if (200 == data.code) {
-            setColumns(data.data);
-          }
-        });
-    }
+    
 
     getColumns();
-    getStoredColumns()
   }, []);
 
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
   };
+
+  async function getStoredColumns() {
+    await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        if (200 == data.code) {
+          console.log(data.data);
+          setColumns(data.data);
+        }
+      });
+  }
 
   const showMoreOption = () => {
     setActive(!isActive);
@@ -798,7 +799,7 @@ export default function ContactListTable(props) {
 
                 <th className="last-name">Last Name</th>
 
-                {columns.map((column) => {
+                {columns?.map((column) => {
                   return (
                     <th key={column.id} className={column.id}>
                       {column.title}

@@ -8,8 +8,6 @@ import Delete from "../Icons/Delete";
 import EyeIcon from "../Icons/EyeIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
-import EyeIcon from "../Icons/EyeIcon";
-import Delete from "../Icons/Delete";
 import SendMessageIcon from "../Icons/SendMessageIcon";
 import AddNoteIcon from "../Icons/AddNoteIcon";
 import NoteDrawer from "../NoteDrawer";
