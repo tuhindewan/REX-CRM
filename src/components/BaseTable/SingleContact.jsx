@@ -143,13 +143,13 @@ export default function SingleContact(props) {
               </td>
             );
           }
-
-          if(column.id in contact?.meta_fields){
+          
+          if(column.id in Object.assign({}, contact?.meta_fields)){
             return (
               <td className={column.id} key={column.id}>
                 {contact?.meta_fields?.[column.id]
-            ? contact?.meta_fields?.[column.id]
-            : "-"}
+                  ? contact?.meta_fields?.[column.id]
+                  : "-"}
               </td>
             );
           }else{

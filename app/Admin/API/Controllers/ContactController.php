@@ -1143,7 +1143,7 @@ class ContactController extends BaseController {
         }
         return $this->get_error_response( __( 'Failed to save columns', 'mrm' ), 200 );
     }
-    
+
 
     /**
      * Return stored column information from wp_options table
