@@ -194,7 +194,7 @@ class FormController extends BaseController {
         if (isset($params['form_id'])){
             $success = FormModel::destroy( $params['form_id'] );
             if($success) {
-                return $this->get_success_response(__( 'Forms has been deleted successfully', 'mrm' ), 200);
+                return $this->get_success_response(__( 'Form has been deleted successfully', 'mrm' ), 200);
             }
         }
 
