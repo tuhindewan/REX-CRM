@@ -581,14 +581,6 @@ ul.mintmrm-dropdown {
     }
   }
 
-  li:hover {
-    svg {
-      path {
-        fill: $primary-color;
-      }
-    }
-  }
-
   li.searchbar {
     background: transparent;
     padding: 8px 8px 20px;
@@ -670,6 +662,7 @@ ul.mintmrm-dropdown {
   }
   .add-action {
     display: flex;
+    align-items: center;
     padding: 15px 0 8px 10px;
     border-top: 1px solid #e2e5ed;
     position: relative;
@@ -682,10 +675,28 @@ ul.mintmrm-dropdown {
     }
   }
   .add-action:hover {
+    text-decoration: none;
+    color: #4c25a5;
     svg {
       path {
         stroke: #4c25a5;
       }
+    }
+  }
+
+  .option-section {
+    max-height: 200px;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f9fafb;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccd0d9;
+      border-radius: 20px;
     }
   }
 }

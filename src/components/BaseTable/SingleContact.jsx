@@ -8,6 +8,9 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 import EyeIcon from "../Icons/EyeIcon";
 import Delete from "../Icons/Delete";
+import SendMessageIcon from "../Icons/SendMessageIcon";
+import AddNoteIcon from "../Icons/AddNoteIcon";
+import NoteDrawer from "../NoteDrawer";
 
 export default function SingleContact(props) {
   // global counter update real time
@@ -18,6 +21,8 @@ export default function SingleContact(props) {
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
+  const [isNoteForm, setIsNoteForm] = useState(true);
+  const [isCloseNote, setIsCloseNote] = useState(true);
 
   const showMoreOption = () => {
     setActive(!isActive);
@@ -64,6 +69,11 @@ export default function SingleContact(props) {
   const handleUpdate = () => {
     //console.log(contact.id);
     navigate(`/contacts/update/${contact.id}`);
+  };
+
+  const noteForm = () => {
+    setIsNoteForm(true);
+    setIsCloseNote(!isCloseNote);
   };
 
   return (
@@ -149,13 +159,26 @@ export default function SingleContact(props) {
                         : "mintmrm-dropdown"
                     }
                   >
-                    <li
-                      className="action-list"
-                      onClick={handleUpdate}
-                    >
+                    <li className="action-list" onClick={handleUpdate}>
                       <EyeIcon />
                       View
                     </li>
+                    {/* <li className="action-list">
+                      <SendMessageIcon />
+                      Send message
+                    </li>
+                    <li className="action-list" onClick={noteForm}>
+                      <AddNoteIcon />
+                      Add note
+                      <NoteDrawer
+                        isOpenNote={isNoteForm}
+                        isCloseNote={isCloseNote}
+                        setIsCloseNote={setIsCloseNote}
+                        // contactID={id}
+                        // refresh={refresh}
+                        // setRefresh={setRefresh}
+                      />
+                    </li> */}
                     <li
                       className="action-list"
                       onClick={() => {

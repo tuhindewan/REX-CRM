@@ -20,7 +20,7 @@ export default function AlertPopup(props) {
     >
       <div className="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
-          <h3>Alert</h3>
+          <h3>No item selected</h3>
           <div className="cross-icon" onClick={onCancel}>
             <CrossIcon />
           </div>

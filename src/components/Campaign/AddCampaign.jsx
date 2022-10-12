@@ -253,7 +253,7 @@ export default function AddCampaign(props) {
                     }
                     onClick={() => setSelectedEmailIndex(index)}
                   >
-                    <div className="icon-section">
+                    <div className="email-icon-section">
                       <InboxIcon />
                     </div>
                     <h5>Email {index + 1}</h5>

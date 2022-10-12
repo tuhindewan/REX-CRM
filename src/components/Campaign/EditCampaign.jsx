@@ -351,7 +351,7 @@ export default function EditCampaign(props) {
                       }
                       onClick={() => setActiveEmailSequence(index)}
                     >
-                      <div className="icon-section">
+                      <div className="email-icon-section">
                         <InboxIcon />
                       </div>
                       <h5>Email {index + 1}</h5>

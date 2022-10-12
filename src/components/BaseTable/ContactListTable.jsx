@@ -14,7 +14,7 @@ import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from "../CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
