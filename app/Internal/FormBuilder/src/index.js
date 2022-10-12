@@ -94,6 +94,11 @@ domReady( function() {
 		edit: CustomFieldEdit,
 		save: mrmCustomField,
 	});
-	render( <Editor settings={ settings } />, document.getElementById( 'mrm-block-editor' ) );
+
+
+	const el = document.getElementById('mrm-block-editor');
+	if (el !== null) {
+		render( <Editor settings={ settings } />, el );
+	}
 } );
 

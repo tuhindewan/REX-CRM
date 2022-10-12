@@ -34,7 +34,7 @@ class HomeScreen {
 
     public function load_wrapper() {
         ?>
-        <div class="">
+        <div class="crm-app-wrapper" style="display: block; ">
             <div id="crm-app"></div>
             <div id="crm-portal"></div>
         </div>

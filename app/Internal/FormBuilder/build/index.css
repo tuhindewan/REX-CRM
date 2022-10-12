@@ -148,50 +148,6 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 0 20px;
 }
 
-.mrm-form-builder-sidebar {
-  background: white;
-  border-left: 1px solid #ddd;
-  bottom: 0;
-  color: #1e1e1e;
-  height: 100vh;
-  overflow: hidden;
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 280px;
-  z-index: 100000;
-}
-@media (min-width: 600px) {
-  .mrm-form-builder-sidebar {
-    -webkit-overflow-scrolling: touch;
-    height: auto;
-    overflow: auto;
-    top: 106px;
-  }
-}
-@media (min-width: 782px) {
-  .mrm-form-builder-sidebar {
-    top: 92px;
-  }
-}
-@media (min-width: 600px) {
-  .mrm-form-builder-sidebar {
-    display: block;
-  }
-}
-.mrm-form-builder-sidebar > .components-panel {
-  border-left: 0;
-  border-right: 0;
-  margin-bottom: -1px;
-  margin-top: -1px;
-}
-.mrm-form-builder-sidebar > .components-panel > .components-panel__header {
-  background: #ddd;
-}
-.mrm-form-builder-sidebar .block-editor-block-inspector__card {
-  margin: 0;
-}
-
 .get-mrm-block-editor__block-list {
   padding-bottom: 48px;
   padding-top: 53px;
@@ -220,6 +176,9 @@ body.block-editor-page #wpcontent {
 }
 body.block-editor-page #wpbody-content {
   padding-bottom: 0;
+}
+body.block-editor-page #wpbody-content > div:not(.block-editor):not(#screen-meta) {
+  display: none;
 }
 body.block-editor-page #wpfooter {
   display: none;
