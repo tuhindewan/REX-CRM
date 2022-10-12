@@ -223,7 +223,8 @@ export default function AddCampaign(props) {
   });
 
   return (
-    <div className="mintmrm-add-campaign">
+      <>
+        <div className="mintmrm-add-campaign">
       <div className="add-campaign-breadcrumb">
         <div className="mintmrm-container">
           <ul className="mintmrm-breadcrumb">
@@ -422,48 +423,7 @@ export default function AddCampaign(props) {
                   <TemplateIcon />
                   <Link to="">Select a Template</Link>
                 </div>
-                <CampaignTemplates
-                  isOpen={isTemplate}
-                  isClose={isClose}
-                  isNewCampaign={true}
-                  selectedEmailIndex={selectedEmailIndex}
-                  emailData={emailData[selectedEmailIndex]}
-                  setIsClose={setIsClose}
-                  setEmailBody={setEmailBody}
-                  setIsTemplate={setIsTemplate}
-                  campaignData={{
-                    title: campaignTitle,
-                    recipients: {
-                      lists: recipientLists.map((list) => {
-                        return {
-                          id: list.id,
-                          title: list.title,
-                        };
-                      }),
-                      tags: recipientTags.map((tag) => {
-                        return {
-                          id: tag.id,
-                          title: tag.title,
-                        };
-                      }),
-                    },
-                    type: emailData.length > 1 ? "sequence" : "regular",
-                    status: status,
-                    created_by: `${window.MRM_Vars.current_userID}`,
-                    emails: emailData.map((email) => {
-                      return {
-                        email_subject: email.subject,
-                        email_preview_text: email.preview,
-                        sender_email: email.senderEmail,
-                        delay_count: email.delay_count,
-                        delay_value: email.delay_value,
-                        sender_name: email.senderName,
-                        email_body: email.email_body,
-                        email_json: email.email_json,
-                      };
-                    }),
-                  }}
-                />
+
               </div>
             </div>
             <div className="content-save-section">
@@ -498,5 +458,48 @@ export default function AddCampaign(props) {
         </div>
       </div>
     </div>
+        <CampaignTemplates
+            isOpen={isTemplate}
+            isClose={isClose}
+            isNewCampaign={true}
+            selectedEmailIndex={selectedEmailIndex}
+            emailData={emailData[selectedEmailIndex]}
+            setIsClose={setIsClose}
+            setEmailBody={setEmailBody}
+            setIsTemplate={setIsTemplate}
+            campaignData={{
+              title: campaignTitle,
+              recipients: {
+                lists: recipientLists.map((list) => {
+                  return {
+                    id: list.id,
+                    title: list.title,
+                  };
+                }),
+                tags: recipientTags.map((tag) => {
+                  return {
+                    id: tag.id,
+                    title: tag.title,
+                  };
+                }),
+              },
+              type: emailData.length > 1 ? "sequence" : "regular",
+              status: status,
+              created_by: `${window.MRM_Vars.current_userID}`,
+              emails: emailData.map((email) => {
+                return {
+                  email_subject: email.subject,
+                  email_preview_text: email.preview,
+                  sender_email: email.senderEmail,
+                  delay_count: email.delay_count,
+                  delay_value: email.delay_value,
+                  sender_name: email.senderName,
+                  email_body: email.email_body,
+                  email_json: email.email_json,
+                };
+              }),
+            }}
+        />
+      </>
   );
 }
