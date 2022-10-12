@@ -88,6 +88,26 @@ class CampaignEmailRoute {
                 ] ,
             ),
         ]);
+
+        /**
+         * Campaign send test email
+         * 
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/sendTest', [
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'send_test_email'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
+
     }
 
 }

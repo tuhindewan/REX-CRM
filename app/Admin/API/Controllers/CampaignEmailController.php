@@ -183,4 +183,59 @@ class CampaignEmailController extends BaseController {
         return rest_ensure_response($response);
     }
 
+    /**
+     * Get and send response to create or update a campaign
+     * 
+     * @param WP_REST_Request
+     * @return \WP_REST_Response
+     * @since 1.0.0
+     */
+    public function send_test_email( WP_REST_Request $request ){
+        
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $to       =  isset( $params['json_data']['to'] ) ? $params['json_data']['to'] : '';
+        $subject       =  isset( $params['json_data']['subject'] ) ? $params['json_data']['subject'] : '';
+        $content       =  isset( $params['json_data']['content'] ) ? $params['json_data']['content'] : '';
+
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        // $headers = array('Content-Type: text/html; charset=UTF-8','From: My Site Name <support@example.com>');
+
+        $response = [
+            'status' => 'error',
+            'message' => 'Failed to send',
+        ];
+
+        if(!is_email($to)) {
+            return $response = [
+                'status' => 'error',
+                'message' => 'Invalid Email',
+            ];
+        }
+
+        if(!empty($to)) {
+            wp_mail($to, $subject, $content, $headers);
+            $response = [
+                'status' => 'success',
+                'message' => 'Successfully sent',
+            ];
+        }
+        return $response;
+    
+    }
+
+    /**
+     * Upload Media
+     * 
+     * @param WP_REST_Request
+     * @return \WP_REST_Response
+     * @since 1.0.0
+     */
+    public function upload_media( WP_REST_Request $request ){
+        $params = $request->get_file_params();
+        $movefile = wp_handle_upload( $params['image'], array('test_form' => FALSE ));
+        return $movefile;
+    }
+
 }

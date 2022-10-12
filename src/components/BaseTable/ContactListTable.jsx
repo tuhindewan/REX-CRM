@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   useLocation,
   useNavigate,
@@ -14,8 +14,10 @@ import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
+import ExportDrawer from "../ExportDrawer";
 import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
+import ExportIcon from "../Icons/ExportIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
@@ -24,9 +26,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
-import PlusCircleIcon from "../Icons/PlusCircleIcon";
-import ExportIcon from "../Icons/ExportIcon";
-import ExportDrawer from "../ExportDrawer";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -123,7 +122,8 @@ export default function ContactListTable(props) {
     if (searchColumns) {
       return listColumns.filter(
         (item) =>
-          item.value.toLowerCase().indexOf(searchColumns.toLocaleLowerCase()) > -1
+          item.value.toLowerCase().indexOf(searchColumns.toLocaleLowerCase()) >
+          -1
       );
     }
     return listColumns;
@@ -295,7 +295,7 @@ export default function ContactListTable(props) {
     }
 
     getColumns();
-    getStoredColumns()
+    getStoredColumns();
   }, []);
 
   const toggleRefresh = () => {
@@ -770,7 +770,12 @@ export default function ContactListTable(props) {
               {/* <button className="mintmrm-btn outline default-btn">
                 Default
               </button> */}
-              <button className="mintmrm-btn outline cancel-btn"onClick={hideAddColumnList} >Cancel</button>
+              <button
+                className="mintmrm-btn outline cancel-btn"
+                onClick={hideAddColumnList}
+              >
+                Cancel
+              </button>
               <button className="mintmrm-btn save-btn" onClick={saveColumnList}>
                 Save
               </button>
