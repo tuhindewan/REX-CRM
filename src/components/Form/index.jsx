@@ -59,6 +59,8 @@ export default function FormIndex(props) {
 
   const [errors, setErrors] = useState({});
 
+  const [formId, setFormId] = useState();
+
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
@@ -133,7 +135,7 @@ export default function FormIndex(props) {
         `${window.MRM_Vars.api_base_url}mrm/v1/forms?page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
-      if (resJson.code == 200) {
+      if (200 === resJson.code) {
         setFormData(resJson.data.data);
         setCount(resJson.data.count);
         setTotalPages(resJson.data.total_pages);
@@ -146,27 +148,35 @@ export default function FormIndex(props) {
     return () => clearTimeout(timer);
   }, [page, perPage, query, refresh]);
 
-  const deleteForm = async (formId) => {
+  const deleteForm = (formId) => {
     setIsDelete("block");
     setDeleteTitle("Delete List");
     setDeleteMessage("Are you sure you want to delete the list?");
+    setFormId(formId);
   };
 
   // Delete form after delete confirmation
   const onDeleteStatus = async (status) => {
     if (status) {
-      deleteSingleList(listID).then((response) => {
-        if (200 === response.code) {
-          setShowNotification("block");
-          setMessage(response.message);
-          toggleRefresh();
-        } else {
-          setErrors({
-            ...errors,
-            title: response?.message,
-          });
-        }
-      });
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${formId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (200 === response.code) {
+            setShowNotification("block");
+            setMessage(response.message);
+            toggleRefresh();
+          } else {
+            setErrors({
+              ...errors,
+              title: response?.message,
+            });
+          }
+        });
     }
     setIsDelete("none");
   };
@@ -182,7 +192,7 @@ export default function FormIndex(props) {
     }
   };
 
-  // Delete multiple lists after delete confirmation
+  // Delete multiple forms after delete confirmation
   const onMultiDelete = async (status) => {
     if (status && selected.length > 0) {
       await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
@@ -298,66 +308,6 @@ export default function FormIndex(props) {
                     </thead>
 
                     <tbody>
-                      {/* <tr>
-                        <td className="form-name">
-                          <div class="name-checkbox">
-                            <span class="mintmrm-checkbox no-title">
-                              <input type="checkbox" name="form1" id="form1" />
-                              <label for="form1"></label>
-                            </span>
-
-                            <div className="name-wrapper">
-                              <span className="icon">
-                                <FormIconSM />
-                              </span>
-
-                              <span className="name">
-                                <a href="">Collaboration Request</a>
-                                <small>2 days ago</small>
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-
-
-                        <td className="signup">45</td>
-
-                        <td className="shortcode">
-                          <span id="myTooltip"></span>
-                          <div className="shortcode-wrapper">
-                            <input
-                              type="text"
-                              value='[mondcrm id="8"]'
-                              id="shortcode1"
-                            />
-                            <button type="button" className="copy">
-                              <CopyIcon />
-                            </button>
-                          </div>
-                        </td>
-
-                        <td className="status">
-                          <span className="wpfnl-switcher">
-                            <input
-                              type="checkbox"
-                              name="status"
-                              id="form-status"
-                            />
-                            <label htmlFor="form-status"></label>
-                          </span>
-                        </td>
-
-                        <td className="action">
-                          <button className="more-option">
-                            <ThreeDotIcon />
-
-                            <ul className="mintmrm-dropdown">
-                              <li>Edit</li>
-                              <li>Delete</li>
-                            </ul>
-                          </button>
-                        </td>
-                      </tr> */}
                       {formData.length === 0 && (
                         <tr className="no-data">
                           <td colSpan={6}>
@@ -465,14 +415,12 @@ export default function FormIndex(props) {
                                         className="action-list"
                                         style={{ display: "flex" }}
                                       >
-                                        <EyeIcon />
                                         Edit
                                       </li>
                                       <li
                                         className="action-list"
-                                        onClick={deleteForm(form.id)}
+                                        onClick={() => deleteForm(form.id)}
                                       >
-                                        <Delete />
                                         Delete
                                       </li>
                                     </ul>
