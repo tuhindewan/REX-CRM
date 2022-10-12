@@ -248,37 +248,40 @@ export default function CustomSelect(props) {
                 </li>
               );
             })}
-          {items?.length > 0 &&
-            !options &&
-            !loading &&
-            items.map((item, index) => {
-              let checked = checkIfSelected(item.id);
-              return (
-                <li
-                  key={index}
-                  className={
-                    checked
-                      ? "single-column mrm-custom-select-single-column-selected"
-                      : "single-column"
-                  }
-                >
-                  <div class="mintmrm-checkbox">
-                    <input
-                      type="checkbox"
-                      name={item.id}
-                      id={item.id}
-                      value={item.title}
-                      onChange={handleSelectOne}
-                      checked={checked}
-                    />
+          <div className="dropdown-options">
+            {items?.length > 0 &&
+              !options &&
+              !loading &&
+              items.map((item, index) => {
+                let checked = checkIfSelected(item.id);
+                return (
+                  <li
+                    key={index}
+                    className={
+                      checked
+                        ? "single-column mrm-custom-select-single-column-selected"
+                        : "single-column"
+                    }
+                  >
+                    <div class="mintmrm-checkbox">
+                      <input
+                        type="checkbox"
+                        name={item.id}
+                        id={item.id}
+                        value={item.title}
+                        onChange={handleSelectOne}
+                        checked={checked}
+                      />
 
-                    <label for={item.id} className="mrm-custom-select-label">
-                      {item.title}
-                    </label>
-                  </div>
-                </li>
-              );
-            })}
+                      <label for={item.id} className="mrm-custom-select-label">
+                        {item.title}
+                      </label>
+                    </div>
+                  </li>
+                );
+              })}
+          </div>
+
           {items?.length == 0 && allowNewCreate && !loading && !options && (
             <>
               <button

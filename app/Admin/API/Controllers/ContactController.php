@@ -1156,6 +1156,9 @@ class ContactController extends BaseController {
     {
         $contact_columns = get_option('mrm_contact_columns');
         $columns = maybe_unserialize($contact_columns);
+        if(false == $columns){
+            $columns = [];
+        }
         return $this->get_success_response( __( 'Query successfully', 'mrm' ), 200, $columns );
     }
 

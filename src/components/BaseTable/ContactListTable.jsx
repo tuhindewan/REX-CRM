@@ -12,7 +12,7 @@ import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from "../CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ExportDrawer from "../ExportDrawer";
 import ContactProfile from "../Icons/ContactProfile";
@@ -280,20 +280,6 @@ export default function ContactListTable(props) {
         });
     }
 
-    async function getStoredColumns() {
-      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          if (200 == data.code) {
-            setColumns(data.data);
-          }
-        });
-    }
-
     getColumns();
     getStoredColumns();
   }, []);
@@ -301,6 +287,21 @@ export default function ContactListTable(props) {
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
   };
+
+  async function getStoredColumns() {
+    await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        if (200 == data.code) {
+          console.log(data.data);
+          setColumns(data.data);
+        }
+      });
+  }
 
   const showMoreOption = () => {
     setActive(!isActive);
@@ -803,7 +804,7 @@ export default function ContactListTable(props) {
 
                 <th className="last-name">Last Name</th>
 
-                {columns.map((column) => {
+                {columns?.map((column) => {
                   return (
                     <th key={column.id} className={column.id}>
                       {column.title}
