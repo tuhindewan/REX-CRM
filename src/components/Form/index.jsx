@@ -68,8 +68,13 @@ export default function FormIndex(props) {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
 
+  const [toggleDropdown, setToggleDropdown] = useState(false);
+
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+
+  const [sortBy, setSortBy] = useState("Date");
+  const [sortByType, setSortByType] = useState("DESC");
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -134,7 +139,7 @@ export default function FormIndex(props) {
   useEffect(() => {
     async function getForms() {
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/forms?page=${page}&per-page=${perPage}${query}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms?order-by=${sortBy}&order-type=${sortByType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (200 === resJson.code) {
@@ -148,7 +153,7 @@ export default function FormIndex(props) {
       setShowNotification("none");
     }, 3000);
     return () => clearTimeout(timer);
-  }, [page, perPage, query, refresh]);
+  }, [page, perPage, query, refresh, sortBy]);
 
   // confirmation for delete and set form id to prepare deletation
   const deleteForm = (formId) => {
@@ -227,6 +232,16 @@ export default function FormIndex(props) {
     setIsDelete("none");
   };
 
+  const handleSort = (param, name) => {
+    setSortBy(name);
+    if ("title" === param) {
+      setSortByType("ASC");
+    } else {
+      setSortByType("DESC");
+    }
+    setToggleDropdown(false);
+  };
+
   return (
     <>
       <div className="form-list-page">
@@ -255,10 +270,32 @@ export default function FormIndex(props) {
                 <div className="right-buttons">
                   <div className="sorting">
                     <h5>Sort by</h5>
-                    <select name="sort-by" id="">
+
+                    {/* <select name="sort-by" id="">
                       <option value="created_at">Date</option>
                       <option value="title">Title</option>
-                    </select>
+                    </select> */}
+                    <div className="pos-relative">
+                      <button
+                        onClick={() => setToggleDropdown(!toggleDropdown)}
+                      >
+                        {sortBy}
+                      </button>
+                      <ul
+                        className={
+                          toggleDropdown
+                            ? "mintmrm-dropdown show"
+                            : "mintmrm-dropdown "
+                        }
+                      >
+                        <li onClick={() => handleSort("created-at", "Date")}>
+                          Date
+                        </li>
+                        <li onClick={() => handleSort("title", "Title")}>
+                          Title
+                        </li>
+                      </ul>
+                    </div>
                   </div>
 
                   <span className="search-section">
