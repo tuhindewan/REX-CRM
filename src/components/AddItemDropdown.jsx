@@ -1,6 +1,4 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import Plus from "./Icons/Plus";
 import Search from "./Icons/Search";
 
 export default function AddItemDropdown(props) {
@@ -12,6 +10,9 @@ export default function AddItemDropdown(props) {
     allowMultiple,
     allowNewCreate,
     name,
+    title,
+    refresh,
+    setRefresh,
   } = props;
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
@@ -78,6 +79,7 @@ export default function AddItemDropdown(props) {
       if (resJson.code == 201) {
         setSearch("");
         setSelected([...selected, resJson.data]);
+        setRefresh(!refresh);
       } else {
       }
     } catch (e) {
@@ -106,7 +108,7 @@ export default function AddItemDropdown(props) {
             />
           </span>
         </li>
-        <li className="list-title">Choose List</li>
+        <li className="list-title">{title}</li>
         <div className="option-section">
           {filteredItems?.length > 0 &&
             filteredItems.map((item, index) => {
@@ -145,13 +147,6 @@ export default function AddItemDropdown(props) {
             </button>
           </>
         )}
-        {/* <div className="no-found">
-          <span>No List found</span>
-        </div> */}
-        <Link className="add-action" to="">
-          <Plus />
-          Add List
-        </Link>
       </ul>
     </>
   );

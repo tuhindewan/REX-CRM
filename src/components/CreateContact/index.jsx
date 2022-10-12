@@ -37,6 +37,11 @@ const CreateContact = (props) => {
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [assignLists, setAssignLists] = useState([]);
   const [assignTags, setAssignTags] = useState([]);
+  const [refresh, setRefresh] = useState();
+
+  const toggleRefresh = () => {
+    setRefresh(!refresh);
+  };
 
   // Fetch lists & tags
   useEffect(() => {
@@ -51,7 +56,7 @@ const CreateContact = (props) => {
     getTags().then((results) => {
       setTags(results.data);
     });
-  }, []);
+  }, [refresh]);
 
   const validate = (event, name, value) => {
     switch (name) {
@@ -239,7 +244,7 @@ const CreateContact = (props) => {
                   }
                   onClick={handleList}
                 >
-                  Select List
+                  Select Lists
                 </button>
                 <AddItemDropdown
                   isActive={isActiveList}
@@ -251,10 +256,13 @@ const CreateContact = (props) => {
                   allowMultiple={true}
                   allowNewCreate={true}
                   name="list"
+                  title="CHOOSE LIST"
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
               </div>
               <div className="form-group tags-dropdown">
-                <label>Lists</label>
+                <label>Tags</label>
                 <button
                   type="button"
                   className={
@@ -262,7 +270,7 @@ const CreateContact = (props) => {
                   }
                   onClick={handleTag}
                 >
-                  Select List
+                  Select Tags
                 </button>
                 <AddItemDropdown
                   isActive={isActiveTag}
@@ -274,6 +282,9 @@ const CreateContact = (props) => {
                   allowMultiple={true}
                   allowNewCreate={true}
                   name="tag"
+                  title="CHOOSE TAG"
+                  refresh={refresh}
+                  setRefresh={setRefresh}
                 />
               </div>
             </div>
