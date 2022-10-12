@@ -39,7 +39,8 @@ const CreateContact = (props) => {
 
   const [isActiveList, setIsActiveList] = useState(false);
   const [isActiveTag, setIsActiveTag] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [isActiveStatus, setIsActiveStatus] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState();
 
   // Fetch lists & tags
   useEffect(() => {
@@ -153,11 +154,22 @@ const CreateContact = (props) => {
   const handleTag = () => {
     setIsActiveTag(!isActiveTag);
     setIsActiveList(false);
+    setIsActiveStatus(false);
   };
   const handleList = () => {
     setIsActiveList(!isActiveList);
     setIsActiveTag(false);
+    setIsActiveStatus(false);
   };
+  const handleStatus = () => {
+    setIsActiveStatus(!isActiveStatus);
+    setIsActiveTag(false);
+    setIsActiveList(false);
+  };
+  const handleSelectStatus = (title) =>{
+    setSelectedStatus(title);
+    setIsActiveStatus(false); 
+  }
 
   return (
     <div className="create-contact">
@@ -214,27 +226,40 @@ const CreateContact = (props) => {
               /> */}
               <div className="form-group status-dropdown">
                 <label>Status</label>
-                <CustomSelect
-                  selected={selectedStatus}
-                  setSelected={setSelectedStatus}
-                  endpoint="/status"
-                  placeholder="Select Status"
-                  name="status"
-                  listTitle="CHOOSE Status"
-                  listTitleOnNotFound="No Data Found"
-                  searchPlaceHolder="Search..."
-                  allowMultiple={false}
-                  showSearchBar={true}
-                  showListTitle={false}
-                  showSelectedInside={false}
-                  allowNewCreate={false}
-                />
+                <button
+                  type="button"
+                  className={
+                    isActiveStatus
+                      ? "drop-down-button show"
+                      : "drop-down-button"
+                  }
+                  onClick={handleStatus}
+                >
+                  {selectedStatus ? selectedStatus : "Select Status"}
+                </button>
+                <ul
+                  className={
+                    isActiveStatus
+                      ? "add-contact-status mintmrm-dropdown show"
+                      : "add-contact-status mintmrm-dropdown"
+                  }
+                >
+                  <li onClick={() => handleSelectStatus("Pending")}>Pending</li>
+                  <li onClick={() => handleSelectStatus("Subscribe")}>
+                    Subscribe
+                  </li>
+                  <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                    Unsubscribe
+                  </li>
+                </ul>
               </div>
               <div className="form-group lists-dropdown">
                 <label>Lists</label>
                 <button
                   type="button"
-                  className={isActiveList ? "drop-down-button show" : "drop-down-button"}
+                  className={
+                    isActiveList ? "drop-down-button show" : "drop-down-button"
+                  }
                   onClick={handleList}
                 >
                   Select List
@@ -245,10 +270,12 @@ const CreateContact = (props) => {
                 />
               </div>
               <div className="form-group tags-dropdown">
-                <label>Lists</label>
+                <label>Tags</label>
                 <button
                   type="button"
-                  className={isActiveTag ? "drop-down-button show" : "drop-down-button"}
+                  className={
+                    isActiveTag ? "drop-down-button show" : "drop-down-button"
+                  }
                   onClick={handleTag}
                 >
                   Select List
