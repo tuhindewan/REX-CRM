@@ -63,7 +63,7 @@ package-lock.json
 # Compiled Files and Build Dirs #
 ##########
 /README.html
-/build/
+/build/vendor
 
 # PhpStrom Project Files #
 .idea/
