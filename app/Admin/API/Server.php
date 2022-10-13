@@ -95,6 +95,7 @@ class Server {
             'campaigns'         =>  'CampaignRoute',
             'campaign-emails'   =>  'CampaignEmailRoute',
             'contact-columns'   =>  'ContactColumnRoute',
+            'forms'             =>  'FormRoute'
 		));
     }
 
