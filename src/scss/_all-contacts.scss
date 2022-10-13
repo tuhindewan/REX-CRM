@@ -338,6 +338,12 @@
 
       .add-column-btn {
         background-color: transparent;
+        &:hover {
+          .tooltip {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
       }
       .add-column-btn:hover {
         svg {
@@ -377,17 +383,12 @@
         }
       }
 
-      &:hover {
-        .tooltip {
-          opacity: 1;
-          visibility: visible;
-        }
-      }
+      
 
       .mintmrm-dropdown {
         width: 315px;
-        right: -2px;
-        top: calc(100% - 5px);
+        right: 0px;
+        top: calc(100%);
 
         &:before {
           right: 21px;
@@ -423,6 +424,22 @@
       &::-webkit-scrollbar-thumb {
         background-color: #ccd0d9;
         border-radius: 20px;
+      }
+    }
+
+    
+    .loader-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      .mintmrm-loader {
+        width: 30px;
+        height: 30px;
+        &.show {
+          display: block;
+        }
       }
     }
 

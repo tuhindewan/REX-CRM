@@ -12,6 +12,7 @@
 //12. dot animation
 //13. datepicker calender style
 //14. breadcrumb style
+//15. Switcher style
 
 //------1. checkbox style-------
 .mintmrm-checkbox {
@@ -50,7 +51,7 @@
       content: "";
       position: absolute;
       left: 5px;
-      top: 4px;
+      top: 3px;
       width: 9px;
       height: 5px;
       transform: rotate(-45deg);
@@ -227,6 +228,9 @@
   animation: spin 0.7s linear infinite;
   display: none;
   margin-left: 4px;
+  &.show{
+    display: block;
+  }
 }
 @-webkit-keyframes spin {
   0% {
@@ -1065,6 +1069,67 @@ ul.mintmrm-dropdown {
     }
   }
 }
+
+//--------15.switcher style----------
+.wpfnl-switcher {
+  position: relative;
+  
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    width: 50px;
+    height: 25px;
+    border-radius: 50px;
+    background-color: #F7F7FA;
+    border: 1px solid #E5E8F3;
+    transition: all 0.3s ease;
+
+    &:after {
+        content: "";
+        width: 15px;
+        height: 15px;
+        filter: drop-shadow(0px 2px 2px rgba(193, 193, 218, 0.45));
+        background-color: #ffffff;
+        border-radius: 100%;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        transition: all 0.3s ease;
+    }
+  }
+
+  input[type="checkbox"]:checked + label{
+    border-color: $primary-color;
+    background-color: $primary-color;
+  }
+  input[type="checkbox"]:checked + label:after {
+    margin-left: 26px;
+    filter: none;
+  }
+
+}
+
+.wpfnl-switcher.sm label {
+  width: 33px;
+  height: 18px;
+}
+.wpfnl-switcher.sm label:after {
+  width: 10px;
+  height: 10px;
+  top: 3px;
+  left: 3px;
+}
+.wpfnl-switcher.sm input[type="checkbox"]:checked + label:after {
+  margin-left: 16px;
+}
+
 
 //--------------
 .mintmrm-row {

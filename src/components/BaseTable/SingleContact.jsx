@@ -3,10 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import DeletePopup from "../DeletePopup";
+import EmailDrawer from "../EmailDrawer";
 import HoverMenu from "../HoverMenu";
+import AddNoteIcon from "../Icons/AddNoteIcon";
 import Delete from "../Icons/Delete";
 import EyeIcon from "../Icons/EyeIcon";
+import SendMessageIcon from "../Icons/SendMessageIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import NoteDrawer from "../NoteDrawer";
 import Portal from "../Portal";
 
 export default function SingleContact(props) {
@@ -20,6 +24,8 @@ export default function SingleContact(props) {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [isNoteForm, setIsNoteForm] = useState(true);
   const [isCloseNote, setIsCloseNote] = useState(true);
+  const [isEmailForm, setIsEmailForm] = useState(true);
+  const [isClose, setIsClose] = useState(true);
 
   const showMoreOption = () => {
     setActive(!isActive);
@@ -69,6 +75,10 @@ export default function SingleContact(props) {
   const noteForm = () => {
     setIsNoteForm(true);
     setIsCloseNote(!isCloseNote);
+  };
+  const emailForm = () => {
+    setIsEmailForm(true);
+    setIsClose(!isClose);
   };
 
   return (
@@ -190,22 +200,14 @@ export default function SingleContact(props) {
                       <EyeIcon />
                       View
                     </li>
-                    {/* <li className="action-list">
+                    <li className="action-list" onClick={emailForm}>
                       <SendMessageIcon />
                       Send message
                     </li>
                     <li className="action-list" onClick={noteForm}>
                       <AddNoteIcon />
                       Add note
-                      <NoteDrawer
-                        isOpenNote={isNoteForm}
-                        isCloseNote={isCloseNote}
-                        setIsCloseNote={setIsCloseNote}
-                        // contactID={id}
-                        // refresh={refresh}
-                        // setRefresh={setRefresh}
-                      />
-                    </li> */}
+                    </li>
                     <li
                       className="action-list"
                       onClick={() => {
@@ -220,6 +222,22 @@ export default function SingleContact(props) {
               </Portal>
             )}
           </button>
+          <NoteDrawer
+            isOpenNote={isNoteForm}
+            isCloseNote={isCloseNote}
+            setIsCloseNote={setIsCloseNote}
+            // contactID={id}
+            // refresh={refresh}
+            // setRefresh={setRefresh}
+          />
+          <EmailDrawer
+            isOpen={isEmailForm}
+            isClose={isClose}
+            setIsClose={setIsClose}
+            contact={contact}
+            // refresh={refresh}
+            // setRefresh={setRefresh}
+          />
         </td>
       </tr>
       <div className="mintmrm-container" style={{ display: isDelete }}>
