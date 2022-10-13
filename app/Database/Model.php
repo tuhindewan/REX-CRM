@@ -29,6 +29,8 @@ class Model {
             'work_flow'             => 'WorkFlowSchema',
             'custom_fields'         => 'CustomFieldSchema',
             'campaign_schema'       => 'CampaignSchema',
+            'form'                  => 'FormSchema',
+            'form_meta'             => 'FormMetaSchema',
             'campaign_email_builder_schema'       => 'CampaignEmailBuilderSchema',
         ));
     }
