@@ -156,11 +156,14 @@ export default function FormIndex(props) {
   }, [page, perPage, query, refresh, sortBy]);
 
   // confirmation for delete and set form id to prepare deletation
-  const deleteForm = (formId) => {
+  const deleteForm = async (formId) => {
     setIsDelete("block");
     setDeleteTitle("Delete List");
-    setDeleteMessage("Are you sure you want to delete the list?");
+    setDeleteMessage("Are you sure you want to delete the form?");
     setFormId(formId);
+    setAllSelected(false);
+    setSelected([]);
+    setBulkAction(false);
   };
 
   // Delete form after delete confirmation
@@ -315,7 +318,6 @@ export default function FormIndex(props) {
       return () => clearTimeout(timer);
     }
   };
-
 
   // function for copying shortcode from the input field
   const handleCopyShortcode = (formId) => {
@@ -509,6 +511,7 @@ export default function FormIndex(props) {
                                     type="text"
                                     value={'[mintmrm id="' + form.id + '"]'}
                                     id={"shortcode-" + form.id}
+                                    readOnly
                                   />
                                   <button
                                     type="button"
