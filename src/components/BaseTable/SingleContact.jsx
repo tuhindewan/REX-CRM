@@ -198,22 +198,6 @@ export default function SingleContact(props) {
             ref={menuButtonRef}
           >
             <ThreeDotIcon />
-            <NoteDrawer
-              isOpenNote={isNoteForm}
-              isCloseNote={isCloseNote}
-              setIsCloseNote={setIsCloseNote}
-              // contactID={id}
-              // refresh={refresh}
-              // setRefresh={setRefresh}
-            />
-            <EmailDrawer
-              isOpen={isEmailForm}
-              isClose={isClose}
-              setIsClose={setIsClose}
-              contact={contact}
-              // refresh={refresh}
-              // setRefresh={setRefresh}
-            />
 
             {currentActive == contact.id && ( // only show the menu if both active and current active points to this listitem
               <Portal>
@@ -251,6 +235,22 @@ export default function SingleContact(props) {
               </Portal>
             )}
           </button>
+          <NoteDrawer
+            isOpenNote={isNoteForm}
+            isCloseNote={isCloseNote}
+            setIsCloseNote={setIsCloseNote}
+            // contactID={id}
+            // refresh={refresh}
+            // setRefresh={setRefresh}
+          />
+          <EmailDrawer
+            isOpen={isEmailForm}
+            isClose={isClose}
+            setIsClose={setIsClose}
+            contact={contact}
+            // refresh={refresh}
+            // setRefresh={setRefresh}
+          />
         </td>
       </tr>
       <div className="mintmrm-container" style={{ display: isDelete }}>
