@@ -278,6 +278,10 @@ export default function FormIndex(props) {
             });
           }
         });
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     } else {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
@@ -302,6 +306,10 @@ export default function FormIndex(props) {
             });
           }
         });
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   };
 
