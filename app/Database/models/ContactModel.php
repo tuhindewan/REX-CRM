@@ -48,6 +48,7 @@ class ContactModel{
                 'source'        =>  $contact->get_source(),
                 'hash'          =>  MRM_Common::get_rand_hash( $contact->get_email() ),
                 'created_by'    =>  $contact->get_created_by(),
+                'wp_user_id'    =>  $contact->get_wp_user_id(),
                 'created_at'    =>  current_time('mysql')
             )); 
 
@@ -91,6 +92,7 @@ class ContactModel{
         unset($args['created_time']);
         unset($args['added_by_login']);
         unset($args['avatar_url']);
+        unset($args['notes']);
 
         try {
             $wpdb->update( 
@@ -174,7 +176,7 @@ class ContactModel{
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s id = %d", array( $email, $contact_id ));
+        $select_query = $wpdb->prepare("SELECT * FROM $contacts_table WHERE email = %s AND id = %d", array( $email, $contact_id ));
         $results = $wpdb->get_results($select_query);
         if( $results ){
             return true;
@@ -261,12 +263,12 @@ class ContactModel{
         // Search contacts by email, first name or last name
 		if ( ! empty( $search ) ) {
             $search = $wpdb->esc_like($search);
-            $search_terms = "WHERE (`hash` LIKE '%$search%' 
-             OR `email` LIKE '%$search%'
-             OR concat(`first_name`, ' ', `last_name`)LIKE '%$search%'
-             OR `source` LIKE '%$search%' 
-             OR `status` LIKE '%$search%' 
-             OR `stage` LIKE '%$search%')";
+            $search_terms = "WHERE (`hash` LIKE '%%$search%%' 
+             OR `email` LIKE '%%$search%%'
+             OR concat(`first_name`, ' ', `last_name`)LIKE '%%$search%%'
+             OR `source` LIKE '%%$search%%' 
+             OR `status` LIKE '%%$search%%' 
+             OR `stage` LIKE '%%$search%%')";
 		}
         
         // Prepare sql results for list view
@@ -341,15 +343,8 @@ class ContactModel{
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-        try {
-            $contacts_query     = $wpdb->prepare("SELECT `email` FROM $contacts_table WHERE id = %d",array( $id ));
-            $contacts_results   = json_decode(json_encode($wpdb->get_results($contacts_query)), true);
-            
-            return $contacts_results[0];
-        
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->get_row( $wpdb->prepare( "SELECT `email` FROM $contacts_table WHERE id = %d",array( $id ) ), ARRAY_A );
+
     }
 
 
@@ -488,10 +483,10 @@ class ContactModel{
             $select_query = $wpdb->prepare("SELECT * FROM $contact_table
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
             LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
-            WHERE (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
-                 `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
-                 OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%') $and $contact_filter_query
+            WHERE (`hash` LIKE '%%$search%%' OR `email` LIKE '%%$search%%' OR
+                 `first_name` LIKE '%%$search%%' OR `last_name` LIKE '%%$search%%' 
+                 OR `source` LIKE '%%$search%%' OR `status` LIKE '%%$search%%' OR 
+                 `stage` LIKE '%%$search%%') $and $contact_filter_query
                  GROUP BY $contact_table.id
                 LIMIT $offset, $limit
             " );
@@ -502,10 +497,10 @@ class ContactModel{
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
             LEFT JOIN $pivot_table AS tt1 ON ($contact_table.id = tt1.contact_id)
             WHERE 
-            (`hash` LIKE '%$search%' OR `email` LIKE '%$search%' OR
-                 `first_name` LIKE '%$search%' OR `last_name` LIKE '%$search%' 
-                 OR `source` LIKE '%$search%' OR `status` LIKE '%$search%' OR 
-                 `stage` LIKE '%$search%') $and $contact_filter_query
+            (`hash` LIKE '%%$search%%' OR `email` LIKE '%%$search%%' OR
+                 `first_name` LIKE '%%$search%%' OR `last_name` LIKE '%%$search%%' 
+                 OR `source` LIKE '%%$search%%' OR `status` LIKE '%%$search%%' OR 
+                 `stage` LIKE '%%$search%%') $and $contact_filter_query
                 GROUP BY $contact_table.id
             " );
 

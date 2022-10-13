@@ -56,6 +56,8 @@ export default function EditCampaign(props) {
   const [refresh, setRefresh] = useState(true);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const [isPublishValid, setIsPublishValid] = useState(false);
+  const [campaignStatus, setCampaignStatus] = useState("");
 
   // get the campaign id from url
   const { id } = useParams();
@@ -104,11 +106,19 @@ export default function EditCampaign(props) {
       setActiveEmailData(emails[0]);
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
+      setCampaignStatus(campaign.status);
+      // toggleRefresh();
     });
+    const isPublishValid = validatePublish();
+    setIsPublishValid(isPublishValid);
     if ("campaign-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [refresh]);
 
   // Prepare campaign object and send post request to backend
@@ -121,13 +131,13 @@ export default function EditCampaign(props) {
     const campaign = {
       title: campaignTitle,
       recipients: {
-        lists: recipientLists.map((list) => {
+        lists: recipientLists?.map((list) => {
           return {
             id: list.id,
             title: list.title,
           };
         }),
-        tags: recipientTags.map((tag) => {
+        tags: recipientTags?.map((tag) => {
           return {
             id: tag.id,
             title: tag.title,
@@ -144,7 +154,8 @@ export default function EditCampaign(props) {
           delay_count: email.delay_count,
           delay_value: email.delay_value,
           sender_name: email.sender_name,
-          email_body: email.email_body,
+          // email_body: email.email_body,
+          email_body: "Dummy Email Body",
           email_json: email.email_json,
         };
       }),
@@ -157,12 +168,65 @@ export default function EditCampaign(props) {
         // Show success message
         setShowNotification("block");
         setMessage(response?.message);
+        toggleRefresh();
       } else {
         window.alert(response?.message);
       }
     });
-    setIsValid(false);
+    const isValid = validate();
+    setIsValid(isValid);
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
+
+  const validate = () => {
+    if (
+      campaignTitle.length > 0 ||
+      recipientLists?.length != 0 ||
+      recipientTags?.length != 0 ||
+      emailData[selectedEmailIndex]["email_subject"]?.length != 0 ||
+      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 ||
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 ||
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 ||
+      emailData[selectedEmailIndex].email_body?.length != 0
+    ) {
+      return true;
+    }
+  };
+
+  const validatePublish = () => {
+    console.log(emailData[selectedEmailIndex]["email_preview_text"]?.length);
+    if (
+      campaignTitle.length > 0 &&
+      recipientLists?.length != 0 &&
+      recipientTags?.length != 0 &&
+      emailData[selectedEmailIndex]["email_subject"]?.length != null &&
+      emailData[selectedEmailIndex]["email_preview_text"]?.length != null &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != null &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != null &&
+      emailData[selectedEmailIndex].email_body?.length != null
+    ) {
+      return true;
+    }
+  };
+
+  useEffect(() => {
+    const isPublishValid = validatePublish();
+    setIsPublishValid(isPublishValid);
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [
+    campaignTitle,
+    recipientLists,
+    recipientTags,
+    emailData[selectedEmailIndex]["email_subject"],
+    emailData[selectedEmailIndex]["email_preview_text"],
+    emailData[selectedEmailIndex]["sender_name"],
+    emailData[selectedEmailIndex]["sender_email"],
+    emailData[selectedEmailIndex].email_body,
+  ]);
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
@@ -260,6 +324,7 @@ export default function EditCampaign(props) {
 
   return (
     <>
+      {/* {console.log(emailData)} */}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
@@ -286,7 +351,7 @@ export default function EditCampaign(props) {
                       }
                       onClick={() => setActiveEmailSequence(index)}
                     >
-                      <div className="icon-section">
+                      <div className="email-icon-section">
                         <InboxIcon />
                       </div>
                       <h5>Email {index + 1}</h5>
@@ -405,7 +470,7 @@ export default function EditCampaign(props) {
                     placeholder="Be Specific and concise to spark interest"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]?.email_subject.length}/200
+                    {emailData[selectedEmailIndex]?.email_subject?.length}/200
                   </span>
                   <div className="setting-section">
                     <SettingIcon />
@@ -426,7 +491,7 @@ export default function EditCampaign(props) {
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]?.email_preview_text.length}
+                    {emailData[selectedEmailIndex]?.email_preview_text?.length}
                     /200
                   </span>
                   <div className="setting-section">
@@ -460,34 +525,44 @@ export default function EditCampaign(props) {
                     <TemplateIcon />
                     <Link to="">Select a Template</Link>
                   </div>
-
-                  {!isClose && (
-                    <CampaignTemplates
-                      isOpen={isTemplate}
-                      isClose={isClose}
-                      setIsClose={setIsClose}
-                      setEmailBody={setEmailBody}
-                      emailData={emailData[selectedEmailIndex]}
-                    />
-                  )}
                 </div>
               </div>
               <div className="content-save-section">
-                <button
-                  className="campaign-schedule mintmrm-btn outline"
-                  disabled={!isValid}
-                  onClick={handlePublish}
-                >
-                  Publish
-                </button>
-                <button
-                  type="submit"
-                  className="campaign-save mintmrm-btn"
-                  onClick={() => updateCampaign("draft")}
-                  disabled={!isValid}
-                >
-                  Save draft
-                </button>
+                {"ongoing" == campaignStatus ? (
+                  <button className="campaign-save mintmrm-btn" disabled={true}>
+                    On Going
+                  </button>
+                ) : (
+                  <>
+                    {/* <button
+                      className="campaign-schedule mintmrm-btn outline"
+                      disabled={!isPublishValid}
+                      onClick={() => updateCampaign("ongoing")}
+                    >
+                      Publish
+                    </button> */}
+                    {isPublishValid ? (
+                      <button
+                        className="campaign-schedule mintmrm-btn outline"
+                        // disabled={!isPublishValid}
+                        onClick={() => updateCampaign("ongoing")}
+                      >
+                        Publish
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                    <button
+                      type="submit"
+                      className="campaign-save mintmrm-btn"
+                      onClick={() => updateCampaign("draft")}
+                      disabled={!isValid}
+                    >
+                      Save draft
+                    </button>
+                  </>
+                )}
+
                 {/* {responseMessage && <p>{responseMessage}</p>} */}
               </div>
             </div>
@@ -503,6 +578,50 @@ export default function EditCampaign(props) {
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
+      {!isClose && (
+          <CampaignTemplates
+              isOpen={isTemplate}
+              isClose={isClose}
+              setIsClose={setIsClose}
+              isNewCampaign={false}
+              selectedEmailIndex={selectedEmailIndex}
+              emailData={emailData[selectedEmailIndex]}
+              setEmailBody={setEmailBody}
+              setIsTemplate={setIsTemplate}
+              campaignData={{
+                title: campaignTitle,
+                recipients: {
+                  lists: recipientLists?.map((list) => {
+                    return {
+                      id: list.id,
+                      title: list.title,
+                    };
+                  }),
+                  tags: recipientTags?.map((tag) => {
+                    return {
+                      id: tag.id,
+                      title: tag.title,
+                    };
+                  }),
+                },
+                type: emailData.length > 1 ? "sequence" : "regular",
+                status: status,
+                created_by: `${window.MRM_Vars.current_userID}`,
+                emails: emailData.map((email) => {
+                  return {
+                    email_subject: email.email_subject,
+                    email_preview_text: email.email_preview_text,
+                    sender_email: email.sender_email,
+                    delay_count: email.delay_count,
+                    delay_value: email.delay_value,
+                    sender_name: email.sender_name,
+                    email_body: email.email_body,
+                    email_json: email.email_json,
+                  };
+                }),
+              }}
+          />
+      )}
     </>
   );
 }

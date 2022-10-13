@@ -12,7 +12,7 @@ export default function Selectbox(props) {
     setMyValue(props.value);
     // Init select2
     let element = $(".mintmrm-" + props.name + "-selectbox");
-    element.css('color', 'red')
+    element.css("color", "red");
     element.select2({
       dropdownParent: $("." + props.name + "-select2-result"),
       placeholder: props.placeholder,

@@ -1,4 +1,4 @@
-import { Link, useLocation, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import Confirmation from "./Icons/Confirmation";
 import ImportNavbar from "./Import/ImportNavbar";
 
@@ -46,10 +46,10 @@ export default function ImportConfirmation() {
                   <strong>{data.skipped}</strong>
                   <span> records are skipped.</span>.
                 </span>
-                <span className="existing-subscribe">
+                {/* <span className="existing-subscribe">
                   <strong>{data.existing_contacts}</strong>
                   <span>existing subscribers were updated.</span>
-                </span>
+                </span> */}
               </div>
               <div className="csv-save-button">
                 <Link to="/contacts/">

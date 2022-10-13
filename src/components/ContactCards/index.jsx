@@ -5,13 +5,9 @@ export default function ContactCards(props) {
     <div className="single-card">
       <div className="image-title">
         <span className="card-icon">{props.source}</span>
-        <Link to={`${props.url}`}>
-          <p>{props.cardTitle}</p>
-        </Link>
+        <p>{props.cardTitle}</p>
       </div>
-      <h3 className="total-contact-numbers">
-        {props.totalAmount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-      </h3>
+      <h3 className="total-contact-numbers">{props.totalAmount}</h3>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import HoverMenu from "../HoverMenu";
+import Delete from "../Icons/Delete";
+import EditIcon from "../Icons/EditIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
 
@@ -17,14 +19,6 @@ export default function ListItem(props) {
     selected,
   } = props;
   const menuButtonRef = useRef(null);
-
-  const handleHref = async (event) => {
-    event.preventDefault();
-
-    navigate(`/contacts?list=${id}`, {
-      state: { list_id: id },
-    });
-  };
 
   return (
     <tr>
@@ -48,7 +42,6 @@ export default function ListItem(props) {
       <td>
         <button
           className="more-option"
-          style={{ background: "transparent", position: "relative" }}
           onClick={() => {
             setCurrentActive((prevActive) => {
               // if current list item is already active then hide the overlay menu by setting current active to 0
@@ -78,10 +71,11 @@ export default function ListItem(props) {
                       editList(props.list);
                     }}
                   >
-                    {" "}
+                    <EditIcon />
                     Edit
                   </li>
-                  <li className="delete" onClick={() => deleteList(id)}>
+                  <li onClick={() => deleteList(id)}>
+                    <Delete />
                     Delete
                   </li>
                 </ul>

@@ -26,26 +26,20 @@ class MessageModel {
      * @return void
      * @since 1.0.0
      */
-    public static function insert($message, $campaign_id ){
+    public static function insert( $message ){
         
         global $wpdb;
         $table = $wpdb->prefix . MessageSchema::$table_name;
 
-        try {
-            $wpdb->insert($table, array(
-                'campaign_id'       => $campaign_id,
-                'contact_id'        => $message->get_receiver_id(),
-                'email_address'     => $message->get_receiver_email(),
-                'email_subject'     => $message->get_email_subject(),
-                'email_body'        => $message->get_email_body(),
-                'sender_id'         => MRM_Common::get_current_user_id(),
-                'created_at'        => current_time('mysql')
-                )
-            );
-            return true;
-        } catch(\Exception $e) {
-            return false;
-        }
+        return $wpdb->insert($table, array(
+            'contact_id'        => $message->get_receiver_id(),
+            'email_address'     => $message->get_receiver_email(),
+            'email_subject'     => $message->get_email_subject(),
+            'email_body'        => $message->get_email_body(),
+            'sender_id'         => $message->get_sender_id(),
+            'created_at'        => current_time('mysql')
+            )
+        );
     }
 
 

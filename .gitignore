@@ -63,7 +63,7 @@ package-lock.json
 # Compiled Files and Build Dirs #
 ##########
 /README.html
-/build/
+/build/vendor
 
 # PhpStrom Project Files #
 .idea/
@@ -86,3 +86,4 @@ phpunit.xml.dist
 admin/asset/dist
 assets/admin/dist
 dist/
+/node_modules

@@ -6263,7 +6263,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     category: "common",
     icon: _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_5__["default"].pricing,
     supports: {
-      align: ['left', 'right', 'center']
+      align: ["left", "right", "center"]
     },
     attributes: _components_email_field_block_attributes__WEBPACK_IMPORTED_MODULE_6__["default"],
     edit: _components_email_field_block_edit__WEBPACK_IMPORTED_MODULE_7__["default"],
@@ -6274,7 +6274,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     category: "common",
     icon: _components_first_name_block_icon__WEBPACK_IMPORTED_MODULE_10__["default"].pricing,
     supports: {
-      align: ['left', 'right', 'center']
+      align: ["left", "right", "center"]
     },
     attributes: _components_first_name_block_attributes__WEBPACK_IMPORTED_MODULE_11__["default"],
     edit: _components_first_name_block_edit__WEBPACK_IMPORTED_MODULE_12__["default"],
@@ -6285,7 +6285,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     category: "common",
     icon: _components_last_name_block_icon__WEBPACK_IMPORTED_MODULE_14__["default"].pricing,
     supports: {
-      align: ['left', 'right', 'center']
+      align: ["left", "right", "center"]
     },
     attributes: _components_last_name_block_attributes__WEBPACK_IMPORTED_MODULE_15__["default"],
     edit: _components_last_name_block_edit__WEBPACK_IMPORTED_MODULE_16__["default"],
@@ -6296,7 +6296,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     category: "common",
     icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].pricing,
     supports: {
-      align: ['left', 'right', 'center']
+      align: ["left", "right", "center"]
     },
     attributes: _components_mrm_button_block_attributes__WEBPACK_IMPORTED_MODULE_19__["default"],
     edit: _components_mrm_button_block_edit__WEBPACK_IMPORTED_MODULE_20__["default"],
@@ -6307,15 +6307,19 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     category: "common",
     icon: _components_mrm_custom_field_icon__WEBPACK_IMPORTED_MODULE_22__["default"].pricing,
     supports: {
-      align: ['left', 'right', 'center']
+      align: ["left", "right", "center"]
     },
     attributes: _components_mrm_custom_field_attributes__WEBPACK_IMPORTED_MODULE_23__["default"],
     edit: _components_mrm_custom_field_edit__WEBPACK_IMPORTED_MODULE_24__["default"],
     save: _components_mrm_custom_field_block__WEBPACK_IMPORTED_MODULE_21__["default"]
   });
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    settings: settings
-  }), document.getElementById('mrm-block-editor'));
+  const el = document.getElementById("mrm-block-editor");
+
+  if (el !== null) {
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      settings: settings
+    }), el);
+  }
 });
 }();
 /******/ })()

@@ -136,14 +136,13 @@ class MRM_Importer {
 
         // Get and formatting editable roles  
 		$editable_roles = get_editable_roles();
-		
         if ( ! is_array( $editable_roles ) || empty( $editable_roles ) ) {
 			return __( 'WordPress user roles not found', 'mrm' );
 		}
-		
-		$roles = array();
-		foreach ( $editable_roles as $slug => $role ) {
-			$roles[ $slug ] = isset( $role['name'] ) ? $role['name'] : $slug;
+		foreach ($editable_roles as $role => $details) {
+			$sub['role'] = esc_attr($role);
+			$sub['name'] = translate_user_role($details['name']);
+			$roles[] = $sub;
 		}
         return $roles;
 	}
@@ -159,7 +158,7 @@ class MRM_Importer {
     public static function get_wp_users( $roles = array() )
     {
         $users = get_users(
-            array('role_in'    => $roles,
+            array('role__in'    => $roles,
                 'orderby' => 'ID',
                 'order'   => 'ASC'
             )
