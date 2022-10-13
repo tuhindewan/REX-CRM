@@ -97,7 +97,7 @@ class ContactController extends BaseController {
             }else{
                 $contact    = new ContactData( $email, $params );
                 $contact_id = ContactModel::insert( $contact );
-                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] ){
+                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] || empty($params['status'][0]) ){
                     MessageController::get_instance()->send_double_opt_in( $contact_id );
                 }
             }
