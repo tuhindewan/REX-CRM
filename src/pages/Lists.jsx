@@ -158,17 +158,6 @@ const Lists = () => {
     setShowCreate(true);
   }
 
-  // function to handle order by select component change
-  function handleOrderBy(e, name, arg1) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    const selectedValue = updatedOptions[0];
-    const order = selectedValue.split("+"); // order is an array with order by and order type
-    setOrderBy(order[0]);
-    setOrderType(order[1]);
-  }
-
   // Handle list create or update form submission
   const createOrUpdate = async () => {
     let res = null;

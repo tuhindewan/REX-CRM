@@ -330,7 +330,7 @@ class ContactController extends BaseController {
         }else if ($success && $isList){
             return $this->get_success_response( __( 'List has been added Successfully', 'mrm' ), 201 );
         }
-        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'Select an item first', 'mrm' ), 400 );
     }
 
 

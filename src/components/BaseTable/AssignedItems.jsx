@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
+import SuccessfulNotification from "../SuccessfulNotification";
+import WarningNotification from "../WarningNotification";
 
 export default function AssignedItems(props) {
   const {
@@ -29,6 +31,9 @@ export default function AssignedItems(props) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
 
   useEffect(() => {
     async function getItems() {
@@ -106,12 +111,22 @@ export default function AssignedItems(props) {
         setSearch("");
         setQuery("");
         setSelected([...selected, { id: resJson.data, title: body.title }]);
+        setShowNotification("block");
+        setMessage(resJson?.message);
+      } else if (400 == resJson.code) {
+        setShowWarning("block");
+        setMessage(resJson?.message);
       } else {
-        window.alert(resJson.message);
+        setShowWarning("block");
+        setMessage(resJson?.message);
       }
     } catch (e) {
     } finally {
       setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   };
 
@@ -150,12 +165,20 @@ export default function AssignedItems(props) {
         props.setRefresh(!props.refresh);
         props.setShowNotification("block");
         props.setMessage(resJson.message);
+      } else if (400 == resJson.code) {
+        setShowWarning("block");
+        setMessage(resJson?.message);
       } else {
-        window.alert(resJson.message);
+        setShowWarning("block");
+        setMessage(resJson?.message);
       }
     } catch (e) {
     } finally {
       setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   };
 
@@ -239,6 +262,8 @@ export default function AssignedItems(props) {
             })} */}
         {loading && <LoadingIndicator type="table" />}
       </ul>
+      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }
