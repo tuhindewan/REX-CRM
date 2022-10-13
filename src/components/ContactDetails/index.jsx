@@ -1,6 +1,7 @@
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
@@ -64,6 +65,10 @@ export default function ContactDetails() {
 
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
+
+  useGlobalStore.setState({
+    hideGlobalNav: true,
+  });
 
   // Fetch lists & tags
   useEffect(() => {
@@ -450,11 +455,9 @@ export default function ContactDetails() {
             <div className="mintmrm-container">
               <ul className="mintmrm-breadcrumb">
                 <li>
-                  <Link to={`../contacts`}>Contact</Link>
+                  <Link to={`../contacts`}>Contacts</Link>
                 </li>
-                <li className="active">
-                  {contactData.first_name} {contactData.last_name}
-                </li>
+                <li className="active">{contactData.email}</li>
               </ul>
             </div>
           </div>
