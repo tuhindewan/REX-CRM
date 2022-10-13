@@ -249,6 +249,9 @@ const Lists = () => {
     setDeleteTitle("Delete List");
     setDeleteMessage("Are you sure you want to delete the list?");
     setListID(list_id);
+    setAllSelected(false);
+    setSelected([]);
+    setShowMoreOptions(false);
   };
 
   // Delete list after delete confirmation

@@ -273,16 +273,21 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         $isTag = false;
         $isList = false;
 
         if( isset($params['tags'], $params['contact_id']) ){
+            if(empty($params['tags'])){
+                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+            }
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
             $isTag = true;
         }
 
         if( isset($params['lists'], $params['contact_id']) ){
+            if(empty($params['lists'])){
+                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+            }
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = true;
         }

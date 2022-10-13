@@ -125,6 +125,7 @@ export default function AssignedItems(props) {
       setLoading(false);
       const timer = setTimeout(() => {
         setShowWarning("none");
+        setShowNotification("none");
       }, 3000);
       return () => clearTimeout(timer);
     }

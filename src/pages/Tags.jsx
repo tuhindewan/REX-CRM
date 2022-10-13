@@ -221,6 +221,9 @@ const Tags = () => {
     setDeleteTitle("Delete Tag");
     setDeleteMessage("Are you sure you want to delete the tag?");
     setTagID(tag_id);
+    setAllSelected(false);
+    setSelected([]);
+    setShowMoreOptions(false);
   };
 
   // Delete tag after delete confirmation
