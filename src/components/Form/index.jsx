@@ -18,6 +18,7 @@ import DeletePopup from "../DeletePopup";
 import AlertPopup from "../AlertPopup";
 
 export default function FormIndex(props) {
+
   const [formData, setFormData] = useState({});
 
   // how many to show per page
@@ -106,7 +107,7 @@ export default function FormIndex(props) {
     if (allSelected) {
       setSelected([]);
     } else {
-      setSelected(formData.map((form) => form.id));
+      setSelected(formData?.map((form) => form.id));
     }
     setAllSelected(!allSelected);
   };
@@ -506,7 +507,9 @@ export default function FormIndex(props) {
                               {/* <td className="view">453</td> */}
 
                               <td className="signup">
-                                {form.meta_fields?.sign_up}
+                                {form.meta_fields?.sign_up
+                                  ? form.meta_fields?.sign_up
+                                  : 0}
                               </td>
 
                               <td className="shortcode">

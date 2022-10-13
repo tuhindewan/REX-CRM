@@ -587,9 +587,6 @@ body.block-editor-page #wpcontent {
 body.block-editor-page #wpbody-content {
   padding-bottom: 0;
 }
-body.block-editor-page #wpbody-content > div:not(.block-editor):not(#screen-meta) {
-  display: none;
-}
 body.block-editor-page #wpfooter {
   display: none;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
@@ -17,6 +17,7 @@ import DownArrowIcon from "../Icons/DownArrowIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
 
 const FormEditor = (props) => {
+  const navigate = useNavigate();
   // lists
   const [lists, setLists] = useState([]);
 
@@ -29,6 +30,12 @@ const FormEditor = (props) => {
   const [moreOption, setMoreOption] = useState(false);
   const [listDropdown, setListDropdown] = useState(false);
   const [settingsPannel, setSettingsPannel] = useState(false);
+
+  const [enable, setEnable] = useState(false);
+
+  const toggleEnable = () => {
+    setEnable(!enable);
+  };
 
   // Fetch lists & tags
   useEffect(() => {
@@ -50,7 +57,6 @@ const FormEditor = (props) => {
     form_position: "",
     group_ids: [],
   });
-
 
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
@@ -123,20 +129,19 @@ const FormEditor = (props) => {
     }));
   }, [selectedLists, selectedTags]);
 
-
   //-------show more option click function-------
   const clickShowOption = () => {
-    setMoreOption(current => !current);
+    setMoreOption((current) => !current);
   };
 
   //-------list click function-------
   const showListDropdown = () => {
-    setListDropdown(current => !current);
+    setListDropdown((current) => !current);
   };
 
   //-------settings pannel open function-------
   const showSettingsPannel = () => {
-    setSettingsPannel(current => !current);
+    setSettingsPannel((current) => !current);
   };
 
   return (
@@ -145,7 +150,7 @@ const FormEditor = (props) => {
         <div className="form-editor-topbar">
           <div className="topbar-left">
             <button className="back-button">
-              <Link to="">
+              <Link to="/form-editor/">
                 <DoubleAngleLeftIcon />
               </Link>
             </button>
@@ -161,15 +166,25 @@ const FormEditor = (props) => {
           </div>
 
           <div className="topbar-right">
-            <button className={moreOption ? 'three-dot-btn show' : 'three-dot-btn'} onClick={clickShowOption}>
+            <button
+              className={moreOption ? "three-dot-btn show" : "three-dot-btn"}
+              onClick={clickShowOption}
+            >
               <ThreeDotIcon />
               <ul className="mintmrm-dropdown">
                 <li>Save as Draft</li>
                 <li>Change Template</li>
               </ul>
             </button>
-            <button className="mintmrm-btn settings" onClick={showSettingsPannel}><SettingIcon/></button>
-            <button className="mintmrm-btn enable">Enable</button>
+            <button
+              className="mintmrm-btn settings"
+              onClick={showSettingsPannel}
+            >
+              <SettingIcon />
+            </button>
+            <button className="mintmrm-btn enable" onClick={saveForm}>
+              Enable
+            </button>
           </div>
         </div>
 
@@ -179,7 +194,7 @@ const FormEditor = (props) => {
               label="Title"
               name="title"
               handleChange={handleChange}
-              value={formData.title}
+              value={formData?.title}
             />
 
             <div className="form-group list">
@@ -194,13 +209,17 @@ const FormEditor = (props) => {
                 <CampaignCustomSelect dropDown={listDropdown} />
               </div>
             </div>
-
           </div>
 
-          <div id="mrm-block-editor" className={settingsPannel ? 'getdave-sbe-block-editor block-editor show-settings-pannel' : 'getdave-sbe-block-editor block-editor'} ></div>
-
+          <div
+            id="mrm-block-editor"
+            className={
+              settingsPannel
+                ? "getdave-sbe-block-editor block-editor show-settings-pannel"
+                : "getdave-sbe-block-editor block-editor"
+            }
+          ></div>
         </div>
-
       </div>
     </>
   );
