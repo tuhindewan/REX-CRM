@@ -497,7 +497,6 @@ export default function ContactListTable(props) {
 
   return (
     <>
-      {console.log(columns)}
       <div className="contact-list-header">
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
