@@ -92,7 +92,7 @@ class Server {
             'field-groups'      =>  'FieldGroupRoute',
             'custom-fields'     =>  'CustomFieldRoute',
             'general'           =>  'GeneralRoute',
-            'campaigns'         =>  'campaignRoute',
+            'campaigns'         =>  'CampaignRoute',
             'campaign-emails'   =>  'CampaignEmailRoute',
             'contact-columns'   =>  'ContactColumnRoute',
 		));
