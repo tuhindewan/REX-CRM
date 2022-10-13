@@ -160,6 +160,27 @@ class FormRoute{
         ]);
 
 
+        /**
+         * Route for update status of a form
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base. '/update-status' . '/(?P<form_id>[\d]+)', [
+        [
+            'methods' => \WP_REST_Server::EDITABLE,
+            'callback' => [
+                $this->controller ,
+                'form_status_update'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ] ,
+        ]
+    ]);
+
+
     }
 
 }

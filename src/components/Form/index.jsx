@@ -156,11 +156,14 @@ export default function FormIndex(props) {
   }, [page, perPage, query, refresh, sortBy]);
 
   // confirmation for delete and set form id to prepare deletation
-  const deleteForm = (formId) => {
+  const deleteForm = async (formId) => {
     setIsDelete("block");
     setDeleteTitle("Delete List");
-    setDeleteMessage("Are you sure you want to delete the list?");
+    setDeleteMessage("Are you sure you want to delete the form?");
     setFormId(formId);
+    setAllSelected(false);
+    setSelected([]);
+    setBulkAction(false);
   };
 
   // Delete form after delete confirmation
@@ -232,6 +235,7 @@ export default function FormIndex(props) {
     setIsDelete("none");
   };
 
+  // function to sort by title ascending or default decending
   const handleSort = (param, name) => {
     setSortBy(name);
     if ("title" === param) {
@@ -240,6 +244,93 @@ export default function FormIndex(props) {
       setSortByType("DESC");
     }
     setToggleDropdown(false);
+  };
+
+  // status checkbox states
+  const [state, setState] = useState({
+    checkedA: true,
+    checkedB: false,
+  });
+
+  // handle and update status of a form
+  const statusSwitch = async (event, index) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+
+    const raw_formId = event.target.id;
+
+    const formId = raw_formId.substring(3);
+
+    if (event.target.checked) {
+      await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ status: "1" }),
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          if (201 === response.code) {
+            setShowNotification("block");
+            setMessage(response.message);
+            toggleRefresh();
+          } else {
+            setErrors({
+              ...errors,
+              title: response?.message,
+            });
+          }
+        });
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ status: "0" }),
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          if (201 === response.code) {
+            setShowNotification("block");
+            setMessage(response.message);
+            toggleRefresh();
+          } else {
+            setErrors({
+              ...errors,
+              title: response?.message,
+            });
+          }
+        });
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  };
+
+  // function for copying shortcode from the input field
+  const handleCopyShortcode = (formId) => {
+    var copyText = document.getElementById("shortcode-" + formId);
+    copyText.select();
+    //deprecated - can be changed with notification.clipboard (only for trusted sites)
+    document.execCommand("copy");
+    setShowNotification("block");
+    setMessage("Shortcode copied ! ");
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   return (
@@ -360,7 +451,7 @@ export default function FormIndex(props) {
                     </thead>
 
                     <tbody>
-                      {formData.length === 0 && (
+                      {0 === formData.length && (
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
@@ -419,9 +510,15 @@ export default function FormIndex(props) {
                                   <input
                                     type="text"
                                     value={'[mintmrm id="' + form.id + '"]'}
-                                    id="shortcode1"
+                                    id={"shortcode-" + form.id}
+                                    readOnly
                                   />
-                                  <button type="button" className="copy">
+                                  <button
+                                    type="button"
+                                    className="copy"
+                                    id={"copybtn-" + form.id}
+                                    onClick={() => handleCopyShortcode(form.id)}
+                                  >
                                     <CopyIcon />
                                   </button>
                                 </div>
@@ -430,11 +527,13 @@ export default function FormIndex(props) {
                               <td className="status">
                                 <span className="wpfnl-switcher">
                                   <input
+                                    checked={form.status === "1"}
                                     type="checkbox"
-                                    name="status"
-                                    id="form-status"
+                                    name="checkedB"
+                                    id={"st-" + form.id}
+                                    onChange={statusSwitch}
                                   />
-                                  <label htmlFor="form-status"></label>
+                                  <label htmlFor={"st-" + form.id}></label>
                                 </span>
                               </td>
 

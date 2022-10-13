@@ -225,5 +225,37 @@ class FormController extends BaseController {
     }
 
 
+    /**
+     * Function used to handle update status requests
+     *
+     * @param WP_REST_Request $request
+     *
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0
+     */
+    public function form_status_update( WP_REST_Request $request ){
+
+        // Get values from the API request
+        $params = MRM_Common::get_api_params_values( $request );
+
+        // Form object create and insert or update to database
+        $this->args = array(
+            'status'         => isset( $params['status'] ) ? $params['status'] : ""
+        );
+        try {
+            $form = new FormData( $this->args );
+            $success = FormModel::form_status_update( $form, $params['form_id'] );
+
+            if($success) {
+                return $this->get_success_response(__( 'Form status successfully updated', 'mrm' ), 201, $success);
+            } 
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
+
+        } catch(Exception $e) {
+            return $this -> get_error_response(__( 'Form is not valid', 'mrm' ), 200);
+        }
+    }
+
+
 
 }
