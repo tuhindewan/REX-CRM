@@ -41,7 +41,7 @@ const CreateContact = (props) => {
     setRefresh(!refresh);
   };
   const [isActiveStatus, setIsActiveStatus] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState();
+  const [selectedStatus, setSelectedStatus] = useState("pending");
 
   // Fetch lists & tags
   useEffect(() => {
