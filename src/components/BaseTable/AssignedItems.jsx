@@ -115,47 +115,47 @@ export default function AssignedItems(props) {
   };
 
   const handleAssignLists = async () => {
-    let res = null;
-    let body;
-    "lists" == endpoint
-      ? (body = {
-          lists: selected,
-          contact_ids: contactIds,
-        })
-      : (body = {
-          tags: selected,
-          contact_ids: contactIds,
-        });
-    try {
-      // create contact
-      setLoading(true);
-      res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      );
+    // let res = null;
+    // let body;
+    // "lists" == endpoint
+    //   ? (body = {
+    //       lists: selected,
+    //       contact_ids: contactIds,
+    //     })
+    //   : (body = {
+    //       tags: selected,
+    //       contact_ids: contactIds,
+    //     });
+    // try {
+    //   // create contact
+    //   setLoading(true);
+    //   res = await fetch(
+    //     `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-type": "application/json",
+    //       },
+    //       body: JSON.stringify(body),
+    //     }
+    //   );
 
-      const resJson = await res.json();
-      if (resJson.code == 201) {
-        setSearch("");
-        setQuery("");
-        setSelected([]);
-        props.setIsAssignTo(!props.isActive);
-        props.setRefresh(!props.refresh);
-        props.setShowNotification("block");
-        props.setMessage(resJson.message);
-      } else {
-        window.alert(resJson.message);
-      }
-    } catch (e) {
-    } finally {
-      setLoading(false);
-    }
+    //   const resJson = await res.json();
+    //   if (resJson.code == 201) {
+    //     setSearch("");
+    //     setQuery("");
+    //     setSelected([]);
+    //     props.setIsAssignTo(!props.isActive);
+    //     props.setRefresh(!props.refresh);
+    //     props.setShowNotification("block");
+    //     props.setMessage(resJson.message);
+    //   } else {
+    //     window.alert(resJson.message);
+    //   }
+    // } catch (e) {
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
