@@ -153,7 +153,7 @@ body.is-fullscreen-mode .get-mrm-header {
   flex-flow: row wrap;
 }
 .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content {
-  width: calc(100% - 385px);
+  width: calc(100% - 395px);
   background: #E6E6E6;
   border-radius: 10px;
   padding: 30px;
@@ -162,11 +162,11 @@ body.is-fullscreen-mode .get-mrm-header {
   width: 677px;
   margin: 0 auto;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar {
-  width: 350px;
+.form-editor-page .interface-interface-skeleton__sidebar {
+  width: 360px;
   margin-left: 35px;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .mrm-form-builder-sidebar {
+.form-editor-page .interface-interface-skeleton__sidebar .mrm-form-builder-sidebar {
   background: #FFFFFF;
   box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3);
   border-radius: 6px;
@@ -174,7 +174,7 @@ body.is-fullscreen-mode .get-mrm-header {
   height: 100%;
   overflow: hidden;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .components-panel__header {
+.form-editor-page .interface-interface-skeleton__sidebar .components-panel__header {
   border-bottom: 1px solid #E9EAEE;
   text-align: center;
   padding: 10px;
@@ -183,47 +183,371 @@ body.is-fullscreen-mode .get-mrm-header {
   align-items: center;
   justify-content: center;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .components-panel__header h2 {
+.form-editor-page .interface-interface-skeleton__sidebar .components-panel__header h2 {
   font-weight: 600;
   font-size: 18px;
   line-height: 18px;
   color: #2D3149;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .components-panel {
+.form-editor-page .interface-interface-skeleton__sidebar .components-panel {
   border: none;
   box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3019607843);
   border-radius: 6px;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel {
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel {
   position: absolute;
   top: 0;
-  left: 210px;
+  left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  visibility: hidden;
   transition: all 0.3s ease;
+  overflow: auto;
+  overflow-x: hidden;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header {
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar {
+  width: 5px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar-track {
+  background: #f2f5f8;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar-thumb {
+  background-color: #6F6AF8;
+  border-radius: 20px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header h2 {
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header h2 {
   display: flex;
   align-items: center;
   padding-left: 10px;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header h2 svg {
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header h2 svg {
   margin-right: 10px;
 }
-.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header .close-pannel {
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header .close-pannel {
   width: 30px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title:hover {
+  background-color: transparent;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #2D3149;
+  text-transform: capitalize;
+  outline: none;
+  box-shadow: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button .components-panel__arrow {
+  color: #A7A8B3;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannelbody-wrapper {
+  background: #F6F8FA;
+  border-radius: 8px;
+  padding: 16px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .settings-label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #2D3149;
+  margin-bottom: 6px;
+  display: block;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .settings-label .mintmrm-tooltip {
+  position: relative;
+  top: 2px;
+  margin-left: 6px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings {
+  margin-bottom: 15px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings:last-child {
+  margin-bottom: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=text],
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=email],
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=tel],
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=date],
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings textarea,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings select {
+  background: #FFFFFF;
+  box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3) !important;
+  border-radius: 6px;
+  height: 38px;
+  border: none;
+  color: #B6B6B7;
+  font-size: 14px;
+  font-weight: 400;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings textarea {
+  height: 92px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-input-control__backdrop {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-input-control__suffix svg {
+  stroke: #B6B6B7;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option {
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio] {
+  display: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option.no-title label {
+  height: 16px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label {
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 400;
+  color: #808591;
+  position: relative;
+  padding-left: 29px;
+  display: block;
+  text-transform: capitalize;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  background: #f7f7fa;
+  border: 1px solid #6F6AF8;
+  transition: all 0.3s ease;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  background: #6F6AF8;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio]:checked + label {
+  color: #6F6AF8;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio]:checked + label::after {
+  transform: scale(1);
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label .settings-label {
+  margin-bottom: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label .components-base-control__field {
+  margin-bottom: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label .components-base-control__field .components-form-toggle {
+  margin-right: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle__track {
+  height: 22px;
+  border-radius: 50px;
+  border: 1px solid #E3E3E3;
+  background: #EAEAEA;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle__thumb {
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border: 5px solid #ffffff;
+  background: #FFFFFF;
+  box-shadow: 0px 1.8px 1px rgba(156, 156, 156, 0.3019607843);
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle.is-checked .components-form-toggle__thumb {
+  transform: translateX(15px);
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle.is-checked .components-form-toggle__track {
+  background-color: #4834F8;
+  border-color: #4834F8;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle__input:focus + .components-form-toggle__track {
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control__field {
+  margin: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control {
+  width: 144px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper select {
+  min-width: auto;
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter {
+  display: inline-flex;
+  align-items: center;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3019607843);
+  border-radius: 6px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number] {
+  box-shadow: none;
+  min-width: auto;
+  border-radius: 0;
+  border-top: 0;
+  border-bottom: 0;
+  width: 60px;
+  height: 38px;
+  padding: 5px 10px;
+  text-align: center;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number]::-webkit-outer-spin-button, .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number] {
+  -moz-appearance: textfield;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter > span {
+  height: 38px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav {
+  background: #FFFFFF;
+  box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3019607843);
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav .tab-nav-item {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  color: #808591;
+  padding: 8px 9px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav .tab-nav-item.active {
+  font-weight: 600;
+  background: #F6F8FA;
+  color: #2D3149;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-content .single-tab-content {
+  display: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-content .single-tab-content.active {
+  display: block;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input[type=number],
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime select {
+  min-width: auto;
+  height: 36px;
+  padding: 5px 10px;
+  line-height: 1;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day {
+  margin: 0 10px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-legend.invisible {
+  position: relative;
+  top: 0;
+  left: 0;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #2D3149;
+  margin-bottom: 5px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-separator {
+  margin: 0 5px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-wrapper {
+  margin-bottom: 15px;
+  align-items: center;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-wrapper input[type=number] {
+  width: 70px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-time {
+  display: flex;
+  align-items: center;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-button {
+  height: 30px;
+  width: 30px;
+  border: none;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  outline: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__timezone {
+  text-decoration: none;
+  margin-left: 5px;
+  font-size: 11px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker {
+  width: 100% !important;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker > div > div {
+  width: 100% !important;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_transitionContainer {
+  width: 100% !important;
+  height: 250px !important;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day {
+  padding: 8px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .DayPickerNavigation_button__horizontalDefault {
+  top: -5px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader {
+  position: relative;
+  top: 0;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul {
+  display: flex;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul .DayPicker_weekHeader_li {
+  flex: 1;
+  font-size: 16px;
+  padding: 8px;
 }
 
 .form-editor-page .show-settings-pannel .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel {
