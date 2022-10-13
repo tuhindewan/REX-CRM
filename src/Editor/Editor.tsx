@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Button } from "@arco-design/web-react";
-import { IconMoonFill, IconSunFill } from "@arco-design/web-react/icon";
+import axios from "axios";
 import { FormApi } from "final-form";
 import { cloneDeep, isEqual } from "lodash";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -33,7 +33,6 @@ import { AdvancedType, IBlockData, JsonToMjml } from "easy-email-core";
 import { copy } from "./utils/copy";
 
 import "./CustomBlocks";
-import { CustomBlocksType } from "./CustomBlocks/constant";
 
 //----icon components----
 import CrossIcon from "./Icon/CrossIcon";
@@ -72,7 +71,7 @@ const defaultCategories: ExtensionProps["categories"] = [
       },
       {
         type: AdvancedType.WRAPPER,
-      }
+      },
     ],
   },
   {
@@ -200,6 +199,7 @@ export default function Editor(props) {
 
   const [testMailModal, setTestMailModal] = useState(false);
   const [testEmail, setTestEmail] = useState("");
+  const [testMailMessage, setTestMailMessage] = useState("");
 
   let defaultValues = {
     type: "page",
@@ -472,9 +472,58 @@ export default function Editor(props) {
     setTestEmail(e.target.value);
   };
 
-  const sendTestEmail = (e) => {};
+  const emailSendApi = async (values) => {
+    const response = await fetch(
+      `${window.MRM_Vars.api_base_url}mrm/v1/campaign/sendTest`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          json_data: values,
+        }),
+      }
+    );
+    return await response.json();
+  };
 
-  const onUploadImage = async (blob: Blob) => {};
+  const sendTestEmail = (values: IEmailTemplate) => {
+    console.log(values);
+
+    setTestMailMessage("");
+    let mergeTagsPayload = {};
+
+    const mjmlContent = JsonToMjml({
+      data: values.content,
+      mode: "production",
+      context: values.content,
+    });
+
+    const html = mjml(mustache.render(mjmlContent, mergeTagsPayload), {
+      beautify: true,
+      validationLevel: "soft",
+    }).html;
+
+    let mailData = {
+      to: testEmail,
+      subject: values.subject,
+      content: html,
+    };
+
+    emailSendApi(mailData).then((response) => {
+      setTestMailMessage(response.message);
+      console.log(response);
+    });
+  };
+
+  const onUploadImage = async (blob: Blob) => {
+    const formData = new FormData();
+    formData.append("image", blob);
+    let url = `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/mediaUpload`;
+    const res = await axios.post(url, formData);
+    return res.data.url;
+  };
 
   return (
     <>
@@ -486,44 +535,6 @@ export default function Editor(props) {
         }
       >
         <span className="mintmrm-loader"></span>
-      </div>
-
-      <div
-        className={
-          testMailModal
-            ? "mintmrm-delete-alert-wrapper show-modal"
-            : "mintmrm-delete-alert-wrapper"
-        }
-      >
-        <div className="mintmrm-delete-confirmation">
-          <div className="delete-confirmation-header">
-            <h3>Send Test E-mail</h3>
-            <div className="cross-icon" onClick={onCancel}>
-              <CrossIcon />
-            </div>
-          </div>
-
-          <div className="delete-confirmation-body">
-            <div className="form-group">
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter a test email"
-                onChange={onChangeEmailField}
-                value={testEmail}
-              />
-            </div>
-          </div>
-
-          <ul className="mintmrm-delete-confirm-btn">
-            <li>
-              <button className="btn-default cancel" onClick={sendTestEmail}>
-                {" "}
-                Ok{" "}
-              </button>
-            </li>
-          </ul>
-        </div>
       </div>
 
       <div className="mrm-email-editor">
@@ -543,6 +554,49 @@ export default function Editor(props) {
           {({ values }, { submit }) => {
             return (
               <>
+                <div
+                  className={
+                    testMailModal
+                      ? "mintmrm-delete-alert-wrapper show-modal"
+                      : "mintmrm-delete-alert-wrapper"
+                  }
+                >
+                  <div className="mintmrm-delete-confirmation">
+                    <div className="delete-confirmation-header">
+                      <h3>Send Test E-mail</h3>
+                      <div className="cross-icon" onClick={onCancel}>
+                        <CrossIcon />
+                      </div>
+                    </div>
+
+                    <div className="delete-confirmation-body">
+                      <div className="form-group">
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="Enter a test email"
+                          onChange={onChangeEmailField}
+                          value={testEmail}
+                        />
+                      </div>
+                    </div>
+
+                    <ul className="mintmrm-delete-confirm-btn">
+                      <li>
+                        <p>{testMailMessage}</p>
+                      </li>
+                      <li>
+                        <button
+                          className="btn-default cancel"
+                          onClick={() => sendTestEmail(values)}
+                        >
+                          {" "}
+                          Ok{" "}
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 <div
                   className="mrm-editor-header"
                   style={{ background: "var(--color-bg-2)" }}
