@@ -242,8 +242,67 @@ export default function FormIndex(props) {
     setToggleDropdown(false);
   };
 
-  const handleStatus = (id, status) => {
-    console.log(status);
+  const [state, setState] = useState({
+    checkedA: true,
+    checkedB: false,
+  });
+
+  const statusSwitch = async (event, index) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+
+    const raw_formId = event.target.id;
+
+    const formId = raw_formId.substring(3);
+
+    if (event.target.checked) {
+      await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ status: "1" }),
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          if (201 === response.code) {
+            setShowNotification("block");
+            setMessage(response.message);
+            toggleRefresh();
+          } else {
+            setErrors({
+              ...errors,
+              title: response?.message,
+            });
+          }
+        });
+    } else {
+      await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ status: "0" }),
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          if (201 === response.code) {
+            setShowNotification("block");
+            setMessage(response.message);
+            toggleRefresh();
+          } else {
+            setErrors({
+              ...errors,
+              title: response?.message,
+            });
+          }
+        });
+    }
   };
 
   return (
@@ -364,7 +423,7 @@ export default function FormIndex(props) {
                     </thead>
 
                     <tbody>
-                      {formData.length === 0 && (
+                      {0 === formData.length && (
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
@@ -433,37 +492,14 @@ export default function FormIndex(props) {
 
                               <td className="status">
                                 <span className="wpfnl-switcher">
-                                  {"1" === form.status ? (
-                                    <>
-                                      <input
-                                        type="checkbox"
-                                        name="status"
-                                        id={"form-status-" + form.id}
-                                        onChange={() =>
-                                          handleStatus(form.id, form.status)
-                                        }
-                                        checked={true}
-                                      />
-                                      <label
-                                        htmlFor={"form-status-" + form.id}
-                                      ></label>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <input
-                                        type="checkbox"
-                                        name="status"
-                                        id={"form-status-" + form.id}
-                                        onChange={() =>
-                                          handleStatus(form.id, form.status)
-                                        }
-                                        checked={false}
-                                      />
-                                      <label
-                                        htmlFor={"form-status-" + form.id}
-                                      ></label>
-                                    </>
-                                  )}
+                                  <input
+                                    checked={form.status === "1"}
+                                    type="checkbox"
+                                    name="checkedB"
+                                    id={"st-" + form.id}
+                                    onChange={statusSwitch}
+                                  />
+                                  <label htmlFor={"st-" + form.id}></label>
                                 </span>
                               </td>
 

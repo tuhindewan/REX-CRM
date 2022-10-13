@@ -247,7 +247,7 @@ class FormController extends BaseController {
             $success = FormModel::form_status_update( $form, $params['form_id'] );
 
             if($success) {
-                return $this->get_success_response(__( 'Form has been saved successfully', 'mrm' ), 201, $success);
+                return $this->get_success_response(__( 'Form status successfully updated', 'mrm' ), 201, $success);
             } 
             return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
 
