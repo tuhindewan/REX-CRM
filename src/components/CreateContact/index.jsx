@@ -132,25 +132,6 @@ const CreateContact = (props) => {
     }));
   };
 
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-
-    setValues((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
-
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setValues((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
-  };
-
   const routeChange = () => {
     let path = `/contacts`;
     navigate(path);

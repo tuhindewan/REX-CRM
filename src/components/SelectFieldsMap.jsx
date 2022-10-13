@@ -3,9 +3,8 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
-import Selectbox from "./Selectbox";
 import WarningNotification from "./WarningNotification";
-import CustomSelect from "./CustomSelect";
+import CustomSelect from "./CustomSelect/CustomSelect";
 import SelectDropdown from "./SelectDropdown";
 
 export default function SelectFieldsMap() {
@@ -130,15 +129,12 @@ export default function SelectFieldsMap() {
   }
 
   // handle selectbox and prepare the mapping
-  function onSelect(e, name, arg1) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    const selectedValue = updatedOptions[0];
+  function onSelect(field_id, field_name, arg1) {
+    
+    const selectedValue = field_id;
     const idx = map.findIndex((item) => item.source == arg1);
-
     if (selectedValue == "no_import") {
-      map.filter((item) => item.source != arg1);
+      mapState.filter((item) => item.source != arg1);
       return;
     }
     if (idx != -1) {
@@ -146,13 +142,14 @@ export default function SelectFieldsMap() {
       map[idx]["source"] = arg1;
       map[idx]["target"] = selectedValue;
     } else {
-      // map doesn't yet have this item so add this
-      map.push({
-        source: arg1,
-        target: selectedValue,
-      });
-    }
-    setMapState(map);
+      setMapState([
+        ...mapState,
+        {
+          source: arg1,
+          target: selectedValue,
+        }
+      ]);
+    }    
   }
 
   return (
@@ -197,7 +194,7 @@ export default function SelectFieldsMap() {
                             <td>{header}</td>
                             <td>
                               <div className="form-group map-dropdown">
-                                <SelectDropdown options={selectOptions} />
+                                <SelectDropdown handleSelect={onSelect} arg1={header} options={selectOptions} />
                               </div>
                             </td>
                           </tr>
