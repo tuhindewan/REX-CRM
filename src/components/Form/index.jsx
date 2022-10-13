@@ -232,6 +232,7 @@ export default function FormIndex(props) {
     setIsDelete("none");
   };
 
+  // function to sort by title ascending or default decending
   const handleSort = (param, name) => {
     setSortBy(name);
     if ("title" === param) {
@@ -242,11 +243,13 @@ export default function FormIndex(props) {
     setToggleDropdown(false);
   };
 
+  // status checkbox states
   const [state, setState] = useState({
     checkedA: true,
     checkedB: false,
   });
 
+  // handle and update status of a form
   const statusSwitch = async (event, index) => {
     setState({ ...state, [event.target.name]: event.target.checked });
 
@@ -311,6 +314,21 @@ export default function FormIndex(props) {
       }, 3000);
       return () => clearTimeout(timer);
     }
+  };
+
+
+  // function for copying shortcode from the input field
+  const handleCopyShortcode = (formId) => {
+    var copyText = document.getElementById("shortcode-" + formId);
+    copyText.select();
+    //deprecated - can be changed with notification.clipboard (only for trusted sites)
+    document.execCommand("copy");
+    setShowNotification("block");
+    setMessage("Shortcode copied ! ");
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   return (
@@ -490,9 +508,14 @@ export default function FormIndex(props) {
                                   <input
                                     type="text"
                                     value={'[mintmrm id="' + form.id + '"]'}
-                                    id="shortcode1"
+                                    id={"shortcode-" + form.id}
                                   />
-                                  <button type="button" className="copy">
+                                  <button
+                                    type="button"
+                                    className="copy"
+                                    id={"copybtn-" + form.id}
+                                    onClick={() => handleCopyShortcode(form.id)}
+                                  >
                                     <CopyIcon />
                                   </button>
                                 </div>
