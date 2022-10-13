@@ -297,7 +297,6 @@ export default function ContactListTable(props) {
       })
       .then((data) => {
         if (200 == data.code) {
-          console.log(data.data);
           setColumns(data.data);
         }
       });

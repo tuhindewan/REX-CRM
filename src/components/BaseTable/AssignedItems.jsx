@@ -21,6 +21,7 @@ export default function AssignedItems(props) {
     showSelectedInside = true,
     allowNewCreate = true,
     contactIds,
+    prefix,
   } = props;
 
   // store retrieved
@@ -199,14 +200,17 @@ export default function AssignedItems(props) {
                     <input
                       type="checkbox"
                       name={item.id}
-                      id={item.id}
+                      id={prefix + item.id}
                       value={item.title}
                       onChange={handleSelectOne}
                       data-custom-id={item.id}
                       checked={checked}
                     />
 
-                    <label for={item.id} className="mrm-custom-select-label">
+                    <label
+                      for={prefix + item.id}
+                      className="mrm-custom-select-label"
+                    >
                       {item.title}
                     </label>
                   </div>
