@@ -34,7 +34,7 @@ export default function ContactListTable(props) {
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
 
-  const [loaded, setLoaded] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -187,7 +187,6 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     const getFilter = async () => {
-      setLoaded(true);
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
         {
@@ -209,7 +208,7 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setFilterCount(data.data.count);
             setFilterTotalPages(data.data.total_pages);
-            setLoaded(false);
+            setShowLoader(false);
           }
         });
     };
@@ -228,7 +227,6 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     async function getData() {
-      setLoaded(true);
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
       )
@@ -242,7 +240,7 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setCount(data.data.count);
             setTotalPages(data.data.total_pages);
-            setLoaded(false);
+            setShowLoader(false);
           }
         });
     }
@@ -498,14 +496,9 @@ export default function ContactListTable(props) {
 
   return (
     <>
-      {loaded ? (
+      {showLoader ? (
         <div className="loader-wrapper">
           <span className="mintmrm-loader show"></span>
-        </div>
-      ) : contactData?.length === 0 ? (
-        <div className="mrm-empty-state-wrapper">
-          <NoContactIcon />
-          <div>No Contact Found </div>
         </div>
       ) : (
         <>
@@ -837,6 +830,19 @@ export default function ContactListTable(props) {
                   </tr>
                 </thead>
                 <tbody>
+                  {!contactData.length && (
+                    <tr>
+                      <td
+                        className="no-contact"
+                        colspan="10"
+                        style={{ textAlign: "center" }}
+                      >
+                        <NoContactIcon />
+                        No contact data found.
+                      </td>
+                    </tr>
+                  )}
+
                   {contactData.map((contact, idx) => {
                     return (
                       <SingleContact
