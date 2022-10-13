@@ -228,6 +228,9 @@
   animation: spin 0.7s linear infinite;
   display: none;
   margin-left: 4px;
+  &.show{
+    display: block;
+  }
 }
 @-webkit-keyframes spin {
   0% {
