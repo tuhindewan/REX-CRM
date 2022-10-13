@@ -58,8 +58,9 @@ class FormController extends BaseController {
             'form_position'  => isset( $params['form_position'] ) ? $params['form_position'] : "",
             'status'         => isset( $params['status'] ) ? $params['status'] : "",
             'group_ids'      => isset( $params['group_ids'] ) ? $params['group_ids'] : "",
+            'meta_fields'    => isset( $params['meta_fields'] ) ? $params['meta_fields'] : [],
         );
-
+        
         try {
             $form = new FormData( $this->args );
 
@@ -110,11 +111,10 @@ class FormController extends BaseController {
         $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
 
 
-
         // Form Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = FormModel::get_all( $offset, $perPage, $search);
+        $groups = FormModel::get_all( $offset, $perPage, $search, $order_by, $order_type);
 
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
@@ -181,7 +181,7 @@ class FormController extends BaseController {
 
 
     /**
-     * Function used to handle delete requests
+     * Function used to handle delete single form requests
      *
      * @param WP_REST_Request $request
      * @return WP_REST_Response
@@ -191,9 +191,11 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $success = FormModel::destroy( $params['list_id'] );
-        if( $success ) {
-            return $this->get_success_response( __( 'List has been deleted successfully', 'mrm' ), 200 );
+        if (isset($params['form_id'])){
+            $success = FormModel::destroy( $params['form_id'] );
+            if($success) {
+                return $this->get_success_response(__( 'Form has been deleted successfully', 'mrm' ), 200);
+            }
         }
 
         return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
@@ -211,13 +213,47 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        // $success = FormModel::destroy_all( $params['list_ids'] );
-        // if($success) {
-        //     return $this->get_success_response(__( 'Lists has been deleted successfully', 'mrm' ), 200);
-        // }
-
+        if (isset($params['form_ids'])){
+            $success = FormModel::destroy_all( $params['form_ids'] );
+            if($success) {
+                return $this->get_success_response(__( 'Forms has been deleted successfully', 'mrm' ), 200);
+            }
+        }
+        
         return $this->get_error_response(__( 'Failed to delete', 'mrm' ), 400);
 
+    }
+
+
+    /**
+     * Function used to handle update status requests
+     *
+     * @param WP_REST_Request $request
+     *
+     * @return WP_REST_RESPONSE
+     * @since 1.0.0
+     */
+    public function form_status_update( WP_REST_Request $request ){
+
+        // Get values from the API request
+        $params = MRM_Common::get_api_params_values( $request );
+
+        // Form object create and insert or update to database
+        $this->args = array(
+            'status'         => isset( $params['status'] ) ? $params['status'] : ""
+        );
+        try {
+            $form = new FormData( $this->args );
+            $success = FormModel::form_status_update( $form, $params['form_id'] );
+
+            if($success) {
+                return $this->get_success_response(__( 'Form status successfully updated', 'mrm' ), 201, $success);
+            } 
+            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 200);
+
+        } catch(Exception $e) {
+            return $this -> get_error_response(__( 'Form is not valid', 'mrm' ), 200);
+        }
     }
 
 

@@ -7,10 +7,6 @@
       "email": "tohin@coderex.co"
     }
   ],
-  "require": {
-    "league/csv": "^9.0",
-    "mailchimp/marketing": "^3.0"
-  },
   "scripts": {
     "test": "phpunit"
   },

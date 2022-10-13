@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
-import CrossIcon from "../Icons/CrossIcon";
 
 export default function CustomSelect(props) {
   // global state reference for whether to hide all dropdown
@@ -75,7 +74,7 @@ export default function CustomSelect(props) {
     // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected.findIndex((item) => item.id == id);
+    const index = selected?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (allowMultiple) {
@@ -89,17 +88,16 @@ export default function CustomSelect(props) {
       if (index >= 0) setSelected([]);
       else setSelected([{ id: id, title: value }]);
     }
-    
   };
 
   // function used for checking whether the current item is selected or not
   const checkIfSelected = (id) => {
-    const checked = selected.findIndex((item) => item.id == id) >= 0;
+    const checked = selected?.findIndex((item) => item.id == id) >= 0;
     return checked;
   };
 
   const deleteSelected = (e, id) => {
-    const index = selected.findIndex((item) => item.id == id);
+    const index = selected?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (allowMultiple) {
@@ -114,37 +112,20 @@ export default function CustomSelect(props) {
   // at first page load get all the available lists
   // keep fetching lists whenever user types something in the search bar
   useEffect(() => {
-    if (endpoint == "/status") {
-      setItems([
-        {
-          title: "Subsbcribe",
-          id: "subsbcribe",
-        },
-        {
-          title: "Unsubscribe",
-          id: "unsubscribe",
-        },
-        {
-          title: "Pending",
-          id: "pending",
-        },
-      ]);
-    } else {
-      async function getItems() {
-        setLoading(true);
-        const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
-        );
-        const resJson = await res.json();
-        if (resJson.code == 200) {
-          setItems(resJson.data.data);
-          setLoading(false);
-        } else {
-          console.log(resJson);
-        }
+    async function getItems() {
+      setLoading(true);
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        setItems(resJson.data.data);
+        setLoading(false);
+      } else {
+        console.log(resJson);
       }
-      if (!options) getItems();
     }
+    if (!options) getItems();
   }, [query]);
 
   // Handle new list or tag creation
@@ -183,6 +164,7 @@ export default function CustomSelect(props) {
     <>
       <div className="mrm-custom-select-container" key="container">
         <button
+          type="button"
           className={
             activeCustomSelect == customSelectUUID.current &&
             !hideAllCustomSelect
@@ -195,19 +177,22 @@ export default function CustomSelect(props) {
           {placeholder}
         </button>
         {/**code for showing selected items inside the tags container still needs to fix css issues */}
-        <div className="mrm-selected-items-container">
+        {/* <div className="mrm-selected-items-container">
           {showSelectedInside &&
             selected.map((item) => {
               return (
                 <span key={item.id} className="mrm-custom-selected-items">
                   {item.title}
-                  <div className="cross-icon" onClick={(e) => deleteSelected(e, item.id)}>
+                  <div
+                    className="cross-icon"
+                    onClick={(e) => deleteSelected(e, item.id)}
+                  >
                     <CrossIcon />
                   </div>
                 </span>
               );
             })}
-        </div>
+        </div> */}
         <ul
           className={
             activeCustomSelect == customSelectUUID.current &&
@@ -263,37 +248,40 @@ export default function CustomSelect(props) {
                 </li>
               );
             })}
-          {items?.length > 0 &&
-            !options &&
-            !loading &&
-            items.map((item, index) => {
-              let checked = checkIfSelected(item.id);
-              return (
-                <li
-                  key={index}
-                  className={
-                    checked
-                      ? "single-column mrm-custom-select-single-column-selected"
-                      : "single-column"
-                  }
-                >
-                  <div class="mintmrm-checkbox">
-                    <input
-                      type="checkbox"
-                      name={item.id}
-                      id={item.id}
-                      value={item.title}
-                      onChange={handleSelectOne}
-                      checked={checked}
-                    />
+          <div className="dropdown-options">
+            {items?.length > 0 &&
+              !options &&
+              !loading &&
+              items.map((item, index) => {
+                let checked = checkIfSelected(item.id);
+                return (
+                  <li
+                    key={index}
+                    className={
+                      checked
+                        ? "single-column mrm-custom-select-single-column-selected"
+                        : "single-column"
+                    }
+                  >
+                    <div class="mintmrm-checkbox">
+                      <input
+                        type="checkbox"
+                        name={item.id}
+                        id={item.id}
+                        value={item.title}
+                        onChange={handleSelectOne}
+                        checked={checked}
+                      />
 
-                    <label for={item.id} className="mrm-custom-select-label">
-                      {item.title}
-                    </label>
-                  </div>
-                </li>
-              );
-            })}
+                      <label for={item.id} className="mrm-custom-select-label">
+                        {item.title}
+                      </label>
+                    </div>
+                  </li>
+                );
+              })}
+          </div>
+
           {items?.length == 0 && allowNewCreate && !loading && !options && (
             <>
               <button

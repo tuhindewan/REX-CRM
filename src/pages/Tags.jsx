@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
+import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
 import TagIcon from "../components/Icons/TagIcon";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import Pagination from "../components/Pagination";
-import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
@@ -49,10 +49,11 @@ const Tags = () => {
   const [count, setCount] = useState(0);
 
   // order by which field
-  const [orderBy, setOrderBy] = useState("id");
+  const [orderBy, setOrderBy] = useState("title");
 
   // order type asc or desc
-  const [orderType, setOrderType] = useState("desc");
+  const [orderType, setOrderType] = useState("asc");
+  const [sortButtonName, setSortButtonName] = useState("Name Asc");
 
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
@@ -88,6 +89,7 @@ const Tags = () => {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Set values from list form
   const handleChange = (e) => {
@@ -296,6 +298,23 @@ const Tags = () => {
   const onShowAlert = async (status) => {
     setShowAlert(status);
   };
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+  const handleSelect = (event, order_by, order_type) => {
+    setShowDropdown(false);
+    setOrderBy(order_by);
+    setOrderType(order_type);
+    if (order_by == "title" && order_type == "asc") {
+      setSortButtonName("Name Asc");
+    } else if (order_by == "title" && order_type == "desc") {
+      setSortButtonName("Name Desc");
+    } else if (order_by == "created_at" && order_type == "asc") {
+      setSortButtonName("Date Created Asc");
+    } else {
+      setSortButtonName("Date Created Desc");
+    }
+  };
 
   return (
     <>
@@ -324,15 +343,14 @@ const Tags = () => {
                   </div>
                   <div className="contact-button-field">
                     <button
-                      className="contact-cancel mintmrm-btn outline"
-                      style={{ padding: "15px" }}
+                      className="import-cancel mintmrm-btn outline"
                       onClick={handleCancel}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="contact-save mintmrm-btn"
+                      className="import-save mintmrm-btn"
                       onClick={createOrUpdate}
                     >
                       {editID == 0 ? "Save" : "Update"}
@@ -350,30 +368,50 @@ const Tags = () => {
             <div className="contact-list-header">
               <div className="left-filters">
                 <p className="sort-by">Sort by</p>
-                <Selectbox
-                  options={[
-                    {
-                      title: "Name Asc",
-                      id: "title+asc",
-                    },
-                    {
-                      title: "Name Desc",
-                      id: "title+desc",
-                    },
-                    {
-                      title: "Date Created Asc",
-                      id: "created_at+asc",
-                    },
-                    {
-                      title: "Date Created Desc",
-                      id: "created_at+desc",
-                    },
-                  ]}
-                  tags={false}
-                  placeholder="Field"
-                  multiple={false}
-                  onSelect={handleOrderBy}
-                />
+                <div className="sort-by-dropdown">
+                  <button
+                    className={
+                      showDropdown
+                        ? "drop-down-button show"
+                        : "drop-down-button"
+                    }
+                    onClick={handleDropdown}
+                  >
+                    {sortButtonName}
+                  </button>
+                  <ul
+                    className={
+                      showDropdown
+                        ? "mintmrm-dropdown show"
+                        : "mintmrm-dropdown"
+                    }
+                  >
+                    <li
+                      onClick={(event) => handleSelect(event, "title", "asc")}
+                    >
+                      Name Asc
+                    </li>
+                    <li
+                      onClick={(event) => handleSelect(event, "title", "desc")}
+                    >
+                      Name Desc
+                    </li>
+                    <li
+                      onClick={(event) =>
+                        handleSelect(event, "created_at", "asc")
+                      }
+                    >
+                      Date Created Asc
+                    </li>
+                    <li
+                      onClick={(event) =>
+                        handleSelect(event, "created_at", "desc")
+                      }
+                    >
+                      Date Created Desc
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div className="right-buttons">
                 {/* search input */}
@@ -413,7 +451,8 @@ const Tags = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li className="delete" onClick={deleteMultipleList}>
+                      <li onClick={deleteMultipleList}>
+                        <Delete />
                         Delete Selected
                       </li>
                     </ul>

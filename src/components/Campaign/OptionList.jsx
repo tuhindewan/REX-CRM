@@ -1,29 +1,66 @@
 export default function OptionList(props) {
-  const { checkList, setCheckList,  } = props;
+  const {selected, setSelected, allowMultiple = true } = props;
+  
 
-  const handleChange = (e) => {
-    let updatedList = [...checkList];
-    if (e.target.checked) {
-      updatedList = [...checkList, e.target.value];
-      // setCheckList([...checkList, e.target.value]);
+  // const handleChange = (e) => {
+  //   let updatedList = [...checkItem];
+  //   if (e.target.checked) {
+  //     updatedList = [...checkItem, e.target.value];
+  //     // setCheckItem([...checkItem, e.target.value]);
+  //   } else {
+  //     updatedList.splice(checkItem.indexOf(e.target.value), 1);
+  //   }
+  //   setCheckItem(updatedList);
+  //   // console.log(updatedList);
+  // };
+
+  const handleSelectOne = (e) => {
+    e.stopPropagation();
+    let updatedList = [...selected];
+    // since this function is handling input for both checkboxes and li elements
+    // there might be either id and value for input checkboxes
+    // or custom ID and custom Value dataset attribute for li elements
+    let value = e.target.value ? e.target.value : e.target.dataset.customValue;
+    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    const index = selected.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (allowMultiple) {
+      if (index >= 0) {
+        setSelected(selected.filter((item) => item.id != id));
+      } else {
+        // add id to the array
+        setSelected([...selected, { id: id, title: value }]);
+      }
     } else {
-      updatedList.splice(checkList.indexOf(e.target.value), 1);
+      if (index >= 0) setSelected([]);
+      else setSelected([{ id: id, title: value }]);
     }
-    setCheckList(updatedList);
-    // console.log(updatedList);
+
+    if (checked) {
+      updatedList = [...selected.id, e.target.value];
+      // setCheckItem([...checkItem, e.target.value]);
+    } else {
+      updatedList.splice(selected.id?.indexOf(e.target.value), 1);
+    }
+    setSelected(updatedList);
   };
+
+  
   return (
     <div class="mintmrm-checkbox">
       <input
         type="checkbox"
-        name={props.name}
-        id={props.name}
+        name={props.id}
+        id={props.id}
         value={props.title}
-        onChange={handleChange}
+        onChange={handleSelectOne}
+        checked={props.checked}
+        
         
       />
 
-      <label for={props.name} className="mrm-custom-select-label">
+      <label for={props.id} className="mrm-custom-select-label">
         {props.title}
       </label>
     </div>

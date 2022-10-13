@@ -82,12 +82,6 @@
       flex-wrap: wrap;
 
       .form-group {
-        margin-right: 12px;
-
-        // label {
-        //   display: none;
-        // }
-
         select {
           color: #344054;
           padding: 2px 21px 2px 9px;
@@ -272,6 +266,7 @@
       font-weight: 500;
       font-size: 12px;
       line-height: 14px;
+      text-transform: capitalize;
     }
 
     .selected-items {
@@ -391,8 +386,8 @@
 
       .mintmrm-dropdown {
         width: 315px;
-        right: -2px;
-        top: calc(100% - 5px);
+        right: 0px;
+        top: calc(100%);
 
         &:before {
           right: 21px;
@@ -477,7 +472,7 @@
               margin-bottom: 15px;
             }
           }
-          .no-contact::before{
+          .no-contact::before {
             border-left: 2px solid #f9fafb;
           }
 
@@ -598,11 +593,9 @@
           }
         }
 
-        .action {
-          .more-option {
-            position: relative;
-            background-color: transparent;
-          }
+        .more-option {
+          position: relative;
+          background-color: transparent;
         }
       }
     }
@@ -715,17 +708,9 @@
       font-size: 14px;
       line-height: 17px;
       color: #344054;
-      svg {
-        margin-right: 11px;
-      }
     }
     .action-list:hover {
       color: #6f6af8;
-      svg {
-        path {
-          fill: #6f6af8;
-        }
-      }
     }
   }
 }

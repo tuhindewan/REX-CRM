@@ -57,7 +57,7 @@ export default function AssignedItems(props) {
     // there might be either id and value for input checkboxes
     // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
-    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    let id = e.target.dataset.customId;
     const index = selected?.findIndex((item) => item.id == id);
     // already in selected list so remove it from the array
     if (allowMultiple) {
@@ -115,47 +115,47 @@ export default function AssignedItems(props) {
   };
 
   const handleAssignLists = async () => {
-    let res = null;
-    let body;
-    "lists" == endpoint
-      ? (body = {
-          lists: selected,
-          contact_ids: contactIds,
-        })
-      : (body = {
-          tags: selected,
-          contact_ids: contactIds,
-        });
-    try {
-      // create contact
-      setLoading(true);
-      res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      );
+    // let res = null;
+    // let body;
+    // "lists" == endpoint
+    //   ? (body = {
+    //       lists: selected,
+    //       contact_ids: contactIds,
+    //     })
+    //   : (body = {
+    //       tags: selected,
+    //       contact_ids: contactIds,
+    //     });
+    // try {
+    //   // create contact
+    //   setLoading(true);
+    //   res = await fetch(
+    //     `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-type": "application/json",
+    //       },
+    //       body: JSON.stringify(body),
+    //     }
+    //   );
 
-      const resJson = await res.json();
-      if (resJson.code == 201) {
-        setSearch("");
-        setQuery("");
-        setSelected([]);
-        props.setIsAssignTo(!props.isActive);
-        props.setRefresh(!props.refresh);
-        props.setShowNotification("block");
-        props.setMessage(resJson.message);
-      } else {
-        window.alert(resJson.message);
-      }
-    } catch (e) {
-    } finally {
-      setLoading(false);
-    }
+    //   const resJson = await res.json();
+    //   if (resJson.code == 201) {
+    //     setSearch("");
+    //     setQuery("");
+    //     setSelected([]);
+    //     props.setIsAssignTo(!props.isActive);
+    //     props.setRefresh(!props.refresh);
+    //     props.setShowNotification("block");
+    //     props.setMessage(resJson.message);
+    //   } else {
+    //     window.alert(resJson.message);
+    //   }
+    // } catch (e) {
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -202,6 +202,7 @@ export default function AssignedItems(props) {
                       id={item.id}
                       value={item.title}
                       onChange={handleSelectOne}
+                      data-custom-id={item.id}
                       checked={checked}
                     />
 

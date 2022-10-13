@@ -167,6 +167,14 @@ class ContactData {
      */
     private $meta_fields;
 
+    /**
+     * Native WordPress user ID
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $wp_user_id;
+
 
     public function __construct( $email, $args = [] )
     {
@@ -188,6 +196,7 @@ class ContactData {
         $this->contact_id       =  isset($args['contact_id'])       ? sanitize_text_field( $args['contact_id'] )        : '';
         $this->meta_fields      =  isset($args['meta_fields'])      ? $args['meta_fields']                              : array();
         $this->created_by       =  isset($args['created_by'])       ? sanitize_text_field( $args['created_by'])         : '';
+        $this->wp_user_id       =  isset($args['wp_user_id'])       ? sanitize_text_field( $args['wp_user_id'])         : '';
     }
 
 
@@ -417,6 +426,18 @@ class ContactData {
     public function get_meta_fields()
     {
         return $this->meta_fields;     
+    }
+
+
+    /**
+     * Return WP user ID
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_wp_user_id()
+    {
+        return $this->wp_user_id;     
     }
 
 }
