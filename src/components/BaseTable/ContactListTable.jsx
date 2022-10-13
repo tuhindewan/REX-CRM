@@ -12,7 +12,7 @@ import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
-import CustomSelect from "../CustomSelect";
+import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ExportDrawer from "../ExportDrawer";
 import ContactProfile from "../Icons/ContactProfile";
@@ -484,6 +484,7 @@ export default function ContactListTable(props) {
       setShowNotification("block");
       setMessage(responseData?.message);
       setColumns(responseData.data);
+      setAddColumn(!isAddColumn);
       toggleRefresh();
     } else {
       // Validation messages
@@ -496,6 +497,7 @@ export default function ContactListTable(props) {
 
   return (
     <>
+      {console.log(columns)}
       <div className="contact-list-header">
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
@@ -803,6 +805,9 @@ export default function ContactListTable(props) {
                 <th className="first-name">First Name</th>
 
                 <th className="last-name">Last Name</th>
+                <th className="list">Lists</th>
+                <th className="tag">Tags</th>
+                <th className="status">Status</th>
 
                 {columns?.map((column) => {
                   return (

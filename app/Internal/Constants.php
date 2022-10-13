@@ -39,27 +39,15 @@ class Constants{
      */
     public static $contact_list_columns = array(
         [
-            "id"    => "lists",
-            "value" => "Lists"
-        ],
-        [
-            "id"    => "tags",
-            "value" => "Tags"
-        ],
-        [
             "id"    => "last_activity",
             "value" => "Last Activity"
-        ],
-        [
-            "id"    => "status",
-            "value" => "Status"
         ],
         [
             "id"    => "phone_number",
             "value" => "Phone Number"
         ],
         [
-            "id"    => "source",
+            "id"    => "sources",
             "value" => "Source"
         ],
         [
@@ -83,7 +71,7 @@ class Constants{
             "value" => "Date of Birth"
         ],
         [
-            "id"    => "address",
+            "id"    => "addresses",
             "value" => "Address"
         ],
         // [

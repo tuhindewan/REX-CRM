@@ -655,8 +655,8 @@ export default function ContactDetails() {
                       <li>
                         <span className="title">Address</span>
                         <span className="title-value">
-                          {contactData?.meta_fields?.address
-                            ? contactData?.meta_fields?.address
+                          {contactData?.meta_fields?.addresses
+                            ? contactData?.meta_fields?.addresses
                             : "-"}
                         </span>
                       </li>
@@ -769,9 +769,9 @@ export default function ContactDetails() {
                           <h4>Address</h4>
                           <div className="adress-input-field">
                             <InputItem
-                              name="address"
+                              name="addresses"
                               handleChange={handleMetaChange}
-                              value={contactData?.meta_fields?.address}
+                              value={contactData?.meta_fields?.addresses}
                             />
                             {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
                           <InputItem label="City" value={contactData?.meta_fields?.city}/>
