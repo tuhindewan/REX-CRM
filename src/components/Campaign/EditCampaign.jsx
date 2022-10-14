@@ -13,6 +13,7 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
+import WarningNotification from "../WarningNotification";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -40,6 +41,7 @@ export default function EditCampaign(props) {
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
+  const [showWarning, setShowWarning] = useState("none");
 
   // recipient lists and recipients tags state variables to whom the email(s) should be sent
   const [recipientLists, setRecipientLists] = useState([]);
@@ -161,7 +163,6 @@ export default function EditCampaign(props) {
       }),
       campaign_id: id,
     };
-
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
@@ -170,7 +171,8 @@ export default function EditCampaign(props) {
         setMessage(response?.message);
         toggleRefresh();
       } else {
-        window.alert(response?.message);
+        setShowWarning("block");
+        setMessage(response?.message);
       }
     });
     const isValid = validate();
@@ -189,7 +191,7 @@ export default function EditCampaign(props) {
       emailData[selectedEmailIndex]["email_subject"]?.length != 0 ||
       emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 ||
       emailData[selectedEmailIndex]["sender_name"]?.length != 0 ||
-      emailData[selectedEmailIndex]["sender_name"]?.length != 0 ||
+      emailData[selectedEmailIndex]["sender_email"]?.length != 0 ||
       emailData[selectedEmailIndex].email_body?.length != 0
     ) {
       return true;
@@ -197,16 +199,15 @@ export default function EditCampaign(props) {
   };
 
   const validatePublish = () => {
-    console.log(emailData[selectedEmailIndex]["email_preview_text"]?.length);
     if (
       campaignTitle.length > 0 &&
       recipientLists?.length != 0 &&
       recipientTags?.length != 0 &&
-      emailData[selectedEmailIndex]["email_subject"]?.length != null &&
-      emailData[selectedEmailIndex]["email_preview_text"]?.length != null &&
-      emailData[selectedEmailIndex]["sender_name"]?.length != null &&
-      emailData[selectedEmailIndex]["sender_name"]?.length != null &&
-      emailData[selectedEmailIndex].email_body?.length != null
+      emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
+      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
+      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
+      emailData[selectedEmailIndex]["sender_email"]?.length != 0 &&
+      emailData[selectedEmailIndex].email_body?.length != 0
     ) {
       return true;
     }
@@ -315,8 +316,6 @@ export default function EditCampaign(props) {
     setActiveEmailData(emailData[index]);
   };
 
-  let handlePublish = async () => {};
-
   useUnload((e) => {
     e.preventDefault();
     e.returnValue = "";
@@ -324,7 +323,6 @@ export default function EditCampaign(props) {
 
   return (
     <>
-      {/* {console.log(emailData)} */}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
@@ -578,49 +576,50 @@ export default function EditCampaign(props) {
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
+      <WarningNotification display={showWarning} message={message} />
       {!isClose && (
-          <CampaignTemplates
-              isOpen={isTemplate}
-              isClose={isClose}
-              setIsClose={setIsClose}
-              isNewCampaign={false}
-              selectedEmailIndex={selectedEmailIndex}
-              emailData={emailData[selectedEmailIndex]}
-              setEmailBody={setEmailBody}
-              setIsTemplate={setIsTemplate}
-              campaignData={{
-                title: campaignTitle,
-                recipients: {
-                  lists: recipientLists?.map((list) => {
-                    return {
-                      id: list.id,
-                      title: list.title,
-                    };
-                  }),
-                  tags: recipientTags?.map((tag) => {
-                    return {
-                      id: tag.id,
-                      title: tag.title,
-                    };
-                  }),
-                },
-                type: emailData.length > 1 ? "sequence" : "regular",
-                status: status,
-                created_by: `${window.MRM_Vars.current_userID}`,
-                emails: emailData.map((email) => {
-                  return {
-                    email_subject: email.email_subject,
-                    email_preview_text: email.email_preview_text,
-                    sender_email: email.sender_email,
-                    delay_count: email.delay_count,
-                    delay_value: email.delay_value,
-                    sender_name: email.sender_name,
-                    email_body: email.email_body,
-                    email_json: email.email_json,
-                  };
-                }),
-              }}
-          />
+        <CampaignTemplates
+          isOpen={isTemplate}
+          isClose={isClose}
+          setIsClose={setIsClose}
+          isNewCampaign={false}
+          selectedEmailIndex={selectedEmailIndex}
+          emailData={emailData[selectedEmailIndex]}
+          setEmailBody={setEmailBody}
+          setIsTemplate={setIsTemplate}
+          campaignData={{
+            title: campaignTitle,
+            recipients: {
+              lists: recipientLists?.map((list) => {
+                return {
+                  id: list.id,
+                  title: list.title,
+                };
+              }),
+              tags: recipientTags?.map((tag) => {
+                return {
+                  id: tag.id,
+                  title: tag.title,
+                };
+              }),
+            },
+            type: emailData.length > 1 ? "sequence" : "regular",
+            status: status,
+            created_by: `${window.MRM_Vars.current_userID}`,
+            emails: emailData.map((email) => {
+              return {
+                email_subject: email.email_subject,
+                email_preview_text: email.email_preview_text,
+                sender_email: email.sender_email,
+                delay_count: email.delay_count,
+                delay_value: email.delay_value,
+                sender_name: email.sender_name,
+                email_body: email.email_body,
+                email_json: email.email_json,
+              };
+            }),
+          }}
+        />
       )}
     </>
   );

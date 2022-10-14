@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
 use Mint\MRM\DataBase\Models\CampaignModel;
+use Mint\MRM\DataStores\Campaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Common\MRM_Common;
@@ -49,6 +50,7 @@ class CampaignEmailController extends BaseController {
         );
         
         $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
+        $email_builder_data = CampaignEmailBuilderModel::is_new_email_template($email->id);
         $emailData = isset($params['campaign_data']['emails'][0]) ? $params['campaign_data']['emails'][0] : "";
         $emailData['email_body'] = $params['email_body'];
         $email_id = CampaignModel::update_campaign_emails( $emailData, $params['campaign_id'], $params['email_index'] );
@@ -56,8 +58,7 @@ class CampaignEmailController extends BaseController {
         if ( $email ) {
             $is_new   = false;
         }
-        error_log(print_r($is_new, 1));
-        if ( $is_new ) {
+        if ( !$email_builder_data ) {
 
             // save the email first
             // $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
@@ -145,7 +146,6 @@ class CampaignEmailController extends BaseController {
      */
     public function create_email( WP_REST_Request $request ) {
         $params         = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         $email_index    = isset($params['email_index']) ? $params['email_index'] : null;
         $response   = array(
             'success'   => true,
