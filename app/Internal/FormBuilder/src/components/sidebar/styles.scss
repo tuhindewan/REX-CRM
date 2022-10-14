@@ -10,8 +10,10 @@
             padding: 30px;
 
             .editor-styles-wrapper {
-                width: 677px;
+                max-width: 697px;
                 margin: 0 auto;
+                width: 100%;
+                padding: 0 20px;
             }
         }
     }
@@ -607,4 +609,65 @@
     left: 0;
     opacity: 1;
     visibility: visible;
+}
+
+
+@media only screen and (max-width: 1299px) {
+    .form-editor-page .form-editor-body {
+        padding: 20px;
+    }
+
+    .form-editor-page .form-editor-body .form-editor-title-area {
+        margin-bottom: 20px;
+    }
+
+    .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content {
+        width: calc(100% - 320px);
+        padding: 20px;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar {
+        width: 300px;
+        margin-left: 20px;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day {
+        margin: 0 7px;
+        width: 45px;
+    }
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day input.components-datetime__time-field-day-input {
+        width: 100%;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-minutes-input,
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-hours-input {
+        padding: 5px 6px;
+        width: 50px!important;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid {
+        width: 100%!important;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul {
+        padding: 0 13px;
+    }
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul .DayPicker_weekHeader_li {
+        font-size: 13px;
+        padding: 2px;
+    }
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day {
+        padding: 1px;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper {
+        display: block;
+    }
+
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select, 
+    .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control {
+        width: 100%;
+        margin-top: 10px;
+    }
+
 }
