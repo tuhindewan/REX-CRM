@@ -52,6 +52,7 @@ export default function CampaignTemplates(props) {
 
   return (
     <>
+      {console.log(campaignData)}
       <div
         className={
           props.isOpen && !isClose
