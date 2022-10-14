@@ -272,7 +272,6 @@ export default function Editor(props) {
     if (!shouldCallAPI) return;
     if (!id) return;
     fetchEmailBuilderData().then((res) => {
-      setShouldCallAPI(false);
       setBuilderData(res?.email_data?.json_data);
     });
   });
@@ -294,6 +293,7 @@ export default function Editor(props) {
   };
 
   const fetchEmailBuilderData = async () => {
+    setShouldCallAPI(false);
     let rest_url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex}`;
     const response = await fetch(rest_url);
     return await response.json();
@@ -489,8 +489,6 @@ export default function Editor(props) {
   };
 
   const sendTestEmail = (values: IEmailTemplate) => {
-    console.log(values);
-
     setTestMailMessage("");
     let mergeTagsPayload = {};
 
@@ -520,22 +518,19 @@ export default function Editor(props) {
   const onUploadImage = async (blob: Blob) => {
     const formData = new FormData();
     formData.append("image", blob);
-    let url = `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/mediaUpload`;
+    let url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/mediaUpload`;
     const res = await axios.post(url, formData);
     return res.data.url;
   };
 
   return (
     <>
-      <div
-        className={
-          emailLoader
-            ? "email-builder-loader show-loader"
-            : "email-builder-loader"
-        }
-      >
-        <span className="mintmrm-loader"></span>
-      </div>
+      { emailLoader &&
+        <div className='email-builder-loader show-loader'>
+          <span className="mintmrm-loader"></span>
+        </div>
+      }
+
 
       <div className="mrm-email-editor">
         <EmailEditorProvider
