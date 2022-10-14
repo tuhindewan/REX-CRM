@@ -13,6 +13,7 @@ import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function FormIndex(props) {
+
   const [formData, setFormData] = useState({});
 
   // how many to show per page
@@ -101,7 +102,7 @@ export default function FormIndex(props) {
     if (allSelected) {
       setSelected([]);
     } else {
-      setSelected(formData.map((form) => form.id));
+      setSelected(formData?.map((form) => form.id));
     }
     setAllSelected(!allSelected);
   };
@@ -126,7 +127,18 @@ export default function FormIndex(props) {
   const getDaysAgo = (created_at) => {
     const created = new Date(created_at);
 
-    return parseInt((date - created) / (1000 * 3600 * 24));
+    const day = parseInt((date - created) / (1000 * 3600 * 24));
+
+    console.log(date);
+
+    let ago = day + " day";
+
+    if (day > 1) {
+      ago = day + " days";
+      return ago;
+    }
+
+    return ago;
   };
 
   // at first page load get all the available lists
@@ -479,15 +491,9 @@ export default function FormIndex(props) {
 
                                     <span className="name">
                                       <a href="">{form.title}</a>
-                                      {getDaysAgo(form.created_at) > 1 ? (
-                                        <small>
-                                          {getDaysAgo(form.created_at)} days ago
-                                        </small>
-                                      ) : (
-                                        <small>
-                                          {getDaysAgo(form.created_at)} day ago
-                                        </small>
-                                      )}
+                                      <small>
+                                        {getDaysAgo(form.created_at)} ago
+                                      </small>
                                     </span>
                                   </div>
                                 </div>
@@ -496,7 +502,9 @@ export default function FormIndex(props) {
                               {/* <td className="view">453</td> */}
 
                               <td className="signup">
-                                {form.meta_fields?.sign_up}
+                                {form.meta_fields?.sign_up
+                                  ? form.meta_fields?.sign_up
+                                  : 0}
                               </td>
 
                               <td className="shortcode">

@@ -342,6 +342,7 @@ export default function AddCampaign(props) {
                       All Subscriber
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
+
                     <button
                       className="all-recipients selected"
                       onClick={showDropDown}
@@ -352,6 +353,7 @@ export default function AddCampaign(props) {
                       <span className="recipients">300 Recipients</span>
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
+                    
                     <CampaignCustomSelect dropDown={dropDown} />
                     <div></div> */}
                         <div className="select-recipient">
