@@ -15,6 +15,7 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignTemplates from "./CampaignTemplates";
+import CrossIcon from "../Icons/CrossIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -60,6 +61,10 @@ export default function EditCampaign(props) {
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [campaignStatus, setCampaignStatus] = useState("");
+  const [listAdder, setListAdder] = useState({
+    lists: [],
+    tags: [],
+  });
 
   // get the campaign id from url
   const { id } = useParams();
@@ -321,6 +326,44 @@ export default function EditCampaign(props) {
     e.returnValue = "";
   });
 
+  const deleteSelectedlist = (e, id) => {
+    const index = recipientLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setRecipientLists(recipientLists.filter((item) => item.id != id));
+      setListAdder((prev) => ({
+        ...prev,
+        lists: prev.lists.filter((item) => {
+          return item != id;
+        }),
+      }));
+      // setFilterAdder(filterAdder.lists.filter((item) => item != id));
+    }
+  };
+  const deleteSelectedtag = (e, id) => {
+    const index = recipientTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setRecipientTags(recipientTags.filter((item) => item.id != id));
+      setListAdder((prev) => ({
+        ...prev,
+        tags: prev.tags.filter((item) => {
+          return item != id;
+        }),
+      }));
+    }
+  };
+  const deleteAll = () => {
+    setRecipientLists([]);
+    setRecipientTags([]);
+    setListAdder({
+      lists: [],
+      tags: [],
+    });
+  };
+
   return (
     <>
       <div className="mintmrm-add-campaign">
@@ -388,38 +431,84 @@ export default function EditCampaign(props) {
                       />
                     </div>
                     <div className="email-to input-item">
-                      <label>To:</label>
-                      <div>
-                        <CustomSelect
-                          selected={recipientLists}
-                          setSelected={setRecipientLists}
-                          endpoint="/lists"
-                          placeholder="Lists"
-                          name="list"
-                          listTitle="CHOOSE LIST"
-                          listTitleOnNotFound="No Data Found"
-                          searchPlaceHolder="Search..."
-                          allowMultiple={true}
-                          showSearchBar={true}
-                          showListTitle={true}
-                          showSelectedInside={false}
-                          allowNewCreate={true}
-                        />
-                        <CustomSelect
-                          selected={recipientTags}
-                          setSelected={setRecipientTags}
-                          endpoint="/tags"
-                          placeholder="Tags"
-                          name="tag"
-                          listTitle="CHOOSE TAG"
-                          listTitleOnNotFound="No Data Found"
-                          searchPlaceHolder="Search..."
-                          allowMultiple={true}
-                          showSearchBar={true}
-                          showListTitle={true}
-                          showSelectedInside={false}
-                          allowNewCreate={true}
-                        />
+                      <div className="select-options">
+                        <label>To:</label>
+                        <div>
+                          <CustomSelect
+                            selected={recipientLists}
+                            setSelected={setRecipientLists}
+                            endpoint="/lists"
+                            placeholder="Lists"
+                            name="list"
+                            listTitle="CHOOSE LIST"
+                            listTitleOnNotFound="No Data Found"
+                            searchPlaceHolder="Search..."
+                            allowMultiple={true}
+                            showSearchBar={true}
+                            showListTitle={true}
+                            showSelectedInside={false}
+                            allowNewCreate={true}
+                          />
+                          <CustomSelect
+                            selected={recipientTags}
+                            setSelected={setRecipientTags}
+                            endpoint="/tags"
+                            placeholder="Tags"
+                            name="tag"
+                            listTitle="CHOOSE TAG"
+                            listTitleOnNotFound="No Data Found"
+                            searchPlaceHolder="Search..."
+                            allowMultiple={true}
+                            showSearchBar={true}
+                            showListTitle={true}
+                            showSelectedInside={false}
+                            allowNewCreate={true}
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className={
+                          recipientLists.length == 0 &&
+                          recipientTags.length == 0
+                            ? "selected-result inactive"
+                            : "selected-result"
+                        }
+                      >
+                        {recipientLists.map((item) => {
+                          return (
+                            <span
+                              key={item.id}
+                              className="mrm-custom-selected-items"
+                            >
+                              {item.title}
+                              <div
+                                className="cross-icon"
+                                onClick={(e) => deleteSelectedlist(e, item.id)}
+                              >
+                                <CrossIcon />
+                              </div>
+                            </span>
+                          );
+                        })}
+                        {recipientTags.map((item) => {
+                          return (
+                            <span
+                              key={item.id}
+                              className="mrm-custom-selected-items"
+                            >
+                              {item.title}
+                              <div
+                                className="cross-icon"
+                                onClick={(e) => deleteSelectedtag(e, item.id)}
+                              >
+                                <CrossIcon />
+                              </div>
+                            </span>
+                          );
+                        })}
+                        <div className="clear-all" onClick={deleteAll}>
+                          <span>Clear All</span>
+                        </div>
                       </div>
                     </div>
                   </>
