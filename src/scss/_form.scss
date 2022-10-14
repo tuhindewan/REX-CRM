@@ -52,9 +52,50 @@
       select {
         min-width: auto;
         height: 36px;
-        padding: 1;
         padding: 4px 10px;
         color: #2D3149;
+      }
+
+      button {
+        border-radius: 6px;
+        display: block;
+        border: 1px solid #e4e6eb;
+        height: 36px;
+        width: 85px;
+        padding: 4px 12px;
+        color: #2D3149;
+        background-color: transparent;
+        text-align: left;
+        position: relative;
+
+        &:before {
+          content: "";
+          position: absolute;
+          right: 10px;
+          top: calc(50% - 2px);
+          transform: translateY(-50%) rotate(45deg);
+          width: 8px;
+          height: 8px;
+          border-bottom: 1px solid #2D3149;
+          border-right: 1px solid #2D3149;
+          transition: all 0.3s ease;
+        }
+      }
+
+      ul.mintmrm-dropdown {
+        top: calc(100% + 10px);
+        width: 132px;
+        padding: 7px;
+      }
+      
+      .show {
+        button:before {
+          top: calc(50% + 1px);
+          transform: translateY(-50%) rotate(-135deg);
+        }
+        .mintmrm-dropdown {
+          display: block;
+        }
       }
 
     }
@@ -289,6 +330,27 @@
             right: -10px;
             top: calc(100% + 6px);
             width: 122px;
+
+            li svg {
+              margin-right: 5px;
+              width: 20px;
+            }
+          }
+
+        }
+
+        tr:last-child{
+          .action {
+            .mintmrm-dropdown {
+              bottom: calc(100% + 6px);
+              top: inherit;
+
+              &:before {
+                top: inherit;
+                bottom: -6px;
+                transform: rotate(223deg);
+              }
+            }
           }
         }
       }

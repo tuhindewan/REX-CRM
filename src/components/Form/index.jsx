@@ -11,6 +11,7 @@ import FormIconSM from "../Icons/FormIconSM";
 import CopyIcon from "../Icons/CopyIcon";
 import Pagination from "../Pagination";
 import EyeIcon from "../Icons/EyeIcon";
+import EditIcon from "../Icons/EditIcon";
 import Delete from "../Icons/Delete";
 import SuccessfulNotification from "../SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -133,8 +134,6 @@ export default function FormIndex(props) {
     const created = new Date(created_at);
 
     const day = parseInt((date - created) / (1000 * 3600 * 24));
-
-    console.log(date);
 
     let ago = day + " day";
 
@@ -373,19 +372,12 @@ export default function FormIndex(props) {
                 <div className="right-buttons">
                   <div className="sorting">
                     <h5>Sort by</h5>
-                    <div className="pos-relative">
-                      <button
-                        onClick={() => setToggleDropdown(!toggleDropdown)}
-                      >
+                    <div className={toggleDropdown ? "pos-relative show" : "pos-relative" } >
+                      <button onClick={() => setToggleDropdown(!toggleDropdown)} >
                         {sortBy}
                       </button>
-                      <ul
-                        className={
-                          toggleDropdown
-                            ? "mintmrm-dropdown show"
-                            : "mintmrm-dropdown "
-                        }
-                      >
+
+                      <ul className="mintmrm-dropdown">
                         <li onClick={() => handleSort("created-at", "Date")}>
                           Date
                         </li>
@@ -393,6 +385,7 @@ export default function FormIndex(props) {
                           Title
                         </li>
                       </ul>
+                      
                     </div>
                   </div>
 
@@ -574,12 +567,14 @@ export default function FormIndex(props) {
                                         className="action-list"
                                         style={{ display: "flex" }}
                                       >
+                                        <EditIcon />
                                         Edit
                                       </li>
                                       <li
                                         className="action-list"
                                         onClick={() => deleteForm(form.id)}
                                       >
+                                        <Delete />
                                         Delete
                                       </li>
                                     </ul>

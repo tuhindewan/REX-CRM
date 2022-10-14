@@ -169,6 +169,64 @@
                 textarea {
                     height: 92px;
                 }
+                
+                .mintmrm-custom-select {
+                    position: relative;
+
+                    .mintmrm-custom-select-btn {
+                        position: relative;
+                        line-height: 1;
+                        padding: 7px 25px 7px 10px;
+                        width: 100%;
+                        text-align: left;
+                        background: #FFFFFF;
+                        box-shadow: 0px 1px 1px #b6b9bf4d;
+                        border-radius: 6px;
+                        height: 38px;
+                        border: none;
+                        color: #B6B6B7;
+                        font-size: 14px;
+                        font-weight: 400;
+
+                        &:before {
+                            content: "";
+                            position: absolute;
+                            right: 14px;
+                            top: calc(50% - 2px);
+                            transform: translateY(-50%) rotate(45deg);
+                            width: 8px;
+                            height: 8px;
+                            border-bottom: 1px solid #2D3149;
+                            border-right: 1px solid #2D3149;
+                            transition: all 0.3s ease;
+                        }
+                    }
+
+                    ul.mintmrm-dropdown {
+                        position: absolute;
+                        background: #fff;
+                        right: 0;
+                        top: calc(100% + 4px);
+                        width: 100%;
+                        border: 1px solid #e2e5ed;
+                        z-index: 5;
+                        transition: all 0.3s ease;
+                        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);
+                        border-radius: 6px;
+                        padding: 8px;
+                        display: none;
+
+                        &::before {
+                            display: none;
+                        }
+                    }
+
+                    &.show-dropdown {
+                        .mintmrm-dropdown {
+                            display: block;
+                        }
+                    }
+                }
 
                 .components-input-control__backdrop {
                     border: none;
@@ -296,11 +354,18 @@
                     .components-base-control__field {
                         margin: 0;
                     }
+                    .mintmrm-custom-select,
                     .components-base-control {
                         width: 144px;
                     }
                     select {
                         min-width: auto;
+                        width: 100%;
+                    }
+
+                    ul.mintmrm-dropdown {
+                        bottom: calc(100% + 4px);
+                        top: inherit;
                         width: 100%;
                     }
                 }
@@ -343,6 +408,7 @@
                         cursor: pointer;
                     }
                 }
+
 
             }
 
@@ -393,6 +459,44 @@
                     height: 36px;
                     padding: 5px 10px;
                     line-height: 1;
+                }
+
+                .DayPickerNavigation {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    padding: 10px;
+                    height: auto;
+
+                    .DayPickerNavigation_button {
+                        position: relative;
+                        top: 0;
+                        left: inherit;
+                        right: inherit;
+                        display: block;
+                        height: 26px;
+                    }
+                }
+
+                .components-datetime__date .CalendarDay {
+                    border-radius: 5px;
+                    box-shadow: 0 2px 3px #33333336;
+                    border: none;
+                }
+                .components-datetime__date .CalendarMonth_table {
+                    border-spacing: 6px;
+                    margin-top: 3px;
+                }
+                .components-datetime__date .CalendarMonth_caption {
+                    top: -37px;
+                    position: relative;
+                }
+                .CalendarMonthGrid_month__horizontal {
+                    padding-top: 48px;
                 }
 
                 .components-datetime__time-field-day {
@@ -455,11 +559,16 @@
                 }
 
                 .DayPicker_transitionContainer {
-                    width: 100%!important;
-                    height: 250px!important;
+                    width: 100% !important;
+                    height: 285px !important;
+                    margin-bottom: 11px;
                 }
                 .components-datetime__date .CalendarDay .components-datetime__date__day {
                     padding: 8px;
+                    font-size: 13px;
+                }
+                .components-datetime__date .CalendarDay__selected .components-datetime__date__day {
+                    color: #fff;
                 }
 
                 .components-datetime__date .DayPickerNavigation_button__horizontalDefault {
@@ -467,8 +576,9 @@
                 }
 
                 .DayPicker_weekHeader {
-                    position: relative;
-                    top: 0;
+                    position: absolute;
+                    top: 35px;
+                    width: 100%;
                     
                     .DayPicker_weekHeader_ul {
                         display: flex;
@@ -479,6 +589,10 @@
                             padding: 8px;
                         }
                     }
+                }
+
+                .components-datetime__buttons .components-button {
+                    width: auto!important;
                 }
             }
 

@@ -55,6 +55,8 @@ function Sidebar() {
 	const [tabState, setTabState] = useState('same-page');
 	const [count, setCount] = useState(0);
 	const [ date, setDate ] = useState( new Date() );
+	const [ customSelectDropdown, setCustomSelectDropdown ] = useState( false );
+	const [ submissionDropdown, setSubmissionDropdown ] = useState( false );
 
 	let currentDate = new Date();
 
@@ -78,6 +80,11 @@ function Sidebar() {
 				return (prevCount = 0);
 			}
 		});
+	}
+
+	function gotSelected() {
+		setCustomSelectDropdown(false);
+		setSubmissionDropdown(false);
 	}
 
 	let submissionType = "hide-form";
@@ -188,19 +195,17 @@ function Sidebar() {
 											</span>
 										</label>
 
-										<SelectControl
-											value=""
-											options={[
-												{
-													value: '',
-													label: 'Select option'
-												},
-												{
-													value: '',
-													label: 'Select option'
-												}
-											]}
-										/>
+										<div className={customSelectDropdown ? "mintmrm-custom-select show-dropdown" : "mintmrm-custom-select" } >
+											<button type="button" className="mintmrm-custom-select-btn" onClick={() => setCustomSelectDropdown(!customSelectDropdown)} >
+												Select Option
+											</button>
+
+											<ul className="mintmrm-dropdown">
+												<li onClick={() => gotSelected() }> Date </li>
+												<li onClick={() => gotSelected() }> Title </li>
+											</ul>
+										</div>
+
 									</div>
 
 									<div className="single-settings">
@@ -317,22 +322,6 @@ function Sidebar() {
 								__nextRemoveHelpButton
 								__nextRemoveResetButton
 							/>
-
-							{/* <Dropdown
-								position="middle left"
-								renderToggle={ ( ( { isOpen, onToggle } ) => (
-									<Button isLink onClick={ onToggle } aria-expanded={ isOpen }>
-										{ currentDate ? date( 'd.m.Y H:i', currentDate ) : "placeholder" }
-									</Button>
-								) ) }
-
-								renderContent={ () => (
-									<DateTimePicker
-										currentDate={ currentDate }
-										onChange={ ( newDate ) => setDate( newDate ) }
-									/>
-								) }>
-							</Dropdown> */}
 						</div>
 
 					</div>
@@ -371,19 +360,16 @@ function Sidebar() {
 									</span>
 								</div>
 
-								<SelectControl
-									value=""
-									options={[
-										{
-											value: '',
-											label: 'Select option'
-										},
-										{
-											value: '',
-											label: 'Select option'
-										}
-									]}
-								/>
+								<div className={submissionDropdown ? "mintmrm-custom-select show-dropdown" : "mintmrm-custom-select" } >
+									<button type="button" className="mintmrm-custom-select-btn" onClick={() => setSubmissionDropdown(!submissionDropdown)} >
+										Select Option
+									</button>
+
+									<ul className="mintmrm-dropdown">
+										<li onClick={() => gotSelected() } > Date </li>
+										<li onClick={() => gotSelected() } > Title </li>
+									</ul>
+								</div>
 							</div>
 						</div>
 
