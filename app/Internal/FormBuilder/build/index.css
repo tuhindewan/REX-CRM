@@ -159,8 +159,10 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 30px;
 }
 .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content .editor-styles-wrapper {
-  width: 677px;
+  max-width: 697px;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar {
   width: 360px;
@@ -294,6 +296,56 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings textarea {
   height: 92px;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select {
+  position: relative;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select .mintmrm-custom-select-btn {
+  position: relative;
+  line-height: 1;
+  padding: 7px 25px 7px 10px;
+  width: 100%;
+  text-align: left;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3019607843);
+  border-radius: 6px;
+  height: 38px;
+  border: none;
+  color: #B6B6B7;
+  font-size: 14px;
+  font-weight: 400;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select .mintmrm-custom-select-btn:before {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: calc(50% - 2px);
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  border-bottom: 1px solid #2D3149;
+  border-right: 1px solid #2D3149;
+  transition: all 0.3s ease;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select ul.mintmrm-dropdown {
+  position: absolute;
+  background: #fff;
+  right: 0;
+  top: calc(100% + 4px);
+  width: 100%;
+  border: 1px solid #e2e5ed;
+  z-index: 5;
+  transition: all 0.3s ease;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  padding: 8px;
+  display: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select ul.mintmrm-dropdown::before {
+  display: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select.show-dropdown .mintmrm-dropdown {
+  display: block;
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-input-control__backdrop {
   border: none;
   box-shadow: none;
@@ -401,11 +453,17 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control__field {
   margin: 0;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select,
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control {
   width: 144px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper select {
   min-width: auto;
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper ul.mintmrm-dropdown {
+  bottom: calc(100% + 4px);
+  top: inherit;
   width: 100%;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter {
@@ -480,6 +538,41 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 5px 10px;
   line-height: 1;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPickerNavigation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  height: auto;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPickerNavigation .DayPickerNavigation_button {
+  position: relative;
+  top: 0;
+  left: inherit;
+  right: inherit;
+  display: block;
+  height: 26px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay {
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(51, 51, 51, 0.2117647059);
+  border: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarMonth_table {
+  border-spacing: 6px;
+  margin-top: 3px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarMonth_caption {
+  top: -37px;
+  position: relative;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid_month__horizontal {
+  padding-top: 48px;
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day {
   margin: 0 10px;
 }
@@ -531,17 +624,23 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_transitionContainer {
   width: 100% !important;
-  height: 250px !important;
+  height: 285px !important;
+  margin-bottom: 11px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day {
   padding: 8px;
+  font-size: 13px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay__selected .components-datetime__date__day {
+  color: #fff;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .DayPickerNavigation_button__horizontalDefault {
   top: -5px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader {
-  position: relative;
-  top: 0;
+  position: absolute;
+  top: 35px;
+  width: 100%;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul {
   display: flex;
@@ -551,6 +650,9 @@ body.is-fullscreen-mode .get-mrm-header {
   font-size: 16px;
   padding: 8px;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__buttons .components-button {
+  width: auto !important;
+}
 
 .form-editor-page .show-settings-pannel .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel {
   left: 0;
@@ -558,6 +660,55 @@ body.is-fullscreen-mode .get-mrm-header {
   visibility: visible;
 }
 
+@media only screen and (max-width: 1299px) {
+  .form-editor-page .form-editor-body {
+    padding: 20px;
+  }
+  .form-editor-page .form-editor-body .form-editor-title-area {
+    margin-bottom: 20px;
+  }
+  .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content {
+    width: calc(100% - 320px);
+    padding: 20px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar {
+    width: 300px;
+    margin-left: 20px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day {
+    margin: 0 7px;
+    width: 45px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day input.components-datetime__time-field-day-input {
+    width: 100%;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-minutes-input,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-hours-input {
+    padding: 5px 6px;
+    width: 50px !important;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid {
+    width: 100% !important;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul {
+    padding: 0 13px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul .DayPicker_weekHeader_li {
+    font-size: 13px;
+    padding: 2px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day {
+    padding: 1px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper {
+    display: block;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
 .get-mrm-block-editor__block-list {
   padding-bottom: 48px;
   padding-top: 53px;
