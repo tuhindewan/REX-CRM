@@ -32,15 +32,6 @@ export default function AddItemDropdown(props) {
     return items;
   }, [search, items]);
 
-  function handleSearch(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    const value = e.target.value;
-    setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);
-    else setQuery("");
-  }
-
   const checkIfSelected = (id) => {
     const checked = selected?.findIndex((item) => item == id) >= 0;
     return checked;
