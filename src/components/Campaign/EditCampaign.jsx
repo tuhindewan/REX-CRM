@@ -161,7 +161,6 @@ export default function EditCampaign(props) {
       }),
       campaign_id: id,
     };
-
     // Send PUT request to update campaign
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
@@ -197,7 +196,6 @@ export default function EditCampaign(props) {
   };
 
   const validatePublish = () => {
-    console.log(recipientTags?.length);
     if (
       campaignTitle.length > 0 &&
       recipientLists?.length != 0 &&
@@ -315,8 +313,6 @@ export default function EditCampaign(props) {
     setActiveEmailData(emailData[index]);
   };
 
-  let handlePublish = async () => {};
-
   useUnload((e) => {
     e.preventDefault();
     e.returnValue = "";
@@ -324,7 +320,6 @@ export default function EditCampaign(props) {
 
   return (
     <>
-      {/* {console.log(emailData)} */}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">

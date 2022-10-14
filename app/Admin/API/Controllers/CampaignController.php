@@ -390,15 +390,17 @@ class CampaignController extends BaseController {
     {
         $campaign_id = isset( $campaign['id'] ) ? $campaign['id'] : "";
         $recipients_emails = self::get_reciepents_email($campaign_id);
+
         $recipients = array_map(function($recipients_email){
             return $recipients_email['email'];
         }, $recipients_emails);
-        $email = isset( $campaign['emails'][0] ) ? $campaign['emails'][0] : [];
-        
-        $email_builder = CampaignEmailBuilderModel::get($email['id']);
-        $sender_email   = isset( $email['sender_email'] ) ? $email['sender_email'] : "";
-        $sender_name    = isset( $email['sender_name'] ) ? $email['sender_name'] : "";
-        $email_subject  = isset( $email['email_subject'] ) ? $email['email_subject'] : "";
+        $emails = ModelsCampaign::get_campaign_email( $campaign_id );
+        $first_email = isset($emails[0]) ? $emails[0] : [];
+
+        $email_builder = CampaignEmailBuilderModel::get($first_email['id']);
+        $sender_email   = isset( $first_email['sender_email'] )     ? $first_email['sender_email'] : "";
+        $sender_name    = isset( $first_email['sender_name'] )      ? $first_email['sender_name'] : "";
+        $email_subject  = isset( $first_email['email_subject'] )    ? $first_email['email_subject'] : "";
         $email_body     = $email_builder["email_body"];
         $headers = array(
 			'MIME-Version: 1.0',
