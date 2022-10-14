@@ -15,7 +15,6 @@ import AlertPopup from "../AlertPopup";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ExportDrawer from "../ExportDrawer";
-import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
 import ExportIcon from "../Icons/ExportIcon";
 import NoContactIcon from "../Icons/NoContactIcon";
@@ -859,15 +858,6 @@ export default function ContactListTable(props) {
                   })}
                 </tbody>
               </table>
-              {contactData.length == 0 && (
-                <div className="mrm-empty-state-wrapper">
-                  <ContactProfile />
-                  <div>
-                    No Contact Found{" "}
-                    {search.length > 0 ? ` for the term "${search}"` : null}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
           {totalPages > 1 && (
