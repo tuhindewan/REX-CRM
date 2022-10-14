@@ -3,10 +3,9 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
-import WarningNotification from "./WarningNotification";
-import CustomSelect from "./CustomSelect/CustomSelect";
+import Select from "./Import/Select";
 import SelectDropdown from "./SelectDropdown";
-import AddItemDropdown from "./AddItemDropdown";
+import WarningNotification from "./WarningNotification";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -24,10 +23,9 @@ export default function SelectFieldsMap() {
   const [selectedStatus, setSelectedStatus] = useState();
   const [isActiveStatus, setIsActiveStatus] = useState(false);
   const [isActiveList, setIsActiveList] = useState(false);
-  const [assignLists, setAssignLists] = useState([]);
   const [isActiveTag, setIsActiveTag] = useState(false);
-  const [assignTags, setAssignTags] = useState([]);
-  const [refresh, setRefresh] = useState();
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   // get the state from calling component
   const state = location.state;
@@ -74,9 +72,9 @@ export default function SelectFieldsMap() {
     } else if (type == "raw") {
       body.raw = state.data.raw;
     }
-    body.status = [selectedStatus]
-    body.lists = assignLists;
-    body.tags = assignTags;
+    body.status = [selectedStatus];
+    body.lists = selectedLists;
+    body.tags = selectedTags;
     body.created_by = `${window.MRM_Vars.current_userID}`;
     try {
       let res = await fetch(
@@ -105,8 +103,6 @@ export default function SelectFieldsMap() {
       }, 3000);
       return () => clearTimeout(timer);
     } catch (e) {
-      console.log(e);
-      window.alert(e.message);
       setLoading(false);
     }
   };
@@ -141,7 +137,6 @@ export default function SelectFieldsMap() {
 
   // handle selectbox and prepare the mapping
   function onSelect(field_id, field_name, arg1) {
-    
     const selectedValue = field_id;
     const idx = map.findIndex((item) => item.source == arg1);
     if (selectedValue == "no_import") {
@@ -158,9 +153,9 @@ export default function SelectFieldsMap() {
         {
           source: arg1,
           target: selectedValue,
-        }
+        },
       ]);
-    }    
+    }
   }
 
   const capitalizeFirst = (str) => {
@@ -180,6 +175,7 @@ export default function SelectFieldsMap() {
 
   return (
     <>
+      {console.log(selectedLists)}
       <div className="mintmrm-import-page">
         <div className="mintmrm-header">
           <div className="contact-details-breadcrumb import-contact-breadcrum">
@@ -220,7 +216,11 @@ export default function SelectFieldsMap() {
                             <td>{header}</td>
                             <td>
                               <div className="form-group map-dropdown">
-                                <SelectDropdown handleSelect={onSelect} arg1={header} options={selectOptions} />
+                                <SelectDropdown
+                                  handleSelect={onSelect}
+                                  arg1={header}
+                                  options={selectOptions}
+                                />
                               </div>
                             </td>
                           </tr>
@@ -236,84 +236,70 @@ export default function SelectFieldsMap() {
                     <div className="form-group status-dropdown">
                       <label>Status</label>
                       <button
-                  type="button"
-                  className={
-                    isActiveStatus
-                      ? "drop-down-button show"
-                      : "drop-down-button"
-                  }
-                  onClick={handleStatus}
-                >
-                  {selectedStatus
-                    ? capitalizeFirst(selectedStatus)
-                    : "Select Status"}
-                </button>
-                <ul
-                  className={
-                    isActiveStatus
-                      ? "add-contact-status mintmrm-dropdown show"
-                      : "add-contact-status mintmrm-dropdown"
-                  }
-                >
-                  <li onClick={() => handleSelectStatus("Pending")}>Pending</li>
-                  <li onClick={() => handleSelectStatus("Subscribe")}>
-                    Subscribe
-                  </li>
-                  <li onClick={() => handleSelectStatus("Unsubscribe")}>
-                    Unsubscribe
-                  </li>
-                </ul>
+                        type="button"
+                        className={
+                          isActiveStatus
+                            ? "drop-down-button show"
+                            : "drop-down-button"
+                        }
+                        onClick={handleStatus}
+                      >
+                        {selectedStatus
+                          ? capitalizeFirst(selectedStatus)
+                          : "Select Status"}
+                      </button>
+                      <ul
+                        className={
+                          isActiveStatus
+                            ? "add-contact-status mintmrm-dropdown show"
+                            : "add-contact-status mintmrm-dropdown"
+                        }
+                      >
+                        <li onClick={() => handleSelectStatus("Pending")}>
+                          Pending
+                        </li>
+                        <li onClick={() => handleSelectStatus("Subscribe")}>
+                          Subscribe
+                        </li>
+                        <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                          Unsubscribe
+                        </li>
+                      </ul>
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Lists</label>
-                      <button
-                        type="button"
-                        className={
-                          isActiveList ? "drop-down-button show" : "drop-down-button"
-                        }
-                        onClick={handleList}
-                      >
-                        Select Lists
-                      </button>
-                      <AddItemDropdown
-                        isActive={isActiveList}
-                        setIsActive={setIsActiveList}
-                        selected={assignLists}
-                        setSelected={setAssignLists}
-                        endpoint="lists"
-                        items={lists}
-                        allowMultiple={true}
-                        allowNewCreate={true}
+                      <Select
+                        selected={selectedLists}
+                        setSelected={setSelectedLists}
+                        endpoint="/lists"
+                        placeholder="Lists"
                         name="list"
-                        title="CHOOSE LIST"
-                        refresh={refresh}
-                        setRefresh={setRefresh}
+                        listTitle="CHOOSE LIST"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={false}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
                       />
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Tags</label>
-                      <button
-                        type="button"
-                        className={
-                          isActiveTag ? "drop-down-button show" : "drop-down-button"
-                        }
-                        onClick={handleTag}
-                      >
-                        Select Tags
-                      </button>
-                      <AddItemDropdown
-                        isActive={isActiveTag}
-                        setIsActive={setIsActiveTag}
-                        selected={assignTags}
-                        setSelected={setAssignTags}
-                        endpoint="tags"
-                        items={tags}
+                      <Select
+                        selected={selectedTags}
+                        setSelected={setSelectedTags}
+                        endpoint="/tags"
+                        placeholder="Tags"
+                        name="list"
+                        listTitle="CHOOSE TAG"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
                         allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={false}
+                        showSelectedInside={false}
                         allowNewCreate={true}
-                        name="tag"
-                        title="CHOOSE TAG"
-                        refresh={refresh}
-                        setRefresh={setRefresh}
                       />
                     </div>
                   </div>

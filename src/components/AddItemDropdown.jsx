@@ -77,7 +77,6 @@ export default function AddItemDropdown(props) {
         setSelected([...selected, resJson.data]);
         setShowNotification("block");
         setMessage(resJson?.message);
-        setRefresh(!refresh);
       } else {
         setShowWarning("block");
         setMessage(resJson?.message);
