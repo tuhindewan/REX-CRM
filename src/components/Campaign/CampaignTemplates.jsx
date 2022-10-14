@@ -46,13 +46,11 @@ export default function CampaignTemplates(props) {
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
-      console.log("exportHtml", html);
     });
   };
 
   return (
     <>
-      {console.log(campaignData)}
       <div
         className={
           props.isOpen && !isClose

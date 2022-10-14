@@ -59,8 +59,18 @@ class CampaignController extends BaseController {
             $params['title'] = "Untitled";
         }
 
-        // Email subject validation
         $emails = isset($params['emails']) ? $params['emails'] : array();
+
+        if( isset( $params['status'] ) && "ongoing" == $params['status'] ){
+            // Sender email address validation
+            $first_email    = isset($emails[0]) ? $emails[0] : [];
+            $sender_email   = isset( $first_email['sender_email'] ) ? $first_email['sender_email'] : "";
+            if(!is_email($sender_email)) {
+                return $this->get_error_response(__( 'Sender Email Address is not valid', 'mrm' ), 203);
+            }
+        }
+        // Email subject validation
+        
         // foreach( $emails as $index => $email ){
         //     if ( isset($email['email_subject']) && empty( $email['email_subject'] )) {
         //         return $this->get_error_response( __( 'Subject is missing on email '. ($index+1), 'mrm' ),  200);
@@ -70,7 +80,8 @@ class CampaignController extends BaseController {
         try {
             // Update a campaign if campaign_id present on API request
             if( isset( $params['campaign_id']) ){
-                $campaign_id            = $params['campaign_id'];
+                $campaign_id  = $params['campaign_id'];
+
                 $this->campaign_data    = ModelsCampaign::update( $params, $campaign_id );
 
                 if( $this->campaign_data ){
@@ -150,7 +161,7 @@ class CampaignController extends BaseController {
                 $data['campaign'] = $this->campaign_data;
                 if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
                     //test_email_sending(for dev)
-                    self::send_email_to_reciepents($this->campaign_data);
+                    $response = self::send_email_to_reciepents($this->campaign_data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
             }
@@ -402,6 +413,7 @@ class CampaignController extends BaseController {
         $sender_name    = isset( $first_email['sender_name'] )      ? $first_email['sender_name'] : "";
         $email_subject  = isset( $first_email['email_subject'] )    ? $first_email['email_subject'] : "";
         $email_body     = $email_builder["email_body"];
+
         $headers = array(
 			'MIME-Version: 1.0',
 			'Content-type: text/html;charset=UTF-8'

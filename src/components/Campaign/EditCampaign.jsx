@@ -13,6 +13,7 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
+import WarningNotification from "../WarningNotification";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -40,6 +41,7 @@ export default function EditCampaign(props) {
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
+  const [showWarning, setShowWarning] = useState("none");
 
   // recipient lists and recipients tags state variables to whom the email(s) should be sent
   const [recipientLists, setRecipientLists] = useState([]);
@@ -169,7 +171,8 @@ export default function EditCampaign(props) {
         setMessage(response?.message);
         toggleRefresh();
       } else {
-        window.alert(response?.message);
+        setShowWarning("block");
+        setMessage(response?.message);
       }
     });
     const isValid = validate();
@@ -573,6 +576,7 @@ export default function EditCampaign(props) {
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
+      <WarningNotification display={showWarning} message={message} />
       {!isClose && (
         <CampaignTemplates
           isOpen={isTemplate}
