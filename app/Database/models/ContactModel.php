@@ -343,7 +343,7 @@ class ContactModel{
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-        return $wpdb->get_row( $wpdb->prepare( "SELECT `email` FROM $contacts_table WHERE id = %d",array( $id ) ), ARRAY_A );
+        return $wpdb->get_row( $wpdb->prepare( "SELECT `email` FROM $contacts_table WHERE id = %d AND status = 'subscribed'",array( $id ) ), ARRAY_A );
 
     }
 
