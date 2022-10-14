@@ -13,25 +13,6 @@ import ContactListTable from "./ContactListTable";
 
 import "./style.css";
 
-// let useClickOutside = (handler) => {
-//   let domNode = useRef();
-
-//   useEffect(() => {
-//     let maybeHandler = (event) => {
-//       if (!domNode.current.contains(event.target)) {
-//         handler();
-//       }
-//     };
-
-//     document.addEventListener("mousedown", maybeHandler);
-
-//     return () => {
-//       document.removeEventListener("mousedown", maybeHandler);
-//     };
-//   });
-
-//   return domNode;
-// };
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
@@ -59,11 +40,6 @@ const BaseTable = () => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [refresh]);
-
-  // let domNode = useClickOutside(() => {
-  //   setIsOpen(true);
-
-  // });
 
   <NavBar refresh={refresh} />;
 
