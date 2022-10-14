@@ -7,7 +7,7 @@ export default function ContactCards(props) {
         <span className="card-icon">{props.source}</span>
         <p>{props.cardTitle}</p>
       </div>
-      <h3 className="total-contact-numbers">{props.totalAmount}</h3>
+      <h3 className="total-contact-numbers">{ props.totalAmount ? props.totalAmount : "0"}</h3>
     </div>
   );
 }

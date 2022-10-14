@@ -41,6 +41,9 @@ const CreateContact = (props) => {
     setRefresh(!refresh);
   };
   const [isActiveStatus, setIsActiveStatus] = useState(false);
+  const [isActivePending, setIsActivePending] = useState(false);
+  const [isActiveSubscribe, setIsActiveSubscribe] = useState(false);
+  const [isActiveUnsubscribe, setIsActiveUnsubscribe] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState();
 
   // Fetch lists & tags
@@ -174,10 +177,19 @@ const CreateContact = (props) => {
   const handleSelectStatus = (title) => {
     if ("Pending" == title) {
       setSelectedStatus("pending");
+      setIsActiveSubscribe(false);
+      setIsActiveUnsubscribe(false);
+      setIsActivePending(true);
     } else if ("Subscribe" == title) {
       setSelectedStatus("subscribed");
+      setIsActiveSubscribe(true);
+      setIsActiveUnsubscribe(false);
+      setIsActivePending(false);
     } else {
       setSelectedStatus("unsubscribed");
+      setIsActiveSubscribe(false);
+      setIsActiveUnsubscribe(true);
+      setIsActivePending(false);
     }
     setIsActiveStatus(false);
   };
@@ -261,11 +273,11 @@ const CreateContact = (props) => {
                       : "add-contact-status mintmrm-dropdown"
                   }
                 >
-                  <li onClick={() => handleSelectStatus("Pending")}>Pending</li>
-                  <li onClick={() => handleSelectStatus("Subscribe")}>
+                  <li className={isActivePending ? "single-column mrm-custom-select-single-column-selected" : "single-column"} onClick={() => handleSelectStatus("Pending")}>Pending</li>
+                  <li className={isActiveSubscribe ? "single-column mrm-custom-select-single-column-selected" : "single-column"} onClick={() => handleSelectStatus("Subscribe")}>
                     Subscribe
                   </li>
-                  <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                  <li className={isActiveUnsubscribe ? "single-column mrm-custom-select-single-column-selected" : "single-column"} onClick={() => handleSelectStatus("Unsubscribe")}>
                     Unsubscribe
                   </li>
                 </ul>

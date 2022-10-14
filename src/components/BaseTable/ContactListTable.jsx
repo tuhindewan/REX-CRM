@@ -34,7 +34,7 @@ export default function ContactListTable(props) {
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
 
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -318,6 +318,7 @@ export default function ContactListTable(props) {
     } else {
       setShowAlert("block");
     }
+    setActive(false);
   }
 
   // Delete multiple contacts after delete confirmation
@@ -401,6 +402,7 @@ export default function ContactListTable(props) {
       setIsAssignTo(!isAssignTo);
       setActive(!isActive);
     }
+    setActive(false);
   };
 
   const showTagDropdown = () => {
@@ -411,6 +413,8 @@ export default function ContactListTable(props) {
       setIsAssignTo(!isAssignTo);
       setActive(!isActive);
     }
+    
+    setActive(false);
   };
 
   const showAddColumnList = () => {
@@ -502,7 +506,7 @@ export default function ContactListTable(props) {
         <div className="loader-wrapper">
           <span className="mintmrm-loader show"></span>
         </div>
-      ) : contactData === 0 ? (
+      ) : contactData.length === 0 ? (
         <div className="mrm-empty-state-wrapper">
           <NoContactIcon />
           <div>No Contact Found </div>
@@ -641,6 +645,8 @@ export default function ContactListTable(props) {
                     showListTitle={true}
                     showSelectedInside={false}
                     allowNewCreate={true}
+                    isAssignDropdown={isActive}
+                    setIsAssignDropdown={setActive}
                     isActive={isAssignTo}
                     setIsAssignTo={setIsAssignTo}
                     contactIds={selected}
