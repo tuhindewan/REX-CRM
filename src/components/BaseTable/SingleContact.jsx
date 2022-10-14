@@ -3,15 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import DeletePopup from "../DeletePopup";
+import EmailDrawer from "../EmailDrawer";
 import HoverMenu from "../HoverMenu";
+import AddNoteIcon from "../Icons/AddNoteIcon";
 import Delete from "../Icons/Delete";
 import EyeIcon from "../Icons/EyeIcon";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import Portal from "../Portal";
 import SendMessageIcon from "../Icons/SendMessageIcon";
-import AddNoteIcon from "../Icons/AddNoteIcon";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import NoteDrawer from "../NoteDrawer";
-import EmailDrawer from "../EmailDrawer";
+import Portal from "../Portal";
 
 export default function SingleContact(props) {
   // global counter update real time
@@ -109,50 +109,37 @@ export default function SingleContact(props) {
           {contact.last_name ? contact.last_name : "-"}
         </td>
 
+        <td className="list">
+          {contact.lists.length
+            ? contact.lists.map((list) => {
+                return (
+                  <span className="list-item" key={list.id}>
+                    {list.title}
+                  </span>
+                );
+              })
+            : "-"}
+        </td>
+
+        <td className="tag">
+          {contact.tags.length
+            ? contact.tags.map((tag) => {
+                return (
+                  <span className="tag-item" key={tag.id}>
+                    {tag.title}
+                  </span>
+                );
+              })
+            : "-"}
+        </td>
+
+        <td className="status">
+          <span className={contact.status}>
+            {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+          </span>
+        </td>
+
         {props.columns.map((column) => {
-          if ("lists" == column.id) {
-            return (
-              <td className="list" key={column.id}>
-                {contact.lists.length
-                  ? contact.lists.map((list) => {
-                      return (
-                        <span className="list-item" key={list.id}>
-                          {list.title}
-                        </span>
-                      );
-                    })
-                  : "-"}
-              </td>
-            );
-          }
-
-          if ("tags" == column.id) {
-            return (
-              <td className="tag" key={column.id}>
-                {contact.tags.length
-                  ? contact.tags.map((tag) => {
-                      return (
-                        <span className="tag-item" key={tag.id}>
-                          {tag.title}
-                        </span>
-                      );
-                    })
-                  : "-"}
-              </td>
-            );
-          }
-
-          if ("status" == column.id) {
-            return (
-              <td className="status" key={column.id}>
-                <span className={contact.status}>
-                  {contact.status.charAt(0).toUpperCase() +
-                    contact.status.slice(1)}
-                </span>
-              </td>
-            );
-          }
-
           if ("last_activity" == column.id) {
             return (
               <td className="last-activity" key={column.id}>

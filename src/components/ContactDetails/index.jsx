@@ -1,6 +1,7 @@
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
@@ -64,6 +65,10 @@ export default function ContactDetails() {
 
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
+
+  useGlobalStore.setState({
+    hideGlobalNav: true,
+  });
 
   // Fetch lists & tags
   useEffect(() => {
@@ -450,11 +455,9 @@ export default function ContactDetails() {
             <div className="mintmrm-container">
               <ul className="mintmrm-breadcrumb">
                 <li>
-                  <Link to={`../contacts`}>Contact</Link>
+                  <Link to={`../contacts`}>Contacts</Link>
                 </li>
-                <li className="active">
-                  {contactData.first_name} {contactData.last_name}
-                </li>
+                <li className="active">{contactData.email}</li>
               </ul>
             </div>
           </div>
@@ -655,8 +658,8 @@ export default function ContactDetails() {
                       <li>
                         <span className="title">Address</span>
                         <span className="title-value">
-                          {contactData?.meta_fields?.address
-                            ? contactData?.meta_fields?.address
+                          {contactData?.meta_fields?.addresses
+                            ? contactData?.meta_fields?.addresses
                             : "-"}
                         </span>
                       </li>
@@ -769,9 +772,9 @@ export default function ContactDetails() {
                           <h4>Address</h4>
                           <div className="adress-input-field">
                             <InputItem
-                              name="address"
+                              name="addresses"
                               handleChange={handleMetaChange}
-                              value={contactData?.meta_fields?.address}
+                              value={contactData?.meta_fields?.addresses}
                             />
                             {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
                           <InputItem label="City" value={contactData?.meta_fields?.city}/>

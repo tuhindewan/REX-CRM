@@ -97,7 +97,7 @@ class ContactController extends BaseController {
             }else{
                 $contact    = new ContactData( $email, $params );
                 $contact_id = ContactModel::insert( $contact );
-                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] ){
+                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] || empty($params['status'][0]) ){
                     MessageController::get_instance()->send_double_opt_in( $contact_id );
                 }
             }
@@ -273,16 +273,21 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         $isTag = false;
         $isList = false;
 
         if( isset($params['tags'], $params['contact_id']) ){
+            if(empty($params['tags'])){
+                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+            }
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
             $isTag = true;
         }
 
         if( isset($params['lists'], $params['contact_id']) ){
+            if(empty($params['lists'])){
+                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+            }
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = true;
         }
@@ -330,7 +335,7 @@ class ContactController extends BaseController {
         }else if ($success && $isList){
             return $this->get_success_response( __( 'List has been added Successfully', 'mrm' ), 201 );
         }
-        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'Select an item first', 'mrm' ), 400 );
     }
 
 

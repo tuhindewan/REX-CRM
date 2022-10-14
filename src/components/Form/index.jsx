@@ -1,21 +1,16 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import HoverMenu from "../HoverMenu";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import Portal from "../Portal";
-import Plus from "../Icons/Plus";
-import Selectbox from "../Selectbox";
-import Search from "../Icons/Search";
-import FormIconXL from "../Icons/FormIconXL";
-import FormIconSM from "../Icons/FormIconSM";
-import CopyIcon from "../Icons/CopyIcon";
-import Pagination from "../Pagination";
-import EyeIcon from "../Icons/EyeIcon";
-import Delete from "../Icons/Delete";
-import SuccessfulNotification from "../SuccessfulNotification";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import DeletePopup from "../DeletePopup";
 import AlertPopup from "../AlertPopup";
+import DeletePopup from "../DeletePopup";
+import CopyIcon from "../Icons/CopyIcon";
+import FormIconSM from "../Icons/FormIconSM";
+import FormIconXL from "../Icons/FormIconXL";
+import Plus from "../Icons/Plus";
+import Search from "../Icons/Search";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import Pagination from "../Pagination";
+import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function FormIndex(props) {
   const [formData, setFormData] = useState({});
@@ -451,7 +446,7 @@ export default function FormIndex(props) {
                     </thead>
 
                     <tbody>
-                      {0 === formData.length && (
+                      {0 === formData?.length && (
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
@@ -460,7 +455,7 @@ export default function FormIndex(props) {
                         </tr>
                       )}
 
-                      {formData.length > 0 ? (
+                      {formData?.length > 0 ? (
                         formData.map((form) => {
                           return (
                             <tr key={form.id}>

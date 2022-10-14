@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import Search from "./Icons/Search";
+import SuccessfulNotification from "./SuccessfulNotification";
+import WarningNotification from "./WarningNotification";
 
 export default function AddItemDropdown(props) {
   const {
@@ -16,6 +18,9 @@ export default function AddItemDropdown(props) {
   } = props;
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
 
   const filteredItems = useMemo(() => {
     if (search) {
@@ -79,8 +84,12 @@ export default function AddItemDropdown(props) {
       if (resJson.code == 201) {
         setSearch("");
         setSelected([...selected, resJson.data]);
+        setShowNotification("block");
+        setMessage(resJson?.message);
         setRefresh(!refresh);
       } else {
+        setShowWarning("block");
+        setMessage(resJson?.message);
       }
     } catch (e) {
     } finally {
@@ -102,7 +111,7 @@ export default function AddItemDropdown(props) {
             <input
               type="search"
               name="column-search"
-              placeholder="Create or find"
+              placeholder="Search or create"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -143,11 +152,13 @@ export default function AddItemDropdown(props) {
         {filteredItems?.length == 0 && allowNewCreate && (
           <>
             <button className="mrm-custom-select-add-btn" onClick={addNewItem}>
-              {`+ Create new ${name} "${search}"`}
+              {`+ Create new ${name} ${search}`}
             </button>
           </>
         )}
       </ul>
+      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }

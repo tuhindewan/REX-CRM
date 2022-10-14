@@ -12,12 +12,12 @@ import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
-import CustomSelect from "../CustomSelect";
+import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ExportDrawer from "../ExportDrawer";
-import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
 import ExportIcon from "../Icons/ExportIcon";
+import NoContactIcon from "../Icons/NoContactIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
@@ -26,7 +26,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
-import NoContactIcon from "../Icons/NoContactIcon";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -35,6 +34,7 @@ export default function ContactListTable(props) {
   const [isStatus, setIsStatus] = useState(false);
 
   const [loaded, setLoaded] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -187,7 +187,6 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     const getFilter = async () => {
-      setLoaded(true);
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
         {
@@ -209,7 +208,7 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setFilterCount(data.data.count);
             setFilterTotalPages(data.data.total_pages);
-            setLoaded(false);
+            setShowLoader(false);
           }
         });
     };
@@ -228,7 +227,6 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     async function getData() {
-      setLoaded(true);
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
       )
@@ -242,7 +240,7 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setCount(data.data.count);
             setTotalPages(data.data.total_pages);
-            setLoaded(false);
+            setShowLoader(false);
           }
         });
     }
@@ -299,7 +297,6 @@ export default function ContactListTable(props) {
       })
       .then((data) => {
         if (200 == data.code) {
-          console.log(data.data);
           setColumns(data.data);
         }
       });
@@ -490,6 +487,7 @@ export default function ContactListTable(props) {
       setShowNotification("block");
       setMessage(responseData?.message);
       setColumns(responseData.data);
+      setAddColumn(!isAddColumn);
       toggleRefresh();
     } else {
       // Validation messages
@@ -502,14 +500,9 @@ export default function ContactListTable(props) {
 
   return (
     <>
-      {loaded ? (
+      {showLoader ? (
         <div className="loader-wrapper">
           <span className="mintmrm-loader show"></span>
-        </div>
-      ) : contactData.length === 0 ? (
-        <div className="mrm-empty-state-wrapper">
-          <NoContactIcon />
-          <div>No Contact Found </div>
         </div>
       ) : (
         <>
@@ -604,15 +597,18 @@ export default function ContactListTable(props) {
                 />
               </span>
 
-              {/* <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
-            <ExportIcon />
-            Export
-          </button>
-          <ExportDrawer
-            isOpenNote={isNoteForm}
-            isCloseNote={isCloseNote}
-            setIsCloseNote={setIsCloseNote}
-          /> */}
+              <button
+                className="export-btn mintmrm-btn outline"
+                onClick={noteForm}
+              >
+                <ExportIcon />
+                Export
+              </button>
+              <ExportDrawer
+                isOpenNote={isNoteForm}
+                isCloseNote={isCloseNote}
+                setIsCloseNote={setIsCloseNote}
+              />
 
               <div className="bulk-action">
                 <button className="more-option" onClick={showMoreOption}>
@@ -786,10 +782,10 @@ export default function ContactListTable(props) {
                   <div>No Column Found</div>
                 )}
 
-                {/* <li className="button-area">
-                  <button className="mintmrm-btn outline default-btn">
+                <li className="button-area">
+                  {/* <button className="mintmrm-btn outline default-btn">
                 Default
-              </button>
+              </button> */}
                   <button
                     className="mintmrm-btn outline cancel-btn"
                     onClick={hideAddColumnList}
@@ -802,10 +798,9 @@ export default function ContactListTable(props) {
                   >
                     Save
                   </button>
-                </li> */}
+                </li>
               </ul>
             </div>
-
             <div className="contact-list-table">
               <table>
                 <thead>
@@ -826,6 +821,9 @@ export default function ContactListTable(props) {
                     <th className="first-name">First Name</th>
 
                     <th className="last-name">Last Name</th>
+                    <th className="list">Lists</th>
+                    <th className="tag">Tags</th>
+                    <th className="status">Status</th>
 
                     {columns?.map((column) => {
                       return (
@@ -838,6 +836,19 @@ export default function ContactListTable(props) {
                   </tr>
                 </thead>
                 <tbody>
+                  {!contactData.length && (
+                    <tr>
+                      <td
+                        className="no-contact"
+                        colspan="10"
+                        style={{ textAlign: "center" }}
+                      >
+                        <NoContactIcon />
+                        No contact data found.
+                      </td>
+                    </tr>
+                  )}
+
                   {contactData.map((contact, idx) => {
                     return (
                       <SingleContact
@@ -854,39 +865,29 @@ export default function ContactListTable(props) {
                   })}
                 </tbody>
               </table>
-              {contactData.length == 0 && (
-                <div className="mrm-empty-state-wrapper">
-                  <NoContactIcon />
-                  <div>
-                    No Contact Found{" "}
-                    {search.length > 0 ? ` for the term "${search}"` : null}
-                  </div>
-                </div>
+            </div>
+          </div>
+          {totalPages > 1 && (
+            <div className="contact-list-footer">
+              {false === isFilter ? (
+                <Pagination
+                  currentPage={page}
+                  pageSize={perPage}
+                  onPageChange={setPage}
+                  totalCount={count}
+                  totalPages={totalPages}
+                />
+              ) : (
+                <Pagination
+                  currentPage={filterPage}
+                  pageSize={filterPerPage}
+                  onPageChange={setFilterPage}
+                  totalCount={filterCount}
+                  totalPages={filterTotalPages}
+                />
               )}
             </div>
-
-            {totalPages > 1 && (
-              <div className="contact-list-footer">
-                {false === isFilter ? (
-                  <Pagination
-                    currentPage={page}
-                    pageSize={perPage}
-                    onPageChange={setPage}
-                    totalCount={count}
-                    totalPages={totalPages}
-                  />
-                ) : (
-                  <Pagination
-                    currentPage={filterPage}
-                    pageSize={filterPerPage}
-                    onPageChange={setFilterPage}
-                    totalCount={filterCount}
-                    totalPages={filterTotalPages}
-                  />
-                )}
-              </div>
-            )}
-          </div>
+          )}
           <div className="mintmrm-container" style={{ display: showAlert }}>
             <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
           </div>

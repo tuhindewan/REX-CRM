@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 export default function ContactCards(props) {
   return (
     <div className="single-card">

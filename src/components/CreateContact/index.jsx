@@ -97,7 +97,6 @@ const CreateContact = (props) => {
     contactData.lists = assignLists;
     contactData.tags = assignTags;
     contactData.status = [selectedStatus];
-    console.log(contactData);
     const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
       method: "POST",
       headers: {
@@ -228,29 +227,6 @@ const CreateContact = (props) => {
                 values={contactData.last_name}
                 handleChange={handleChange}
               />
-              {/* <Selectbox
-                label="Status"
-                name="status"
-                options={[
-                  {
-                    title: "Pending",
-                    id: "pending",
-                  },
-                  {
-                    title: "Subscribed",
-                    id: "subscribed",
-                  },
-                  {
-                    title: "Unsubscribed",
-                    id: "unsubscribed",
-                  },
-                ]}
-                value={contactData.status}
-                tags={false}
-                placeholder="Select Status"
-                multiple={false}
-                onSelect={onSelect}
-              /> */}
               <div className="form-group status-dropdown">
                 <label>Status</label>
                 <button

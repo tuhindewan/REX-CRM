@@ -74,21 +74,25 @@ const BaseTable = () => {
           <div className="contact-info-wrapper">
             <ContactCards
               source={<ContactProfile />}
+              url="#"
               cardTitle="Total Contacts"
               totalAmount={countData.total_contacts}
             />
             <ContactCards
               source={<Subscribe />}
+              url="#"
               cardTitle="Subscribed"
               totalAmount={countData.total_subscribed}
             />
             <ContactCards
               source={<Unsubscribe />}
+              url="#"
               cardTitle="Unsubscribed"
               totalAmount={countData.total_unsubscribed}
             />
             <ContactCards
               source={<Pending />}
+              url="#"
               cardTitle="Pending"
               totalAmount={countData.total_pending}
             />

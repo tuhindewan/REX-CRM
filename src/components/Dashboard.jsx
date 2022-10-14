@@ -1,6 +1,6 @@
 import React from "react";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-import ContactCards from "./ContactCards";
+import DashboardCard from "./DashboardCard";
 import ContactProfile from "./Icons/ContactProfile";
 import Pending from "./Icons/Pending";
 import Subscribe from "./Icons/Subscribe";
@@ -15,18 +15,18 @@ const Dashboard = () => {
       <div className="mintmrm-container">
         <h2 class="conatct-heading">Dashboard</h2>
         <div className="contact-info-wrapper">
-          <ContactCards
+          <DashboardCard
             url="/contacts"
             source={<ContactProfile />}
             cardTitle="Contacts"
           />
-          <ContactCards url="/tags" source={<Subscribe />} cardTitle="Tags" />
-          <ContactCards
+          <DashboardCard url="/tags" source={<Subscribe />} cardTitle="Tags" />
+          <DashboardCard
             url="/lists"
             source={<Unsubscribe />}
             cardTitle="Lists"
           />
-          <ContactCards
+          <DashboardCard
             url="/campaigns"
             source={<Pending />}
             cardTitle="Campaigns"

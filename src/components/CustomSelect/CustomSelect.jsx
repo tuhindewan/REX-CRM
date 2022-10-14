@@ -330,14 +330,7 @@ export default function CustomSelect(props) {
               );
             })}
           {items?.length == 0 && allowNewCreate && !loading && !options && (
-            <>
-              <button
-                className="mrm-custom-select-add-btn"
-                onClick={addNewItem}
-              >
-                {`+ Add new ${name} "${search}"`}
-              </button>
-            </>
+            <div>No Item Found</div>
           )}
           {loading && <LoadingIndicator type="table" />}
         </ul>
