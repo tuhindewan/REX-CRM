@@ -4721,12 +4721,44 @@ const {
 const {
   Slot: InspectorSlot,
   Fill: InspectorFill
-} = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)('MRMBlockEditorSidebarInspector');
+} = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
 
 function Sidebar() {
-  const [tabState, setTabState] = useState('same-page');
+  const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
   const [date, setDate] = useState(new Date());
+  const [samePageMessage, setSamePageMessage] = useState("");
+  const [settingData, setSettingData] = useState({
+    settings: {
+      confirmation_type: {
+        same_page: {
+          message_to_show: "",
+          after_form_submission: ""
+        },
+        to_a_page: {
+          page: "",
+          redirection_message: ""
+        },
+        to_a_custom_url: {
+          custom_url: "",
+          custom_redirection_message: ""
+        }
+      },
+      form_layout: "",
+      schedule: {
+        form_scheduling: false,
+        submission_start: {
+          date: "",
+          time: ""
+        }
+      },
+      restriction: {
+        max_entries: false,
+        max_number: "",
+        max_type: ""
+      }
+    }
+  });
   let currentDate = new Date();
 
   const toggleTab = index => {
@@ -4749,7 +4781,33 @@ function Sidebar() {
         return prevCount = 0;
       }
     });
-  }
+  } //   const updateSetting = (index) => (e) => {
+  //     const updatedSetting = settingData.map((item, i) => {
+  //       if (index === i) {
+  //         return { ...item, [e.target.name]: e.target.value };
+  //       } else {
+  //         return item;
+  //       }
+  //     });
+  //     setSettingData(updatedSetting);
+  //   };
+
+
+  const handleConfirmationType = index => {
+    toggleTab(index);
+
+    if ("same_page" === index) {
+      setSettingData({
+        settings: {
+          confirmation_type: {
+            same_page: {
+              message_to_show: "static"
+            }
+          }
+        }
+      });
+    }
+  };
 
   let submissionType = "hide-form";
   let labelAlign = "center";
@@ -4758,13 +4816,13 @@ function Sidebar() {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
-    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('MRM Block Editor advanced settings.'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
     tabIndex: "-1"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
-    header: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Inspector')
+    header: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Inspector")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorSlot, {
     bubblesVirtually: true
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+  })), console.log(settingData), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
     className: "settings-pannel"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "components-panel__header"
@@ -4782,29 +4840,29 @@ function Sidebar() {
     className: "settings-label"
   }, "Confirmation Type", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Where do you want to send the user after form confirmation?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pannel-tab-nav"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: tabState === 'same-page' ? "tab-nav-item active" : "tab-nav-item",
-    onClick: () => toggleTab('same-page')
+    className: tabState === "same-page" ? "tab-nav-item active" : "tab-nav-item",
+    onClick: () => handleConfirmationType("same-page")
   }, "Same Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: tabState === 'page' ? "tab-nav-item active" : "tab-nav-item",
-    onClick: () => toggleTab('page')
+    className: tabState === "page" ? "tab-nav-item active" : "tab-nav-item",
+    onClick: () => handleConfirmationType("page")
   }, "To a page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: tabState === 'custom-url' ? "tab-nav-item active" : "tab-nav-item",
-    onClick: () => toggleTab('custom-url')
+    className: tabState === "custom-url" ? "tab-nav-item active" : "tab-nav-item",
+    onClick: () => handleConfirmationType("custom-url")
   }, "To a custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pannel-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: tabState === 'same-page' ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
+    className: tabState === "same-page" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "settings-label"
   }, "Message to show", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-    value: ""
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What message you want to show to the use?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+    name: "message_to_show"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -4814,17 +4872,17 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
     selected: submissionType,
     options: [{
-      label: 'Hide Form',
-      value: 'hide-form'
+      label: "Hide Form",
+      value: "hide-form"
     }, {
-      label: 'Reset Form',
-      value: 'reset-form'
+      label: "Reset Form",
+      value: "reset-form"
     }],
     onChange: state => this.props.setAttributes({
       submissionType: state
     })
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: tabState === 'page' ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
+    className: tabState === "page" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -4834,11 +4892,11 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
     value: "",
     options: [{
-      value: '',
-      label: 'Select option'
+      value: "",
+      label: "Select option"
     }, {
-      value: '',
-      label: 'Select option'
+      value: "",
+      label: "Select option"
     }]
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -4849,7 +4907,7 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     value: ""
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: tabState === 'custom-url' ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
+    className: tabState === "custom-url" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -4857,7 +4915,8 @@ function Sidebar() {
   }, "Custom URL", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-    value: ""
+    value: "",
+    onChange: handleConfirmationType
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -4881,14 +4940,14 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
     selected: labelAlign,
     options: [{
-      label: 'Left',
-      value: 'left'
+      label: "Left",
+      value: "left"
     }, {
-      label: 'Center',
-      value: 'center'
+      label: "Center",
+      value: "center"
     }, {
-      label: 'Right',
-      value: 'right'
+      label: "Right",
+      value: "right"
     }],
     onChange: state => this.props.setAttributes({
       labelAlign: state
@@ -4960,11 +5019,11 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
     value: "",
     options: [{
-      value: '',
-      label: 'Select option'
+      value: "",
+      label: "Select option"
     }, {
-      value: '',
-      label: 'Select option'
+      value: "",
+      label: "Select option"
     }]
   })))))));
 }

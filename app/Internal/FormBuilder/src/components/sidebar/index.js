@@ -2,323 +2,404 @@
  * WordPress dependencies
  */
 import React from "react";
-import { createSlotFill } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { createSlotFill } from "@wordpress/components";
+import { __ } from "@wordpress/i18n";
 
-import CrossIcon from '../Icons/CrossIcon';
-import SettingsIcon from '../Icons/SettingsIcon';
-import QuestionIcon from '../Icons/QuestionIcon';
-import MinusIcon from '../Icons/MinusIcon';
-import PlusIcon from '../Icons/PlusIcon';
+import CrossIcon from "../Icons/CrossIcon";
+import SettingsIcon from "../Icons/SettingsIcon";
+import QuestionIcon from "../Icons/QuestionIcon";
+import MinusIcon from "../Icons/MinusIcon";
+import PlusIcon from "../Icons/PlusIcon";
 
 const {
-    TextControl,
-    SelectControl,
-    RangeControl,
-    TextareaControl,
-    Button,
-	Dropdown,
-    Panel,
-    PanelBody,
-    RadioGroup,
-    RadioControl,
-    ToggleControl,
-    Radio,
-    DateTimePicker,
-    DatePicker,
+  TextControl,
+  SelectControl,
+  RangeControl,
+  TextareaControl,
+  Button,
+  Dropdown,
+  Panel,
+  PanelBody,
+  RadioGroup,
+  RadioControl,
+  ToggleControl,
+  Radio,
+  DateTimePicker,
+  DatePicker,
 } = wp.components;
 
-const {
-	Component,
-	RawHTML,
-	useEffect,
-	useState
-} = wp.element;
+const { Component, RawHTML, useEffect, useState } = wp.element;
 
 const {
-    InspectorControls,
-    ColorPalette,
-    MediaUpload,
-    PanelColorSettings,
-    withColors,
-	useBlockProps
+  InspectorControls,
+  ColorPalette,
+  MediaUpload,
+  PanelColorSettings,
+  withColors,
+  useBlockProps,
 } = wp.blockEditor;
 
 const { Slot: InspectorSlot, Fill: InspectorFill } = createSlotFill(
-	'MRMBlockEditorSidebarInspector'
+  "MRMBlockEditorSidebarInspector"
 );
 
-
-
-
 function Sidebar() {
-	const [tabState, setTabState] = useState('same-page');
-	const [count, setCount] = useState(0);
-	const [ date, setDate ] = useState( new Date() );
+  const [tabState, setTabState] = useState("same-page");
+  const [count, setCount] = useState(0);
+  const [date, setDate] = useState(new Date());
 
-	let currentDate = new Date();
+  const [samePageMessage, setSamePageMessage] = useState("");
 
-	const toggleTab = (index) => {
-		setTabState(index);
-	};
+  const [settingData, setSettingData] = useState({
+    settings: {
+      confirmation_type: {
+        same_page: {
+          message_to_show: "",
+          after_form_submission: "",
+        },
+        to_a_page: {
+          page: "",
+          redirection_message: "",
+        },
+        to_a_custom_url: {
+          custom_url: "",
+          custom_redirection_message: "",
+        },
+      },
+      form_layout: "",
+      schedule: {
+        form_scheduling: false,
+        submission_start: {
+          date: "",
+          time: "",
+        },
+      },
+      restriction: {
+        max_entries: false,
+        max_number: "",
+        max_type: "",
+      },
+    },
+  });
 
-	//-----counter increment-------
-	function counterIncrement() {
-		setCount(function (prevCount) {
-			return (prevCount += 1);
-		});
-	}
-	
-	//-----counter decrement-------
-	function counterDecrement() {
-		setCount(function (prevCount) {
-			if (prevCount > 0) {
-				return (prevCount -= 1); 
-			} else {
-				return (prevCount = 0);
-			}
-		});
-	}
+  let currentDate = new Date();
 
-	let submissionType = "hide-form";
-	let labelAlign = "center";
-	let maxEntries = false;
-	let formScheduling = false;
+  const toggleTab = (index) => {
+    setTabState(index);
+  };
 
-	return (
-		<div
-			className="mrm-form-builder-sidebar"
-			role="region"
-			aria-label={ __( 'MRM Block Editor advanced settings.' ) }
-			tabIndex="-1"
-		>
-			<Panel header={ __( 'Inspector' ) }>
-				<InspectorSlot bubblesVirtually />
-			</Panel>
+  //-----counter increment-------
+  function counterIncrement() {
+    setCount(function (prevCount) {
+      return (prevCount += 1);
+    });
+  }
 
-			<Panel className="settings-pannel">
-				<div className="components-panel__header">
-					<h2>
-						<SettingsIcon/>
-						Settings
-					</h2>
+  //-----counter decrement-------
+  function counterDecrement() {
+    setCount(function (prevCount) {
+      if (prevCount > 0) {
+        return (prevCount -= 1);
+      } else {
+        return (prevCount = 0);
+      }
+    });
+  }
 
-					<span className="close-pannel">
-						<CrossIcon/>
-					</span>
-				</div>
+  //   const updateSetting = (index) => (e) => {
+  //     const updatedSetting = settingData.map((item, i) => {
+  //       if (index === i) {
+  //         return { ...item, [e.target.name]: e.target.value };
+  //       } else {
+  //         return item;
+  //       }
+  //     });
+  //     setSettingData(updatedSetting);
+  //   };
 
-				<PanelBody title="Confirmation Settings" className="confirmation-settings" initialOpen={true}>
-					<div className="pannelbody-wrapper">
-						<div className="pannel-single-settings">
-							<label className="settings-label">
-								Confirmation Type
+  const handleConfirmationType = (index) => {
+    toggleTab(index);
 
-								<span className="mintmrm-tooltip">
-									<QuestionIcon/>
-									<p>lorem ipsum dollar sit amet</p>
-								</span>
-							</label>
+    if ("same_page" === index) {
+      setSettingData({
+        settings: {
+          confirmation_type: {
+            same_page: {
+              message_to_show: "static",
+            },
+          },
+        },
+      });
+    }
+  };
 
-							<div className="pannel-tab-nav">
-								<span 
-								className={tabState === 'same-page' ? "tab-nav-item active" : "tab-nav-item"} 
-								onClick={() => toggleTab('same-page')} >
-									Same Page
-								</span>
+  let submissionType = "hide-form";
+  let labelAlign = "center";
+  let maxEntries = false;
+  let formScheduling = false;
 
-								<span 
-								className={tabState === 'page' ? "tab-nav-item active" : "tab-nav-item"} 
-								onClick={() => toggleTab('page')} >
-									To a page
-								</span>
+  return (
+    <div
+      className="mrm-form-builder-sidebar"
+      role="region"
+      aria-label={__("MRM Block Editor advanced settings.")}
+      tabIndex="-1"
+    >
+      <Panel header={__("Inspector")}>
+        <InspectorSlot bubblesVirtually />
+      </Panel>
+      {console.log(settingData)}
 
-								<span 
-								className={tabState === 'custom-url' ? "tab-nav-item active" : "tab-nav-item"} 
-								onClick={() => toggleTab('custom-url')} >
-									To a custom URL
-								</span>
-							</div>
+      <Panel className="settings-pannel">
+        <div className="components-panel__header">
+          <h2>
+            <SettingsIcon />
+            Settings
+          </h2>
 
-							<div className="pannel-tab-content">
-								<div className={ tabState === 'same-page' ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content" } >
-									<div className="single-settings">
-										<label className="settings-label">
-											Message to show
+          <span className="close-pannel">
+            <CrossIcon />
+          </span>
+        </div>
 
-											<span className="mintmrm-tooltip">
-												<QuestionIcon/>
-												<p>lorem ipsum dollar sit amet</p>
-											</span>
-										</label>
-										<TextareaControl
-											value=""
-										/>
-									</div>
+        <PanelBody
+          title="Confirmation Settings"
+          className="confirmation-settings"
+          initialOpen={true}
+        >
+          <div className="pannelbody-wrapper">
+            <div className="pannel-single-settings">
+              <label className="settings-label">
+                Confirmation Type
+                <span className="mintmrm-tooltip">
+                  <QuestionIcon />
+                  <p>
+                    Where do you want to send the user after form confirmation?
+                  </p>
+                </span>
+              </label>
 
-									<div className="single-settings">
-										<label className="settings-label">
-											After Form Submission
+              <div className="pannel-tab-nav">
+                <span
+                  className={
+                    tabState === "same-page"
+                      ? "tab-nav-item active"
+                      : "tab-nav-item"
+                  }
+                  onClick={() => handleConfirmationType("same-page")}
+                >
+                  Same Page
+                </span>
 
-											<span className="mintmrm-tooltip">
-												<QuestionIcon/>
-												<p>lorem ipsum dollar sit amet</p>
-											</span>
-										</label>
+                <span
+                  className={
+                    tabState === "page" ? "tab-nav-item active" : "tab-nav-item"
+                  }
+                  onClick={() => handleConfirmationType("page")}
+                >
+                  To a page
+                </span>
 
-										<RadioControl
-											selected={submissionType}
-											options={ [
-												{ label: 'Hide Form', value: 'hide-form' },
-												{ label: 'Reset Form', value: 'reset-form' },
-											] }
-											onChange={ (state ) => this.props.setAttributes({ submissionType: state }) }
-										/>
-									</div>
-								</div>
+                <span
+                  className={
+                    tabState === "custom-url"
+                      ? "tab-nav-item active"
+                      : "tab-nav-item"
+                  }
+                  onClick={() => handleConfirmationType("custom-url")}
+                >
+                  To a custom URL
+                </span>
+              </div>
 
-								<div className={ tabState === 'page' ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content" } >
-									<div className="single-settings">
-										<label className="settings-label">
-											Message to show
+              <div className="pannel-tab-content">
+                <div
+                  className={
+                    tabState === "same-page"
+                      ? "single-tab-content same-page-tab-content active"
+                      : "single-tab-content same-page-tab-content"
+                  }
+                >
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Message to show
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>What message you want to show to the use?</p>
+                      </span>
+                    </label>
+                    <TextareaControl name="message_to_show" />
+                  </div>
 
-											<span className="mintmrm-tooltip">
-												<QuestionIcon/>
-												<p>lorem ipsum dollar sit amet</p>
-											</span>
-										</label>
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      After Form Submission
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>lorem ipsum dollar sit amet</p>
+                      </span>
+                    </label>
 
-										<SelectControl
-											value=""
-											options={[
-												{
-													value: '',
-													label: 'Select option'
-												},
-												{
-													value: '',
-													label: 'Select option'
-												}
-											]}
-										/>
-									</div>
+                    <RadioControl
+                      selected={submissionType}
+                      options={[
+                        { label: "Hide Form", value: "hide-form" },
+                        { label: "Reset Form", value: "reset-form" },
+                      ]}
+                      onChange={(state) =>
+                        this.props.setAttributes({ submissionType: state })
+                      }
+                    />
+                  </div>
+                </div>
 
-									<div className="single-settings">
-										<label className="settings-label">
-											Redirection Message
+                <div
+                  className={
+                    tabState === "page"
+                      ? "single-tab-content same-page-tab-content active"
+                      : "single-tab-content same-page-tab-content"
+                  }
+                >
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Message to show
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>lorem ipsum dollar sit amet</p>
+                      </span>
+                    </label>
 
-											<span className="mintmrm-tooltip">
-												<QuestionIcon/>
-												<p>lorem ipsum dollar sit amet</p>
-											</span>
-										</label>
-										<TextareaControl
-											value=""
-										/>
-									</div>
-								</div>
+                    <SelectControl
+                      value=""
+                      options={[
+                        {
+                          value: "",
+                          label: "Select option",
+                        },
+                        {
+                          value: "",
+                          label: "Select option",
+                        },
+                      ]}
+                    />
+                  </div>
 
-								<div className={ tabState === 'custom-url' ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content" } >
-									<div className="single-settings">
-										<label className="settings-label">
-											Custom URL
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Redirection Message
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>lorem ipsum dollar sit amet</p>
+                      </span>
+                    </label>
+                    <TextareaControl value="" />
+                  </div>
+                </div>
 
-											<span className="mintmrm-tooltip">
-												<QuestionIcon/>
-												<p>lorem ipsum dollar sit amet</p>
-											</span>
-										</label>
+                <div
+                  className={
+                    tabState === "custom-url"
+                      ? "single-tab-content same-page-tab-content active"
+                      : "single-tab-content same-page-tab-content"
+                  }
+                >
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Custom URL
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>lorem ipsum dollar sit amet</p>
+                      </span>
+                    </label>
 
-										<TextControl
-											value=""
-										/>
-									</div>
+                    <TextControl value="" onChange={handleConfirmationType} />
+                  </div>
 
-									<div className="single-settings">
-										<label className="settings-label">
-											Redirection Message
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Redirection Message
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>lorem ipsum dollar sit amet</p>
+                      </span>
+                    </label>
+                    <TextareaControl value="" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </PanelBody>
 
-											<span className="mintmrm-tooltip">
-												<QuestionIcon/>
-												<p>lorem ipsum dollar sit amet</p>
-											</span>
-										</label>
-										<TextareaControl
-											value=""
-										/>
-									</div>
-									
-								</div>
+        <PanelBody
+          title="Form Layout"
+          className="form-layout-settings"
+          initialOpen={false}
+        >
+          <div className="pannelbody-wrapper">
+            <div className="single-settings">
+              <label className="settings-label">
+                Label Alignment
+                <span className="mintmrm-tooltip">
+                  <QuestionIcon />
+                  <p>lorem ipsum dollar sit amet</p>
+                </span>
+              </label>
 
-							</div>
-							
-						</div>
-					</div>
-				</PanelBody>
+              <RadioControl
+                selected={labelAlign}
+                options={[
+                  { label: "Left", value: "left" },
+                  { label: "Center", value: "center" },
+                  { label: "Right", value: "right" },
+                ]}
+                onChange={(state) =>
+                  this.props.setAttributes({ labelAlign: state })
+                }
+              />
+            </div>
+          </div>
+        </PanelBody>
 
-				<PanelBody title="Form Layout" className="form-layout-settings" initialOpen={false}>
-					<div className="pannelbody-wrapper">
-						<div className="single-settings">
-							<label className="settings-label">
-								Label Alignment
+        <PanelBody
+          title="Schedule"
+          className="schedule-settings"
+          initialOpen={false}
+        >
+          <div className="pannelbody-wrapper">
+            <div className="single-settings inline-label">
+              <label className="settings-label">
+                Form Scheduling
+                <span className="mintmrm-tooltip">
+                  <QuestionIcon />
+                  <p>lorem ipsum dollar sit amet</p>
+                </span>
+              </label>
 
-								<span className="mintmrm-tooltip">
-									<QuestionIcon/>
-									<p>lorem ipsum dollar sit amet</p>
-								</span>
-							</label>
+              <ToggleControl
+                checked={formScheduling}
+                onChange={(state) => setAttributes({ formScheduling: state })}
+              />
+            </div>
 
-							<RadioControl
-								selected={labelAlign}
-								options={ [
-									{ label: 'Left', value: 'left' },
-									{ label: 'Center', value: 'center' },
-									{ label: 'Right', value: 'right' },
-								] }
-								onChange={ (state ) => this.props.setAttributes({ labelAlign: state }) }
-							/>
-						</div>
-						
-					</div>
-				</PanelBody>
+            <div className="single-settings">
+              <label className="settings-label">
+                Submission Starts
+                <span className="mintmrm-tooltip">
+                  <QuestionIcon />
+                  <p>lorem ipsum dollar sit amet</p>
+                </span>
+              </label>
 
-				<PanelBody title="Schedule" className="schedule-settings" initialOpen={false}>
-					<div className="pannelbody-wrapper">
-						<div className="single-settings inline-label">
-							<label className="settings-label">
-								Form Scheduling
+              <DateTimePicker
+                currentDate={date}
+                onChange={(newDate) => setDate(newDate)}
+                is12Hour={true}
+                __nextRemoveHelpButton
+                __nextRemoveResetButton
+              />
 
-								<span className="mintmrm-tooltip">
-									<QuestionIcon/>
-									<p>lorem ipsum dollar sit amet</p>
-								</span>
-							</label>
-
-							<ToggleControl
-								checked={ formScheduling }
-								onChange={ (state ) => setAttributes({ formScheduling: state }) }
-							/>
-						</div>
-
-						<div className="single-settings">
-							<label className="settings-label">
-								Submission Starts
-
-								<span className="mintmrm-tooltip">
-									<QuestionIcon/>
-									<p>lorem ipsum dollar sit amet</p>
-								</span>
-							</label>
-
-							<DateTimePicker
-								currentDate={ date }
-								onChange={ ( newDate ) => setDate( newDate ) }
-								is12Hour={ true }
-								__nextRemoveHelpButton
-								__nextRemoveResetButton
-							/>
-
-							{/* <Dropdown
+              {/* <Dropdown
 								position="middle left"
 								renderToggle={ ( ( { isOpen, onToggle } ) => (
 									<Button isLink onClick={ onToggle } aria-expanded={ isOpen }>
@@ -333,66 +414,72 @@ function Sidebar() {
 									/>
 								) }>
 							</Dropdown> */}
-						</div>
+            </div>
+          </div>
+        </PanelBody>
 
-					</div>
-				</PanelBody>
+        <PanelBody
+          title="Restrictions"
+          className="restrictions-settings"
+          initialOpen={false}
+        >
+          <div className="pannelbody-wrapper">
+            <div className="single-settings inline-label">
+              <label className="settings-label">
+                Maximum Number of Entries
+                <span className="mintmrm-tooltip">
+                  <QuestionIcon />
+                  <p>lorem ipsum dollar sit amet</p>
+                </span>
+              </label>
+              <ToggleControl
+                checked={maxEntries}
+                onChange={(state) => setAttributes({ maxEntries: state })}
+              />
+            </div>
 
-				<PanelBody title="Restrictions" className="restrictions-settings" initialOpen={false}>
-					<div className="pannelbody-wrapper">
-						<div className="single-settings inline-label">
-							<label className="settings-label">
-								Maximum Number of Entries
+            <div className="single-settings">
+              <label className="settings-label">Submission Starts </label>
 
-								<span className="mintmrm-tooltip">
-									<QuestionIcon/>
-									<p>lorem ipsum dollar sit amet</p>
-								</span>
-							</label>
-							<ToggleControl
-								checked={ maxEntries }
-								onChange={ (state ) => setAttributes({ maxEntries: state }) }
-							/>
-						</div>
+              <div className="submission-counter-wrapper">
+                <div className="counter">
+                  <span
+                    className="counter-increment"
+                    onClick={counterDecrement}
+                  >
+                    <MinusIcon />
+                  </span>
 
-						<div className="single-settings">
-							<label className="settings-label">Submission Starts </label>
+                  <input type="number" min="1" value={count} />
 
-							<div className="submission-counter-wrapper">
-								<div className="counter">
-									<span className="counter-increment" onClick={counterDecrement}>
-										<MinusIcon/>
-									</span>
+                  <span
+                    className="counter-decrement"
+                    onClick={counterIncrement}
+                  >
+                    <PlusIcon />
+                  </span>
+                </div>
 
-									<input type="number" min="1" value={count} />
-
-									<span className="counter-decrement" onClick={counterIncrement}>
-										<PlusIcon/>
-									</span>
-								</div>
-
-								<SelectControl
-									value=""
-									options={[
-										{
-											value: '',
-											label: 'Select option'
-										},
-										{
-											value: '',
-											label: 'Select option'
-										}
-									]}
-								/>
-							</div>
-						</div>
-
-					</div>
-				</PanelBody>
-				
-			</Panel>
-		</div>
-	);
+                <SelectControl
+                  value=""
+                  options={[
+                    {
+                      value: "",
+                      label: "Select option",
+                    },
+                    {
+                      value: "",
+                      label: "Select option",
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
+        </PanelBody>
+      </Panel>
+    </div>
+  );
 }
 
 Sidebar.InspectorFill = InspectorFill;
