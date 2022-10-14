@@ -620,7 +620,6 @@ class ContactController extends BaseController {
                 if ($contact_email && is_email( $contact_email )) {
 
                     $is_exists = ContactModel::is_contact_exist( $contact_email );
-
                     if(!$is_exists){
                         $contact    = new ContactData( $contact_email, $contact_args );
                         $contact_id = ContactModel::insert( $contact );
