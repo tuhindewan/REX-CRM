@@ -1,3 +1,4 @@
+import LoadingIndicator from "../components/LoadingIndicator";
 import React, { useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
@@ -36,8 +37,8 @@ const Tags = () => {
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
-  // current lists data
-  const [lists, setLists] = useState([]);
+  // current tags data
+  const [tags, setTags] = useState([]);
 
   // how many to show per page
   const [perPage, setPerPage] = useState(10);
@@ -90,6 +91,8 @@ const Tags = () => {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showTableHead, setShowTableHead] = useState(false);
 
   // Set values from list form
   const handleChange = (e) => {
@@ -113,7 +116,7 @@ const Tags = () => {
     if (allSelected) {
       setSelected([]);
     } else {
-      setSelected(lists.map((list) => list.id));
+      setSelected(tags.map((list) => list.id));
     }
     setAllSelected(!allSelected);
   };
@@ -195,18 +198,21 @@ const Tags = () => {
     } catch (e) {}
   };
 
-  // at first page load get all the available lists
-  // also get lists if the page or perpage or search item changes
+  // at first page load get all the available tags
+  // also get tags if the page or perpage or search item changes
   useEffect(() => {
     async function getTags() {
+      setLoading(true);
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/tags?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
-        setLists(resJson.data.data);
+        setTags(resJson.data.data);
         setCount(resJson.data.count);
         setTotalPages(resJson.data.total_pages);
+        setLoading(false);
+        setShowTableHead(true);
       }
     }
     getTags();
@@ -428,7 +434,7 @@ const Tags = () => {
                       let value = e.target.value;
                       setSearch(value);
                       // only set query when there are more than 3 characters
-                      if (value.length >= 3) {
+                      if (value.length) {
                         setQuery(`&search=${value}`);
                         // on every new search term set the page explicitly to 1 so that results can
                         // appear
@@ -463,6 +469,10 @@ const Tags = () => {
                 </div>
               </div>
             </div>
+
+            {loading ? (<LoadingIndicator type="table" />) : 
+            (
+            <>
             <div className="contact-list-body">
               <div class="contact-list-table">
                 <table>
@@ -487,8 +497,20 @@ const Tags = () => {
                   </thead>
 
                   <tbody>
-                    {lists.length > 0 &&
-                      lists.map((list, idx) => {
+                    {/* List empty or search not found ui */}
+                    {!tags.length && (
+                        <tr>
+                          <td
+                            className="no-contact"
+                            colspan="10"
+                            style={{ textAlign: "center" }}
+                          >
+                            <TagIcon />
+                            No Tag Found
+                          </td>
+                        </tr>
+                      )}
+                    {tags.map((list, idx) => {
                         return (
                           <TagItem
                             key={idx}
@@ -504,16 +526,6 @@ const Tags = () => {
                       })}
                   </tbody>
                 </table>
-                {/* List empty or search not found ui */}
-                {lists.length == 0 && (
-                  <div className="mrm-empty-state-wrapper">
-                    <TagIcon />
-                    <div>
-                      No Tags Found{" "}
-                      {search.length > 0 ? ` for the term "${search}"` : null}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
             {totalPages > 1 && (
@@ -527,6 +539,8 @@ const Tags = () => {
                 />
               </div>
             )}
+            </>)}
+            
           </div>
         </div>
       </div>

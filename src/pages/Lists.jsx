@@ -10,6 +10,7 @@ import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -94,6 +95,9 @@ const Lists = () => {
   const [showAlert, setShowAlert] = useState("none");
   const [showDropdown, setShowDropdown] = useState(false);
   const [sortButtonName, setSortButtonName] = useState("Name Asc");
+  // loading or not
+  const [loading, setLoading] = useState(false);
+  const [showTableHead, setShowTableHead] = useState(false);
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -226,6 +230,7 @@ const Lists = () => {
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
     async function getLists() {
+      setLoading(true);
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
@@ -234,6 +239,8 @@ const Lists = () => {
         setLists(resJson.data.data);
         setCount(resJson.data.count);
         setTotalPages(resJson.data.total_pages);
+        setLoading(false);
+        setShowTableHead(true);
       }
     }
     getLists();
@@ -459,7 +466,7 @@ const Lists = () => {
                       let value = e.target.value;
                       setSearch(value);
                       // only set query when there are more than 3 characters
-                      if (value.length >= 3) {
+                      if (value.length) {
                         setQuery(`&search=${value}`);
                         // on every new search term set the page explicitly to 1 so that results can
                         // appear
@@ -493,71 +500,81 @@ const Lists = () => {
                 </div>
               </div>
             </div>
-            <div className="contact-list-body">
-              <div class="contact-list-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th className="">
-                        <span class="mintmrm-checkbox no-title">
-                          <input
-                            type="checkbox"
-                            name="bulk-select"
-                            id="bulk-select"
-                            onChange={handleSelectAll}
-                            checked={allSelected}
-                          />
-                          <label for="bulk-select">Name</label>
-                        </span>
-                      </th>
-                      <th>Contacts</th>
-                      <th className="">Description</th>
-                      <th className="creation-date">Creation Date</th>
-                      <th className="action"></th>
-                    </tr>
-                  </thead>
+            {loading ? (<LoadingIndicator type="table" />) : 
+            (
+            <>  
+              <div className="contact-list-body">
+                <div class="contact-list-table">
 
-                  <tbody>
-                    {lists.length > 0 &&
-                      lists.map((list, idx) => {
-                        return (
-                          <ListItem
-                            key={idx}
-                            list={list}
-                            deleteList={deleteList}
-                            currentActive={currentActive}
-                            setCurrentActive={setCurrentActive}
-                            handleSelectOne={handleSelectOne}
-                            selected={selected}
-                            editList={editList}
-                          />
-                        );
-                      })}
-                  </tbody>
-                </table>
-                {/* List empty or search not found ui */}
-                {lists.length == 0 && (
-                  <div className="mrm-empty-state-wrapper">
-                    <ListIcon />
-                    <div>
-                      No Lists Found{" "}
-                      {search.length > 0 ? ` for the term "${search}"` : null}
-                    </div>
-                  </div>
-                )}
+                  <table>
+                    <thead className={ showTableHead ? "showTableHead show" : "showTableHead" }>
+                      <tr>
+                        <th className="">
+                          <span class="mintmrm-checkbox no-title">
+                            <input
+                              type="checkbox"
+                              name="bulk-select"
+                              id="bulk-select"
+                              onChange={handleSelectAll}
+                              checked={allSelected}
+                            />
+                            <label for="bulk-select">Name</label>
+                          </span>
+                        </th>
+                        <th>Contacts</th>
+                        <th className="">Description</th>
+                        <th className="creation-date">Creation Date</th>
+                        <th className="action"></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+
+                      {/* List empty or search not found ui */}
+                      {!lists.length && (
+                        <tr>
+                          <td
+                            className="no-contact"
+                            colspan="10"
+                            style={{ textAlign: "center" }}
+                          >
+                            <ListIcon />
+                            No List Found
+                          </td>
+                        </tr>
+                      )}
+
+                      {lists.map((list, idx) => {
+                          return (
+                            <ListItem
+                              key={idx}
+                              list={list}
+                              deleteList={deleteList}
+                              currentActive={currentActive}
+                              setCurrentActive={setCurrentActive}
+                              handleSelectOne={handleSelectOne}
+                              selected={selected}
+                              editList={editList}
+                            />
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            {totalPages > 1 && (
-              <div className="contact-list-footer">
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              </div>
-            )}
+              {totalPages > 1 && (
+                <div className="contact-list-footer">
+                  <Pagination
+                    currentPage={page}
+                    pageSize={perPage}
+                    onPageChange={setPage}
+                    totalCount={count}
+                    totalPages={totalPages}
+                  />
+                </div>
+              )}
+            </>)}
+            
           </div>
         </div>
       </div>

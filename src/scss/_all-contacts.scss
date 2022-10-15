@@ -486,6 +486,13 @@
           }
         }
       }
+
+      .showTableHead {
+        display: none;
+        &.show {
+          display: contents;
+        }
+      }
     }
 
     table {

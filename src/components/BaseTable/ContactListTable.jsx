@@ -844,7 +844,7 @@ export default function ContactListTable(props) {
                         style={{ textAlign: "center" }}
                       >
                         <NoContactIcon />
-                        No contact data found.
+                        No contact data found
                       </td>
                     </tr>
                   )}
