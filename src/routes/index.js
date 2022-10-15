@@ -10,12 +10,8 @@ import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";
 import FormEditor from "../components/Form/FormEditor";
 import ImportConfirmation from "../components/ImportConfirmation";
-import CreateList from "../components/List/CreateList";
-import UpdateList from "../components/List/UpdateList";
 import SelectFieldsMap from "../components/SelectFieldsMap";
 import Settings from "../components/Setting";
-import CreateTag from "../components/Tag/CreateTag";
-import UpdateTag from "../components/Tag/UpdateTag";
 import WordPressFieldMap from "../components/WordPressFieldMap";
 import Contacts from "../pages/Contacts";
 import ImportContactFile from "../pages/ImportContactFile";
@@ -122,26 +118,6 @@ const routes = [
   {
     path: "/custom-fields/update/:id",
     element: CustomFieldCreate,
-    hideInMenu: true,
-  },
-  {
-    path: "/tags/create",
-    element: CreateTag,
-    hideInMenu: true,
-  },
-  {
-    path: "/tags/update/:id",
-    element: UpdateTag,
-    hideInMenu: true,
-  },
-  {
-    path: "/lists/create",
-    element: CreateList,
-    hideInMenu: true,
-  },
-  {
-    path: "/lists/update/:id",
-    element: UpdateList,
     hideInMenu: true,
   },
   {

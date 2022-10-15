@@ -32,26 +32,17 @@ export default function ContactListTable(props) {
   const [isLists, setIsLists] = useState(false);
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
-
-  const [loaded, setLoaded] = useState(true);
   const [showLoader, setShowLoader] = useState(true);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
-
   const [filterPerPage, setFilterPerPage] = useState(10);
   const [filterPage, setFilterPage] = useState(1);
   const [filterCount, setFilterCount] = useState(0);
-
   const [isActive, setActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
   const [isAssignTo, setIsAssignTo] = useState(false);
-
-  const [selectedSection, setSelectedSection] = useState(false);
-
   const [contactData, setContactData] = useState([]);
-  const [filterContact, setFilterContact] = useState([]);
-
   const [search, setSearch] = useState("");
   const [searchColumns, setSearchColumns] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
@@ -64,9 +55,6 @@ export default function ContactListTable(props) {
   const [filterData, setFilterData] = useState({});
 
   const navigate = useNavigate();
-
-  const [countData, setCountData] = useState({});
-
   // the select all checkbox
   const [allSelected, setAllSelected] = useState(false);
 
@@ -75,19 +63,12 @@ export default function ContactListTable(props) {
 
   const [totalPages, setTotalPages] = useState(0);
   const [filterTotalPages, setFilterTotalPages] = useState(0);
-
   const [currentActive, setCurrentActive] = useState(0);
-  const [openListSelectBox, setOpenTagSelectBox] = useState(false);
-
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filterParams, setFilterParams] = useState([]);
-
   const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
-  let { lists, tags_ids, status } = useParams();
   const [filterRequest, setFilterRequest] = useState({});
-
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [showNotification, setShowNotification] = useState("none");

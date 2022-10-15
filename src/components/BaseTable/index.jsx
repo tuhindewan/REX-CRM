@@ -16,7 +16,6 @@ import "./style.css";
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
-  const [isOpen, setIsOpen] = useState(false);
   const [countData, setCountData] = useState([]);
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
