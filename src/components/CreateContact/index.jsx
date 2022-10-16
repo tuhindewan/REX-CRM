@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Internal dependencies
@@ -8,6 +8,7 @@ import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../AddItemDropdown";
 import InputItem from "../InputItem/index";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import "./style.css";
 
 const CreateContact = (props) => {
@@ -45,6 +46,15 @@ const CreateContact = (props) => {
   const [isActiveSubscribe, setIsActiveSubscribe] = useState(false);
   const [isActiveUnsubscribe, setIsActiveUnsubscribe] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState();
+
+  //Detect Outside Click to Hide Dropdown Element
+  const statusMenuRef = useRef(null)
+  const listMenuRef   = useRef(null)
+  const tagMenuRef    = useRef(null)
+  const [listening, setListening] = useState(false)
+  useEffect(ListenForOutsideClicks(listening, setListening, statusMenuRef, setIsActiveStatus))
+  useEffect(ListenForOutsideClicks(listening, setListening, listMenuRef, setIsActiveList))
+  useEffect(ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag))
 
   // Fetch lists & tags
   useEffect(() => {
@@ -139,21 +149,19 @@ const CreateContact = (props) => {
     let path = `/contacts`;
     navigate(path);
   };
+
   const handleTag = () => {
     setIsActiveTag(!isActiveTag);
-    setIsActiveList(false);
-    setIsActiveStatus(false);
   };
+  
   const handleList = () => {
     setIsActiveList(!isActiveList);
-    setIsActiveTag(false);
-    setIsActiveStatus(false);
   };
+
   const handleStatus = () => {
     setIsActiveStatus(!isActiveStatus);
-    setIsActiveTag(false);
-    setIsActiveList(false);
   };
+
   const handleSelectStatus = (title) => {
     if ("Pending" == title) {
       setSelectedStatus("pending");
@@ -208,7 +216,7 @@ const CreateContact = (props) => {
                 values={contactData.last_name}
                 handleChange={handleChange}
               />
-              <div className="form-group status-dropdown">
+              <div className="form-group status-dropdown" ref={statusMenuRef}>
                 <label>Status</label>
                 <button
                   type="button"
@@ -239,7 +247,7 @@ const CreateContact = (props) => {
                   </li>
                 </ul>
               </div>
-              <div className="form-group lists-dropdown">
+              <div className="form-group lists-dropdown" ref={listMenuRef}>
                 <label>Lists</label>
                 <button
                   type="button"
@@ -265,7 +273,7 @@ const CreateContact = (props) => {
                   setRefresh={setRefresh}
                 />
               </div>
-              <div className="form-group tags-dropdown">
+              <div className="form-group tags-dropdown" ref={tagMenuRef}>
                 <label>Tags</label>
                 <button
                   type="button"
