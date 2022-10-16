@@ -894,9 +894,9 @@ class ContactController extends BaseController {
                                                             ));
                 $contact_email = trim($contact->get_email());   
                 if ($contact_email && is_email( $contact_email )) {
-                    $exists = ContactModel::is_contact_exist( $contact_email );
+                    $is_exists = ContactModel::is_contact_exist( $contact_email );
 
-                    if(!$exists) {
+                    if(!$is_exists) {
                         $contact_id = ContactModel::insert( $contact );
                         $status = isset( $params['status'] ) ? $params['status'][0] : "pending";
                         if( 'pending' == $status){
@@ -912,12 +912,12 @@ class ContactController extends BaseController {
                         }
         
                     }else {
-                        $exists++;
+                        ++$exists;
                     }
                 }else {
-                    $skipped++;
+                    ++$skipped;
                 }                                     
-                $total_count++;
+                ++$total_count;
             }
             /**
              * Prepare data for sucess response
@@ -927,6 +927,7 @@ class ContactController extends BaseController {
                 'skipped'              => $skipped,
                 'existing_contacts'    => $exists,
             );
+
             return $this->get_success_response(__("Import contact has been successful", "mrm"), 201, $result);
         } catch (\Throwable $th) {
             return $this->get_error_response(__( $th->getMessage(), "mrm" ), 200);

@@ -565,7 +565,7 @@ export default function ContactListTable(props) {
                     setSearch(value);
                     setFilterSearch(value);
                     // only set query when there are more than 3 characters
-                    if (value.length >= 3) {
+                    if (value.length >= 1) {
                       setQuery(encodeURI(`&search=${value}`));
                       // on every new search term set the page explicitly to 1 so that results can
                       // appear

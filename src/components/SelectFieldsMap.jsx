@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
@@ -6,6 +6,7 @@ import ImportNavbar from "./Import/ImportNavbar";
 import Select from "./Import/Select";
 import SelectDropdown from "./SelectDropdown";
 import WarningNotification from "./WarningNotification";
+import ListenForOutsideClicks from "./ListenForOutsideClicks";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
@@ -26,6 +27,15 @@ export default function SelectFieldsMap() {
   const [isActiveTag, setIsActiveTag] = useState(false);
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+
+  //Detect Outside Click to Hide Dropdown Element
+  const statusMenuRef = useRef(null)
+  const listMenuRef   = useRef(null)
+  const tagMenuRef    = useRef(null)
+  const [listening, setListening] = useState(false)
+  useEffect(ListenForOutsideClicks(listening, setListening, statusMenuRef, setIsActiveStatus))
+  useEffect(ListenForOutsideClicks(listening, setListening, listMenuRef, setIsActiveList))
+  useEffect(ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag))
 
   // get the state from calling component
   const state = location.state;
@@ -125,8 +135,6 @@ export default function SelectFieldsMap() {
 
   const handleList = () => {
     setIsActiveList(!isActiveList);
-    setIsActiveTag(false);
-    setIsActiveStatus(false);
   };
 
   const handleStatus = () => {
@@ -175,7 +183,6 @@ export default function SelectFieldsMap() {
 
   return (
     <>
-      {console.log(selectedLists)}
       <div className="mintmrm-import-page">
         <div className="mintmrm-header">
           <div className="contact-details-breadcrumb import-contact-breadcrum">
@@ -233,7 +240,7 @@ export default function SelectFieldsMap() {
                   <h3>Contact Profile</h3>
 
                   <div className="contact-profile">
-                    <div className="form-group status-dropdown">
+                    <div className="form-group status-dropdown" ref={statusMenuRef}>
                       <label>Status</label>
                       <button
                         type="button"
@@ -268,39 +275,63 @@ export default function SelectFieldsMap() {
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Lists</label>
-                      <Select
-                        selected={selectedLists}
-                        setSelected={setSelectedLists}
-                        endpoint="/lists"
-                        placeholder="Lists"
-                        name="list"
-                        listTitle="CHOOSE LIST"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={false}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                      />
+                      <div className="mrm-custom-select-container" key="container">
+                        <button
+                          type="button"
+                          className="mrm-custom-select-btn show"
+                          onClick={handleList}
+                          ref={listMenuRef}
+                        >
+                          Select Lists
+                        </button>
+                        <Select
+                          isActive={isActiveList}
+                          setIsActive={setIsActiveList}
+                          selected={selectedLists}
+                          setSelected={setSelectedLists}
+                          endpoint="/lists"
+                          placeholder="Lists"
+                          name="list"
+                          listTitle="CHOOSE LIST"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={false}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Tags</label>
-                      <Select
-                        selected={selectedTags}
-                        setSelected={setSelectedTags}
-                        endpoint="/tags"
-                        placeholder="Tags"
-                        name="list"
-                        listTitle="CHOOSE TAG"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={false}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                      />
+                      <div className="mrm-custom-select-container" key="container">
+                        <button
+                          type="button"
+                          className="mrm-custom-select-btn show"
+                          onClick={handleTag}
+                          ref={tagMenuRef}
+                        >
+                          Select Tags
+                        </button>
+                        <Select
+                          isActive={isActiveTag}
+                          setIsActive={setIsActiveTag}
+                          selected={selectedTags}
+                          setSelected={setSelectedTags}
+                          endpoint="/tags"
+                          placeholder="Tags"
+                          name="list"
+                          listTitle="CHOOSE TAG"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={false}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

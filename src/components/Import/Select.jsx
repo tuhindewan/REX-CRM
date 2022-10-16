@@ -1,19 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
 
 export default function Select(props) {
-  // global state reference for whether to hide all dropdown
-  const hideAllCustomSelect = useGlobalStore(
-    (state) => state.hideAllCustomSelect
-  );
-  // global state reference for which dropdown is currently active
-  const activeCustomSelect = useGlobalStore(
-    (state) => state.activeCustomSelect
-  );
   const {
     selected,
     setSelected,
@@ -21,7 +12,6 @@ export default function Select(props) {
     endpoint = "/lists",
     page = 1,
     perPage = 15,
-    placeholder = "Lists",
     name = "list", // used inside the new button of
     listTitle = "CHOOSE LIST",
     listTitleOnNotFound = "No Data Found",
@@ -29,11 +19,8 @@ export default function Select(props) {
     allowMultiple = true,
     showSearchBar = true,
     showListTitle = true,
-    showSelectedInside = true,
     allowNewCreate = true,
   } = props;
-  const buttonRef = useRef(null);
-  const customSelectUUID = useRef(Math.random());
 
   // store retrieved
   const [items, setItems] = useState([]);
@@ -49,25 +36,13 @@ export default function Select(props) {
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
 
-  // function used for either showing or hiding the dropdown
-  function toggleActive(event) {
-    event.stopPropagation();
-    useGlobalStore.setState({
-      hideAllCustomSelect: false,
-      activeCustomSelect:
-        activeCustomSelect == customSelectUUID.current
-          ? null
-          : customSelectUUID.current,
-    });
-  }
-
   // helper function to set the search query only when there are at least 3 characters or more
   function handleSearch(e) {
     e.stopPropagation();
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);
+    if (value.length) setQuery(`&search=${value}`);
     else setQuery("");
   }
 
@@ -152,58 +127,45 @@ export default function Select(props) {
 
   return (
     <>
-      <div className="mrm-custom-select-container" key="container">
-        <button
-          type="button"
-          className={
-            activeCustomSelect == customSelectUUID.current &&
-            !hideAllCustomSelect
-              ? "mrm-custom-select-btn show"
-              : "mrm-custom-select-btn"
-          }
-          onClick={toggleActive}
-          ref={buttonRef}
-        >
-          {placeholder}
-        </button>
-        <ul
-          className={
-            activeCustomSelect == customSelectUUID.current &&
-            !hideAllCustomSelect
-              ? "mintmrm-dropdown mrm-custom-select-dropdown show"
-              : "mintmrm-dropdown mrm-custom-select-dropdown"
-          }
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          {showSearchBar && (
-            <li className="searchbar" key="hello">
-              <span class="pos-relative">
-                <Search />
-                <input
-                  type="search"
-                  name="column-search"
-                  placeholder={searchPlaceHolder}
-                  value={search}
-                  onChange={handleSearch}
-                />
-              </span>
-            </li>
-          )}
-          {showListTitle && (
-            <li className="list-title" key="world">
-              {!loading
-                ? items?.length && !options == 0
-                  ? listTitleOnNotFound
-                  : listTitle
-                : null}
-            </li>
-          )}
+      <ul
+        className={
+          props.isActive
+            ? "mintmrm-dropdown mrm-custom-select-dropdown show"
+            : "mintmrm-dropdown mrm-custom-select-dropdown"
+        }
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {showSearchBar && (
+          <li className="searchbar" key="hello">
+            <span class="pos-relative">
+              <Search />
+              <input
+                type="search"
+                name="column-search"
+                placeholder={searchPlaceHolder}
+                value={search}
+                onChange={handleSearch}
+              />
+            </span>
+          </li>
+        )}
+        {showListTitle && (
+          <li className="list-title" key="world">
+            {!loading
+              ? items?.length && !options == 0
+                ? listTitleOnNotFound
+                : listTitle
+              : null}
+          </li>
+        )}
 
-          {/* Render all elements while options are specified */}
-          {options &&
-            options.map((item, index) => {
+        <div className="dropdown-options">
+          {items?.length > 0 &&
+            !options &&
+            !loading &&
+            items.map((item, index) => {
               let checked = checkIfSelected(item.id);
               return (
                 <li
@@ -213,61 +175,38 @@ export default function Select(props) {
                       ? "single-column mrm-custom-select-single-column-selected"
                       : "single-column"
                   }
-                  data-custom-id={item.id}
-                  data-custom-value={item.title}
-                  onClick={handleSelectOne}
                 >
-                  {item.title}
+                  <div class="mintmrm-checkbox">
+                    <input
+                      type="checkbox"
+                      name={item.id}
+                      id={item.id}
+                      value={item.title}
+                      onChange={handleSelectOne}
+                      checked={checked}
+                    />
+
+                    <label for={item.id} className="mrm-custom-select-label">
+                      {item.title}
+                    </label>
+                  </div>
                 </li>
               );
             })}
-          <div className="dropdown-options">
-            {items?.length > 0 &&
-              !options &&
-              !loading &&
-              items.map((item, index) => {
-                let checked = checkIfSelected(item.id);
-                return (
-                  <li
-                    key={index}
-                    className={
-                      checked
-                        ? "single-column mrm-custom-select-single-column-selected"
-                        : "single-column"
-                    }
-                  >
-                    <div class="mintmrm-checkbox">
-                      <input
-                        type="checkbox"
-                        name={item.id}
-                        id={item.id}
-                        value={item.title}
-                        onChange={handleSelectOne}
-                        checked={checked}
-                      />
+        </div>
 
-                      <label for={item.id} className="mrm-custom-select-label">
-                        {item.title}
-                      </label>
-                    </div>
-                  </li>
-                );
-              })}
-          </div>
-
-          {items?.length == 0 && allowNewCreate && !loading && !options && (
-            <>
-              <button
-                className="mrm-custom-select-add-btn"
-                onClick={addNewItem}
-              >
-                {`+ Add new ${name} "${search}"`}
-              </button>
-            </>
-          )}
-          {loading && <LoadingIndicator type="table" />}
-        </ul>
-      </div>
+        {items?.length == 0 && allowNewCreate && !loading && !options && (
+          <>
+            <button
+              className="mrm-custom-select-add-btn"
+              onClick={addNewItem}
+            >
+              {`+ Add new ${name} "${search}"`}
+            </button>
+          </>
+        )}
+        {loading && <LoadingIndicator type="table" />}
+      </ul>
       <WarningNotification display={showWarning} message={message} />
       <SuccessfulNotification display={showNotification} message={message} />
     </>

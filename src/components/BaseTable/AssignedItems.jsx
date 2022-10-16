@@ -85,7 +85,7 @@ export default function AssignedItems(props) {
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);
+    if (value.length >= 1) setQuery(`&search=${value}`);
     else setQuery("");
   }
 

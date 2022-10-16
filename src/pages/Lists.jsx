@@ -466,7 +466,7 @@ const Lists = () => {
                       let value = e.target.value;
                       setSearch(value);
                       // only set query when there are more than 3 characters
-                      if (value.length) {
+                      if (value.length >= 1) {
                         setQuery(`&search=${value}`);
                         // on every new search term set the page explicitly to 1 so that results can
                         // appear
