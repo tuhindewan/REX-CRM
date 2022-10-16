@@ -2,14 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Internal dependencies
-import { omit } from "lodash";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../AddItemDropdown";
 import InputItem from "../InputItem/index";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
-import "./style.css";
+import { createContact } from "../../services/Contact";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -31,16 +30,11 @@ const CreateContact = (props) => {
   const [errors, setErrors] = useState({});
   const [lists, setLists] = useState([]);
   const [tags, setTags] = useState([]);
-
   const [isActiveList, setIsActiveList] = useState(false);
   const [isActiveTag, setIsActiveTag] = useState(false);
   const [assignLists, setAssignLists] = useState([]);
   const [assignTags, setAssignTags] = useState([]);
   const [refresh, setRefresh] = useState();
-
-  const toggleRefresh = () => {
-    setRefresh(!refresh);
-  };
   const [isActiveStatus, setIsActiveStatus] = useState(false);
   const [isActivePending, setIsActivePending] = useState(false);
   const [isActiveSubscribe, setIsActiveSubscribe] = useState(false);
@@ -71,67 +65,31 @@ const CreateContact = (props) => {
     });
   }, [refresh]);
 
-  const validate = (event, name, value) => {
-    switch (name) {
-      case "email":
-        if (
-          !new RegExp(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
-          ).test(value)
-        ) {
-          setErrors({
-            ...errors,
-            email: "Enter a valid email address",
-          });
-        } else {
-          let newObj = omit(errors, "email");
-          setErrors(newObj);
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
   // Handle contact create form submission
   const handleSubmit = async (event) => {
     if (event) event.preventDefault();
 
-    if (Object.keys(errors).length !== 0) {
-      setErrors({
-        ...errors,
-        email: errors["emails"],
-      });
-    }
-
     contactData.lists = assignLists;
     contactData.tags = assignTags;
     contactData.status = [selectedStatus];
-    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(contactData),
-    });
-    const responseData = await res.json();
-    const code = responseData?.code;
 
-    if (code === 201) {
-      // Navigate user with success message
-      navigate("../contacts", {
-        state: { status: "contact-created", message: responseData?.message },
-      });
-      useGlobalStore.setState({
-        counterRefresh: !counterRefresh,
-      });
-    } else {
-      // Validation messages
-      setErrors({
-        ...errors,
-        email: responseData?.message,
-      });
-    }
+    createContact(contactData).then((response) => {
+      if (201 === response.code) {
+        // Navigate user with success message
+        navigate("../contacts", {
+          state: { status: "contact-created", message: response?.message },
+        });
+        useGlobalStore.setState({
+          counterRefresh: !counterRefresh,
+        });
+      } else {
+        // Validation messages
+        setErrors({
+          ...errors,
+          email: response?.message,
+        });
+      }
+    })
   };
 
   // Set values from contact form

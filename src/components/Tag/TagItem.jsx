@@ -55,7 +55,7 @@ export default function TagItem(props) {
           <ThreeDotIcon />
           {currentActive == id && ( // only show the menu if both active and current active points to this listitem
             <Portal>
-              <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
+              <HoverMenu elementRef={menuButtonRef} x={-10} y={-20}>
                 <ul
                   className={
                     currentActive == id // only show the menu if both active and current active points to this listitem

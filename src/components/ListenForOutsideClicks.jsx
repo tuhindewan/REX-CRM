@@ -7,7 +7,7 @@ export default function ListenForOutsideClicks(listening, setListening, menuRef,
             document.addEventListener(`click`, (evt) => {
                 const cur = menuRef.current
                 const node = evt.target
-                if (cur.contains(node)) return
+                if (cur?.contains(node)) return
                 setIsOpen(false)
             })
         })
