@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import Search from "./Icons/Search";
-import Plus from "./Icons/Plus";
+import ListenForOutsideClicks from "./ListenForOutsideClicks";
 
 export default function SelectDropdown(props) {
   const { options } = props;
@@ -10,8 +9,11 @@ export default function SelectDropdown(props) {
   const [selected, setSelected] = useState("");
 
   const [isActiveMap, setIsActiveMap] = useState(false);
-  const map = [];
-  const [mapState, setMapState] = useState([]);
+
+  //Detect Outside Click to Hide Dropdown Element
+  const menuRef = useRef(null)
+  const [listening, setListening] = useState(false)
+  useEffect(ListenForOutsideClicks(listening, setListening, menuRef, setIsActiveMap))
 
   function handleSearch(e) {
     e.stopPropagation();
@@ -35,6 +37,7 @@ export default function SelectDropdown(props) {
         type="button"
         className={isActiveMap ? "drop-down-button show" : "drop-down-button"}
         onClick={handleMap}
+        ref={menuRef}
       >
         {selected ? selected : "Do not import this field"}
       </button>
