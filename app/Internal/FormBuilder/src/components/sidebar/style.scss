@@ -21,6 +21,7 @@
     .interface-interface-skeleton__sidebar {
         width: calc(395px - 35px );
         margin-left: 35px;
+        height: 710px;
 
         .mrm-form-builder-sidebar {
             background: #FFFFFF;
@@ -52,6 +53,21 @@
             border: none;
             box-shadow: 0px 1px 1px #b6b9bf4d;
             border-radius: 6px;
+            height: 100%;
+            overflow: auto;
+            overflow-x: hidden;
+
+            &::-webkit-scrollbar {
+                width: 5px;
+            }
+            &::-webkit-scrollbar-track {
+                background: #f2f5f8;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #6F6AF8;
+                border-radius: 20px;
+            }
+
         }
 
         //----settings pannel----

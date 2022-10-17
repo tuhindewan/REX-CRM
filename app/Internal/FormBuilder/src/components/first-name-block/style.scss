@@ -1,380 +1,140 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-
-.gutenberg-pricing {
-    div, h1, h2, h3, h4, h5, h6, li, p, span {
-        font-family: 'Montserrat', sans-serif!important;
-    }
-
-    .pricing-section {
-        .section-title {
-            margin: 0 auto 47px;
-            max-width: 930px;
-
-            // h6 {
-            //     color: #333;
-            //     font-size: 20px;
-            //     font-weight: 500;
-            //     text-transform: uppercase;
-            //     letter-spacing: 1.5px;
-            // }
-
-            h1 {
-                font-size: calc(30px + (56 - 30) * ((100vw - 320px) / (1920 - 320)));
-                font-weight: 700;
-
-                @media only screen and (min-width: 1921px) {
-                    font-size: 56px;
-                }
-
-                span {
-                    color: #333;
-                    font-size: 20px;
-                    font-weight: 500;
-                    display: block;
-                    text-transform: uppercase;
-                    letter-spacing: 1.5px;
-                }
-            }
-
-            p {
-                font-weight: 400;
-                font-size: 18px;
-                max-width: 785px;
-                margin: 15px auto 0;
-            }
+.mrm-block-control-wrapper {
+    .components-panel__body {
+        .mrm-hr {
+            margin: 24px 0;
         }
 
-        .overlay {
-            background-image: none;
-            background: -moz-linear-gradient(top,  rgba(110,66,211,0.4) 0%, rgba(255,255,255,0.17) 58%, rgba(255,255,255,0) 100%);
-            background: -webkit-linear-gradient(top,  rgba(110,66,211,0.4) 0%,rgba(255,255,255,0.17) 58%,rgba(255,255,255,0) 100%);
-            background: linear-gradient(to bottom,  rgba(110,66,211,0.4) 0%,rgba(255,255,255,0.17) 58%,rgba(255,255,255,0) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666e42d3', endColorstr='#00ffffff',GradientType=0 );
+        p, span, section, label, div {
+            color: inherit;
+        }
+
+        & > .components-panel__body-title {
+            background: transparent!important;
+        }
+
+        .components-color-palette__custom-color {
+            padding: 12px;
         }
         
-        .wpfunnel-switcher .lifetime:before {
-            display: none;
-        }
-
-        .pricing-wrapper {
-            max-width: 1097px;
-            margin: 0 auto;
-        }
-
-        .price-plan-wrapper {
-            margin-left: 0;
-            margin-top: 70px;
-            align-items: inherit;
-        }
-        .price-plan-wrapper .single-plan {
-            box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.3);
-            padding: 40px 30px 40px;
-            margin-left: 0;
-            margin: 25px 0 30px;
-            width: calc(100% / 3 - 20px);
-
-            &:first-child {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-            &:last-child {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-            }
-
-            &.popular {
-               transform: translateY(0);
-                box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.3);
-                position: relative;
-                z-index: 2;
-                margin: 0;
-                transition: all 0.3s ease;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-                width: calc(100% / 3 + 40px);
-
-                &:before {
-                    content: "";
-                    background: #6e42d3;
-                    top: -8px;
-                    padding: 9px 5px;
-                    
-                }
-
-                &:hover {
-                    box-shadow: 0 3px 30px 0 rgba(0, 0, 0, 0.3);
-                }
-            }
-        }
-
-        .price-plan-wrapper .single-plan .tbl-header {
-            width: 100%;
-
-            .plan-name {
-                font-size: calc(28px + (46 - 28) * ((100vw - 320px) / (1920 - 320)));
-                color: #333333;
-                font-weight: 700;
-                margin-bottom: 30px;
-
-                @media only screen and (min-width: 1921px) {
-                    font-size: 46px;
-                }
-            }
-
-            .plan-image {
-                display: block;
-                text-align: center;
-                margin-bottom: 30px;
-
-                img {
-                    max-height: 100%;
-                    max-width: 100%;
-                    display: block;
-                    margin: 0 auto;
-                }
-            }
-
-            .regular-price {
-                font-size: 18px;
-                line-height: 1;
-                color: #778b94;
-                margin-bottom: 10px;
-
-                s{
-                    text-decoration-color: #f93939;
-                }
-            }
-
-            .price {
-                font-size: calc(36px + (65 - 36) * ((100vw - 320px) / (1920 - 320)));
-                color: #778b94;
-                font-weight: 600;
-
-                @media only screen and (min-width: 1921px) {
-                    font-size: 65px;
-                }
-
-                sup {
-                    vertical-align: top;
-                    position: relative;
-                    top: 10px;
-                    font-size: 36px;
-                    margin-right: 5px;
-                    line-height: 1;
-                }
-
-                .plan-type {
-                    font-size: 17px;
-                    text-transform: uppercase;
-                    display: block;
-                    line-height: 1;
-                    margin-top: 7px;
-                    letter-spacing: 3px;
-                    color: #556e79;
-                    font-weight: 500;
-                }
-            }
-
-            .plan-description {
-                font-size: 13px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                line-height: 1.7;
-                margin-top: 20px;
-                color: #929292;
-            }
-        }
-
-        .price-plan-wrapper .single-plan .tbl-footer {
-            margin-top: 25px;
-
-            .btn-default {
-                height: auto;
-                line-height: 1;
-                width: auto;
-                display: inline-block;
-                padding: 23px 44px;
-                font-weight: 600;
-                font-family: "Montserrat", sans-serif;
-                font-size: 20px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                color: #fff;
-                background-color: #556e79;
-                border-radius: 50px;
-                border: none;
-                box-shadow: 0 3px 8px 0 rgba(85, 110, 121, 0.4);
-
-                &:hover {
-                    background-color: #556e79;
-                    color: #fff;
-                    transform: scale(1.1);
-                }
-            }
-        }
-
-        .price-plan-wrapper .single-plan .tbl-body ul li {
+        .components-panel__body-toggle.components-button {
             font-size: 15px;
-            text-transform: uppercase;
-            padding-left: 0;
-            line-height: 1.4;
-            letter-spacing: 1.6px;
-            text-align: center;
-            padding-bottom: 10px;
-            color: #858585;
+            line-height: 1.2;
+            color: #344054;
+            font-weight: 600;
+            padding: 19px 32px 19px 13px;
+            box-shadow: none!important;
+            outline: none!important;
+            background: transparent;
+        }
+
+        label.blocks-base-control__label {
             font-weight: 400;
+            font-size: 14px;
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+            color: #A7A8B3;
+            display: block;
+            margin-bottom: 8px;
+        }
 
-            &:before {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                height: 1px;
-                width: 50%;
-                background: #ccc;
-                transform: translateX(-50%);
-            }
+        .components-range-control .components-input-control__input,
+        .components-base-control .components-select-control__input,
+        .components-base-control .components-text-control__input {
+            border-radius: 6px;
+            outline: none;
+            box-shadow: none;
+            background: #FFFFFF;
+            border: 1px solid #E4E6EB;
+            padding: 9px 12px;
+            line-height: 1.5715;
+            color: #1d2129;
+            font-size: 14px;
+            font-weight: 500;
+            height: auto;
+        }
 
-            &:last-child {
-                margin-bottom: 15px;
-                &:before {
-                    display: none;
-                }
+        .components-input-control__backdrop {
+            border: none!important;
+            box-shadow: none!important;
+            outline: none!important;
+        }
+
+        .components-base-control {
+            .components-base-control__label {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 1.5;
+                letter-spacing: -0.01em;
+                color: #A7A8B3;
             }
         }
 
-        
-        .price-plan-wrapper .single-plan.popular {
+        .mrm-inline-label {
+            .components-base-control__field {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .components-base-control__label {
+                width: calc(100% - 190px);
+                margin-bottom: 0;
+                padding-right: 10px;
+            }
+            .components-text-control__input {
+                width: 190px;
+            }
+        }
 
-            &:first-child {
-                border-bottom-right-radius: 10px;
+        .mrm-switcher-block {
+            .components-base-control__field {
+                flex-flow: row-reverse;
+                justify-content: space-between;
             }
-            &:last-child {
-                border-bottom-left-radius: 10px;
+            .components-form-toggle {
+                margin-right: 0;
+                margin-left: 12px;
             }
-            
-            .tbl-header {
-                .price {
-                    color: #6e42d3;
+            .components-toggle-control__label {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 1.5;
+                letter-spacing: -0.01em;
+                color: #A7A8B3;
+                padding-right: 10px;
+            }
+        }
 
-                    .plan-type {
-                        color: #6e42d3; 
-                    }
-                }
+        .components-range-control {
+            .components-range-control__root {
+                align-items: center;
             }
-            .tbl-footer .btn-default:hover {
-                background-color: #6e42d3;
+            .components-input-control__input {
+                height: 42px;
+            }
+            .components-range-control__reset {
+                height: 42px;
+                box-shadow: none;
+                background: #6f6af8;
+                color: #fff;
+                border-radius: 6px;
+            }
+
+            .components-range-control__track {
+                background-color: #6f6af8;
+            }
+
+            .components-range-control__slider::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                -webkit-appearance: none;
+                cursor: ew-resize;
+                background: #6f6af8;
+            }
+            .components-simple-tooltip {
+                color: #fff;
             }
         }
 
     }
-    
-    
-}
-
-.wpfunnels-block-section-padding {
-    padding: 150px 0!important;
-    margin-bottom: 0!important;
-}
-
-.wpfunnels-block-margin-0{
-    margin: 0!important;
-}
-.chat-with-us .wpfunnels-block-section-padding {
-    padding-bottom: 0!important;
-}
-
-.money-back {
-    padding: 50px 0!important;
-    margin-bottom: 0!important;
-}
-.money-back .wp-block-image {
-    margin: 0!important;
-}
-.money-back .wp-block-columns {
-    margin-bottom: 0!important;
-}
-
-@media only screen and (max-width: 1399px) {
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan {
-        padding: 40px 20px 40px;
-    }
-    
-}
-
-@media only screen and (max-width: 1199px) {
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan.popular .tbl-header .price .plan-type {
-        font-size: 20px;
-    }
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan .tbl-footer .btn-default {
-        height: 52px;
-        padding: 16px 30px;
-    }
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan.popular .tbl-footer .btn-default {
-        height: 56px;
-        padding: 18px 30px;
-        font-size: 18px;
-    }
-
-}
-
-@media only screen and (max-width: 1399px) {
-    .gutenberg-pricing .pricing-section {
-        padding: 120px 0;
-    }
-    .wpfunnels-block-section-padding {
-        padding: 120px 0!important;
-    }
-}
-
-@media only screen and (max-width: 1199px) {
-    .gutenberg-pricing .pricing-section {
-        padding: 100px 0;
-    }
-    .wpfunnels-block-section-padding {
-        padding: 100px 0!important;
-    }
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan .tbl-header .price sup {
-        top: 7px;
-        font-size: 28px;
-    }
-
-}
-
-@media only screen and (max-width: 991px) {
-    .gutenberg-pricing .pricing-section .price-plan-wrapper {
-        flex-flow: column;
-        margin-top: 40px;
-    }
-
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan {
-        margin: 0 auto 30px;
-        width: 100%;
-        max-width: 480px;
-        border-radius: 15px!important;
-    }
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan.popular {
-        margin: 0 auto 30px;
-        width: 100%;
-    }
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan.popular:before {
-        content: "popular";
-        top: 21px;
-        padding: 5px 5px;
-    }
-
-}
-
-@media only screen and (max-width: 767px) {
-    .gutenberg-pricing .pricing-section .price-plan-wrapper .single-plan .tbl-header .price sup {
-        font-size: 22px;
-    }
-}
-
-@media only screen and (max-width: 575px) {
-    .gutenberg-pricing .pricing-section .section-title h6 {
-        font-size: 17px;
-        letter-spacing: 1px;
-    }
-
 }
