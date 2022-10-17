@@ -440,7 +440,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/keyboard-shortcuts */ "@wordpress/keyboard-shortcuts");
 /* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__);
 
-
 /**
  * WordPress dependencies
  */
@@ -457,8 +456,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
-
 function BlockEditor(_ref) {
   let {
     settings: _settings
@@ -469,16 +466,14 @@ function BlockEditor(_ref) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/notices');
   const canUserCreateMedia = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
     const _canUserCreateMedia = select('core').canUser('create', 'media');
-
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
     }
-
-    return { ..._settings,
-
+    return {
+      ..._settings,
       mediaUpload(_ref2) {
         let {
           onError,
@@ -495,35 +490,32 @@ function BlockEditor(_ref) {
           ...rest
         });
       }
-
     };
   }, [canUserCreateMedia, _settings]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const storedBlocks = window.localStorage.getItem('getmrmblocks');
-
     if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
-      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks)); // createInfoNotice( 'Blocks loaded', {
+      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
+      // createInfoNotice( 'Blocks loaded', {
       // 	type: 'snackbar',
       // 	isDismissible: true,
       // } );
     }
   }, []);
+
   /**
    * Wrapper for updating blocks. Required as `onInput` callback passed to
    * `BlockEditorProvider` is now called with more than 1 argument. Therefore
    * attempting to setState directly via `updateBlocks` will trigger an error
    * in React.
    */
-
   function handleUpdateBlocks(blocks) {
     updateBlocks(blocks);
   }
-
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
@@ -537,7 +529,6 @@ function BlockEditor(_ref) {
     className: "get-mrm-block-editor__block-list"
   })))))));
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (BlockEditor);
 
 /***/ }),
@@ -892,7 +883,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -908,6 +898,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -981,7 +972,6 @@ const mrmEmailField = _ref => {
     pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
   })))))));
 };
-
 mrmEmailField.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -1065,13 +1055,15 @@ class Editor extends Component {
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
-      adminEmail: { ...this.props.attributes.adminEmail,
+      adminEmail: {
+        ...this.props.attributes.adminEmail,
         [key]: value
       }
     });
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -1087,24 +1079,24 @@ class Editor extends Component {
   };
   formFields = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        firstName = attributes.firstName,
-        firstNameLabel = attributes.firstNameLabel,
-        firstNamePlaceholder = attributes.firstNamePlaceholder,
-        isRequiredName = attributes.isRequiredName,
-        lastName = attributes.lastName,
-        lastNameLabel = attributes.lastNameLabel,
-        lastNamePlaceholder = attributes.lastNamePlaceholder,
-        isRequiredLastName = attributes.isRequiredLastName,
-        emailLabel = attributes.emailLabel,
-        emailPlaceholder = attributes.emailPlaceholder,
-        phone = attributes.phone,
-        phoneLabel = attributes.phoneLabel,
-        phonePlaceholder = attributes.phonePlaceholder,
-        isRequiredPhone = attributes.isRequiredPhone,
-        requiredMark = attributes.requiredMark;
+        attributes,
+        setAttributes
+      } = this.props,
+      firstName = attributes.firstName,
+      firstNameLabel = attributes.firstNameLabel,
+      firstNamePlaceholder = attributes.firstNamePlaceholder,
+      isRequiredName = attributes.isRequiredName,
+      lastName = attributes.lastName,
+      lastNameLabel = attributes.lastNameLabel,
+      lastNamePlaceholder = attributes.lastNamePlaceholder,
+      isRequiredLastName = attributes.isRequiredLastName,
+      emailLabel = attributes.emailLabel,
+      emailPlaceholder = attributes.emailPlaceholder,
+      phone = attributes.phone,
+      phoneLabel = attributes.phoneLabel,
+      phonePlaceholder = attributes.phonePlaceholder,
+      isRequiredPhone = attributes.isRequiredPhone,
+      requiredMark = attributes.requiredMark;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Email",
       className: "inner-pannel"
@@ -1124,11 +1116,11 @@ class Editor extends Component {
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        labelTypography = attributes.labelTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Form Style",
       initialOpen: false
@@ -1161,11 +1153,11 @@ class Editor extends Component {
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        inputTypography = attributes.inputTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
@@ -1236,7 +1228,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -1279,8 +1270,9 @@ class Editor extends Component {
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + 'px',
       borderColor: inputBorderColor
-    }; // display the map selector
+    };
 
+    // display the map selector
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-email-form mrm-gutenberg-email-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1305,9 +1297,7 @@ class Editor extends Component {
       pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
     })))))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -1483,7 +1473,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -1499,6 +1488,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -1573,7 +1563,6 @@ const mrmFirstName = _ref => {
     style: inputStyle
   })))))));
 };
-
 mrmFirstName.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -1656,7 +1645,8 @@ class Editor extends Component {
     setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -1667,13 +1657,13 @@ class Editor extends Component {
   };
   formFields = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        firstName = attributes.firstName,
-        firstNameLabel = attributes.firstNameLabel,
-        firstNamePlaceholder = attributes.firstNamePlaceholder,
-        isRequiredName = attributes.isRequiredName;
+        attributes,
+        setAttributes
+      } = this.props,
+      firstName = attributes.firstName,
+      firstNameLabel = attributes.firstNameLabel,
+      firstNamePlaceholder = attributes.firstNamePlaceholder,
+      isRequiredName = attributes.isRequiredName;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "First Name",
       className: "inner-pannel"
@@ -1699,11 +1689,11 @@ class Editor extends Component {
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        labelTypography = attributes.labelTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Form Style",
       initialOpen: false
@@ -1736,11 +1726,11 @@ class Editor extends Component {
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        inputTypography = attributes.inputTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
@@ -1811,7 +1801,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -1881,9 +1870,7 @@ class Editor extends Component {
       style: inputStyle
     })))))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -1939,7 +1926,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-
 
 /**
  * WordPress dependencies
@@ -2306,7 +2292,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -2322,6 +2307,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -2399,7 +2385,6 @@ const mrmLastName = _ref => {
     style: inputStyle
   }))))))));
 };
-
 mrmLastName.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -2483,7 +2468,8 @@ class Editor extends Component {
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
-      adminEmail: { ...this.props.attributes.adminEmail,
+      adminEmail: {
+        ...this.props.attributes.adminEmail,
         [key]: value
       }
     });
@@ -2492,7 +2478,8 @@ class Editor extends Component {
     }, 0);
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -2508,12 +2495,12 @@ class Editor extends Component {
   };
   formFields = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        lastNameLabel = attributes.lastNameLabel,
-        lastNamePlaceholder = attributes.lastNamePlaceholder,
-        isRequiredLastName = attributes.isRequiredLastName;
+        attributes,
+        setAttributes
+      } = this.props,
+      lastNameLabel = attributes.lastNameLabel,
+      lastNamePlaceholder = attributes.lastNamePlaceholder,
+      isRequiredLastName = attributes.isRequiredLastName;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Last Name",
       className: "inner-pannel"
@@ -2539,11 +2526,11 @@ class Editor extends Component {
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        labelTypography = attributes.labelTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Form Style",
       initialOpen: false
@@ -2649,7 +2636,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -2693,8 +2679,9 @@ class Editor extends Component {
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + 'px',
       borderColor: inputBorderColor
-    }; // display the map selector
+    };
 
+    // display the map selector
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-gutenberg-last-name-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2718,9 +2705,7 @@ class Editor extends Component {
       style: inputStyle
     })))))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -3111,7 +3096,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -3127,6 +3111,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -3180,7 +3165,6 @@ const mrmButton = _ref => {
     value: buttonText
   })))));
 };
-
 mrmButton.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -3263,7 +3247,8 @@ class Editor extends Component {
     setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -3363,7 +3348,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.buttonText(), this.buttonStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -3396,8 +3380,9 @@ class Editor extends Component {
       borderStyle: buttonBorderStyle,
       borderWidth: buttonBorderWidth + 'px',
       borderColor: buttonBorderColor
-    }; // display the map selector
+    };
 
+    // display the map selector
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-gutenberg-mrm-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -3423,9 +3408,7 @@ class Editor extends Component {
       placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Submit', 'mrm')
     })))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -3501,7 +3484,8 @@ const attributes = {
   },
   selectOption: {
     type: 'array',
-    default: [// {
+    default: [
+      // {
       //     value: '',
       //     label: '--Select--'
       // },
@@ -3649,7 +3633,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -3665,6 +3648,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -3825,7 +3809,6 @@ const mrmCustomField = _ref => {
     }, option.label);
   })))))));
 };
-
 mrmCustomField.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -3908,7 +3891,8 @@ class Editor extends Component {
     setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -3928,7 +3912,6 @@ class Editor extends Component {
       value: slug_name,
       label: 'label'
     };
-
     if ('radio' === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
       setAttributes(attributes.radioOption);
@@ -3978,7 +3961,8 @@ class Editor extends Component {
         field_label: state
       })
     }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-      label: "Option Name" // value={ attributes.select_option_name }
+      label: "Option Name"
+      // value={ attributes.select_option_name }
       ,
       onChange: state => setAttributes({
         select_option_name: state
@@ -3991,7 +3975,8 @@ class Editor extends Component {
       role: "button"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New Option')), attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-        value: option.value // onChange={ (state ) => setAttributes({ value: state }) }
+        value: option.value
+        // onChange={ (state ) => setAttributes({ value: state }) }
         ,
         onChange: val => this.onChangeOptionField(option, val, index)
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -4009,7 +3994,8 @@ class Editor extends Component {
       role: "button"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New')), attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-        value: option.label // onChange={ (state ) => setAttributes({ value: state }) }
+        value: option.label
+        // onChange={ (state ) => setAttributes({ value: state }) }
         ,
         onChange: val => this.onChangeRadioLabelField(option, val, index)
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -4037,11 +4023,11 @@ class Editor extends Component {
     option.value = val;
     const modifiedOption = radioOption.map((value, thisIndex) => {
       if (index === thisIndex) {
-        value = { ...radioOption[index],
+        value = {
+          ...radioOption[index],
           ...option
         };
       }
-
       return value;
     });
     setAttributes({
@@ -4058,11 +4044,11 @@ class Editor extends Component {
     option.label = val;
     const modifiedOption = radioOption.map((value, thisIndex) => {
       if (index === thisIndex) {
-        value = { ...radioOption[index],
+        value = {
+          ...radioOption[index],
           ...option
         };
       }
-
       return value;
     });
     setAttributes({
@@ -4080,11 +4066,11 @@ class Editor extends Component {
     option.value = val;
     const modifiedOption = selectOption.map((value, thisIndex) => {
       if (index === thisIndex) {
-        value = { ...selectOption[index],
+        value = {
+          ...selectOption[index],
           ...option
         };
       }
-
       return value;
     });
     setAttributes({
@@ -4096,11 +4082,9 @@ class Editor extends Component {
       setAttributes,
       attributes
     } = this.props;
-
     if (index > -1) {
       // only splice array when item is found
       attributes.selectOption.splice(index, 1); // 2nd parameter means remove one item only
-
       setAttributes(attributes.selectOption);
     }
   };
@@ -4109,11 +4093,9 @@ class Editor extends Component {
       setAttributes,
       attributes
     } = this.props;
-
     if (index > -1) {
       // only splice array when item is found
       attributes.radioOption.splice(index, 1); // 2nd parameter means remove one item only
-
       setAttributes(attributes.radioOption);
     }
   };
@@ -4127,7 +4109,6 @@ class Editor extends Component {
       value: slug_name,
       label: attributes.select_option_name
     };
-
     if ('select' === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
       setAttributes(attributes.selectOption);
@@ -4170,11 +4151,11 @@ class Editor extends Component {
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        inputTypography = attributes.inputTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
@@ -4250,7 +4231,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderTextField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4302,7 +4282,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderTextareaField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4354,7 +4333,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderDateField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4404,7 +4382,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderSelectField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4449,13 +4426,13 @@ class Editor extends Component {
       return this.renderSelectOption(value, index);
     }))));
   };
+
   /**
    * Render Select Option
    * @param option
    * @param index
    * @returns {JSX.Element}
    */
-
   renderSelectOption = (option, index) => {
     const {
       attributes,
@@ -4560,12 +4537,10 @@ class Editor extends Component {
    * @param values
    * @returns {string}
    */
-
   makeSlug = values => {
     const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
     return slug;
   };
-
   render() {
     const {
       attributes,
@@ -4573,9 +4548,7 @@ class Editor extends Component {
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -4634,7 +4607,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 
-
 /**
  * WordPress dependencies
  */
@@ -4675,7 +4647,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Icons/QuestionIcon */ "./src/components/Icons/QuestionIcon.jsx");
 /* harmony import */ var _Icons_MinusIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Icons/MinusIcon */ "./src/components/Icons/MinusIcon.jsx");
 /* harmony import */ var _Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Icons/PlusIcon */ "./src/components/Icons/PlusIcon.jsx");
-
 
 /**
  * WordPress dependencies
@@ -4722,7 +4693,6 @@ const {
   Slot: InspectorSlot,
   Fill: InspectorFill
 } = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
-
 function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
@@ -4760,19 +4730,18 @@ function Sidebar() {
     }
   });
   let currentDate = new Date();
-
   const toggleTab = index => {
     setTabState(index);
-  }; //-----counter increment-------
+  };
 
-
+  //-----counter increment-------
   function counterIncrement() {
     setCount(function (prevCount) {
       return prevCount += 1;
     });
-  } //-----counter decrement-------
+  }
 
-
+  //-----counter decrement-------
   function counterDecrement() {
     setCount(function (prevCount) {
       if (prevCount > 0) {
@@ -4781,7 +4750,9 @@ function Sidebar() {
         return prevCount = 0;
       }
     });
-  } //   const updateSetting = (index) => (e) => {
+  }
+
+  //   const updateSetting = (index) => (e) => {
   //     const updatedSetting = settingData.map((item, i) => {
   //       if (index === i) {
   //         return { ...item, [e.target.name]: e.target.value };
@@ -4792,10 +4763,8 @@ function Sidebar() {
   //     setSettingData(updatedSetting);
   //   };
 
-
   const handleConfirmationType = index => {
     toggleTab(index);
-
     if ("same_page" === index) {
       setSettingData({
         settings: {
@@ -4808,7 +4777,6 @@ function Sidebar() {
       });
     }
   };
-
   let submissionType = "hide-form";
   let labelAlign = "center";
   let maxEntries = false;
@@ -5027,7 +4995,6 @@ function Sidebar() {
     }]
   })))))));
 }
-
 Sidebar.InspectorFill = InspectorFill;
 /* harmony default export */ __webpack_exports__["default"] = (Sidebar);
 
@@ -5052,17 +5019,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_sidebar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/sidebar */ "./src/components/sidebar/index.js");
 /* harmony import */ var _components_block_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/block-editor */ "./src/components/block-editor/index.js");
 
-
 /**
  * WordPress dependencies
  */
 
 
+
 /**
  * Internal dependencies
  */
-
-
 
 
 
@@ -5084,7 +5049,6 @@ function Editor(_ref) {
     }))
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)))));
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (Editor);
 
 /***/ }),
@@ -6432,7 +6396,6 @@ function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   }
-
   return self;
 }
 
@@ -6477,7 +6440,6 @@ function _defineProperties(target, props) {
     Object.defineProperty(target, descriptor.key, descriptor);
   }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
@@ -6511,7 +6473,6 @@ function _defineProperty(obj, key, value) {
   } else {
     obj[key] = value;
   }
-
   return obj;
 }
 
@@ -6554,7 +6515,6 @@ function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
   }
-
   subClass.prototype = Object.create(superClass && superClass.prototype, {
     constructor: {
       value: subClass,
@@ -6591,7 +6551,6 @@ function _possibleConstructorReturn(self, call) {
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
   }
-
   return (0,_assertThisInitialized_js__WEBPACK_IMPORTED_MODULE_1__["default"])(self);
 }
 
@@ -6756,28 +6715,28 @@ const {
 const {
   __
 } = wp.i18n;
- //Email
+
+//Email
 
 
 
 
- // Firstname
+// Firstname
 
 
 
 
- //last Name
+//last Name
 
 
 
 
- //Button
+//Button
 
 
 
 
- // Custom Field
-
+// Custom Field
 
 
 
@@ -6841,7 +6800,6 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     save: _components_mrm_custom_field_block__WEBPACK_IMPORTED_MODULE_21__["default"]
   });
   const el = document.getElementById("mrm-block-editor");
-
   if (el !== null) {
     (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
       settings: settings
