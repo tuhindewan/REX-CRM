@@ -75,7 +75,6 @@ class AjaxAction {
                     }
                 }
             }
-            error_log(print_r($form_data,1));
             $parms          = [
                                 'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
                                 'last_name'     => isset($form_data['first_name']) ? $form_data['first_name'] : ''
