@@ -85,9 +85,6 @@ export default function CampaignCustomSelect(props) {
         props.dropDown ? "recipient-dropdown" : "recipient-dropdown inactive"
       }
     >
-      {console.log(lists)}
-      {console.log(tags)}
-      {console.log(selectedTags)}
       <div className="dropdown-header">
         <button
           className={
@@ -153,7 +150,6 @@ export default function CampaignCustomSelect(props) {
             <div className="checkbox-options">
               {tags.map((item, index) => {
                 let checkedTag = checkIfSelectedTag(item.id);
-                console.log(checkedTag);
                 return (
                   <li
                     key={index}
@@ -225,7 +221,6 @@ export default function CampaignCustomSelect(props) {
             <div className="checkbox-options">
               {lists.map((item, index) => {
                 let checkedList = checkIfSelectedList(item.id);
-                console.log(checkedList);
                 return (
                   <li
                     key={index}
