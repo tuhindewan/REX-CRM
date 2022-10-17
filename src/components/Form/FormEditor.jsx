@@ -46,7 +46,6 @@ const FormEditor = (props) => {
   // Fetch lists & tags
   useEffect(() => {
 
-    window.localStorage.setItem( 'getmrmblocks', '' )
 
     // Get lists
     getLists().then((results) => {
