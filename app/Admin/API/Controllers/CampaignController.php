@@ -61,22 +61,20 @@ class CampaignController extends BaseController {
 
         $emails = isset($params['emails']) ? $params['emails'] : array();
 
-        if( isset( $params['status'] ) && "ongoing" == $params['status'] ){
-            // Sender email address validation
-            $first_email    = isset($emails[0]) ? $emails[0] : [];
-            $sender_email   = isset( $first_email['sender_email'] ) ? $first_email['sender_email'] : "";
-            if(!is_email($sender_email)) {
-                return $this->get_error_response(__( 'Sender Email Address is not valid', 'mrm' ), 203);
+        // Email subject validation
+        if( isset( $params['status']) ){
+
+            foreach( $emails as $index => $email ){
+                $sender_email   = isset( $email['sender_email'] ) ? $email['sender_email'] : "";
+                if ( isset($sender_email) && empty( $sender_email )) {
+                    return $this->get_error_response( __( 'Sender email is missing on email '. ($index+1), 'mrm' ),  200);
+                }
+                if(!is_email($sender_email)) {
+                    return $this->get_error_response(__( 'Sender Email Address is not valid on email '. ($index+1), 'mrm' ), 203);
+                }
             }
         }
-        // Email subject validation
         
-        // foreach( $emails as $index => $email ){
-        //     if ( isset($email['email_subject']) && empty( $email['email_subject'] )) {
-        //         return $this->get_error_response( __( 'Subject is missing on email '. ($index+1), 'mrm' ),  200);
-        //     }
-        // }
-
         try {
             // Update a campaign if campaign_id present on API request
             if( isset( $params['campaign_id']) ){

@@ -9,6 +9,7 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import useUnload from "../Unload";
+import WarningNotification from "../WarningNotification";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -48,6 +49,8 @@ export default function AddCampaign(props) {
 
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -107,15 +110,25 @@ export default function AddCampaign(props) {
         };
       }),
     };
-    // Send POST request to save data
-    submitCampaign(campaign).then((response) => {
-      if (201 === response.code) {
-        // Navigate to campaigns list with success message
-        navigate("/campaign/edit/" + response.data.campaign.id, {
-          state: { status: "campaign-created", message: response?.message },
+
+    emailData.map((email, index) => {
+      if (validateCampaign(email.senderEmail, index)) {
+        // Send POST request to save data
+        submitCampaign(campaign).then((response) => {
+          if (201 === response.code) {
+            // Navigate to campaigns list with success message
+            navigate("/campaign/edit/" + response.data.campaign.id, {
+              state: { status: "campaign-created", message: response?.message },
+            });
+          } else {
+            setShowWarning("block");
+            setMessage(response?.message);
+          }
+          const timer = setTimeout(() => {
+            setShowWarning("none");
+          }, 3000);
+          return () => clearTimeout(timer);
         });
-      } else {
-        window.alert(response?.message);
       }
     });
   };
@@ -140,6 +153,25 @@ export default function AddCampaign(props) {
     });
   };
 
+  const validateCampaign = (value, index) => {
+    if (!value.length) {
+      setShowWarning("block");
+      setMessage("Sender Email is missing on email " + (index + 1));
+      return false;
+    } else if (
+      !new RegExp(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
+      ).test(value)
+    ) {
+      setShowWarning("block");
+      setMessage("Sender Email Address is not valid on email" + (index + 1));
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = async (e) => {
     setEmailData((prevEmailData) => {
@@ -148,16 +180,6 @@ export default function AddCampaign(props) {
       const copy = [...prevEmailData];
       if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
-      }
-      if (name == "delay_count") {
-        if (0 > value) {
-          setErrors({
-            ...errors,
-            number: "Negative value is not allowed",
-          });
-        } else {
-          setErrors({});
-        }
       }
       copy[selectedEmailIndex][name] = value;
       return copy;
@@ -534,12 +556,13 @@ export default function AddCampaign(props) {
                     placeholder="Enter Name"
                   />
                   <input
-                    type="text"
+                    type="email"
                     name="senderEmail"
                     value={emailData[selectedEmailIndex]["senderEmail"]}
                     onChange={handleEmailFieldsChange}
                     placeholder="Enter Email"
                   />
+                  <p className="error-message">{errors?.email}</p>
                 </div>
                 <div className="email-design input-item">
                   <label>Design</label>
@@ -581,6 +604,7 @@ export default function AddCampaign(props) {
           </div>
         </div>
       </div>
+      <WarningNotification display={showWarning} message={message} />
       <CampaignTemplates
         isOpen={isTemplate}
         isClose={isClose}

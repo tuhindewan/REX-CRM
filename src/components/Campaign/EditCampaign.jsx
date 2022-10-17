@@ -130,6 +130,25 @@ export default function EditCampaign(props) {
     return () => clearTimeout(timer);
   }, [refresh]);
 
+  const validateCampaign = (value, index) => {
+    if (!value.length) {
+      setShowWarning("block");
+      setMessage("Sender Email is missing on email " + (index + 1));
+      return false;
+    } else if (
+      !new RegExp(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
+      ).test(value)
+    ) {
+      setShowWarning("block");
+      setMessage("Sender Email Address is not valid on email" + (index + 1));
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
   // Prepare campaign object and send post request to backend
   const updateCampaign = async (status) => {
     if (campaignTitle.length < 3) {
@@ -170,18 +189,24 @@ export default function EditCampaign(props) {
       }),
       campaign_id: id,
     };
-    // Send PUT request to update campaign
-    updateCampaignRequest(campaign).then((response) => {
-      if (201 === response.code) {
-        // Show success message
-        setShowNotification("block");
-        setMessage(response?.message);
-        toggleRefresh();
-      } else {
-        setShowWarning("block");
-        setMessage(response?.message);
+
+    emailData.map((email, index) => {
+      if (validateCampaign(email.sender_email, index)) {
+        // Send PUT request to update campaign
+        updateCampaignRequest(campaign).then((response) => {
+          if (201 === response.code) {
+            // Show success message
+            setShowNotification("block");
+            setMessage(response?.message);
+            toggleRefresh();
+          } else {
+            setShowWarning("block");
+            setMessage(response?.message);
+          }
+        });
       }
     });
+
     const isValid = validate();
     setIsValid(isValid);
     const timer = setTimeout(() => {
@@ -603,135 +628,107 @@ export default function EditCampaign(props) {
                     </span>
                     <div className="setting-section">
                       <SettingIcon />
-                      <div className="email-subject input-item">
-                        <label>Subject:</label>
-                        <input
-                          type="text"
-                          name="subject"
-                          value={emailData[selectedEmailIndex]["email_subject"]}
-                          onChange={(e) =>
-                            handleEmailFieldsChange(
-                              e.target.value,
-                              "email_subject"
-                            )
-                          }
-                          placeholder="Be Specific and concise to spark interest"
-                        />
-                        <span>
-                          {emailData[selectedEmailIndex]?.email_subject?.length}
-                          /200
-                        </span>
-                        <div className="setting-section">
-                          <SettingIcon />
-                        </div>
-                      </div>
-                      <div className="email-preview input-item">
-                        <label>Preview Text</label>
-                        <input
-                          type="text"
-                          name="email_preview_text"
-                          value={
-                            emailData[selectedEmailIndex]["email_preview_text"]
-                          }
-                          onChange={(e) =>
-                            handleEmailFieldsChange(
-                              e.target.value,
-                              "email_preview_text"
-                            )
-                          }
-                          placeholder="Write a summary of your email to display after the subject line"
-                        />
-                        <span>
-                          {
-                            emailData[selectedEmailIndex]?.email_preview_text
-                              ?.length
-                          }
-                          /200
-                        </span>
-                        <div className="setting-section">
-                          <SettingIcon />
-                        </div>
-                      </div>
-                      <div className="email-from input-item">
-                        <label>From</label>
-                        <input
-                          type="text"
-                          name="senderName"
-                          value={emailData[selectedEmailIndex]["sender_name"]}
-                          onChange={(e) =>
-                            handleEmailFieldsChange(
-                              e.target.value,
-                              "sender_name"
-                            )
-                          }
-                          placeholder="Enter Name"
-                        />
-                        <input
-                          type="text"
-                          name="senderEmail"
-                          value={emailData[selectedEmailIndex]["sender_email"]}
-                          onChange={(e) =>
-                            handleEmailFieldsChange(
-                              e.target.value,
-                              "sender_email"
-                            )
-                          }
-                          placeholder="Enter Email"
-                        />
-                      </div>
-                      <div className="email-design input-item">
-                        <label>Design</label>
-                        <div
-                          className="add-template-section"
-                          onClick={openTemplate}
-                        >
-                          <TemplateIcon />
-                          <Link to="">Select a Template</Link>
-                        </div>
-                      </div>
                     </div>
-                    <div className="content-save-section">
-                      {"ongoing" == campaignStatus ? (
-                        <button
-                          className="campaign-save mintmrm-btn"
-                          disabled={true}
-                        >
-                          On Going
-                        </button>
-                      ) : (
-                        <>
-                          {/* <button
+                  </div>
+                  <div className="email-preview input-item">
+                    <label>Preview Text</label>
+                    <input
+                      type="text"
+                      name="email_preview_text"
+                      value={
+                        emailData[selectedEmailIndex]["email_preview_text"]
+                      }
+                      onChange={(e) =>
+                        handleEmailFieldsChange(
+                          e.target.value,
+                          "email_preview_text"
+                        )
+                      }
+                      placeholder="Write a summary of your email to display after the subject line"
+                    />
+                    <span>
+                      {
+                        emailData[selectedEmailIndex]?.email_preview_text
+                          ?.length
+                      }
+                      /200
+                    </span>
+                    <div className="setting-section">
+                      <SettingIcon />
+                    </div>
+                  </div>
+                  <div className="email-from input-item">
+                    <label>From</label>
+                    <input
+                      type="text"
+                      name="senderName"
+                      value={emailData[selectedEmailIndex]["sender_name"]}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "sender_name")
+                      }
+                      placeholder="Enter Name"
+                    />
+                    <input
+                      type="email"
+                      name="senderEmail"
+                      value={emailData[selectedEmailIndex]["sender_email"]}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "sender_email")
+                      }
+                      placeholder="Enter Email"
+                    />
+                  </div>
+                  <div className="email-design input-item">
+                    <label>Design</label>
+                    <div
+                      className="add-template-section"
+                      onClick={openTemplate}
+                    >
+                      <TemplateIcon />
+                      <Link to="">Select a Template</Link>
+                    </div>
+                  </div>
+                </div>
+                <div className="content-save-section">
+                  {"ongoing" == campaignStatus ? (
+                    <button
+                      className="campaign-save mintmrm-btn"
+                      disabled={true}
+                    >
+                      On Going
+                    </button>
+                  ) : (
+                    <>
+                      {/* <button
                       className="campaign-schedule mintmrm-btn outline"
                       disabled={!isPublishValid}
                       onClick={() => updateCampaign("ongoing")}
                     >
                       Publish
                     </button> */}
-                          {isPublishValid ? (
-                            <button
-                              className="campaign-schedule mintmrm-btn outline"
-                              // disabled={!isPublishValid}
-                              onClick={() => updateCampaign("ongoing")}
-                            >
-                              Publish
-                            </button>
-                          ) : (
-                            ""
-                          )}
-                          <button
-                            type="submit"
-                            className="campaign-save mintmrm-btn"
-                            onClick={() => updateCampaign("draft")}
-                            disabled={!isValid}
-                          >
-                            Save draft
-                          </button>
-                        </>
+                      {isPublishValid ? (
+                        <button
+                          className="campaign-schedule mintmrm-btn outline"
+                          // disabled={!isPublishValid}
+                          onClick={() => updateCampaign("ongoing")}
+                        >
+                          Publish
+                        </button>
+                      ) : (
+                        ""
                       )}
+                      <button
+                        type="submit"
+                        className="campaign-save mintmrm-btn"
+                        onClick={() => updateCampaign("draft")}
+                        disabled={!isValid}
+                      >
+                        Save draft
+                      </button>
+                    </>
+                  )}
 
-                      {/* {responseMessage && <p>{responseMessage}</p>} */}
-                    </div>
-                  </div>
+                  {/* {responseMessage && <p>{responseMessage}</p>} */}
                 </div>
               </div>
             </div>
