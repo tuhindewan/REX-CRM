@@ -149,7 +149,7 @@
       .form-group.left-filter {
         position: relative;
 
-        .mrm-custom-select-container{
+        .mrm-custom-select-container {
           margin: 6px;
         }
       }
@@ -506,14 +506,12 @@
 
           .no-contact {
             padding: 235px 500px;
+            background-color: #ffffff;
             svg {
               display: block;
               margin: 0 auto;
               margin-bottom: 15px;
             }
-          }
-          .no-contact::before {
-            border-left: 2px solid #f9fafb;
           }
 
           td {
@@ -576,6 +574,11 @@
 
           td:first-child::before {
             background-color: #6f6af8;
+          }
+          .no-contact::before {
+            // border-left: 3px solid #ffffff;
+            width: 0;
+            
           }
           .email-wrapper {
             background-color: #f9fafb;
