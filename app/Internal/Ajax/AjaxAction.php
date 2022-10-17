@@ -48,10 +48,11 @@ class AjaxAction {
     public function mrm_submit_form()
     {
         $params = $_POST;
+        $response = array(
+            'success' => 'failed',
+            'message' => 'Form is not valid'
+        );
         if (isset($params['action']) &&  'mrm_submit_form' == $params['action'] ){
-            $email          = '';
-            $first_name     = '';
-            $last_name      = '';
             $postData 	= isset($_POST['post_data']) ? $_POST['post_data'] : '';
             parse_str($postData, $post_data);
             $form_data = array();
@@ -68,7 +69,6 @@ class AjaxAction {
                         $form_data['form_id'] = $value;
                     }else{
                         $form_data['meta_fields'][$key] = $value;
-//                        array_push($form_data['meta_fields'],$meta_data);
                     }
                 }
             }
@@ -80,7 +80,14 @@ class AjaxAction {
             $contact_id     = ContactModel::insert( $contact );
             $meta_fields['meta_fields'] = $form_data['meta_fields'];
             ContactModel::update_meta_fields( $contact_id, $meta_fields );
+            $response = array(
+                'success' => 'success',
+                'message' => 'Form Submit Successfully'
+            );
         }
+
+        echo json_encode($response, true);
+        die();
     }
 
 }

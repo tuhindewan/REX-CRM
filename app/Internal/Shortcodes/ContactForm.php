@@ -77,7 +77,7 @@ class ContactForm {
         $output = '';
         ob_start();?>
         <div>
-            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="<?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
+            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="mrm-form-form-wrapper  <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
                 <form method="post" id="mrm-form">
                     <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                     <?php echo  $form_data['form_body'] ?>
