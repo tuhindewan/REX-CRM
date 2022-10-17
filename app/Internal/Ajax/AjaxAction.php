@@ -55,7 +55,7 @@ class AjaxAction {
             $postData 	= isset($_POST['post_data']) ? $_POST['post_data'] : '';
             parse_str($postData, $post_data);
             $form_data = array();
-            $form_data['meta_data'] = [];
+            $form_data['meta_fields'] = [];
             if ($post_data) {
                 foreach ( $post_data as $key => $value ) {
                     if ('email' === $key) {
@@ -67,11 +67,8 @@ class AjaxAction {
                     }elseif ( 'form_id' === $key ) {
                         $form_data['form_id'] = $value;
                     }else{
-                        $meta_data =array(
-                            'name' => $key,
-                            'value' => $value
-                        );
-                        array_push($form_data['meta_data'],$meta_data);
+                        $form_data['meta_fields'][$key] = $value;
+//                        array_push($form_data['meta_fields'],$meta_data);
                     }
                 }
             }
@@ -81,7 +78,8 @@ class AjaxAction {
                               ];
             $contact        = new ContactData( $form_data['email'],$parms );
             $contact_id     = ContactModel::insert( $contact );
-
+            $meta_fields['meta_fields'] = $form_data['meta_fields'];
+            ContactModel::update_meta_fields( $contact_id, $meta_fields );
         }
     }
 
