@@ -70,15 +70,25 @@ class FormData {
     private $created_by;
 
 
+    /**
+     * Form Meta Fileds
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    private $meta_fields;
+
+
     public function __construct( $args )
     {
-        $this->title = isset($args['title']) ? $args['title'] : NULL;
-        $this->form_body  = isset($args['form_body'])  ? $args['form_body']  : NULL;
-        $this->form_position  = isset($args['form_position'])  ? $args['form_position']  : NULL;
-        $this->status  = isset($args['status'])  ? $args['status']  : NULL;
-        $this->group_ids  = isset($args['group_ids'])  ? $args['group_ids']  : NULL;
-        $this->template_id  = isset($args['template_id'])  ? $args['template_id']  : NULL;
-        $this->created_by  = isset($args['created_by'])  ? $args['created_by']  : NULL;
+        $this->title            = isset($args['title'])         ? $args['title']         : NULL;
+        $this->form_body        = isset($args['form_body'])     ? $args['form_body']     : NULL;
+        $this->form_position    = isset($args['form_position']) ? $args['form_position'] : NULL;
+        $this->status           = isset($args['status'])        ? $args['status']        : NULL;
+        $this->group_ids        = isset($args['group_ids'])     ? $args['group_ids']     : NULL;
+        $this->template_id      = isset($args['template_id'])   ? $args['template_id']   : NULL;
+        $this->created_by       = isset($args['created_by'])    ? $args['created_by']    : NULL;
+        $this->meta_fields      = isset($args['meta_fields'])   ? $args['meta_fields']   : array();
     }
 
 
@@ -163,6 +173,17 @@ class FormData {
     public function get_template_id()
     {
         return $this->template_id;
+    }
+
+    /**
+     * Return Meta Fields
+     * 
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_meta_fields()
+    {
+        return $this->meta_fields;     
     }
 
 }
