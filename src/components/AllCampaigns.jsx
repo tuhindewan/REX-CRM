@@ -14,6 +14,7 @@ import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
 import Pagination from "./Pagination";
 import SuccessfulNotification from "./SuccessfulNotification";
+import SearchNavbar from "./SearchNavbar";
 
 export default function AllCampaigns() {
   useGlobalStore.setState({
@@ -167,7 +168,7 @@ export default function AllCampaigns() {
     <>
       <div className="campaign-index-page">
         <CampaignsNavbar />
-        {/* <SearchNavbar /> */}
+        <SearchNavbar />
         <div className="campaign-list-page">
           <div className="mintmrm-container">
             <div className="campaign-list-area">
