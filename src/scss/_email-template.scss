@@ -100,12 +100,14 @@
         flex-flow: row wrap;
         padding: 40px 0;
         .template-select-section {
-          width: calc(100% / 4 - 40px);
+          width: calc(100% - 300px);
           margin: 0 20px;
           background: #ffffff;
           box-shadow: 0px 2px 3px #dfdfdf;
           border-radius: 6px;
-          display: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .template-select-section:first-child {

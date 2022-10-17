@@ -70,11 +70,11 @@ export default function CampaignTemplates(props) {
               <div className="template-tab-section">
                 <ul className="tab-list">
                   <li className="brand-template active">Branded templates</li>
-                  <li className="my-templates">My templates</li>
+                  {/* <li className="my-templates">My templates</li> */}
                 </ul>
               </div>
               <div className="email-type-dropdown">
-                <button className="type-button">Email Type</button>
+                {/* <button className="type-button">Email Type</button> */}
               </div>
             </div>
             <div className="template-body">
@@ -102,9 +102,9 @@ export default function CampaignTemplates(props) {
                   </Link>
                 )}
               </div>
-              <div className="template-select-section"></div>
-              <div className="template-select-section"></div>
-              <div className="template-select-section"></div>
+              <div className="template-select-section">
+                <h1>Amazing Templates Are Coming Soon</h1>
+              </div>
             </div>
           </div>
         </div>
