@@ -340,7 +340,11 @@ class CampaignController extends BaseController {
         // Get values from REST API JSON
         $params         = MRM_Common::get_api_params_values( $request );
         $campaign_id    = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+        $recipients_emails = self::get_reciepents_email($campaign_id);
+
         $campaign       = ModelsCampaign::get( $campaign_id );
+        $campaign['total_recipients'] = count($recipients_emails);
+        error_log(print_r($campaign, 1));
         if(isset($campaign)) {
             return $this->get_success_response("Query Successfull", 200, $campaign);
         }

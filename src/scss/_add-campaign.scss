@@ -264,10 +264,17 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            display: flex;
+              &.hide {
+                display: none;
+              }
 
             &.selected {
               gap: 5px;
               display: none;
+              &.show {
+                display: flex;
+              }
               .tags,
               .from,
               .lists,

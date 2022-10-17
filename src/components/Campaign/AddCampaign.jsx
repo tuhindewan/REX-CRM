@@ -4,12 +4,15 @@ import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
 import CrossIcon from "../Icons/CrossIcon";
 import Delete from "../Icons/Delete";
+import DownArrowIcon from "../Icons/DownArrowIcon";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
+import UpArrowIcon from "../Icons/UpArrowIcon";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
+import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -316,6 +319,8 @@ export default function AddCampaign(props) {
 
   return (
     <>
+    {console.log(recipientTags)}
+    {console.log(recipientLists)}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
@@ -386,7 +391,7 @@ export default function AddCampaign(props) {
                     <div className="email-to input-item">
                       <div className="select-options">
                         <label>To:</label>
-                        {/* <button className="all-recipients" onClick={showDropDown}>
+                        <button className="all-recipients" onClick={showDropDown}>
                       All Subscriber
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
@@ -402,40 +407,8 @@ export default function AddCampaign(props) {
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
                     
-                    <CampaignCustomSelect dropDown={dropDown} />
-                    <div></div> */}
-                        <div className="select-recipient">
-                          <CustomSelect
-                            selected={recipientLists}
-                            setSelected={setRecipientLists}
-                            endpoint="/lists"
-                            placeholder="Lists"
-                            name="list"
-                            listTitle="CHOOSE LIST"
-                            listTitleOnNotFound="No Data Found"
-                            searchPlaceHolder="Search..."
-                            allowMultiple={true}
-                            showSearchBar={true}
-                            showListTitle={true}
-                            showSelectedInside={false}
-                            allowNewCreate={true}
-                          />
-                          <CustomSelect
-                            selected={recipientTags}
-                            setSelected={setRecipientTags}
-                            endpoint="/tags"
-                            placeholder="Tags"
-                            name="tag"
-                            listTitle="CHOOSE TAG"
-                            listTitleOnNotFound="No Data Found"
-                            searchPlaceHolder="Search..."
-                            allowMultiple={true}
-                            showSearchBar={true}
-                            showListTitle={true}
-                            showSelectedInside={false}
-                            allowNewCreate={true}
-                          />
-                        </div>
+                    <CampaignCustomSelect dropDown={dropDown} setRecipientTags={setRecipientTags} recipientTags={recipientTags} setRecipientLists={setRecipientLists} recipientLists={recipientLists} />
+                    <div></div>
                       </div>
                       <div
                         className={

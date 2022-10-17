@@ -37,27 +37,27 @@ export default function CampaignCustomSelect(props) {
   // };
 
   const deleteSelectedTag = (e, id) => {
-    const index = selectedTags.findIndex((item) => item.id == id);
+    const index = props.recipientTags.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
-      setSelectedTags(selectedTags.filter((item) => item.id != id));
+      props.setRecipientTags(props.recipientTags.filter((item) => item.id != id));
     }
   };
   const deleteSelectedList = (e, id) => {
-    const index = selectedLists.findIndex((item) => item.id == id);
+    const index = props.recipientLists.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
-      setSelectedLists(selectedLists.filter((item) => item.id != id));
+      props.setRecipientLists(props.recipientLists.filter((item) => item.id != id));
     }
   };
 
   const deleteAllTag = () => {
-    setSelectedTags([]);
+    props.setRecipientTags([]);
   };
   const deleteAllList = () => {
-    setSelectedLists([]);
+    props.setRecipientLists([]);
   };
   useEffect(() => {
     // Get lists
@@ -71,23 +71,23 @@ export default function CampaignCustomSelect(props) {
   }, []);
 
   const checkIfSelectedList = (id) => {
-    const checkedList = selectedLists.findIndex((item) => item.id == id) >= 0;
+    const checkedList = props.recipientLists.findIndex((item) => item.id == id) >= 0;
     return checkedList;
   };
   const checkIfSelectedTag = (id) => {
-    const checkedTag = selectedTags.findIndex((item) => item.id == id) >= 0;
+    const checkedTag = props.recipientTags.findIndex((item) => item.id == id) >= 0;
     return checkedTag;
   };
 
   return (
+    <>
+    
+
     <div
       className={
         props.dropDown ? "recipient-dropdown" : "recipient-dropdown inactive"
       }
     >
-      {console.log(lists)}
-      {console.log(tags)}
-      {console.log(selectedTags)}
       <div className="dropdown-header">
         <button
           className={
@@ -110,15 +110,15 @@ export default function CampaignCustomSelect(props) {
         <div className="options-section">
           <div
             className={
-              selectedTags?.length != 0
+              props.recipientTags?.length != 0
                 ? "selected-items"
                 : "selected-items inactive"
             }
           >
             <div className="items">
-              {selectedTags?.map((item, index) => {
+              {props.recipientTags?.map((item, index) => {
                 return (
-                  <span key={index} id={item.id}>
+                  <span key={index}>
                     {item.title}
                     <div
                       className="cross-icon"
@@ -132,7 +132,7 @@ export default function CampaignCustomSelect(props) {
             </div>
             <button
               className={
-                selectedTags?.length == 0 ? "clear-btn inactive" : "clear-btn"
+                props.recipientTags?.length == 0 ? "clear-btn inactive" : "clear-btn"
               }
               onClick={deleteAllTag}
             >
@@ -153,7 +153,6 @@ export default function CampaignCustomSelect(props) {
             <div className="checkbox-options">
               {tags.map((item, index) => {
                 let checkedTag = checkIfSelectedTag(item.id);
-                console.log(checkedTag);
                 return (
                   <li
                     key={index}
@@ -164,8 +163,8 @@ export default function CampaignCustomSelect(props) {
                     }
                   >
                     <OptionList
-                      selected={selectedTags}
-                      setSelected={setSelectedTags}
+                      selected={props.recipientTags}
+                      setSelected={props.setRecipientTags}
                       allowMultiple={true}
                       id={item.id}
                       title={item.title}
@@ -182,15 +181,15 @@ export default function CampaignCustomSelect(props) {
         <div className="options-section">
           <div
             className={
-              selectedLists?.length != 0
+              props.recipientLists?.length != 0
                 ? "selected-items"
                 : "selected-items inactive"
             }
           >
             <div className="items">
-              {selectedLists?.map((item, index) => {
+              {props.recipientLists?.map((item, index) => {
                 return (
-                  <span key={index} id={item.id}>
+                  <span key={index}>
                     {item.title}
                     <div
                       className="cross-icon"
@@ -204,7 +203,7 @@ export default function CampaignCustomSelect(props) {
             </div>
             <button
               className={
-                selectedLists?.length == 0 ? "clear-btn inactive" : "clear-btn"
+                props.recipientLists?.length == 0 ? "clear-btn inactive" : "clear-btn"
               }
               onClick={deleteAllList}
             >
@@ -225,7 +224,6 @@ export default function CampaignCustomSelect(props) {
             <div className="checkbox-options">
               {lists.map((item, index) => {
                 let checkedList = checkIfSelectedList(item.id);
-                console.log(checkedList);
                 return (
                   <li
                     key={index}
@@ -236,8 +234,8 @@ export default function CampaignCustomSelect(props) {
                     }
                   >
                     <OptionList
-                      selected={selectedLists}
-                      setSelected={setSelectedLists}
+                      selected={props.recipientLists}
+                      setSelected={props.setRecipientLists}
                       allowMultiple={true}
                       id={item.id}
                       title={item.title}
@@ -251,5 +249,6 @@ export default function CampaignCustomSelect(props) {
         </div>
       ) : null}
     </div>
+    </>
   );
 }

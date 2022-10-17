@@ -8,14 +8,17 @@ import CustomSelect from "../CustomSelect";
 import DeletePopup from "../DeletePopup";
 import CrossIcon from "../Icons/CrossIcon";
 import Delete from "../Icons/Delete";
+import DownArrowIcon from "../Icons/DownArrowIcon";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
+import UpArrowIcon from "../Icons/UpArrowIcon";
 import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
+import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
 
 // default email object empty template, this object is reused thats why declared here once
@@ -42,6 +45,7 @@ export default function EditCampaign(props) {
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
+  const [recipientsCount, satRecipientsCount] = useState(0)
   const [showWarning, setShowWarning] = useState("none");
 
   // recipient lists and recipients tags state variables to whom the email(s) should be sent
@@ -59,6 +63,7 @@ export default function EditCampaign(props) {
   const [refresh, setRefresh] = useState(true);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const [dropDown, setDropDown] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [campaignStatus, setCampaignStatus] = useState("");
@@ -115,6 +120,7 @@ export default function EditCampaign(props) {
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
       setCampaignStatus(campaign.status);
+      satRecipientsCount(campaign.total_recipients);
       setShowLoader(false);
       // toggleRefresh();
     });
@@ -406,6 +412,10 @@ export default function EditCampaign(props) {
     });
   };
 
+  const showDropDown = () => {
+    setDropDown(!dropDown);
+  };
+
   return (
     <>
       <div className="mintmrm-add-campaign">
@@ -476,41 +486,27 @@ export default function EditCampaign(props) {
                         />
                       </div>
                       <div className="email-to input-item">
-                        <div className="select-options">
-                          <label>To:</label>
-                          <div className="select-recipient">
-                            <CustomSelect
-                              selected={recipientLists}
-                              setSelected={setRecipientLists}
-                              endpoint="/lists"
-                              placeholder="Lists"
-                              name="list"
-                              listTitle="CHOOSE LIST"
-                              listTitleOnNotFound="No Data Found"
-                              searchPlaceHolder="Search..."
-                              allowMultiple={true}
-                              showSearchBar={true}
-                              showListTitle={true}
-                              showSelectedInside={false}
-                              allowNewCreate={true}
-                            />
-                            <CustomSelect
-                              selected={recipientTags}
-                              setSelected={setRecipientTags}
-                              endpoint="/tags"
-                              placeholder="Tags"
-                              name="tag"
-                              listTitle="CHOOSE TAG"
-                              listTitleOnNotFound="No Data Found"
-                              searchPlaceHolder="Search..."
-                              allowMultiple={true}
-                              showSearchBar={true}
-                              showListTitle={true}
-                              showSelectedInside={false}
-                              allowNewCreate={true}
-                            />
-                          </div>
-                        </div>
+                      <div className="select-options">
+                        <label>To:</label>
+                        <button className={id ? "all-recipients hide" : "all-recipients"} onClick={showDropDown}>
+                          All Subscriber
+                          {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                        </button>
+
+                    <button
+                      className={id ? "all-recipients selected show" : "all-recipients selected"}
+                      onClick={showDropDown}
+                    >
+                      <span className="tags">{recipientTags.length} Tags</span>
+                      <span className="from">and</span>
+                      <span className="lists">{recipientLists.length} Lists.</span>
+                      <span className="recipients">{recipientsCount} Recipients</span>
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                    
+                    <CampaignCustomSelect dropDown={dropDown} setRecipientTags={setRecipientTags} recipientTags={recipientTags} setRecipientLists={setRecipientLists} recipientLists={recipientLists} />
+                    <div></div>
+                      </div>
                         <div
                           className={
                             recipientLists.length == 0 &&
