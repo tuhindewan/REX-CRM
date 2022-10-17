@@ -82,11 +82,6 @@ class AjaxAction {
             $contact        = new ContactData( $form_data['email'],$parms );
             $contact_id     = ContactModel::insert( $contact );
 
-
-
-
-
-
         }
     }
 

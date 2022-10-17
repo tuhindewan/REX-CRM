@@ -28,7 +28,7 @@ class HomeScreen {
         );
         add_submenu_page(self::MENU_SLUG, __( 'Contacts', 'mrm'), __( 'Contacts', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/contacts/');
         add_submenu_page(self::MENU_SLUG, __( 'Campaigns', 'mrm'), __( 'Campaigns', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/campaigns/');
-        add_submenu_page(self::MENU_SLUG, __( 'Form Editor', 'mrm'), __( 'Form Editor', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/form-editor/');
+        add_submenu_page(self::MENU_SLUG, __( 'Form', 'mrm'), __( 'Form', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/form/');
         add_submenu_page(self::MENU_SLUG, __( 'Settings', 'mrm'), __( 'Settings', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/settings/');
     }
 

@@ -179,7 +179,7 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path: "/form-editor/",
+    path: "/form/",
     element: FormIndex,
     hideInMenu: true,
   },
