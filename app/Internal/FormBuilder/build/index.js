@@ -456,10 +456,15 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
 function BlockEditor(_ref) {
   let {
     settings: _settings
   } = _ref;
+  const location = window.location.hash;
+  var locationArray = location.split('/');
+  const lastIndex = locationArray.at(-1);
+  const id = lastIndex.replace("#", '');
   const [blocks, updateBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const {
     createInfoNotice
@@ -493,14 +498,28 @@ function BlockEditor(_ref) {
     };
   }, [canUserCreateMedia, _settings]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const storedBlocks = window.localStorage.getItem('getmrmblocks');
-    if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
-      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
-      // createInfoNotice( 'Blocks loaded', {
-      // 	type: 'snackbar',
-      // 	isDismissible: true,
-      // } );
-    }
+    const getFormData = async () => {
+      if (id) {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
+        const resJson = await res.json();
+        if (200 === resJson.code) {
+          window.localStorage.setItem('getmrmblocks', resJson.data.form_body);
+          const storedBlocks = window.localStorage.getItem('getmrmblocks');
+          if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
+            handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
+            // createInfoNotice( 'Blocks loaded', {
+            // 	type: 'snackbar',
+            // 	isDismissible: true,
+            // } );
+          }
+        } else {
+          window.localStorage.setItem('getmrmblocks', '');
+        }
+      } else {
+        window.localStorage.setItem('getmrmblocks', '');
+      }
+    };
+    getFormData();
   }, []);
 
   /**
