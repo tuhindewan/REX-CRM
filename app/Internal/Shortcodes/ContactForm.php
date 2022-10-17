@@ -82,7 +82,9 @@ class ContactForm {
                     <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                     <?php echo  $form_data['form_body'] ?>
                 </form>
+                <div class="response"></div>
             </div>
+
 
         </div>
         <?php

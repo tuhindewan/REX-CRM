@@ -49,7 +49,7 @@ class AjaxAction {
     {
         $params = $_POST;
         $response = array(
-            'success' => 'failed',
+            'status' => 'failed',
             'message' => 'Form is not valid'
         );
         if (isset($params['action']) &&  'mrm_submit_form' == $params['action'] ){
@@ -72,20 +72,28 @@ class AjaxAction {
                     }
                 }
             }
-            $parms          = [
-                                'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
-                                'last_name'     => isset($form_data['first_name']) ? $form_data['first_name'] : ''
-                              ];
+            $parms = array(
+                        'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
+                        'last_name'     => isset($form_data['first_name']) ? $form_data['first_name'] : ''
+                      );
             $contact        = new ContactData( $form_data['email'],$parms );
+            $exist_email    = ContactModel::is_contact_exist( $form_data['email'] );
+            if($exist_email){
+                $response['status']  = 'success';
+                $response['message'] = __( 'Email address already assigned to another contact.', 'mrm' );
+                echo json_encode($response, true);
+                die();
+            }
             $contact_id     = ContactModel::insert( $contact );
-            $meta_fields['meta_fields'] = $form_data['meta_fields'];
-            ContactModel::update_meta_fields( $contact_id, $meta_fields );
-            $response = array(
-                'success' => 'success',
-                'message' => 'Form Submit Successfully'
-            );
+            if ( $contact_id ){
+                $meta_fields['meta_fields'] = $form_data['meta_fields'];
+                ContactModel::update_meta_fields( $contact_id, $meta_fields );
+                $response['status']  = 'success';
+                $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
+                echo json_encode($response, true);
+                die();
+            }
         }
-
         echo json_encode($response, true);
         die();
     }

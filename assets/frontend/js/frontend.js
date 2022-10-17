@@ -31,19 +31,14 @@ jQuery(document).ready(function($){
      */
     $('.mrm-form-form-wrapper form').on('submit', function (e) {
         e.preventDefault();
-
+        jQuery(".response").html('')
         jQuery.ajax({
             type : "post",
             dataType : "json",
             url : MRM_Frontend_Vars.ajaxurl,
             data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize()},
             success: function(response) {
-                if(response.type == "success") {
-                    jQuery("#form-submit-response").html(response.vote_count)
-                }
-                else {
-
-                }
+                jQuery(".response").html(response.message)
             }
         })
     })
