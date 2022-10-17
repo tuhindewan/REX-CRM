@@ -13,7 +13,7 @@ class ShortCode {
      */
     public static function init() {
         $shortcodes = array(
-            'mrm_form' => __CLASS__ . '::render_contact_form'
+            'mintmrm' => __CLASS__ . '::render_contact_form'
         );
 
         foreach ( $shortcodes as $shortcode => $function ) {

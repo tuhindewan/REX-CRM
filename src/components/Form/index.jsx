@@ -143,8 +143,6 @@ export default function FormIndex(props) {
 
     return ago;
   };
-  
-  
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
@@ -356,11 +354,7 @@ export default function FormIndex(props) {
               </div>
 
               <div className="right-section">
-                <Link
-                  className="add-form-btn mintmrm-btn"
-                  to="/form-builder/"
-                  state={{ reload: true }}
-                >
+                <Link className="add-form-btn mintmrm-btn" to="/form-builder/">
                   <Plus /> Add Form
                 </Link>
               </div>

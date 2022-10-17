@@ -35,6 +35,8 @@ const FormEditor = (props) => {
 
   const params = useParams();
 
+  const [load, setLoad] = useState(false);
+
   const id = params.id;
 
   const toggleEnable = () => {
@@ -70,7 +72,24 @@ const FormEditor = (props) => {
       }
     };
     getFormData();
+    reload();
   }, []);
+
+  const reload = () => {
+    let hashCount = 0;
+    const str = window.location.hash;
+
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] === "#") {
+        hashCount = hashCount + 1;
+      }
+    }
+
+    if (1 === hashCount) {
+      window.location = window.location + "#";
+      window.location.reload();
+    }
+  };
 
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
@@ -105,7 +124,7 @@ const FormEditor = (props) => {
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     const post_data = {
-      title: formData.title,
+      title: formData?.title,
       form_body: storedBlocks,
     };
     const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
@@ -163,11 +182,11 @@ const FormEditor = (props) => {
       <div className="form-editor-page">
         <div className="form-editor-topbar">
           <div className="topbar-left">
-            <button className="back-button">
-              <Link to="/form-editor/">
+            <Link to="/form/">
+              <button className="back-button">
                 <DoubleAngleLeftIcon />
-              </Link>
-            </button>
+              </button>
+            </Link>
 
             <div className="responsive-section">
               <button className="computer-view active">

@@ -179,7 +179,7 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path: "/form-editor/",
+    path: "/form/",
     element: FormIndex,
     hideInMenu: true,
   },
@@ -189,10 +189,15 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path        : "/settings",
-    element     : Settings,
-    hideInMenu  : true,
-  }
+    path: "/form-builder/",
+    element: FormEditor,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings",
+    element: Settings,
+    hideInMenu: true,
+  },
 ];
 
 export default routes;
