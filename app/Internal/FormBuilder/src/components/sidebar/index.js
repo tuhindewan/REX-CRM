@@ -43,7 +43,6 @@ const { Slot: InspectorSlot, Fill: InspectorFill } = createSlotFill(
   "MRMBlockEditorSidebarInspector"
 );
 
-
 function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
@@ -121,6 +120,7 @@ function Sidebar() {
   const handleConfirmationType = (index) => {
     toggleTab(index);
 
+
     if ("same_page" === index) {
       setSettingData({
         settings: {
@@ -187,7 +187,7 @@ function Sidebar() {
                       ? "tab-nav-item active"
                       : "tab-nav-item"
                   }
-                  onClick={() => handleConfirmationType("same-page")}
+                  onChange={(e) => handleConfirmationType("same-page")}
                 >
                   Same Page
                 </span>
@@ -196,7 +196,7 @@ function Sidebar() {
                   className={
                     tabState === "page" ? "tab-nav-item active" : "tab-nav-item"
                   }
-                  onClick={() => handleConfirmationType("page")}
+                  onChange={(e) => handleConfirmationType("page")}
                 >
                   To a page
                 </span>
@@ -207,7 +207,7 @@ function Sidebar() {
                       ? "tab-nav-item active"
                       : "tab-nav-item"
                   }
-                  onClick={() => handleConfirmationType("custom-url")}
+                  onChange={(e) => handleConfirmationType("custom-url")}
                 >
                   To a custom URL
                 </span>

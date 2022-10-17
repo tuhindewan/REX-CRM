@@ -4844,13 +4844,13 @@ function Sidebar() {
     className: "pannel-tab-nav"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "same-page" ? "tab-nav-item active" : "tab-nav-item",
-    onClick: () => handleConfirmationType("same-page")
+    onChange: e => handleConfirmationType("same-page")
   }, "Same Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "page" ? "tab-nav-item active" : "tab-nav-item",
-    onClick: () => handleConfirmationType("page")
+    onChange: e => handleConfirmationType("page")
   }, "To a page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "custom-url" ? "tab-nav-item active" : "tab-nav-item",
-    onClick: () => handleConfirmationType("custom-url")
+    onChange: e => handleConfirmationType("custom-url")
   }, "To a custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pannel-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

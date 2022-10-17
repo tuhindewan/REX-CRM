@@ -71,16 +71,16 @@ const FormEditor = (props) => {
         setFormData(resJson.data);
       }
     };
-    getFormData();
+    if (id) getFormData();
     reload();
   }, []);
 
   const reload = () => {
     let hashCount = 0;
-    const str = window.location.hash;
+    const loc = window.location.hash;
 
-    for (let i = 0; i < str.length; i++) {
-      if (str[i] === "#") {
+    for (let i = 0; i < loc.length; i++) {
+      if (loc[i] === "#") {
         hashCount = hashCount + 1;
       }
     }
