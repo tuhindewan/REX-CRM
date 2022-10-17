@@ -10,6 +10,7 @@ export default function AssignedItems(props) {
   const {
     selected,
     setSelected,
+    isActive,
     endpoint = "lists",
     placeholder = "Lists",
     options = null,
@@ -162,7 +163,7 @@ export default function AssignedItems(props) {
         setSearch("");
         setQuery("");
         setSelected([]);
-        props.setIsAssignTo(!props.isActive);
+        props.setIsActive(false);
         props.setRefresh(!props.refresh);
         props.setShowNotification("block");
         props.setMessage(resJson.message);
@@ -181,13 +182,14 @@ export default function AssignedItems(props) {
       }, 3000);
       return () => clearTimeout(timer);
     }
+
   };
 
   return (
     <>
       <ul
         className={
-          props.isActive
+          isActive
             ? "assigned-to mintmrm-dropdown show"
             : "assigned-to mintmrm-dropdown"
         }
@@ -252,16 +254,17 @@ export default function AssignedItems(props) {
         {/* <div className="no-found">
           <span>No List found</span>
         </div> */}
-        <Link className="add-action" to="" onClick={handleAssignLists}>
-          <Plus />
-          Assign {placeholder}
-        </Link>
+
         {/* {contactListColumns.map((column, index) => {
               <li className="single-column">
                 <ColumnList title={column.title} key={index} />
               </li>;
             })} */}
         {loading && <LoadingIndicator type="table" />}
+        <Link className="add-action" to="" onClick={handleAssignLists}>
+          <Plus />
+          Assign {placeholder}
+        </Link>
       </ul>
       <WarningNotification display={showWarning} message={message} />
       <SuccessfulNotification display={showNotification} message={message} />

@@ -26,6 +26,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
+import Loader from "../Loader";
+import LoadingIndicator from "../LoadingIndicator";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -168,6 +170,7 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     const getFilter = async () => {
+      setShowLoader(true);
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
         {
@@ -207,6 +210,7 @@ export default function ContactListTable(props) {
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
+    setShowLoader(true)
     async function getData() {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
@@ -391,7 +395,7 @@ export default function ContactListTable(props) {
       setIsAssignTo(!isAssignTo);
       setActive(!isActive);
     }
-    
+
     setActive(false);
   };
 
@@ -481,244 +485,241 @@ export default function ContactListTable(props) {
 
   return (
     <>
-      {showLoader ? (
-        <div className="loader-wrapper">
-          <span className="mintmrm-loader show"></span>
+      <div className="contact-list-header">
+        <div className="left-filters filter-box">
+          <div className="form-group left-filter">
+            <CustomSelect
+              selected={selectedLists}
+              setSelected={setSelectedLists}
+              showLoader ={showLoader}
+              setShowLoader= {setShowLoader}
+              endpoint="/lists"
+              placeholder="Lists"
+              name="lists"
+              listTitle="CHOOSE LIST"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+              prefix="filter"
+            />
+          </div>
+          <div className="form-group left-filter">
+            <CustomSelect
+              selected={selectedTags}
+              setSelected={setSelectedTags}
+              endpoint="/tags"
+              placeholder="Tags"
+              name="tags"
+              listTitle="CHOOSE TAG"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+              prefix="filter"
+            />
+          </div>
+          <div className="form-group left-filter">
+            <CustomSelect
+              selected={selectedStatus}
+              setSelected={setSelectedStatus}
+              endpoint="/status"
+              placeholder="Status"
+              name="status"
+              listTitle="CHOOSE Status"
+              listTitleOnNotFound="No Data Found"
+              searchPlaceHolder="Search..."
+              allowMultiple={true}
+              showSearchBar={true}
+              showListTitle={true}
+              showSelectedInside={false}
+              allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+              prefix="filter"
+            />
+          </div>
         </div>
+
+        <div className="right-buttons">
+          <span className="search-section">
+            <Search />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                let value = e.target.value;
+                setSearch(value);
+                setFilterSearch(value);
+                // only set query when there are more than 3 characters
+                if (value.length >= 1) {
+                  setQuery(encodeURI(`&search=${value}`));
+                  // on every new search term set the page explicitly to 1 so that results can
+                  // appear
+                  setPage(1);
+                } else {
+                  setQuery("");
+                }
+              }}
+              placeholder="Search..."
+            />
+          </span>
+
+          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+            <ExportIcon />
+            Export
+          </button>
+          <ExportDrawer
+            isOpenNote={isNoteForm}
+            isCloseNote={isCloseNote}
+            setIsCloseNote={setIsCloseNote}
+          />
+
+          <div className="bulk-action">
+            <button className="more-option" onClick={showMoreOption}>
+              <ThreeDotIcon />
+            </button>
+            <ul
+              className={
+                isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
+              }
+            >
+              <li onClick={showListDropdown}>Assign to list</li>
+              <li onClick={showTagDropdown}>Assign to tag</li>
+              {/* <li onClick={showListDropdown}>Assign to segment</li> */}
+              <li className="delete" onClick={deleteMultipleContacts}>
+                Delete
+              </li>
+            </ul>
+            {"lists" == selectGroup ? (
+              <AssignedItems
+                selected={assignLists}
+                setSelected={setAssignLists}
+                endpoint="lists"
+                placeholder="Lists"
+                name="list"
+                listTitle="CHOOSE LIST"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isAssignDropdown={isActive}
+                setIsAssignDropdown={setActive}
+                isActive={isAssignTo}
+                setIsActive={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+                prefix="assign"
+              />
+            ) : (
+              <AssignedItems
+                selected={assignTags}
+                setSelected={setAssignTags}
+                endpoint="tags"
+                placeholder="Tags"
+                name="tag"
+                listTitle="CHOOSE Tag"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsActive={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+                prefix="assign"
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div
+        className={
+          selectedLists.length == 0 &&
+          selectedTags.length == 0 &&
+          selectedStatus.length == 0
+            ? "selected-result inactive"
+            : "selected-result"
+        }
+      >
+        {selectedLists.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedlist(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedTags.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedtag(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        {selectedStatus.map((item) => {
+          return (
+            <span key={item.id} className="mrm-custom-selected-items">
+              {item.title}
+              <div
+                className="cross-icon"
+                onClick={(e) => deleteSelectedstatus(e, item.id)}
+              >
+                <CrossIcon />
+              </div>
+            </span>
+          );
+        })}
+        <div className="clear-all" onClick={deleteAll}>
+          <span>Clear All</span>
+        </div>
+      </div>
+
+      {showLoader ? (
+        <LoadingIndicator type="table"/>
       ) : (
         <>
-          <div className="contact-list-header">
-            <div className="left-filters filter-box">
-              <div className="form-group left-filter">
-                <CustomSelect
-                  selected={selectedLists}
-                  setSelected={setSelectedLists}
-                  endpoint="/lists"
-                  placeholder="Lists"
-                  name="lists"
-                  listTitle="CHOOSE LIST"
-                  listTitleOnNotFound="No Data Found"
-                  searchPlaceHolder="Search..."
-                  allowMultiple={true}
-                  showSearchBar={true}
-                  showListTitle={true}
-                  showSelectedInside={false}
-                  allowNewCreate={true}
-                  setFilterAdder={setFilterAdder}
-                  filterAdder={filterAdder}
-                  filterRequest={filterRequest}
-                  prefix="filter"
-                />
-              </div>
-              <div className="form-group left-filter">
-                <CustomSelect
-                  selected={selectedTags}
-                  setSelected={setSelectedTags}
-                  endpoint="/tags"
-                  placeholder="Tags"
-                  name="tags"
-                  listTitle="CHOOSE TAG"
-                  listTitleOnNotFound="No Data Found"
-                  searchPlaceHolder="Search..."
-                  allowMultiple={true}
-                  showSearchBar={true}
-                  showListTitle={true}
-                  showSelectedInside={false}
-                  allowNewCreate={true}
-                  setFilterAdder={setFilterAdder}
-                  filterAdder={filterAdder}
-                  filterRequest={filterRequest}
-                  prefix="filter"
-                />
-              </div>
-              <div className="form-group left-filter">
-                <CustomSelect
-                  selected={selectedStatus}
-                  setSelected={setSelectedStatus}
-                  endpoint="/status"
-                  placeholder="Status"
-                  name="status"
-                  listTitle="CHOOSE Status"
-                  listTitleOnNotFound="No Data Found"
-                  searchPlaceHolder="Search..."
-                  allowMultiple={true}
-                  showSearchBar={true}
-                  showListTitle={true}
-                  showSelectedInside={false}
-                  allowNewCreate={true}
-                  setFilterAdder={setFilterAdder}
-                  filterAdder={filterAdder}
-                  filterRequest={filterRequest}
-                  prefix="filter"
-                />
-              </div>
-            </div>
-
-            <div className="right-buttons">
-              <span className="search-section">
-                <Search />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => {
-                    let value = e.target.value;
-                    setSearch(value);
-                    setFilterSearch(value);
-                    // only set query when there are more than 3 characters
-                    if (value.length >= 1) {
-                      setQuery(encodeURI(`&search=${value}`));
-                      // on every new search term set the page explicitly to 1 so that results can
-                      // appear
-                      setPage(1);
-                    } else {
-                      setQuery("");
-                    }
-                  }}
-                  placeholder="Search..."
-                />
-              </span>
-
-              <button
-                className="export-btn mintmrm-btn outline"
-                onClick={noteForm}
-              >
-                <ExportIcon />
-                Export
-              </button>
-              <ExportDrawer
-                isOpenNote={isNoteForm}
-                isCloseNote={isCloseNote}
-                setIsCloseNote={setIsCloseNote}
-              />
-
-              <div className="bulk-action">
-                <button className="more-option" onClick={showMoreOption}>
-                  <ThreeDotIcon />
-                </button>
-                <ul
-                  className={
-                    isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
-                  }
-                >
-                  <li onClick={showListDropdown}>Assign to list</li>
-                  <li onClick={showTagDropdown}>Assign to tag</li>
-                  {/* <li onClick={showListDropdown}>Assign to segment</li> */}
-                  <li className="delete" onClick={deleteMultipleContacts}>
-                    Delete
-                  </li>
-                </ul>
-                {"lists" == selectGroup ? (
-                  <AssignedItems
-                    selected={assignLists}
-                    setSelected={setAssignLists}
-                    endpoint="lists"
-                    placeholder="Lists"
-                    name="list"
-                    listTitle="CHOOSE LIST"
-                    listTitleOnNotFound="No Data Found"
-                    searchPlaceHolder="Search..."
-                    allowMultiple={true}
-                    showSearchBar={true}
-                    showListTitle={true}
-                    showSelectedInside={false}
-                    allowNewCreate={true}
-                    isAssignDropdown={isActive}
-                    setIsAssignDropdown={setActive}
-                    isActive={isAssignTo}
-                    setIsAssignTo={setIsAssignTo}
-                    contactIds={selected}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                    setShowNotification={setShowNotification}
-                    showNotification={"mone"}
-                    setMessage={setMessage}
-                    message={message}
-                    prefix="assign"
-                  />
-                ) : (
-                  <AssignedItems
-                    selected={assignTags}
-                    setSelected={setAssignTags}
-                    endpoint="tags"
-                    placeholder="Tags"
-                    name="tag"
-                    listTitle="CHOOSE Tag"
-                    listTitleOnNotFound="No Data Found"
-                    searchPlaceHolder="Search..."
-                    allowMultiple={true}
-                    showSearchBar={true}
-                    showListTitle={true}
-                    showSelectedInside={false}
-                    allowNewCreate={true}
-                    isActive={isAssignTo}
-                    setIsAssignTo={setIsAssignTo}
-                    contactIds={selected}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                    setShowNotification={setShowNotification}
-                    showNotification={"mone"}
-                    setMessage={setMessage}
-                    message={message}
-                    prefix="assign"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div
-            className={
-              selectedLists.length == 0 &&
-              selectedTags.length == 0 &&
-              selectedStatus.length == 0
-                ? "selected-result inactive"
-                : "selected-result"
-            }
-          >
-            {selectedLists.map((item) => {
-              return (
-                <span key={item.id} className="mrm-custom-selected-items">
-                  {item.title}
-                  <div
-                    className="cross-icon"
-                    onClick={(e) => deleteSelectedlist(e, item.id)}
-                  >
-                    <CrossIcon />
-                  </div>
-                </span>
-              );
-            })}
-            {selectedTags.map((item) => {
-              return (
-                <span key={item.id} className="mrm-custom-selected-items">
-                  {item.title}
-                  <div
-                    className="cross-icon"
-                    onClick={(e) => deleteSelectedtag(e, item.id)}
-                  >
-                    <CrossIcon />
-                  </div>
-                </span>
-              );
-            })}
-            {selectedStatus.map((item) => {
-              return (
-                <span key={item.id} className="mrm-custom-selected-items">
-                  {item.title}
-                  <div
-                    className="cross-icon"
-                    onClick={(e) => deleteSelectedstatus(e, item.id)}
-                  >
-                    <CrossIcon />
-                  </div>
-                </span>
-              );
-            })}
-            <div className="clear-all" onClick={deleteAll}>
-              <span>Clear All</span>
-            </div>
-          </div>
-
           <div className="pos-relative">
             <div className="add-column">
               <button className="add-column-btn" onClick={showAddColumnList}>
@@ -849,7 +850,7 @@ export default function ContactListTable(props) {
             </div>
           </div>
           {totalPages > 1 && (
-            <div className="contact-list-footer">
+            <div>
               {false === isFilter ? (
                 <Pagination
                   currentPage={page}
@@ -869,24 +870,21 @@ export default function ContactListTable(props) {
               )}
             </div>
           )}
-          <div className="mintmrm-container" style={{ display: showAlert }}>
-            <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
-          </div>
-          <div className="mintmrm-container" style={{ display: isDelete }}>
-            <DeletePopup
-              title={deleteTitle}
-              message={deleteMessage}
-              onDeleteShow={onDeleteShow}
-              onMultiDelete={onMultiDelete}
-              selected={selected}
-            />
-          </div>
-          <SuccessfulNotification
-            display={showNotification}
-            message={message}
-          />
         </>
       )}
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
+        />
+      </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }

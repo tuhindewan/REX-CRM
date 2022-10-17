@@ -180,6 +180,10 @@
           .select-options {
             display: flex;
             align-items: center;
+            .select-recipient{
+              display: flex;
+              gap: 5px;
+            }
           }
           .selected-result {
             padding: 20px 0 0;

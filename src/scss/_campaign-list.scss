@@ -1,3 +1,4 @@
+@import "variables";
 .campaign-list-page {
   .campaign-list-area {
     .campaign-list-body {
@@ -184,6 +185,11 @@
                 font-size: 15px;
                 line-height: 18px;
                 color: #121212;
+              }
+              &:hover{
+                a{
+                  color: $primary-color;
+                }
               }
               span {
                 font-weight: 400;
