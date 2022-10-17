@@ -149,7 +149,7 @@ export default function EditCampaign(props) {
     }
   };
 
-  const validateSenderEmail = (event, name, value) => {
+  const validateSenderEmail = (name, value) => {
     if (
       !new RegExp(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
