@@ -69,16 +69,17 @@ class ContactForm {
      * @return string
      */
     public function get_content() {
-        $form_data = FormModel::get($this->attributes['id']);
+        $form_id = isset($this->attributes['id']) ? $this->attributes['id'] : 0 ;
+        $form_data = FormModel::get($form_id);
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
         }
         $output = '';
         ob_start();?>
         <div>
-            <div id="mrm-<?php echo $form_data['form_position'] ?>" class="<?php echo $this->attributes['class'] ?>">
+            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="<?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
                 <form method="post" id="mrm-form">
-                    <input hidden name="form_id" value="<?php echo $form_data['id'] ?>" />
+                    <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                     <?php echo  $form_data['form_body'] ?>
                 </form>
             </div>
