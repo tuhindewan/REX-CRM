@@ -184,15 +184,20 @@ const routes = [
     hideInMenu: true,
   },
   {
+    path: "/form-builder/:id",
+    element: FormEditor,
+    hideInMenu: true,
+  },
+  {
     path: "/form-builder/",
     element: FormEditor,
     hideInMenu: true,
   },
   {
-    path        : "/settings",
-    element     : Settings,
-    hideInMenu  : true,
-  }
+    path: "/settings",
+    element: Settings,
+    hideInMenu: true,
+  },
 ];
 
 export default routes;

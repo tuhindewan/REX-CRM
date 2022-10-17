@@ -19,7 +19,6 @@ import DeletePopup from "../DeletePopup";
 import AlertPopup from "../AlertPopup";
 
 export default function FormIndex(props) {
-
   const [formData, setFormData] = useState({});
 
   // how many to show per page
@@ -355,11 +354,7 @@ export default function FormIndex(props) {
               </div>
 
               <div className="right-section">
-                <Link
-                  className="add-form-btn mintmrm-btn"
-                  to="/form-builder/"
-                  state={{ reload: true }}
-                >
+                <Link className="add-form-btn mintmrm-btn" to="/form-builder/">
                   <Plus /> Add Form
                 </Link>
               </div>
@@ -372,8 +367,14 @@ export default function FormIndex(props) {
                 <div className="right-buttons">
                   <div className="sorting">
                     <h5>Sort by</h5>
-                    <div className={toggleDropdown ? "pos-relative show" : "pos-relative" } >
-                      <button onClick={() => setToggleDropdown(!toggleDropdown)} >
+                    <div
+                      className={
+                        toggleDropdown ? "pos-relative show" : "pos-relative"
+                      }
+                    >
+                      <button
+                        onClick={() => setToggleDropdown(!toggleDropdown)}
+                      >
                         {sortBy}
                       </button>
 
@@ -385,7 +386,6 @@ export default function FormIndex(props) {
                           Title
                         </li>
                       </ul>
-                      
                     </div>
                   </div>
 
@@ -488,7 +488,10 @@ export default function FormIndex(props) {
                                     </span>
 
                                     <span className="name">
-                                      <a href="">{form.title}</a>
+                                      <Link to={`../form-builder/${form.id}`}>
+                                        {form.title}
+                                      </Link>
+
                                       <small>
                                         {getDaysAgo(form.created_at)} ago
                                       </small>
