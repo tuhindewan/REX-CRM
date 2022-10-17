@@ -150,7 +150,6 @@ export default function AddCampaign(props) {
         if (value.length > 200) return copy;
       }
       if (name == "delay_count") {
-        console.log(value);
         if (0 > value) {
           setErrors({
             ...errors,
