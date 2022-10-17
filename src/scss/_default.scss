@@ -175,7 +175,7 @@
     margin: 0 auto;
   }
 
-  .mintmrm-container.import-cotainer{
+  .mintmrm-container.import-cotainer {
     padding-bottom: 85px;
   }
 
@@ -221,6 +221,10 @@
     display: inline-block;
     word-break: break-all;
     color: #e03535;
+    display: none;
+    &.show {
+      display: flex;
+    }
   }
   .inactive {
     display: none;

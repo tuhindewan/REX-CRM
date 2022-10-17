@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import CustomSelect from "../CustomSelect";
+import CrossIcon from "../Icons/CrossIcon";
 import Delete from "../Icons/Delete";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
@@ -9,7 +10,6 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import useUnload from "../Unload";
 import CampaignTemplates from "./CampaignTemplates";
-import CrossIcon from "../Icons/CrossIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -44,6 +44,7 @@ export default function AddCampaign(props) {
   const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
   const [dropDown, setDropDown] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
@@ -147,6 +148,17 @@ export default function AddCampaign(props) {
       const copy = [...prevEmailData];
       if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
+      }
+      if (name == "delay_count") {
+        console.log(value);
+        if (0 > value) {
+          setErrors({
+            ...errors,
+            number: "Negative value is not allowed",
+          });
+        } else {
+          setErrors({});
+        }
       }
       copy[selectedEmailIndex][name] = value;
       return copy;
@@ -437,28 +449,49 @@ export default function AddCampaign(props) {
                   </>
                 )}
                 {selectedEmailIndex > 0 && (
-                  <div className="email-from input-item">
-                    <label>Delay</label>
-                    <input
-                      type="number"
-                      name="delay_count"
-                      value={emailData[selectedEmailIndex]["delay_count"]}
-                      onChange={handleEmailFieldsChange}
-                    />
-                    <select
-                      style={{ maxWidth: "fit-content" }}
-                      onChange={handleEmailFieldsChange}
-                      name="delay_value"
-                      value={emailData[selectedEmailIndex]["delay_value"]}
-                    >
-                      <option disabled={true} value="">
-                        --Choose delay--
-                      </option>
-                      {names.map((item) => (
-                        <option key={item.id}>{item.value}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <>
+                    <div className="email-from input-item">
+                      <label>Delay</label>
+                      <div className="delay_count_input">
+                        <div>
+                          <input
+                            type="number"
+                            name="delay_count"
+                            value={emailData[selectedEmailIndex]["delay_count"]}
+                            onChange={handleEmailFieldsChange}
+                            min="0"
+                            onKeyDown={(e) =>
+                              ["e", "E", "+", "-"].includes(e.key) &&
+                              e.preventDefault()
+                            }
+                          />
+                          <p
+                            className={
+                              errors?.number
+                                ? "error-message show"
+                                : "error-message"
+                            }
+                          >
+                            {errors?.number}
+                          </p>
+                        </div>
+
+                        <select
+                          style={{ maxWidth: "fit-content" }}
+                          onChange={handleEmailFieldsChange}
+                          name="delay_value"
+                          value={emailData[selectedEmailIndex]["delay_value"]}
+                        >
+                          <option disabled={true} value="">
+                            --Choose delay--
+                          </option>
+                          {names.map((item) => (
+                            <option key={item.id}>{item.value}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </>
                 )}
                 <div className="email-subject input-item">
                   <label>Subject:</label>
