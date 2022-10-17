@@ -4817,7 +4817,7 @@ function Sidebar() {
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
     tabIndex: "-1"
-  }, console.log(submissionStartDate), console.log(submissionStartTime), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
     header: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Inspector")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorSlot, {
     bubblesVirtually: true
@@ -4986,11 +4986,9 @@ function Sidebar() {
     className: "settings-label"
   }, "Maximum Number of Entries", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "lorem ipsum dollar sit amet"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Restrict the total number of submissions"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
     checked: maxEntries,
-    onChange: state => setAttributes({
-      maxEntries: state
-    })
+    onChange: state => setMaxEntries(!maxEntries)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -5009,16 +5007,7 @@ function Sidebar() {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "counter-decrement",
     onClick: counterIncrement
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-    value: "",
-    options: [{
-      value: "",
-      label: "Select option"
-    }, {
-      value: "",
-      label: "Select option"
-    }]
-  })))))));
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)))))))));
 }
 
 Sidebar.InspectorFill = InspectorFill;

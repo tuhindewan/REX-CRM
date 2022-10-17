@@ -126,11 +126,10 @@ function Sidebar() {
   let submissionType = "hide-form";
   let labelAlign = "center";
 
-
   const dateTimeSplitter = () => {
     const convertedDate = JSON.stringify(date);
-    setSubmissionStartDate(convertedDate.slice(1,11));
-    setSubmissionStartTime(convertedDate.slice(12,20));
+    setSubmissionStartDate(convertedDate.slice(1, 11));
+    setSubmissionStartTime(convertedDate.slice(12, 20));
   };
 
   useEffect(() => {
@@ -144,8 +143,6 @@ function Sidebar() {
       aria-label={__("MRM Block Editor advanced settings.")}
       tabIndex="-1"
     >
-      {console.log(submissionStartDate)}
-      {console.log(submissionStartTime)}
       <Panel header={__("Inspector")}>
         <InspectorSlot bubblesVirtually />
       </Panel>
@@ -423,12 +420,12 @@ function Sidebar() {
                 Maximum Number of Entries
                 <span className="mintmrm-tooltip">
                   <QuestionIcon />
-                  <p>lorem ipsum dollar sit amet</p>
+                  <p>Restrict the total number of submissions</p>
                 </span>
               </label>
               <ToggleControl
                 checked={maxEntries}
-                onChange={(state) => setAttributes({ maxEntries: state })}
+                onChange={(state) => setMaxEntries(!maxEntries)}
               />
             </div>
 
@@ -453,20 +450,6 @@ function Sidebar() {
                     <PlusIcon />
                   </span>
                 </div>
-
-                <SelectControl
-                  value=""
-                  options={[
-                    {
-                      value: "",
-                      label: "Select option",
-                    },
-                    {
-                      value: "",
-                      label: "Select option",
-                    },
-                  ]}
-                />
               </div>
             </div>
           </div>
