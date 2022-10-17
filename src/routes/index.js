@@ -184,7 +184,7 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path: "/form-builder/",
+    path: "/form-builder/:id",
     element: FormEditor,
     hideInMenu: true,
   },

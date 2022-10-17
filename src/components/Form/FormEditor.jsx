@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
@@ -33,6 +33,10 @@ const FormEditor = (props) => {
 
   const [enable, setEnable] = useState(false);
 
+  const params = useParams();
+
+  const id = params.id;
+
   const toggleEnable = () => {
     setEnable(!enable);
   };
@@ -52,18 +56,28 @@ const FormEditor = (props) => {
     });
   }, []);
 
-  const [formData, setValues] = useState({
-    title: "",
-    form_position: "",
-    group_ids: [],
-  });
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    const getFormData = async () => {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+      );
+      const resJson = await res.json();
+
+      if (200 === resJson.code) {
+        setFormData(resJson.data);
+      }
+    };
+    getFormData();
+  }, []);
 
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
   const handleChange = (event) => {
     event.persist();
     const { name, value } = event.target;
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -74,7 +88,7 @@ const FormEditor = (props) => {
       .filter((option) => option.selected)
       .map((x) => x.value);
 
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: updatedOptions,
     }));
@@ -82,7 +96,7 @@ const FormEditor = (props) => {
 
   const onRemove = (e, name) => {
     let unselectedItem = e.params.data.id;
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: prevState[name].filter((x) => x !== unselectedItem),
     }));
@@ -106,7 +120,7 @@ const FormEditor = (props) => {
 
   const [positionName, setPositionName] = useState("");
   const handleFormPosition = (param, name) => {
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       form_position: param,
     }));
@@ -123,7 +137,7 @@ const FormEditor = (props) => {
 
     const group_ids = lists.concat(tags);
 
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       group_ids: group_ids,
     }));
