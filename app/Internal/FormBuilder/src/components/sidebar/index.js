@@ -46,9 +46,22 @@ const { Slot: InspectorSlot, Fill: InspectorFill } = createSlotFill(
 function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
-  const [date, setDate] = useState(new Date());
 
-  const [samePageMessage, setSamePageMessage] = useState("");
+  //confirmation types
+  const [messageToShow, setMessageToShow] = useState("");
+  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  const [page, setPage] = useState("");
+  const [redirectionMessage, setRedirectionMessage] = useState("");
+  const [customURL, setCustomURL] = useState("");
+  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
+  const [formLayout, setFormLayout] = useState("pop-up");
+  const [formScheduling, setFormScheduling] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [submissionStartDate, setSubmissionStartDate] = useState("");
+  const [submissionStartTime, setSubmissionStartTime] = useState("");
+  const [maxEntries, setMaxEntries] = useState(false);
+  const [maxNumber, setMaxNumber] = useState();
+  const [maxType, setMaxType] = useState();
 
   const [settingData, setSettingData] = useState({
     settings: {
@@ -106,38 +119,23 @@ function Sidebar() {
     });
   }
 
-  //   const updateSetting = (index) => (e) => {
-  //     const updatedSetting = settingData.map((item, i) => {
-  //       if (index === i) {
-  //         return { ...item, [e.target.name]: e.target.value };
-  //       } else {
-  //         return item;
-  //       }
-  //     });
-  //     setSettingData(updatedSetting);
-  //   };
-
   const handleConfirmationType = (index) => {
     toggleTab(index);
-
-
-    if ("same_page" === index) {
-      setSettingData({
-        settings: {
-          confirmation_type: {
-            same_page: {
-              message_to_show: "static",
-            },
-          },
-        },
-      });
-    }
   };
 
   let submissionType = "hide-form";
   let labelAlign = "center";
-  let maxEntries = false;
-  let formScheduling = false;
+
+
+  const dateTimeSplitter = () => {
+    const convertedDate = JSON.stringify(date);
+    setSubmissionStartDate(convertedDate.slice(1,11));
+    setSubmissionStartTime(convertedDate.slice(12,20));
+  };
+
+  useEffect(() => {
+    dateTimeSplitter();
+  }, [date]);
 
   return (
     <div
@@ -146,10 +144,11 @@ function Sidebar() {
       aria-label={__("MRM Block Editor advanced settings.")}
       tabIndex="-1"
     >
+      {console.log(submissionStartDate)}
+      {console.log(submissionStartTime)}
       <Panel header={__("Inspector")}>
         <InspectorSlot bubblesVirtually />
       </Panel>
-      {console.log(settingData)}
 
       <Panel className="settings-pannel">
         <div className="components-panel__header">
@@ -187,7 +186,7 @@ function Sidebar() {
                       ? "tab-nav-item active"
                       : "tab-nav-item"
                   }
-                  onChange={(e) => handleConfirmationType("same-page")}
+                  onClick={() => handleConfirmationType("same-page")}
                 >
                   Same Page
                 </span>
@@ -196,7 +195,7 @@ function Sidebar() {
                   className={
                     tabState === "page" ? "tab-nav-item active" : "tab-nav-item"
                   }
-                  onChange={(e) => handleConfirmationType("page")}
+                  onClick={() => handleConfirmationType("page")}
                 >
                   To a page
                 </span>
@@ -207,7 +206,7 @@ function Sidebar() {
                       ? "tab-nav-item active"
                       : "tab-nav-item"
                   }
-                  onChange={(e) => handleConfirmationType("custom-url")}
+                  onClick={() => handleConfirmationType("custom-url")}
                 >
                   To a custom URL
                 </span>
@@ -229,7 +228,10 @@ function Sidebar() {
                         <p>What message you want to show to the use?</p>
                       </span>
                     </label>
-                    <TextareaControl name="message_to_show" />
+                    <TextareaControl
+                      name="message_to_show"
+                      onChange={(e) => setMessageToShow(e)}
+                    />
                   </div>
 
                   <div className="single-settings">
@@ -237,19 +239,17 @@ function Sidebar() {
                       After Form Submission
                       <span className="mintmrm-tooltip">
                         <QuestionIcon />
-                        <p>lorem ipsum dollar sit amet</p>
+                        <p>Define behaviour of the form after submission</p>
                       </span>
                     </label>
 
                     <RadioControl
-                      selected={submissionType}
+                      selected={afterFormSubmission}
                       options={[
                         { label: "Hide Form", value: "hide-form" },
                         { label: "Reset Form", value: "reset-form" },
                       ]}
-                      onChange={(state) =>
-                        this.props.setAttributes({ submissionType: state })
-                      }
+                      onChange={(state) => setAfterFormSubmission(state)}
                     />
                   </div>
                 </div>
@@ -263,10 +263,13 @@ function Sidebar() {
                 >
                   <div className="single-settings">
                     <label className="settings-label">
-                      Message to show
+                      Select a page
                       <span className="mintmrm-tooltip">
                         <QuestionIcon />
-                        <p>lorem ipsum dollar sit amet</p>
+                        <p>
+                          Which page you want to redirect after the submitted
+                          the form?
+                        </p>
                       </span>
                     </label>
 
@@ -290,10 +293,13 @@ function Sidebar() {
                       Redirection Message
                       <span className="mintmrm-tooltip">
                         <QuestionIcon />
-                        <p>lorem ipsum dollar sit amet</p>
+                        <p>What is the message after redirection of a page?</p>
                       </span>
                     </label>
-                    <TextareaControl value="" />
+                    <TextareaControl
+                      name="redirection_message"
+                      onChange={(e) => setRedirectionMessage(e)}
+                    />
                   </div>
                 </div>
 
@@ -309,11 +315,14 @@ function Sidebar() {
                       Custom URL
                       <span className="mintmrm-tooltip">
                         <QuestionIcon />
-                        <p>lorem ipsum dollar sit amet</p>
+                        <p>Enter a custom URL to redirect</p>
                       </span>
                     </label>
 
-                    <TextControl value="" onChange={handleConfirmationType} />
+                    <TextControl
+                      name="custom-url"
+                      onChange={(e) => setCustomURL(e)}
+                    />
                   </div>
 
                   <div className="single-settings">
@@ -321,10 +330,13 @@ function Sidebar() {
                       Redirection Message
                       <span className="mintmrm-tooltip">
                         <QuestionIcon />
-                        <p>lorem ipsum dollar sit amet</p>
+                        <p>Reidrectional message for custom URL</p>
                       </span>
                     </label>
-                    <TextareaControl value="" />
+                    <TextareaControl
+                      name="custom-redirection-message"
+                      onChange={(e) => setCustomRedirectionMessage(e)}
+                    />
                   </div>
                 </div>
               </div>
@@ -343,20 +355,17 @@ function Sidebar() {
                 Label Alignment
                 <span className="mintmrm-tooltip">
                   <QuestionIcon />
-                  <p>lorem ipsum dollar sit amet</p>
+                  <p>Animation to show up your form</p>
                 </span>
               </label>
 
               <RadioControl
-                selected={labelAlign}
+                selected={formLayout}
                 options={[
-                  { label: "Left", value: "left" },
-                  { label: "Center", value: "center" },
-                  { label: "Right", value: "right" },
+                  { label: "Fly In", value: "fly-in" },
+                  { label: "Pop Up", value: "pop-up" },
                 ]}
-                onChange={(state) =>
-                  this.props.setAttributes({ labelAlign: state })
-                }
+                onChange={(state) => setFormLayout(state)}
               />
             </div>
           </div>
@@ -373,13 +382,13 @@ function Sidebar() {
                 Form Scheduling
                 <span className="mintmrm-tooltip">
                   <QuestionIcon />
-                  <p>lorem ipsum dollar sit amet</p>
+                  <p>Schedule your form submission time</p>
                 </span>
               </label>
 
               <ToggleControl
                 checked={formScheduling}
-                onChange={(state) => setAttributes({ formScheduling: state })}
+                onChange={(state) => setFormScheduling(!formScheduling)}
               />
             </div>
 
@@ -388,7 +397,7 @@ function Sidebar() {
                 Submission Starts
                 <span className="mintmrm-tooltip">
                   <QuestionIcon />
-                  <p>lorem ipsum dollar sit amet</p>
+                  <p>Take Submissions from...</p>
                 </span>
               </label>
 
@@ -399,22 +408,6 @@ function Sidebar() {
                 __nextRemoveHelpButton
                 __nextRemoveResetButton
               />
-
-              {/* <Dropdown
-								position="middle left"
-								renderToggle={ ( ( { isOpen, onToggle } ) => (
-									<Button isLink onClick={ onToggle } aria-expanded={ isOpen }>
-										{ currentDate ? date( 'd.m.Y H:i', currentDate ) : "placeholder" }
-									</Button>
-								) ) }
-
-								renderContent={ () => (
-									<DateTimePicker
-										currentDate={ currentDate }
-										onChange={ ( newDate ) => setDate( newDate ) }
-									/>
-								) }>
-							</Dropdown> */}
             </div>
           </div>
         </PanelBody>
