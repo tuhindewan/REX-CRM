@@ -111,25 +111,20 @@ export default function AddCampaign(props) {
       }),
     };
 
-    emailData.map((email, index) => {
-      if (validateCampaign(email.senderEmail, index)) {
-        // Send POST request to save data
-        submitCampaign(campaign).then((response) => {
-          if (201 === response.code) {
-            // Navigate to campaigns list with success message
-            navigate("/campaign/edit/" + response.data.campaign.id, {
-              state: { status: "campaign-created", message: response?.message },
-            });
-          } else {
-            setShowWarning("block");
-            setMessage(response?.message);
-          }
-          const timer = setTimeout(() => {
-            setShowWarning("none");
-          }, 3000);
-          return () => clearTimeout(timer);
+    submitCampaign(campaign).then((response) => {
+      if (201 === response.code) {
+        // Navigate to campaigns list with success message
+        navigate("/campaign/edit/" + response.data.campaign.id, {
+          state: { status: "campaign-created", message: response?.message },
         });
+      } else {
+        setShowWarning("block");
+        setMessage(response?.message);
       }
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     });
   };
 
@@ -154,7 +149,7 @@ export default function AddCampaign(props) {
   };
 
   const validateCampaign = (value, index) => {
-    if (!value.length) {
+    if (value.length > 0) {
       setShowWarning("block");
       setMessage("Sender Email is missing on email " + (index + 1));
       return false;
@@ -172,6 +167,23 @@ export default function AddCampaign(props) {
     }
   };
 
+  const validateSenderEmail = (event, name, value) => {
+    if (
+      !new RegExp(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
+      ).test(value)
+    ) {
+      setErrors({
+        ...errors,
+        email: "Enter a valid email address",
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = async (e) => {
     setEmailData((prevEmailData) => {
@@ -180,6 +192,9 @@ export default function AddCampaign(props) {
       const copy = [...prevEmailData];
       if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
+      }
+      if (name == "senderEmail") {
+        validateSenderEmail(e, copy[selectedEmailIndex][name], value);
       }
       copy[selectedEmailIndex][name] = value;
       return copy;
@@ -555,14 +570,22 @@ export default function AddCampaign(props) {
                     onChange={handleEmailFieldsChange}
                     placeholder="Enter Name"
                   />
-                  <input
-                    type="email"
-                    name="senderEmail"
-                    value={emailData[selectedEmailIndex]["senderEmail"]}
-                    onChange={handleEmailFieldsChange}
-                    placeholder="Enter Email"
-                  />
-                  <p className="error-message">{errors?.email}</p>
+                  <div>
+                    <input
+                      type="email"
+                      name="senderEmail"
+                      value={emailData[selectedEmailIndex]["senderEmail"]}
+                      onChange={handleEmailFieldsChange}
+                      placeholder="Enter Email"
+                    />
+                    <p
+                      className={
+                        errors?.email ? "error-message show" : "error-message"
+                      }
+                    >
+                      {errors?.email}
+                    </p>
+                  </div>
                 </div>
                 <div className="email-design input-item">
                   <label>Design</label>

@@ -149,6 +149,23 @@ export default function EditCampaign(props) {
     }
   };
 
+  const validateSenderEmail = (event, name, value) => {
+    if (
+      !new RegExp(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
+      ).test(value)
+    ) {
+      setErrors({
+        ...errors,
+        email: "Enter a valid email address",
+      });
+      return false;
+    } else {
+      setErrors({});
+      return true;
+    }
+  };
+
   // Prepare campaign object and send post request to backend
   const updateCampaign = async (status) => {
     if (campaignTitle.length < 3) {
@@ -190,20 +207,15 @@ export default function EditCampaign(props) {
       campaign_id: id,
     };
 
-    emailData.map((email, index) => {
-      if (validateCampaign(email.sender_email, index)) {
-        // Send PUT request to update campaign
-        updateCampaignRequest(campaign).then((response) => {
-          if (201 === response.code) {
-            // Show success message
-            setShowNotification("block");
-            setMessage(response?.message);
-            toggleRefresh();
-          } else {
-            setShowWarning("block");
-            setMessage(response?.message);
-          }
-        });
+    updateCampaignRequest(campaign).then((response) => {
+      if (201 === response.code) {
+        // Show success message
+        setShowNotification("block");
+        setMessage(response?.message);
+        toggleRefresh();
+      } else {
+        setShowWarning("block");
+        setMessage(response?.message);
       }
     });
 
@@ -323,16 +335,8 @@ export default function EditCampaign(props) {
       if (key === "subject" || key === "preview") {
         if (value.length > 200) return copy;
       }
-      if (key == "delay_count") {
-        console.log(value);
-        if (0 > value) {
-          setErrors({
-            ...errors,
-            number: "Negative value is not allowed",
-          });
-        } else {
-          setErrors({});
-        }
+      if (key == "sender_email") {
+        validateSenderEmail(copy[selectedEmailIndex][key], value);
       }
       copy[selectedEmailIndex][key] = value;
       return copy;
@@ -668,15 +672,27 @@ export default function EditCampaign(props) {
                       }
                       placeholder="Enter Name"
                     />
-                    <input
-                      type="email"
-                      name="senderEmail"
-                      value={emailData[selectedEmailIndex]["sender_email"]}
-                      onChange={(e) =>
-                        handleEmailFieldsChange(e.target.value, "sender_email")
-                      }
-                      placeholder="Enter Email"
-                    />
+                    <div>
+                      <input
+                        type="email"
+                        name="senderEmail"
+                        value={emailData[selectedEmailIndex]["sender_email"]}
+                        onChange={(e) =>
+                          handleEmailFieldsChange(
+                            e.target.value,
+                            "sender_email"
+                          )
+                        }
+                        placeholder="Enter Email"
+                      />
+                      <p
+                        className={
+                          errors?.email ? "error-message show" : "error-message"
+                        }
+                      >
+                        {errors?.email}
+                      </p>
+                    </div>
                   </div>
                   <div className="email-design input-item">
                     <label>Design</label>
