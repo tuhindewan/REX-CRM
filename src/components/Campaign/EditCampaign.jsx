@@ -16,6 +16,7 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignTemplates from "./CampaignTemplates";
 import CrossIcon from "../Icons/CrossIcon";
+import LoadingIndicator from "../LoadingIndicator";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -60,6 +61,7 @@ export default function EditCampaign(props) {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
   const [campaignStatus, setCampaignStatus] = useState("");
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -114,6 +116,7 @@ export default function EditCampaign(props) {
       setSelectedEmailIndex(0);
       setCampaignTitle(campaign.title);
       setCampaignStatus(campaign.status);
+      setShowLoader(false);
       // toggleRefresh();
     });
     const isPublishValid = validatePublish();
@@ -378,283 +381,300 @@ export default function EditCampaign(props) {
           </div>
         </div>
 
-        <div className="mintmrm-container">
-          <div className="add-campaign-wrapper">
-            <div className="add-email-section">
-              {emailData.map((email, index) => {
-                return (
-                  <div className="email-box" key={`emails-${index}`}>
-                    <div
-                      className={
-                        selectedEmailIndex != index
-                          ? "email-select-section"
-                          : "email-select-section selected"
-                      }
-                      onClick={() => setActiveEmailSequence(index)}
-                    >
-                      <div className="email-icon-section">
-                        <InboxIcon />
-                      </div>
-                      <h5>Email {index + 1}</h5>
-                      {index > 0 && (
-                        <div
-                          className="delete-option"
-                          onClick={() => deleteEmail(index, email.id)}
-                        >
-                          <Delete />
-                        </div>
-                      )}
-                    </div>
-                    <div className="link-line"></div>
-                  </div>
-                );
-              })}
-              <div className="add-another-email" onClick={addNextEmail}>
-                <Plus />
-              </div>
-            </div>
-            <div className="email-content-section">
-              <div className="email-container">
-                {selectedEmailIndex == 0 && (
-                  <>
-                    <div className="email-title input-item">
-                      <label>Title</label>
-                      <input
-                        type="text"
-                        name="title"
-                        value={campaignTitle}
-                        onChange={(e) => {
-                          setIsValid(true);
-                          setCampaignTitle(e.target.value);
-                        }}
-                        placeholder="Enter Campaign title"
-                      />
-                    </div>
-                    <div className="email-to input-item">
-                      <div className="select-options">
-                        <label>To:</label>
-                        <div>
-                          <CustomSelect
-                            selected={recipientLists}
-                            setSelected={setRecipientLists}
-                            endpoint="/lists"
-                            placeholder="Lists"
-                            name="list"
-                            listTitle="CHOOSE LIST"
-                            listTitleOnNotFound="No Data Found"
-                            searchPlaceHolder="Search..."
-                            allowMultiple={true}
-                            showSearchBar={true}
-                            showListTitle={true}
-                            showSelectedInside={false}
-                            allowNewCreate={true}
-                          />
-                          <CustomSelect
-                            selected={recipientTags}
-                            setSelected={setRecipientTags}
-                            endpoint="/tags"
-                            placeholder="Tags"
-                            name="tag"
-                            listTitle="CHOOSE TAG"
-                            listTitleOnNotFound="No Data Found"
-                            searchPlaceHolder="Search..."
-                            allowMultiple={true}
-                            showSearchBar={true}
-                            showListTitle={true}
-                            showSelectedInside={false}
-                            allowNewCreate={true}
-                          />
-                        </div>
-                      </div>
+        {showLoader ? (
+          <LoadingIndicator type="table" />
+        ) : (
+          <div className="mintmrm-container">
+            <div className="add-campaign-wrapper">
+              <div className="add-email-section">
+                {emailData.map((email, index) => {
+                  return (
+                    <div className="email-box" key={`emails-${index}`}>
                       <div
                         className={
-                          recipientLists.length == 0 &&
-                          recipientTags.length == 0
-                            ? "selected-result inactive"
-                            : "selected-result"
+                          selectedEmailIndex != index
+                            ? "email-select-section"
+                            : "email-select-section selected"
                         }
+                        onClick={() => setActiveEmailSequence(index)}
                       >
-                        {recipientLists.map((item) => {
-                          return (
-                            <span
-                              key={item.id}
-                              className="mrm-custom-selected-items"
-                            >
-                              {item.title}
-                              <div
-                                className="cross-icon"
-                                onClick={(e) => deleteSelectedlist(e, item.id)}
-                              >
-                                <CrossIcon />
-                              </div>
-                            </span>
-                          );
-                        })}
-                        {recipientTags.map((item) => {
-                          return (
-                            <span
-                              key={item.id}
-                              className="mrm-custom-selected-items"
-                            >
-                              {item.title}
-                              <div
-                                className="cross-icon"
-                                onClick={(e) => deleteSelectedtag(e, item.id)}
-                              >
-                                <CrossIcon />
-                              </div>
-                            </span>
-                          );
-                        })}
-                        <div className="clear-all" onClick={deleteAll}>
-                          <span>Clear All</span>
+                        <div className="email-icon-section">
+                          <InboxIcon />
                         </div>
+                        <h5>Email {index + 1}</h5>
+                        {index > 0 && (
+                          <div
+                            className="delete-option"
+                            onClick={() => deleteEmail(index, email.id)}
+                          >
+                            <Delete />
+                          </div>
+                        )}
                       </div>
+                      <div className="link-line"></div>
                     </div>
-                  </>
-                )}
-                {selectedEmailIndex > 0 && (
-                  <div className="email-from input-item">
-                    <label>Delay</label>
-                    <input
-                      style={{
-                        border: "1px solid #e3e4e8",
-                        marginRight: "15px",
-                      }}
-                      type="number"
-                      name="delay_count"
-                      value={emailData[selectedEmailIndex]["delay_count"]}
-                      onChange={(e) =>
-                        handleEmailFieldsChange(e.target.value, "delay_count")
-                      }
-                    />
-                    <select
-                      style={{ maxWidth: "fit-content" }}
-                      onChange={(e) =>
-                        handleEmailFieldsChange(e.target.value, "delay_value")
-                      }
-                      name="delay_value"
-                      value={emailData[selectedEmailIndex]["delay_value"]}
-                    >
-                      <option disabled={true} value="">
-                        --Choose delay--
-                      </option>
-                      {names.map((item) => (
-                        <option key={item.id}>{item.value}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                <div className="email-subject input-item">
-                  <label>Subject:</label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={emailData[selectedEmailIndex]["email_subject"]}
-                    onChange={(e) =>
-                      handleEmailFieldsChange(e.target.value, "email_subject")
-                    }
-                    placeholder="Be Specific and concise to spark interest"
-                  />
-                  <span>
-                    {emailData[selectedEmailIndex]?.email_subject?.length}/200
-                  </span>
-                  <div className="setting-section">
-                    <SettingIcon />
-                  </div>
-                </div>
-                <div className="email-preview input-item">
-                  <label>Preview Text</label>
-                  <input
-                    type="text"
-                    name="email_preview_text"
-                    value={emailData[selectedEmailIndex]["email_preview_text"]}
-                    onChange={(e) =>
-                      handleEmailFieldsChange(
-                        e.target.value,
-                        "email_preview_text"
-                      )
-                    }
-                    placeholder="Write a summary of your email to display after the subject line"
-                  />
-                  <span>
-                    {emailData[selectedEmailIndex]?.email_preview_text?.length}
-                    /200
-                  </span>
-                  <div className="setting-section">
-                    <SettingIcon />
-                  </div>
-                </div>
-                <div className="email-from input-item">
-                  <label>From</label>
-                  <input
-                    type="text"
-                    name="senderName"
-                    value={emailData[selectedEmailIndex]["sender_name"]}
-                    onChange={(e) =>
-                      handleEmailFieldsChange(e.target.value, "sender_name")
-                    }
-                    placeholder="Enter Name"
-                  />
-                  <input
-                    type="text"
-                    name="senderEmail"
-                    value={emailData[selectedEmailIndex]["sender_email"]}
-                    onChange={(e) =>
-                      handleEmailFieldsChange(e.target.value, "sender_email")
-                    }
-                    placeholder="Enter Email"
-                  />
-                </div>
-                <div className="email-design input-item">
-                  <label>Design</label>
-                  <div className="add-template-section" onClick={openTemplate}>
-                    <TemplateIcon />
-                    <Link to="">Select a Template</Link>
-                  </div>
+                  );
+                })}
+                <div className="add-another-email" onClick={addNextEmail}>
+                  <Plus />
                 </div>
               </div>
-              <div className="content-save-section">
-                {"ongoing" == campaignStatus ? (
-                  <button className="campaign-save mintmrm-btn" disabled={true}>
-                    On Going
-                  </button>
-                ) : (
-                  <>
-                    {/* <button
+              <div className="email-content-section">
+                <div className="email-container">
+                  {selectedEmailIndex == 0 && (
+                    <>
+                      <div className="email-title input-item">
+                        <label>Title</label>
+                        <input
+                          type="text"
+                          name="title"
+                          value={campaignTitle}
+                          onChange={(e) => {
+                            setIsValid(true);
+                            setCampaignTitle(e.target.value);
+                          }}
+                          placeholder="Enter Campaign title"
+                        />
+                      </div>
+                      <div className="email-to input-item">
+                        <div className="select-options">
+                          <label>To:</label>
+                          <div className="select-recipient">
+                            <CustomSelect
+                              selected={recipientLists}
+                              setSelected={setRecipientLists}
+                              endpoint="/lists"
+                              placeholder="Lists"
+                              name="list"
+                              listTitle="CHOOSE LIST"
+                              listTitleOnNotFound="No Data Found"
+                              searchPlaceHolder="Search..."
+                              allowMultiple={true}
+                              showSearchBar={true}
+                              showListTitle={true}
+                              showSelectedInside={false}
+                              allowNewCreate={true}
+                            />
+                            <CustomSelect
+                              selected={recipientTags}
+                              setSelected={setRecipientTags}
+                              endpoint="/tags"
+                              placeholder="Tags"
+                              name="tag"
+                              listTitle="CHOOSE TAG"
+                              listTitleOnNotFound="No Data Found"
+                              searchPlaceHolder="Search..."
+                              allowMultiple={true}
+                              showSearchBar={true}
+                              showListTitle={true}
+                              showSelectedInside={false}
+                              allowNewCreate={true}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className={
+                            recipientLists.length == 0 &&
+                            recipientTags.length == 0
+                              ? "selected-result inactive"
+                              : "selected-result"
+                          }
+                        >
+                          {recipientLists.map((item) => {
+                            return (
+                              <span
+                                key={item.id}
+                                className="mrm-custom-selected-items"
+                              >
+                                {item.title}
+                                <div
+                                  className="cross-icon"
+                                  onClick={(e) =>
+                                    deleteSelectedlist(e, item.id)
+                                  }
+                                >
+                                  <CrossIcon />
+                                </div>
+                              </span>
+                            );
+                          })}
+                          {recipientTags.map((item) => {
+                            return (
+                              <span
+                                key={item.id}
+                                className="mrm-custom-selected-items"
+                              >
+                                {item.title}
+                                <div
+                                  className="cross-icon"
+                                  onClick={(e) => deleteSelectedtag(e, item.id)}
+                                >
+                                  <CrossIcon />
+                                </div>
+                              </span>
+                            );
+                          })}
+                          <div className="clear-all" onClick={deleteAll}>
+                            <span>Clear All</span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {selectedEmailIndex > 0 && (
+                    <div className="email-from input-item">
+                      <label>Delay</label>
+                      <input
+                        style={{
+                          border: "1px solid #e3e4e8",
+                          marginRight: "15px",
+                        }}
+                        type="number"
+                        name="delay_count"
+                        value={emailData[selectedEmailIndex]["delay_count"]}
+                        onChange={(e) =>
+                          handleEmailFieldsChange(e.target.value, "delay_count")
+                        }
+                      />
+                      <select
+                        style={{ maxWidth: "fit-content" }}
+                        onChange={(e) =>
+                          handleEmailFieldsChange(e.target.value, "delay_value")
+                        }
+                        name="delay_value"
+                        value={emailData[selectedEmailIndex]["delay_value"]}
+                      >
+                        <option disabled={true} value="">
+                          --Choose delay--
+                        </option>
+                        {names.map((item) => (
+                          <option key={item.id}>{item.value}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  <div className="email-subject input-item">
+                    <label>Subject:</label>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={emailData[selectedEmailIndex]["email_subject"]}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "email_subject")
+                      }
+                      placeholder="Be Specific and concise to spark interest"
+                    />
+                    <span>
+                      {emailData[selectedEmailIndex]?.email_subject?.length}/200
+                    </span>
+                    <div className="setting-section">
+                      <SettingIcon />
+                    </div>
+                  </div>
+                  <div className="email-preview input-item">
+                    <label>Preview Text</label>
+                    <input
+                      type="text"
+                      name="email_preview_text"
+                      value={
+                        emailData[selectedEmailIndex]["email_preview_text"]
+                      }
+                      onChange={(e) =>
+                        handleEmailFieldsChange(
+                          e.target.value,
+                          "email_preview_text"
+                        )
+                      }
+                      placeholder="Write a summary of your email to display after the subject line"
+                    />
+                    <span>
+                      {
+                        emailData[selectedEmailIndex]?.email_preview_text
+                          ?.length
+                      }
+                      /200
+                    </span>
+                    <div className="setting-section">
+                      <SettingIcon />
+                    </div>
+                  </div>
+                  <div className="email-from input-item">
+                    <label>From</label>
+                    <input
+                      type="text"
+                      name="senderName"
+                      value={emailData[selectedEmailIndex]["sender_name"]}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "sender_name")
+                      }
+                      placeholder="Enter Name"
+                    />
+                    <input
+                      type="text"
+                      name="senderEmail"
+                      value={emailData[selectedEmailIndex]["sender_email"]}
+                      onChange={(e) =>
+                        handleEmailFieldsChange(e.target.value, "sender_email")
+                      }
+                      placeholder="Enter Email"
+                    />
+                  </div>
+                  <div className="email-design input-item">
+                    <label>Design</label>
+                    <div
+                      className="add-template-section"
+                      onClick={openTemplate}
+                    >
+                      <TemplateIcon />
+                      <Link to="">Select a Template</Link>
+                    </div>
+                  </div>
+                </div>
+                <div className="content-save-section">
+                  {"ongoing" == campaignStatus ? (
+                    <button
+                      className="campaign-save mintmrm-btn"
+                      disabled={true}
+                    >
+                      On Going
+                    </button>
+                  ) : (
+                    <>
+                      {/* <button
                       className="campaign-schedule mintmrm-btn outline"
                       disabled={!isPublishValid}
                       onClick={() => updateCampaign("ongoing")}
                     >
                       Publish
                     </button> */}
-                    {isPublishValid ? (
+                      {isPublishValid ? (
+                        <button
+                          className="campaign-schedule mintmrm-btn outline"
+                          // disabled={!isPublishValid}
+                          onClick={() => updateCampaign("ongoing")}
+                        >
+                          Publish
+                        </button>
+                      ) : (
+                        ""
+                      )}
                       <button
-                        className="campaign-schedule mintmrm-btn outline"
-                        // disabled={!isPublishValid}
-                        onClick={() => updateCampaign("ongoing")}
+                        type="submit"
+                        className="campaign-save mintmrm-btn"
+                        onClick={() => updateCampaign("draft")}
+                        disabled={!isValid}
                       >
-                        Publish
+                        Save draft
                       </button>
-                    ) : (
-                      ""
-                    )}
-                    <button
-                      type="submit"
-                      className="campaign-save mintmrm-btn"
-                      onClick={() => updateCampaign("draft")}
-                      disabled={!isValid}
-                    >
-                      Save draft
-                    </button>
-                  </>
-                )}
+                    </>
+                  )}
 
-                {/* {responseMessage && <p>{responseMessage}</p>} */}
+                  {/* {responseMessage && <p>{responseMessage}</p>} */}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="mintmrm-container" style={{ display: isEmailDelete }}>
         <DeletePopup

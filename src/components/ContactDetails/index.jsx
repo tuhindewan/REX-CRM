@@ -21,6 +21,7 @@ import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
+import LoadingIndicator from "../LoadingIndicator";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -51,6 +52,7 @@ export default function ContactDetails() {
   const [assignTags, setAssignTags] = useState([]);
   const [isAssignTo, setIsAssignTo] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [showLoader, setShowLoader] = useState(true);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -105,6 +107,7 @@ export default function ContactDetails() {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setContactData(resJson.data);
+        setShowLoader(false)
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
@@ -463,7 +466,7 @@ export default function ContactDetails() {
           </div>
         </div>
 
-        <div className="contact-details-wrapper">
+        {showLoader ? (<LoadingIndicator type="table" />) : (<div className="contact-details-wrapper">
           <div className="mintmrm-container">
             <div className="contact-details-header">
               <div className="contact-author-info">
@@ -786,12 +789,13 @@ export default function ContactDetails() {
                       <div className="other-info-edit">
                         <h4>Other</h4>
                         <div className="edit-input-field">
-                          <InputItem
+                          {/* <InputItem
                             name="gender"
                             handleChange={handleMetaChange}
                             label="Gender"
                             value={contactData?.meta_fields?.gender}
-                          />
+                          /> */}
+                          <button className="gender-button"></button>
                           <InputItem
                             name="company"
                             handleChange={handleMetaChange}
@@ -1077,7 +1081,7 @@ export default function ContactDetails() {
               </div>
             </div>
           </div>
-        </div>
+        </div>)}
       </div>
       <div className="mintmrm-container" style={{ display: isDelete }}>
         <DeletePopup

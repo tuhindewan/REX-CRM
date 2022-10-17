@@ -155,7 +155,6 @@
       }
 
       .mintmrm-dropdown {
-        width: 315px;
         left: -2px;
         top: calc(100% + 20px);
 
@@ -502,11 +501,13 @@
     table {
       tbody {
         tr {
-          border-bottom: 1px solid #e2e5ed;
-
           .no-contact {
             padding: 235px 500px;
             background-color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 1.2;
+            color: #101828;
             svg {
               display: block;
               margin: 0 auto;
@@ -578,7 +579,6 @@
           .no-contact::before {
             // border-left: 3px solid #ffffff;
             width: 0;
-            
           }
           .email-wrapper {
             background-color: #f9fafb;
@@ -679,6 +679,8 @@
     width: 100%;
     justify-content: space-between;
     background-color: #ffffff;
+    padding: 25px 29px 25px 27px;
+    border-top: 1px solid #e2e5ed;
     border-radius: 0 0 10px 10px;
 
     .footer-show-number {

@@ -94,7 +94,7 @@ const Lists = () => {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [sortButtonName, setSortButtonName] = useState("Name Asc");
+  const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
   // loading or not
   const [loading, setLoading] = useState(false);
   const [showTableHead, setShowTableHead] = useState(false);
@@ -335,9 +335,9 @@ const Lists = () => {
     setOrderBy(order_by);
     setOrderType(order_type);
     if (order_by == "title" && order_type == "asc") {
-      setSortButtonName("Name Asc");
+      setSortButtonName("Name (A - Z)");
     } else if (order_by == "title" && order_type == "desc") {
-      setSortButtonName("Name Desc");
+      setSortButtonName("Name (Z - A)");
     } else if (order_by == "created_at" && order_type == "asc") {
       setSortButtonName("Date Created Asc");
     } else {
@@ -430,14 +430,14 @@ const Lists = () => {
                     <li
                       onClick={(event) => handleSelect(event, "title", "asc")}
                     >
-                      Name Asc
+                      Name (A - Z)
                     </li>
                     <li
                       onClick={(event) => handleSelect(event, "title", "desc")}
                     >
-                      Name Desc
+                      Name (Z - A)
                     </li>
-                    <li
+                    {/* <li
                       onClick={(event) =>
                         handleSelect(event, "created_at", "asc")
                       }
@@ -450,7 +450,7 @@ const Lists = () => {
                       }
                     >
                       Date Created Desc
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
