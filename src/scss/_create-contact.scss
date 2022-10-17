@@ -26,6 +26,92 @@
       flex-wrap: wrap;
       border-radius: 10px 10px 0 0;
 
+      .lists-dropdown,
+      .tags-dropdown,
+      .status-dropdown {
+        position: relative;
+
+        .mrm-custom-select-container {
+          width: 100%;
+
+          .searchbar {
+            input {
+              padding: 4px 15px 4px 40px;
+            }
+          }
+          .single-column {
+            label {
+              padding-bottom: 0;
+            }
+          }
+        }
+
+        .drop-down-button,
+        .mrm-custom-select-btn {
+          position: relative;
+          border: 1px solid #e4e6eb;
+          border-radius: 6px;
+          background-color: #ffffff;
+          width: 100%;
+          padding: 14px 16px;
+          text-align: left;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 17px;
+          letter-spacing: -0.01em;
+          color: #6a707c;
+        }
+        .mrm-custom-select-btn:before {
+          right: 20px;
+        }
+        .drop-down-button::before {
+          content: " ";
+          display: block;
+          position: absolute;
+          border-style: solid;
+          border-color: #686f7f;
+          border-width: 0px 1px 1px 0px;
+          transform: rotate(45deg);
+          transition: border-width 150ms ease-in-out;
+          height: 5px;
+          right: 20px;
+          top: 40%;
+          width: 5px;
+          cursor: pointer;
+        }
+        .drop-down-button.show::before {
+          top: 47%;
+          transform: rotate(225deg);
+        }
+        .mintmrm-dropdown {
+          min-width: 332px;
+        }
+        .add-contact {
+          .searchbar {
+            input {
+              padding: 4px 15px 4px 40px;
+            }
+          }
+          .list-title {
+            margin-bottom: 0;
+          }
+          .option-section {
+            padding: 10px 0;
+            .single-column {
+              label {
+                padding-bottom: 0;
+              }
+              label::after {
+                left: 5px;
+              }
+            }
+          }
+        }
+        .add-contact-status {
+          top: 90px !important;
+        }
+      }
+
       .form-group {
         width: calc(100% / 2 - 10px);
         margin-left: 20px;

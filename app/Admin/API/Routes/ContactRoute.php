@@ -294,6 +294,26 @@ class ContactRoute {
         ]);
 
         /**
+         * Contact import endpoint for WordPress users
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/insert/wordpress', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'insert_native_wp_contacts'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ],
+            ]
+        ]);
+
+        /**
          * Contact import endpoint for WooCommerce customers
          * 
          * @return void

@@ -12,7 +12,7 @@ use WP_REST_Request;
  * @desc [Abstract class for REST API controller]
  */
 
-abstract class BaseController {
+abstract class BaseController extends \WP_REST_Controller {
 
 	/**
      * REST API response code

@@ -34,6 +34,80 @@ class Constants{
         "phone"
     );
 
+    /**
+     * Contact list columns available for hide/show
+     */
+    public static $contact_list_columns = array(
+        [
+            "id"    => "lists",
+            "value" => "Lists"
+        ],
+        [
+            "id"    => "tags",
+            "value" => "Tags"
+        ],
+        [
+            "id"    => "last_activity",
+            "value" => "Last Activity"
+        ],
+        [
+            "id"    => "status",
+            "value" => "Status"
+        ],
+        [
+            "id"    => "phone_number",
+            "value" => "Phone Number"
+        ],
+        [
+            "id"    => "source",
+            "value" => "Source"
+        ],
+        [
+            "id"    => "gender",
+            "value" => "Gender"
+        ],
+        [
+            "id"    => "timezone",
+            "value" => "Timezone"
+        ],
+        [
+            "id"    => "company",
+            "value" => "Company Name"
+        ],
+        [
+            "id"    => "designation",
+            "value" => "Designation"
+        ],
+        [
+            "id"    => "date_of_birth",
+            "value" => "Date of Birth"
+        ],
+        [
+            "id"    => "address",
+            "value" => "Address"
+        ],
+        // [
+        //     "id"    => "address_line_2",
+        //     "value" => "Address Line 2"
+        // ],
+        // [
+        //     "id"    => "postal_code",
+        //     "value" => "Postal Code"
+        // ],
+        // [
+        //     "id"    => "city",
+        //     "value" => "City"
+        // ],
+        // [
+        //     "id"    => "state",
+        //     "value" => "State"
+        // ],
+        // [
+        //     "id"    => "country",
+        //     "value" => "Country"
+        // ]
+    );
+
     /*
     * maichimp api key for testing
     */

@@ -6,8 +6,10 @@ import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import DeletePopup from "../DeletePopup";
+import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
 import EditButton from "../Icons/EditButton";
+import EmailIcon from "../Icons/EmailIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
@@ -214,7 +216,6 @@ export default function ContactDetails() {
     );
     const responseData = await res.json();
     const code = responseData?.code;
-    console.log(responseData);
 
     if (code === 201) {
       setShowNotification("block");
@@ -451,10 +452,9 @@ export default function ContactDetails() {
                 <li>
                   <Link to={`../contacts`}>Contact</Link>
                 </li>
-                {contactData.first_name || contactData.last_name ? <li className="active">
+                <li className="active">
                   {contactData.first_name} {contactData.last_name}
-                </li> : <li className="active">Untitled</li> }
-                
+                </li>
               </ul>
             </div>
           </div>
@@ -468,34 +468,34 @@ export default function ContactDetails() {
                   <img
                     src={contactData.avatar_url}
                     alt="contact-author-img"
-                    style={{ "border-radius": "50%" }}
+                    style={{ borderRadius: "50%" }}
                   />
                 </div>
 
                 <div className="author-short-details">
-                  <div className="author-name-status">
-                    {contactData.first_name || contactData.last_name ? (
-                      <h2 className="author-name">
-                        {contactData.first_name} {contactData.last_name}{" "}
-                      </h2>
-                    ) : (
-                      <h2 className="author-name">Untitled</h2>
-                    )}
-
-                    {contactData.status == "subscribed" ? (
-                      <span className="subscribe">Subscribed</span>
-                    ) : contactData.status == "unsubscribed" ? (
-                      <span className="unsubscribe">Unsubscribed</span>
-                    ) : (
-                      <span className="pending">Pending</span>
-                    )}
-                  </div>
+                  <h2 className="author-name">
+                    {contactData.first_name} {contactData.last_name}
+                  </h2>
 
                   <p>
                     Added via {contactData.added_by_login} Add on {createMonth}{" "}
                     {toOrdinalSuffix(createDay)}, {createYear} at{" "}
                     {contactData.created_time}
                   </p>
+
+                  {contactData.status == "subscribed" ? (
+                    <span className="subscribe" style={{ color: "green" }}>
+                      Subscribed
+                    </span>
+                  ) : contactData.status == "unsubscribed" ? (
+                    <span className="unsubscribe" style={{ color: "red" }}>
+                      Unsubscribed
+                    </span>
+                  ) : (
+                    <span className="pending" style={{ color: "yellow" }}>
+                      Pending
+                    </span>
+                  )}
 
                   {/* <div className="rating">
                   <span>
@@ -530,14 +530,17 @@ export default function ContactDetails() {
                   setRefresh={setRefresh}
                 />
 
-                {/* <button className="create-mail" onClick={emailForm}>
+                <button className="create-mail" onClick={emailForm}>
                   <EmailIcon />
                 </button>
                 <EmailDrawer
                   isOpen={isEmailForm}
                   isClose={isClose}
                   setIsClose={setIsClose}
-                /> */}
+                  contact={contactData}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
 
                 <button className="more-option" onClick={shoMoreOption}>
                   <ThreeDotIcon />

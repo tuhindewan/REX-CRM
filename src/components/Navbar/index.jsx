@@ -64,7 +64,7 @@ export default function Navbar(props) {
                           {route.bage && (
                             <span className="bage">{route.bage}</span>
                           )}
-                          {"All Contacts" === route.title ? (
+                          {"Contacts" === route.title ? (
                             <span className="bage">
                               {dataCount.total_contacts}
                             </span>

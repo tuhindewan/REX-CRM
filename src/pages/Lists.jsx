@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
+import Delete from "../components/Icons/Delete";
 import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
-import Selectbox from "../components/Selectbox";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
@@ -47,10 +47,10 @@ const Lists = () => {
   const [page, setPage] = useState(1);
 
   // order by which field
-  const [orderBy, setOrderBy] = useState("id");
+  const [orderBy, setOrderBy] = useState("title");
 
   // order type asc or desc
-  const [orderType, setOrderType] = useState("desc");
+  const [orderType, setOrderType] = useState("asc");
 
   // total count of results
   const [count, setCount] = useState(0);
@@ -92,6 +92,8 @@ const Lists = () => {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [sortButtonName, setSortButtonName] = useState("Name Asc");
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -326,6 +328,23 @@ const Lists = () => {
   const onShowAlert = async (status) => {
     setShowAlert(status);
   };
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+  const handleSelect = (event, order_by, order_type) => {
+    setShowDropdown(false);
+    setOrderBy(order_by);
+    setOrderType(order_type);
+    if (order_by == "title" && order_type == "asc") {
+      setSortButtonName("Name Asc");
+    } else if (order_by == "title" && order_type == "desc") {
+      setSortButtonName("Name Desc");
+    } else if (order_by == "created_at" && order_type == "asc") {
+      setSortButtonName("Date Created Asc");
+    } else {
+      setSortButtonName("Date Created Desc");
+    }
+  };
 
   return (
     <>
@@ -365,14 +384,14 @@ const Lists = () => {
                   </div>
                   <div className="contact-button-field">
                     <button
-                      className="contact-cancel mintmrm-btn outline"
+                      className="import-cancel mintmrm-btn outline"
                       onClick={handleCancel}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="contact-save mintmrm-btn"
+                      className="import-save mintmrm-btn"
                       onClick={createOrUpdate}
                     >
                       {editID == 0 ? "Save" : "Update"}
@@ -391,31 +410,50 @@ const Lists = () => {
             <div className="contact-list-header">
               <div className="left-filters">
                 <p className="sort-by">Sort by</p>
-                <Selectbox
-                  options={[
-                    {
-                      title: "Name Asc",
-                      id: "title+asc",
-                    },
-                    {
-                      title: "Name Desc",
-                      id: "title+desc",
-                    },
-                    {
-                      title: "Date Created Asc",
-                      id: "created_at+asc",
-                    },
-                    {
-                      title: "Date Created Desc",
-                      id: "created_at+desc",
-                    },
-                  ]}
-                  tags={false}
-                  placeholder="Field"
-                  multiple={false}
-                  onSelect={handleOrderBy}
-                  onRemove={handleOrderBy}
-                />
+                <div className="sort-by-dropdown">
+                  <button
+                    className={
+                      showDropdown
+                        ? "drop-down-button show"
+                        : "drop-down-button"
+                    }
+                    onClick={handleDropdown}
+                  >
+                    {sortButtonName}
+                  </button>
+                  <ul
+                    className={
+                      showDropdown
+                        ? "mintmrm-dropdown show"
+                        : "mintmrm-dropdown"
+                    }
+                  >
+                    <li
+                      onClick={(event) => handleSelect(event, "title", "asc")}
+                    >
+                      Name Asc
+                    </li>
+                    <li
+                      onClick={(event) => handleSelect(event, "title", "desc")}
+                    >
+                      Name Desc
+                    </li>
+                    <li
+                      onClick={(event) =>
+                        handleSelect(event, "created_at", "asc")
+                      }
+                    >
+                      Date Created Asc
+                    </li>
+                    <li
+                      onClick={(event) =>
+                        handleSelect(event, "created_at", "desc")
+                      }
+                    >
+                      Date Created Desc
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div className="right-buttons">
                 {/* search input */}
@@ -455,8 +493,8 @@ const Lists = () => {
                           : "mintmrm-dropdown"
                       }
                     >
-                      <li className="delete" onClick={deleteMultipleList}>
-                        Delete Selected
+                      <li onClick={deleteMultipleList}>
+                        <Delete /> Delete Selected
                       </li>
                     </ul>
                   </button>

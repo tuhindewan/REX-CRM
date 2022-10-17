@@ -13,8 +13,10 @@ import ImportConfirmation from "../components/ImportConfirmation";
 import CreateList from "../components/List/CreateList";
 import UpdateList from "../components/List/UpdateList";
 import SelectFieldsMap from "../components/SelectFieldsMap";
+import Settings from "../components/Setting";
 import CreateTag from "../components/Tag/CreateTag";
 import UpdateTag from "../components/Tag/UpdateTag";
+import WordPressFieldMap from "../components/WordPressFieldMap";
 import Contacts from "../pages/Contacts";
 import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
@@ -65,6 +67,11 @@ const routes = [
   {
     path: "/contacts/import/wordpress",
     element: ImportWordpress,
+    hideInMenu: true,
+  },
+  {
+    path: "/contacts/import/wordpress/map",
+    element: WordPressFieldMap,
     hideInMenu: true,
   },
   {
@@ -181,6 +188,11 @@ const routes = [
     element: FormEditor,
     hideInMenu: true,
   },
+  {
+    path        : "/settings",
+    element     : Settings,
+    hideInMenu  : true,
+  }
 ];
 
 export default routes;

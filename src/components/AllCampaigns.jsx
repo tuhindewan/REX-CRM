@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useGlobalStore } from "../hooks/useGlobalStore";
 import {
   deleleMultipleCampaigns,
   deleteSingleCampaign,
@@ -11,13 +12,13 @@ import SingleCampaign from "./Campaign/SingleCampaign";
 import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
-import ThreeDotIcon from "./Icons/ThreeDotIcon";
-import SuccessfulNotification from "./SuccessfulNotification";
 import Pagination from "./Pagination";
-import SearchNavbar from "./SearchNavbar";
-import Plus from "./Icons/Plus";
+import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {
+  useGlobalStore.setState({
+    hideGlobalNav: true,
+  });
   let navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [campaigns, setCampaigns] = useState([]);
@@ -166,26 +167,33 @@ export default function AllCampaigns() {
     <>
       <div className="campaign-index-page">
         <CampaignsNavbar />
-        <SearchNavbar />
+        {/* <SearchNavbar /> */}
         <div className="campaign-list-page">
           <div className="mintmrm-container">
             <div className="campaign-list-area">
-              <div className="campaign-title-header">
-                <div className="left-section">
-                  <h2 className="campaign-title">Campaigns</h2>
-                </div>
-                <div className="right-section">
-                  <Link to="/campaigns/create">
-                    <button className="add-contact-btn mintmrm-btn ">
-                      <Plus /> Add Campaign
-                    </button>
-                  </Link>
-                </div>
-              </div>
               <div className="campaign-list-header">
                 <div className="left-filters">
-                  <h5 className="list-view">List View</h5>
+                  {/* <FilterBox
+                    label="Status"
+                    name="Status"
+                    options={[
+                      {
+                        title: "Pending",
+                        id: "pending",
+                      },
+                      {
+                        title: "Subscribed",
+                        id: "subscribed",
+                      },
+                      {
+                        title: "Unsubscribed",
+                        id: "unsubscribed",
+                      },
+                    ]}
+                    placeholder="Status"
+                  /> */}
                 </div>
+
                 <div className="right-buttons">
                   <span className="search-section">
                     <Search />
@@ -195,8 +203,11 @@ export default function AllCampaigns() {
                       onChange={(e) => {
                         let value = e.target.value;
                         setSearch(value);
+                        // only set query when there are more than 3 characters
                         if (value.length >= 3) {
                           setQuery(`&search=${value}`);
+                          // on every new search term set the page explicitly to 1 so that results can
+                          // appear
                           setPage(1);
                         } else {
                           setQuery("");
@@ -205,7 +216,7 @@ export default function AllCampaigns() {
                       placeholder="Search by title"
                     />
                   </span>
-                  
+
                   {/* <FilterBox
                     label="Status"
                     name="Status"

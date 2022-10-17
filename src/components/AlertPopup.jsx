@@ -12,15 +12,15 @@ export default function AlertPopup(props) {
 
   return (
     <div
-      class={
+    className={
         deleteClass
           ? "mintmrm-delete-alert-wrapper"
           : "mintmrm-delete-alert-wrapper"
       }
     >
-      <div class="mintmrm-delete-confirmation">
+      <div className="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
-          <h3>Alert</h3>
+          <h3>No item selected</h3>
           <div className="cross-icon" onClick={onCancel}>
             <CrossIcon />
           </div>
@@ -30,9 +30,9 @@ export default function AlertPopup(props) {
           <p>Please select at least one item to bulk action.</p>
         </div>
 
-        <ul class="mintmrm-delete-confirm-btn">
+        <ul className="mintmrm-delete-confirm-btn">
           <li>
-            <button class="btn-default cancel" onClick={onCancel}>
+            <button className="btn-default cancel" onClick={onCancel}>
               Ok
             </button>
           </li>

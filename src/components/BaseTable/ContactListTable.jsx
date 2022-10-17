@@ -1,29 +1,31 @@
 import queryString from "query-string";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  Link,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
-import Plus from "../Icons/Plus";
 // Internal dependencies
-import Swal from "sweetalert2";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import AlertPopup from "../AlertPopup";
+import CustomSelect from "../CustomSelect";
+import DeletePopup from "../DeletePopup";
+import ExportDrawer from "../ExportDrawer";
+import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
+import ExportIcon from "../Icons/ExportIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
+import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
+import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
-import ExportIcon from "../Icons/ExportIcon";
-import ExportDrawer from "../ExportDrawer";
-import FilterItems from "./FilterItems";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import CustomSelect from "../CustomSelect";
-import NoContactIcon from "../Icons/NoContactIcon";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -31,8 +33,6 @@ export default function ContactListTable(props) {
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
 
-  const { endpoint = "contacts" } = props;
-  const [contacts, setContacts] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
@@ -51,14 +51,14 @@ export default function ContactListTable(props) {
   const [contactData, setContactData] = useState([]);
   const [filterContact, setFilterContact] = useState([]);
 
-  const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
+  const [searchColumns, setSearchColumns] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
 
-  const [lists, setLists] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [listsdata, setLists] = useState([]);
+  const [tagsdata, setTags] = useState([]);
 
   const [filterData, setFilterData] = useState({});
 
@@ -81,50 +81,16 @@ export default function ContactListTable(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterParams, setFilterParams] = useState([]);
 
-  const [selectedStatus, setSelectedStatus] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
-
-  const [isFilter, setIsFilter] = useState(0);
+  const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
-
+  let { lists, tags_ids, status } = useParams();
   const [filterRequest, setFilterRequest] = useState({});
-  const [listIds, setListIds] = useState([]);
-  const [tagIds, setTagIds] = useState([]);
-  const [statusIds, setStatusIds] = useState([]);
-  const [filterElem, setFilterElem] = useState({
-    lists: [],
-    tags: [],
-    status: [],
-  });
-  useEffect(() => {
-    selectedLists.map((list) => {
-      // console.log(list);
-      setListIds([...listIds, list.id]);
-      setFilterElem((prev) => ({
-        ...prev,
-        lists: listIds,
-      }));
-    });
-    selectedTags.map((tag) => {
-      setTagIds([...tagIds, tag.id]);
-      setFilterElem((prev) => ({
-        ...prev,
-        tags: tagIds,
-      }));
-    });
-    selectedStatus.map((status) => {
-      setStatusIds([...statusIds, status.id]);
-      setFilterElem((prev) => ({
-        prev,
-        status: statusIds,
-      }));
-    });
-  }, [selectedLists, selectedStatus, selectedTags]);
 
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
 
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
@@ -135,42 +101,90 @@ export default function ContactListTable(props) {
 
   const [isNoteForm, setIsNoteForm] = useState(true);
   const [isCloseNote, setIsCloseNote] = useState(true);
+  const [showAlert, setShowAlert] = useState("none");
+  const [isDelete, setIsDelete] = useState("none");
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [assignLists, setAssignLists] = useState([]);
+  const [assignTags, setAssignTags] = useState([]);
+  const [selectGroup, setSelectGroup] = useState("lists");
 
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [filteredStatus, setFilteredStatus] = useState([]);
+  const [filteredLists, setFilteredLists] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
+  const [listColumns, setListColumns] = useState([]);
+  const [columns, setColumns] = useState([]);
 
-    setFilterAdder((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
+  const filteredColumns = useMemo(() => {
+    if (searchColumns) {
+      return listColumns.filter(
+        (item) =>
+          item.value.toLowerCase().indexOf(searchColumns.toLocaleLowerCase()) >
+          -1
+      );
+    }
+    return listColumns;
+  }, [searchColumns, listColumns]);
 
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setFilterAdder((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
+  const deleteAll = () => {
+    setSelectedLists([]);
+    setSelectedTags([]);
+    setSelectedStatus([]);
+    setFilterRequest({});
+    setFilterData({});
+    setFilterAdder({
+      lists: [],
+      tags: [],
+      status: [],
+    });
+    navigate("/contacts");
   };
 
   useEffect(() => {
-    //console.log(filterAdder);
-
     setSearchParams(filterAdder);
-    setFilterParams(searchParams);
-
-    //  navigate(`${location.pathname}/${filterData}`);
   }, [filterAdder]);
 
   useEffect(() => {
     setFilterData(queryString.parse(location.search));
-  }, [filterParams]);
+    navigate(`${location.pathname}${location.search}`);
+  }, [searchParams]);
 
   useEffect(() => {
-    //console.log("getFilter");
+    let tags_array = [];
+    let lists_array = [];
+    let status_array = [];
 
+    tags_array =
+      "string" == typeof filterData.tags
+        ? filterData.tags.split(" ")
+        : filterData.tags;
+
+    lists_array =
+      "string" == typeof filterData.lists
+        ? filterData.lists.split(" ")
+        : filterData.lists;
+
+    status_array =
+      "string" == typeof filterData.status
+        ? filterData.status.split(" ")
+        : filterData.status;
+
+    setFilterRequest({
+      tags_ids: tags_array,
+      lists_ids: lists_array,
+      status: status_array,
+    });
+
+    filterData.status ? setFilteredStatus(filterData.status) : "";
+    filterData.tags ? setFilteredTags(filterData.tags) : "";
+    filterData.lists ? setFilteredLists(filterData.lists) : "";
+    setFilterPage(1);
+  }, [filterData]);
+
+  useEffect(() => {
     const getFilter = async () => {
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
@@ -193,7 +207,6 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setFilterCount(data.data.count);
             setFilterTotalPages(data.data.total_pages);
-            // setFilterPerPage(data.total_pages);
             setLoaded(true);
           }
         });
@@ -205,15 +218,13 @@ export default function ContactListTable(props) {
       filterRequest.status != undefined
     ) {
       getFilter();
-      setIsFilter(1);
+      setIsFilter(true);
     } else {
-      setIsFilter(0);
-      // toggleRefresh();
+      setIsFilter(false);
     }
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
-    //console.log("Normal Data")
     async function getData() {
       setLoaded(false);
       await fetch(
@@ -229,7 +240,6 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setCount(data.data.count);
             setTotalPages(data.data.total_pages);
-            // setPerPage(data.total_pages);
             setLoaded(true);
           }
         });
@@ -247,12 +257,51 @@ export default function ContactListTable(props) {
       setTags(results.data);
     });
 
-    if (0 == isFilter) getData();
+    if (false == isFilter) getData();
+
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [perPage, page, query, refresh, isFilter]);
+
+  useEffect(() => {
+    async function getColumns() {
+      await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (200 == data.code) {
+            setListColumns(data.data);
+          }
+        });
+    }
+
+    getColumns();
+    getStoredColumns();
+  }, []);
 
   const toggleRefresh = () => {
     setRefresh((prev) => !prev);
   };
+
+  async function getStoredColumns() {
+    await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/stored`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        if (200 == data.code) {
+          console.log(data.data);
+          setColumns(data.data);
+        }
+      });
+  }
 
   const showMoreOption = () => {
     setActive(!isActive);
@@ -260,39 +309,48 @@ export default function ContactListTable(props) {
   };
 
   async function deleteMultipleContacts() {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        if (selected.length > 0) {
-          const res = await fetch(
-            `${window.MRM_Vars.api_base_url}mrm/v1/contacts/`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-type": "application/json",
-              },
-              body: JSON.stringify({
-                contact_ids: selected,
-              }),
-            }
-          );
-          Swal.fire("Deleted!", "Contact has been deleted.", "success");
+    if (selected.length > 0) {
+      setIsDelete("block");
+      setDeleteTitle("Delete Multiple");
+      setDeleteMessage("Are you sure you want to delete these selected items?");
+    } else {
+      setShowAlert("block");
+    }
+  }
+
+  // Delete multiple contacts after delete confirmation
+  const onMultiDelete = async (status) => {
+    if (status) {
+      deleteMultipleContactsItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
           setAllSelected(false);
+          setSelected([]);
           useGlobalStore.setState({
             counterRefresh: !counterRefresh,
           });
-          toggleRefresh();
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
         }
-      }
-    });
-  }
+      });
+    }
+    setIsDelete("none");
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
 
   const handleSelectOne = (e) => {
     if (selected.includes(e.target.id)) {
@@ -334,11 +392,30 @@ export default function ContactListTable(props) {
   };
 
   const showListDropdown = () => {
-    setIsAssignTo(!isAssignTo);
-    setActive(!isActive);
+    if (!selected.length) {
+      setShowAlert("block");
+    } else {
+      setSelectGroup("lists");
+      setIsAssignTo(!isAssignTo);
+      setActive(!isActive);
+    }
+  };
+
+  const showTagDropdown = () => {
+    if (!selected.length) {
+      setShowAlert("block");
+    } else {
+      setSelectGroup("tags");
+      setIsAssignTo(!isAssignTo);
+      setActive(!isActive);
+    }
   };
 
   const showAddColumnList = () => {
+    setAddColumn(!isAddColumn);
+  };
+
+  const hideAddColumnList = () => {
     setAddColumn(!isAddColumn);
   };
 
@@ -347,48 +424,79 @@ export default function ContactListTable(props) {
     setIsCloseNote(!isCloseNote);
   };
 
-  const onCustomSelect = (e) => {};
-
   const deleteSelectedlist = (e, id) => {
     const index = selectedLists.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
-    if (index >= 0) {
+    if (0 <= index) {
       setSelectedLists(selectedLists.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        lists: prev.lists.filter((item) => {
+          return item != id;
+        }),
+      }));
+      // setFilterAdder(filterAdder.lists.filter((item) => item != id));
     }
   };
   const deleteSelectedtag = (e, id) => {
     const index = selectedTags.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
-    if (index >= 0) {
+    if (0 <= index) {
       setSelectedTags(selectedTags.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        tags: prev.tags.filter((item) => {
+          return item != id;
+        }),
+      }));
     }
   };
   const deleteSelectedstatus = (e, id) => {
     const index = selectedStatus.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
-    if (index >= 0) {
+    if (0 <= index) {
       setSelectedStatus(selectedStatus.filter((item) => item.id != id));
+      setFilterAdder((prev) => ({
+        ...prev,
+        status: prev.status.filter((item) => {
+          return item != id;
+        }),
+      }));
     }
   };
-  const deleteAll = () => {
-    setSelectedLists([]);
-    setSelectedTags([]);
-    setSelectedStatus([]);
+
+  const saveColumnList = async () => {
+    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/columns/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        contact_columns: columns,
+      }),
+    });
+    const responseData = await res.json();
+    const code = responseData?.code;
+    if (code === 201) {
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      setColumns(responseData.data);
+      toggleRefresh();
+    } else {
+      // Validation messages
+      setErrors({
+        ...errors,
+        email: responseData?.message,
+      });
+    }
   };
 
   return (
     <>
-      <div
-        className="contact-list-header"
-        onClick={() => {
-          setIsLists(false);
-          setIsTags(false);
-          setIsStatus(false);
-        }}
-      >
+      <div className="contact-list-header">
         <div className="left-filters filter-box">
           <div className="form-group left-filter">
             <CustomSelect
@@ -396,7 +504,7 @@ export default function ContactListTable(props) {
               setSelected={setSelectedLists}
               endpoint="/lists"
               placeholder="Lists"
-              name="list"
+              name="lists"
               listTitle="CHOOSE LIST"
               listTitleOnNotFound="No Data Found"
               searchPlaceHolder="Search..."
@@ -405,6 +513,10 @@ export default function ContactListTable(props) {
               showListTitle={true}
               showSelectedInside={false}
               allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
           <div className="form-group left-filter">
@@ -413,7 +525,7 @@ export default function ContactListTable(props) {
               setSelected={setSelectedTags}
               endpoint="/tags"
               placeholder="Tags"
-              name="tag"
+              name="tags"
               listTitle="CHOOSE TAG"
               listTitleOnNotFound="No Data Found"
               searchPlaceHolder="Search..."
@@ -422,6 +534,10 @@ export default function ContactListTable(props) {
               showListTitle={true}
               showSelectedInside={false}
               allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
           <div className="form-group left-filter">
@@ -439,36 +555,37 @@ export default function ContactListTable(props) {
               showListTitle={true}
               showSelectedInside={false}
               allowNewCreate={true}
+              setFilterAdder={setFilterAdder}
+              filterAdder={filterAdder}
+              filterRequest={filterRequest}
+              prefix="filter"
             />
           </div>
         </div>
 
         <div className="right-buttons">
-          {!isFilter ? (
-            <span className="search-section">
-              <Search />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => {
-                  let value = e.target.value;
-                  setSearch(value);
-                  // only set query when there are more than 3 characters
-                  if (value.length >= 3) {
-                    setQuery(encodeURI(`&search=${value}`));
-                    // on every new search term set the page explicitly to 1 so that results can
-                    // appear
-                    setPage(1);
-                  } else {
-                    setQuery("");
-                  }
-                }}
-                placeholder="Search..."
-              />
-            </span>
-          ) : (
-            ""
-          )}
+          <span className="search-section">
+            <Search />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                let value = e.target.value;
+                setSearch(value);
+                setFilterSearch(value);
+                // only set query when there are more than 3 characters
+                if (value.length >= 3) {
+                  setQuery(encodeURI(`&search=${value}`));
+                  // on every new search term set the page explicitly to 1 so that results can
+                  // appear
+                  setPage(1);
+                } else {
+                  setQuery("");
+                }
+              }}
+              placeholder="Search..."
+            />
+          </span>
 
           <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
             <ExportIcon />
@@ -490,13 +607,65 @@ export default function ContactListTable(props) {
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>
-              <li onClick={showListDropdown}>Assign to tag</li>
-              <li onClick={showListDropdown}>Assign to segment</li>
+              <li onClick={showTagDropdown}>Assign to tag</li>
+              {/* <li onClick={showListDropdown}>Assign to segment</li> */}
               <li className="delete" onClick={deleteMultipleContacts}>
                 Delete
               </li>
             </ul>
-            <AssignedItems isActive={isAssignTo} />
+            {"lists" == selectGroup ? (
+              <AssignedItems
+                selected={assignLists}
+                setSelected={setAssignLists}
+                endpoint="lists"
+                placeholder="Lists"
+                name="list"
+                listTitle="CHOOSE LIST"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsAssignTo={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+                prefix="assign"
+              />
+            ) : (
+              <AssignedItems
+                selected={assignTags}
+                setSelected={setAssignTags}
+                endpoint="tags"
+                placeholder="Tags"
+                name="tag"
+                listTitle="CHOOSE Tag"
+                listTitleOnNotFound="No Data Found"
+                searchPlaceHolder="Search..."
+                allowMultiple={true}
+                showSearchBar={true}
+                showListTitle={true}
+                showSelectedInside={false}
+                allowNewCreate={true}
+                isActive={isAssignTo}
+                setIsAssignTo={setIsAssignTo}
+                contactIds={selected}
+                refresh={refresh}
+                setRefresh={setRefresh}
+                setShowNotification={setShowNotification}
+                showNotification={"mone"}
+                setMessage={setMessage}
+                message={message}
+                prefix="assign"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -552,22 +721,6 @@ export default function ContactListTable(props) {
         <div className="clear-all" onClick={deleteAll}>
           <span>Clear All</span>
         </div>
-
-        {/* <div className="selected-items">
-          <span>Product Feed</span>
-          <CrossIcon />
-        </div>
-        <div className="selected-items">
-          <span>Funnel</span>
-          <CrossIcon />
-        </div>
-        <div className="selected-items">
-          <span>WPVR</span>
-          <CrossIcon />
-        </div>
-        <div className="clear-all">
-          <span>Clear All</span>
-        </div> */}
       </div>
 
       <div className="pos-relative">
@@ -588,32 +741,46 @@ export default function ContactListTable(props) {
                   type="search"
                   name="column-search"
                   placeholder="Search..."
+                  value={searchColumns}
+                  onChange={(e) => setSearchColumns(e.target.value)}
                 />
               </span>
             </li>
 
             <li className="list-title">Choose columns</li>
 
-            <Link className="add-action" to="">
-              <Plus />
-              Add Column
-            </Link>
+            {filteredColumns.length > 0 ? (
+              filteredColumns &&
+              filteredColumns.map((column) => {
+                return (
+                  <li className="single-column" key={column.id}>
+                    <ColumnList
+                      title={column.value}
+                      id={column.id}
+                      selected={columns}
+                      setSelected={setColumns}
+                    />
+                  </li>
+                );
+              })
+            ) : (
+              <div>No Column Found</div>
+            )}
 
-            {/* {contactListColumns.map((column, index) => {
-                  <li className="single-column">
-                    <ColumnList title={column.title} key={index} />
-                  </li>;
-                })} */}
-
-            {/* <li className="button-area">
-              <button className="mintmrm-btn outline default-btn">
+            <li className="button-area">
+              {/* <button className="mintmrm-btn outline default-btn">
                 Default
-              </button>
-              <button className="mintmrm-btn outline cancel-btn">
+              </button> */}
+              <button
+                className="mintmrm-btn outline cancel-btn"
+                onClick={hideAddColumnList}
+              >
                 Cancel
               </button>
-              <button className="mintmrm-btn save-btn">Save</button>
-            </li> */}
+              <button className="mintmrm-btn save-btn" onClick={saveColumnList}>
+                Save
+              </button>
+            </li>
           </ul>
         </div>
         <div className="contact-list-table">
@@ -637,28 +804,17 @@ export default function ContactListTable(props) {
 
                 <th className="last-name">Last Name</th>
 
-                <th className="list">List</th>
-                <th className="tag">Tag</th>
-                <th className="last-activity">Last Activity</th>
-                <th className="status">Status</th>
-                <th className="phone-number">Phone Number</th>
-                <th className="source">Source</th>
+                {columns?.map((column) => {
+                  return (
+                    <th key={column.id} className={column.id}>
+                      {column.title}
+                    </th>
+                  );
+                })}
                 <th className="action"></th>
               </tr>
             </thead>
             <tbody>
-              {!contactData.length && (
-                <tr>
-                  <td
-                    className="no-contact"
-                    colspan="10"
-                    style={{ textAlign: "center" }}
-                  >
-                    <NoContactIcon />
-                    No contact data found.
-                  </td>
-                </tr>
-              )}
               {contactData.map((contact, idx) => {
                 return (
                   <SingleContact
@@ -669,24 +825,57 @@ export default function ContactListTable(props) {
                     setCurrentActive={setCurrentActive}
                     handleSelectOne={handleSelectOne}
                     selected={selected}
+                    columns={columns}
                   />
                 );
               })}
             </tbody>
           </table>
+          {contactData.length == 0 && (
+            <div className="mrm-empty-state-wrapper">
+              <ContactProfile />
+              <div>
+                No Contact Found{" "}
+                {search.length > 0 ? ` for the term "${search}"` : null}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {totalPages > 1 && (
         <div className="contact-list-footer">
-          <Pagination
-            currentPage={page}
-            pageSize={perPage}
-            onPageChange={setPage}
-            totalCount={count}
-            totalPages={totalPages}
-          />
+          {false === isFilter ? (
+            <Pagination
+              currentPage={page}
+              pageSize={perPage}
+              onPageChange={setPage}
+              totalCount={count}
+              totalPages={totalPages}
+            />
+          ) : (
+            <Pagination
+              currentPage={filterPage}
+              pageSize={filterPerPage}
+              onPageChange={setFilterPage}
+              totalCount={filterCount}
+              totalPages={filterTotalPages}
+            />
+          )}
         </div>
       )}
+      <div className="mintmrm-container" style={{ display: showAlert }}>
+        <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+      </div>
+      <div className="mintmrm-container" style={{ display: isDelete }}>
+        <DeletePopup
+          title={deleteTitle}
+          message={deleteMessage}
+          onDeleteShow={onDeleteShow}
+          onMultiDelete={onMultiDelete}
+          selected={selected}
+        />
+      </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }
