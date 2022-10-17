@@ -95,6 +95,53 @@ function Sidebar() {
     },
   });
 
+  useEffect(() => {
+    setSettingData({
+      settings: {
+        confirmation_type: {
+          same_page: {
+            message_to_show: messageToShow,
+            after_form_submission: afterFormSubmission,
+          },
+          to_a_page: {
+            page: page,
+            redirection_message: redirectionMessage,
+          },
+          to_a_custom_url: {
+            custom_url: customURL,
+            custom_redirection_message: customRedirectionMessage,
+          },
+        },
+        form_layout: formLayout,
+        schedule: {
+          form_scheduling: formScheduling,
+          submission_start: {
+            date: submissionStartDate,
+            time: submissionStartTime,
+          },
+        },
+        restriction: {
+          max_entries: maxEntries,
+          max_number: count,
+          max_type: "",
+        },
+      },
+    });
+  }, [
+    messageToShow,
+    afterFormSubmission,
+    page,
+    redirectionMessage,
+    customURL,
+    formLayout,
+    formScheduling,
+    submissionStartDate,
+    submissionStartTime,
+    maxEntries,
+    count,
+    maxType,
+  ]);
+
   let currentDate = new Date();
 
   const toggleTab = (index) => {
