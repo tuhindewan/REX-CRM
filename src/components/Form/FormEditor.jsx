@@ -129,14 +129,26 @@ const FormEditor = (props) => {
       title: formData?.title,
       form_body: storedBlocks,
     };
-    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(post_data),
-    });
-    const responseData = await res.json();
+    if(id == undefined){
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      });
+      const responseData = await res.json();
+    }else{
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      });
+      const responseData = await res.json();
+    }
+
   };
 
   const [positionName, setPositionName] = useState("");
