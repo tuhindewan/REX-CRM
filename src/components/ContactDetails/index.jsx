@@ -23,6 +23,8 @@ import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 import LoadingIndicator from "../LoadingIndicator";
 import NoActivityIcon from "../Icons/NoActivityIcon";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
+import CrossIcon from "../Icons/CrossIcon";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -484,19 +486,6 @@ export default function ContactDetails() {
   return (
     <>
       <div className="mintmrm-contact-details">
-        <div className="contact-details-banner">
-          <div className="contact-details-breadcrumb">
-            <div className="mintmrm-container">
-              <ul className="mintmrm-breadcrumb">
-                <li>
-                  <Link to={`../contacts`}>Contacts</Link>
-                </li>
-                <li className="active">{contactData.email}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         {showLoader ? (
           <LoadingIndicator type="table" />
         ) : (
@@ -513,28 +502,40 @@ export default function ContactDetails() {
                   </div>
 
                   <div className="author-short-details">
-                    <h2 className="author-name">
-                      {contactData.first_name} {contactData.last_name}
-                    </h2>
+                    <div className="back-button">
+                      <DoubleAngleLeftIcon />
+                      <Link to={`../contacts`}>Back</Link>
+                    </div>
+                    <div className="author-name-status">
+                      {contactData.first_name || contactData.last_name ? (
+                        <h2 className="author-name">
+                          {contactData.first_name} {contactData.last_name}{" "}
+                        </h2>
+                      ) : (
+                        <h2 className="author-name">Untitled</h2>
+                      )}
+
+                      {contactData.status == "subscribed" ? (
+                        <span className="subscribe">Subscribed</span>
+                      ) : contactData.status == "unsubscribed" ? (
+                        <span className="unsubscribe">Unsubscribed</span>
+                      ) : (
+                        <span className="pending">Pending</span>
+                      )}
+                    </div>
 
                     <p>
                       Added via {contactData.added_by_login} Add on{" "}
                       {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
                       at {contactData.created_time}
                     </p>
-
-                    {contactData.status == "subscribed" ? (
-                      <span className="subscribe" style={{ color: "green" }}>
-                        Subscribed
-                      </span>
-                    ) : contactData.status == "unsubscribed" ? (
-                      <span className="unsubscribe" style={{ color: "red" }}>
-                        Unsubscribed
-                      </span>
-                    ) : (
-                      <span className="pending" style={{ color: "yellow" }}>
-                        Pending
-                      </span>
+                    {contactData.status == "pending" && (
+                      <div
+                        className="double-optin-info"
+                        onClick={() => handleDoubleOptin()}
+                      >
+                        Send Double Optin Email
+                      </div>
                     )}
 
                     {/* <div className="rating">
@@ -582,9 +583,10 @@ export default function ContactDetails() {
                     setRefresh={setRefresh}
                   />
 
-                  <button className="more-option" onClick={shoMoreOption}>
-                    <ThreeDotIcon />
-
+                  <div className="pos-relative">
+                    <button className="more-option" onClick={shoMoreOption}>
+                      <ThreeDotIcon />
+                    </button>
                     <ul
                       className={
                         isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
@@ -618,7 +620,7 @@ export default function ContactDetails() {
                         Delete
                       </li>
                     </ul>
-                  </button>
+                  </div>
                 </div>
               </div>
 
@@ -843,7 +845,9 @@ export default function ContactDetails() {
                               >
                                 {contactData?.meta_fields.gender
                                   ? contactData?.meta_fields.gender
-                                  : (genderButton ? genderButton : "Select Gender")}
+                                  : genderButton
+                                  ? genderButton
+                                  : "Select Gender"}
                               </button>
                               <ul
                                 className={
@@ -1049,8 +1053,76 @@ export default function ContactDetails() {
 
                   <hr />
 
+                  <div className="lists">
+                    <div className="title-section">
+                      <h4 className="title">Lists</h4>
+                      {contactData?.lists.length == 0 && (
+                        <div className="no-item-found">No list found</div>
+                      )}
+                    </div>
+                    <div className="list-wrapper">
+                      {contactData?.lists?.map((list, idx) => {
+                        return (
+                          <span className="single-list" key={list.id}>
+                            {list.title}
+
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={() => {
+                                handleTagListDelete(list.id);
+                              }}
+                            >
+                              <CrossIcon />
+                            </button>
+                          </span>
+                        );
+                      })}
+                      {/* {contactData?.lists?.length == 0 && (
+                      <span>No List Found </span>
+                    )} */}
+                      <button className="add-list" onClick={selectLists}>
+                        <PlusIconSmall /> Add List
+                      </button>
+                    </div>
+                    <AddItems
+                      selected={assignLists}
+                      setSelected={setAssignLists}
+                      endpoint="lists"
+                      placeholder="List"
+                      name="list"
+                      listTitle="CHOOSE LIST"
+                      listTitleOnNotFound="No Data Found"
+                      searchPlaceHolder="Search..."
+                      allowMultiple={true}
+                      showSearchBar={true}
+                      showListTitle={true}
+                      showSelectedInside={false}
+                      allowNewCreate={true}
+                      setIsAssignTo={setSelectList}
+                      contactId={id}
+                      refresh={refresh}
+                      setRefresh={setRefresh}
+                      setShowNotification={setShowNotification}
+                      showNotification={"mone"}
+                      setMessage={setMessage}
+                      message={message}
+                      isActive={selectList}
+                    />
+                    {/* {openListSelectBox && (
+                    <button className="add-list" onClick={handleAddList}>
+                      Add List
+                    </button>
+                  )} */}
+                  </div>
+
                   <div className="tags">
-                    <h4 className="title">Tags</h4>
+                    <div className="title-section">
+                      <h4 className="title">Tags</h4>
+                      {contactData?.tags.length == 0 && (
+                        <div className="no-item-found">No tag found</div>
+                      )}
+                    </div>
                     <div className="tag-wrapper">
                       {contactData?.tags?.map((tag, idx) => {
                         return (
@@ -1063,7 +1135,7 @@ export default function ContactDetails() {
                                 handleTagListDelete(tag.id);
                               }}
                             >
-                              x
+                              <CrossIcon />
                             </button>
                           </span>
                         );
@@ -1104,64 +1176,6 @@ export default function ContactDetails() {
                     {/* {openTagSelectBox && (
                     <button className="add-list" onClick={handleAddTag}>
                       Add Tag
-                    </button>
-                  )} */}
-                  </div>
-
-                  <div className="lists">
-                    <h4 className="title">Lists</h4>
-                    <div className="list-wrapper">
-                      {contactData?.lists?.map((list, idx) => {
-                        return (
-                          <span className="single-list" key={list.id}>
-                            {list.title}
-
-                            <button
-                              className="close-list"
-                              title="Delete"
-                              onClick={() => {
-                                handleTagListDelete(list.id);
-                              }}
-                            >
-                              x
-                            </button>
-                          </span>
-                        );
-                      })}
-                      {/* {contactData?.lists?.length == 0 && (
-                      <span>No List Found </span>
-                    )} */}
-                      <button className="add-list" onClick={selectLists}>
-                        <PlusIconSmall /> Add List
-                      </button>
-                    </div>
-                    <AddItems
-                      selected={assignLists}
-                      setSelected={setAssignLists}
-                      endpoint="lists"
-                      placeholder="List"
-                      name="list"
-                      listTitle="CHOOSE LIST"
-                      listTitleOnNotFound="No Data Found"
-                      searchPlaceHolder="Search..."
-                      allowMultiple={true}
-                      showSearchBar={true}
-                      showListTitle={true}
-                      showSelectedInside={false}
-                      allowNewCreate={true}
-                      setIsAssignTo={setSelectList}
-                      contactId={id}
-                      refresh={refresh}
-                      setRefresh={setRefresh}
-                      setShowNotification={setShowNotification}
-                      showNotification={"mone"}
-                      setMessage={setMessage}
-                      message={message}
-                      isActive={selectList}
-                    />
-                    {/* {openListSelectBox && (
-                    <button className="add-list" onClick={handleAddList}>
-                      Add List
                     </button>
                   )} */}
                   </div>
