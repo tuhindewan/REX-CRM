@@ -1082,31 +1082,20 @@ class Editor extends Component {
         attributes,
         setAttributes
       } = this.props,
-      firstName = attributes.firstName,
-      firstNameLabel = attributes.firstNameLabel,
-      firstNamePlaceholder = attributes.firstNamePlaceholder,
-      isRequiredName = attributes.isRequiredName,
-      lastName = attributes.lastName,
-      lastNameLabel = attributes.lastNameLabel,
-      lastNamePlaceholder = attributes.lastNamePlaceholder,
-      isRequiredLastName = attributes.isRequiredLastName,
       emailLabel = attributes.emailLabel,
-      emailPlaceholder = attributes.emailPlaceholder,
-      phone = attributes.phone,
-      phoneLabel = attributes.phoneLabel,
-      phonePlaceholder = attributes.phonePlaceholder,
-      isRequiredPhone = attributes.isRequiredPhone,
-      requiredMark = attributes.requiredMark;
+      emailPlaceholder = attributes.emailPlaceholder;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Email",
       className: "inner-pannel"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Email Label",
       value: emailLabel,
       onChange: state => this.props.setAttributes({
         emailLabel: state
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Email Placeholder Text",
       value: emailPlaceholder,
       onChange: state => this.props.setAttributes({
@@ -1217,15 +1206,14 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
-      className: "mrm-hr"
     }));
   };
   getInspectorControls = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       key: "mrm-mrm-form-inspector-controls"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      id: "mrm-block-inspected-inspector-control-wrapper"
+      id: "mrm-block-inspected-inspector-control-wrapper",
+      className: "mrm-block-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
   render() {
@@ -1793,8 +1781,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
-      className: "mrm-hr"
     }));
   };
   getInspectorControls = () => {
@@ -2509,19 +2495,22 @@ class Editor extends Component {
       title: "Last Name",
       className: "inner-pannel"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Last Name Label",
       value: lastNameLabel,
       onChange: state => this.props.setAttributes({
         lastNameLabel: state
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Last Name Placeholder Text",
       value: lastNamePlaceholder,
       onChange: state => this.props.setAttributes({
         lastNamePlaceholder: state
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-      label: "Is Required Last Name",
+      className: "mrm-switcher-block",
+      label: "Mark Last Name As Required",
       checked: isRequiredLastName,
       onChange: state => setAttributes({
         isRequiredLastName: state
@@ -2629,15 +2618,14 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
-      className: "mrm-hr"
     }));
   };
   getInspectorControls = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       key: "mrm-mrm-form-inspector-controls"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      id: "mrm-block-inspected-inspector-control-wrapper"
+      id: "mrm-block-inspected-inspector-control-wrapper",
+      className: "mrm-block-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
   render() {
@@ -3930,6 +3918,7 @@ class Editor extends Component {
       title: "Custom Field",
       className: "inner-pannel"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      className: "mrm-inline-label",
       label: "Field Type",
       value: attributes.field_type,
       onChange: select_type => this.onChangeAttribute('field_type', select_type),
@@ -3953,32 +3942,52 @@ class Editor extends Component {
         label: 'Date'
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Field Name",
       value: attributes.field_name,
       onChange: state => setAttributes({
         field_name: state
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: " Field Label",
       value: attributes.field_label,
       onChange: state => setAttributes({
         field_label: state
       })
-    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "select-option-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Option Name"
       // value={ attributes.select_option_name }
       ,
       onChange: state => setAttributes({
         select_option_name: state
       })
-    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
       onClick: () => {
         this.addNewOption();
       },
-      className: "components-button is-primary is-default mrm-action-button",
-      role: "button"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New Option')), attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "add-option-button",
+      role: "button",
+      title: "Add New Option"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+      width: "14",
+      height: "14",
+      fill: "none",
+      viewBox: "0 0 14 14",
+      xmlns: "http://www.w3.org/2000/svg"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+      stroke: "#44af5c",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "stroke-width": "2",
+      d: "M7.008 1v12M1 7h12"
+    }))), attributes.selectOption.map((option, index) => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "single-option-field"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
         value: option.value
         // onChange={ (state ) => setAttributes({ value: state }) }
         ,
@@ -3986,18 +3995,54 @@ class Editor extends Component {
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
         key: `mrm-delete-button-${index}`,
         onClick: val => this.deleteOption(option, val, index),
-        className: "button  mrm-action-button",
+        className: "delete-option-button",
         title: "Delete Option",
         role: "button"
-      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('x')));
-    }), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+        width: "18",
+        height: "18",
+        fill: "none",
+        viewBox: "0 0 22 22",
+        xmlns: "http://www.w3.org/2000/svg"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", {
+        stroke: "#aa646b",
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+        "stroke-width": "2",
+        "clip-path": "url(#clip0_54_11724)"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+        d: "M16.5 5.5l-11 11m0-11l11 11"
+      })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("defs", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("clipPath", {
+        id: "clip0_54_11724"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+        fill: "#fff",
+        d: "M0 0h22v22H0z"
+      }))))));
+    })), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "radio-option-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
       onClick: () => {
         this.addNewRadioOption();
       },
-      className: "components-button is-primary is-default mrm-action-button",
-      role: "button"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New')), attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "add-option-button",
+      role: "button",
+      title: "Add New Option"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+      width: "14",
+      height: "14",
+      fill: "none",
+      viewBox: "0 0 14 14",
+      xmlns: "http://www.w3.org/2000/svg"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+      stroke: "#44af5c",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "stroke-width": "2",
+      d: "M7.008 1v12M1 7h12"
+    }))), attributes.radioOption.map((option, index) => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "single-option-field"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
         value: option.label
         // onChange={ (state ) => setAttributes({ value: state }) }
         ,
@@ -4005,12 +4050,32 @@ class Editor extends Component {
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
         key: `mrm-delete-button-${index}`,
         onClick: val => this.deleteRadioButtonOption(option, val, index),
-        className: "button  mrm-action-button",
+        className: "delete-option-button",
         title: "Delete Option",
         role: "button"
-      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('x')));
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-      label: "Require",
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+        width: "18",
+        height: "18",
+        fill: "none",
+        viewBox: "0 0 22 22",
+        xmlns: "http://www.w3.org/2000/svg"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", {
+        stroke: "#aa646b",
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+        "stroke-width": "2",
+        "clip-path": "url(#clip0_54_11724)"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+        d: "M16.5 5.5l-11 11m0-11l11 11"
+      })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("defs", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("clipPath", {
+        id: "clip0_54_11724"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+        fill: "#fff",
+        d: "M0 0h22v22H0z"
+      }))))));
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+      className: "mrm-switcher-block",
+      label: "Mark As Required",
       checked: attributes.field_require,
       onChange: state => setAttributes({
         field_require: state
@@ -4219,15 +4284,14 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
-      className: "mrm-hr"
     }));
   };
   getInspectorControls = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       key: "mrm-mrm-form-inspector-controls"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      id: "mrm-block-inspected-inspector-control-wrapper"
+      id: "mrm-block-inspected-inspector-control-wrapper",
+      className: "mrm-block-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), this.inputFieldStyle())));
   };
   /**

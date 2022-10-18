@@ -96,19 +96,22 @@ class Editor extends Component {
         return (
                 <PanelBody title="Last Name" className="inner-pannel">
                     <TextControl
+                        className="mrm-inline-label"
                         label="Last Name Label"
                         value={ lastNameLabel }
                         onChange={ (state ) => this.props.setAttributes({ lastNameLabel: state }) }
                     />
 
                     <TextControl
+                        className="mrm-inline-label"
                         label="Last Name Placeholder Text"
                         value={ lastNamePlaceholder }
                         onChange={ (state ) => this.props.setAttributes({ lastNamePlaceholder: state }) }
                     />
 
                     <ToggleControl
-                        label="Is Required Last Name"
+                        className="mrm-switcher-block"
+                        label="Mark Last Name As Required"
                         checked={ isRequiredLastName }
                         onChange={ (state ) => setAttributes({ isRequiredLastName: state }) }
                     />
@@ -134,15 +137,6 @@ class Editor extends Component {
                 />
 
                 <hr className="mrm-hr"/>
-
-                {/* <Typography
-                    label={__('Label Typography')}
-                    value={labelTypography}
-                    onChange={ (value) => setAttributes({ labelTypography: value }) }
-                    disableLineHeight
-                    device={device}
-                    onDeviceChange={value => setAttributes({ device: value })}
-                /> */}
 
                 <label className="blocks-base-control__label">Label Color</label>
                 <ColorPalette
@@ -238,8 +232,6 @@ class Editor extends Component {
                     value = { attributes.inputBorderColor }
                 />
 
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
@@ -247,7 +239,7 @@ class Editor extends Component {
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
-                <div id="mrm-block-inspected-inspector-control-wrapper">
+                <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper" >
                     <Panel>
                         {this.formFields()}
                         {this.formStyle()}

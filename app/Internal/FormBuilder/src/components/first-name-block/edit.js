@@ -116,6 +116,7 @@ class Editor extends Component {
                 />
 
                 <hr className="mrm-hr"/>
+
                 <label className="blocks-base-control__label">Label Color</label>
                 <ColorPalette
                     onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
@@ -211,9 +212,6 @@ class Editor extends Component {
                     onChange={ inputBorderColor => this.onChangeAttribute( 'inputBorderColor', inputBorderColor )}
                     value = { attributes.inputBorderColor }
                 />
-
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
