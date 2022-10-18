@@ -210,7 +210,7 @@ export default function ContactListTable(props) {
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
-    setShowLoader(true)
+    setShowLoader(true);
     async function getData() {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
@@ -491,8 +491,8 @@ export default function ContactListTable(props) {
             <CustomSelect
               selected={selectedLists}
               setSelected={setSelectedLists}
-              showLoader ={showLoader}
-              setShowLoader= {setShowLoader}
+              showLoader={showLoader}
+              setShowLoader={setShowLoader}
               endpoint="/lists"
               placeholder="Lists"
               name="lists"
@@ -717,7 +717,7 @@ export default function ContactListTable(props) {
       </div>
 
       {showLoader ? (
-        <LoadingIndicator type="table"/>
+        <LoadingIndicator type="table" />
       ) : (
         <>
           <div className="pos-relative">
@@ -826,7 +826,7 @@ export default function ContactListTable(props) {
                         style={{ textAlign: "center" }}
                       >
                         <NoContactIcon />
-                        No contact data found
+                        No contact data found "{search}"
                       </td>
                     </tr>
                   )}

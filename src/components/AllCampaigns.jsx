@@ -283,7 +283,7 @@ export default function AllCampaigns() {
                         </div>
 
                         <div className="table-body">
-                          {!campaigns.length && <NoCampaign />}
+                          {!campaigns.length && <NoCampaign search={search} />}
                           {campaigns.map((campaign, idx) => {
                             return (
                               <SingleCampaign
