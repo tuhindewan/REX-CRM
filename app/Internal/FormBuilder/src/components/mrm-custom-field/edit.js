@@ -90,6 +90,7 @@ class Editor extends Component {
         return (
             <PanelBody title="Custom Field" className="inner-pannel">
                 <SelectControl
+                    className="mrm-inline-label"
                     label="Field Type"
                     value={attributes.field_type}
                     onChange={ select_type => this.onChangeAttribute( 'field_type', select_type )}
@@ -120,82 +121,104 @@ class Editor extends Component {
                         }
                     ]}
                 />
+
                 <TextControl
+                    className="mrm-inline-label"
                     label="Field Name"
                     value={ attributes.field_name }
                     onChange={ (state ) => setAttributes({ field_name: state }) }
                 />
+
                 <TextControl
+                    className="mrm-inline-label"
                     label=" Field Label"
                     value={ attributes.field_label }
                     onChange={ (state ) => setAttributes({ field_label: state }) }
                 />
-                {attributes.field_type == 'select' && <TextControl
-                    label="Option Name"
-                    // value={ attributes.select_option_name }
-                    onChange={ (state ) => setAttributes({ select_option_name: state }) }
-                />}
-                {attributes.field_type == 'select' &&   <button onClick={() => {
-                    this.addNewOption()
-                }} className="components-button is-primary is-default mrm-action-button" role="button">
-                {__('Add New Option')}
-                    </button>
-                }
-                { attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
-                        return (
-                            <>
-                            <TextControl
-                                value={ option.value }
-                                // onChange={ (state ) => setAttributes({ value: state }) }
-                                onChange={val => this.onChangeOptionField(option,val, index )}
-                            />
-                            <button
-                                key={`mrm-delete-button-${index}`}
-                                onClick={val => this.deleteOption(option, val, index)}
-                                className="button  mrm-action-button"
-                                title="Delete Option"
-                                role="button" >
-                                {__('x')}
-                            </button>
-                            </>
-                        )
-                })}
 
-                {attributes.field_type == 'radio' &&   <button onClick={() => {
-                    this.addNewRadioOption()
-                }} className="components-button is-primary is-default mrm-action-button" role="button">
-                    {__('Add New')}
-                </button>
-                }
-                { attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
-                    return (
-                        <>
-                            <TextControl
-                                value={ option.label }
-                                // onChange={ (state ) => setAttributes({ value: state }) }
-                                onChange={val => this.onChangeRadioLabelField(option,val, index )}
-                            />
-                            <button
-                                key={`mrm-delete-button-${index}`}
-                                onClick={val => this.deleteRadioButtonOption(option, val, index)}
-                                className="button  mrm-action-button"
-                                title="Delete Option"
-                                role="button" >
-                                {__('x')}
+                {attributes.field_type == 'select' && 
+                    <div className="select-option-wrapper">
+                        <TextControl
+                            className="mrm-inline-label"
+                            label="Option Name"
+                            // value={ attributes.select_option_name }
+                            onChange={ (state ) => setAttributes({ select_option_name: state }) }
+                        />
+                    
+                        <div className="add-option-wrapper">
+                            <h4>Add New Option</h4>
+                            <button onClick={() => { this.addNewOption() }} className="add-option-button" role="button" title="Add New Option">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
                             </button>
-                        </>
-                    )
-                })}
+                        </div>
+
+                        { attributes.selectOption.map((option, index) => {
+                            return (
+                                <div className="single-option-field">
+                                    <TextControl
+                                        value={ option.value }
+                                        // onChange={ (state ) => setAttributes({ value: state }) }
+                                        onChange={val => this.onChangeOptionField(option,val, index )}
+                                    />
+                                    <button
+                                        key={`mrm-delete-button-${index}`}
+                                        onClick={val => this.deleteOption(option, val, index)}
+                                        className="delete-option-button"
+                                        title="Delete Option"
+                                        role="button" >
+
+                                        <svg width="18" height="18" fill="none" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><g stroke="#aa646b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" clip-path="url(#clip0_54_11724)"><path d="M16.5 5.5l-11 11m0-11l11 11"/></g><defs><clipPath id="clip0_54_11724"><path fill="#fff" d="M0 0h22v22H0z"/></clipPath></defs></svg>
+                                    </button>
+                                </div>
+                            )
+                        })}
+                    </div>
+                }
+
+
+                {attributes.field_type == 'radio' && 
+                    <div className="radio-option-wrapper">
+                        <div className="add-option-wrapper">
+                            <h4>Add New Option</h4>
+                            <button onClick={() => { this.addNewRadioOption() }} className="add-option-button" role="button" title="Add New Option" >
+                                <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
+                            </button>
+                        </div>
+                    
+                        { attributes.radioOption.map((option, index) => {
+                            return (
+                                <div className="single-option-field">
+                                    <TextControl
+                                        value={ option.label }
+                                        // onChange={ (state ) => setAttributes({ value: state }) }
+                                        onChange={val => this.onChangeRadioLabelField(option,val, index )}
+                                    />
+                                    <button
+                                        key={`mrm-delete-button-${index}`}
+                                        onClick={val => this.deleteRadioButtonOption(option, val, index)}
+                                        className="delete-option-button"
+                                        title="Delete Option"
+                                        role="button" >
+                                        
+                                        <svg width="18" height="18" fill="none" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><g stroke="#aa646b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" clip-path="url(#clip0_54_11724)"><path d="M16.5 5.5l-11 11m0-11l11 11"/></g><defs><clipPath id="clip0_54_11724"><path fill="#fff" d="M0 0h22v22H0z"/></clipPath></defs></svg>
+                                    </button>
+                                </div>
+                            )
+                        })}
+                    </div>
+                }
 
 
                 <ToggleControl
-                    label="Require"
+                    className="mrm-switcher-block"
+                    label="Mark As Required"
                     checked={ attributes.field_require }
                     onChange={ (state ) => setAttributes({ field_require: state }) }
                 />
             </PanelBody>
         )
     }
+
     onChangeRadioValueField = (option,val, index) =>{
         const {
             setAttributes,
@@ -212,6 +235,7 @@ class Editor extends Component {
         })
         setAttributes({ radioOption: modifiedOption });
     }
+
     onChangeRadioLabelField = (option,val, index) =>{
         const {
             setAttributes,
@@ -228,6 +252,7 @@ class Editor extends Component {
         })
         setAttributes({ radioOption: modifiedOption });
     }
+
     onChangeOptionField = (option,val, index) => {
         const {
             setAttributes,
@@ -245,6 +270,7 @@ class Editor extends Component {
         })
         setAttributes({ selectOption: modifiedOption });
     }
+
     deleteOption = (option, val, index) => {
         const {
             setAttributes,
@@ -257,6 +283,7 @@ class Editor extends Component {
 
 
     }
+
     deleteRadioButtonOption = (option, val, index) => {
         const {
             setAttributes,
@@ -282,6 +309,7 @@ class Editor extends Component {
             setAttributes(attributes.selectOption)
         }
     }
+
     formStyle = () => {
         let { attributes, setAttributes } 	= this.props
 
@@ -298,6 +326,7 @@ class Editor extends Component {
                 />
 
                 <hr className="mrm-hr"/>
+
                 <label className="blocks-base-control__label">Label Color</label>
                 <ColorPalette
                     onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
@@ -394,15 +423,13 @@ class Editor extends Component {
                     value = { attributes.inputBorderColor }
                 />
 
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
-                <div id="mrm-block-inspected-inspector-control-wrapper">
+                <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper">
                     <Panel>
                         {this.customFields()}
                         {this.formStyle()}

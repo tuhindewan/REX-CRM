@@ -74,18 +74,23 @@ class Editor extends Component {
             isRequiredName = attributes.isRequiredName;
         return (
                 <PanelBody title="First Name" className="inner-pannel">
-                   <TextControl
+                    <TextControl
+                        className="mrm-inline-label"
                         label="First Name Label"
                         value={ firstNameLabel }
                         onChange={ (state ) => this.props.setAttributes({ firstNameLabel: state }) }
                     />
+
                     <TextControl
+                        className="mrm-inline-label"
                         label="First Name Placeholder"
                         value={ firstNamePlaceholder }
                         onChange={ (state ) => this.props.setAttributes({ firstNamePlaceholder: state }) }
                     />
+
                     <ToggleControl
-                        label="Is Required First Name"
+                        className="mrm-switcher-block"
+                        label="Mark First Name As Required"
                         checked={ isRequiredName }
                         onChange={ (state ) => setAttributes({ isRequiredName: state }) }
                     />
@@ -111,6 +116,7 @@ class Editor extends Component {
                 />
 
                 <hr className="mrm-hr"/>
+
                 <label className="blocks-base-control__label">Label Color</label>
                 <ColorPalette
                     onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
@@ -206,16 +212,13 @@ class Editor extends Component {
                     onChange={ inputBorderColor => this.onChangeAttribute( 'inputBorderColor', inputBorderColor )}
                     value = { attributes.inputBorderColor }
                 />
-
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
-                <div id="mrm-block-inspected-inspector-control-wrapper">
+                <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper">
                     <Panel>
                         {this.formFields()}
                         {this.formStyle()}
