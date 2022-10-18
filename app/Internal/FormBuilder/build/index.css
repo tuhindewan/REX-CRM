@@ -167,7 +167,7 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar {
   width: 360px;
   margin-left: 35px;
-  height: 710px;
+  min-height: 710px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .mrm-form-builder-sidebar {
   background: #FFFFFF;
