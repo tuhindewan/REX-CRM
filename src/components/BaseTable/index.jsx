@@ -10,9 +10,9 @@ import Unsubscribe from "../Icons/Unsubscribe";
 import NavBar from "../Navbar/index";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
+import ContactNavbar from "../ContactNavbar/index";
 
 import "./style.css";
-
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
@@ -44,6 +44,7 @@ const BaseTable = () => {
 
   return (
     <>
+      <ContactNavbar />
       <div className="contact-list-page">
         <div className="mintmrm-container">
           <div className="contact-info-wrapper">

@@ -11,6 +11,7 @@ import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
+import ContactNavbar from "../components/ContactNavbar";
 
 const Tags = () => {
   // global counter update real time
@@ -316,6 +317,7 @@ const Tags = () => {
 
   return (
     <>
+      <ContactNavbar />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">
@@ -459,77 +461,78 @@ const Tags = () => {
               </div>
             </div>
 
-            {loading ? (<LoadingIndicator type="table" />) : 
-            (
-            <>
-            <div className="contact-list-body">
-              <div class="contact-list-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th className="">
-                        <span class="mintmrm-checkbox no-title">
-                          <input
-                            type="checkbox"
-                            name="bulk-select"
-                            id="bulk-select"
-                            onChange={handleSelectAll}
-                            checked={allSelected}
-                          />
-                          <label for="bulk-select">Name</label>
-                        </span>
-                      </th>
-                      <th>Contacts</th>
-                      <th className="creation-date">Creation Date</th>
-                      <th className="action"></th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {/* List empty or search not found ui */}
-                    {!tags.length && (
+            {loading ? (
+              <LoadingIndicator type="table" />
+            ) : (
+              <>
+                <div className="contact-list-body">
+                  <div class="contact-list-table">
+                    <table>
+                      <thead>
                         <tr>
-                          <td
-                            className="no-contact"
-                            colspan="10"
-                            style={{ textAlign: "center" }}
-                          >
-                            <TagIcon />
-                            No Tag Found
-                          </td>
+                          <th className="">
+                            <span class="mintmrm-checkbox no-title">
+                              <input
+                                type="checkbox"
+                                name="bulk-select"
+                                id="bulk-select"
+                                onChange={handleSelectAll}
+                                checked={allSelected}
+                              />
+                              <label for="bulk-select">Name</label>
+                            </span>
+                          </th>
+                          <th>Contacts</th>
+                          <th className="creation-date">Creation Date</th>
+                          <th className="action"></th>
                         </tr>
-                      )}
-                    {tags.map((list, idx) => {
-                        return (
-                          <TagItem
-                            key={idx}
-                            list={list}
-                            deleteTag={deleteTag}
-                            currentActive={currentActive}
-                            setCurrentActive={setCurrentActive}
-                            handleSelectOne={handleSelectOne}
-                            selected={selected}
-                            editList={editList}
-                          />
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            {totalPages > 1 && (
-              <div className="contact-list-footer">
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              </div>
+                      </thead>
+
+                      <tbody>
+                        {/* List empty or search not found ui */}
+                        {!tags.length && (
+                          <tr>
+                            <td
+                              className="no-contact"
+                              colspan="10"
+                              style={{ textAlign: "center" }}
+                            >
+                              <TagIcon />
+                              No Tag Found
+                            </td>
+                          </tr>
+                        )}
+                        {tags.map((list, idx) => {
+                          return (
+                            <TagItem
+                              key={idx}
+                              list={list}
+                              deleteTag={deleteTag}
+                              currentActive={currentActive}
+                              setCurrentActive={setCurrentActive}
+                              handleSelectOne={handleSelectOne}
+                              selected={selected}
+                              editList={editList}
+                            />
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                {totalPages > 1 && (
+                  <div className="contact-list-footer">
+                    <Pagination
+                      currentPage={page}
+                      pageSize={perPage}
+                      onPageChange={setPage}
+                      totalCount={count}
+                      totalPages={totalPages}
+                    />
+                  </div>
+                )}
+              </>
             )}
-            </>)}
-            
           </div>
         </div>
       </div>
