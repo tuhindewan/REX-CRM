@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
-import CrossIcon from "../Icons/CrossIcon";
 import Delete from "../Icons/Delete";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import InboxIcon from "../Icons/InboxIcon";
@@ -9,6 +8,7 @@ import Plus from "../Icons/Plus";
 import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
@@ -53,6 +53,12 @@ export default function AddCampaign(props) {
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+
+  const menuRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
+  );
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -386,7 +392,7 @@ export default function AddCampaign(props) {
                       />
                     </div>
                     <div className="email-to input-item">
-                      <div className="select-options">
+                      <div className="select-options" ref={menuRef}>
                         <label>To:</label>
                         {recipientLists.length == 0 &&
                         recipientTags.length == 0 ? (
