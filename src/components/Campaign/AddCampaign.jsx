@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
-import CustomSelect from "../CustomSelect";
 import CrossIcon from "../Icons/CrossIcon";
 import Delete from "../Icons/Delete";
 import DownArrowIcon from "../Icons/DownArrowIcon";
@@ -319,8 +318,6 @@ export default function AddCampaign(props) {
 
   return (
     <>
-    {console.log(recipientTags)}
-    {console.log(recipientLists)}
       <div className="mintmrm-add-campaign">
         <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
@@ -391,24 +388,33 @@ export default function AddCampaign(props) {
                     <div className="email-to input-item">
                       <div className="select-options">
                         <label>To:</label>
-                        <button className="all-recipients" onClick={showDropDown}>
-                      All Subscriber
-                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                    </button>
+                        <button
+                          className="all-recipients"
+                          onClick={showDropDown}
+                        >
+                          All Subscriber
+                          {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                        </button>
 
-                    <button
-                      className="all-recipients selected"
-                      onClick={showDropDown}
-                    >
-                      <span className="tags">5 Tags</span>
-                      <span className="from">from</span>
-                      <span className="lists">4 Lists.</span>
-                      <span className="recipients">300 Recipients</span>
-                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                    </button>
-                    
-                    <CampaignCustomSelect dropDown={dropDown} setRecipientTags={setRecipientTags} recipientTags={recipientTags} setRecipientLists={setRecipientLists} recipientLists={recipientLists} />
-                    <div></div>
+                        <button
+                          className="all-recipients selected"
+                          onClick={showDropDown}
+                        >
+                          <span className="tags">5 Tags</span>
+                          <span className="from">from</span>
+                          <span className="lists">4 Lists.</span>
+                          <span className="recipients">300 Recipients</span>
+                          {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                        </button>
+
+                        <CampaignCustomSelect
+                          dropDown={dropDown}
+                          setRecipientTags={setRecipientTags}
+                          recipientTags={recipientTags}
+                          setRecipientLists={setRecipientLists}
+                          recipientLists={recipientLists}
+                        />
+                        <div></div>
                       </div>
                       <div
                         className={
