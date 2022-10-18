@@ -440,7 +440,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/keyboard-shortcuts */ "@wordpress/keyboard-shortcuts");
 /* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__);
 
-
 /**
  * WordPress dependencies
  */
@@ -457,8 +456,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
-
 function BlockEditor(_ref) {
   let {
     settings: _settings
@@ -469,16 +466,14 @@ function BlockEditor(_ref) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/notices');
   const canUserCreateMedia = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
     const _canUserCreateMedia = select('core').canUser('create', 'media');
-
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
     }
-
-    return { ..._settings,
-
+    return {
+      ..._settings,
       mediaUpload(_ref2) {
         let {
           onError,
@@ -495,35 +490,32 @@ function BlockEditor(_ref) {
           ...rest
         });
       }
-
     };
   }, [canUserCreateMedia, _settings]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const storedBlocks = window.localStorage.getItem('getmrmblocks');
-
     if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
-      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks)); // createInfoNotice( 'Blocks loaded', {
+      handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
+      // createInfoNotice( 'Blocks loaded', {
       // 	type: 'snackbar',
       // 	isDismissible: true,
       // } );
     }
   }, []);
+
   /**
    * Wrapper for updating blocks. Required as `onInput` callback passed to
    * `BlockEditorProvider` is now called with more than 1 argument. Therefore
    * attempting to setState directly via `updateBlocks` will trigger an error
    * in React.
    */
-
   function handleUpdateBlocks(blocks) {
     updateBlocks(blocks);
   }
-
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
@@ -537,7 +529,6 @@ function BlockEditor(_ref) {
     className: "get-mrm-block-editor__block-list"
   })))))));
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (BlockEditor);
 
 /***/ }),
@@ -892,7 +883,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -908,6 +898,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -981,7 +972,6 @@ const mrmEmailField = _ref => {
     pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
   })))))));
 };
-
 mrmEmailField.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -1065,13 +1055,15 @@ class Editor extends Component {
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
-      adminEmail: { ...this.props.attributes.adminEmail,
+      adminEmail: {
+        ...this.props.attributes.adminEmail,
         [key]: value
       }
     });
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -1087,24 +1079,24 @@ class Editor extends Component {
   };
   formFields = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        firstName = attributes.firstName,
-        firstNameLabel = attributes.firstNameLabel,
-        firstNamePlaceholder = attributes.firstNamePlaceholder,
-        isRequiredName = attributes.isRequiredName,
-        lastName = attributes.lastName,
-        lastNameLabel = attributes.lastNameLabel,
-        lastNamePlaceholder = attributes.lastNamePlaceholder,
-        isRequiredLastName = attributes.isRequiredLastName,
-        emailLabel = attributes.emailLabel,
-        emailPlaceholder = attributes.emailPlaceholder,
-        phone = attributes.phone,
-        phoneLabel = attributes.phoneLabel,
-        phonePlaceholder = attributes.phonePlaceholder,
-        isRequiredPhone = attributes.isRequiredPhone,
-        requiredMark = attributes.requiredMark;
+        attributes,
+        setAttributes
+      } = this.props,
+      firstName = attributes.firstName,
+      firstNameLabel = attributes.firstNameLabel,
+      firstNamePlaceholder = attributes.firstNamePlaceholder,
+      isRequiredName = attributes.isRequiredName,
+      lastName = attributes.lastName,
+      lastNameLabel = attributes.lastNameLabel,
+      lastNamePlaceholder = attributes.lastNamePlaceholder,
+      isRequiredLastName = attributes.isRequiredLastName,
+      emailLabel = attributes.emailLabel,
+      emailPlaceholder = attributes.emailPlaceholder,
+      phone = attributes.phone,
+      phoneLabel = attributes.phoneLabel,
+      phonePlaceholder = attributes.phonePlaceholder,
+      isRequiredPhone = attributes.isRequiredPhone,
+      requiredMark = attributes.requiredMark;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Email",
       className: "inner-pannel"
@@ -1124,11 +1116,11 @@ class Editor extends Component {
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        labelTypography = attributes.labelTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Form Style",
       initialOpen: false
@@ -1161,11 +1153,11 @@ class Editor extends Component {
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        inputTypography = attributes.inputTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
@@ -1236,7 +1228,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -1279,8 +1270,9 @@ class Editor extends Component {
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + 'px',
       borderColor: inputBorderColor
-    }; // display the map selector
+    };
 
+    // display the map selector
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-email-form mrm-gutenberg-email-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1305,9 +1297,7 @@ class Editor extends Component {
       pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
     })))))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -1483,7 +1473,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -1499,6 +1488,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -1573,7 +1563,6 @@ const mrmFirstName = _ref => {
     style: inputStyle
   })))))));
 };
-
 mrmFirstName.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -1656,7 +1645,8 @@ class Editor extends Component {
     setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -1667,13 +1657,13 @@ class Editor extends Component {
   };
   formFields = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        firstName = attributes.firstName,
-        firstNameLabel = attributes.firstNameLabel,
-        firstNamePlaceholder = attributes.firstNamePlaceholder,
-        isRequiredName = attributes.isRequiredName;
+        attributes,
+        setAttributes
+      } = this.props,
+      firstName = attributes.firstName,
+      firstNameLabel = attributes.firstNameLabel,
+      firstNamePlaceholder = attributes.firstNamePlaceholder,
+      isRequiredName = attributes.isRequiredName;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "First Name",
       className: "inner-pannel"
@@ -1699,11 +1689,11 @@ class Editor extends Component {
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        labelTypography = attributes.labelTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Form Style",
       initialOpen: false
@@ -1736,11 +1726,11 @@ class Editor extends Component {
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        inputTypography = attributes.inputTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
@@ -1811,7 +1801,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -1881,9 +1870,7 @@ class Editor extends Component {
       style: inputStyle
     })))))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -1939,7 +1926,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-
 
 /**
  * WordPress dependencies
@@ -2306,7 +2292,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -2322,6 +2307,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -2399,7 +2385,6 @@ const mrmLastName = _ref => {
     style: inputStyle
   }))))))));
 };
-
 mrmLastName.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -2483,7 +2468,8 @@ class Editor extends Component {
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
-      adminEmail: { ...this.props.attributes.adminEmail,
+      adminEmail: {
+        ...this.props.attributes.adminEmail,
         [key]: value
       }
     });
@@ -2492,7 +2478,8 @@ class Editor extends Component {
     }, 0);
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -2508,12 +2495,12 @@ class Editor extends Component {
   };
   formFields = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        lastNameLabel = attributes.lastNameLabel,
-        lastNamePlaceholder = attributes.lastNamePlaceholder,
-        isRequiredLastName = attributes.isRequiredLastName;
+        attributes,
+        setAttributes
+      } = this.props,
+      lastNameLabel = attributes.lastNameLabel,
+      lastNamePlaceholder = attributes.lastNamePlaceholder,
+      isRequiredLastName = attributes.isRequiredLastName;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Last Name",
       className: "inner-pannel"
@@ -2539,11 +2526,11 @@ class Editor extends Component {
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        labelTypography = attributes.labelTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Form Style",
       initialOpen: false
@@ -2649,7 +2636,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.formFields(), this.formStyle(), this.inputFieldStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -2693,8 +2679,9 @@ class Editor extends Component {
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + 'px',
       borderColor: inputBorderColor
-    }; // display the map selector
+    };
 
+    // display the map selector
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-gutenberg-last-name-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2718,9 +2705,7 @@ class Editor extends Component {
       style: inputStyle
     })))))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -3111,7 +3096,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -3127,6 +3111,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -3180,7 +3165,6 @@ const mrmButton = _ref => {
     value: buttonText
   })))));
 };
-
 mrmButton.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -3263,7 +3247,8 @@ class Editor extends Component {
     setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -3363,7 +3348,6 @@ class Editor extends Component {
       id: "mrm-block-inspected-inspector-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.buttonText(), this.buttonStyle())));
   };
-
   render() {
     const {
       attributes: {
@@ -3396,8 +3380,9 @@ class Editor extends Component {
       borderStyle: buttonBorderStyle,
       borderWidth: buttonBorderWidth + 'px',
       borderColor: buttonBorderColor
-    }; // display the map selector
+    };
 
+    // display the map selector
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm mrm-gutenberg-mrm-form-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -3423,9 +3408,7 @@ class Editor extends Component {
       placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Submit', 'mrm')
     })))));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -3501,7 +3484,8 @@ const attributes = {
   },
   selectOption: {
     type: 'array',
-    default: [// {
+    default: [
+      // {
       //     value: '',
       //     label: '--Select--'
       // },
@@ -3649,7 +3633,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
-
 /**
  * External dependencies
  */
@@ -3665,6 +3648,7 @@ const {
 const {
   RichText
 } = wp.blockEditor;
+
 /**
  * Internal dependencies
  */
@@ -3825,7 +3809,6 @@ const mrmCustomField = _ref => {
     }, option.label);
   })))))));
 };
-
 mrmCustomField.propTypes = {
   attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired)
 };
@@ -3908,7 +3891,8 @@ class Editor extends Component {
     setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
-    this.props.setAttributes({ ...this.props.attributes,
+    this.props.setAttributes({
+      ...this.props.attributes,
       [key]: value
     });
   };
@@ -3928,7 +3912,6 @@ class Editor extends Component {
       value: slug_name,
       label: 'label'
     };
-
     if ('radio' === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
       setAttributes(attributes.radioOption);
@@ -3978,7 +3961,8 @@ class Editor extends Component {
         field_label: state
       })
     }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-      label: "Option Name" // value={ attributes.select_option_name }
+      label: "Option Name"
+      // value={ attributes.select_option_name }
       ,
       onChange: state => setAttributes({
         select_option_name: state
@@ -3991,7 +3975,8 @@ class Editor extends Component {
       role: "button"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New Option')), attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-        value: option.value // onChange={ (state ) => setAttributes({ value: state }) }
+        value: option.value
+        // onChange={ (state ) => setAttributes({ value: state }) }
         ,
         onChange: val => this.onChangeOptionField(option, val, index)
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -4009,7 +3994,8 @@ class Editor extends Component {
       role: "button"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Add New')), attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-        value: option.label // onChange={ (state ) => setAttributes({ value: state }) }
+        value: option.label
+        // onChange={ (state ) => setAttributes({ value: state }) }
         ,
         onChange: val => this.onChangeRadioLabelField(option, val, index)
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -4037,11 +4023,11 @@ class Editor extends Component {
     option.value = val;
     const modifiedOption = radioOption.map((value, thisIndex) => {
       if (index === thisIndex) {
-        value = { ...radioOption[index],
+        value = {
+          ...radioOption[index],
           ...option
         };
       }
-
       return value;
     });
     setAttributes({
@@ -4058,11 +4044,11 @@ class Editor extends Component {
     option.label = val;
     const modifiedOption = radioOption.map((value, thisIndex) => {
       if (index === thisIndex) {
-        value = { ...radioOption[index],
+        value = {
+          ...radioOption[index],
           ...option
         };
       }
-
       return value;
     });
     setAttributes({
@@ -4080,11 +4066,11 @@ class Editor extends Component {
     option.value = val;
     const modifiedOption = selectOption.map((value, thisIndex) => {
       if (index === thisIndex) {
-        value = { ...selectOption[index],
+        value = {
+          ...selectOption[index],
           ...option
         };
       }
-
       return value;
     });
     setAttributes({
@@ -4096,11 +4082,9 @@ class Editor extends Component {
       setAttributes,
       attributes
     } = this.props;
-
     if (index > -1) {
       // only splice array when item is found
       attributes.selectOption.splice(index, 1); // 2nd parameter means remove one item only
-
       setAttributes(attributes.selectOption);
     }
   };
@@ -4109,11 +4093,9 @@ class Editor extends Component {
       setAttributes,
       attributes
     } = this.props;
-
     if (index > -1) {
       // only splice array when item is found
       attributes.radioOption.splice(index, 1); // 2nd parameter means remove one item only
-
       setAttributes(attributes.radioOption);
     }
   };
@@ -4127,7 +4109,6 @@ class Editor extends Component {
       value: slug_name,
       label: attributes.select_option_name
     };
-
     if ('select' === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
       setAttributes(attributes.selectOption);
@@ -4170,11 +4151,11 @@ class Editor extends Component {
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props,
-        inputTypography = attributes.inputTypography,
-        device = attributes.device;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
@@ -4250,7 +4231,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderTextField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4302,7 +4282,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderTextareaField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4354,7 +4333,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderDateField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4404,7 +4382,6 @@ class Editor extends Component {
    * @param attributes
    * @returns {JSX.Element}
    */
-
   renderSelectField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4449,13 +4426,13 @@ class Editor extends Component {
       return this.renderSelectOption(value, index);
     }))));
   };
+
   /**
    * Render Select Option
    * @param option
    * @param index
    * @returns {JSX.Element}
    */
-
   renderSelectOption = (option, index) => {
     const {
       attributes,
@@ -4560,12 +4537,10 @@ class Editor extends Component {
    * @param values
    * @returns {string}
    */
-
   makeSlug = values => {
     const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
     return slug;
   };
-
   render() {
     const {
       attributes,
@@ -4573,9 +4548,7 @@ class Editor extends Component {
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
   }
-
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
 
 /***/ }),
@@ -4634,7 +4607,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 
-
 /**
  * WordPress dependencies
  */
@@ -4677,7 +4649,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Icons_MinusIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Icons/MinusIcon */ "./src/components/Icons/MinusIcon.jsx");
 /* harmony import */ var _Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Icons/PlusIcon */ "./src/components/Icons/PlusIcon.jsx");
 /* harmony import */ var _src_components_Form_FormEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../../../src/components/Form/FormEditor */ "../../../src/components/Form/FormEditor.jsx");
-
 
 /**
  * WordPress dependencies
@@ -4726,11 +4697,11 @@ const {
   Slot: InspectorSlot,
   Fill: InspectorFill
 } = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
-
 function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
-  const [count, setCount] = useState(0); //confirmation types
+  const [count, setCount] = useState(0);
 
+  //confirmation types
   const [messageToShow, setMessageToShow] = useState("");
   const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
   const [page, setPage] = useState("");
@@ -4810,19 +4781,18 @@ function Sidebar() {
     });
   }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
   let currentDate = new Date();
-
   const toggleTab = index => {
     setTabState(index);
-  }; //-----counter increment-------
+  };
 
-
+  //-----counter increment-------
   function counterIncrement() {
     setCount(function (prevCount) {
       return prevCount += 1;
     });
-  } //-----counter decrement-------
+  }
 
-
+  //-----counter decrement-------
   function counterDecrement() {
     setCount(function (prevCount) {
       if (prevCount > 0) {
@@ -4832,20 +4802,16 @@ function Sidebar() {
       }
     });
   }
-
   const handleConfirmationType = index => {
     toggleTab(index);
   };
-
   let submissionType = "hide-form";
   let labelAlign = "center";
-
   const dateTimeSplitter = () => {
     const convertedDate = JSON.stringify(date);
     setSubmissionStartDate(convertedDate.slice(1, 11));
     setSubmissionStartTime(convertedDate.slice(12, 20));
   };
-
   useEffect(() => {
     dateTimeSplitter();
   }, [date]);
@@ -5051,7 +5017,6 @@ function Sidebar() {
     onClick: counterIncrement
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null))))))))));
 }
-
 Sidebar.InspectorFill = InspectorFill;
 /* harmony default export */ __webpack_exports__["default"] = (Sidebar);
 
@@ -5076,17 +5041,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_sidebar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/sidebar */ "./src/components/sidebar/index.jsx");
 /* harmony import */ var _components_block_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/block-editor */ "./src/components/block-editor/index.js");
 
-
 /**
  * WordPress dependencies
  */
 
 
+
 /**
  * Internal dependencies
  */
-
-
 
 
 
@@ -5109,7 +5072,6 @@ function Editor(_ref) {
     }))
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)))));
 }
-
 /* harmony default export */ __webpack_exports__["default"] = (Editor);
 
 /***/ }),
@@ -5161,28 +5123,28 @@ const {
 const {
   __
 } = wp.i18n;
- //Email
+
+//Email
 
 
 
 
- // Firstname
+// Firstname
 
 
 
 
- //last Name
+//last Name
 
 
 
 
- //Button
+//Button
 
 
 
 
- // Custom Field
-
+// Custom Field
 
 
 
@@ -5246,7 +5208,6 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     save: _components_mrm_custom_field_block__WEBPACK_IMPORTED_MODULE_21__["default"]
   });
   const el = document.getElementById("mrm-block-editor");
-
   if (el !== null) {
     (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_editor__WEBPACK_IMPORTED_MODULE_3__["default"], {
       settings: settings
@@ -5293,16 +5254,16 @@ function CampaignCustomSelect(props) {
   const [tags, setTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [selectedLists, setSelectedLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [selectedTags, setSelectedTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
-
   const showTag = () => {
     setActiveTag(true);
     setActiveList(false);
   };
-
   const showList = () => {
     setActiveTag(false);
     setActiveList(true);
-  }; // const deleteItem = (id) => {
+  };
+
+  // const deleteItem = (id) => {
   //   const updatedListItem = checkList.filter((item, index) => {
   //     return index != id;
   //   });
@@ -5313,52 +5274,46 @@ function CampaignCustomSelect(props) {
   //   setChecktag(updatedTagItem);
   // };
 
-
   const deleteSelectedTag = (e, id) => {
-    const index = selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.findIndex(item => item.id == id); // already in selected list so remove it from the array
+    const index = selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.findIndex(item => item.id == id);
 
+    // already in selected list so remove it from the array
     if (index >= 0) {
       setSelectedTags(selectedTags.filter(item => item.id != id));
     }
   };
-
   const deleteSelectedList = (e, id) => {
-    const index = selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.findIndex(item => item.id == id); // already in selected list so remove it from the array
+    const index = selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.findIndex(item => item.id == id);
 
+    // already in selected list so remove it from the array
     if (index >= 0) {
       setSelectedLists(selectedLists.filter(item => item.id != id));
     }
   };
-
   const deleteAllTag = () => {
     setSelectedTags([]);
   };
-
   const deleteAllList = () => {
     setSelectedLists([]);
   };
-
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     // Get lists
     (0,_services_List__WEBPACK_IMPORTED_MODULE_5__.getLists)().then(results => {
       setLists(results.data);
-    }); // Get tags
-
+    });
+    // Get tags
     (0,_services_Tag__WEBPACK_IMPORTED_MODULE_6__.getTags)().then(results => {
       setTags(results.data);
     });
   }, []);
-
   const checkIfSelectedList = id => {
     const checkedList = (selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.findIndex(item => item.id == id)) >= 0;
     return checkedList;
   };
-
   const checkIfSelectedTag = id => {
     const checkedTag = (selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.findIndex(item => item.id == id)) >= 0;
     return checkedTag;
   };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: props.dropDown ? "recipient-dropdown" : "recipient-dropdown inactive"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -5477,7 +5432,9 @@ function OptionList(props) {
     selected,
     setSelected,
     allowMultiple = true
-  } = props; // const handleChange = (e) => {
+  } = props;
+
+  // const handleChange = (e) => {
   //   let updatedList = [...checkItem];
   //   if (e.target.checked) {
   //     updatedList = [...checkItem, e.target.value];
@@ -5491,14 +5448,15 @@ function OptionList(props) {
 
   const handleSelectOne = e => {
     e.stopPropagation();
-    let updatedList = [...selected]; // since this function is handling input for both checkboxes and li elements
+    let updatedList = [...selected];
+    // since this function is handling input for both checkboxes and li elements
     // there might be either id and value for input checkboxes
     // or custom ID and custom Value dataset attribute for li elements
-
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected.findIndex(item => item.id == id); // already in selected list so remove it from the array
+    const index = selected.findIndex(item => item.id == id);
 
+    // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
         setSelected(selected.filter(item => item.id != id));
@@ -5515,18 +5473,15 @@ function OptionList(props) {
         title: value
       }]);
     }
-
     if (checked) {
-      updatedList = [...selected.id, e.target.value]; // setCheckItem([...checkItem, e.target.value]);
+      updatedList = [...selected.id, e.target.value];
+      // setCheckItem([...checkItem, e.target.value]);
     } else {
       var _selected$id;
-
       updatedList.splice((_selected$id = selected.id) === null || _selected$id === void 0 ? void 0 : _selected$id.indexOf(e.target.value), 1);
     }
-
     setSelected(updatedList);
   };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "mintmrm-checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
@@ -5569,8 +5524,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function CustomSelect(props) {
   // global state reference for whether to hide all dropdown
-  const hideAllCustomSelect = (0,_hooks_useGlobalStore__WEBPACK_IMPORTED_MODULE_2__.useGlobalStore)(state => state.hideAllCustomSelect); // global state reference for which dropdown is currently active
-
+  const hideAllCustomSelect = (0,_hooks_useGlobalStore__WEBPACK_IMPORTED_MODULE_2__.useGlobalStore)(state => state.hideAllCustomSelect);
+  // global state reference for which dropdown is currently active
   const activeCustomSelect = (0,_hooks_useGlobalStore__WEBPACK_IMPORTED_MODULE_2__.useGlobalStore)(state => state.activeCustomSelect);
   const {
     selected,
@@ -5592,43 +5547,48 @@ function CustomSelect(props) {
     allowNewCreate = true
   } = props;
   const buttonRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
-  const customSelectUUID = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(Math.random()); // store retrieved
+  const customSelectUUID = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(Math.random());
 
-  const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]); // search input value is stored here
+  // store retrieved
+  const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  // search input value is stored here
+  const [search, setSearch] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
 
-  const [search, setSearch] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""); // search query, search query only updates when there are more than 3 characters typed
+  // search query, search query only updates when there are more than 3 characters typed
+  const [query, setQuery] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
 
-  const [query, setQuery] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""); // loading or not
+  // loading or not
+  const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
 
-  const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false); // function used for either showing or hiding the dropdown
-
+  // function used for either showing or hiding the dropdown
   function toggleActive(event) {
     event.stopPropagation();
     _hooks_useGlobalStore__WEBPACK_IMPORTED_MODULE_2__.useGlobalStore.setState({
       hideAllCustomSelect: false,
       activeCustomSelect: activeCustomSelect == customSelectUUID.current ? null : customSelectUUID.current
     });
-  } // helper function to set the search query only when there are at least 3 characters or more
+  }
 
-
+  // helper function to set the search query only when there are at least 3 characters or more
   function handleSearch(e) {
     e.stopPropagation();
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
     if (value.length >= 3) setQuery(`&search=${value}`);else setQuery("");
-  } // handler for one single item click for both list item and checkbox rendering
+  }
 
-
+  // handler for one single item click for both list item and checkbox rendering
   const handleSelectOne = e => {
-    e.stopPropagation(); // since this function is handling input for both checkboxes and li elements
+    e.stopPropagation();
+    // since this function is handling input for both checkboxes and li elements
     // there might be either id and value for input checkboxes
     // or custom ID and custom Value dataset attribute for li elements
-
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected === null || selected === void 0 ? void 0 : selected.findIndex(item => item.id == id); // already in selected list so remove it from the array
+    const index = selected === null || selected === void 0 ? void 0 : selected.findIndex(item => item.id == id);
 
+    // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
         setSelected(selected.filter(item => item.id != id));
@@ -5645,17 +5605,17 @@ function CustomSelect(props) {
         title: value
       }]);
     }
-  }; // function used for checking whether the current item is selected or not
+  };
 
-
+  // function used for checking whether the current item is selected or not
   const checkIfSelected = id => {
     const checked = (selected === null || selected === void 0 ? void 0 : selected.findIndex(item => item.id == id)) >= 0;
     return checked;
   };
-
   const deleteSelected = (e, id) => {
-    const index = selected === null || selected === void 0 ? void 0 : selected.findIndex(item => item.id == id); // already in selected list so remove it from the array
+    const index = selected === null || selected === void 0 ? void 0 : selected.findIndex(item => item.id == id);
 
+    // already in selected list so remove it from the array
     if (allowMultiple) {
       if (index >= 0) {
         setSelected(selected.filter(item => item.id != id));
@@ -5663,16 +5623,15 @@ function CustomSelect(props) {
     } else {
       if (index >= 0) setSelected([]);
     }
-  }; // at first page load get all the available lists
+  };
+
+  // at first page load get all the available lists
   // keep fetching lists whenever user types something in the search bar
-
-
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     async function getItems() {
       setLoading(true);
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`);
       const resJson = await res.json();
-
       if (resJson.code == 200) {
         setItems(resJson.data.data);
         setLoading(false);
@@ -5680,17 +5639,16 @@ function CustomSelect(props) {
         console.log(resJson);
       }
     }
-
     if (!options) getItems();
-  }, [query]); // Handle new list or tag creation
+  }, [query]);
 
+  // Handle new list or tag creation
   const addNewItem = async () => {
     let res = null;
     let body = {
       title: search,
       slug: search.toLowerCase().replace(/[\W_]+/g, "-")
     };
-
     try {
       // create contact
       setLoading(true);
@@ -5702,7 +5660,6 @@ function CustomSelect(props) {
         body: JSON.stringify(body)
       });
       const resJson = await res.json();
-
       if (resJson.code == 201) {
         setSearch("");
         setQuery("");
@@ -5717,7 +5674,6 @@ function CustomSelect(props) {
       setLoading(false);
     }
   };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-custom-select-container",
     key: "container"
@@ -5784,6 +5740,37 @@ function CustomSelect(props) {
 
 /***/ }),
 
+/***/ "../../../src/components/Form/DesktopView.jsx":
+/*!****************************************************!*\
+  !*** ../../../src/components/Form/DesktopView.jsx ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const DesktopView = props => {
+  const {
+    blockData
+  } = props;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "resposive-preview-desktop"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "form-preview-inner",
+    dangerouslySetInnerHTML: {
+      __html: blockData
+    }
+  })));
+};
+/* harmony default export */ __webpack_exports__["default"] = (DesktopView);
+
+/***/ }),
+
 /***/ "../../../src/components/Form/FormEditor.jsx":
 /*!***************************************************!*\
   !*** ../../../src/components/Form/FormEditor.jsx ***!
@@ -5796,8 +5783,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router-dom/dist/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router-dom/dist/index.js");
 /* harmony import */ var _InputItem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../InputItem */ "../../../src/components/InputItem/index.jsx");
 /* harmony import */ var _CustomSelect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../CustomSelect */ "../../../src/components/CustomSelect/index.jsx");
 /* harmony import */ var _Selectbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Selectbox */ "../../../src/components/Selectbox/index.jsx");
@@ -5811,6 +5798,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../Icons/SettingIcon */ "../../../src/components/Icons/SettingIcon.jsx");
 /* harmony import */ var _Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../Icons/DownArrowIcon */ "../../../src/components/Icons/DownArrowIcon.jsx");
 /* harmony import */ var _Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../Icons/UpArrowIcon */ "../../../src/components/Icons/UpArrowIcon.jsx");
+/* harmony import */ var _MobileView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./MobileView */ "../../../src/components/Form/MobileView.jsx");
+/* harmony import */ var _DesktopView__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./DesktopView */ "../../../src/components/Form/DesktopView.jsx");
+/* harmony import */ var _Icons_EditIcon__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../Icons/EditIcon */ "../../../src/components/Icons/EditIcon.jsx");
+
+
 
 
 
@@ -5834,10 +5826,13 @@ const FormEditor = props => {
     settingData,
     setSettingData
   } = props;
-  const [settingToSave, setSettingToSave] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(settingData); // lists
+  const [settingToSave, setSettingToSave] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(settingData);
+  const [preview, setPreview] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("editor");
 
-  const [lists, setLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]); // tags
+  // lists
+  const [lists, setLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
 
+  // tags
   const [tags, setTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [selectedLists, setSelectedLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [selectedTags, setSelectedTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
@@ -5845,14 +5840,14 @@ const FormEditor = props => {
   const [listDropdown, setListDropdown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [settingsPannel, setSettingsPannel] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [enable, setEnable] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_15__.useParams)();
+  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_18__.useParams)();
   const [load, setLoad] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const id = params.id;
-
+  const [blockData, setBlockData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)();
+  const [showPreview, setShowPreview] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const toggleEnable = () => {
     setEnable(!enable);
   };
-
   const settingDataValidation = settingData => {
     if (!settingData) {
       setSettingData({
@@ -5887,9 +5882,9 @@ const FormEditor = props => {
         }
       });
     }
-  }; // Fetch lists & tags
+  };
 
-
+  // Fetch lists & tags
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     //setSettingToSave(settingData);
     // Get lists
@@ -5897,8 +5892,9 @@ const FormEditor = props => {
       results.data.map(function () {
         setLists(results.data);
       });
-    }); // Get tags
+    });
 
+    // Get tags
     (0,_services_Tag__WEBPACK_IMPORTED_MODULE_6__.getTags)().then(results => {
       setTags(results.data);
     });
@@ -5908,130 +5904,134 @@ const FormEditor = props => {
     const getFormData = async () => {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
       const resJson = await res.json();
-
       if (200 === resJson.code) {
         setFormData(resJson.data);
       }
     };
-
     if (id) getFormData();
     reload();
   }, []);
-
   const reload = () => {
     let hashCount = 0;
     const loc = window.location.hash;
-
     for (let i = 0; i < loc.length; i++) {
       if (loc[i] === "#") {
         hashCount = hashCount + 1;
       }
     }
-
     if (1 === hashCount) {
       window.location = window.location + "#";
       window.location.reload();
     }
   };
-
   const [toggleDropdown, setToggleDropdown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-
   const handleChange = event => {
     event.persist();
     const {
       name,
       value
     } = event.target;
-    setFormData(prevState => ({ ...prevState,
+    setFormData(prevState => ({
+      ...prevState,
       [name]: value
     }));
   };
-
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options].filter(option => option.selected).map(x => x.value);
-    setFormData(prevState => ({ ...prevState,
+    setFormData(prevState => ({
+      ...prevState,
       [name]: updatedOptions
     }));
   };
-
   const onRemove = (e, name) => {
     let unselectedItem = e.params.data.id;
-    setFormData(prevState => ({ ...prevState,
+    setFormData(prevState => ({
+      ...prevState,
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
-  }; // const [refresh, setRefresh] = useState(false);
+  };
+
+  // const [refresh, setRefresh] = useState(false);
   // useEffect(() => {}, [refresh]);
 
-
-  const saveForm = settingData => {
-    console.log(props);
-    const storedBlocks = window.localStorage.getItem("getmrmblocks"); // if (settingDataValidation(settingData)) {
+  const saveForm = async settingData => {
+    const storedBlocks = window.localStorage.getItem("getmrmblocks");
+    // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
 
-    console.log(settingData); // const post_data = {
-    //   title: formData?.title,
-    //   form_body: storedBlocks,
-    // };
-    // const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-type": "application/json",
-    //   },
-    //   body: JSON.stringify(post_data),
-    // });
-    // const responseData = await res.json();
+    const post_data = {
+      title: formData === null || formData === void 0 ? void 0 : formData.title,
+      form_body: storedBlocks
+    };
+    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json"
+      },
+      body: JSON.stringify(post_data)
+    });
+    const responseData = await res.json();
   };
-
   const [positionName, setPositionName] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
-
   const handleFormPosition = (param, name) => {
-    setFormData(prevState => ({ ...prevState,
+    setFormData(prevState => ({
+      ...prevState,
       form_position: param
     }));
     setPositionName(name);
     setToggleDropdown(false);
   };
-
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     const lists = selectedLists.filter(list => list.id > 0).map(list => list.id);
     const tags = selectedTags.filter(tag => tag.id > 0).map(tag => tag.id);
     const group_ids = lists.concat(tags);
-    setFormData(prevState => ({ ...prevState,
+    setFormData(prevState => ({
+      ...prevState,
       group_ids: group_ids
     }));
-  }, [selectedLists, selectedTags]); //-------show more option click function-------
+  }, [selectedLists, selectedTags]);
 
+  //-------show more option click function-------
   const clickShowOption = () => {
     setMoreOption(current => !current);
-  }; //-------list click function-------
+  };
 
-
+  //-------list click function-------
   const showListDropdown = () => {
     setListDropdown(current => !current);
-  }; //-------settings pannel open function-------
+  };
 
-
+  //-------settings pannel open function-------
   const showSettingsPannel = () => {
     setSettingsPannel(current => !current);
   };
-
+  const handlePreview = view => {
+    setPreview(view);
+    const block = window.localStorage.getItem("getmrmblocks");
+    setBlockData(block);
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-page"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-topbar"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "topbar-left"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_16__.Link, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_19__.Link, {
     to: "/form/"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "back-button"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_9__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "responsive-section"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "computer-view active"
+    className: "computer-view active",
+    onClick: e => handlePreview("editor")
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_EditIcon__WEBPACK_IMPORTED_MODULE_17__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "computer-view active",
+    onClick: e => handlePreview("desktop")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ComputerIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "mobile-view"
+    className: "mobile-view",
+    onClick: e => handlePreview("mobile")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_MobileIcon__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "topbar-right"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -6065,13 +6065,50 @@ const FormEditor = props => {
     onClick: showListDropdown
   }, "All Subscriber", listDropdown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_14__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Campaign_CampaignCustomSelect__WEBPACK_IMPORTED_MODULE_7__["default"], {
     dropDown: listDropdown
-  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })))), preview === "mobile" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_MobileView__WEBPACK_IMPORTED_MODULE_15__["default"], {
+    blockData: blockData
+  }) : preview === "desktop" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DesktopView__WEBPACK_IMPORTED_MODULE_16__["default"], {
+    blockData: blockData
+  })) : "", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "mrm-block-editor",
-    className: settingsPannel ? "getdave-sbe-block-editor block-editor show-settings-pannel" : "getdave-sbe-block-editor block-editor"
+    className: settingsPannel ? "getdave-sbe-block-editor block-editor show-settings-pannel" : "getdave-sbe-block-editor block-editor",
+    style: {
+      display: preview === "editor" ? "block" : "none"
+    }
   }))));
 };
-
 /* harmony default export */ __webpack_exports__["default"] = (FormEditor);
+
+/***/ }),
+
+/***/ "../../../src/components/Form/MobileView.jsx":
+/*!***************************************************!*\
+  !*** ../../../src/components/Form/MobileView.jsx ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const MobileView = props => {
+  const {
+    blockData
+  } = props;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "resposive-preview-mobile"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "form-preview-inner",
+    dangerouslySetInnerHTML: {
+      __html: blockData
+    }
+  })));
+};
+/* harmony default export */ __webpack_exports__["default"] = (MobileView);
 
 /***/ }),
 
@@ -6227,6 +6264,35 @@ function DownArrowIcon() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
     d: "M11.5035 0.1575C11.4801 0.110303 11.444 0.0705586 11.3993 0.0427353C11.3546 0.014912 11.303 0.00011231 11.2503 0H0.750331C0.697666 0.00011231 0.646076 0.014912 0.60136 0.0427353C0.556644 0.0705586 0.520575 0.110303 0.497206 0.1575C0.474023 0.204856 0.464713 0.257805 0.470353 0.310229C0.475994 0.362653 0.496354 0.41241 0.529081 0.45375L5.77908 7.20375C5.80518 7.2376 5.8387 7.26501 5.87706 7.28387C5.91541 7.30273 5.95759 7.31254 6.00033 7.31254C6.04308 7.31254 6.08525 7.30273 6.12361 7.28387C6.16196 7.26501 6.19548 7.2376 6.22158 7.20375L11.4716 0.45375C11.5043 0.41241 11.5247 0.362653 11.5303 0.310229C11.5359 0.257805 11.5266 0.204856 11.5035 0.1575Z",
     fill: "#A7A8B3"
+  }));
+}
+
+/***/ }),
+
+/***/ "../../../src/components/Icons/EditIcon.jsx":
+/*!**************************************************!*\
+  !*** ../../../src/components/Icons/EditIcon.jsx ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ EditIcon; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+function EditIcon() {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+    width: "15",
+    height: "15",
+    viewBox: "0 0 18 18",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    d: "M15.4084 2.59181C14.7091 1.89391 13.7615 1.50195 12.7735 1.50195C11.7855 1.50195 10.8379 1.89391 10.1386 2.59181L8.73546 3.99499L2.42143 10.3093C2.30665 10.4239 2.23224 10.5728 2.20941 10.7334L1.50756 15.6443C1.49234 15.7507 1.50016 15.8591 1.5305 15.9622C1.56083 16.0653 1.61297 16.1607 1.68338 16.2419C1.75379 16.3231 1.84083 16.3882 1.9386 16.4328C2.03637 16.4774 2.14259 16.5005 2.25006 16.5005C2.28559 16.5006 2.32108 16.498 2.35626 16.493L7.26756 15.7915C7.42812 15.7683 7.57686 15.6938 7.69161 15.5791L15.4091 7.86229C15.7552 7.51624 16.0298 7.10541 16.2171 6.65326C16.4044 6.2011 16.5008 5.71647 16.5008 5.22705C16.5008 4.73763 16.4044 4.253 16.2171 3.80084C16.0298 3.34868 15.7552 2.93785 15.4091 2.59181H15.4084ZM6.80758 14.3421L3.13408 14.8665L3.65908 11.1933L9.26593 5.58604L12.415 8.73484L6.80758 14.3421ZM14.3476 6.80179L13.4753 7.67434L10.3261 4.52539L11.1991 3.65231C11.6233 3.24753 12.1872 3.02169 12.7735 3.02169C13.3598 3.02169 13.9237 3.24753 14.3479 3.65231C14.7654 4.07002 14.9999 4.63645 14.9999 5.22705C14.9999 5.81765 14.7654 6.38408 14.3479 6.80179H14.3476Z",
+    fill: "#686F7F"
   }));
 }
 
@@ -6482,7 +6548,6 @@ function LoadingIndicator(props) {
   const {
     type = "default"
   } = props;
-
   if ("default" == type) {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       class: "shimmer-wrapper"
@@ -6498,7 +6563,6 @@ function LoadingIndicator(props) {
       class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
     }));
   }
-
   if ("table" == type) {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       class: "shimmer-wrapper-center"
@@ -6542,12 +6606,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Selectbox(props) {
-  const [myValue, setMyValue] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(""); // const [selected, setSelected] = useState("false");
+  const [myValue, setMyValue] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)("");
+  // const [selected, setSelected] = useState("false");
   // const selected = optionState === option.value ? "selected" : "false";
-
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    setMyValue(props.value); // Init select2
-
+    setMyValue(props.value);
+    // Init select2
     let element = jquery__WEBPACK_IMPORTED_MODULE_1___default()(".mintmrm-" + props.name + "-selectbox");
     element.css("color", "red");
     element.select2({
@@ -6558,6 +6622,7 @@ function Selectbox(props) {
     element.on("select2:select", function (e) {
       props.onSelect(e, props.name, props.arg1); // here arg1 is any extra information that is passed to the calling component
     });
+
     element.on("select2:unselect", function (e) {
       props.onRemove(e, props.name);
     });
@@ -6648,8 +6713,9 @@ async function getLists() {
       return data.data;
     }
   });
-} // List delete request
+}
 
+// List delete request
 async function deleteSingleList(id) {
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/lists/${id}`, {
     method: "DELETE",
@@ -6661,8 +6727,9 @@ async function deleteSingleList(id) {
       return response.json();
     }
   });
-} // Multiple lists delete request
+}
 
+// Multiple lists delete request
 async function deleteMultipleListsItems(selected) {
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/lists/`, {
     method: "DELETE",
@@ -6705,8 +6772,9 @@ async function getTags() {
       return data.data;
     }
   });
-} // Tag delete request
+}
 
+// Tag delete request
 async function deleteSingleTag(id) {
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags/${id}`, {
     method: "DELETE",
@@ -6718,8 +6786,9 @@ async function deleteSingleTag(id) {
       return response.json();
     }
   });
-} // Multiple tags delete request
+}
 
+// Multiple tags delete request
 async function deleteMultipleTagsItems(selected) {
   return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/tags/`, {
     method: "DELETE",
@@ -20509,7 +20578,6 @@ function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
   }
-
   return self;
 }
 
@@ -20554,7 +20622,6 @@ function _defineProperties(target, props) {
     Object.defineProperty(target, descriptor.key, descriptor);
   }
 }
-
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
@@ -20588,7 +20655,6 @@ function _defineProperty(obj, key, value) {
   } else {
     obj[key] = value;
   }
-
   return obj;
 }
 
@@ -20631,7 +20697,6 @@ function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
   }
-
   subClass.prototype = Object.create(superClass && superClass.prototype, {
     constructor: {
       value: subClass,
@@ -20668,7 +20733,6 @@ function _possibleConstructorReturn(self, call) {
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
   }
-
   return (0,_assertThisInitialized_js__WEBPACK_IMPORTED_MODULE_1__["default"])(self);
 }
 

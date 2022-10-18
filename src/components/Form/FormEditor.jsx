@@ -15,11 +15,16 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import SettingIcon from "../Icons/SettingIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
+import MobileView from "./MobileView";
+import DesktopView from "./DesktopView";
+import EditIcon from "../Icons/EditIcon";
 
 const FormEditor = (props) => {
   const { settingData, setSettingData } = props;
 
   const [settingToSave, setSettingToSave] = useState(settingData);
+
+  const [preview, setPreview] = useState("editor");
 
   // lists
   const [lists, setLists] = useState([]);
@@ -41,6 +46,9 @@ const FormEditor = (props) => {
   const [load, setLoad] = useState(false);
 
   const id = params.id;
+
+  const [blockData, setBlockData] = useState();
+  const [showPreview, setShowPreview] = useState(false);
 
   const toggleEnable = () => {
     setEnable(!enable);
@@ -164,26 +172,24 @@ const FormEditor = (props) => {
   // const [refresh, setRefresh] = useState(false);
   // useEffect(() => {}, [refresh]);
 
-  const saveForm = (settingData) => {
-    console.log(props);
+  const saveForm = async (settingData) => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-    console.log(settingData);
 
-    // const post_data = {
-    //   title: formData?.title,
-    //   form_body: storedBlocks,
-    // };
-    // const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-type": "application/json",
-    //   },
-    //   body: JSON.stringify(post_data),
-    // });
-    // const responseData = await res.json();
+    const post_data = {
+      title: formData?.title,
+      form_body: storedBlocks,
+    };
+    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(post_data),
+    });
+    const responseData = await res.json();
   };
 
   const [positionName, setPositionName] = useState("");
@@ -226,6 +232,12 @@ const FormEditor = (props) => {
     setSettingsPannel((current) => !current);
   };
 
+  const handlePreview = (view) => {
+    setPreview(view);
+    const block = window.localStorage.getItem("getmrmblocks");
+    setBlockData(block);
+  };
+
   return (
     <>
       <div className="form-editor-page">
@@ -238,10 +250,22 @@ const FormEditor = (props) => {
             </Link>
 
             <div className="responsive-section">
-              <button className="computer-view active">
+              <button
+                className="computer-view active"
+                onClick={(e) => handlePreview("editor")}
+              >
+                <EditIcon />
+              </button>
+              <button
+                className="computer-view active"
+                onClick={(e) => handlePreview("desktop")}
+              >
                 <ComputerIcon />
               </button>
-              <button className="mobile-view">
+              <button
+                className="mobile-view"
+                onClick={(e) => handlePreview("mobile")}
+              >
                 <MobileIcon />
               </button>
             </div>
@@ -296,6 +320,18 @@ const FormEditor = (props) => {
             </div>
           </div>
 
+          {/*Preview Mobile and Desktop*/}
+
+          {preview === "mobile" ? (
+            <MobileView blockData={blockData} />
+          ) : preview === "desktop" ? (
+            <>
+              <DesktopView blockData={blockData} />
+            </>
+          ) : (
+            ""
+          )}
+
           <div
             id="mrm-block-editor"
             className={
@@ -303,6 +339,7 @@ const FormEditor = (props) => {
                 ? "getdave-sbe-block-editor block-editor show-settings-pannel"
                 : "getdave-sbe-block-editor block-editor"
             }
+            style={{ display: preview === "editor" ? "block" : "none" }}
           ></div>
         </div>
       </div>
