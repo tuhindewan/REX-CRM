@@ -79,15 +79,49 @@ class ContactForm {
         }
         $output = '';
         ob_start();?>
-        <div>
-            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="mrm-form-form-wrapper  <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
+        <div class="mintmrm" >
+            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
                 <form method="post" id="mrm-form">
                     <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                     <?php echo  $form_data['form_body'] ?>
                 </form>
+
                 <div class="response"></div>
             </div>
 
+            <style>
+                .mintmrm label, 
+                .mintmrm .label {
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 15px;
+                    line-height: 18px;
+                    color: #344054;
+                    box-sizing: border-box;
+                }
+
+                .mintmrm input[type=date], 
+                .mintmrm input[type=search], 
+                .mintmrm input[type=url], 
+                .mintmrm input[type=tel], 
+                .mintmrm input[type=number], 
+                .mintmrm input[type=password], 
+                .mintmrm input[type=email], 
+                .mintmrm input[type=text], 
+                .mintmrm textarea, 
+                .mintmrm select {
+                    font-size: 14px;
+                    line-height: 1;
+                    color: #7a8b9a;
+                    padding: 9px 15px;
+                    width: 100%;
+                    border-radius: 6px;
+                    display: block;
+                    border: 1px solid #e4e6eb;
+                    min-height: 30px;
+                    box-sizing: border-box;
+                }
+            </style>
 
         </div>
         <?php

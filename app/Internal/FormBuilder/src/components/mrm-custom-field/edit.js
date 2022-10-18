@@ -439,6 +439,8 @@ class Editor extends Component {
             </InspectorControls>
         );
     };
+
+
     /**
      * Render Text Field
      * @param attributes
@@ -476,20 +478,20 @@ class Editor extends Component {
 
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} style={fieldSpacing}>
-                    <label htmlFor="mrm-text-field" style={labelStyle}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group" style={fieldSpacing}>
+                    <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <div>
-                        <span className="input-wrapper">
-                         <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} style={inputStyle} />
-                        </span>
+
+                    <div className="input-wrapper">
+                        <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} style={inputStyle} />
                     </div>
                 </div>
             </Fragment>
         )
     }
+
     /**
      * Render Textarea Field
      * @param attributes
@@ -525,13 +527,15 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group" style={fieldSpacing}>
                     <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
 
+                    <div className="input-wrapper">
+                        <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
+                    </div>
                 </div>
             </Fragment>
         )
@@ -571,13 +575,15 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group" style={fieldSpacing}>
                     <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <input type="date" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle}/>
 
+                    <div className="input-wrapper">
+                        <input type="date" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle}/>
+                    </div>
                 </div>
             </Fragment>
         )
@@ -617,20 +623,21 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group select" style={fieldSpacing}>
                     <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <select name={attributes.field_slug} id={attributes.field_slug} style={inputStyle} >
-                        {attributes.selectOption.map((value, index) => {
-                            return (
+
+                    <div className="input-wrapper">
+                        <select name={attributes.field_slug} id={attributes.field_slug} style={inputStyle} >
+                            {attributes.selectOption.map((value, index) => {
+                                return (
                                     this.renderSelectOption(value, index, )
-                            )
-                        })}
-
-                    </select>
-
+                                )
+                            })}
+                        </select>
+                    </div>
                 </div>
             </Fragment>
         )
@@ -714,7 +721,7 @@ class Editor extends Component {
             borderColor:  attributes.inputBorderColor,
         }
         return (
-            <div>
+            <div className="mrm-radio-group">
                 <input type="radio" id={option.value} name={option.value} required={attributes.field_require} style={inputStyle}/>
                 <label htmlFor={attributes.field_slug} style={labelStyle}>
                     {option.label ? __(option.label,'mrm') : __('','mrm')}
@@ -724,19 +731,21 @@ class Editor extends Component {
 
         )
     }
+
     renderRadioField = (attributes) => {
         const slug_name =  this.makeSlug(attributes.field_name)
         this.props.setAttributes({ field_slug: slug_name })
+
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group mrm-radio-group">
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group radio">
 
                     {attributes.radioOption.map((option,index) => {
                         return (
                             this.renderRadioOption( option,index )
                         )
-
                     })}
+
                 </div>
             </Fragment>
 

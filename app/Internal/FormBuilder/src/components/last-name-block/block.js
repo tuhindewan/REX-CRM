@@ -15,31 +15,31 @@ const { RichText } = wp.blockEditor;
 
 
 const mrmLastName = ({
-                           attributes: {
-                               formLayout,
-                               lastNameLabel,
-                               lastNamePlaceholder,
-                               isRequiredLastName,
+        attributes: {
+            formLayout,
+            lastNameLabel,
+            lastNamePlaceholder,
+            isRequiredLastName,
 
 
-                               fieldLabel,
-                               requiredMark,
-                               inputBgColor,
-                               inputTextColor,
-                               inputBorderRadius,
-                               inputPaddingTop,
-                               inputPaddingRight,
-                               inputPaddingBottom,
-                               inputPaddingLeft,
-                               inputBorderStyle,
-                               inputBorderWidth,
-                               inputBorderColor,
-                               rowSpacing,
+            fieldLabel,
+            requiredMark,
+            inputBgColor,
+            inputTextColor,
+            inputBorderRadius,
+            inputPaddingTop,
+            inputPaddingRight,
+            inputPaddingBottom,
+            inputPaddingLeft,
+            inputBorderStyle,
+            inputBorderWidth,
+            inputBorderColor,
+            rowSpacing,
 
-                               labelColor,
-                               labelSpacing,
-                           },
-                       }) => {
+            labelColor,
+            labelSpacing,
+        },
+    }) => {
 
     let layout = formLayout
     let fieldSpacing = {
@@ -70,23 +70,16 @@ const mrmLastName = ({
     return (
 
         <>
-            <div className="mrm mrm-gutenberg-last-name-form-wrapper">
-                    <div className={`mrm-last-form-wrapper ${layout}`} >
-                         <div className="mrm-optin-form-group last-name" style={fieldSpacing}>
-                             <div className="wpfnl-optin-form-group last-name" style={fieldSpacing}>
-                                 <label htmlFor="wpfnl-last-name" style={labelStyle}>
-                                     {lastNameLabel ? __(lastNameLabel,'mrm') : __('Last Name','wpfnl')}
-                                     {requiredMark && isRequiredLastName && <span className="required-mark">*</span>}
-                                 </label>
-                                 <div>
-                                     <span className="input-wrapper">
-                                        <input type="text" name="last_name" id="wpfnl-last-name" placeholder={lastNamePlaceholder} required={isRequiredLastName} style={inputStyle} />
-                                     </span>
-                                 </div>
+            <div className="mrm-form-group last-name" style={fieldSpacing}>
+                <label htmlFor="wpfnl-last-name" style={labelStyle}>
+                    {lastNameLabel ? __(lastNameLabel,'mrm') : __('Last Name','wpfnl')}
+                    {requiredMark && isRequiredLastName && <span className="required-mark">*</span>}
+                </label>
 
-                             </div>
-                        </div>
-                    </div>
+                <div className="input-wrapper">
+                    <input type="text" name="last_name" id="wpfnl-last-name" placeholder={lastNamePlaceholder} required={isRequiredLastName} style={inputStyle} />
+                </div>
+
             </div>
         </>
     )

@@ -295,21 +295,14 @@ class Editor extends Component {
             <>
                 { this.getInspectorControls() }
 
-                <div className="mrm mrm-email-form mrm-gutenberg-email-form-wrapper">
-                    <div className={`mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`}>
+                <div className="mrm-form-group email" style={fieldSpacing}>
+                    <label htmlFor="mrm-email" style={labelStyle}>
+                        {emailLabel ? __(emailLabel,'mrm') : __('Email','mrm')}
+                        {requiredMark && <span className="required-mark">*</span>}
+                    </label>
 
-                        <div className="mrm-mrm-form-group email" style={fieldSpacing}>
-                            <label htmlFor="mrm-email" style={labelStyle}>
-                                {emailLabel ? __(emailLabel,'mrm') : __('Email','mrm')}
-                                {requiredMark && <span className="required-mark">*</span>}
-                            </label>
-                            <div>
-                                <span className="input-wrapper">
-                                    <input type="email" name="email" id="mrm-email" placeholder={emailPlaceholder} required style={inputStyle} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
-                                </span>
-                            </div>
-
-                        </div>
+                    <div className="input-wrapper">
+                        <input type="email" name="email" id="mrm-email" placeholder={emailPlaceholder} required style={inputStyle} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
                     </div>
                 </div>
             </>

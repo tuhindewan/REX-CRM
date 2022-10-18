@@ -212,30 +212,27 @@ class Editor extends Component {
         return (
             <>
                 { this.getInspectorControls() }
+                
+                <div className="mrm-form-group submit" style={fieldSpacing}>
+                    <BlockControls>
+                        <BlockAlignmentToolbar
+                            value={ buttonAlign }
+                            onChange={ (newAlign) => this.props.setAttributes({ buttonAlign: newAlign }) }
+                            controls={["left", "center", "right"]}
+                        />
+                    </BlockControls>
+                    <RichText
+                        className='mrm-submit-button'
+                        tagName="button"
+                        type='button'
+                        value={ buttonText }
+                        style={ buttonStyle }
+                        onChange={ ( content ) => this.props.setAttributes( { buttonText: content } ) }
+                        placeholder={ __( 'Submit', 'mrm' ) }
+                    />
 
-                <div className="mrm mrm-gutenberg-mrm-form-wrapper">
-                    <div className="mrm-mrm-form-wrapper">
-                            <div className="mrm-mrm-form-group submit" style={fieldSpacing}>
-                                <BlockControls>
-                                    <BlockAlignmentToolbar
-                                        value={ buttonAlign }
-                                        onChange={ (newAlign) => this.props.setAttributes({ buttonAlign: newAlign }) }
-                                        controls={["left", "center", "right"]}
-                                    />
-                                </BlockControls>
-                                <RichText
-                                    className='mrm-submit-button'
-                                    tagName="button"
-                                    type='button'
-                                    value={ buttonText }
-                                    style={ buttonStyle }
-                                    onChange={ ( content ) => this.props.setAttributes( { buttonText: content } ) }
-                                    placeholder={ __( 'Submit', 'mrm' ) }
-                                />
-
-                            </div>
-                        </div>
                 </div>
+                       
             </>
 
 

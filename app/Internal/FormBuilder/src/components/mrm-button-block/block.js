@@ -52,18 +52,14 @@ const mrmButton = ({
 
     return (
         <>
-            <div className="mrm mrm-gutenberg-mrm-form-wrapper">
-                    <div className="mrm-form-wrapper" >
-                        <div className="mrm-form-group submit" style={fieldSpacing}>
-                            <RichText.Content
-                                className='mrm-submit-button'
-                                tagName="button"
-                                type="submit"
-                                style={ buttonStyle }
-                                value={ buttonText }
-                            />
-                        </div>
-                    </div>
+            <div className="mrm-form-group submit" style={fieldSpacing}>
+                <RichText.Content
+                    className='mrm-submit-button'
+                    tagName="button"
+                    type="submit"
+                    style={ buttonStyle }
+                    value={ buttonText }
+                />
             </div>
         </>
     )

@@ -94,28 +94,28 @@ class Editor extends Component {
             isRequiredLastName = attributes.isRequiredLastName;
 
         return (
-                <PanelBody title="Last Name" className="inner-pannel">
-                    <TextControl
-                        className="mrm-inline-label"
-                        label="Last Name Label"
-                        value={ lastNameLabel }
-                        onChange={ (state ) => this.props.setAttributes({ lastNameLabel: state }) }
-                    />
+            <PanelBody title="Last Name" className="inner-pannel">
+                <TextControl
+                    className="mrm-inline-label"
+                    label="Last Name Label"
+                    value={ lastNameLabel }
+                    onChange={ (state ) => this.props.setAttributes({ lastNameLabel: state }) }
+                />
 
-                    <TextControl
-                        className="mrm-inline-label"
-                        label="Last Name Placeholder Text"
-                        value={ lastNamePlaceholder }
-                        onChange={ (state ) => this.props.setAttributes({ lastNamePlaceholder: state }) }
-                    />
+                <TextControl
+                    className="mrm-inline-label"
+                    label="Last Name Placeholder Text"
+                    value={ lastNamePlaceholder }
+                    onChange={ (state ) => this.props.setAttributes({ lastNamePlaceholder: state }) }
+                />
 
-                    <ToggleControl
-                        className="mrm-switcher-block"
-                        label="Mark Last Name As Required"
-                        checked={ isRequiredLastName }
-                        onChange={ (state ) => setAttributes({ isRequiredLastName: state }) }
-                    />
-                </PanelBody>
+                <ToggleControl
+                    className="mrm-switcher-block"
+                    label="Mark Last Name As Required"
+                    checked={ isRequiredLastName }
+                    onChange={ (state ) => setAttributes({ isRequiredLastName: state }) }
+                />
+            </PanelBody>
         )
     }
 
@@ -308,20 +308,14 @@ class Editor extends Component {
             <>
                 { this.getInspectorControls() }
 
-                <div className="mrm mrm-gutenberg-last-name-form-wrapper">
-                    <div className={`mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`}>
-                        <div className="mrm-mrm-form-group last-name" style={fieldSpacing}>
-                            <label htmlFor="mrm-last-name" style={labelStyle}>
-                                {lastNameLabel ? __(lastNameLabel,'mrm') : __('Last Name','mrm')}
-                                {requiredMark && isRequiredLastName && <span className="required-mark">*</span>}
-                            </label>
-                            <div>
-                                <span className="input-wrapper">
-                                 <input type="text" name="last_name" id="mrm-last-name" placeholder={lastNamePlaceholder} required={isRequiredLastName} style={inputStyle} />
-                                </span>
-                            </div>
-
-                        </div>
+                <div className="mrm-form-group last-name" style={fieldSpacing}>
+                    <label htmlFor="mrm-last-name" style={labelStyle}>
+                        {lastNameLabel ? __(lastNameLabel,'mrm') : __('Last Name','mrm')}
+                        {requiredMark && isRequiredLastName && <span className="required-mark">*</span>}
+                    </label>
+                    
+                    <div className="input-wrapper">
+                        <input type="text" name="last_name" id="mrm-last-name" placeholder={lastNamePlaceholder} required={isRequiredLastName} style={inputStyle} />
                     </div>
                 </div>
             </>
