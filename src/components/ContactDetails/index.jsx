@@ -59,7 +59,8 @@ export default function ContactDetails() {
   const [gender, setGender] = useState(false);
   const [genderButton, setGenderButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
-
+  const [timezones, setTimezones] = useState([]);
+  const [selectedTimezone, setSelectedTimezone] = useState();
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -84,11 +85,12 @@ export default function ContactDetails() {
     getLists().then((results) => {
       setLists(results.data);
     });
-
     // Get tags
     getTags().then((results) => {
       setTags(results.data);
     });
+
+    setTimezones(window.MRM_Vars.timezone_list);
   }, [refresh]);
 
   // lists
@@ -218,7 +220,7 @@ export default function ContactDetails() {
   };
 
   const handleUpdate = async () => {
-    contactData.meta_fields.gender = genderButton;
+    contactData.meta_fields.timezone = selectedTimezone;
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
       {
@@ -474,8 +476,6 @@ export default function ContactDetails() {
     } else {
       setGenderButton("Others");
     }
-    // console.log(genderButton);
-    // handleGenderMetaChange(name);
 
     setContactData((prevState) => ({
       ...prevState,
@@ -483,6 +483,16 @@ export default function ContactDetails() {
         [name]: genderButton,
       },
     }));
+  };
+
+  const handleTimezoneSelect = (event, id, value) => {
+    setSelectedTimezone(value);
+    // setContactData((prevState) => ({
+    //   ...prevState,
+    //   meta_fields: {
+    //     ["timezone"]: value,
+    //   },
+    // }));
   };
 
   // useEffect(() =>{
@@ -903,10 +913,8 @@ export default function ContactDetails() {
                                 className="gender-button"
                                 onClick={handleTimezoneShow}
                               >
-                                {contactData?.meta_fields.gender
-                                  ? contactData?.meta_fields.gender
-                                  : genderButton
-                                  ? genderButton
+                                {selectedTimezone
+                                  ? selectedTimezone
                                   : "Select Timezone"}
                               </button>
                               <ul
@@ -916,7 +924,26 @@ export default function ContactDetails() {
                                     : "mintmrm-dropdown"
                                 }
                               >
-                                <li
+                                <div className="option-section">
+                                  {timezones?.map((timezone) => {
+                                    return (
+                                      <li
+                                        key={timezone.id}
+                                        onClick={(event) =>
+                                          handleTimezoneSelect(
+                                            event,
+                                            timezone.id,
+                                            timezone.value
+                                          )
+                                        }
+                                      >
+                                        {timezone.value}
+                                      </li>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* <li
                                   onClick={(event) =>
                                     handleSelect(event, "gender", "male")
                                   }
@@ -936,7 +963,7 @@ export default function ContactDetails() {
                                   }
                                 >
                                   Others
-                                </li>
+                                </li> */}
                               </ul>
                             </div>
 

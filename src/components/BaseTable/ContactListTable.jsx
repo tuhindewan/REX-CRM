@@ -1,11 +1,6 @@
 import queryString from "query-string";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteMultipleContactsItems } from "../../services/Contact";
@@ -21,13 +16,12 @@ import NoContactIcon from "../Icons/NoContactIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
-import Loader from "../Loader";
-import LoadingIndicator from "../LoadingIndicator";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -210,7 +204,7 @@ export default function ContactListTable(props) {
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
-    setShowLoader(true)
+    setShowLoader(true);
     async function getData() {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
@@ -491,8 +485,8 @@ export default function ContactListTable(props) {
             <CustomSelect
               selected={selectedLists}
               setSelected={setSelectedLists}
-              showLoader ={showLoader}
-              setShowLoader= {setShowLoader}
+              showLoader={showLoader}
+              setShowLoader={setShowLoader}
               endpoint="/lists"
               placeholder="Lists"
               name="lists"
@@ -717,7 +711,7 @@ export default function ContactListTable(props) {
       </div>
 
       {showLoader ? (
-        <LoadingIndicator type="table"/>
+        <LoadingIndicator type="table" />
       ) : (
         <>
           <div className="pos-relative">
