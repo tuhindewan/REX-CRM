@@ -71,8 +71,11 @@ class ContactForm {
     public function get_content() {
         $form_id = isset($this->attributes['id']) ? $this->attributes['id'] : 0 ;
         $form_data = FormModel::get($form_id);
+        $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
+        }elseif(!$form_status){
+           return __('This form is not active. Please check');
         }
         $output = '';
         ob_start();?>
