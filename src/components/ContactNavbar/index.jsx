@@ -30,64 +30,6 @@ export default function Navbar(props) {
 
   return (
     <>
-      {/* {!hideGlobalNav && (
-        <div className="mintmrm-header">
-          <div className="mintmrm-container">
-            <div className="header-wrapper">
-              <div className="site-logo">
-                <Link to="/">
-                  <img
-                    src="/wp-content/plugins/mrm/admin/assets/images/contact-logo.png"
-                    alt=""
-                  />
-                </Link>
-              </div>
-
-              <nav className="mintmrm-navbar">
-                <ul className="navbar-ul">
-                  {routes.map((route, index) => {
-                    if (!route.hideInMenu) {
-                      return (
-                        <li
-                          className={
-                            location.pathname == route.path
-                              ? "navbar-li active"
-                              : "navbar-li "
-                          }
-                          key={index}
-                        >
-                          <Link to={route.path}>
-                            {__(route.title, "mintmrm")}
-                          </Link>
-
-                          {route.bage && (
-                            <span className="bage">{route.bage}</span>
-                          )}
-                          {"Contacts" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_contacts}
-                            </span>
-                          ) : "Lists" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_lists}
-                            </span>
-                          ) : "Tags" === route.title ? (
-                            <span className="bage">{dataCount.total_tags}</span>
-                          ) : (
-                            ""
-                          )}
-                        </li>
-                      );
-                    }
-                  })}
-                </ul>
-              </nav>
-
-              <div className="navbar-buttons">{navbarMarkup}</div>
-            </div>
-          </div>
-        </div>
-      )} */}
       <div className="contact-header">
         <div className="mintmrm-container">
           <div className="header-wrapper">
@@ -119,14 +61,22 @@ export default function Navbar(props) {
                           )}
                           {"Contacts" === route.title ? (
                             <span className="bage">
-                              {dataCount.total_contacts ? dataCount.total_contacts : "0" }
+                              {dataCount.total_contacts
+                                ? dataCount.total_contacts
+                                : "0"}
                             </span>
                           ) : "Lists" === route.title ? (
                             <span className="bage">
-                              {dataCount.total_lists ? dataCount.total_lists : "0"}
+                              {dataCount.total_lists
+                                ? dataCount.total_lists
+                                : "0"}
                             </span>
                           ) : "Tags" === route.title ? (
-                            <span className="bage">{dataCount.total_tags ? dataCount.total_tags : "0"}</span>
+                            <span className="bage">
+                              {dataCount.total_tags
+                                ? dataCount.total_tags
+                                : "0"}
+                            </span>
                           ) : (
                             ""
                           )}
