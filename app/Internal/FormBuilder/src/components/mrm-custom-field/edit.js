@@ -145,9 +145,12 @@ class Editor extends Component {
                             onChange={ (state ) => setAttributes({ select_option_name: state }) }
                         />
                     
-                        <button onClick={() => { this.addNewOption() }} className="add-option-button" role="button" title="Add New Option">
-                            <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
-                        </button>
+                        <div className="add-option-wrapper">
+                            <h4>Add New Option</h4>
+                            <button onClick={() => { this.addNewOption() }} className="add-option-button" role="button" title="Add New Option">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
+                            </button>
+                        </div>
 
                         { attributes.selectOption.map((option, index) => {
                             return (
@@ -175,9 +178,12 @@ class Editor extends Component {
 
                 {attributes.field_type == 'radio' && 
                     <div className="radio-option-wrapper">
-                        <button onClick={() => { this.addNewRadioOption() }} className="add-option-button" role="button" title="Add New Option" >
-                            <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
-                        </button>
+                        <div className="add-option-wrapper">
+                            <h4>Add New Option</h4>
+                            <button onClick={() => { this.addNewRadioOption() }} className="add-option-button" role="button" title="Add New Option" >
+                                <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
+                            </button>
+                        </div>
                     
                         { attributes.radioOption.map((option, index) => {
                             return (

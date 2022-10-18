@@ -944,6 +944,19 @@ body.is-fullscreen-mode .get-mrm-header {
   border-radius: 6px;
   margin-bottom: 20px;
 }
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-wrapper,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-wrapper h4,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-wrapper h4 {
+  font-size: 15px;
+  line-height: 1.2;
+  color: #344054;
+  font-weight: 600;
+}
 .mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-button,
 .mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-button {
   width: 38px;

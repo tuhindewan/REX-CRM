@@ -259,6 +259,19 @@
             border-radius: 6px;
             margin-bottom: 20px;
 
+            .add-option-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                h4 {
+                    font-size: 15px;
+                    line-height: 1.2;
+                    color: #344054;
+                    font-weight: 600;
+                }
+            }
+
             .add-option-button {
                 width: 38px;
                 height: 38px;

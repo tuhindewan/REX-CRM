@@ -3965,7 +3965,9 @@ class Editor extends Component {
       onChange: state => setAttributes({
         select_option_name: state
       })
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "add-option-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, "Add New Option"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
       onClick: () => {
         this.addNewOption();
       },
@@ -3984,7 +3986,7 @@ class Editor extends Component {
       "stroke-linejoin": "round",
       "stroke-width": "2",
       d: "M7.008 1v12M1 7h12"
-    }))), attributes.selectOption.map((option, index) => {
+    })))), attributes.selectOption.map((option, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "single-option-field"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
@@ -4020,7 +4022,9 @@ class Editor extends Component {
       }))))));
     })), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "radio-option-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "add-option-wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, "Add New Option"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
       onClick: () => {
         this.addNewRadioOption();
       },
@@ -4039,7 +4043,7 @@ class Editor extends Component {
       "stroke-linejoin": "round",
       "stroke-width": "2",
       d: "M7.008 1v12M1 7h12"
-    }))), attributes.radioOption.map((option, index) => {
+    })))), attributes.radioOption.map((option, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "single-option-field"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
