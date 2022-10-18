@@ -251,7 +251,7 @@ export default function CampaignCustomSelect(props) {
                   />
                 </div>
               </div>
-              <div className="checkbox-options">
+              <div className="checkbox-options option-section">
                 {filteredLists?.length > 0 &&
                   filteredLists.map((item, index) => {
                     let checkedList = checkIfSelectedList(item.id);
