@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
@@ -17,7 +17,10 @@ import DownArrowIcon from "../Icons/DownArrowIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
 
 const FormEditor = (props) => {
-  const navigate = useNavigate();
+  const { settingData, setSettingData } = props;
+
+  const [settingToSave, setSettingToSave] = useState(settingData);
+
   // lists
   const [lists, setLists] = useState([]);
 
@@ -43,8 +46,45 @@ const FormEditor = (props) => {
     setEnable(!enable);
   };
 
+  const settingDataValidation = (settingData) => {
+    if (!settingData) {
+      setSettingData({
+        settings: {
+          confirmation_type: {
+            same_page: {
+              message_to_show: "",
+              after_form_submission: "hide-form",
+            },
+            to_a_page: {
+              page: "",
+              redirection_message: "",
+            },
+            to_a_custom_url: {
+              custom_url: "",
+              custom_redirection_message: "",
+            },
+          },
+          form_layout: "pop-in",
+          schedule: {
+            form_scheduling: "",
+            submission_start: {
+              date: "",
+              time: "",
+            },
+          },
+          restriction: {
+            max_entries: "",
+            max_number: "",
+            max_type: "",
+          },
+        },
+      });
+    }
+  };
+
   // Fetch lists & tags
   useEffect(() => {
+    //setSettingToSave(settingData);
     // Get lists
     getLists().then((results) => {
       results.data.map(function () {
@@ -56,7 +96,7 @@ const FormEditor = (props) => {
     getTags().then((results) => {
       setTags(results.data);
     });
-  }, []);
+  }, [settingData]);
 
   const [formData, setFormData] = useState({});
 
@@ -121,20 +161,29 @@ const FormEditor = (props) => {
     }));
   };
 
-  const saveForm = async () => {
+  // const [refresh, setRefresh] = useState(false);
+  // useEffect(() => {}, [refresh]);
+
+  const saveForm = (settingData) => {
+    console.log(props);
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
-    const post_data = {
-      title: formData?.title,
-      form_body: storedBlocks,
-    };
-    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(post_data),
-    });
-    const responseData = await res.json();
+    // if (settingDataValidation(settingData)) {
+    //   console.log(settingData);
+    // }
+    console.log(settingData);
+
+    // const post_data = {
+    //   title: formData?.title,
+    //   form_body: storedBlocks,
+    // };
+    // const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-type": "application/json",
+    //   },
+    //   body: JSON.stringify(post_data),
+    // });
+    // const responseData = await res.json();
   };
 
   const [positionName, setPositionName] = useState("");
@@ -215,7 +264,10 @@ const FormEditor = (props) => {
             >
               <SettingIcon />
             </button>
-            <button className="mintmrm-btn enable" onClick={saveForm}>
+            <button
+              className="mintmrm-btn enable"
+              onClick={(e) => saveForm(settingData)}
+            >
               Enable
             </button>
           </div>
