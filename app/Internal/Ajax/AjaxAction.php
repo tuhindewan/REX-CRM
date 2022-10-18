@@ -5,8 +5,10 @@ namespace Mint\MRM\Internal\Ajax;
 
 use Mint\MRM\Admin\API\Controllers\TagController;
 use Mint\MRM\DataBase\Models\ContactModel;
+use Mint\MRM\DataBase\Models\CustomFieldModel;
 use Mint\MRM\DataBase\Models\FormModel;
 use Mint\MRM\DataStores\ContactData;
+use Mint\MRM\DataStores\CustomFieldData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 
@@ -81,9 +83,9 @@ class AjaxAction {
             }
             $form_id = isset($form_data['form_id']) ? $form_data['form_id']: 0;
             $parms = array(
-                        'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
-                        'last_name'     => isset($form_data['last_name']) ? $form_data['last_name'] : ''
-                      );
+                'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
+                'last_name'     => isset($form_data['last_name']) ? $form_data['last_name'] : ''
+              );
             $contact        = new ContactData( $form_data['email'],$parms );
             $exist_email    = ContactModel::is_contact_exist( $form_data['email'] );
             if($exist_email){
