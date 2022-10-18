@@ -1,9 +1,11 @@
 import React from "react";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import ContactCards from "../ContactCards";
 import ContactProfile from "../Icons/ContactProfile";
 
 function Settings() {
+  AdminNavMenuClassChange("mrm-admin", "settings");
   useGlobalStore.setState({
     hideGlobalNav: true,
   });

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import AlertPopup from "../AlertPopup";
 import DeletePopup from "../DeletePopup";
 import CopyIcon from "../Icons/CopyIcon";
@@ -13,6 +14,7 @@ import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function FormIndex(props) {
+  AdminNavMenuClassChange("mrm-admin", "form-editor");
 
   const [formData, setFormData] = useState({});
 

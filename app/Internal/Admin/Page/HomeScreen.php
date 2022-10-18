@@ -17,19 +17,37 @@ class HomeScreen {
 
 
     public function register_page() {
+
         add_menu_page(
             __( 'MRM', 'mrm'),
             __( 'MRM', 'mrm'),
             'manage_options',
             self::MENU_SLUG,
             array($this, 'load_wrapper'),
-            'dashicons-admin-post',
-            '20'
+            $this->getMenuIcon(),
+            2
         );
-        add_submenu_page(self::MENU_SLUG, __( 'Contacts', 'mrm'), __( 'Contacts', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/contacts/');
-        add_submenu_page(self::MENU_SLUG, __( 'Campaigns', 'mrm'), __( 'Campaigns', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/campaigns/');
-        add_submenu_page(self::MENU_SLUG, __( 'Form Editor', 'mrm'), __( 'Form Editor', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/form-editor/');
-        add_submenu_page(self::MENU_SLUG, __( 'Settings', 'mrm'), __( 'Settings', 'mrm'), 'manage_options', 'admin.php?page=mrm-admin#/settings/');
+
+        add_submenu_page(
+            self::MENU_SLUG, 
+            __( 'Dashboard', 'mrm'), 
+            __( 'Dashboard', 'mrm'), 
+            'manage_options', 
+            self::MENU_SLUG,
+            array($this, 'load_wrapper')
+        );
+
+        add_submenu_page(
+            self::MENU_SLUG, 
+            __( 'Contacts', 'mrm'), 
+            __( 'Contacts', 'mrm'), 
+            'manage_options', 
+            'mrm-admin#/contacts/',
+            array($this, 'load_wrapper')
+        );
+        add_submenu_page(self::MENU_SLUG, __( 'Campaigns', 'mrm'), __( 'Campaigns', 'mrm'), 'manage_options', 'mrm-admin#/campaigns/', array($this, 'load_wrapper'));
+        add_submenu_page(self::MENU_SLUG, __( 'Forms', 'mrm'), __( 'Forms', 'mrm'), 'manage_options', 'mrm-admin#/form-editor/', array($this, 'load_wrapper'));
+        add_submenu_page(self::MENU_SLUG, __( 'Settings', 'mrm'), __( 'Settings', 'mrm'), 'manage_options', 'mrm-admin#/settings/', array($this, 'load_wrapper'));
     }
 
 
@@ -41,4 +59,36 @@ class HomeScreen {
         </div>
         <?php
     }
+
+    /**
+     * Return SVG icon for menu
+     * 
+     * @return string
+     */
+    private function getMenuIcon()
+    {
+        return 'data:image/svg+xml;base64,' . base64_encode('<?xml version="1.0" standalone="no"?>
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+         "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+         width="32.000000pt" height="32.000000pt" viewBox="0 0 32.000000 32.000000"
+         preserveAspectRatio="xMidYMid meet">
+        
+        <g transform="translate(0.000000,32.000000) scale(0.100000,-0.100000)"
+        fill="#000000" stroke="none">
+        <path d="M24 285 c-9 -23 3 -45 24 -45 10 0 23 -5 30 -12 16 -16 25 -4 13 19
+        -5 10 -12 26 -15 36 -7 21 -44 23 -52 2z"/>
+        <path d="M244 283 c-3 -10 -10 -26 -15 -36 -13 -24 -6 -31 18 -18 10 5 26 12
+        36 15 12 4 17 14 15 28 -4 29 -45 38 -54 11z"/>
+        <path d="M116 191 c-31 -32 -32 -66 -1 -66 16 0 20 7 20 35 0 31 3 35 25 35
+        22 0 25 -4 25 -37 0 -24 -5 -38 -12 -38 -7 0 -13 -4 -13 -10 0 -17 36 -11 53
+        8 23 26 21 41 -10 74 -34 35 -52 35 -87 -1z"/>
+        <path d="M70 90 c-8 -5 -23 -11 -33 -14 -12 -4 -17 -14 -15 -28 4 -29 45 -38
+        54 -11 3 10 10 26 15 35 15 30 9 35 -21 18z"/>
+        <path d="M220 95 c0 -3 4 -13 9 -23 5 -9 12 -25 15 -35 9 -27 50 -18 54 11 2
+        14 -3 24 -15 28 -10 3 -26 10 -35 15 -20 10 -28 11 -28 4z"/>
+        </g>
+        </svg>');
+    }
+    
 }

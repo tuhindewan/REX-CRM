@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 import ContactCards from "../ContactCards/index";
 
@@ -12,7 +12,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
 
 import "./style.css";
-
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();

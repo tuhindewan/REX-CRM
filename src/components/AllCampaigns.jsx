@@ -6,18 +6,19 @@ import {
   deleteSingleCampaign,
   getAllCampaigns,
 } from "../services/Campaign";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 import AlertPopup from "./AlertPopup";
 import NoCampaign from "./Campaign/NoCampaign";
 import SingleCampaign from "./Campaign/SingleCampaign";
 import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
+import LoadingIndicator from "./LoadingIndicator";
 import Pagination from "./Pagination";
 import SuccessfulNotification from "./SuccessfulNotification";
-import SearchNavbar from "./SearchNavbar";
-import LoadingIndicator from "./LoadingIndicator";
 
 export default function AllCampaigns() {
+  AdminNavMenuClassChange("mrm-admin", "campaigns");
   useGlobalStore.setState({
     hideGlobalNav: true,
   });
