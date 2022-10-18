@@ -4,6 +4,7 @@ namespace Mint\MRM\Internal\Ajax;
 
 
 use Mint\MRM\DataBase\Models\ContactModel;
+use Mint\MRM\DataBase\Models\FormModel;
 use Mint\MRM\DataStores\ContactData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
@@ -45,17 +46,21 @@ class AjaxAction {
         die();
     }
 
+    /**
+     * MRM Form Submit
+     */
+
     public function mrm_submit_form()
     {
-        $params = $_POST;
-        $response = array(
+        $params     = $_POST;
+        $response   = array(
             'status' => 'failed',
             'message' => 'Form is not valid'
         );
         if (isset($params['action']) &&  'mrm_submit_form' == $params['action'] ){
             $postData 	= isset($_POST['post_data']) ? $_POST['post_data'] : '';
             parse_str($postData, $post_data);
-            $form_data = array();
+            $form_data  = array();
             $form_data['meta_fields'] = [];
             if ($post_data) {
                 foreach ( $post_data as $key => $value ) {
@@ -84,8 +89,19 @@ class AjaxAction {
                 echo json_encode($response, true);
                 die();
             }
-            $contact_id     = ContactModel::insert( $contact );
+            do_action('mrm/before_form_submit',$contact);
+            $contact_id         = ContactModel::insert( $contact );
             if ( $contact_id ){
+                do_action('mrm/after_form_submit',$contact_id,$contact);
+
+                $sign_up        = FormModel::get_meta($form_data['form_id']);
+                $sign_up_count  = isset($sign_up['meta_fields']['sign_up']) ? $sign_up['meta_fields']['sign_up'] : 0;
+
+                $args['meta_fields'] = array(
+                    'sign_up' => $sign_up_count + 1
+                );
+                FormModel::update_meta_fields($form_data['form_id'],$args);
+
                 $meta_fields['meta_fields'] = $form_data['meta_fields'];
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
                 $response['status']  = 'success';
