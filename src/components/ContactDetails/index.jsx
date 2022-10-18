@@ -9,22 +9,22 @@ import { getTags } from "../../services/Tag";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
+import CrossIcon from "../Icons/CrossIcon";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import EditButton from "../Icons/EditButton";
 import EmailIcon from "../Icons/EmailIcon";
+import NoActivityIcon from "../Icons/NoActivityIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
+import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
-import LoadingIndicator from "../LoadingIndicator";
-import NoActivityIcon from "../Icons/NoActivityIcon";
-import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
-import CrossIcon from "../Icons/CrossIcon";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -592,14 +592,6 @@ export default function ContactDetails() {
                         isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
                       }
                     >
-                      {contactData.status == "pending" ? (
-                        <li onClick={() => handleDoubleOptin()}>
-                          Send Double Optin Email
-                        </li>
-                      ) : (
-                        ""
-                      )}
-
                       {statusList.map((status, index) => {
                         return (
                           <>
