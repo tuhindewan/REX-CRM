@@ -1,5 +1,5 @@
 import { omit } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
@@ -20,6 +20,7 @@ import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
@@ -66,6 +67,22 @@ export default function ContactDetails() {
     lists: [],
     tags: [],
   });
+
+  const timezoneRef = useRef(null);
+  const genderRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      timezoneRef,
+      setShowTimezone
+    )
+  );
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, genderRef, setGender)
+  );
 
   const [errors, setErrors] = useState({});
 
@@ -845,7 +862,10 @@ export default function ContactDetails() {
                             label="Gender"
                             value={contactData?.meta_fields?.gender}
                           /> */}
-                            <div className="form-group contact-input-field">
+                            <div
+                              className="form-group contact-input-field"
+                              ref={genderRef}
+                            >
                               <label name="gender">Gender</label>
                               <button
                                 className="gender-button"
@@ -907,7 +927,10 @@ export default function ContactDetails() {
                               label="Timezone"
                               value={contactData?.meta_fields?.timezone}
                             /> */}
-                            <div className="form-group contact-input-field">
+                            <div
+                              className="form-group contact-input-field"
+                              ref={timezoneRef}
+                            >
                               <label name="gender">Timezone</label>
                               <button
                                 className="gender-button"
