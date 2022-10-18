@@ -3258,6 +3258,7 @@ class Editor extends Component {
       title: "Button Text",
       className: "inner-pannel"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
       label: "Button Text",
       value: attributes.buttonText,
       onChange: state => setAttributes({
@@ -3329,15 +3330,14 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: buttonBorderColor => this.onChangeAttribute('buttonBorderColor', buttonBorderColor),
       value: attributes.buttonBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
-      className: "mrm-hr"
     }));
   };
   getInspectorControls = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       key: "mrm-mrm-form-inspector-controls"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      id: "mrm-block-inspected-inspector-control-wrapper"
+      id: "mrm-block-inspected-inspector-control-wrapper",
+      className: "mrm-block-control-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.buttonText(), this.buttonStyle())));
   };
   render() {
