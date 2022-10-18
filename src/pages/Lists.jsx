@@ -11,6 +11,7 @@ import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
 import LoadingIndicator from "../components/LoadingIndicator";
+import ContactNavbar from "../components/ContactNavbar"
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -347,6 +348,7 @@ const Lists = () => {
 
   return (
     <>
+    <ContactNavbar />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">

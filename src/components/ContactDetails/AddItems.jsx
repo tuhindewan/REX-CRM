@@ -236,6 +236,7 @@ export default function AddItems(props) {
         {/* <div className="no-found">
         <span>No List found</span>
       </div> */}
+        {loading && <LoadingIndicator type="table" />}
         <Link className="add-action" to="" onClick={handleAssignLists}>
           <Plus />
           Assign {placeholder}
@@ -245,7 +246,6 @@ export default function AddItems(props) {
                 <ColumnList title={column.title} key={index} />
               </li>;
             })} */}
-        {loading && <LoadingIndicator type="table" />}
       </ul>
       <WarningNotification display={showWarning} message={message} />
     </>

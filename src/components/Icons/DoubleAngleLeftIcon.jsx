@@ -1,4 +1,4 @@
-export default function DoubleAngleLeft() {
+export default function DoubleAngleLeftIcon() {
   return (
     <svg
       width="13"
