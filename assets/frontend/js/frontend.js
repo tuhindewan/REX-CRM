@@ -36,7 +36,7 @@ jQuery(document).ready(function($){
             type : "post",
             dataType : "json",
             url : MRM_Frontend_Vars.ajaxurl,
-            data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize()},
+            data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize(), security : MRM_Frontend_Vars.mrm_form_nonce},
             success: function(response) {
                 jQuery(".response").html(response.message)
             }

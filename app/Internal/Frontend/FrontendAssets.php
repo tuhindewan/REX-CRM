@@ -58,7 +58,8 @@ class FrontendAssets
             MRM_PLUGIN_NAME,
             'MRM_Frontend_Vars',
             array(
-                'ajaxurl' => admin_url('admin-ajax.php'),
+                'ajaxurl'               => admin_url('admin-ajax.php'),
+                'mrm_form_nonce' 		=> wp_create_nonce('wp_mrm_submit_form'),
             )
         );
     }

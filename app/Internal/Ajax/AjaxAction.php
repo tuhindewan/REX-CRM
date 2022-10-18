@@ -3,6 +3,7 @@
 namespace Mint\MRM\Internal\Ajax;
 
 
+use Mint\MRM\Admin\API\Controllers\TagController;
 use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataBase\Models\FormModel;
 use Mint\MRM\DataStores\ContactData;
@@ -52,6 +53,7 @@ class AjaxAction {
 
     public function mrm_submit_form()
     {
+        check_ajax_referer( 'wp_mrm_submit_form', 'security' );
         $params     = $_POST;
         $response   = array(
             'status' => 'failed',
@@ -77,9 +79,10 @@ class AjaxAction {
                     }
                 }
             }
+            $form_id = isset($form_data['form_id']) ? $form_data['form_id']: 0;
             $parms = array(
                         'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
-                        'last_name'     => isset($form_data['first_name']) ? $form_data['first_name'] : ''
+                        'last_name'     => isset($form_data['last_name']) ? $form_data['last_name'] : ''
                       );
             $contact        = new ContactData( $form_data['email'],$parms );
             $exist_email    = ContactModel::is_contact_exist( $form_data['email'] );
@@ -94,15 +97,19 @@ class AjaxAction {
             if ( $contact_id ){
                 do_action('mrm/after_form_submit',$contact_id,$contact);
 
-                $sign_up        = FormModel::get_meta($form_data['form_id']);
+                $sign_up        = FormModel::get_meta($form_id);
                 $sign_up_count  = isset($sign_up['meta_fields']['sign_up']) ? $sign_up['meta_fields']['sign_up'] : 0;
 
                 $args['meta_fields'] = array(
                     'sign_up' => $sign_up_count + 1
                 );
-                FormModel::update_meta_fields($form_data['form_id'],$args);
+                FormModel::update_meta_fields($form_id,$args);
 
-                $meta_fields['meta_fields'] = $form_data['meta_fields'];
+                $group_id = ['1','2','3','4','5'];
+
+                TagController::set_tags_to_contact($group_id,$contact_id);
+
+                $meta_fields['meta_fields'] = isset($form_data['meta_fields']) ? $form_data['meta_fields'] : [];
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
                 $response['status']  = 'success';
                 $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
