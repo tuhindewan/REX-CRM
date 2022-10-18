@@ -45,7 +45,7 @@ export default function EditCampaign(props) {
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
-  const [recipientsCount, satRecipientsCount] = useState(0)
+  const [recipientsCount, satRecipientsCount] = useState(0);
   const [showWarning, setShowWarning] = useState("none");
 
   // recipient lists and recipients tags state variables to whom the email(s) should be sent
@@ -122,8 +122,10 @@ export default function EditCampaign(props) {
       setCampaignStatus(campaign.status);
       satRecipientsCount(campaign.total_recipients);
       setShowLoader(false);
+
       // toggleRefresh();
     });
+
     const isPublishValid = validatePublish();
     setIsPublishValid(isPublishValid);
     if ("campaign-created" == location.state?.status) {
@@ -486,72 +488,45 @@ export default function EditCampaign(props) {
                         />
                       </div>
                       <div className="email-to input-item">
-                      <div className="select-options">
-                        <label>To:</label>
-                        <button className={id ? "all-recipients hide" : "all-recipients"} onClick={showDropDown}>
-                          All Subscriber
-                          {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                        </button>
+                        <div className="select-options">
+                          <label>To:</label>
+                          {recipientLists.length == 0 &&
+                          recipientTags.length == 0 ? (
+                            <button
+                              className="all-recipients"
+                              onClick={showDropDown}
+                            >
+                              All Subscriber
+                              {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                            </button>
+                          ) : (
+                            <button
+                              className="all-recipients selected show"
+                              onClick={showDropDown}
+                            >
+                              <span className="tags">
+                                {recipientTags.length} Tags
+                              </span>
+                              <span className="from">and</span>
+                              <span className="lists">
+                                {recipientLists.length} Lists.
+                              </span>
+                              <span className="recipients">
+                                {recipientLists.length + recipientTags.length}{" "}
+                                Recipients
+                              </span>
+                              {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                            </button>
+                          )}
 
-                    <button
-                      className={id ? "all-recipients selected show" : "all-recipients selected"}
-                      onClick={showDropDown}
-                    >
-                      <span className="tags">{recipientTags.length} Tags</span>
-                      <span className="from">and</span>
-                      <span className="lists">{recipientLists.length} Lists.</span>
-                      <span className="recipients">{recipientsCount} Recipients</span>
-                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                    </button>
-                    
-                    <CampaignCustomSelect dropDown={dropDown} setRecipientTags={setRecipientTags} recipientTags={recipientTags} setRecipientLists={setRecipientLists} recipientLists={recipientLists} />
-                    <div></div>
-                      </div>
-                        <div
-                          className={
-                            recipientLists.length == 0 &&
-                            recipientTags.length == 0
-                              ? "selected-result inactive"
-                              : "selected-result"
-                          }
-                        >
-                          {recipientLists.map((item) => {
-                            return (
-                              <span
-                                key={item.id}
-                                className="mrm-custom-selected-items"
-                              >
-                                {item.title}
-                                <div
-                                  className="cross-icon"
-                                  onClick={(e) =>
-                                    deleteSelectedlist(e, item.id)
-                                  }
-                                >
-                                  <CrossIcon />
-                                </div>
-                              </span>
-                            );
-                          })}
-                          {recipientTags.map((item) => {
-                            return (
-                              <span
-                                key={item.id}
-                                className="mrm-custom-selected-items"
-                              >
-                                {item.title}
-                                <div
-                                  className="cross-icon"
-                                  onClick={(e) => deleteSelectedtag(e, item.id)}
-                                >
-                                  <CrossIcon />
-                                </div>
-                              </span>
-                            );
-                          })}
-                          <div className="clear-all" onClick={deleteAll}>
-                            <span>Clear All</span>
-                          </div>
+                          <CampaignCustomSelect
+                            dropDown={dropDown}
+                            setRecipientTags={setRecipientTags}
+                            recipientTags={recipientTags}
+                            setRecipientLists={setRecipientLists}
+                            recipientLists={recipientLists}
+                          />
+                          <div></div>
                         </div>
                       </div>
                     </>

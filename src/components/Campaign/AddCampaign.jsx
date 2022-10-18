@@ -388,24 +388,34 @@ export default function AddCampaign(props) {
                     <div className="email-to input-item">
                       <div className="select-options">
                         <label>To:</label>
-                        <button
-                          className="all-recipients"
-                          onClick={showDropDown}
-                        >
-                          All Subscriber
-                          {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                        </button>
-
-                        <button
-                          className="all-recipients selected"
-                          onClick={showDropDown}
-                        >
-                          <span className="tags">5 Tags</span>
-                          <span className="from">from</span>
-                          <span className="lists">4 Lists.</span>
-                          <span className="recipients">300 Recipients</span>
-                          {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                        </button>
+                        {recipientLists.length == 0 &&
+                        recipientTags.length == 0 ? (
+                          <button
+                            className="all-recipients"
+                            onClick={showDropDown}
+                          >
+                            All Subscriber
+                            {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                          </button>
+                        ) : (
+                          <button
+                            className="all-recipients selected show"
+                            onClick={showDropDown}
+                          >
+                            <span className="tags">
+                              {recipientTags.length} Tags
+                            </span>
+                            <span className="from">and</span>
+                            <span className="lists">
+                              {recipientLists.length} Lists.
+                            </span>
+                            <span className="recipients">
+                              {recipientLists.length + recipientTags.length}{" "}
+                              Recipients
+                            </span>
+                            {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                          </button>
+                        )}
 
                         <CampaignCustomSelect
                           dropDown={dropDown}
@@ -416,7 +426,7 @@ export default function AddCampaign(props) {
                         />
                         <div></div>
                       </div>
-                      <div
+                      {/* <div
                         className={
                           recipientLists.length == 0 &&
                           recipientTags.length == 0
@@ -459,7 +469,7 @@ export default function AddCampaign(props) {
                         <div className="clear-all" onClick={deleteAll}>
                           <span>Clear All</span>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </>
                 )}

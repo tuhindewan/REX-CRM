@@ -430,6 +430,12 @@
                   .mintmrm-checkbox:hover {
                     background-color: #f6f8fa;
                   }
+                  .no-item-found{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #ec5956;
+                  }
                 }
               }
             }

@@ -199,6 +199,7 @@ export default function CampaignCustomSelect(props) {
                       </li>
                     );
                   })}
+                {filteredTags?.length == 0 ? <div className="no-item-found">No item found</div> : null}
               </div>
             </div>
           </div>
@@ -274,6 +275,7 @@ export default function CampaignCustomSelect(props) {
                       </li>
                     );
                   })}
+                {filteredLists?.length == 0 ? <div className="no-item-found">No item found</div> : null}
               </div>
             </div>
           </div>
