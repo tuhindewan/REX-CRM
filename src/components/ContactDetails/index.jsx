@@ -58,6 +58,7 @@ export default function ContactDetails() {
   const [showLoader, setShowLoader] = useState(true);
   const [gender, setGender] = useState(false);
   const [genderButton, setGenderButton] = useState();
+  const [showTimezone, setShowTimezone] = useState(false);
 
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
@@ -459,6 +460,11 @@ export default function ContactDetails() {
   const handleGender = () => {
     setGender(!gender);
   };
+
+  const handleTimezoneShow = () => {
+    setShowTimezone(!showTimezone);
+  };
+
   const handleSelect = (e, name, gender) => {
     setGender(false);
     if (name == "gender" && gender == "male") {
@@ -885,13 +891,54 @@ export default function ContactDetails() {
                               value={contactData?.meta_fields?.designation}
                             />
                             {/*<Selectbox label="Company" index="company" />*/}
-                            <InputItem
+                            {/* <InputItem
                               name="timezone"
                               handleChange={handleMetaChange}
                               label="Timezone"
                               value={contactData?.meta_fields?.timezone}
-                            />
-                            {/*<Selectbox label="Designation" index="designation" />*/}
+                            /> */}
+                            <div className="form-group contact-input-field">
+                              <label name="gender">Timezone</label>
+                              <button
+                                className="gender-button"
+                                onClick={handleTimezoneShow}
+                              >
+                                {contactData?.meta_fields.gender
+                                  ? contactData?.meta_fields.gender
+                                  : genderButton
+                                  ? genderButton
+                                  : "Select Timezone"}
+                              </button>
+                              <ul
+                                className={
+                                  showTimezone
+                                    ? "mintmrm-dropdown show"
+                                    : "mintmrm-dropdown"
+                                }
+                              >
+                                <li
+                                  onClick={(event) =>
+                                    handleSelect(event, "gender", "male")
+                                  }
+                                >
+                                  Male
+                                </li>
+                                <li
+                                  onClick={(event) =>
+                                    handleSelect(event, "gender", "female")
+                                  }
+                                >
+                                  Female
+                                </li>
+                                <li
+                                  onClick={(event) =>
+                                    handleSelect(event, "gender", "others")
+                                  }
+                                >
+                                  Others
+                                </li>
+                              </ul>
+                            </div>
 
                             {customFields.map((field) => {
                               return (
