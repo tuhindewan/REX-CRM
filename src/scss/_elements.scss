@@ -516,7 +516,7 @@ ul.mintmrm-dropdown {
   background: #fff;
   right: 0;
   top: calc(100% + 16px);
-  width: 250px;
+  width: 300px;
   border: 1px solid #e2e5ed;
   z-index: 5;
   transition: all 0.3s ease;
@@ -527,6 +527,10 @@ ul.mintmrm-dropdown {
 
   &.show {
     display: block;
+  }
+
+  &.timezone {
+    width: 320px;
   }
 
   &:before {

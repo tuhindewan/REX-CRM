@@ -1,5 +1,5 @@
 import { omit } from "lodash";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
@@ -15,6 +15,7 @@ import EditButton from "../Icons/EditButton";
 import EmailIcon from "../Icons/EmailIcon";
 import NoActivityIcon from "../Icons/NoActivityIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
+import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
@@ -24,6 +25,7 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
+import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 
@@ -54,14 +56,13 @@ export default function ContactDetails() {
   const [isCloseNote, setIsCloseNote] = useState(true);
   const [assignLists, setAssignLists] = useState([]);
   const [assignTags, setAssignTags] = useState([]);
-  const [isAssignTo, setIsAssignTo] = useState(false);
-  const [selected, setSelected] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
   const [gender, setGender] = useState(false);
   const [genderButton, setGenderButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
   const [timezones, setTimezones] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
+  const [showWarning, setShowWarning] = useState("none");
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -117,8 +118,19 @@ export default function ContactDetails() {
   const [tags, setTags] = useState([]);
 
   const [customFields, setCustomFields] = useState([]);
+  const [searchTimezone, setSearchTimezone] = useState("");
 
   const navigate = useNavigate();
+
+  const filteredTimezone = useMemo(() => {
+    if (searchTimezone) {
+      return timezones.filter(
+        (timezone) =>
+          timezone.value.toLowerCase().indexOf(searchTimezone.toLocaleLowerCase()) > -1
+      );
+    }
+    return timezones;
+  }, [searchTimezone, timezones]);
 
   const toggleRefresh = () => {
     setRefresh(!refresh);
@@ -237,6 +249,7 @@ export default function ContactDetails() {
   };
 
   const handleUpdate = async () => {
+    contactData.meta_fields.gender = genderButton;
     contactData.meta_fields.timezone = selectedTimezone;
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
@@ -263,6 +276,10 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   //to open input field to add new tag to a contact
@@ -271,47 +288,10 @@ export default function ContactDetails() {
     setOpenTagSelectBox(!openTagSelectBox);
   };
 
-  const handleAddTag = async () => {
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}/groups`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(tagListsAdder),
-      }
-    );
-    toggleRefresh();
-    setTagListsAdder({
-      lists: [],
-      tags: [],
-    });
-    addTagInput();
-  };
-
   //to open input field to add new list to a contact
   const [openListSelectBox, setOpenListSelectBox] = useState(false);
   const addListInput = () => {
     setOpenListSelectBox(!openListSelectBox);
-  };
-  const handleAddList = async () => {
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}/groups`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(tagListsAdder),
-      }
-    );
-    toggleRefresh();
-    setTagListsAdder({
-      lists: [],
-      tags: [],
-    });
-    addListInput();
   };
 
   // Set values from contact form
@@ -373,7 +353,6 @@ export default function ContactDetails() {
       setShowNotification("block");
       setMessage(responseData?.message);
       toggleRefresh();
-      showEditMode();
     } else {
       // Validation messages
       setErrors({
@@ -381,6 +360,10 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   // Send Double opt-in email
@@ -398,15 +381,18 @@ export default function ContactDetails() {
     const code = responseData?.code;
     if (code === 200) {
       setShowNotification("block");
-      setMessage(responseData.message);
+      setMessage(responseData?.message);
     } else {
       // Validation messages
-      setErrors({
-        ...errors,
-        email: responseData.message,
-      });
+      setShowWarning("block");
+      setMessage(responseData?.message);
     }
     toggleRefresh();
+    const timer = setTimeout(() => {
+      setShowNotification("none");
+      setShowWarning("none");
+    }, 3000);
+    return () => clearTimeout(timer);
   };
 
   const handleDelete = () => {
@@ -494,16 +480,12 @@ export default function ContactDetails() {
       setGenderButton("Others");
     }
 
-    setContactData((prevState) => ({
-      ...prevState,
-      meta_fields: {
-        [name]: genderButton,
-      },
-    }));
+    
   };
 
   const handleTimezoneSelect = (event, id, value) => {
     setSelectedTimezone(value);
+    setShowTimezone(!showTimezone);
     // setContactData((prevState) => ({
     //   ...prevState,
     //   meta_fields: {
@@ -871,11 +853,9 @@ export default function ContactDetails() {
                                 className="gender-button"
                                 onClick={handleGender}
                               >
-                                {contactData?.meta_fields.gender
-                                  ? contactData?.meta_fields.gender
-                                  : genderButton
+                                {genderButton
                                   ? genderButton
-                                  : "Select Gender"}
+                                  : (contactData?.meta_fields.gender ? contactData?.meta_fields.gender : "Select Gender")}
                               </button>
                               <ul
                                 className={
@@ -919,14 +899,7 @@ export default function ContactDetails() {
                               handleChange={handleMetaChange}
                               label="Designation"
                               value={contactData?.meta_fields?.designation}
-                            />
-                            {/*<Selectbox label="Company" index="company" />*/}
-                            {/* <InputItem
-                              name="timezone"
-                              handleChange={handleMetaChange}
-                              label="Timezone"
-                              value={contactData?.meta_fields?.timezone}
-                            /> */}
+                            />                            
                             <div
                               className="form-group contact-input-field"
                               ref={timezoneRef}
@@ -938,17 +911,31 @@ export default function ContactDetails() {
                               >
                                 {selectedTimezone
                                   ? selectedTimezone
-                                  : "Select Timezone"}
+                                  : (contactData?.meta_fields.timezone ? contactData?.meta_fields.timezone : "Select Timezone")}
                               </button>
                               <ul
                                 className={
                                   showTimezone
-                                    ? "mintmrm-dropdown show"
-                                    : "mintmrm-dropdown"
+                                    ? "mintmrm-dropdown timezone show"
+                                    : "mintmrm-dropdown timezone"
                                 }
                               >
+                                <li className="searchbar">
+                                  <span class="pos-relative">
+                                    <Search />
+                                    <input
+                                      type="search"
+                                      name="column-search"
+                                      placeholder="Seacrh..."
+                                      value={searchTimezone}
+                                      onChange={(e) => setSearchTimezone(e.target.value)}
+                                    />
+                                  </span>
+                                </li>
                                 <div className="option-section">
-                                  {timezones?.map((timezone) => {
+          
+                                  {filteredTimezone?.length > 0 && 
+                                  filteredTimezone?.map((timezone) => {
                                     return (
                                       <li
                                         key={timezone.id}
@@ -965,28 +952,6 @@ export default function ContactDetails() {
                                     );
                                   })}
                                 </div>
-
-                                {/* <li
-                                  onClick={(event) =>
-                                    handleSelect(event, "gender", "male")
-                                  }
-                                >
-                                  Male
-                                </li>
-                                <li
-                                  onClick={(event) =>
-                                    handleSelect(event, "gender", "female")
-                                  }
-                                >
-                                  Female
-                                </li>
-                                <li
-                                  onClick={(event) =>
-                                    handleSelect(event, "gender", "others")
-                                  }
-                                >
-                                  Others
-                                </li> */}
                               </ul>
                             </div>
 
@@ -1198,11 +1163,6 @@ export default function ContactDetails() {
                       message={message}
                       isActive={selectList}
                     />
-                    {/* {openListSelectBox && (
-                    <button className="add-list" onClick={handleAddList}>
-                      Add List
-                    </button>
-                  )} */}
                   </div>
 
                   <div className="tags">
@@ -1261,12 +1221,6 @@ export default function ContactDetails() {
                         message={message}
                       />
                     )}
-
-                    {/* {openTagSelectBox && (
-                    <button className="add-list" onClick={handleAddTag}>
-                      Add Tag
-                    </button>
-                  )} */}
                   </div>
                 </div>
               </div>
@@ -1283,6 +1237,7 @@ export default function ContactDetails() {
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
+      <WarningNotification display={showWarning} message={message} />
     </>
   );
 }
