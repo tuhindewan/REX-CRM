@@ -45,7 +45,7 @@ export default function SingleCampaign(props) {
       <div className="table-data status">
         <span className="draft">{props.campaign.status}</span>
       </div>
-      <div>
+      <div className="table-data threedot">
         <button
           className="more-option"
           style={{ background: "white", position: "relative" }}

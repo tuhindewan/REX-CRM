@@ -102,8 +102,8 @@ export default function CampaignTemplates(props) {
                   </Link>
                 )}
               </div>
-              <div className="template-select-section">
-                <h1>Amazing Templates Are Coming Soon</h1>
+              <div className="template-select-section coming-soon">
+                <h2>Amazing Templates Are Coming Soon</h2>
               </div>
             </div>
           </div>

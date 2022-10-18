@@ -161,6 +161,9 @@
                 margin-right: 5px;
                 display: inline-block;
               }
+              &.no-campaign {
+                width: 100%;
+              }
             }
           }
           // .table-row:last-child {
@@ -186,8 +189,8 @@
                 line-height: 18px;
                 color: #121212;
               }
-              &:hover{
-                a{
+              &:hover {
+                a {
                   color: $primary-color;
                 }
               }
@@ -236,7 +239,6 @@
         .table-head,
         .table-body {
           .table-row {
-            justify-content: center;
             align-items: center;
           }
           .campaign-name {

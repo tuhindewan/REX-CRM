@@ -11,7 +11,7 @@ import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ContactNavbar from "../components/ContactNavbar"
+import ContactNavbar from "../components/ContactNavbar";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -348,7 +348,7 @@ const Lists = () => {
 
   return (
     <>
-    <ContactNavbar />
+      <ContactNavbar />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">
@@ -502,51 +502,54 @@ const Lists = () => {
                 </div>
               </div>
             </div>
-            {loading ? (<LoadingIndicator type="table" />) : 
-            (
-            <>  
-              <div className="contact-list-body">
-                <div class="contact-list-table">
-
-                  <table>
-                    <thead className={ showTableHead ? "showTableHead show" : "showTableHead" }>
-                      <tr>
-                        <th className="">
-                          <span class="mintmrm-checkbox no-title">
-                            <input
-                              type="checkbox"
-                              name="bulk-select"
-                              id="bulk-select"
-                              onChange={handleSelectAll}
-                              checked={allSelected}
-                            />
-                            <label for="bulk-select">Name</label>
-                          </span>
-                        </th>
-                        <th>Contacts</th>
-                        <th className="">Description</th>
-                        <th className="creation-date">Creation Date</th>
-                        <th className="action"></th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-
-                      {/* List empty or search not found ui */}
-                      {!lists.length && (
+            {loading ? (
+              <LoadingIndicator type="table" />
+            ) : (
+              <>
+                <div className="contact-list-body">
+                  <div class="contact-list-table">
+                    <table>
+                      <thead
+                        className={
+                          showTableHead ? "showTableHead show" : "showTableHead"
+                        }
+                      >
                         <tr>
-                          <td
-                            className="no-contact"
-                            colspan="10"
-                            style={{ textAlign: "center" }}
-                          >
-                            <ListIcon />
-                            No List Found
-                          </td>
+                          <th className="">
+                            <span class="mintmrm-checkbox no-title">
+                              <input
+                                type="checkbox"
+                                name="bulk-select"
+                                id="bulk-select"
+                                onChange={handleSelectAll}
+                                checked={allSelected}
+                              />
+                              <label for="bulk-select">Name</label>
+                            </span>
+                          </th>
+                          <th>Contacts</th>
+                          <th className="">Description</th>
+                          <th className="creation-date">Creation Date</th>
+                          <th className="action"></th>
                         </tr>
-                      )}
+                      </thead>
 
-                      {lists.map((list, idx) => {
+                      <tbody>
+                        {/* List empty or search not found ui */}
+                        {!lists.length && (
+                          <tr>
+                            <td
+                              className="no-contact"
+                              colspan="10"
+                              style={{ textAlign: "center" }}
+                            >
+                              <ListIcon />
+                              No List Found "{search}"
+                            </td>
+                          </tr>
+                        )}
+
+                        {lists.map((list, idx) => {
                           return (
                             <ListItem
                               key={idx}
@@ -560,23 +563,23 @@ const Lists = () => {
                             />
                           );
                         })}
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-              {totalPages > 1 && (
-                <div className="contact-list-footer">
-                  <Pagination
-                    currentPage={page}
-                    pageSize={perPage}
-                    onPageChange={setPage}
-                    totalCount={count}
-                    totalPages={totalPages}
-                  />
-                </div>
-              )}
-            </>)}
-            
+                {totalPages > 1 && (
+                  <div className="contact-list-footer">
+                    <Pagination
+                      currentPage={page}
+                      pageSize={perPage}
+                      onPageChange={setPage}
+                      totalCount={count}
+                      totalPages={totalPages}
+                    />
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
