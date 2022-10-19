@@ -38,7 +38,7 @@ domReady(function () {
   registerBlockType("mrmformfield/email-field-block", {
     title: __("Email Field", "mrm"),
     category: "common",
-    icon: icon.pricing,
+    icon: icon.EmailField,
     supports: {
       align: ["left", "right", "center"],
     },
@@ -50,7 +50,7 @@ domReady(function () {
   registerBlockType("mrmformfield/first-name-block", {
     title: __("First Name", "mrm"),
     category: "common",
-    icon: firstNameIcon.pricing,
+    icon: firstNameIcon.firstName,
     supports: {
       align: ["left", "right", "center"],
     },
@@ -62,7 +62,7 @@ domReady(function () {
   registerBlockType("mrmformfield/last-name-block", {
     title: __("Last Name", "mrm"),
     category: "common",
-    icon: lastNameIcon.pricing,
+    icon: lastNameIcon.lastName,
     supports: {
       align: ["left", "right", "center"],
     },
@@ -74,7 +74,7 @@ domReady(function () {
   registerBlockType("mrmformfield/mrm-button-block", {
     title: __("MRM Button", "mrm"),
     category: "common",
-    icon: ButtonIcon.pricing,
+    icon: ButtonIcon.Button,
     supports: {
       align: ["left", "right", "center"],
     },
@@ -86,7 +86,7 @@ domReady(function () {
   registerBlockType("mrmformfield/mrm-custom-field", {
     title: __("MRM Custom Field", "mrm"),
     category: "common",
-    icon: CustomFieldIcon.pricing,
+    icon: CustomFieldIcon.CustomField,
     supports: {
       align: ["left", "right", "center"],
     },
