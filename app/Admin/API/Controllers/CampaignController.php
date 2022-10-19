@@ -446,39 +446,23 @@ class CampaignController extends BaseController {
      * @return array
      * @since 1.0.0 
      */
-    public function get_reciepents_email($campaign_id)
+    public static function get_reciepents_email( $campaign_id, $offset = 0, $per_batch = 0 )
     {
-        $all_receipents = ModelsCampaign::get_campaign_meta($campaign_id);
-        $group_ids = [];
+        $all_receipents = ModelsCampaign::get_campaign_meta( $campaign_id );
 
-        if( isset($all_receipents['recipients']['lists'], $all_receipents['recipients']['tags']) ){
-             $group_ids = array_merge($all_receipents['recipients']['lists'],$all_receipents['recipients']['tags']);
+        if( isset( $all_receipents['recipients']['lists'], $all_receipents['recipients']['tags'] ) ){
+             $group_ids = array_merge( $all_receipents['recipients']['lists'],  $all_receipents['recipients']['tags']);
         }else{
-            isset($all_receipents['recipients']['lists']) ? $group_ids = $all_receipents['recipients']['lists'] : 
-            (isset($all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
-            $group_ids = []);
+            isset( $all_receipents['recipients']['lists']) ? $group_ids = $all_receipents['recipients']['lists'] :
+            ( isset( $all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
+            $group_ids = [] );
         }
-        $contact_ids = [];
 
-        foreach ($group_ids as $group_id){
-            $id = isset( $group_id['id'] ) ? $group_id['id'] : "";
-            array_push($contact_ids,ContactGroupPivotModel::get_contacts_to_group($id));
-        }
-        $recipients_ids = [];
-
-        foreach ($contact_ids as $contact_id){
-            if (is_array($contact_id ) ){
-                foreach ($contact_id as $id){
-                    if( isset( $id->contact_id ) ){
-                        array_push($recipients_ids, $id->contact_id);
-                    }
-                }
-            }
-        }
-        $unique_recipients_ids = array_unique($recipients_ids);
+        $recipients_ids = ContactGroupPivotModel::get_contacts_to_group( array_column( $group_ids, 'id' ), $offset, $per_batch );
+        $recipients_ids = array_column( $recipients_ids, 'contact_id' );
 
         $recipients_emails = [];
-        foreach ($unique_recipients_ids as $contact_id){
+        foreach ( $recipients_ids as $contact_id ){
             array_push($recipients_emails, ContactModel::get_single_email($contact_id));
         }
 

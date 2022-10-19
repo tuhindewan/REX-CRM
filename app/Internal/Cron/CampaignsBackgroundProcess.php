@@ -1,7 +1,10 @@
 <?php
 namespace Mint\MRM\Internal\Cron;
 
+use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
+use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
+use Mint\MRM\Admin\API\Controllers\CampaignController;
 
 class CampaignsBackgroundProcess
 {
@@ -50,6 +53,38 @@ class CampaignsBackgroundProcess
      * @return void
      */
     public function process_scheduled_emails() {
-        error_log(print_r('processing-fucntion', 1));
+        $campaign_id = 1;
+        $recipients_emails = CampaignController::get_reciepents_email( $campaign_id );
+        $recipients_emails = array_column( array_values( array_filter( $recipients_emails ) ), 'email' );
+        $this->send_emails( $recipients_emails, $campaign_id );
+    }
+
+    private function send_emails( array $email_addresses, $campaign_id ) {
+        $emails = ModelsCampaign::get_campaign_email( $campaign_id );
+        $first_email = isset($emails[0]) ? $emails[0] : [];
+
+        $email_builder = CampaignEmailBuilderModel::get($first_email['id']);
+        $sender_email   = isset( $first_email['sender_email'] )     ? $first_email['sender_email'] : "";
+        $sender_name    = isset( $first_email['sender_name'] )      ? $first_email['sender_name'] : "";
+        $email_subject  = isset( $first_email['email_subject'] )    ? $first_email['email_subject'] : "";
+        $email_body     = $email_builder["email_body"];
+
+        $headers = array(
+            'MIME-Version: 1.0',
+            'Content-type: text/html;charset=UTF-8'
+        );
+
+        $from = 'From: '. $sender_name;
+        $headers[] = $from . ' <' . $sender_email . '>';
+        $headers[] = 'Reply-To:  ' . $sender_email;
+
+        try {
+            foreach( $email_addresses as $recipient ){
+                wp_mail( $recipient, $email_subject, $email_body, $headers );
+            }
+
+        } catch(\Exception $e) {
+            error_log(print_r( $e->getMessage(), 1 ));
+        }
     }
 }
