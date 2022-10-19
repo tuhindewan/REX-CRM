@@ -2,7 +2,12 @@
  * WordPress dependencies
  */
 import React from "react";
-import { BrowserRouter, Router, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Router,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { createSlotFill } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 
@@ -12,6 +17,7 @@ import QuestionIcon from "../Icons/QuestionIcon";
 import MinusIcon from "../Icons/MinusIcon";
 import PlusIcon from "../Icons/PlusIcon";
 import FormEditor from "../../../../../../src/components/Form/FormEditor";
+import { withFontSizes } from "@wordpress/editor";
 
 const {
   TextControl,
@@ -49,22 +55,6 @@ function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
 
-  //confirmation types
-  const [messageToShow, setMessageToShow] = useState("");
-  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
-  const [page, setPage] = useState("");
-  const [redirectionMessage, setRedirectionMessage] = useState("");
-  const [customURL, setCustomURL] = useState("");
-  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("pop-up");
-  const [formScheduling, setFormScheduling] = useState(false);
-  const [date, setDate] = useState(new Date());
-  const [submissionStartDate, setSubmissionStartDate] = useState("");
-  const [submissionStartTime, setSubmissionStartTime] = useState("");
-  const [maxEntries, setMaxEntries] = useState(false);
-  const [maxNumber, setMaxNumber] = useState();
-  const [maxType, setMaxType] = useState();
-
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
@@ -97,7 +87,57 @@ function Sidebar() {
     },
   });
 
+  //settings variables
+  const [messageToShow, setMessageToShow] = useState("");
+  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  const [page, setPage] = useState("");
+  const [redirectionMessage, setRedirectionMessage] = useState("");
+  const [customURL, setCustomURL] = useState("");
+  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
+  const [formLayout, setFormLayout] = useState("pop-up");
+  const [formScheduling, setFormScheduling] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [submissionStartDate, setSubmissionStartDate] = useState("");
+  const [submissionStartTime, setSubmissionStartTime] = useState("");
+  const [maxEntries, setMaxEntries] = useState(false);
+  const [maxNumber, setMaxNumber] = useState();
+  const [maxType, setMaxType] = useState();
+
+  const params = useParams();
+  const [id, setId] = useState(window.location.hash.slice(15));
+  const [formData, setFormData] = useState({});
+
+  const [prevSetting, setPrevSetting] = useState({});
+
   useEffect(() => {
+    if (id) {
+      const getFormData = async () => {
+        const res = await fetch(
+          `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+        );
+        const resJson = await res.json();
+
+        if (200 === resJson.code) {
+          setFormData(resJson.data);
+          setSettingData(JSON.parse(resJson.data?.meta_fields?.settings));
+          // setMessageToShow(
+          //   settingData?.settings?.confirmation_type?.same_page?.message_to_show
+          // );
+          // setAfterFormSubmission(
+          //   settingData?.settings?.confirmation_type?.same_page
+          //     ?.after_form_submission
+          // );
+        }
+      };
+      getFormData();
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(settingData);
+  }, [settingData]);
+
+  useEffect(async () => {
     setSettingData({
       settings: {
         confirmation_type: {
@@ -144,6 +184,10 @@ function Sidebar() {
     maxType,
   ]);
 
+  useEffect(() => {
+    localStorage.setItem("settings", JSON.stringify(settingData));
+  }, [settingData]);
+
   let currentDate = new Date();
 
   const toggleTab = (index) => {
@@ -187,15 +231,6 @@ function Sidebar() {
 
   return (
     <>
-      <div className="form-editor-hidden">
-        {/*<BrowserRouter>*/}
-        {/*  <FormEditor*/}
-        {/*    settingData={settingData}*/}
-        {/*    setSettingData={setSettingData}*/}
-        {/*  />*/}
-        {/*</BrowserRouter>*/}
-      </div>
-
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -289,6 +324,10 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="message_to_show"
+                        value={
+                          settingData?.settings?.confirmation_type?.same_page
+                            ?.message_to_show
+                        }
                         onChange={(e) => setMessageToShow(e)}
                       />
                     </div>
@@ -303,7 +342,10 @@ function Sidebar() {
                       </label>
 
                       <RadioControl
-                        selected={afterFormSubmission}
+                        selected={
+                          settingData?.settings?.confirmation_type?.same_page
+                            ?.after_form_submission
+                        }
                         options={[
                           { label: "Hide Form", value: "hide-form" },
                           { label: "Reset Form", value: "reset-form" },
@@ -359,6 +401,10 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="redirection_message"
+                        value={
+                          settingData?.settings?.confirmation_type?.to_a_page
+                            ?.redirection_message
+                        }
                         onChange={(e) => setRedirectionMessage(e)}
                       />
                     </div>
@@ -382,6 +428,10 @@ function Sidebar() {
 
                       <TextControl
                         name="custom-url"
+                        value={
+                          settingData?.settings?.confirmation_type
+                            ?.to_a_custom_url?.custom_url
+                        }
                         onChange={(e) => setCustomURL(e)}
                       />
                     </div>
@@ -396,6 +446,10 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="custom-redirection-message"
+                        value={
+                          settingData?.settings?.confirmation_type
+                            ?.to_a_custom_url?.custom_redirection_message
+                        }
                         onChange={(e) => setCustomRedirectionMessage(e)}
                       />
                     </div>
@@ -421,7 +475,7 @@ function Sidebar() {
                 </label>
 
                 <RadioControl
-                  selected={formLayout}
+                  selected={settingData?.settings?.form_layout}
                   options={[
                     { label: "Fly In", value: "fly-in" },
                     { label: "Pop Up", value: "pop-up" },
@@ -432,7 +486,7 @@ function Sidebar() {
             </div>
           </PanelBody>
 
-          <PanelBody
+          {/* <PanelBody
             title="Schedule"
             className="schedule-settings"
             initialOpen={false}
@@ -517,7 +571,7 @@ function Sidebar() {
                 </div>
               </div>
             </div>
-          </PanelBody>
+          </PanelBody> */}
         </Panel>
       </div>
     </>
