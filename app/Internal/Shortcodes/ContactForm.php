@@ -156,6 +156,7 @@ class ContactForm {
                     padding-left: 29px;
                     display: inline-block;
                     text-transform: capitalize;
+                    cursor: pointer;
                 }
                 .mintmrm-checkbox label:before {
                     content: "";
@@ -203,13 +204,14 @@ class ContactForm {
                 }
                 .mintmrm-radiobtn label {
                     font-size: 15px;
-                    line-height: 1.1;
+                    line-height: 14px;
                     font-weight: 500;
                     color: #7a8b9a;
                     position: relative;
                     padding-left: 29px;
                     display: inline-block;
                     text-transform: capitalize;
+                    cursor: pointer;
                 }
                 .mintmrm-radiobtn label::before {
                     content: "";

@@ -15,31 +15,31 @@ const { RichText } = wp.blockEditor;
 
 
 const mrmFirstName = ({
-                           attributes: {
-                               formLayout,
-                               firstNameLabel,
-                               firstNamePlaceholder,
-                               isRequiredName,
+        attributes: {
+            formLayout,
+            firstNameLabel,
+            firstNamePlaceholder,
+            isRequiredName,
 
-                               fieldLabel,
-                               requiredMark,
-                               inputBgColor,
-                               inputTextColor,
-                               inputBorderRadius,
-                               inputPaddingTop,
-                               inputPaddingRight,
-                               inputPaddingBottom,
-                               inputPaddingLeft,
-                               inputBorderStyle,
-                               inputBorderWidth,
-                               inputBorderColor,
-                               rowSpacing,
+            fieldLabel,
+            requiredMark,
+            inputBgColor,
+            inputTextColor,
+            inputBorderRadius,
+            inputPaddingTop,
+            inputPaddingRight,
+            inputPaddingBottom,
+            inputPaddingLeft,
+            inputBorderStyle,
+            inputBorderWidth,
+            inputBorderColor,
+            rowSpacing,
 
-                               labelColor,
-                               labelSpacing,
+            labelColor,
+            labelSpacing,
 
-                           },
-                       }) => {
+        },
+    }) => {
 
     let layout = formLayout
     let fieldSpacing = {
