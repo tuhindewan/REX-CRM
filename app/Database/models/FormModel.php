@@ -75,7 +75,7 @@ class FormModel {
                 self::update_meta_fields( $insert_id, $meta_fields );
             }
             
-            return true;
+            return $insert_id;
         } catch(Exception $e) {
             return false;
         }
@@ -95,14 +95,26 @@ class FormModel {
 
         global $wpdb;
         $form_table = $wpdb->prefix . FormSchema::$table_name;
+        
+
+        
+        $args['title']        = !empty($form->get_title()) ? $form->get_title() : "";
+        $args['form_body']    = !empty($form->get_form_body()) ? $form->get_form_body() : "";
+        $args['form_position']= !empty($form->get_form_position()) ? $form->get_form_position() : "";
+        $args['group_ids']    = !empty($form->get_group_ids() ? $form->get_group_ids() : "");
+        $args['status']       = !empty($form->get_status() ? $form->get_status() : 0);
+        $args['template_id']  = !empty($form->get_template_id() ? $form->get_template_id() : "");
+        $args['created_by']   = !empty($form->get_created_by() ? $form->get_created_by() : "");
+        $args['updated_at']   = current_time('mysql'); 
+        $args['meta_fields']  = $form->get_meta_fields();
+
+
         if( !empty( $args['meta_fields'] )){
             self::update_meta_fields($form_id, $args);
         }
-        $args['updated_at'] = current_time('mysql');
         unset($args['meta_fields']);
-        unset($args['form_id']);
-        unset($args['created_time']);
-
+        
+        
         try {
             $wpdb->update(
                 $form_table, 

@@ -73,6 +73,7 @@ const mrmCustomField = ({
      * @param values
      * @returns {string}
      */
+    console.log(selectOption);
 
     return (
         <>
