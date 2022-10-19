@@ -19,6 +19,10 @@ import MobileView from "./MobileView";
 import DesktopView from "./DesktopView";
 import EditIcon from "../Icons/EditIcon";
 
+import AlertPopup from "../AlertPopup";
+import SuccessfulNotification from "../SuccessfulNotification";
+import WarningNotification from "../WarningNotification";
+
 const FormEditor = (props) => {
   const { settingData, setSettingData } = props;
 
@@ -50,8 +54,19 @@ const FormEditor = (props) => {
   const [blockData, setBlockData] = useState();
   const [showPreview, setShowPreview] = useState(false);
 
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+  const [showAlert, setShowAlert] = useState("none");
+
+  const [savedSuccess, setSaveSuccess] = useState(false);
+
   const toggleEnable = () => {
     setEnable(!enable);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
   };
 
   const settingDataValidation = (settingData) => {
@@ -181,7 +196,7 @@ const FormEditor = (props) => {
       title: formData?.title,
       form_body: storedBlocks,
     };
-    if(id == undefined){
+    if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
         method: "POST",
         headers: {
@@ -190,17 +205,37 @@ const FormEditor = (props) => {
         body: JSON.stringify(post_data),
       });
       const responseData = await res.json();
-    }else{
-      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(post_data),
-      });
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(post_data),
+        }
+      );
       const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-
   };
 
   const [positionName, setPositionName] = useState("");
@@ -254,7 +289,7 @@ const FormEditor = (props) => {
       <div className="form-editor-page">
         <div className="form-editor-topbar">
           <div className="topbar-left">
-            <Link to="/form/">
+            <Link to="/forms/">
               <button className="back-button">
                 <DoubleAngleLeftIcon />
               </button>
@@ -352,6 +387,19 @@ const FormEditor = (props) => {
             }
             style={{ display: preview === "editor" ? "block" : "none" }}
           ></div>
+
+          <div className="mintmrm-container" style={{ display: showAlert }}>
+            <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+          </div>
+          {savedSuccess && (
+            <SuccessfulNotification
+              display={showNotification}
+              message={message}
+            />
+          )}
+          {!savedSuccess && (
+            <WarningNotification display={showNotification} message={message} />
+          )}
         </div>
       </div>
     </>
