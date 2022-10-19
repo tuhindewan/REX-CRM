@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
 
@@ -64,7 +64,7 @@ export default function ImportContactRaw() {
               <div className="mintmrm-container">
                 <ul className="mintmrm-breadcrumb">
                   <li>
-                    <a href="">Contact</a>
+                    <Link to={`../contacts`}>Contact</Link>
                   </li>
                   <li className="active">Import</li>
                 </ul>

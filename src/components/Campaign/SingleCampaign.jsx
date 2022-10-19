@@ -1,14 +1,28 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import HoverMenu from "../HoverMenu";
 import CompletedCampaignIcon from "../Icons/CompletedCampaignIcon";
 import DraftCampaignIcon from "../Icons/DraftCampaignIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function SingleCampaign(props) {
+  const [isActiveDropdown, setIsActiveDropdown] = useState(false);
+  const [listening, setListening] = useState(false);
+
   const menuButtonRef = useRef(null);
-  
+  const moreOptionRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      moreOptionRef,
+      setIsActiveDropdown
+    )
+  );
+
   return (
     <div className="table-row">
       <div className="table-data email-wrapper campaign-name-wrapper">
@@ -45,7 +59,7 @@ export default function SingleCampaign(props) {
       <div className="table-data status">
         <span className="draft">{props.campaign.status}</span>
       </div>
-      <div className="table-data threedot">
+      <div className="table-data threedot" ref={moreOptionRef}>
         <button
           className="more-option"
           style={{ background: "white", position: "relative" }}
@@ -59,16 +73,17 @@ export default function SingleCampaign(props) {
                 return props.campaign.id;
               }
             });
+            setIsActiveDropdown((prev) => !prev);
           }}
           ref={menuButtonRef}
         >
           <ThreeDotIcon />
-          {props.currentActive == props.campaign.id && ( // only show the menu if both active and current active points to this listitem
+          {isActiveDropdown && ( // only show the menu if both active and current active points to this listitem
             <Portal>
               <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
                 <ul
                   className={
-                    props.currentActive == props.campaign.id // only show the menu if both active and current active points to this listitem
+                    isActiveDropdown // only show the menu if both active and current active points to this listitem
                       ? "mintmrm-dropdown show"
                       : "mintmrm-dropdown"
                   }

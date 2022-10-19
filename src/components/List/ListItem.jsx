@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HoverMenu from "../HoverMenu";
 import Delete from "../Icons/Delete";
 import EditIcon from "../Icons/EditIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function ListItem(props) {
   const navigate = useNavigate();
@@ -18,7 +19,20 @@ export default function ListItem(props) {
     handleSelectOne,
     selected,
   } = props;
+  const [isActiveDropdown, setIsActiveDropdown] = useState(false);
+  const [listening, setListening] = useState(false);
+
   const menuButtonRef = useRef(null);
+  const moreOptionRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      moreOptionRef,
+      setIsActiveDropdown
+    )
+  );
 
   return (
     <tr>
@@ -39,7 +53,7 @@ export default function ListItem(props) {
         {data?.length > 20 ? data.substring(0, 20) + "..." : data}
       </td>
       <td className="">{new Date(created_at).toDateString()}</td>
-      <td>
+      <td ref={moreOptionRef}>
         <button
           className="more-option"
           onClick={() => {
@@ -52,16 +66,17 @@ export default function ListItem(props) {
                 return id;
               }
             });
+            setIsActiveDropdown((prev) => !prev);
           }}
           ref={menuButtonRef} // we need to add ref to menu button in order to correctly position the hovermenu
         >
           <ThreeDotIcon />
-          {currentActive == id && ( // only show the menu if both active and current active points to this listitem
+          {isActiveDropdown && ( // only show the menu if both active and current active points to this listitem
             <Portal>
               <HoverMenu elementRef={menuButtonRef} x={-10} y={-20}>
                 <ul
                   className={
-                    currentActive == id // only show the menu  current active points to this listitem id
+                    isActiveDropdown // only show the menu  current active points to this listitem id
                       ? "mintmrm-dropdown show"
                       : "mintmrm-dropdown"
                   }

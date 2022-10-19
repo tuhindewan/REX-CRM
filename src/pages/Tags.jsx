@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
-import ContactNavbar from "../components/ContactNavbar";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
@@ -12,6 +11,8 @@ import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
+import ContactNavbar from "../components/ContactNavbar";
+import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 
 const Tags = () => {
   // global counter update real time
@@ -94,6 +95,24 @@ const Tags = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTableHead, setShowTableHead] = useState(false);
+
+  const [listening, setListening] = useState(false);
+
+  const sortByRef = useRef(null);
+  const moreOptionRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, sortByRef, setShowDropdown)
+  );
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      moreOptionRef,
+      setShowMoreOptions
+    )
+  );
 
   // Set values from list form
   const handleChange = (e) => {
@@ -368,7 +387,7 @@ const Tags = () => {
             <div className="contact-list-header">
               <div className="left-filters">
                 <p className="sort-by">Sort by</p>
-                <div className="sort-by-dropdown">
+                <div className="sort-by-dropdown" ref={sortByRef}>
                   <button
                     className={
                       showDropdown
@@ -436,7 +455,7 @@ const Tags = () => {
                     }}
                   />
                 </span>
-                <div className="bulk-action">
+                <div className="bulk-action" ref={moreOptionRef}>
                   {/* show more options section */}
                   <button
                     className="more-option"
@@ -498,7 +517,7 @@ const Tags = () => {
                               style={{ textAlign: "center" }}
                             >
                               <TagIcon />
-                              No Tag Found "{search}"
+                              No Tag Found {search ? `"${search}"` : null}
                             </td>
                           </tr>
                         )}

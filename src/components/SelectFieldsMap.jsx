@@ -29,13 +29,29 @@ export default function SelectFieldsMap() {
   const [selectedTags, setSelectedTags] = useState([]);
 
   //Detect Outside Click to Hide Dropdown Element
-  const statusMenuRef = useRef(null)
-  const listMenuRef   = useRef(null)
-  const tagMenuRef    = useRef(null)
-  const [listening, setListening] = useState(false)
-  useEffect(ListenForOutsideClicks(listening, setListening, statusMenuRef, setIsActiveStatus))
-  useEffect(ListenForOutsideClicks(listening, setListening, listMenuRef, setIsActiveList))
-  useEffect(ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag))
+  const statusMenuRef = useRef(null);
+  const listMenuRef = useRef(null);
+  const tagMenuRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      statusMenuRef,
+      setIsActiveStatus
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      listMenuRef,
+      setIsActiveList
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag)
+  );
 
   // get the state from calling component
   const state = location.state;
@@ -190,7 +206,7 @@ export default function SelectFieldsMap() {
               <div className="mintmrm-container">
                 <ul className="mintmrm-breadcrumb">
                   <li>
-                    <a href="">Contact</a>
+                    <Link to={`../contacts`}>Contact</Link>
                   </li>
                   <li className="active">Import</li>
                 </ul>
@@ -240,7 +256,10 @@ export default function SelectFieldsMap() {
                   <h3>Contact Profile</h3>
 
                   <div className="contact-profile">
-                    <div className="form-group status-dropdown" ref={statusMenuRef}>
+                    <div
+                      className="form-group status-dropdown"
+                      ref={statusMenuRef}
+                    >
                       <label>Status</label>
                       <button
                         type="button"
@@ -275,7 +294,10 @@ export default function SelectFieldsMap() {
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Lists</label>
-                      <div className="mrm-custom-select-container" key="container">
+                      <div
+                        className="mrm-custom-select-container"
+                        key="container"
+                      >
                         <button
                           type="button"
                           className="mrm-custom-select-btn show"
@@ -305,7 +327,10 @@ export default function SelectFieldsMap() {
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Tags</label>
-                      <div className="mrm-custom-select-container" key="container">
+                      <div
+                        className="mrm-custom-select-container"
+                        key="container"
+                      >
                         <button
                           type="button"
                           className="mrm-custom-select-btn show"
