@@ -4784,7 +4784,6 @@ const {
   Fill: InspectorFill
 } = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
 function Sidebar() {
-  var _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10, _settingData$settings11, _settingData$settings12, _settingData$settings13, _settingData$settings14, _settingData$settings15, _settingData$settings16;
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
   const [settingData, setSettingData] = useState({
@@ -4854,8 +4853,14 @@ function Sidebar() {
     }
   }, []);
   useEffect(() => {
-    console.log(settingData);
-  }, [settingData]);
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6, _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10;
+    setMessageToShow(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings = prevSetting.settings) === null || _prevSetting$settings === void 0 ? void 0 : (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) === null || _prevSetting$settings2 === void 0 ? void 0 : (_prevSetting$settings3 = _prevSetting$settings2.same_page) === null || _prevSetting$settings3 === void 0 ? void 0 : _prevSetting$settings3.message_to_show);
+    setAfterFormSubmission(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings4 = prevSetting.settings) === null || _prevSetting$settings4 === void 0 ? void 0 : (_prevSetting$settings5 = _prevSetting$settings4.confirmation_type) === null || _prevSetting$settings5 === void 0 ? void 0 : (_prevSetting$settings6 = _prevSetting$settings5.same_page) === null || _prevSetting$settings6 === void 0 ? void 0 : _prevSetting$settings6.after_form_submission);
+    setRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.to_a_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.redirection_message);
+    setCustomURL(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.to_a_custom_url) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.custom_url);
+    setCustomRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_custom_url) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.custom_redirection_message);
+    setFormLayout(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : _settingData$settings10.form_layout);
+  }, [prevSetting]);
   useEffect(async () => {
     setSettingData({
       settings: {
@@ -4977,7 +4982,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What message you want to show to the use?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "message_to_show",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.same_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.message_to_show,
+    value: messageToShow,
     onChange: e => setMessageToShow(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -4986,7 +4991,7 @@ function Sidebar() {
   }, "After Form Submission", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Define behaviour of the form after submission"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.same_page) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.after_form_submission,
+    selected: afterFormSubmission,
     options: [{
       label: "Hide Form",
       value: "hide-form"
@@ -5020,7 +5025,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What is the message after redirection of a page?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "redirection_message",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_page) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.redirection_message,
+    value: redirectionMessage,
     onChange: e => setRedirectionMessage(e)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "custom-url" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -5032,7 +5037,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Enter a custom URL to redirect"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
     name: "custom-url",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : (_settingData$settings11 = _settingData$settings10.confirmation_type) === null || _settingData$settings11 === void 0 ? void 0 : (_settingData$settings12 = _settingData$settings11.to_a_custom_url) === null || _settingData$settings12 === void 0 ? void 0 : _settingData$settings12.custom_url,
+    value: customURL,
     onChange: e => setCustomURL(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -5042,7 +5047,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Reidrectional message for custom URL"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "custom-redirection-message",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings13 = settingData.settings) === null || _settingData$settings13 === void 0 ? void 0 : (_settingData$settings14 = _settingData$settings13.confirmation_type) === null || _settingData$settings14 === void 0 ? void 0 : (_settingData$settings15 = _settingData$settings14.to_a_custom_url) === null || _settingData$settings15 === void 0 ? void 0 : _settingData$settings15.custom_redirection_message,
+    value: customRedirectionMessage,
     onChange: e => setCustomRedirectionMessage(e)
   }))))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Layout",
@@ -5057,7 +5062,7 @@ function Sidebar() {
   }, "Label Alignment", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings16 = settingData.settings) === null || _settingData$settings16 === void 0 ? void 0 : _settingData$settings16.form_layout,
+    selected: formLayout,
     options: [{
       label: "Fly In",
       value: "fly-in"

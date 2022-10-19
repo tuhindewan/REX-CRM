@@ -128,8 +128,24 @@ function Sidebar() {
   }, []);
 
   useEffect(() => {
-    console.log(settingData);
-  }, [settingData]);
+    setMessageToShow(
+      prevSetting?.settings?.confirmation_type?.same_page?.message_to_show
+    );
+    setAfterFormSubmission(
+      prevSetting?.settings?.confirmation_type?.same_page?.after_form_submission
+    );
+    setRedirectionMessage(
+      settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
+    );
+    setCustomURL(
+      settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+    );
+    setCustomRedirectionMessage(
+      settingData?.settings?.confirmation_type?.to_a_custom_url
+        ?.custom_redirection_message
+    );
+    setFormLayout(settingData?.settings?.form_layout);
+  }, [prevSetting]);
 
   useEffect(async () => {
     setSettingData({
@@ -318,10 +334,7 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="message_to_show"
-                        value={
-                          settingData?.settings?.confirmation_type?.same_page
-                            ?.message_to_show
-                        }
+                        value={messageToShow}
                         onChange={(e) => setMessageToShow(e)}
                       />
                     </div>
@@ -336,10 +349,7 @@ function Sidebar() {
                       </label>
 
                       <RadioControl
-                        selected={
-                          settingData?.settings?.confirmation_type?.same_page
-                            ?.after_form_submission
-                        }
+                        selected={afterFormSubmission}
                         options={[
                           { label: "Hide Form", value: "hide-form" },
                           { label: "Reset Form", value: "reset-form" },
@@ -395,10 +405,7 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="redirection_message"
-                        value={
-                          settingData?.settings?.confirmation_type?.to_a_page
-                            ?.redirection_message
-                        }
+                        value={redirectionMessage}
                         onChange={(e) => setRedirectionMessage(e)}
                       />
                     </div>
@@ -422,10 +429,7 @@ function Sidebar() {
 
                       <TextControl
                         name="custom-url"
-                        value={
-                          settingData?.settings?.confirmation_type
-                            ?.to_a_custom_url?.custom_url
-                        }
+                        value={customURL}
                         onChange={(e) => setCustomURL(e)}
                       />
                     </div>
@@ -440,10 +444,7 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="custom-redirection-message"
-                        value={
-                          settingData?.settings?.confirmation_type
-                            ?.to_a_custom_url?.custom_redirection_message
-                        }
+                        value={customRedirectionMessage}
                         onChange={(e) => setCustomRedirectionMessage(e)}
                       />
                     </div>
@@ -469,7 +470,7 @@ function Sidebar() {
                 </label>
 
                 <RadioControl
-                  selected={settingData?.settings?.form_layout}
+                  selected={formLayout}
                   options={[
                     { label: "Fly In", value: "fly-in" },
                     { label: "Pop Up", value: "pop-up" },
