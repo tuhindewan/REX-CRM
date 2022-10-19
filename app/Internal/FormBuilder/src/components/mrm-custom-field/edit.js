@@ -141,12 +141,12 @@ class Editor extends Component {
 
                 {attributes.field_type == 'select' && 
                     <div className="select-option-wrapper">
-                        <TextControl
-                            className="mrm-inline-label"
-                            label="Option Name"
-                            // value={ attributes.select_option_name }
-                            onChange={ (state ) => setAttributes({ select_option_name: state }) }
-                        />
+                        {/*<TextControl*/}
+                        {/*    className="mrm-inline-label"*/}
+                        {/*    label="Option Name"*/}
+                        {/*    // value={ attributes.select_option_name }*/}
+                        {/*    onChange={ (state ) => setAttributes({ select_option_name: state }) }*/}
+                        {/*/>*/}
                     
                         <div className="add-option-wrapper">
                             <h4>Add New Option</h4>
@@ -280,7 +280,8 @@ class Editor extends Component {
             attributes
         } = this.props;
         if (index > -1) { // only splice array when item is found
-            attributes.selectOption.splice(index,1); // 2nd parameter means remove one item only
+            delete attributes.selectOption[index]
+            // attributes.selectOption.splice(index,1); // 2nd parameter means remove one item only
             setAttributes(attributes.selectOption)
         }
 
@@ -303,10 +304,10 @@ class Editor extends Component {
 
     addNewOption = () =>{
         let { attributes, setAttributes } 	= this.props;
-        const slug_name =  this.makeSlug(attributes.select_option_name)
+        setAttributes({select_option_count : attributes.select_option_count+1 } )
         let defaultOption = {
-                value: slug_name,
-                label: attributes.select_option_name
+                value: 'option'+'-'+attributes.select_option_count,
+                label: 'Option'+'-'+attributes.select_option_count
             }
         if('select' === attributes.field_type) {
             attributes.selectOption.push(defaultOption)
@@ -655,10 +656,10 @@ class Editor extends Component {
      */
     renderSelectOption = (option, index) => {
         const { attributes, setAttributes } 	= this.props;
-
+        const slug_name =  this.makeSlug(option.value)
         return (
             <Fragment>
-                <option value={option.value}>{option.label}</option>
+                <option value={slug_name}>{option.label}</option>
             </Fragment>
         )
     }

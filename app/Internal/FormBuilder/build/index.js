@@ -3460,12 +3460,14 @@ const attributes = {
   },
   selectOption: {
     type: 'array',
-    default: [
-      // {
-      //     value: '',
-      //     label: '--Select--'
-      // },
-    ]
+    default: [{
+      value: 'none',
+      label: '--Select--'
+    }]
+  },
+  select_option_count: {
+    type: 'number',
+    default: 2
   },
   select_option_name: {
     type: 'string',
@@ -3635,7 +3637,10 @@ const {
 /**
  * Internal dependencies
  */
-
+const makeSlug = values => {
+  const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
+  return slug;
+};
 const mrmCustomField = _ref => {
   let {
     attributes: {
@@ -3684,6 +3689,12 @@ const mrmCustomField = _ref => {
     borderWidth: inputBorderWidth + 'px',
     borderColor: inputBorderColor
   };
+  /**
+   * Make Slug when render text
+   * @param values
+   * @returns {string}
+   */
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group text",
     style: fieldSpacing
@@ -3744,12 +3755,12 @@ const mrmCustomField = _ref => {
       className: "mrm-radio-group"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: "radio",
-      id: option.value,
-      name: option.value,
+      id: option.label,
+      name: field_slug,
       required: field_require,
       style: inputStyle
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      htmlFor: field_slug,
+      htmlFor: option.label,
       style: labelStyle
     }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
@@ -3789,7 +3800,7 @@ const mrmCustomField = _ref => {
     style: inputStyle
   }, selectOption.map((option, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-      value: option.value
+      value: makeSlug(option.value)
     }, option.label);
   })))));
 };
@@ -3952,15 +3963,7 @@ class Editor extends Component {
       })
     }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "select-option-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-      className: "mrm-inline-label",
-      label: "Option Name"
-      // value={ attributes.select_option_name }
-      ,
-      onChange: state => setAttributes({
-        select_option_name: state
-      })
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, "Add New Option"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
       onClick: () => {
@@ -4152,7 +4155,8 @@ class Editor extends Component {
     } = this.props;
     if (index > -1) {
       // only splice array when item is found
-      attributes.selectOption.splice(index, 1); // 2nd parameter means remove one item only
+      delete attributes.selectOption[index];
+      // attributes.selectOption.splice(index,1); // 2nd parameter means remove one item only
       setAttributes(attributes.selectOption);
     }
   };
@@ -4173,10 +4177,12 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
-    const slug_name = this.makeSlug(attributes.select_option_name);
+    setAttributes({
+      select_option_count: attributes.select_option_count + 1
+    });
     let defaultOption = {
-      value: slug_name,
-      label: attributes.select_option_name
+      value: 'option' + '-' + attributes.select_option_count,
+      label: 'Option' + '-' + attributes.select_option_count
     };
     if ('select' === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
@@ -4515,8 +4521,9 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
+    const slug_name = this.makeSlug(option.value);
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-      value: option.value
+      value: slug_name
     }, option.label));
   };
   renderCheckboxField = attributes => {

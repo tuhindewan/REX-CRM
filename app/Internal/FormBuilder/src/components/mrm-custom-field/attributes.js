@@ -26,11 +26,15 @@ const attributes = {
     selectOption: {
         type : 'array',
         default: [
-            // {
-            //     value: '',
-            //     label: '--Select--'
-            // },
+            {
+                value: 'none',
+                label: '--Select--'
+            },
         ]
+    },
+    select_option_count: {
+        type : 'number',
+        default : 2
     },
     select_option_name:{
         type : 'string',

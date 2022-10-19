@@ -12,6 +12,10 @@ const { RichText } = wp.blockEditor;
 /**
  * Internal dependencies
  */
+const makeSlug = (values) =>{
+    const slug =  values.toLowerCase().replace(/[\W_]+/g, "-");
+    return slug
+}
 
 const mrmCustomField = ({
         attributes: {
@@ -64,6 +68,12 @@ const mrmCustomField = ({
         borderWidth:  inputBorderWidth+'px',
         borderColor:  inputBorderColor,
     }
+    /**
+     * Make Slug when render text
+     * @param values
+     * @returns {string}
+     */
+
     return (
         <>
             {field_type == 'text' &&
@@ -110,8 +120,8 @@ const mrmCustomField = ({
                     {radioOption.map((option,index) => {
                         return (
                             <div className="mrm-radio-group">
-                                <input type="radio" id={option.value} name={option.value} required={field_require} style={inputStyle}/>
-                                <label htmlFor={field_slug} style={labelStyle}>
+                                <input type="radio" id={option.label} name={field_slug} required={field_require} style={inputStyle}/>
+                                <label htmlFor={option.label} style={labelStyle}>
                                     {option.label ? __(option.label,'mrm') : __('','mrm')}
                                     {field_require && <span className="required-mark">*</span>}
                                 </label>
@@ -145,7 +155,7 @@ const mrmCustomField = ({
                         <select name={field_slug} id={field_slug}  style={inputStyle}>
                             {selectOption.map((option, index) => {
                                 return (
-                                    <option value={option.value}>{option.label}</option>
+                                    <option value={makeSlug(option.value)}>{option.label}</option>
                                 )
                             })}
                         </select>
