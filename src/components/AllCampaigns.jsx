@@ -6,16 +6,19 @@ import {
   deleteSingleCampaign,
   getAllCampaigns,
 } from "../services/Campaign";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 import AlertPopup from "./AlertPopup";
 import NoCampaign from "./Campaign/NoCampaign";
 import SingleCampaign from "./Campaign/SingleCampaign";
 import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
+import LoadingIndicator from "./LoadingIndicator";
 import Pagination from "./Pagination";
 import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {
+  AdminNavMenuClassChange("mrm-admin", "campaigns");
   useGlobalStore.setState({
     hideGlobalNav: true,
   });
@@ -43,7 +46,7 @@ export default function AllCampaigns() {
   const [message, setMessage] = useState("");
   // refresh the whole list if this boolean changes
   const [refresh, setRefresh] = useState(true);
-
+  const [showLoader, setShowLoader] = useState(true);
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
   const [showAlert, setShowAlert] = useState("none");
@@ -53,6 +56,7 @@ export default function AllCampaigns() {
       setCampaigns(results.data);
       setCount(results.count);
       setTotalPages(results.total_pages);
+      setShowLoader(false);
     });
     const timer = setTimeout(() => {
       setShowNotification("none");
@@ -204,7 +208,7 @@ export default function AllCampaigns() {
                         let value = e.target.value;
                         setSearch(value);
                         // only set query when there are more than 3 characters
-                        if (value.length >= 3) {
+                        if (value.length >= 1) {
                           setQuery(`&search=${value}`);
                           // on every new search term set the page explicitly to 1 so that results can
                           // appear
@@ -238,71 +242,80 @@ export default function AllCampaigns() {
                   /> */}
                 </div>
               </div>
+              {showLoader ? (
+                <LoadingIndicator type="table" />
+              ) : (
+                <>
+                  <div className="campaign-list-body">
+                    <div className="campaign-list-table">
+                      <div className="campaign-table">
+                        <div className="table-head">
+                          <div className="table-row">
+                            <div className="table-header campaign-name">
+                              <span class="mintmrm-checkbox">
+                                <input
+                                  type="checkbox"
+                                  name="campaign-bulk-select"
+                                  id="campaign-bulk-select"
+                                  onChange={handleSelectAll}
+                                  checked={allSelected}
+                                />
+                                <label for="campaign-bulk-select">
+                                  Campaign Name
+                                </label>
+                              </span>
+                            </div>
 
-              <div className="campaign-list-body">
-                <div className="campaign-list-table">
-                  <div className="campaign-table">
-                    <div className="table-head">
-                      <div className="table-row">
-                        <div className="table-header campaign-name">
-                          <span class="mintmrm-checkbox">
-                            <input
-                              type="checkbox"
-                              name="campaign-bulk-select"
-                              id="campaign-bulk-select"
-                              onChange={handleSelectAll}
-                              checked={allSelected}
+                            <div className="table-header recipient">
+                              Recipient
+                            </div>
+                            <div className="table-header open-rate">
+                              Open rate
+                            </div>
+                            <div className="table-header click-rate">
+                              Click rate
+                            </div>
+                            <div className="table-header unsubscribers">
+                              Unsubscribers
+                            </div>
+                            <div className="table-header status">Status</div>
+                            <div className="table-header three-dot"></div>
+                          </div>
+                        </div>
+
+                        <div className="table-body">
+                          {!campaigns.length && <NoCampaign search={search} />}
+                          {campaigns.map((campaign, idx) => {
+                            return (
+                              <SingleCampaign
+                                key={idx}
+                                campaign={campaign}
+                                setCurrentActive={setCurrentActive}
+                                currentActive={currentActive}
+                                editField={editField}
+                                deleteCampaign={deleteCampaign}
+                                handleSelectOne={handleSelectOne}
+                                selected={selected}
+                              />
+                            );
+                          })}
+                        </div>
+                        {totalPages > 1 && (
+                          <div className="table-footer">
+                            <Pagination
+                              currentPage={page}
+                              pageSize={perPage}
+                              onPageChange={setPage}
+                              totalCount={count}
+                              totalPages={totalPages}
                             />
-                            <label for="campaign-bulk-select">
-                              Campaign Name
-                            </label>
-                          </span>
-                        </div>
-
-                        <div className="table-header recipient">Recipient</div>
-                        <div className="table-header open-rate">Open rate</div>
-                        <div className="table-header click-rate">
-                          Click rate
-                        </div>
-                        <div className="table-header unsubscribers">
-                          Unsubscribers
-                        </div>
-                        <div className="table-header status">Status</div>
-                        <div className="table-header three-dot"></div>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    <div className="table-body">
-                      {!campaigns.length && <NoCampaign />}
-                      {campaigns.map((campaign, idx) => {
-                        return (
-                          <SingleCampaign
-                            key={idx}
-                            campaign={campaign}
-                            setCurrentActive={setCurrentActive}
-                            currentActive={currentActive}
-                            editField={editField}
-                            deleteCampaign={deleteCampaign}
-                            handleSelectOne={handleSelectOne}
-                            selected={selected}
-                          />
-                        );
-                      })}
-                    </div>
-                    {totalPages > 1 && (
-                      <div className="table-footer">
-                        <Pagination
-                          currentPage={page}
-                          pageSize={perPage}
-                          onPageChange={setPage}
-                          totalCount={count}
-                          totalPages={totalPages}
-                        />
-                      </div>
-                    )}
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
         </div>

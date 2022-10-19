@@ -108,6 +108,26 @@ class CampaignEmailRoute {
             ],
         ]);
 
+
+        /**
+         * file send api
+         *
+         * @since 1.0.0
+         */
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/mediaUpload', [
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'upload_media'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
+
     }
 
 }

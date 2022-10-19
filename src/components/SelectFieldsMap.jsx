@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
-import Selectbox from "./Selectbox";
-import WarningNotification from "./WarningNotification";
-import CustomSelect from "./CustomSelect";
+import Select from "./Import/Select";
 import SelectDropdown from "./SelectDropdown";
+import WarningNotification from "./WarningNotification";
+import ListenForOutsideClicks from "./ListenForOutsideClicks";
 
 export default function SelectFieldsMap() {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  // holds user selected lists, tags, and status
-  const [extra, setExtra] = useState([]);
   // holds map state
   const [mapState, setMapState] = useState([]);
 
@@ -23,9 +21,21 @@ export default function SelectFieldsMap() {
   const [tags, setTags] = useState([]);
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState();
+  const [isActiveStatus, setIsActiveStatus] = useState(false);
+  const [isActiveList, setIsActiveList] = useState(false);
+  const [isActiveTag, setIsActiveTag] = useState(false);
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+
+  //Detect Outside Click to Hide Dropdown Element
+  const statusMenuRef = useRef(null)
+  const listMenuRef   = useRef(null)
+  const tagMenuRef    = useRef(null)
+  const [listening, setListening] = useState(false)
+  useEffect(ListenForOutsideClicks(listening, setListening, statusMenuRef, setIsActiveStatus))
+  useEffect(ListenForOutsideClicks(listening, setListening, listMenuRef, setIsActiveList))
+  useEffect(ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag))
 
   // get the state from calling component
   const state = location.state;
@@ -65,7 +75,6 @@ export default function SelectFieldsMap() {
     setLoading(true);
     const body = {
       map: mapState, // current mapping from file
-      ...extra, // lists, tags, status
     };
     // send the filename in case of csv file upload otherwise send the raw data
     if (type == "csv") {
@@ -73,7 +82,9 @@ export default function SelectFieldsMap() {
     } else if (type == "raw") {
       body.raw = state.data.raw;
     }
-    if (!body["status"]) body["status"] = ["pending"];
+    body.status = [selectedStatus];
+    body.lists = selectedLists;
+    body.tags = selectedTags;
     body.created_by = `${window.MRM_Vars.current_userID}`;
     try {
       let res = await fetch(
@@ -102,8 +113,6 @@ export default function SelectFieldsMap() {
       }, 3000);
       return () => clearTimeout(timer);
     } catch (e) {
-      console.log(e);
-      window.alert(e.message);
       setLoading(false);
     }
   };
@@ -118,27 +127,28 @@ export default function SelectFieldsMap() {
     id: "no_import",
   });
 
-  // handle status, lists, tags
-  function handleExtraFields(e, name) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    setExtra((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  }
+  const handleTag = () => {
+    setIsActiveTag(!isActiveTag);
+    setIsActiveList(false);
+    setIsActiveStatus(false);
+  };
+
+  const handleList = () => {
+    setIsActiveList(!isActiveList);
+  };
+
+  const handleStatus = () => {
+    setIsActiveStatus(!isActiveStatus);
+    setIsActiveTag(false);
+    setIsActiveList(false);
+  };
 
   // handle selectbox and prepare the mapping
-  function onSelect(e, name, arg1) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    const selectedValue = updatedOptions[0];
+  function onSelect(field_id, field_name, arg1) {
+    const selectedValue = field_id;
     const idx = map.findIndex((item) => item.source == arg1);
-
     if (selectedValue == "no_import") {
-      map.filter((item) => item.source != arg1);
+      mapState.filter((item) => item.source != arg1);
       return;
     }
     if (idx != -1) {
@@ -146,14 +156,30 @@ export default function SelectFieldsMap() {
       map[idx]["source"] = arg1;
       map[idx]["target"] = selectedValue;
     } else {
-      // map doesn't yet have this item so add this
-      map.push({
-        source: arg1,
-        target: selectedValue,
-      });
+      setMapState([
+        ...mapState,
+        {
+          source: arg1,
+          target: selectedValue,
+        },
+      ]);
     }
-    setMapState(map);
   }
+
+  const capitalizeFirst = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const handleSelectStatus = (title) => {
+    if ("Pending" == title) {
+      setSelectedStatus("pending");
+    } else if ("Subscribe" == title) {
+      setSelectedStatus("subscribed");
+    } else {
+      setSelectedStatus("unsubscribed");
+    }
+    setIsActiveStatus(false);
+  };
 
   return (
     <>
@@ -197,7 +223,11 @@ export default function SelectFieldsMap() {
                             <td>{header}</td>
                             <td>
                               <div className="form-group map-dropdown">
-                                <SelectDropdown options={selectOptions} />
+                                <SelectDropdown
+                                  handleSelect={onSelect}
+                                  arg1={header}
+                                  options={selectOptions}
+                                />
                               </div>
                             </td>
                           </tr>
@@ -210,59 +240,98 @@ export default function SelectFieldsMap() {
                   <h3>Contact Profile</h3>
 
                   <div className="contact-profile">
-                    <div className="form-group status-dropdown">
+                    <div className="form-group status-dropdown" ref={statusMenuRef}>
                       <label>Status</label>
-                      <CustomSelect
-                        selected={selectedStatus}
-                        setSelected={setSelectedStatus}
-                        endpoint="/status"
-                        placeholder="Select Status"
-                        name="status"
-                        listTitle="CHOOSE Status"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={false}
-                        showSearchBar={true}
-                        showListTitle={false}
-                        showSelectedInside={false}
-                        allowNewCreate={false}
-                      />
+                      <button
+                        type="button"
+                        className={
+                          isActiveStatus
+                            ? "drop-down-button show"
+                            : "drop-down-button"
+                        }
+                        onClick={handleStatus}
+                      >
+                        {selectedStatus
+                          ? capitalizeFirst(selectedStatus)
+                          : "Select Status"}
+                      </button>
+                      <ul
+                        className={
+                          isActiveStatus
+                            ? "add-contact-status mintmrm-dropdown show"
+                            : "add-contact-status mintmrm-dropdown"
+                        }
+                      >
+                        <li onClick={() => handleSelectStatus("Pending")}>
+                          Pending
+                        </li>
+                        <li onClick={() => handleSelectStatus("Subscribe")}>
+                          Subscribe
+                        </li>
+                        <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                          Unsubscribe
+                        </li>
+                      </ul>
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Lists</label>
-                      <CustomSelect
-                        selected={selectedLists}
-                        setSelected={setSelectedLists}
-                        endpoint="/lists"
-                        placeholder="Lists"
-                        name="list"
-                        listTitle="CHOOSE LIST"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={false}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                      />
+                      <div className="mrm-custom-select-container" key="container">
+                        <button
+                          type="button"
+                          className="mrm-custom-select-btn show"
+                          onClick={handleList}
+                          ref={listMenuRef}
+                        >
+                          Select Lists
+                        </button>
+                        <Select
+                          isActive={isActiveList}
+                          setIsActive={setIsActiveList}
+                          selected={selectedLists}
+                          setSelected={setSelectedLists}
+                          endpoint="/lists"
+                          placeholder="Lists"
+                          name="list"
+                          listTitle="CHOOSE LIST"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={false}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Tags</label>
-                      <CustomSelect
-                        selected={selectedTags}
-                        setSelected={setSelectedTags}
-                        endpoint="/tags"
-                        placeholder="Tags"
-                        name="tag"
-                        listTitle="CHOOSE TAG"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={false}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                      />
+                      <div className="mrm-custom-select-container" key="container">
+                        <button
+                          type="button"
+                          className="mrm-custom-select-btn show"
+                          onClick={handleTag}
+                          ref={tagMenuRef}
+                        >
+                          Select Tags
+                        </button>
+                        <Select
+                          isActive={isActiveTag}
+                          setIsActive={setIsActiveTag}
+                          selected={selectedTags}
+                          setSelected={setSelectedTags}
+                          endpoint="/tags"
+                          placeholder="Tags"
+                          name="list"
+                          listTitle="CHOOSE TAG"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={false}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

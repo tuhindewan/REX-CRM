@@ -138,7 +138,7 @@ export default function ImportContactFile() {
                   className="contact-save mintmrm-btn"
                   onClick={uploadCSV}
                 >
-                  Upload
+                  Next
                 </button>
               </div>
             </div>

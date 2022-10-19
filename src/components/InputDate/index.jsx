@@ -1,15 +1,22 @@
 import "./style.css";
 
-export default function InputDate( props ) {
+export default function InputDate(props) {
+  const today = new Date().toISOString().split("T")[0];
   return (
     <div className="form-group contact-input-field">
       <label htmlFor="" aria-required>
         {props.label}
         {props.isRequired ? <span>*</span> : null}
       </label>
-      <input type="date" name={props.name} onChange={ props.handleChange } defaultValue={props.value} />
-        <p>{props?.error}</p>
-
+      <input
+        type="date"
+        name={props.name}
+        onChange={props.handleChange}
+        defaultValue={props.value}
+        max={today}
+        onkeypress="return disablekeys();"
+      />
+      <p>{props?.error}</p>
     </div>
   );
 }

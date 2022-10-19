@@ -67,17 +67,20 @@ export default function AddItems(props) {
         setSearch("");
         setQuery("");
         setSelected([...selected, { id: resJson.data, title: body.title }]);
+        props.setShowNotification("block");
+        props.setMessage(resJson?.message);
       } else {
         setShowWarning("block");
         setMessage(resJson.message);
-        const timer = setTimeout(() => {
-          setShowWarning("none");
-        }, 3000);
-        return () => clearTimeout(timer);
       }
     } catch (e) {
     } finally {
       setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+        props.setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   };
 
@@ -116,7 +119,7 @@ export default function AddItems(props) {
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);
+    if (value.length >= 1) setQuery(`&search=${value}`);
     else setQuery("");
   }
 
@@ -157,13 +160,14 @@ export default function AddItems(props) {
         setShowWarning("block");
         setMessage(resJson.message);
       }
-      const timer = setTimeout(() => {
-        props.setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
     } catch (e) {
     } finally {
       setLoading(false);
+      const timer = setTimeout(() => {
+        props.setShowNotification("none");
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   };
 
@@ -232,6 +236,7 @@ export default function AddItems(props) {
         {/* <div className="no-found">
         <span>No List found</span>
       </div> */}
+        {loading && <LoadingIndicator type="table" />}
         <Link className="add-action" to="" onClick={handleAssignLists}>
           <Plus />
           Assign {placeholder}
@@ -241,7 +246,6 @@ export default function AddItems(props) {
                 <ColumnList title={column.title} key={index} />
               </li>;
             })} */}
-        {loading && <LoadingIndicator type="table" />}
       </ul>
       <WarningNotification display={showWarning} message={message} />
     </>

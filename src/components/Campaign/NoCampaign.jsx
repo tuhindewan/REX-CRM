@@ -9,7 +9,7 @@ export default function NoCampaign(props) {
             <div className="table-data no-campaign" colSpan={6}>
                 <div className="no-campaign-wrapper">
                     <OpenEnvelopeIcon />
-                    <span className="title">No campaigns found</span>
+                    <span className="title">No campaigns found "{props.search}" </span>
                 </div>
             </div>
         </div>

@@ -16,10 +16,6 @@ export default function OptionList(props) {
 
   const handleSelectOne = (e) => {
     e.stopPropagation();
-    let updatedList = [...selected];
-    // since this function is handling input for both checkboxes and li elements
-    // there might be either id and value for input checkboxes
-    // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
     const index = selected.findIndex((item) => item.id == id);
@@ -36,14 +32,6 @@ export default function OptionList(props) {
       if (index >= 0) setSelected([]);
       else setSelected([{ id: id, title: value }]);
     }
-
-    if (checked) {
-      updatedList = [...selected.id, e.target.value];
-      // setCheckItem([...checkItem, e.target.value]);
-    } else {
-      updatedList.splice(selected.id?.indexOf(e.target.value), 1);
-    }
-    setSelected(updatedList);
   };
 
   

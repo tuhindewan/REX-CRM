@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button, Table, useToaster } from "rsuite";
+import { Link } from "react-router-dom";
+import { Button } from "rsuite";
 import BaseTable from "../components/BaseTable/index";
 import Import from "../components/Icons/Import";
 import Plus from "../components/Icons/Plus";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-const { Column, HeaderCell, Cell } = Table;
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
+
 const leftMarkup = (
   <>
     <Link to="/contacts/import">
@@ -15,6 +15,8 @@ const leftMarkup = (
 );
 
 const Contacts = () => {
+  AdminNavMenuClassChange("mrm-admin", "contacts");
+
   useGlobalStore.setState({
     navbarMarkup: (
       <>
@@ -34,56 +36,8 @@ const Contacts = () => {
     ),
     hideGlobalNav: false,
   });
-  const toaster = useToaster();
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  const [tags, setTags] = useState([]);
-  const [lists, setLists] = useState([]);
-  const [status, setStatus] = useState("pending");
-  const [filter, setFilter] = useState({});
-  const [refreshFilter, setRefreshFilter] = useState(true);
-  const statusData = ["pending", "subscribed", "unsubscribed", "bounced"].map(
-    (data) => ({ label: data.toUpperCase(), value: data })
-  );
-
-  useEffect(() => {
-    try {
-      const searchParams = new URLSearchParams(location.search);
-      const lists = JSON.parse(searchParams.get("lists"));
-      const tags = JSON.parse(searchParams.get("tags"));
-      const status = searchParams.get("status");
-      setFilter({
-        lists,
-        tags,
-        status,
-      });
-    } catch (err) {}
-  }, [refreshFilter]);
-
-  function filterContacts() {
-    const listArr = lists.map((item) => item.id);
-    const tagArr = tags.map((item) => item.id);
-    toggleRefreshFilter();
-    navigate(
-      `/contacts?lists=[${listArr}]&tags=[${tagArr.toString()}]&status=${status}`
-    );
-  }
-
-  function resetFilter() {
-    toggleRefreshFilter();
-    navigate("/contacts");
-  }
-
-  function toggleRefreshFilter() {
-    setRefreshFilter((prev) => !prev);
-  }
-
-  return (
-    <>
-      <BaseTable endpoint="contacts" leftMarkup={leftMarkup}></BaseTable>
-    </>
-  );
+  return <BaseTable endpoint="contacts" leftMarkup={leftMarkup}></BaseTable>;
 };
 
 export default Contacts;

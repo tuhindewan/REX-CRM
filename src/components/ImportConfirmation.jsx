@@ -9,6 +9,7 @@ export default function ImportConfirmation() {
     return <Navigate to="/contacts/import/csv" />;
   }
   const data = state.data;
+  console.log(data);
   return (
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">
@@ -46,10 +47,10 @@ export default function ImportConfirmation() {
                   <strong>{data.skipped}</strong>
                   <span> records are skipped.</span>.
                 </span>
-                {/* <span className="existing-subscribe">
+                <span className="existing-subscribe">
                   <strong>{data.existing_contacts}</strong>
                   <span>existing subscribers were updated.</span>
-                </span> */}
+                </span>
               </div>
               <div className="csv-save-button">
                 <Link to="/contacts/">

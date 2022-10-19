@@ -1,26 +1,22 @@
 import queryString from "query-string";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteMultipleContactsItems } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AlertPopup from "../AlertPopup";
-import CustomSelect from "../CustomSelect";
+import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ExportDrawer from "../ExportDrawer";
-import ContactProfile from "../Icons/ContactProfile";
 import CrossIcon from "../Icons/CrossIcon";
 import ExportIcon from "../Icons/ExportIcon";
+import NoContactIcon from "../Icons/NoContactIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
@@ -32,25 +28,17 @@ export default function ContactListTable(props) {
   const [isLists, setIsLists] = useState(false);
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
-
-  const [loaded, setLoaded] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
-
   const [filterPerPage, setFilterPerPage] = useState(10);
   const [filterPage, setFilterPage] = useState(1);
   const [filterCount, setFilterCount] = useState(0);
-
   const [isActive, setActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
   const [isAssignTo, setIsAssignTo] = useState(false);
-
-  const [selectedSection, setSelectedSection] = useState(false);
-
   const [contactData, setContactData] = useState([]);
-  const [filterContact, setFilterContact] = useState([]);
-
   const [search, setSearch] = useState("");
   const [searchColumns, setSearchColumns] = useState("");
   const [filterSearch, setFilterSearch] = useState("");
@@ -63,9 +51,6 @@ export default function ContactListTable(props) {
   const [filterData, setFilterData] = useState({});
 
   const navigate = useNavigate();
-
-  const [countData, setCountData] = useState({});
-
   // the select all checkbox
   const [allSelected, setAllSelected] = useState(false);
 
@@ -74,19 +59,12 @@ export default function ContactListTable(props) {
 
   const [totalPages, setTotalPages] = useState(0);
   const [filterTotalPages, setFilterTotalPages] = useState(0);
-
   const [currentActive, setCurrentActive] = useState(0);
-  const [openListSelectBox, setOpenTagSelectBox] = useState(false);
-
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filterParams, setFilterParams] = useState([]);
-
   const [isFilter, setIsFilter] = useState(false);
 
   const location = useLocation();
-  let { lists, tags_ids, status } = useParams();
   const [filterRequest, setFilterRequest] = useState({});
-
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [showNotification, setShowNotification] = useState("none");
@@ -186,6 +164,7 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     const getFilter = async () => {
+      setShowLoader(true);
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
         {
@@ -207,7 +186,7 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setFilterCount(data.data.count);
             setFilterTotalPages(data.data.total_pages);
-            setLoaded(true);
+            setShowLoader(false);
           }
         });
     };
@@ -225,8 +204,8 @@ export default function ContactListTable(props) {
   }, [filterRequest, filterPage, filterCount, filterSearch]);
 
   useEffect(() => {
+    setShowLoader(true);
     async function getData() {
-      setLoaded(false);
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
       )
@@ -240,7 +219,7 @@ export default function ContactListTable(props) {
             setContactData(data.data.data);
             setCount(data.data.count);
             setTotalPages(data.data.total_pages);
-            setLoaded(true);
+            setShowLoader(false);
           }
         });
     }
@@ -297,7 +276,6 @@ export default function ContactListTable(props) {
       })
       .then((data) => {
         if (200 == data.code) {
-          console.log(data.data);
           setColumns(data.data);
         }
       });
@@ -316,6 +294,7 @@ export default function ContactListTable(props) {
     } else {
       setShowAlert("block");
     }
+    setActive(false);
   }
 
   // Delete multiple contacts after delete confirmation
@@ -399,6 +378,7 @@ export default function ContactListTable(props) {
       setIsAssignTo(!isAssignTo);
       setActive(!isActive);
     }
+    setActive(false);
   };
 
   const showTagDropdown = () => {
@@ -409,6 +389,8 @@ export default function ContactListTable(props) {
       setIsAssignTo(!isAssignTo);
       setActive(!isActive);
     }
+
+    setActive(false);
   };
 
   const showAddColumnList = () => {
@@ -484,6 +466,7 @@ export default function ContactListTable(props) {
       setShowNotification("block");
       setMessage(responseData?.message);
       setColumns(responseData.data);
+      setAddColumn(!isAddColumn);
       toggleRefresh();
     } else {
       // Validation messages
@@ -502,6 +485,8 @@ export default function ContactListTable(props) {
             <CustomSelect
               selected={selectedLists}
               setSelected={setSelectedLists}
+              showLoader={showLoader}
+              setShowLoader={setShowLoader}
               endpoint="/lists"
               placeholder="Lists"
               name="lists"
@@ -574,7 +559,7 @@ export default function ContactListTable(props) {
                 setSearch(value);
                 setFilterSearch(value);
                 // only set query when there are more than 3 characters
-                if (value.length >= 3) {
+                if (value.length >= 1) {
                   setQuery(encodeURI(`&search=${value}`));
                   // on every new search term set the page explicitly to 1 so that results can
                   // appear
@@ -628,8 +613,10 @@ export default function ContactListTable(props) {
                 showListTitle={true}
                 showSelectedInside={false}
                 allowNewCreate={true}
+                isAssignDropdown={isActive}
+                setIsAssignDropdown={setActive}
                 isActive={isAssignTo}
-                setIsAssignTo={setIsAssignTo}
+                setIsActive={setIsAssignTo}
                 contactIds={selected}
                 refresh={refresh}
                 setRefresh={setRefresh}
@@ -655,7 +642,7 @@ export default function ContactListTable(props) {
                 showSelectedInside={false}
                 allowNewCreate={true}
                 isActive={isAssignTo}
-                setIsAssignTo={setIsAssignTo}
+                setIsActive={setIsAssignTo}
                 contactIds={selected}
                 refresh={refresh}
                 setRefresh={setRefresh}
@@ -723,145 +710,161 @@ export default function ContactListTable(props) {
         </div>
       </div>
 
-      <div className="pos-relative">
-        <div className="add-column">
-          <button className="add-column-btn" onClick={showAddColumnList}>
-            <PlusCircleIcon />
-            <span className="tooltip">Add Column</span>
-          </button>
-          <ul
-            className={
-              isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
-            }
-          >
-            <li className="searchbar">
-              <span class="pos-relative">
-                <Search />
-                <input
-                  type="search"
-                  name="column-search"
-                  placeholder="Search..."
-                  value={searchColumns}
-                  onChange={(e) => setSearchColumns(e.target.value)}
-                />
-              </span>
-            </li>
-
-            <li className="list-title">Choose columns</li>
-
-            {filteredColumns.length > 0 ? (
-              filteredColumns &&
-              filteredColumns.map((column) => {
-                return (
-                  <li className="single-column" key={column.id}>
-                    <ColumnList
-                      title={column.value}
-                      id={column.id}
-                      selected={columns}
-                      setSelected={setColumns}
+      {showLoader ? (
+        <LoadingIndicator type="table" />
+      ) : (
+        <>
+          <div className="pos-relative">
+            <div className="add-column">
+              <button className="add-column-btn" onClick={showAddColumnList}>
+                <PlusCircleIcon />
+                <span className="tooltip">Add Column</span>
+              </button>
+              <ul
+                className={
+                  isAddColumn ? "mintmrm-dropdown show" : "mintmrm-dropdown"
+                }
+              >
+                <li className="searchbar">
+                  <span class="pos-relative">
+                    <Search />
+                    <input
+                      type="search"
+                      name="column-search"
+                      placeholder="Search..."
+                      value={searchColumns}
+                      onChange={(e) => setSearchColumns(e.target.value)}
                     />
-                  </li>
-                );
-              })
-            ) : (
-              <div>No Column Found</div>
-            )}
+                  </span>
+                </li>
 
-            <li className="button-area">
-              {/* <button className="mintmrm-btn outline default-btn">
+                <li className="list-title">Choose columns</li>
+
+                {filteredColumns.length > 0 ? (
+                  filteredColumns &&
+                  filteredColumns.map((column) => {
+                    return (
+                      <li className="single-column" key={column.id}>
+                        <ColumnList
+                          title={column.value}
+                          id={column.id}
+                          selected={columns}
+                          setSelected={setColumns}
+                        />
+                      </li>
+                    );
+                  })
+                ) : (
+                  <div>No Column Found</div>
+                )}
+
+                <li className="button-area">
+                  {/* <button className="mintmrm-btn outline default-btn">
                 Default
               </button> */}
-              <button
-                className="mintmrm-btn outline cancel-btn"
-                onClick={hideAddColumnList}
-              >
-                Cancel
-              </button>
-              <button className="mintmrm-btn save-btn" onClick={saveColumnList}>
-                Save
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div className="contact-list-table">
-          <table>
-            <thead>
-              <tr>
-                <th className="email">
-                  <span class="mintmrm-checkbox">
-                    <input
-                      type="checkbox"
-                      name="bulk-select"
-                      id="bulk-select"
-                      onChange={handleSelectAll}
-                      checked={allSelected}
-                    />
-                    <label for="bulk-select">Email</label>
-                  </span>
-                </th>
-
-                <th className="first-name">First Name</th>
-
-                <th className="last-name">Last Name</th>
-
-                {columns?.map((column) => {
-                  return (
-                    <th key={column.id} className={column.id}>
-                      {column.title}
+                  <button
+                    className="mintmrm-btn outline cancel-btn"
+                    onClick={hideAddColumnList}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="mintmrm-btn save-btn"
+                    onClick={saveColumnList}
+                  >
+                    Save
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div className="contact-list-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="email">
+                      <span class="mintmrm-checkbox">
+                        <input
+                          type="checkbox"
+                          name="bulk-select"
+                          id="bulk-select"
+                          onChange={handleSelectAll}
+                          checked={allSelected}
+                        />
+                        <label for="bulk-select">Email</label>
+                      </span>
                     </th>
-                  );
-                })}
-                <th className="action"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {contactData.map((contact, idx) => {
-                return (
-                  <SingleContact
-                    key={idx}
-                    contact={contact}
-                    toggleRefresh={toggleRefresh}
-                    currentActive={currentActive}
-                    setCurrentActive={setCurrentActive}
-                    handleSelectOne={handleSelectOne}
-                    selected={selected}
-                    columns={columns}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
-          {contactData.length == 0 && (
-            <div className="mrm-empty-state-wrapper">
-              <ContactProfile />
-              <div>
-                No Contact Found{" "}
-                {search.length > 0 ? ` for the term "${search}"` : null}
-              </div>
+
+                    <th className="first-name">First Name</th>
+
+                    <th className="last-name">Last Name</th>
+                    <th className="list">Lists</th>
+                    <th className="tag">Tags</th>
+                    <th className="status">Status</th>
+
+                    {columns?.map((column) => {
+                      return (
+                        <th key={column.id} className={column.id}>
+                          {column.title}
+                        </th>
+                      );
+                    })}
+                    <th className="action"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {!contactData.length && (
+                    <tr>
+                      <td
+                        className="no-contact"
+                        colspan="10"
+                        style={{ textAlign: "center" }}
+                      >
+                        <NoContactIcon />
+                        No contact data found "{search}"
+                      </td>
+                    </tr>
+                  )}
+
+                  {contactData.map((contact, idx) => {
+                    return (
+                      <SingleContact
+                        key={idx}
+                        contact={contact}
+                        toggleRefresh={toggleRefresh}
+                        currentActive={currentActive}
+                        setCurrentActive={setCurrentActive}
+                        handleSelectOne={handleSelectOne}
+                        selected={selected}
+                        columns={columns}
+                      />
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {totalPages > 1 && (
+            <div>
+              {false === isFilter ? (
+                <Pagination
+                  currentPage={page}
+                  pageSize={perPage}
+                  onPageChange={setPage}
+                  totalCount={count}
+                  totalPages={totalPages}
+                />
+              ) : (
+                <Pagination
+                  currentPage={filterPage}
+                  pageSize={filterPerPage}
+                  onPageChange={setFilterPage}
+                  totalCount={filterCount}
+                  totalPages={filterTotalPages}
+                />
+              )}
             </div>
           )}
-        </div>
-      </div>
-      {totalPages > 1 && (
-        <div className="contact-list-footer">
-          {false === isFilter ? (
-            <Pagination
-              currentPage={page}
-              pageSize={perPage}
-              onPageChange={setPage}
-              totalCount={count}
-              totalPages={totalPages}
-            />
-          ) : (
-            <Pagination
-              currentPage={filterPage}
-              pageSize={filterPerPage}
-              onPageChange={setFilterPage}
-              totalCount={filterCount}
-              totalPages={filterTotalPages}
-            />
-          )}
-        </div>
+        </>
       )}
       <div className="mintmrm-container" style={{ display: showAlert }}>
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />

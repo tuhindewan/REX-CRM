@@ -1,3 +1,4 @@
+import LoadingIndicator from "../components/LoadingIndicator";
 import React, { useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
@@ -10,6 +11,7 @@ import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
+import ContactNavbar from "../components/ContactNavbar";
 
 const Tags = () => {
   // global counter update real time
@@ -36,8 +38,8 @@ const Tags = () => {
   // whether to show more options or not
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
-  // current lists data
-  const [lists, setLists] = useState([]);
+  // current tags data
+  const [tags, setTags] = useState([]);
 
   // how many to show per page
   const [perPage, setPerPage] = useState(10);
@@ -53,7 +55,7 @@ const Tags = () => {
 
   // order type asc or desc
   const [orderType, setOrderType] = useState("asc");
-  const [sortButtonName, setSortButtonName] = useState("Name Asc");
+  const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
 
   // total number of pages for result
   const [totalPages, setTotalPages] = useState(0);
@@ -90,6 +92,8 @@ const Tags = () => {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showTableHead, setShowTableHead] = useState(false);
 
   // Set values from list form
   const handleChange = (e) => {
@@ -113,21 +117,10 @@ const Tags = () => {
     if (allSelected) {
       setSelected([]);
     } else {
-      setSelected(lists.map((list) => list.id));
+      setSelected(tags.map((list) => list.id));
     }
     setAllSelected(!allSelected);
   };
-
-  // function to handle order by select component change
-  function handleOrderBy(e, name, arg1) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    const selectedValue = updatedOptions[0];
-    const order = selectedValue.split("+"); // order is an array with order by and order type
-    setOrderBy(order[0]);
-    setOrderType(order[1]);
-  }
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -195,18 +188,21 @@ const Tags = () => {
     } catch (e) {}
   };
 
-  // at first page load get all the available lists
-  // also get lists if the page or perpage or search item changes
+  // at first page load get all the available tags
+  // also get tags if the page or perpage or search item changes
   useEffect(() => {
     async function getTags() {
+      setLoading(true);
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/tags?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
       const resJson = await res.json();
       if (resJson.code == 200) {
-        setLists(resJson.data.data);
+        setTags(resJson.data.data);
         setCount(resJson.data.count);
         setTotalPages(resJson.data.total_pages);
+        setLoading(false);
+        setShowTableHead(true);
       }
     }
     getTags();
@@ -221,6 +217,9 @@ const Tags = () => {
     setDeleteTitle("Delete Tag");
     setDeleteMessage("Are you sure you want to delete the tag?");
     setTagID(tag_id);
+    setAllSelected(false);
+    setSelected([]);
+    setShowMoreOptions(false);
   };
 
   // Delete tag after delete confirmation
@@ -306,9 +305,9 @@ const Tags = () => {
     setOrderBy(order_by);
     setOrderType(order_type);
     if (order_by == "title" && order_type == "asc") {
-      setSortButtonName("Name Asc");
+      setSortButtonName("Name (A - Z)");
     } else if (order_by == "title" && order_type == "desc") {
-      setSortButtonName("Name Desc");
+      setSortButtonName("Name (Z - A)");
     } else if (order_by == "created_at" && order_type == "asc") {
       setSortButtonName("Date Created Asc");
     } else {
@@ -318,6 +317,7 @@ const Tags = () => {
 
   return (
     <>
+      <ContactNavbar />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">
@@ -389,14 +389,14 @@ const Tags = () => {
                     <li
                       onClick={(event) => handleSelect(event, "title", "asc")}
                     >
-                      Name Asc
+                      Name (A - Z)
                     </li>
                     <li
                       onClick={(event) => handleSelect(event, "title", "desc")}
                     >
-                      Name Desc
+                      Name (Z - A)
                     </li>
-                    <li
+                    {/* <li
                       onClick={(event) =>
                         handleSelect(event, "created_at", "asc")
                       }
@@ -409,7 +409,7 @@ const Tags = () => {
                       }
                     >
                       Date Created Desc
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
@@ -425,7 +425,7 @@ const Tags = () => {
                       let value = e.target.value;
                       setSearch(value);
                       // only set query when there are more than 3 characters
-                      if (value.length >= 3) {
+                      if (value.length >= 1) {
                         setQuery(`&search=${value}`);
                         // on every new search term set the page explicitly to 1 so that results can
                         // appear
@@ -460,69 +460,78 @@ const Tags = () => {
                 </div>
               </div>
             </div>
-            <div className="contact-list-body">
-              <div class="contact-list-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th className="">
-                        <span class="mintmrm-checkbox no-title">
-                          <input
-                            type="checkbox"
-                            name="bulk-select"
-                            id="bulk-select"
-                            onChange={handleSelectAll}
-                            checked={allSelected}
-                          />
-                          <label for="bulk-select">Name</label>
-                        </span>
-                      </th>
-                      <th>Contacts</th>
-                      <th className="creation-date">Creation Date</th>
-                      <th className="action"></th>
-                    </tr>
-                  </thead>
 
-                  <tbody>
-                    {lists.length > 0 &&
-                      lists.map((list, idx) => {
-                        return (
-                          <TagItem
-                            key={idx}
-                            list={list}
-                            deleteTag={deleteTag}
-                            currentActive={currentActive}
-                            setCurrentActive={setCurrentActive}
-                            handleSelectOne={handleSelectOne}
-                            selected={selected}
-                            editList={editList}
-                          />
-                        );
-                      })}
-                  </tbody>
-                </table>
-                {/* List empty or search not found ui */}
-                {lists.length == 0 && (
-                  <div className="mrm-empty-state-wrapper">
-                    <TagIcon />
-                    <div>
-                      No Tags Found{" "}
-                      {search.length > 0 ? ` for the term "${search}"` : null}
-                    </div>
+            {loading ? (
+              <LoadingIndicator type="table" />
+            ) : (
+              <>
+                <div className="contact-list-body">
+                  <div class="contact-list-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th className="">
+                            <span class="mintmrm-checkbox no-title">
+                              <input
+                                type="checkbox"
+                                name="bulk-select"
+                                id="bulk-select"
+                                onChange={handleSelectAll}
+                                checked={allSelected}
+                              />
+                              <label for="bulk-select">Name</label>
+                            </span>
+                          </th>
+                          <th>Contacts</th>
+                          <th className="creation-date">Creation Date</th>
+                          <th className="action"></th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {/* List empty or search not found ui */}
+                        {!tags.length && (
+                          <tr>
+                            <td
+                              className="no-contact"
+                              colspan="10"
+                              style={{ textAlign: "center" }}
+                            >
+                              <TagIcon />
+                              No Tag Found "{search}"
+                            </td>
+                          </tr>
+                        )}
+                        {tags.map((list, idx) => {
+                          return (
+                            <TagItem
+                              key={idx}
+                              list={list}
+                              deleteTag={deleteTag}
+                              currentActive={currentActive}
+                              setCurrentActive={setCurrentActive}
+                              handleSelectOne={handleSelectOne}
+                              selected={selected}
+                              editList={editList}
+                            />
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                {totalPages > 1 && (
+                  <div className="contact-list-footer">
+                    <Pagination
+                      currentPage={page}
+                      pageSize={perPage}
+                      onPageChange={setPage}
+                      totalCount={count}
+                      totalPages={totalPages}
+                    />
                   </div>
                 )}
-              </div>
-            </div>
-            {totalPages > 1 && (
-              <div className="contact-list-footer">
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              </div>
+              </>
             )}
           </div>
         </div>

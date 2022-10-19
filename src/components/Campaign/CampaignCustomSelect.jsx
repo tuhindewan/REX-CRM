@@ -1,20 +1,37 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getLists } from "../../services/List";
+import { getTags } from "../../services/Tag";
 import CrossIcon from "../Icons/CrossIcon";
 import Search from "../Icons/Search";
 import OptionList from "./OptionList";
-import { getLists } from "../../services/List";
-import { getTags } from "../../services/Tag";
 
 export default function CampaignCustomSelect(props) {
   const [activeTag, setActiveTag] = useState(true);
   const [activeList, setActiveList] = useState(false);
-  const [checkList, setCheckList] = useState([]);
-  const [checktag, setChecktag] = useState([]);
-  const [unSelect, setUnSelect] = useState();
   const [lists, setLists] = useState([]);
   const [tags, setTags] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [searchTag, setSearchTag] = useState("");
+  const [searchList, setSearchList] = useState("");
+
+  const filteredTags = useMemo(() => {
+    if (searchTag) {
+      return tags.filter(
+          (item) =>
+              item.title.toLowerCase().indexOf(searchTag.toLocaleLowerCase()) > -1
+      );
+    }
+    return tags;
+  }, [searchTag, tags]);
+
+  const filteredLists = useMemo(() => {
+    if (searchList) {
+      return lists.filter(
+          (item) =>
+              item.title.toLowerCase().indexOf(searchList.toLocaleLowerCase()) > -1
+      );
+    }
+    return lists;
+  }, [searchList, lists]);
 
   const showTag = () => {
     setActiveTag(true);
@@ -37,27 +54,31 @@ export default function CampaignCustomSelect(props) {
   // };
 
   const deleteSelectedTag = (e, id) => {
-    const index = selectedTags?.findIndex((item) => item.id == id);
+    const index = props.recipientTags?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
-      setSelectedTags(selectedTags.filter((item) => item.id != id));
+      props.setRecipientTags(
+          props.recipientTags.filter((item) => item.id != id)
+      );
     }
   };
   const deleteSelectedList = (e, id) => {
-    const index = selectedLists?.findIndex((item) => item.id == id);
+    const index = props.recipientLists?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
-      setSelectedLists(selectedLists.filter((item) => item.id != id));
+      props.setRecipientLists(
+          props.recipientLists.filter((item) => item.id != id)
+      );
     }
   };
 
   const deleteAllTag = () => {
-    setSelectedTags([]);
+    props.setRecipientTags([]);
   };
   const deleteAllList = () => {
-    setSelectedLists([]);
+    props.setRecipientLists([]);
   };
   useEffect(() => {
     // Get lists
@@ -71,180 +92,195 @@ export default function CampaignCustomSelect(props) {
   }, []);
 
   const checkIfSelectedList = (id) => {
-    const checkedList = selectedLists?.findIndex((item) => item.id == id) >= 0;
+    const checkedList =
+        props.recipientLists?.findIndex((item) => item.id == id) >= 0;
     return checkedList;
   };
   const checkIfSelectedTag = (id) => {
-    const checkedTag = selectedTags?.findIndex((item) => item.id == id) >= 0;
+    const checkedTag =
+        props.recipientTags?.findIndex((item) => item.id == id) >= 0;
     return checkedTag;
   };
 
   return (
-    <div
-      className={
-        props.dropDown ? "recipient-dropdown" : "recipient-dropdown inactive"
-      }
-    >
-      <div className="dropdown-header">
-        <button
-          className={
-            activeTag ? "tab-button active tag-btn" : "tab-button tag-btn"
-          }
-          onClick={showTag}
-        >
-          Tag
-        </button>
-        <button
-          className={
-            activeList ? "tab-button active list-btn" : "tab-button list-btn"
-          }
-          onClick={showList}
-        >
-          List
-        </button>
-      </div>
-      {activeTag ? (
-        <div className="options-section">
-          <div
+      <>
+        <div
             className={
-              selectedTags?.length != 0
-                ? "selected-items"
-                : "selected-items inactive"
+              props.dropDown ? "recipient-dropdown" : "recipient-dropdown inactive"
             }
-          >
-            <div className="items">
-              {selectedTags?.map((item, index) => {
-                return (
-                  <span key={index} id={item.id}>
-                    {item.title}
-                    <div
-                      className="cross-icon"
-                      onClick={(e) => deleteSelectedTag(e, item.id)}
-                    >
-                      <CrossIcon />
-                    </div>
-                  </span>
-                );
-              })}
-            </div>
+        >
+          <div className="dropdown-header">
             <button
-              className={
-                selectedTags?.length == 0 ? "clear-btn inactive" : "clear-btn"
-              }
-              onClick={deleteAllTag}
+                className={
+                  activeTag ? "tab-button active tag-btn" : "tab-button tag-btn"
+                }
+                onClick={showTag}
             >
-              Clear
+              Tag
+            </button>
+            <button
+                className={
+                  activeList ? "tab-button active list-btn" : "tab-button list-btn"
+                }
+                onClick={showList}
+            >
+              List
             </button>
           </div>
-          <div className="dropdown-body">
-            <div className="searchbar">
-              <div class="pos-relative">
-                <Search />
-                <input
-                  className="recipient-input"
-                  type="search"
-                  placeholder="Search tag"
-                />
-              </div>
-            </div>
-            <div className="checkbox-options">
-              {tags.map((item, index) => {
-                let checkedTag = checkIfSelectedTag(item.id);
-                return (
-                  <li
-                    key={index}
+          {activeTag ? (
+              <div className="options-section">
+                <div
                     className={
-                      checkedTag
-                        ? "single-column mrm-custom-select-single-column-selected"
-                        : "single-column"
+                      props.recipientTags?.length != 0
+                          ? "selected-items"
+                          : "selected-items inactive"
                     }
+                >
+                  <div className="items">
+                    {props.recipientTags?.map((item, index) => {
+                      return (
+                          <span key={index}>
+                      {item.title}
+                            <div
+                                className="cross-icon"
+                                onClick={(e) => deleteSelectedTag(e, item.id)}
+                            >
+                        <CrossIcon />
+                      </div>
+                    </span>
+                      );
+                    })}
+                  </div>
+                  <button
+                      className={
+                        props.recipientTags?.length == 0
+                            ? "clear-btn inactive"
+                            : "clear-btn"
+                      }
+                      onClick={deleteAllTag}
                   >
-                    <OptionList
-                      selected={selectedTags}
-                      setSelected={setSelectedTags}
-                      allowMultiple={true}
-                      id={item.id}
-                      title={item.title}
-                      checked={checkedTag}
-                    />
-                  </li>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      ) : null}
-      {activeList ? (
-        <div className="options-section">
-          <div
-            className={
-              selectedLists?.length != 0
-                ? "selected-items"
-                : "selected-items inactive"
-            }
-          >
-            <div className="items">
-              {selectedLists?.map((item, index) => {
-                return (
-                  <span key={index} id={item.id}>
-                    {item.title}
-                    <div
-                      className="cross-icon"
-                      onClick={(e) => deleteSelectedList(e, item.id)}
-                    >
-                      <CrossIcon />
+                    Clear
+                  </button>
+                </div>
+                <div className="dropdown-body">
+                  <div className="searchbar">
+                    <div class="pos-relative">
+                      <Search />
+                      <input
+                          className="recipient-input"
+                          type="search"
+                          placeholder="Search tag"
+                          value={searchTag}
+                          onChange={(e) => setSearchTag(e.target.value)}
+                      />
                     </div>
-                  </span>
-                );
-              })}
-            </div>
-            <button
-              className={
-                selectedLists?.length == 0 ? "clear-btn inactive" : "clear-btn"
-              }
-              onClick={deleteAllList}
-            >
-              Clear
-            </button>
-          </div>
-          <div className="dropdown-body">
-            <div className="searchbar">
-              <div class="pos-relative">
-                <Search />
-                <input
-                  className="recipient-input"
-                  type="search"
-                  placeholder="Search tag"
-                />
+                  </div>
+                  <div className="checkbox-options">
+                    {filteredTags?.length > 0 &&
+                    filteredTags.map((item, index) => {
+                      let checkedTag = checkIfSelectedTag(item.id);
+                      return (
+                          <li
+                              key={index}
+                              className={
+                                checkedTag
+                                    ? "single-column mrm-custom-select-single-column-selected"
+                                    : "single-column"
+                              }
+                          >
+                            <OptionList
+                                selected={props.recipientTags}
+                                setSelected={props.setRecipientTags}
+                                allowMultiple={true}
+                                id={item.id}
+                                title={item.title}
+                                checked={checkedTag}
+                            />
+                          </li>
+                      );
+                    })}
+                    {filteredTags?.length == 0 ? <div className="no-item-found">No item found</div> : null}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="checkbox-options">
-              {lists.map((item, index) => {
-                let checkedList = checkIfSelectedList(item.id);
-                return (
-                  <li
-                    key={index}
+          ) : null}
+          {activeList ? (
+              <div className="options-section">
+                <div
                     className={
-                      checkedList
-                        ? "single-column mrm-custom-select-single-column-selected"
-                        : "single-column"
+                      props.recipientLists?.length != 0
+                          ? "selected-items"
+                          : "selected-items inactive"
                     }
+                >
+                  <div className="items">
+                    {props.recipientLists?.map((item, index) => {
+                      return (
+                          <span key={index}>
+                      {item.title}
+                            <div
+                                className="cross-icon"
+                                onClick={(e) => deleteSelectedList(e, item.id)}
+                            >
+                        <CrossIcon />
+                      </div>
+                    </span>
+                      );
+                    })}
+                  </div>
+                  <button
+                      className={
+                        props.recipientLists?.length == 0
+                            ? "clear-btn inactive"
+                            : "clear-btn"
+                      }
+                      onClick={deleteAllList}
                   >
-                    <OptionList
-                      selected={selectedLists}
-                      setSelected={setSelectedLists}
-                      allowMultiple={true}
-                      id={item.id}
-                      title={item.title}
-                      checked={checkedList}
-                    />
-                  </li>
-                );
-              })}
-            </div>
-          </div>
+                    Clear
+                  </button>
+                </div>
+                <div className="dropdown-body">
+                  <div className="searchbar">
+                    <div class="pos-relative">
+                      <Search />
+                      <input
+                          className="recipient-input"
+                          type="search"
+                          placeholder="Search tag"
+                          onChange={(e) => setSearchList(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="checkbox-options option-section">
+                    {filteredLists?.length > 0 &&
+                    filteredLists.map((item, index) => {
+                      let checkedList = checkIfSelectedList(item.id);
+                      return (
+                          <li
+                              key={index}
+                              className={
+                                checkedList
+                                    ? "single-column mrm-custom-select-single-column-selected"
+                                    : "single-column"
+                              }
+                          >
+                            <OptionList
+                                selected={props.recipientLists}
+                                setSelected={props.setRecipientLists}
+                                allowMultiple={true}
+                                id={item.id}
+                                title={item.title}
+                                checked={checkedList}
+                            />
+                          </li>
+                      );
+                    })}
+                    {filteredLists?.length == 0 ? <div className="no-item-found">No item found</div> : null}
+                  </div>
+                </div>
+              </div>
+          ) : null}
         </div>
-      ) : null}
-    </div>
+      </>
   );
 }

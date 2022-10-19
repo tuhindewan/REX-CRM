@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
 import ImportNavbar from "./Import/ImportNavbar";
-import Selectbox from "./Selectbox";
 import WarningNotification from "./WarningNotification";
+import ListenForOutsideClicks from "./ListenForOutsideClicks";
+import Select from "./Import/Select";
 
 export default function WordPressFieldMap() {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  // holds user selected lists, tags, and status
-  const [extra, setExtra] = useState([]);
-  // holds map state
-  const [mapState, setMapState] = useState([]);
 
   // holds selectbox currently selected lists
   const [lists, setLists] = useState([]);
@@ -22,6 +19,20 @@ export default function WordPressFieldMap() {
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
   const [contacts, setContacts] = useState([]);
+  const [isActiveStatus, setIsActiveStatus] = useState(false);
+  const [isActiveList, setIsActiveList] = useState(false);
+  const [isActiveTag, setIsActiveTag] = useState(false);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState();
+  //Detect Outside Click to Hide Dropdown Element
+  const statusMenuRef = useRef(null)
+  const listMenuRef   = useRef(null)
+  const tagMenuRef    = useRef(null)
+  const [listening, setListening] = useState(false)
+  useEffect(ListenForOutsideClicks(listening, setListening, statusMenuRef, setIsActiveStatus))
+  useEffect(ListenForOutsideClicks(listening, setListening, listMenuRef, setIsActiveList))
+  useEffect(ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag))
 
   // get the state from calling component
   const state = location.state;
@@ -59,13 +70,13 @@ export default function WordPressFieldMap() {
   const importContacts = async () => {
     setLoading(true);
     const body = {
-      contacts: contacts,
-      ...extra, // lists, tags, status
+      contacts: contacts
     };
 
-    if (!body["status"]) body["status"] = ["pending"];
+    body.status = [selectedStatus];
+    body.lists = selectedLists;
+    body.tags = selectedTags;
     body.created_by = `${window.MRM_Vars.current_userID}`;
-    console.log(body);
     try {
       let res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/insert/wordpress`,
@@ -78,7 +89,6 @@ export default function WordPressFieldMap() {
         }
       );
       let resJson = await res.json();
-      console.log(resJson);
       if (resJson.code == 201) {
         navigate("/contacts/import/confirmation", {
           state: { data: resJson.data },
@@ -99,16 +109,36 @@ export default function WordPressFieldMap() {
     }
   };
 
-  // handle status, lists, tags
-  function handleExtraFields(e, name) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    setExtra((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  }
+  const handleTag = () => {
+    setIsActiveTag(!isActiveTag);
+    setIsActiveList(false);
+    setIsActiveStatus(false);
+  };
+
+  const handleList = () => {
+    setIsActiveList(!isActiveList);
+  };
+
+  const handleStatus = () => {
+    setIsActiveStatus(!isActiveStatus);
+    setIsActiveTag(false);
+    setIsActiveList(false);
+  };
+
+  const capitalizeFirst = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const handleSelectStatus = (title) => {
+    if ("Pending" == title) {
+      setSelectedStatus("pending");
+    } else if ("Subscribe" == title) {
+      setSelectedStatus("subscribed");
+    } else {
+      setSelectedStatus("unsubscribed");
+    }
+    setIsActiveStatus(false);
+  };
 
   return (
     <>
@@ -167,46 +197,99 @@ export default function WordPressFieldMap() {
                   <h3>Contact Profile</h3>
 
                   <div className="contact-profile">
-                    <Selectbox
-                      label="Status"
-                      name="status"
-                      options={[
-                        {
-                          title: "Pending",
-                          id: "pending",
-                        },
-                        {
-                          title: "Subscribed",
-                          id: "subscribed",
-                        },
-                        {
-                          title: "Unsubscribed",
-                          id: "unsubscribed",
-                        },
-                      ]}
-                      tags={false}
-                      placeholder="Select Status"
-                      multiple={false}
-                      onSelect={handleExtraFields}
-                    />
-                    <Selectbox
-                      label="Lists"
-                      name="lists"
-                      options={lists}
-                      placeholder="Select List"
-                      tags={false}
-                      multiple={true}
-                      onSelect={handleExtraFields}
-                    />
-                    <Selectbox
-                      label="Tags"
-                      name="tags"
-                      options={tags}
-                      placeholder="Select Tags"
-                      tags={false}
-                      multiple={true}
-                      onSelect={handleExtraFields}
-                    />
+                    <div className="form-group status-dropdown" ref={statusMenuRef}>
+                      <label>Status</label>
+                      <button
+                        type="button"
+                        className={
+                          isActiveStatus
+                            ? "drop-down-button show"
+                            : "drop-down-button"
+                        }
+                        onClick={handleStatus}
+                      >
+                        {selectedStatus
+                          ? capitalizeFirst(selectedStatus)
+                          : "Select Status"}
+                      </button>
+                      <ul
+                        className={
+                          isActiveStatus
+                            ? "add-contact-status mintmrm-dropdown show"
+                            : "add-contact-status mintmrm-dropdown"
+                        }
+                      >
+                        <li onClick={() => handleSelectStatus("Pending")}>
+                          Pending
+                        </li>
+                        <li onClick={() => handleSelectStatus("Subscribe")}>
+                          Subscribe
+                        </li>
+                        <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                          Unsubscribe
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="form-group status-dropdown">
+                      <label>Lists</label>
+                      <div className="mrm-custom-select-container" key="container">
+                        <button
+                          type="button"
+                          className="mrm-custom-select-btn show"
+                          onClick={handleList}
+                          ref={listMenuRef}
+                        >
+                          Select Lists
+                        </button>
+                        <Select
+                          isActive={isActiveList}
+                          setIsActive={setIsActiveList}
+                          selected={selectedLists}
+                          setSelected={setSelectedLists}
+                          endpoint="/lists"
+                          placeholder="Lists"
+                          name="list"
+                          listTitle="CHOOSE LIST"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={false}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group status-dropdown">
+                      <label>Tags</label>
+                      <div className="mrm-custom-select-container" key="container">
+                        <button
+                          type="button"
+                          className="mrm-custom-select-btn show"
+                          onClick={handleTag}
+                          ref={tagMenuRef}
+                        >
+                          Select Tags
+                        </button>
+                        <Select
+                          isActive={isActiveTag}
+                          setIsActive={setIsActiveTag}
+                          selected={selectedTags}
+                          setSelected={setSelectedTags}
+                          endpoint="/tags"
+                          placeholder="Tags"
+                          name="list"
+                          listTitle="CHOOSE TAG"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={false}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </form>

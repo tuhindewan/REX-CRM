@@ -7,6 +7,7 @@
 .mintmrm {
   background: $body-background-color;
   position: relative;
+  min-height: 100vh;
 
   //---input field style---
   input[type="date"],
@@ -138,7 +139,7 @@
     position: relative;
   }
   .inter {
-    font-family: "Inter", sans-serif;
+    font-family: "Inter";
   }
   .overlay {
     position: absolute;
@@ -174,7 +175,7 @@
     margin: 0 auto;
   }
 
-  .mintmrm-container.import-cotainer{
+  .mintmrm-container.import-cotainer {
     padding-bottom: 85px;
   }
 
@@ -220,6 +221,10 @@
     display: inline-block;
     word-break: break-all;
     color: #e03535;
+    display: none;
+    &.show {
+      display: flex;
+    }
   }
   .inactive {
     display: none;

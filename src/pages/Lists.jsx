@@ -10,6 +10,8 @@ import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
+import LoadingIndicator from "../components/LoadingIndicator";
+import ContactNavbar from "../components/ContactNavbar";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -93,7 +95,10 @@ const Lists = () => {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [sortButtonName, setSortButtonName] = useState("Name Asc");
+  const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
+  // loading or not
+  const [loading, setLoading] = useState(false);
+  const [showTableHead, setShowTableHead] = useState(false);
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -156,17 +161,6 @@ const Lists = () => {
     setEditID(list.id);
     setValues(list);
     setShowCreate(true);
-  }
-
-  // function to handle order by select component change
-  function handleOrderBy(e, name, arg1) {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-    const selectedValue = updatedOptions[0];
-    const order = selectedValue.split("+"); // order is an array with order by and order type
-    setOrderBy(order[0]);
-    setOrderType(order[1]);
   }
 
   // Handle list create or update form submission
@@ -237,6 +231,7 @@ const Lists = () => {
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
     async function getLists() {
+      setLoading(true);
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/lists?order-by=${orderBy}&order-type=${orderType}&page=${page}&per-page=${perPage}${query}`
       );
@@ -245,6 +240,8 @@ const Lists = () => {
         setLists(resJson.data.data);
         setCount(resJson.data.count);
         setTotalPages(resJson.data.total_pages);
+        setLoading(false);
+        setShowTableHead(true);
       }
     }
     getLists();
@@ -260,6 +257,9 @@ const Lists = () => {
     setDeleteTitle("Delete List");
     setDeleteMessage("Are you sure you want to delete the list?");
     setListID(list_id);
+    setAllSelected(false);
+    setSelected([]);
+    setShowMoreOptions(false);
   };
 
   // Delete list after delete confirmation
@@ -336,9 +336,9 @@ const Lists = () => {
     setOrderBy(order_by);
     setOrderType(order_type);
     if (order_by == "title" && order_type == "asc") {
-      setSortButtonName("Name Asc");
+      setSortButtonName("Name (A - Z)");
     } else if (order_by == "title" && order_type == "desc") {
-      setSortButtonName("Name Desc");
+      setSortButtonName("Name (Z - A)");
     } else if (order_by == "created_at" && order_type == "asc") {
       setSortButtonName("Date Created Asc");
     } else {
@@ -348,6 +348,7 @@ const Lists = () => {
 
   return (
     <>
+      <ContactNavbar />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">
@@ -431,14 +432,14 @@ const Lists = () => {
                     <li
                       onClick={(event) => handleSelect(event, "title", "asc")}
                     >
-                      Name Asc
+                      Name (A - Z)
                     </li>
                     <li
                       onClick={(event) => handleSelect(event, "title", "desc")}
                     >
-                      Name Desc
+                      Name (Z - A)
                     </li>
-                    <li
+                    {/* <li
                       onClick={(event) =>
                         handleSelect(event, "created_at", "asc")
                       }
@@ -451,7 +452,7 @@ const Lists = () => {
                       }
                     >
                       Date Created Desc
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
@@ -467,7 +468,7 @@ const Lists = () => {
                       let value = e.target.value;
                       setSearch(value);
                       // only set query when there are more than 3 characters
-                      if (value.length >= 3) {
+                      if (value.length >= 1) {
                         setQuery(`&search=${value}`);
                         // on every new search term set the page explicitly to 1 so that results can
                         // appear
@@ -501,70 +502,83 @@ const Lists = () => {
                 </div>
               </div>
             </div>
-            <div className="contact-list-body">
-              <div class="contact-list-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th className="">
-                        <span class="mintmrm-checkbox no-title">
-                          <input
-                            type="checkbox"
-                            name="bulk-select"
-                            id="bulk-select"
-                            onChange={handleSelectAll}
-                            checked={allSelected}
-                          />
-                          <label for="bulk-select">Name</label>
-                        </span>
-                      </th>
-                      <th>Contacts</th>
-                      <th className="">Description</th>
-                      <th className="creation-date">Creation Date</th>
-                      <th className="action"></th>
-                    </tr>
-                  </thead>
+            {loading ? (
+              <LoadingIndicator type="table" />
+            ) : (
+              <>
+                <div className="contact-list-body">
+                  <div class="contact-list-table">
+                    <table>
+                      <thead
+                        className={
+                          showTableHead ? "showTableHead show" : "showTableHead"
+                        }
+                      >
+                        <tr>
+                          <th className="">
+                            <span class="mintmrm-checkbox no-title">
+                              <input
+                                type="checkbox"
+                                name="bulk-select"
+                                id="bulk-select"
+                                onChange={handleSelectAll}
+                                checked={allSelected}
+                              />
+                              <label for="bulk-select">Name</label>
+                            </span>
+                          </th>
+                          <th>Contacts</th>
+                          <th className="">Description</th>
+                          <th className="creation-date">Creation Date</th>
+                          <th className="action"></th>
+                        </tr>
+                      </thead>
 
-                  <tbody>
-                    {lists.length > 0 &&
-                      lists.map((list, idx) => {
-                        return (
-                          <ListItem
-                            key={idx}
-                            list={list}
-                            deleteList={deleteList}
-                            currentActive={currentActive}
-                            setCurrentActive={setCurrentActive}
-                            handleSelectOne={handleSelectOne}
-                            selected={selected}
-                            editList={editList}
-                          />
-                        );
-                      })}
-                  </tbody>
-                </table>
-                {/* List empty or search not found ui */}
-                {lists.length == 0 && (
-                  <div className="mrm-empty-state-wrapper">
-                    <ListIcon />
-                    <div>
-                      No Lists Found{" "}
-                      {search.length > 0 ? ` for the term "${search}"` : null}
-                    </div>
+                      <tbody>
+                        {/* List empty or search not found ui */}
+                        {!lists.length && (
+                          <tr>
+                            <td
+                              className="no-contact"
+                              colspan="10"
+                              style={{ textAlign: "center" }}
+                            >
+                              <ListIcon />
+                              No List Found "{search}"
+                            </td>
+                          </tr>
+                        )}
+
+                        {lists.map((list, idx) => {
+                          return (
+                            <ListItem
+                              key={idx}
+                              list={list}
+                              deleteList={deleteList}
+                              currentActive={currentActive}
+                              setCurrentActive={setCurrentActive}
+                              handleSelectOne={handleSelectOne}
+                              selected={selected}
+                              editList={editList}
+                            />
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                {totalPages > 1 && (
+                  <div className="contact-list-footer">
+                    <Pagination
+                      currentPage={page}
+                      pageSize={perPage}
+                      onPageChange={setPage}
+                      totalCount={count}
+                      totalPages={totalPages}
+                    />
                   </div>
                 )}
-              </div>
-            </div>
-            {totalPages > 1 && (
-              <div className="contact-list-footer">
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              </div>
+              </>
             )}
           </div>
         </div>

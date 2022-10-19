@@ -5296,11 +5296,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Icons/CrossIcon */ "../../../src/components/Icons/CrossIcon.jsx");
-/* harmony import */ var _Icons_Search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Icons/Search */ "../../../src/components/Icons/Search.jsx");
-/* harmony import */ var _OptionList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./OptionList */ "../../../src/components/Campaign/OptionList.jsx");
-/* harmony import */ var _services_List__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/List */ "../../../src/services/List.jsx");
-/* harmony import */ var _services_Tag__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../services/Tag */ "../../../src/services/Tag.jsx");
+/* harmony import */ var _services_List__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/List */ "../../../src/services/List.jsx");
+/* harmony import */ var _services_Tag__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/Tag */ "../../../src/services/Tag.jsx");
+/* harmony import */ var _Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Icons/CrossIcon */ "../../../src/components/Icons/CrossIcon.jsx");
+/* harmony import */ var _Icons_Search__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Icons/Search */ "../../../src/components/Icons/Search.jsx");
+/* harmony import */ var _OptionList__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./OptionList */ "../../../src/components/Campaign/OptionList.jsx");
 
 
 
@@ -5309,15 +5309,25 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function CampaignCustomSelect(props) {
+  var _props$recipientTags3, _props$recipientTags4, _props$recipientTags5, _props$recipientLists3, _props$recipientLists4, _props$recipientLists5;
   const [activeTag, setActiveTag] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
   const [activeList, setActiveList] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const [checkList, setCheckList] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
-  const [checktag, setChecktag] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
-  const [unSelect, setUnSelect] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)();
   const [lists, setLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [tags, setTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
-  const [selectedLists, setSelectedLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
-  const [selectedTags, setSelectedTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [searchTag, setSearchTag] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
+  const [searchList, setSearchList] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
+  const filteredTags = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    if (searchTag) {
+      return tags.filter(item => item.title.toLowerCase().indexOf(searchTag.toLocaleLowerCase()) > -1);
+    }
+    return tags;
+  }, [searchTag, tags]);
+  const filteredLists = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    if (searchList) {
+      return lists.filter(item => item.title.toLowerCase().indexOf(searchList.toLocaleLowerCase()) > -1);
+    }
+    return lists;
+  }, [searchList, lists]);
   const showTag = () => {
     setActiveTag(true);
     setActiveList(false);
@@ -5339,46 +5349,50 @@ function CampaignCustomSelect(props) {
   // };
 
   const deleteSelectedTag = (e, id) => {
-    const index = selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.findIndex(item => item.id == id);
+    var _props$recipientTags;
+    const index = (_props$recipientTags = props.recipientTags) === null || _props$recipientTags === void 0 ? void 0 : _props$recipientTags.findIndex(item => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
-      setSelectedTags(selectedTags.filter(item => item.id != id));
+      props.setRecipientTags(props.recipientTags.filter(item => item.id != id));
     }
   };
   const deleteSelectedList = (e, id) => {
-    const index = selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.findIndex(item => item.id == id);
+    var _props$recipientLists;
+    const index = (_props$recipientLists = props.recipientLists) === null || _props$recipientLists === void 0 ? void 0 : _props$recipientLists.findIndex(item => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
-      setSelectedLists(selectedLists.filter(item => item.id != id));
+      props.setRecipientLists(props.recipientLists.filter(item => item.id != id));
     }
   };
   const deleteAllTag = () => {
-    setSelectedTags([]);
+    props.setRecipientTags([]);
   };
   const deleteAllList = () => {
-    setSelectedLists([]);
+    props.setRecipientLists([]);
   };
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     // Get lists
-    (0,_services_List__WEBPACK_IMPORTED_MODULE_5__.getLists)().then(results => {
+    (0,_services_List__WEBPACK_IMPORTED_MODULE_2__.getLists)().then(results => {
       setLists(results.data);
     });
     // Get tags
-    (0,_services_Tag__WEBPACK_IMPORTED_MODULE_6__.getTags)().then(results => {
+    (0,_services_Tag__WEBPACK_IMPORTED_MODULE_3__.getTags)().then(results => {
       setTags(results.data);
     });
   }, []);
   const checkIfSelectedList = id => {
-    const checkedList = (selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.findIndex(item => item.id == id)) >= 0;
+    var _props$recipientLists2;
+    const checkedList = ((_props$recipientLists2 = props.recipientLists) === null || _props$recipientLists2 === void 0 ? void 0 : _props$recipientLists2.findIndex(item => item.id == id)) >= 0;
     return checkedList;
   };
   const checkIfSelectedTag = id => {
-    const checkedTag = (selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.findIndex(item => item.id == id)) >= 0;
+    var _props$recipientTags2;
+    const checkedTag = ((_props$recipientTags2 = props.recipientTags) === null || _props$recipientTags2 === void 0 ? void 0 : _props$recipientTags2.findIndex(item => item.id == id)) >= 0;
     return checkedTag;
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: props.dropDown ? "recipient-dropdown" : "recipient-dropdown inactive"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "dropdown-header"
@@ -5391,19 +5405,18 @@ function CampaignCustomSelect(props) {
   }, "List")), activeTag ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "options-section"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: (selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.length) != 0 ? "selected-items" : "selected-items inactive"
+    className: ((_props$recipientTags3 = props.recipientTags) === null || _props$recipientTags3 === void 0 ? void 0 : _props$recipientTags3.length) != 0 ? "selected-items" : "selected-items inactive"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "items"
-  }, selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.map((item, index) => {
+  }, (_props$recipientTags4 = props.recipientTags) === null || _props$recipientTags4 === void 0 ? void 0 : _props$recipientTags4.map((item, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      key: index,
-      id: item.id
+      key: index
     }, item.title, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "cross-icon",
       onClick: e => deleteSelectedTag(e, item.id)
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: (selectedTags === null || selectedTags === void 0 ? void 0 : selectedTags.length) == 0 ? "clear-btn inactive" : "clear-btn",
+    className: ((_props$recipientTags5 = props.recipientTags) === null || _props$recipientTags5 === void 0 ? void 0 : _props$recipientTags5.length) == 0 ? "clear-btn inactive" : "clear-btn",
     onClick: deleteAllTag
   }, "Clear")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "dropdown-body"
@@ -5411,41 +5424,44 @@ function CampaignCustomSelect(props) {
     className: "searchbar"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "pos-relative"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_Search__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_Search__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     className: "recipient-input",
     type: "search",
-    placeholder: "Search tag"
+    placeholder: "Search tag",
+    value: searchTag,
+    onChange: e => setSearchTag(e.target.value)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "checkbox-options"
-  }, tags.map((item, index) => {
+  }, (filteredTags === null || filteredTags === void 0 ? void 0 : filteredTags.length) > 0 && filteredTags.map((item, index) => {
     let checkedTag = checkIfSelectedTag(item.id);
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
       key: index,
       className: checkedTag ? "single-column mrm-custom-select-single-column-selected" : "single-column"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_OptionList__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      selected: selectedTags,
-      setSelected: setSelectedTags,
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_OptionList__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      selected: props.recipientTags,
+      setSelected: props.setRecipientTags,
       allowMultiple: true,
       id: item.id,
       title: item.title,
       checked: checkedTag
     }));
-  })))) : null, activeList ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), (filteredTags === null || filteredTags === void 0 ? void 0 : filteredTags.length) == 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "no-item-found"
+  }, "No item found") : null))) : null, activeList ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "options-section"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: (selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.length) != 0 ? "selected-items" : "selected-items inactive"
+    className: ((_props$recipientLists3 = props.recipientLists) === null || _props$recipientLists3 === void 0 ? void 0 : _props$recipientLists3.length) != 0 ? "selected-items" : "selected-items inactive"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "items"
-  }, selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.map((item, index) => {
+  }, (_props$recipientLists4 = props.recipientLists) === null || _props$recipientLists4 === void 0 ? void 0 : _props$recipientLists4.map((item, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      key: index,
-      id: item.id
+      key: index
     }, item.title, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "cross-icon",
       onClick: e => deleteSelectedList(e, item.id)
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: (selectedLists === null || selectedLists === void 0 ? void 0 : selectedLists.length) == 0 ? "clear-btn inactive" : "clear-btn",
+    className: ((_props$recipientLists5 = props.recipientLists) === null || _props$recipientLists5 === void 0 ? void 0 : _props$recipientLists5.length) == 0 ? "clear-btn inactive" : "clear-btn",
     onClick: deleteAllList
   }, "Clear")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "dropdown-body"
@@ -5453,26 +5469,29 @@ function CampaignCustomSelect(props) {
     className: "searchbar"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "pos-relative"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_Search__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_Search__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     className: "recipient-input",
     type: "search",
-    placeholder: "Search tag"
+    placeholder: "Search tag",
+    onChange: e => setSearchList(e.target.value)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "checkbox-options"
-  }, lists.map((item, index) => {
+    className: "checkbox-options option-section"
+  }, (filteredLists === null || filteredLists === void 0 ? void 0 : filteredLists.length) > 0 && filteredLists.map((item, index) => {
     let checkedList = checkIfSelectedList(item.id);
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
       key: index,
       className: checkedList ? "single-column mrm-custom-select-single-column-selected" : "single-column"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_OptionList__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      selected: selectedLists,
-      setSelected: setSelectedLists,
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_OptionList__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      selected: props.recipientLists,
+      setSelected: props.setRecipientLists,
       allowMultiple: true,
       id: item.id,
       title: item.title,
       checked: checkedList
     }));
-  })))) : null);
+  }), (filteredLists === null || filteredLists === void 0 ? void 0 : filteredLists.length) == 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "no-item-found"
+  }, "No item found") : null))) : null));
 }
 
 /***/ }),
@@ -5512,10 +5531,6 @@ function OptionList(props) {
 
   const handleSelectOne = e => {
     e.stopPropagation();
-    let updatedList = [...selected];
-    // since this function is handling input for both checkboxes and li elements
-    // there might be either id and value for input checkboxes
-    // or custom ID and custom Value dataset attribute for li elements
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
     const index = selected.findIndex(item => item.id == id);
@@ -5537,14 +5552,6 @@ function OptionList(props) {
         title: value
       }]);
     }
-    if (checked) {
-      updatedList = [...selected.id, e.target.value];
-      // setCheckItem([...checkItem, e.target.value]);
-    } else {
-      var _selected$id;
-      updatedList.splice((_selected$id = selected.id) === null || _selected$id === void 0 ? void 0 : _selected$id.indexOf(e.target.value), 1);
-    }
-    setSelected(updatedList);
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "mintmrm-checkbox"
@@ -5639,7 +5646,7 @@ function CustomSelect(props) {
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);else setQuery("");
+    if (value.length >= 1) setQuery(`&search=${value}`);else setQuery("");
   }
 
   // handler for one single item click for both list item and checkbox rendering
@@ -6285,12 +6292,12 @@ function CrossIcon() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ DoubleAngleLeft; }
+/* harmony export */   "default": function() { return /* binding */ DoubleAngleLeftIcon; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
-function DoubleAngleLeft() {
+function DoubleAngleLeftIcon() {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
     width: "13",
     height: "13",
@@ -6598,7 +6605,7 @@ function InputItem(props) {
     onChange: props.handleChange,
     defaultValue: props.value
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "error-message"
+    className: props !== null && props !== void 0 && props.error ? "error-message show" : "error-message"
   }, props === null || props === void 0 ? void 0 : props.error));
 }
 
@@ -6639,15 +6646,23 @@ function LoadingIndicator(props) {
   }
   if ("table" == type) {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      class: "shimmer-wrapper-center"
+      class: "shimmer-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       class: "shimmer-line shimmer-line-br shimmer-line-60 shimmer-animate"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      class: "shimmer-line shimmer-line-br shimmer-line-60 shimmer-animate"
+      class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      class: "shimmer-line shimmer-line-br shimmer-line-60 shimmer-animate"
+      class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      class: "shimmer-line shimmer-line-br shimmer-line-60 shimmer-animate"
+      class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      class: "shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      class: "shimmer-line shimmer-line-br shimmer-line-80 shimmer-animate"
     }));
   }
 }

@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
+import SuccessfulNotification from "../SuccessfulNotification";
+import WarningNotification from "../WarningNotification";
 
 export default function AssignedItems(props) {
   const {
     selected,
     setSelected,
+    isActive,
     endpoint = "lists",
     placeholder = "Lists",
     options = null,
@@ -21,6 +24,7 @@ export default function AssignedItems(props) {
     showSelectedInside = true,
     allowNewCreate = true,
     contactIds,
+    prefix,
   } = props;
 
   // store retrieved
@@ -28,6 +32,9 @@ export default function AssignedItems(props) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [showWarning, setShowWarning] = useState("none");
+  const [message, setMessage] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
 
   useEffect(() => {
     async function getItems() {
@@ -79,7 +86,7 @@ export default function AssignedItems(props) {
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);
+    if (value.length >= 1) setQuery(`&search=${value}`);
     else setQuery("");
   }
 
@@ -105,64 +112,84 @@ export default function AssignedItems(props) {
         setSearch("");
         setQuery("");
         setSelected([...selected, { id: resJson.data, title: body.title }]);
+        setShowNotification("block");
+        setMessage(resJson?.message);
+      } else if (400 == resJson.code) {
+        setShowWarning("block");
+        setMessage(resJson?.message);
       } else {
-        window.alert(resJson.message);
+        setShowWarning("block");
+        setMessage(resJson?.message);
       }
     } catch (e) {
     } finally {
       setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   };
 
   const handleAssignLists = async () => {
-    // let res = null;
-    // let body;
-    // "lists" == endpoint
-    //   ? (body = {
-    //       lists: selected,
-    //       contact_ids: contactIds,
-    //     })
-    //   : (body = {
-    //       tags: selected,
-    //       contact_ids: contactIds,
-    //     });
-    // try {
-    //   // create contact
-    //   setLoading(true);
-    //   res = await fetch(
-    //     `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-type": "application/json",
-    //       },
-    //       body: JSON.stringify(body),
-    //     }
-    //   );
+    let res = null;
+    let body;
+    "lists" == endpoint
+      ? (body = {
+          lists: selected,
+          contact_ids: contactIds,
+        })
+      : (body = {
+          tags: selected,
+          contact_ids: contactIds,
+        });
+    try {
+      // create contact
+      setLoading(true);
+      res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/groups`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
-    //   const resJson = await res.json();
-    //   if (resJson.code == 201) {
-    //     setSearch("");
-    //     setQuery("");
-    //     setSelected([]);
-    //     props.setIsAssignTo(!props.isActive);
-    //     props.setRefresh(!props.refresh);
-    //     props.setShowNotification("block");
-    //     props.setMessage(resJson.message);
-    //   } else {
-    //     window.alert(resJson.message);
-    //   }
-    // } catch (e) {
-    // } finally {
-    //   setLoading(false);
-    // }
+      const resJson = await res.json();
+      if (resJson.code == 201) {
+        setSearch("");
+        setQuery("");
+        setSelected([]);
+        props.setIsActive(false);
+        props.setRefresh(!props.refresh);
+        props.setShowNotification("block");
+        props.setMessage(resJson.message);
+      } else if (400 == resJson.code) {
+        setShowWarning("block");
+        setMessage(resJson?.message);
+      } else {
+        setShowWarning("block");
+        setMessage(resJson?.message);
+      }
+    } catch (e) {
+    } finally {
+      setLoading(false);
+      const timer = setTimeout(() => {
+        setShowWarning("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+
   };
 
   return (
     <>
       <ul
         className={
-          props.isActive
+          isActive
             ? "assigned-to mintmrm-dropdown show"
             : "assigned-to mintmrm-dropdown"
         }
@@ -199,14 +226,17 @@ export default function AssignedItems(props) {
                     <input
                       type="checkbox"
                       name={item.id}
-                      id={item.id}
+                      id={prefix + item.id}
                       value={item.title}
                       onChange={handleSelectOne}
                       data-custom-id={item.id}
                       checked={checked}
                     />
 
-                    <label for={item.id} className="mrm-custom-select-label">
+                    <label
+                      for={prefix + item.id}
+                      className="mrm-custom-select-label"
+                    >
                       {item.title}
                     </label>
                   </div>
@@ -224,17 +254,20 @@ export default function AssignedItems(props) {
         {/* <div className="no-found">
           <span>No List found</span>
         </div> */}
-        <Link className="add-action" to="" onClick={handleAssignLists}>
-          <Plus />
-          Assign {placeholder}
-        </Link>
+
         {/* {contactListColumns.map((column, index) => {
               <li className="single-column">
                 <ColumnList title={column.title} key={index} />
               </li>;
             })} */}
         {loading && <LoadingIndicator type="table" />}
+        <Link className="add-action" to="" onClick={handleAssignLists}>
+          <Plus />
+          Assign {placeholder}
+        </Link>
       </ul>
+      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 }

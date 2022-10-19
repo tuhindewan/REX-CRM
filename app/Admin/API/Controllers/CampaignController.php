@@ -59,18 +59,27 @@ class CampaignController extends BaseController {
             $params['title'] = "Untitled";
         }
 
-        // Email subject validation
         $emails = isset($params['emails']) ? $params['emails'] : array();
-        // foreach( $emails as $index => $email ){
-        //     if ( isset($email['email_subject']) && empty( $email['email_subject'] )) {
-        //         return $this->get_error_response( __( 'Subject is missing on email '. ($index+1), 'mrm' ),  200);
-        //     }
-        // }
 
+        // Email subject validation
+        if( isset( $params['status']) ){
+
+            foreach( $emails as $index => $email ){
+                $sender_email   = isset( $email['sender_email'] ) ? $email['sender_email'] : "";
+                if ( isset($sender_email) && empty( $sender_email )) {
+                    return $this->get_error_response( __( 'Sender email is missing on email '. ($index+1), 'mrm' ),  200);
+                }
+                if(!is_email($sender_email)) {
+                    return $this->get_error_response(__( 'Sender Email Address is not valid on email '. ($index+1), 'mrm' ), 203);
+                }
+            }
+        }
+        
         try {
             // Update a campaign if campaign_id present on API request
             if( isset( $params['campaign_id']) ){
-                $campaign_id            = $params['campaign_id'];
+                $campaign_id  = $params['campaign_id'];
+
                 $this->campaign_data    = ModelsCampaign::update( $params, $campaign_id );
 
                 if( $this->campaign_data ){
@@ -150,7 +159,8 @@ class CampaignController extends BaseController {
                 $data['campaign'] = $this->campaign_data;
                 if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
                     //test_email_sending(for dev)
-                    self::send_email_to_reciepents($this->campaign_data);
+                    $response = self::send_email_to_reciepents($this->campaign_data);
+                    return $this->get_success_response(__( 'Campaign has been started successfully', 'mrm' ), 201, $data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
             }
@@ -330,7 +340,10 @@ class CampaignController extends BaseController {
         // Get values from REST API JSON
         $params         = MRM_Common::get_api_params_values( $request );
         $campaign_id    = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+        $recipients_emails = self::get_reciepents_email($campaign_id);
+
         $campaign       = ModelsCampaign::get( $campaign_id );
+        $campaign['total_recipients'] = count($recipients_emails);
         if(isset($campaign)) {
             return $this->get_success_response("Query Successfull", 200, $campaign);
         }
@@ -390,16 +403,21 @@ class CampaignController extends BaseController {
     {
         $campaign_id = isset( $campaign['id'] ) ? $campaign['id'] : "";
         $recipients_emails = self::get_reciepents_email($campaign_id);
+
         $recipients = array_map(function($recipients_email){
-            return $recipients_email['email'];
+            if( isset($recipients_email['email']) ){
+                return $recipients_email['email'];
+            }
         }, $recipients_emails);
-        $email = isset( $campaign['emails'][0] ) ? $campaign['emails'][0] : [];
-        
-        $email_builder = CampaignEmailBuilderModel::get($email['id']);
-        $sender_email   = isset( $email['sender_email'] ) ? $email['sender_email'] : "";
-        $sender_name    = isset( $email['sender_name'] ) ? $email['sender_name'] : "";
-        $email_subject  = isset( $email['email_subject'] ) ? $email['email_subject'] : "";
+        $emails = ModelsCampaign::get_campaign_email( $campaign_id );
+        $first_email = isset($emails[0]) ? $emails[0] : [];
+
+        $email_builder = CampaignEmailBuilderModel::get($first_email['id']);
+        $sender_email   = isset( $first_email['sender_email'] )     ? $first_email['sender_email'] : "";
+        $sender_name    = isset( $first_email['sender_name'] )      ? $first_email['sender_name'] : "";
+        $email_subject  = isset( $first_email['email_subject'] )    ? $first_email['email_subject'] : "";
         $email_body     = $email_builder["email_body"];
+
         $headers = array(
 			'MIME-Version: 1.0',
 			'Content-type: text/html;charset=UTF-8'

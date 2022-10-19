@@ -1,3 +1,4 @@
+@import "variables";
 .campaign-list-page {
   .campaign-list-area {
     .campaign-list-body {
@@ -160,6 +161,9 @@
                 margin-right: 5px;
                 display: inline-block;
               }
+              &.no-campaign {
+                width: 100%;
+              }
             }
           }
           // .table-row:last-child {
@@ -184,6 +188,11 @@
                 font-size: 15px;
                 line-height: 18px;
                 color: #121212;
+              }
+              &:hover {
+                a {
+                  color: $primary-color;
+                }
               }
               span {
                 font-weight: 400;
@@ -230,7 +239,6 @@
         .table-head,
         .table-body {
           .table-row {
-            justify-content: center;
             align-items: center;
           }
           .campaign-name {
