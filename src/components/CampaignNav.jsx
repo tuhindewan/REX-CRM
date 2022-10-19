@@ -18,7 +18,7 @@ export default function CampaignsNavbar() {
           <div className="header-wrapper">
             <div className="left-header-section">
               <div className="site-logo">
-                <Link to="/">
+                <Link to="/campaigns">
                   <h1>Campaigns</h1>
                 </Link>
               </div>
