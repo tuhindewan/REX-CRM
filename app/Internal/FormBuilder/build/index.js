@@ -3138,7 +3138,7 @@ const mrmButton = _ref => {
     className: "mrm-form-group submit",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
-    className: "mrm-submit-button",
+    className: "mrm-submit-button mintmrm-btn",
     tagName: "button",
     type: "submit",
     style: buttonStyle,
@@ -3373,7 +3373,7 @@ class Editor extends Component {
       }),
       controls: ["left", "center", "right"]
     })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
-      className: "mrm-submit-button",
+      className: "mrm-submit-button mintmrm-btn",
       tagName: "button",
       type: "button",
       value: buttonText,
@@ -4537,7 +4537,7 @@ class Editor extends Component {
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
-      className: "mrm-checkbox-group",
+      className: "mrm-checkbox-group mintmrm-checkbox",
       style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: "checkbox",
@@ -4574,7 +4574,7 @@ class Editor extends Component {
       borderColor: attributes.inputBorderColor
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "mrm-radio-group"
+      className: "mrm-radio-group mintmrm-radiobtn"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: "radio",
       id: option.value,
@@ -20417,7 +20417,7 @@ if (false) {} else {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "createStore": function() { return /* reexport safe */ zustand_vanilla__WEBPACK_IMPORTED_MODULE_0__["default"]; },
-/* harmony export */   "default": function() { return /* binding */ create; },
+/* harmony export */   "default": function() { return /* binding */ create$1; },
 /* harmony export */   "useStore": function() { return /* binding */ useStore; }
 /* harmony export */ });
 /* harmony import */ var zustand_vanilla__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! zustand/vanilla */ "../../../node_modules/zustand/esm/vanilla.js");
@@ -20449,6 +20449,7 @@ const createImpl = (createState) => {
   return useBoundStore;
 };
 const create = (createState) => createState ? createImpl(createState) : createImpl;
+var create$1 = create;
 
 
 
@@ -20471,7 +20472,7 @@ const createStoreImpl = (createState) => {
   const listeners = /* @__PURE__ */ new Set();
   const setState = (partial, replace) => {
     const nextState = typeof partial === "function" ? partial(state) : partial;
-    if (!Object.is(nextState, state)) {
+    if (nextState !== state) {
       const previousState = state;
       state = (replace != null ? replace : typeof nextState !== "object") ? nextState : Object.assign({}, state, nextState);
       listeners.forEach((listener) => listener(state, previousState));

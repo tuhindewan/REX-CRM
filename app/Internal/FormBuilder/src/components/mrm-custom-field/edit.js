@@ -689,7 +689,7 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-checkbox-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-checkbox-group mintmrm-checkbox" style={fieldSpacing}>
 
                     <input type="checkbox" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle} />
                     <label htmlFor={attributes.field_slug} style={checkboxLabelColor}>
@@ -721,7 +721,7 @@ class Editor extends Component {
             borderColor:  attributes.inputBorderColor,
         }
         return (
-            <div className="mrm-radio-group">
+            <div className="mrm-radio-group mintmrm-radiobtn">
                 <input type="radio" id={option.value} name={option.value} required={attributes.field_require} style={inputStyle}/>
                 <label htmlFor={attributes.field_slug} style={labelStyle}>
                     {option.label ? __(option.label,'mrm') : __('','mrm')}
