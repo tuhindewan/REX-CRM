@@ -71,12 +71,14 @@ class Editor extends Component {
 
     }
 
-    addNewRadioOption = () => {
+    addNewRadioOption = (count) => {
         let { attributes, setAttributes } 	= this.props;
-        const slug_name =  this.makeSlug(attributes.field_name)
+        const slug_name =  this.makeSlug(attributes.field_name);
+        setAttributes({radio_option_count : attributes.radio_option_count+1 } )
+        console.log();
         let defaultOption = {
             value : slug_name,
-            label: 'label'
+            label: 'Label'+'-'+attributes.radio_option_count
         }
         if('radio' === attributes.field_type) {
             attributes.radioOption.push(defaultOption)
@@ -129,12 +131,14 @@ class Editor extends Component {
                     onChange={ (state ) => setAttributes({ field_name: state }) }
                 />
 
+                {attributes.field_type != 'radio' &&
                 <TextControl
                     className="mrm-inline-label"
                     label=" Field Label"
-                    value={ attributes.field_label }
-                    onChange={ (state ) => setAttributes({ field_label: state }) }
+                    value={attributes.field_label}
+                    onChange={(state) => setAttributes({field_label: state})}
                 />
+                }
 
                 {attributes.field_type == 'select' && 
                     <div className="select-option-wrapper">
@@ -180,7 +184,7 @@ class Editor extends Component {
                     <div className="radio-option-wrapper">
                         <div className="add-option-wrapper">
                             <h4>Add New Option</h4>
-                            <button onClick={() => { this.addNewRadioOption() }} className="add-option-button" role="button" title="Add New Option" >
+                            <button onClick={(count) => { this.addNewRadioOption(count) }} className="add-option-button" role="button" title="Add New Option" >
                                 <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
                             </button>
                         </div>
@@ -541,7 +545,7 @@ class Editor extends Component {
         )
     }
     /**
-     * Render Textarea Field
+     * Render Date Field
      * @param attributes
      * @returns {JSX.Element}
      */
@@ -701,7 +705,7 @@ class Editor extends Component {
         )
     }
 
-    renderRadioOption = (option, index) =>{
+    renderRadioOption = (option, index, field_slug) =>{
         const { attributes ,setAttributes} = this.props
         let labelStyle = {
             color:  attributes.labelColor,
@@ -722,8 +726,8 @@ class Editor extends Component {
         }
         return (
             <div className="mrm-radio-group mintmrm-radiobtn">
-                <input type="radio" id={option.value} name={option.value} required={attributes.field_require} style={inputStyle}/>
-                <label htmlFor={attributes.field_slug} style={labelStyle}>
+                <input type="radio" id={option.label} name={field_slug} required={attributes.field_require} style={inputStyle}/>
+                <label htmlFor={option.label} style={labelStyle}>
                     {option.label ? __(option.label,'mrm') : __('','mrm')}
                     {attributes.field_require && <span className="required-mark">*</span>}
                 </label>
@@ -735,14 +739,13 @@ class Editor extends Component {
     renderRadioField = (attributes) => {
         const slug_name =  this.makeSlug(attributes.field_name)
         this.props.setAttributes({ field_slug: slug_name })
-
         return (
             <Fragment>
                 <div key={`mrm-${attributes.field_label}`} className="mrm-form-group radio">
 
                     {attributes.radioOption.map((option,index) => {
                         return (
-                            this.renderRadioOption( option,index )
+                            this.renderRadioOption( option,index ,this.props.attributes.field_slug)
                         )
                     })}
 

@@ -43,8 +43,15 @@ const attributes = {
     radioOption: {
         type : 'array',
         default: [
-
+            {
+                label : 'Label',
+                value : ''
+            }
         ]
+    },
+    radio_option_count: {
+        type : 'number',
+        default : 2
     },
     radio_option_name:{
         type : 'string',

@@ -3477,7 +3477,14 @@ const attributes = {
   },
   radioOption: {
     type: 'array',
-    default: []
+    default: [{
+      label: 'Label',
+      value: ''
+    }]
+  },
+  radio_option_count: {
+    type: 'number',
+    default: 2
   },
   radio_option_name: {
     type: 'string',
@@ -3879,15 +3886,19 @@ class Editor extends Component {
     });
   };
   selectOptionList = () => {};
-  addNewRadioOption = () => {
+  addNewRadioOption = count => {
     let {
       attributes,
       setAttributes
     } = this.props;
     const slug_name = this.makeSlug(attributes.field_name);
+    setAttributes({
+      radio_option_count: attributes.radio_option_count + 1
+    });
+    console.log();
     let defaultOption = {
       value: slug_name,
-      label: 'label'
+      label: 'Label' + '-' + attributes.radio_option_count
     };
     if ('radio' === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
@@ -3933,7 +3944,7 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_name: state
       })
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type != 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Field Label",
       value: attributes.field_label,
@@ -4010,8 +4021,8 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, "Add New Option"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-      onClick: () => {
-        this.addNewRadioOption();
+      onClick: count => {
+        this.addNewRadioOption(count);
       },
       className: "add-option-button",
       role: "button",
@@ -4391,7 +4402,7 @@ class Editor extends Component {
     }))));
   };
   /**
-   * Render Textarea Field
+   * Render Date Field
    * @param attributes
    * @returns {JSX.Element}
    */
@@ -4552,7 +4563,7 @@ class Editor extends Component {
       className: "required-mark"
     }, "*"))));
   };
-  renderRadioOption = (option, index) => {
+  renderRadioOption = (option, index, field_slug) => {
     const {
       attributes,
       setAttributes
@@ -4577,12 +4588,12 @@ class Editor extends Component {
       className: "mrm-radio-group mintmrm-radiobtn"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: "radio",
-      id: option.value,
-      name: option.value,
+      id: option.label,
+      name: field_slug,
       required: attributes.field_require,
       style: inputStyle
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      htmlFor: attributes.field_slug,
+      htmlFor: option.label,
       style: labelStyle
     }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
@@ -4597,7 +4608,7 @@ class Editor extends Component {
       key: `mrm-${attributes.field_label}`,
       className: "mrm-form-group radio"
     }, attributes.radioOption.map((option, index) => {
-      return this.renderRadioOption(option, index);
+      return this.renderRadioOption(option, index, this.props.attributes.field_slug);
     })));
   };
   /**
@@ -20417,7 +20428,7 @@ if (false) {} else {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "createStore": function() { return /* reexport safe */ zustand_vanilla__WEBPACK_IMPORTED_MODULE_0__["default"]; },
-/* harmony export */   "default": function() { return /* binding */ create$1; },
+/* harmony export */   "default": function() { return /* binding */ create; },
 /* harmony export */   "useStore": function() { return /* binding */ useStore; }
 /* harmony export */ });
 /* harmony import */ var zustand_vanilla__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! zustand/vanilla */ "../../../node_modules/zustand/esm/vanilla.js");
@@ -20449,7 +20460,6 @@ const createImpl = (createState) => {
   return useBoundStore;
 };
 const create = (createState) => createState ? createImpl(createState) : createImpl;
-var create$1 = create;
 
 
 
@@ -20472,7 +20482,7 @@ const createStoreImpl = (createState) => {
   const listeners = /* @__PURE__ */ new Set();
   const setState = (partial, replace) => {
     const nextState = typeof partial === "function" ? partial(state) : partial;
-    if (nextState !== state) {
+    if (!Object.is(nextState, state)) {
       const previousState = state;
       state = (replace != null ? replace : typeof nextState !== "object") ? nextState : Object.assign({}, state, nextState);
       listeners.forEach((listener) => listener(state, previousState));
