@@ -533,6 +533,7 @@ function BlockEditor(_ref) {
   }
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
+    console.log('dddaf');
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

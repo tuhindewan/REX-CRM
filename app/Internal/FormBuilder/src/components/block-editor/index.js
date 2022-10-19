@@ -97,7 +97,6 @@ function BlockEditor( { settings: _settings } ) {
 		updateBlocks( newBlocks );
 		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
 	}
-
 	return (
 		<div className="get-mrm-block-editor">
 			<ShortcutProvider>
