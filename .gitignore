@@ -87,3 +87,4 @@ admin/asset/dist
 assets/admin/dist
 dist/
 /node_modules
+/build
