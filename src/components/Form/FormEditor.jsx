@@ -152,8 +152,7 @@ const FormEditor = (props) => {
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-    const settingData = window.localStorage.getItem("settings");
-    console.log(JSON.parse(settingData));
+    const settingData = window.localStorage.getItem("getsettings");
 
     const post_data = {
       title: formData?.title,
@@ -303,8 +302,8 @@ const FormEditor = (props) => {
             >
               <ThreeDotIcon />
               <ul className="mintmrm-dropdown">
-                <li>Save as Draft</li>
-                <li>Change Template</li>
+                <li onClick={saveForm}>Save as Draft</li>
+                {/*<li>Change Template</li>*/}
               </ul>
             </button>
             <button
