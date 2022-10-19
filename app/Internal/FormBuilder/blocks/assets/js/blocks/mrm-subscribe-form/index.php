@@ -90,11 +90,6 @@ class MRM_Subscribe_form
                 }
 
                 .mintmrm input[type=date], 
-                .mintmrm input[type=search], 
-                .mintmrm input[type=url], 
-                .mintmrm input[type=tel], 
-                .mintmrm input[type=number], 
-                .mintmrm input[type=password], 
                 .mintmrm input[type=email], 
                 .mintmrm input[type=text], 
                 .mintmrm textarea, 
@@ -109,6 +104,8 @@ class MRM_Subscribe_form
                     border: 1px solid #e4e6eb;
                     min-height: 30px;
                     box-sizing: border-box;
+                    outline: none;
+                    box-shadow: none;
                 }
             </style>
 

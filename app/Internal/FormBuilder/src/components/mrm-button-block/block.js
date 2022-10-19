@@ -54,7 +54,7 @@ const mrmButton = ({
         <>
             <div className="mrm-form-group submit" style={fieldSpacing}>
                 <RichText.Content
-                    className='mrm-submit-button'
+                    className='mrm-submit-button mintmrm-btn'
                     tagName="button"
                     type="submit"
                     style={ buttonStyle }

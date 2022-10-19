@@ -591,7 +591,7 @@ export default function FormIndex(props) {
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
-                            <h5>No Forms found</h5>
+                            <h5>No Form Found</h5>
                           </td>
                         </tr>
                       )}

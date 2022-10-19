@@ -101,11 +101,6 @@ class ContactForm {
                 }
 
                 .mintmrm input[type=date], 
-                .mintmrm input[type=search], 
-                .mintmrm input[type=url], 
-                .mintmrm input[type=tel], 
-                .mintmrm input[type=number], 
-                .mintmrm input[type=password], 
                 .mintmrm input[type=email], 
                 .mintmrm input[type=text], 
                 .mintmrm textarea, 
@@ -120,6 +115,28 @@ class ContactForm {
                     border: 1px solid #e4e6eb;
                     min-height: 30px;
                     box-sizing: border-box;
+                    outline: none;
+                    box-shadow: none;
+                }
+                .mintmrm-btn {
+                    display: inline-block;
+                    border: 1px solid transparent;
+                    color: #fff;
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 17px;
+                    letter-spacing: -0.01em;
+                    padding: 11px 15px;
+                    cursor: pointer;
+                    text-align: center;
+                    border-radius: 6px;
+                    text-transform: capitalize;
+                    background-color: #573BFF;
+                }
+                .mintmrm-btn:hover {
+                    background-color: #4C25A5;
+                    color: #fff;
                 }
             </style>
 
