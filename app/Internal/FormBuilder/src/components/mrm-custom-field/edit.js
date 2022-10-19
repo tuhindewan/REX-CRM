@@ -75,7 +75,6 @@ class Editor extends Component {
         let { attributes, setAttributes } 	= this.props;
         const slug_name =  this.makeSlug(attributes.field_name);
         setAttributes({radio_option_count : attributes.radio_option_count+1 } )
-        console.log();
         let defaultOption = {
             value : slug_name,
             label: 'Label'+'-'+attributes.radio_option_count
@@ -294,7 +293,8 @@ class Editor extends Component {
             attributes
         } = this.props;
         if (index > -1) { // only splice array when item is found
-            attributes.radioOption.splice(index,1); // 2nd parameter means remove one item only
+            delete attributes.radioOption[index]
+            // attributes.radioOption.splice(index,1); // 2nd parameter means remove one item only
             setAttributes(attributes.radioOption)
         }
 
