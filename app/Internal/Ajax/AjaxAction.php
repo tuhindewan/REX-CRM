@@ -121,7 +121,7 @@ class AjaxAction {
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
 
                 $setting = FormModel::get_meta($form_id);
-                $setting = unserialize($setting['meta_fields']['_form_setting']);
+//                $setting = unserialize($setting['meta_fields']['_form_setting']);
 
                 $response['status']  = 'success';
                 $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
