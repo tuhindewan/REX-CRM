@@ -9282,7 +9282,6 @@ const FormEditor = props => {
     //   console.log(settingData);
     // }
     const settingData = window.localStorage.getItem("settings");
-    console.log(JSON.parse(settingData));
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
@@ -9406,7 +9405,9 @@ const FormEditor = props => {
     onClick: clickShowOption
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ThreeDotIcon__WEBPACK_IMPORTED_MODULE_11__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "mintmrm-dropdown"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Save as Draft"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Change Template"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    onClick: saveForm
+  }, "Save as Draft"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mintmrm-btn settings",
     onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
