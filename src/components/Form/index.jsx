@@ -11,10 +11,15 @@ import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
+import EyeIcon from "../Icons/EyeIcon";
+import EditIcon from "../Icons/EditIcon";
+import Delete from "../Icons/Delete";
+
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function FormIndex(props) {
-  AdminNavMenuClassChange("mrm-admin", "form-editor");
+
+  AdminNavMenuClassChange("mrm-admin", "forms");
 
   const [formData, setFormData] = useState({});
 
@@ -130,8 +135,6 @@ export default function FormIndex(props) {
     const created = new Date(created_at);
 
     const day = parseInt((date - created) / (1000 * 3600 * 24));
-
-    console.log(date);
 
     let ago = day + " day";
 
@@ -353,11 +356,7 @@ export default function FormIndex(props) {
               </div>
 
               <div className="right-section">
-                <Link
-                  className="add-form-btn mintmrm-btn"
-                  to="/form-builder/"
-                  state={{ reload: true }}
-                >
+                <Link className="add-form-btn mintmrm-btn" to="/form-builder/">
                   <Plus /> Add Form
                 </Link>
               </div>
@@ -370,19 +369,18 @@ export default function FormIndex(props) {
                 <div className="right-buttons">
                   <div className="sorting">
                     <h5>Sort by</h5>
-                    <div className="pos-relative">
+                    <div
+                      className={
+                        toggleDropdown ? "pos-relative show" : "pos-relative"
+                      }
+                    >
                       <button
                         onClick={() => setToggleDropdown(!toggleDropdown)}
                       >
                         {sortBy}
                       </button>
-                      <ul
-                        className={
-                          toggleDropdown
-                            ? "mintmrm-dropdown show"
-                            : "mintmrm-dropdown "
-                        }
-                      >
+
+                      <ul className="mintmrm-dropdown">
                         <li onClick={() => handleSort("created-at", "Date")}>
                           Date
                         </li>
@@ -492,7 +490,10 @@ export default function FormIndex(props) {
                                     </span>
 
                                     <span className="name">
-                                      <a href="">{form.title}</a>
+                                      <Link to={`../form-builder/${form.id}`}>
+                                        {form.title}
+                                      </Link>
+
                                       <small>
                                         {getDaysAgo(form.created_at)} ago
                                       </small>
@@ -571,12 +572,14 @@ export default function FormIndex(props) {
                                         className="action-list"
                                         style={{ display: "flex" }}
                                       >
+                                        <EditIcon />
                                         Edit
                                       </li>
                                       <li
                                         className="action-list"
                                         onClick={() => deleteForm(form.id)}
                                       >
+                                        <Delete />
                                         Delete
                                       </li>
                                     </ul>
@@ -590,7 +593,7 @@ export default function FormIndex(props) {
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
-                            <h5>No Forms found</h5>
+                            <h5>No Form Found</h5>
                           </td>
                         </tr>
                       )}

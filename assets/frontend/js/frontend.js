@@ -26,27 +26,22 @@ jQuery(document).ready(function($){
         $('.ajax')[0].reset();
     });
 
-
-
-    jQuery(".mrm-submit-button").click( function(e) {
-            e.preventDefault();
-
-            jQuery.ajax({
-                type : "post",
-                dataType : "json",
-                url : MRM_Frontend_Vars.ajaxurl,
-                data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize()},
-                success: function(response) {
-                    if(response.type == "success") {
-                        jQuery("#vote_counter").html(response.vote_count)
-                    }
-                    else {
-
-                    }
-                }
-            })
-
+    /**
+     * Shortcode form submission ajax
+     */
+    $('.mrm-form-wrapper form').on('submit', function (e) {
+        e.preventDefault();
+        jQuery(".response").html('')
+        jQuery.ajax({
+            type : "post",
+            dataType : "json",
+            url : MRM_Frontend_Vars.ajaxurl,
+            data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize(), security : MRM_Frontend_Vars.mrm_form_nonce},
+            success: function(response) {
+                jQuery(".response").html(response.message)
+            }
         })
+    })
 
 
 });

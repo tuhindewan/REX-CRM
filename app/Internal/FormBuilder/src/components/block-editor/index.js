@@ -3,7 +3,7 @@
  */
 import '@wordpress/editor'; // This shouldn't be necessary
 import '@wordpress/format-library';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch} from '@wordpress/data';
 import { useEffect, useState, useMemo } from '@wordpress/element';
 import { serialize, parse } from '@wordpress/blocks';
 import { uploadMedia } from '@wordpress/media-utils';
@@ -22,8 +22,13 @@ import {
  */
 import Sidebar from '../sidebar';
 import {ShortcutProvider} from '@wordpress/keyboard-shortcuts';
+import { useParams } from "react-router-dom";
 
 function BlockEditor( { settings: _settings } ) {
+	const location = window.location.hash;
+	var locationArray = location.split('/');
+	const lastIndex = locationArray.at(-1);
+	const id = lastIndex.replace("#",'');
 	const [ blocks, updateBlocks ] = useState( [] );
 	const { createInfoNotice } = useDispatch( 'core/notices' );
 
@@ -49,15 +54,33 @@ function BlockEditor( { settings: _settings } ) {
 	}, [ canUserCreateMedia, _settings ] );
 
 	useEffect( () => {
-		const storedBlocks = window.localStorage.getItem( 'getmrmblocks' );
+		const getFormData = async () => {
+			if(id){
+				const res = await fetch(
+					`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+				);
+				const resJson = await res.json();
+				if (200 === resJson.code) {
+					window.localStorage.setItem( 'getmrmblocks', resJson.data.form_body )
+					const storedBlocks = window.localStorage.getItem( 'getmrmblocks' );
 
-		if ( storedBlocks?.length ) {
-			handleUpdateBlocks(() => parse(storedBlocks));
-			// createInfoNotice( 'Blocks loaded', {
-			// 	type: 'snackbar',
-			// 	isDismissible: true,
-			// } );
-		}
+					if ( storedBlocks?.length ) {
+						handleUpdateBlocks(() => parse(storedBlocks));
+						// createInfoNotice( 'Blocks loaded', {
+						// 	type: 'snackbar',
+						// 	isDismissible: true,
+						// } );
+					}
+				}else{
+					window.localStorage.setItem( 'getmrmblocks', '' )
+				}
+			}else{
+				window.localStorage.setItem( 'getmrmblocks', '' )
+			}
+
+		};
+		getFormData();
+
 	}, [] );
 
 	/**
@@ -74,7 +97,6 @@ function BlockEditor( { settings: _settings } ) {
 		updateBlocks( newBlocks );
 		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
 	}
-
 	return (
 		<div className="get-mrm-block-editor">
 			<ShortcutProvider>

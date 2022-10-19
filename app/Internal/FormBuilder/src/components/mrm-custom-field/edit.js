@@ -71,12 +71,13 @@ class Editor extends Component {
 
     }
 
-    addNewRadioOption = () => {
+    addNewRadioOption = (count) => {
         let { attributes, setAttributes } 	= this.props;
-        const slug_name =  this.makeSlug(attributes.field_name)
+        const slug_name =  this.makeSlug(attributes.field_name);
+        setAttributes({radio_option_count : attributes.radio_option_count+1 } )
         let defaultOption = {
             value : slug_name,
-            label: 'label'
+            label: 'Label'+'-'+attributes.radio_option_count
         }
         if('radio' === attributes.field_type) {
             attributes.radioOption.push(defaultOption)
@@ -90,6 +91,7 @@ class Editor extends Component {
         return (
             <PanelBody title="Custom Field" className="inner-pannel">
                 <SelectControl
+                    className="mrm-inline-label"
                     label="Field Type"
                     value={attributes.field_type}
                     onChange={ select_type => this.onChangeAttribute( 'field_type', select_type )}
@@ -120,82 +122,106 @@ class Editor extends Component {
                         }
                     ]}
                 />
+
                 <TextControl
+                    className="mrm-inline-label"
                     label="Field Name"
                     value={ attributes.field_name }
                     onChange={ (state ) => setAttributes({ field_name: state }) }
                 />
-                <TextControl
-                    label=" Field Label"
-                    value={ attributes.field_label }
-                    onChange={ (state ) => setAttributes({ field_label: state }) }
-                />
-                {attributes.field_type == 'select' && <TextControl
-                    label="Option Name"
-                    // value={ attributes.select_option_name }
-                    onChange={ (state ) => setAttributes({ select_option_name: state }) }
-                />}
-                {attributes.field_type == 'select' &&   <button onClick={() => {
-                    this.addNewOption()
-                }} className="components-button is-primary is-default mrm-action-button" role="button">
-                {__('Add New Option')}
-                    </button>
-                }
-                { attributes.field_type == 'select' && attributes.selectOption.map((option, index) => {
-                        return (
-                            <>
-                            <TextControl
-                                value={ option.value }
-                                // onChange={ (state ) => setAttributes({ value: state }) }
-                                onChange={val => this.onChangeOptionField(option,val, index )}
-                            />
-                            <button
-                                key={`mrm-delete-button-${index}`}
-                                onClick={val => this.deleteOption(option, val, index)}
-                                className="button  mrm-action-button"
-                                title="Delete Option"
-                                role="button" >
-                                {__('x')}
-                            </button>
-                            </>
-                        )
-                })}
 
-                {attributes.field_type == 'radio' &&   <button onClick={() => {
-                    this.addNewRadioOption()
-                }} className="components-button is-primary is-default mrm-action-button" role="button">
-                    {__('Add New')}
-                </button>
+                {attributes.field_type != 'radio' &&
+                <TextControl
+                    className="mrm-inline-label"
+                    label=" Field Label"
+                    value={attributes.field_label}
+                    onChange={(state) => setAttributes({field_label: state})}
+                />
                 }
-                { attributes.field_type == 'radio' && attributes.radioOption.map((option, index) => {
-                    return (
-                        <>
-                            <TextControl
-                                value={ option.label }
-                                // onChange={ (state ) => setAttributes({ value: state }) }
-                                onChange={val => this.onChangeRadioLabelField(option,val, index )}
-                            />
-                            <button
-                                key={`mrm-delete-button-${index}`}
-                                onClick={val => this.deleteRadioButtonOption(option, val, index)}
-                                className="button  mrm-action-button"
-                                title="Delete Option"
-                                role="button" >
-                                {__('x')}
+
+                {attributes.field_type == 'select' && 
+                    <div className="select-option-wrapper">
+                        {/*<TextControl*/}
+                        {/*    className="mrm-inline-label"*/}
+                        {/*    label="Option Name"*/}
+                        {/*    // value={ attributes.select_option_name }*/}
+                        {/*    onChange={ (state ) => setAttributes({ select_option_name: state }) }*/}
+                        {/*/>*/}
+                    
+                        <div className="add-option-wrapper">
+                            <h4>Add New Option</h4>
+                            <button onClick={() => { this.addNewOption() }} className="add-option-button" role="button" title="Add New Option">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
                             </button>
-                        </>
-                    )
-                })}
+                        </div>
+
+                        { attributes.selectOption.map((option, index) => {
+                            return (
+                                <div className="single-option-field">
+                                    <TextControl
+                                        value={ option.value }
+                                        // onChange={ (state ) => setAttributes({ value: state }) }
+                                        onChange={val => this.onChangeOptionField(option,val, index )}
+                                    />
+                                    <button
+                                        key={`mrm-delete-button-${index}`}
+                                        onClick={val => this.deleteOption(option, val, index)}
+                                        className="delete-option-button"
+                                        title="Delete Option"
+                                        role="button" >
+
+                                        <svg width="18" height="18" fill="none" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><g stroke="#aa646b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" clip-path="url(#clip0_54_11724)"><path d="M16.5 5.5l-11 11m0-11l11 11"/></g><defs><clipPath id="clip0_54_11724"><path fill="#fff" d="M0 0h22v22H0z"/></clipPath></defs></svg>
+                                    </button>
+                                </div>
+                            )
+                        })}
+                    </div>
+                }
+
+
+                {attributes.field_type == 'radio' && 
+                    <div className="radio-option-wrapper">
+                        <div className="add-option-wrapper">
+                            <h4>Add New Option</h4>
+                            <button onClick={(count) => { this.addNewRadioOption(count) }} className="add-option-button" role="button" title="Add New Option" >
+                                <svg width="14" height="14" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path stroke="#44af5c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.008 1v12M1 7h12"/></svg>
+                            </button>
+                        </div>
+                    
+                        { attributes.radioOption.map((option, index) => {
+                            return (
+                                <div className="single-option-field">
+                                    <TextControl
+                                        value={ option.label }
+                                        // onChange={ (state ) => setAttributes({ value: state }) }
+                                        onChange={val => this.onChangeRadioLabelField(option,val, index )}
+                                    />
+                                    <button
+                                        key={`mrm-delete-button-${index}`}
+                                        onClick={val => this.deleteRadioButtonOption(option, val, index)}
+                                        className="delete-option-button"
+                                        title="Delete Option"
+                                        role="button" >
+                                        
+                                        <svg width="18" height="18" fill="none" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><g stroke="#aa646b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" clip-path="url(#clip0_54_11724)"><path d="M16.5 5.5l-11 11m0-11l11 11"/></g><defs><clipPath id="clip0_54_11724"><path fill="#fff" d="M0 0h22v22H0z"/></clipPath></defs></svg>
+                                    </button>
+                                </div>
+                            )
+                        })}
+                    </div>
+                }
 
 
                 <ToggleControl
-                    label="Require"
+                    className="mrm-switcher-block"
+                    label="Mark As Required"
                     checked={ attributes.field_require }
                     onChange={ (state ) => setAttributes({ field_require: state }) }
                 />
             </PanelBody>
         )
     }
+
     onChangeRadioValueField = (option,val, index) =>{
         const {
             setAttributes,
@@ -212,6 +238,7 @@ class Editor extends Component {
         })
         setAttributes({ radioOption: modifiedOption });
     }
+
     onChangeRadioLabelField = (option,val, index) =>{
         const {
             setAttributes,
@@ -228,6 +255,7 @@ class Editor extends Component {
         })
         setAttributes({ radioOption: modifiedOption });
     }
+
     onChangeOptionField = (option,val, index) => {
         const {
             setAttributes,
@@ -245,25 +273,29 @@ class Editor extends Component {
         })
         setAttributes({ selectOption: modifiedOption });
     }
+
     deleteOption = (option, val, index) => {
         const {
             setAttributes,
             attributes
         } = this.props;
         if (index > -1) { // only splice array when item is found
-            attributes.selectOption.splice(index,1); // 2nd parameter means remove one item only
+            delete attributes.selectOption[index]
+            // attributes.selectOption.splice(index,1); // 2nd parameter means remove one item only
             setAttributes(attributes.selectOption)
         }
 
 
     }
+
     deleteRadioButtonOption = (option, val, index) => {
         const {
             setAttributes,
             attributes
         } = this.props;
         if (index > -1) { // only splice array when item is found
-            attributes.radioOption.splice(index,1); // 2nd parameter means remove one item only
+            delete attributes.radioOption[index]
+            // attributes.radioOption.splice(index,1); // 2nd parameter means remove one item only
             setAttributes(attributes.radioOption)
         }
 
@@ -272,16 +304,17 @@ class Editor extends Component {
 
     addNewOption = () =>{
         let { attributes, setAttributes } 	= this.props;
-        const slug_name =  this.makeSlug(attributes.select_option_name)
+        setAttributes({select_option_count : attributes.select_option_count+1 } )
         let defaultOption = {
-                value: slug_name,
-                label: attributes.select_option_name
+                value: 'option'+'-'+attributes.select_option_count,
+                label: 'Option'+'-'+attributes.select_option_count
             }
         if('select' === attributes.field_type) {
             attributes.selectOption.push(defaultOption)
             setAttributes(attributes.selectOption)
         }
     }
+
     formStyle = () => {
         let { attributes, setAttributes } 	= this.props
 
@@ -298,6 +331,7 @@ class Editor extends Component {
                 />
 
                 <hr className="mrm-hr"/>
+
                 <label className="blocks-base-control__label">Label Color</label>
                 <ColorPalette
                     onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
@@ -394,15 +428,13 @@ class Editor extends Component {
                     value = { attributes.inputBorderColor }
                 />
 
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
-                <div id="mrm-block-inspected-inspector-control-wrapper">
+                <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper">
                     <Panel>
                         {this.customFields()}
                         {this.formStyle()}
@@ -412,6 +444,8 @@ class Editor extends Component {
             </InspectorControls>
         );
     };
+
+
     /**
      * Render Text Field
      * @param attributes
@@ -449,20 +483,20 @@ class Editor extends Component {
 
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} style={fieldSpacing}>
-                    <label htmlFor="mrm-text-field" style={labelStyle}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group" style={fieldSpacing}>
+                    <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <div>
-                        <span className="input-wrapper">
-                         <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} style={inputStyle} />
-                        </span>
+
+                    <div className="input-wrapper">
+                        <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} style={inputStyle} />
                     </div>
                 </div>
             </Fragment>
         )
     }
+
     /**
      * Render Textarea Field
      * @param attributes
@@ -498,19 +532,21 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group" style={fieldSpacing}>
                     <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
 
+                    <div className="input-wrapper">
+                        <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
+                    </div>
                 </div>
             </Fragment>
         )
     }
     /**
-     * Render Textarea Field
+     * Render Date Field
      * @param attributes
      * @returns {JSX.Element}
      */
@@ -544,13 +580,15 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group" style={fieldSpacing}>
                     <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <input type="date" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle}/>
 
+                    <div className="input-wrapper">
+                        <input type="date" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle}/>
+                    </div>
                 </div>
             </Fragment>
         )
@@ -590,20 +628,21 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group select" style={fieldSpacing}>
                     <label htmlFor={attributes.field_slug} style={labelStyle}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
                     </label>
-                    <select name={attributes.field_slug} id={attributes.field_slug} style={inputStyle} >
-                        {attributes.selectOption.map((value, index) => {
-                            return (
+
+                    <div className="input-wrapper">
+                        <select name={attributes.field_slug} id={attributes.field_slug} style={inputStyle} >
+                            {attributes.selectOption.map((value, index) => {
+                                return (
                                     this.renderSelectOption(value, index, )
-                            )
-                        })}
-
-                    </select>
-
+                                )
+                            })}
+                        </select>
+                    </div>
                 </div>
             </Fragment>
         )
@@ -617,10 +656,10 @@ class Editor extends Component {
      */
     renderSelectOption = (option, index) => {
         const { attributes, setAttributes } 	= this.props;
-
+        const slug_name =  this.makeSlug(option.value)
         return (
             <Fragment>
-                <option value={option.value}>{option.label}</option>
+                <option value={slug_name}>{option.label}</option>
             </Fragment>
         )
     }
@@ -655,7 +694,7 @@ class Editor extends Component {
         }
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-checkbox-group" style={fieldSpacing}>
+                <div key={`mrm-${attributes.field_label}`} className="mrm-checkbox-group mintmrm-checkbox" style={fieldSpacing}>
 
                     <input type="checkbox" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle} />
                     <label htmlFor={attributes.field_slug} style={checkboxLabelColor}>
@@ -667,7 +706,7 @@ class Editor extends Component {
         )
     }
 
-    renderRadioOption = (option, index) =>{
+    renderRadioOption = (option, index, field_slug) =>{
         const { attributes ,setAttributes} = this.props
         let labelStyle = {
             color:  attributes.labelColor,
@@ -687,9 +726,9 @@ class Editor extends Component {
             borderColor:  attributes.inputBorderColor,
         }
         return (
-            <div>
-                <input type="radio" id={option.value} name={option.value} required={attributes.field_require} style={inputStyle}/>
-                <label htmlFor={attributes.field_slug} style={labelStyle}>
+            <div className="mrm-radio-group mintmrm-radiobtn">
+                <input type="radio" id={option.label} name={field_slug} required={attributes.field_require} style={inputStyle}/>
+                <label htmlFor={option.label} style={labelStyle}>
                     {option.label ? __(option.label,'mrm') : __('','mrm')}
                     {attributes.field_require && <span className="required-mark">*</span>}
                 </label>
@@ -697,19 +736,20 @@ class Editor extends Component {
 
         )
     }
+
     renderRadioField = (attributes) => {
         const slug_name =  this.makeSlug(attributes.field_name)
         this.props.setAttributes({ field_slug: slug_name })
         return (
             <Fragment>
-                <div key={`mrm-${attributes.field_label}`} className="mrm-input-group mrm-radio-group">
+                <div key={`mrm-${attributes.field_label}`} className="mrm-form-group radio">
 
                     {attributes.radioOption.map((option,index) => {
                         return (
-                            this.renderRadioOption( option,index )
+                            this.renderRadioOption( option,index ,this.props.attributes.field_slug)
                         )
-
                     })}
+
                 </div>
             </Fragment>
 

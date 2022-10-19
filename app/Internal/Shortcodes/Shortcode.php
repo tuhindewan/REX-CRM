@@ -8,10 +8,12 @@ class ShortCode {
 
     use Singleton;
 
-
+    /**
+     * Assign Shortcode name and callback function
+     */
     public static function init() {
         $shortcodes = array(
-            'mrm_contact_form' => __CLASS__ . '::render_contact_form'
+            'mintmrm' => __CLASS__ . '::render_contact_form'
         );
 
         foreach ( $shortcodes as $shortcode => $function ) {
@@ -20,6 +22,11 @@ class ShortCode {
     }
 
 
+    /**
+     * Render Shortcode
+     * @param $atts
+     * @return string
+     */
 
     public static function render_contact_form( $atts ) {
         $shortcode	= new ContactForm( (array) $atts );

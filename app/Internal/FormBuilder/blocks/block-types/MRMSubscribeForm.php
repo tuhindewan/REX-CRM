@@ -28,6 +28,11 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
             $form_id = $_POST['post_id'];
 
             $get_form_data_by_id = FormModel::get($form_id);
+            $form_status = isset($get_form_data_by_id['status']) ? $get_form_data_by_id['status'] : 0 ;
+            if (!$form_status){
+                echo __('This form is not active. Please check');
+                die();
+            }
             ob_start();
             $output = '';
             $output .= $get_form_data_by_id["form_body"];
