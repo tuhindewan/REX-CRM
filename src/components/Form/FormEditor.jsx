@@ -71,42 +71,6 @@ const FormEditor = (props) => {
     setShowAlert(status);
   };
 
-  const settingDataValidation = (settingData) => {
-    if (!settingData) {
-      setSettingData({
-        settings: {
-          confirmation_type: {
-            same_page: {
-              message_to_show: "",
-              after_form_submission: "hide-form",
-            },
-            to_a_page: {
-              page: "",
-              redirection_message: "",
-            },
-            to_a_custom_url: {
-              custom_url: "",
-              custom_redirection_message: "",
-            },
-          },
-          form_layout: "pop-in",
-          schedule: {
-            form_scheduling: "",
-            submission_start: {
-              date: "",
-              time: "",
-            },
-          },
-          restriction: {
-            max_entries: "",
-            max_number: "",
-            max_type: "",
-          },
-        },
-      });
-    }
-  };
-
   // Fetch lists & tags
   useEffect(() => {
     // Get lists
@@ -185,9 +149,6 @@ const FormEditor = (props) => {
     }));
   };
 
-  // const [refresh, setRefresh] = useState(false);
-  // useEffect(() => {}, [refresh]);
-
   const saveForm = async (settingData) => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     // if (settingDataValidation(settingData)) {
@@ -212,6 +173,8 @@ const FormEditor = (props) => {
       if (201 === responseData?.code) {
         setSaveSuccess(true);
         setId(responseData?.data);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -233,6 +196,8 @@ const FormEditor = (props) => {
       setMessage(responseData?.message);
       if (201 === responseData?.code) {
         setSaveSuccess(true);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -242,7 +207,11 @@ const FormEditor = (props) => {
   };
 
   useEffect(() => {
-    if (id) navigate(`/form-builder/${id}`);
+    if (id) {
+      navigate(`/form-builder/${id}`);
+    } else {
+      navigate(`/form-builder/`);
+    }
   }, [id]);
 
   const [positionName, setPositionName] = useState("");

@@ -5983,41 +5983,6 @@ const FormEditor = props => {
   const onShowAlert = async status => {
     setShowAlert(status);
   };
-  const settingDataValidation = settingData => {
-    if (!settingData) {
-      setSettingData({
-        settings: {
-          confirmation_type: {
-            same_page: {
-              message_to_show: "",
-              after_form_submission: "hide-form"
-            },
-            to_a_page: {
-              page: "",
-              redirection_message: ""
-            },
-            to_a_custom_url: {
-              custom_url: "",
-              custom_redirection_message: ""
-            }
-          },
-          form_layout: "pop-in",
-          schedule: {
-            form_scheduling: "",
-            submission_start: {
-              date: "",
-              time: ""
-            }
-          },
-          restriction: {
-            max_entries: "",
-            max_number: "",
-            max_type: ""
-          }
-        }
-      });
-    }
-  };
 
   // Fetch lists & tags
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
@@ -6084,10 +6049,6 @@ const FormEditor = props => {
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
   };
-
-  // const [refresh, setRefresh] = useState(false);
-  // useEffect(() => {}, [refresh]);
-
   const saveForm = async settingData => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     // if (settingDataValidation(settingData)) {
@@ -6112,6 +6073,8 @@ const FormEditor = props => {
       if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(true);
         setId(responseData === null || responseData === void 0 ? void 0 : responseData.data);
+      } else if (200 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
+        setSaveSuccess(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -6130,6 +6093,8 @@ const FormEditor = props => {
       setMessage(responseData === null || responseData === void 0 ? void 0 : responseData.message);
       if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(true);
+      } else if (200 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
+        setSaveSuccess(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -6138,7 +6103,11 @@ const FormEditor = props => {
     }
   };
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    if (id) navigate(`/form-builder/${id}`);
+    if (id) {
+      navigate(`/form-builder/${id}`);
+    } else {
+      navigate(`/form-builder/`);
+    }
   }, [id]);
   const [positionName, setPositionName] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
   const handleFormPosition = (param, name) => {
