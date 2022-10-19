@@ -8,10 +8,12 @@ import {__} from "@wordpress/i18n";
 const { RawHTML, Component, useEffect, } = wp.element;
 const { RichText } = wp.blockEditor;
 
-
 /**
- * Internal dependencies
+ * Make Slug when render text
+ * @param values
+ * @returns {string}
  */
+
 const makeSlug = (values) =>{
     const slug =  values.toLowerCase().replace(/[\W_]+/g, "-");
     return slug
@@ -68,12 +70,6 @@ const mrmCustomField = ({
         borderWidth:  inputBorderWidth+'px',
         borderColor:  inputBorderColor,
     }
-    /**
-     * Make Slug when render text
-     * @param values
-     * @returns {string}
-     */
-    console.log(selectOption);
 
     return (
         <>

@@ -3635,8 +3635,11 @@ const {
 } = wp.blockEditor;
 
 /**
- * Internal dependencies
+ * Make Slug when render text
+ * @param values
+ * @returns {string}
  */
+
 const makeSlug = values => {
   const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
   return slug;
@@ -3689,12 +3692,6 @@ const mrmCustomField = _ref => {
     borderWidth: inputBorderWidth + 'px',
     borderColor: inputBorderColor
   };
-  /**
-   * Make Slug when render text
-   * @param values
-   * @returns {string}
-   */
-  console.log(selectOption);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group text",
     style: fieldSpacing
