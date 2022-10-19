@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
@@ -59,6 +59,8 @@ const FormEditor = (props) => {
   const [showAlert, setShowAlert] = useState("none");
 
   const [savedSuccess, setSaveSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const toggleEnable = () => {
     setEnable(!enable);

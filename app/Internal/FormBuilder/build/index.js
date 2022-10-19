@@ -5974,6 +5974,7 @@ const FormEditor = props => {
   const [message, setMessage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
   const [showAlert, setShowAlert] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("none");
   const [savedSuccess, setSaveSuccess] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.useNavigate)();
   const toggleEnable = () => {
     setEnable(!enable);
   };
