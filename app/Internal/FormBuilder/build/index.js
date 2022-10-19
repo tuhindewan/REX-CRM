@@ -3138,7 +3138,7 @@ const mrmButton = _ref => {
     className: "mrm-form-group submit",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
-    className: "mrm-submit-button",
+    className: "mrm-submit-button mintmrm-btn",
     tagName: "button",
     type: "submit",
     style: buttonStyle,
@@ -3373,7 +3373,7 @@ class Editor extends Component {
       }),
       controls: ["left", "center", "right"]
     })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
-      className: "mrm-submit-button",
+      className: "mrm-submit-button mintmrm-btn",
       tagName: "button",
       type: "button",
       value: buttonText,
