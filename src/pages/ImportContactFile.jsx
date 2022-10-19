@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import DragAndDrop from "../components/DragAndDrop";
 import ImportSVG from "../components/Icons/ImportSVG";
 import ImportNavbar from "../components/Import/ImportNavbar";
@@ -83,7 +83,7 @@ export default function ImportContactFile() {
               <div className="mintmrm-container">
                 <ul className="mintmrm-breadcrumb">
                   <li>
-                    <a href="">Contact</a>
+                    <Link to={`../contacts`}>Contact</Link>
                   </li>
                   <li className="active">Import</li>
                 </ul>

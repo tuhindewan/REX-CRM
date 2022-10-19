@@ -13,6 +13,7 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -59,6 +60,8 @@ export default function AddCampaign(props) {
   useEffect(
     ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
   );
+
+  const [previewPersonalization, setPreviewPersonalization] = useState(false);
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -325,7 +328,7 @@ export default function AddCampaign(props) {
   return (
     <>
       <div className="mintmrm-add-campaign">
-        <div className="add-campaign-breadcrumb">
+        {/* <div className="add-campaign-breadcrumb">
           <div className="mintmrm-container">
             <ul className="mintmrm-breadcrumb">
               <li>
@@ -333,6 +336,21 @@ export default function AddCampaign(props) {
               </li>
               <li className="active">Add Campaign</li>
             </ul>
+          </div>
+        </div> */}
+
+        <div className="single-campaign-header">
+          <div className="mintmrm-container">
+            <div className="left-section">
+              <div className="back-button">
+                <DoubleAngleLeftIcon />
+                <Link to="/campaigns">Campaigns</Link>
+              </div>
+              <h2 className="campaign-title">Add Campaigns</h2>
+            </div>
+            <div className="right-section">
+              {/* <button className="mrm-custom-select-btn">Month</button> */}
+            </div>
           </div>
         </div>
 
@@ -537,7 +555,9 @@ export default function AddCampaign(props) {
                     {emailData[selectedEmailIndex]["subject"].length}/200
                   </span>
                   <div className="setting-section">
-                    <SettingIcon />
+                    <div>
+                      <SettingIcon />
+                    </div>
                   </div>
                 </div>
                 <div className="email-preview input-item">
@@ -553,7 +573,28 @@ export default function AddCampaign(props) {
                     {emailData[selectedEmailIndex]["preview"].length}/200
                   </span>
                   <div className="setting-section">
-                    <SettingIcon />
+                    <div
+                      onClick={() => {
+                        setPreviewPersonalization((prev) => !prev);
+                      }}
+                    >
+                      <SettingIcon />
+                    </div>
+                    <ul
+                      className={
+                        previewPersonalization
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <div className="title">Personalization</div>
+                      <li>First name</li>
+                      <li>Last Name</li>
+                      <li>Email</li>
+                      <li>City</li>
+                      <li>State / Province</li>
+                      <li>Country</li>
+                    </ul>
                   </div>
                 </div>
                 <div className="email-from input-item">
@@ -565,7 +606,7 @@ export default function AddCampaign(props) {
                     onChange={handleEmailFieldsChange}
                     placeholder="Enter Name"
                   />
-                  <div>
+                  <div className="email-input">
                     <input
                       type="email"
                       name="senderEmail"
@@ -605,7 +646,11 @@ export default function AddCampaign(props) {
                 {/* <ScheduleAlert /> */}
                 <button
                   type="submit"
-                  className="campaign-save mintmrm-btn"
+                  className={
+                    isValid
+                      ? "campaign-save mintmrm-btn"
+                      : "campaign-save mintmrm-btn disable"
+                  }
                   onClick={() => saveCampaign("draft")}
                   disabled={!isValid}
                 >

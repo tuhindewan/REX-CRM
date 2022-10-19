@@ -19,6 +19,7 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -426,14 +427,18 @@ export default function EditCampaign(props) {
   return (
     <>
       <div className="mintmrm-add-campaign">
-        <div className="add-campaign-breadcrumb">
+        <div className="single-campaign-header">
           <div className="mintmrm-container">
-            <ul className="mintmrm-breadcrumb">
-              <li>
+            <div className="left-section">
+              <div className="back-button">
+                <DoubleAngleLeftIcon />
                 <Link to="/campaigns">Campaigns</Link>
-              </li>
-              <li className="active">Add Campaign</li>
-            </ul>
+              </div>
+              <h2 className="campaign-title">Add Campaigns</h2>
+            </div>
+            <div className="right-section">
+              {/* <button className="mrm-custom-select-btn">Month</button> */}
+            </div>
           </div>
         </div>
 
@@ -648,7 +653,7 @@ export default function EditCampaign(props) {
                       }
                       placeholder="Enter Name"
                     />
-                    <div>
+                    <div className="email-input">
                       <input
                         type="email"
                         name="senderEmail"

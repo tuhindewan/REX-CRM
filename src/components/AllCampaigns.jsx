@@ -177,25 +177,7 @@ export default function AllCampaigns() {
             <div className="campaign-list-area">
               <div className="campaign-list-header">
                 <div className="left-filters">
-                  {/* <FilterBox
-                    label="Status"
-                    name="Status"
-                    options={[
-                      {
-                        title: "Pending",
-                        id: "pending",
-                      },
-                      {
-                        title: "Subscribed",
-                        id: "subscribed",
-                      },
-                      {
-                        title: "Unsubscribed",
-                        id: "unsubscribed",
-                      },
-                    ]}
-                    placeholder="Status"
-                  /> */}
+                  <h2 className="table-title">List View</h2>
                 </div>
 
                 <div className="right-buttons">

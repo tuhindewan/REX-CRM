@@ -58,6 +58,9 @@
 
 .form-list-page {
   min-height: 100vh;
+  .form-list {
+    padding-top: 50px;
+  }
 
   .contact-list-header {
     .header-title {
@@ -160,6 +163,12 @@
         font-size: 22px;
         line-height: 24px;
         color: #2d3149;
+      }
+    }
+    .right-section {
+      .add-form-btn {
+        display: flex;
+        align-items: center;
       }
     }
   }

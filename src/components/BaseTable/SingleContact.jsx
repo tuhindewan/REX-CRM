@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
@@ -12,6 +12,7 @@ import SendMessageIcon from "../Icons/SendMessageIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import NoteDrawer from "../NoteDrawer";
 import Portal from "../Portal";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function SingleContact(props) {
   // global counter update real time
@@ -27,9 +28,7 @@ export default function SingleContact(props) {
   const [isEmailForm, setIsEmailForm] = useState(true);
   const [isClose, setIsClose] = useState(true);
 
-  const showMoreOption = () => {
-    setActive(!isActive);
-  };
+
   const {
     index,
     contact,
@@ -44,6 +43,13 @@ export default function SingleContact(props) {
     setDeleteTitle("Delete Contact");
     setDeleteMessage("Are you sure you want to delete the contact?");
   };
+  const [listening, setListening] = useState(false);
+
+  const moreOptionRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, moreOptionRef, setActive)
+  );
 
   // Delete contact after delete confirmation
   const onDeleteStatus = async (status) => {
@@ -175,7 +181,7 @@ export default function SingleContact(props) {
           }
         })}
 
-        <td className="action">
+        <td className="action" ref={moreOptionRef}>
           <button
             className="more-option"
             onClick={() => {

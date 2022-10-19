@@ -5,6 +5,43 @@
     padding: 23px 0 23px;
   }
 
+  .single-campaign-header {
+    padding-top: 38px;
+    .mintmrm-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .left-section {
+        .back-button {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+          svg {
+            margin-right: 7px;
+            path {
+              stroke: #a7a8b3;
+            }
+          }
+          a {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 14px;
+            /* identical to box height, or 100% */
+
+            color: #a4a8b5;
+          }
+        }
+        .campaign-title {
+          font-weight: 600;
+          font-size: 22px;
+          line-height: 24px;
+          color: #2d3149;
+        }
+      }
+    }
+  }
+
   .add-campaign-wrapper {
     width: 100%;
     max-width: 1160px;
@@ -158,6 +195,25 @@
           }
           .setting-section {
             display: inline;
+            position: relative;
+
+            .mintmrm-dropdown {
+              width: 163px;
+              &::before {
+                display: none;
+              }
+              .title {
+                border-bottom: 1px solid #f0f1f4;
+                margin-bottom: 13px;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 16px;
+                color: #2d3149;
+                padding: 0 12px 12px;
+                margin-left: -12px;
+                width: calc(100% + 24px);
+              }
+            }
           }
         }
         .input-item:last-child {
@@ -180,7 +236,7 @@
           .select-options {
             display: flex;
             align-items: center;
-            .select-recipient{
+            .select-recipient {
               display: flex;
               gap: 5px;
             }
@@ -265,9 +321,9 @@
             justify-content: center;
             gap: 10px;
             display: flex;
-              &.hide {
-                display: none;
-              }
+            &.hide {
+              display: none;
+            }
 
             &.selected {
               gap: 5px;
@@ -430,7 +486,7 @@
                   .mintmrm-checkbox:hover {
                     background-color: #f6f8fa;
                   }
-                  .no-item-found{
+                  .no-item-found {
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -450,7 +506,7 @@
             }
           }
           &.input-item {
-            input:last-child {
+            .email-input {
               border-left: 1px solid #d1d3da;
               padding-left: 20px;
               border-radius: 0;
@@ -493,6 +549,19 @@
         justify-content: flex-end;
         align-items: center;
         padding: 25px 0;
+        .campaign-save {
+          font-weight: 600;
+          font-size: 15px;
+          line-height: 18px;
+          &.disable {
+            color: rgba(255, 255, 255, 0.4);
+            background: #573bff;
+            &:hover {
+              color: rgba(255, 255, 255, 0.4);
+              background: #573bff;
+            }
+          }
+        }
         .campaign-schedule {
           margin-right: 15px;
 
