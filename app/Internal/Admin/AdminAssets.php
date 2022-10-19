@@ -2,6 +2,7 @@
 
 namespace Mint\MRM\Internal\Admin;
 
+use Mint\MRM\Internal\Constants;
 
 class AdminAssets {
 
@@ -80,7 +81,8 @@ class AdminAssets {
                 'api_base_url' 		    => get_rest_url(),
                 'nonce' 			    => wp_create_nonce('wp_rest'),
                 'current_userID'        => get_current_user_id(),
-                'editor_data_source'    => $this->get_editor_source()
+                'editor_data_source'    => $this->get_editor_source(),
+                'timezone_list'         => Constants::get_timezone_list()
             )
         );
     }

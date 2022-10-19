@@ -108,7 +108,7 @@ johnny@walker.com, Johny, Walker
                   className="contact-save mintmrm-btn"
                   onClick={uploadRawData}
                 >
-                  Upload
+                  Next
                 </button>
               </div>
             </div>

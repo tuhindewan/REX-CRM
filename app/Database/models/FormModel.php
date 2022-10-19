@@ -98,14 +98,13 @@ class FormModel {
         if( !empty( $args['meta_fields'] )){
             self::update_meta_fields($form_id, $args);
         }
-        
         $args['updated_at'] = current_time('mysql');
         unset($args['meta_fields']);
         unset($args['form_id']);
         unset($args['created_time']);
 
         try {
-            $wpdb->update( 
+            $wpdb->update(
                 $form_table, 
                 $args, 
                 array( 'ID' => $form_id )

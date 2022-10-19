@@ -17,8 +17,7 @@
     border-radius: 10px;
     // padding: 30px 20px;
     width: 100%;
-    max-width: 90vw;
-    min-height: 90vh;
+    min-height: 94vh;
 
     .template-confirmation-header {
       background-color: #ffffff;
@@ -100,12 +99,14 @@
         flex-flow: row wrap;
         padding: 40px 0;
         .template-select-section {
-          width: calc(100% / 4 - 40px);
+          width: calc(100% - 300px);
           margin: 0 20px;
           background: #ffffff;
           box-shadow: 0px 2px 3px #dfdfdf;
           border-radius: 6px;
-          display: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .template-select-section:first-child {
@@ -115,8 +116,18 @@
           padding: 135px 50px;
           width: auto;
         }
-        .template-select-section:last-child {
+        .coming-soon {
           margin-right: 0;
+          padding: 20px;
+        }
+        @media only screen and (max-width: 768px) {
+          .coming-soon {
+            h2 {
+              font-size: 30px;
+              line-height: 1.4;
+              text-align: center;
+            }
+          }
         }
       }
     }

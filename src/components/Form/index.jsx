@@ -1,24 +1,26 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import HoverMenu from "../HoverMenu";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import Portal from "../Portal";
-import Plus from "../Icons/Plus";
-import Selectbox from "../Selectbox";
-import Search from "../Icons/Search";
-import FormIconXL from "../Icons/FormIconXL";
-import FormIconSM from "../Icons/FormIconSM";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import AlertPopup from "../AlertPopup";
+import DeletePopup from "../DeletePopup";
 import CopyIcon from "../Icons/CopyIcon";
+import FormIconSM from "../Icons/FormIconSM";
+import FormIconXL from "../Icons/FormIconXL";
+import Plus from "../Icons/Plus";
+import Search from "../Icons/Search";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
 import EyeIcon from "../Icons/EyeIcon";
 import EditIcon from "../Icons/EditIcon";
 import Delete from "../Icons/Delete";
+
 import SuccessfulNotification from "../SuccessfulNotification";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import DeletePopup from "../DeletePopup";
-import AlertPopup from "../AlertPopup";
 
 export default function FormIndex(props) {
+
+  AdminNavMenuClassChange("mrm-admin", "forms");
+
   const [formData, setFormData] = useState({});
 
   // how many to show per page

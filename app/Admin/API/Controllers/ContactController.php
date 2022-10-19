@@ -97,7 +97,7 @@ class ContactController extends BaseController {
             }else{
                 $contact    = new ContactData( $email, $params );
                 $contact_id = ContactModel::insert( $contact );
-                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] ){
+                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] || empty($params['status'][0]) ){
                     MessageController::get_instance()->send_double_opt_in( $contact_id );
                 }
             }
@@ -273,16 +273,21 @@ class ContactController extends BaseController {
     {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-
         $isTag = false;
         $isList = false;
 
         if( isset($params['tags'], $params['contact_id']) ){
+            if(empty($params['tags'])){
+                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+            }
             $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
             $isTag = true;
         }
 
         if( isset($params['lists'], $params['contact_id']) ){
+            if(empty($params['lists'])){
+                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+            }
             $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
             $isList = true;
         }
@@ -330,7 +335,7 @@ class ContactController extends BaseController {
         }else if ($success && $isList){
             return $this->get_success_response( __( 'List has been added Successfully', 'mrm' ), 201 );
         }
-        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'Select an item first', 'mrm' ), 400 );
     }
 
 
@@ -615,7 +620,6 @@ class ContactController extends BaseController {
                 if ($contact_email && is_email( $contact_email )) {
 
                     $is_exists = ContactModel::is_contact_exist( $contact_email );
-
                     if(!$is_exists){
                         $contact    = new ContactData( $contact_email, $contact_args );
                         $contact_id = ContactModel::insert( $contact );
@@ -890,9 +894,9 @@ class ContactController extends BaseController {
                                                             ));
                 $contact_email = trim($contact->get_email());   
                 if ($contact_email && is_email( $contact_email )) {
-                    $exists = ContactModel::is_contact_exist( $contact_email );
+                    $is_exists = ContactModel::is_contact_exist( $contact_email );
 
-                    if(!$exists) {
+                    if(!$is_exists) {
                         $contact_id = ContactModel::insert( $contact );
                         $status = isset( $params['status'] ) ? $params['status'][0] : "pending";
                         if( 'pending' == $status){
@@ -908,12 +912,12 @@ class ContactController extends BaseController {
                         }
         
                     }else {
-                        $exists++;
+                        ++$exists;
                     }
                 }else {
-                    $skipped++;
+                    ++$skipped;
                 }                                     
-                $total_count++;
+                ++$total_count;
             }
             /**
              * Prepare data for sucess response
@@ -923,6 +927,7 @@ class ContactController extends BaseController {
                 'skipped'              => $skipped,
                 'existing_contacts'    => $exists,
             );
+
             return $this->get_success_response(__("Import contact has been successful", "mrm"), 201, $result);
         } catch (\Throwable $th) {
             return $this->get_error_response(__( $th->getMessage(), "mrm" ), 200);

@@ -82,12 +82,19 @@ class AjaxAction {
                 }
             }
             $form_id = isset($form_data['form_id']) ? $form_data['form_id']: 0;
+            $form_email = isset($form_data['email']) ? $form_data['email']: '';
+            if (!$form_email){
+                $response['status']  = 'success';
+                $response['message'] = __( 'Email Field Not found', 'mrm' );
+                echo json_encode($response, true);
+                die();
+            }
             $parms = array(
                 'first_name'    => isset($form_data['first_name']) ? $form_data['first_name'] : '' ,
                 'last_name'     => isset($form_data['last_name']) ? $form_data['last_name'] : ''
-              );
-            $contact        = new ContactData( $form_data['email'],$parms );
-            $exist_email    = ContactModel::is_contact_exist( $form_data['email'] );
+            );
+            $contact        = new ContactData( $form_email,$parms );
+            $exist_email    = ContactModel::is_contact_exist( $form_email );
             if($exist_email){
                 $response['status']  = 'success';
                 $response['message'] = __( 'Email address already assigned to another contact.', 'mrm' );
@@ -110,9 +117,12 @@ class AjaxAction {
                 $group_id = ['1','2','3','4','5'];
 
                 TagController::set_tags_to_contact($group_id,$contact_id);
-
                 $meta_fields['meta_fields'] = isset($form_data['meta_fields']) ? $form_data['meta_fields'] : [];
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
+
+                $setting = FormModel::get_meta($form_id);
+                $setting = unserialize($setting['meta_fields']['_form_setting']);
+
                 $response['status']  = 'success';
                 $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
                 echo json_encode($response, true);

@@ -86,11 +86,11 @@ class CustomFieldModel{
         global $wpdb;
         $fields_table = $wpdb->prefix . CustomFieldSchema::$table_name;
 
+        $search_terms   = null;
         if ( !empty( $search ) ) {
             $search = $wpdb->esc_like($search);
             $search_terms = "WHERE `title` LIKE '%%$search%%'";
 		}
-
         // Return field froups for list view
         $select_query  = $wpdb->prepare( "SELECT * FROM $fields_table {$search_terms} ORDER BY $order_by $order_type LIMIT $offset, $limit" );
         $results = $wpdb->get_results( $select_query, ARRAY_A );

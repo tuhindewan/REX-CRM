@@ -127,6 +127,15 @@
           flex-flow: row wrap;
           align-items: center;
 
+          &.email-to {
+            flex-flow: column wrap;
+            align-items: flex-start;
+          }
+
+          .delay_count_input {
+            display: flex;
+          }
+
           label {
             font-weight: 500;
             font-size: 14px;
@@ -167,6 +176,83 @@
         }
         .email-to {
           position: relative;
+
+          .select-options {
+            display: flex;
+            align-items: center;
+            .select-recipient{
+              display: flex;
+              gap: 5px;
+            }
+          }
+          .selected-result {
+            padding: 20px 0 0;
+            display: flex;
+            flex-flow: row wrap;
+            background-color: #ffffff;
+
+            .mrm-custom-selected-items {
+              display: flex;
+              align-items: center;
+              color: #667085;
+              font-weight: 500;
+              font-size: 12px;
+              line-height: 14px;
+              text-transform: capitalize;
+              padding-left: 7px;
+            }
+            // .mrm-custom-selected-items:first-child {
+            //   margin-left: 0;
+            // }
+
+            .selected-items {
+              border: 1px solid #e2e5ed;
+              border-radius: 4px;
+              padding: 5px 0 5px 7px;
+              margin-right: 8px;
+              display: flex;
+              align-items: center;
+              flex-flow: row wrap;
+
+              span {
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 14px;
+                letter-spacing: -0.01em;
+                color: #667085;
+              }
+              svg {
+                height: 6px;
+                width: 6px;
+                margin: 0 5px;
+                path {
+                  fill: #667085;
+                }
+              }
+            }
+            .clear-all {
+              border: 1px solid #d92d20;
+              border-radius: 4px;
+              padding: 5px 7px 5px 7px;
+              display: flex;
+              align-items: center;
+              flex-flow: row wrap;
+              margin: 4px 8px;
+
+              span {
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 14px;
+                letter-spacing: -0.01em;
+                color: #d92d20;
+                padding-left: 0;
+              }
+            }
+            &.inactive {
+              display: none;
+            }
+          }
+
           .all-recipients {
             font-weight: 500;
             font-size: 15px;
@@ -178,10 +264,17 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            display: flex;
+              &.hide {
+                display: none;
+              }
 
             &.selected {
               gap: 5px;
               display: none;
+              &.show {
+                display: flex;
+              }
               .tags,
               .from,
               .lists,
@@ -336,6 +429,12 @@
                   }
                   .mintmrm-checkbox:hover {
                     background-color: #f6f8fa;
+                  }
+                  .no-item-found{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #ec5956;
                   }
                 }
               }
@@ -522,4 +621,3 @@
     }
   }
 }
-

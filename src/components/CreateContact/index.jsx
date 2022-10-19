@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Internal dependencies
-import { omit } from "lodash";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { createContact } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../AddItemDropdown";
 import InputItem from "../InputItem/index";
-import "./style.css";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 const CreateContact = (props) => {
   let navigate = useNavigate();
@@ -30,18 +30,41 @@ const CreateContact = (props) => {
   const [errors, setErrors] = useState({});
   const [lists, setLists] = useState([]);
   const [tags, setTags] = useState([]);
-
   const [isActiveList, setIsActiveList] = useState(false);
   const [isActiveTag, setIsActiveTag] = useState(false);
   const [assignLists, setAssignLists] = useState([]);
   const [assignTags, setAssignTags] = useState([]);
   const [refresh, setRefresh] = useState();
-
-  const toggleRefresh = () => {
-    setRefresh(!refresh);
-  };
   const [isActiveStatus, setIsActiveStatus] = useState(false);
+  const [isActivePending, setIsActivePending] = useState(false);
+  const [isActiveSubscribe, setIsActiveSubscribe] = useState(false);
+  const [isActiveUnsubscribe, setIsActiveUnsubscribe] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState();
+
+  //Detect Outside Click to Hide Dropdown Element
+  const statusMenuRef = useRef(null);
+  const listMenuRef = useRef(null);
+  const tagMenuRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      statusMenuRef,
+      setIsActiveStatus
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      listMenuRef,
+      setIsActiveList
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag)
+  );
 
   // Fetch lists & tags
   useEffect(() => {
@@ -61,7 +84,13 @@ const CreateContact = (props) => {
   const validate = (event, name, value) => {
     switch (name) {
       case "email":
-        if (
+        if (!value.length) {
+          setErrors({
+            ...errors,
+            email: "Email address is mandatory",
+          });
+          return false;
+        } else if (
           !new RegExp(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
           ).test(value)
@@ -70,9 +99,10 @@ const CreateContact = (props) => {
             ...errors,
             email: "Enter a valid email address",
           });
+          return false;
         } else {
-          let newObj = omit(errors, "email");
-          setErrors(newObj);
+          setErrors({});
+          return true;
         }
         break;
       default:
@@ -84,40 +114,27 @@ const CreateContact = (props) => {
   const handleSubmit = async (event) => {
     if (event) event.preventDefault();
 
-    if (Object.keys(errors).length !== 0) {
-      setErrors({
-        ...errors,
-        email: errors["emails"],
-      });
-    }
-
     contactData.lists = assignLists;
     contactData.tags = assignTags;
     contactData.status = [selectedStatus];
-    console.log(contactData);
-    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/contacts/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(contactData),
-    });
-    const responseData = await res.json();
-    const code = responseData?.code;
 
-    if (code === 201) {
-      // Navigate user with success message
-      navigate("../contacts", {
-        state: { status: "contact-created", message: responseData?.message },
-      });
-      useGlobalStore.setState({
-        counterRefresh: !counterRefresh,
-      });
-    } else {
-      // Validation messages
-      setErrors({
-        ...errors,
-        email: responseData?.message,
+    if (validate(event, "email", contactData.email)) {
+      createContact(contactData).then((response) => {
+        if (201 === response.code) {
+          // Navigate user with success message
+          navigate("../contacts", {
+            state: { status: "contact-created", message: response?.message },
+          });
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          // Validation messages
+          setErrors({
+            ...errors,
+            email: response?.message,
+          });
+        }
       });
     }
   };
@@ -126,58 +143,51 @@ const CreateContact = (props) => {
   const handleChange = (event) => {
     event.persist();
     const { name, value } = event.target;
+    validate(event, name, value);
 
     setValues((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-  };
 
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-
-    setValues((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
-
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setValues((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
+    if (!value.length) {
+      setErrors({});
+    }
   };
 
   const routeChange = () => {
     let path = `/contacts`;
     navigate(path);
   };
+
   const handleTag = () => {
     setIsActiveTag(!isActiveTag);
-    setIsActiveList(false);
-    setIsActiveStatus(false);
   };
+
   const handleList = () => {
     setIsActiveList(!isActiveList);
-    setIsActiveTag(false);
-    setIsActiveStatus(false);
   };
+
   const handleStatus = () => {
     setIsActiveStatus(!isActiveStatus);
-    setIsActiveTag(false);
-    setIsActiveList(false);
   };
+
   const handleSelectStatus = (title) => {
     if ("Pending" == title) {
       setSelectedStatus("pending");
+      setIsActiveSubscribe(false);
+      setIsActiveUnsubscribe(false);
+      setIsActivePending(true);
     } else if ("Subscribe" == title) {
       setSelectedStatus("subscribed");
+      setIsActiveSubscribe(true);
+      setIsActiveUnsubscribe(false);
+      setIsActivePending(false);
     } else {
       setSelectedStatus("unsubscribed");
+      setIsActiveSubscribe(false);
+      setIsActiveUnsubscribe(true);
+      setIsActivePending(false);
     }
     setIsActiveStatus(false);
   };
@@ -216,30 +226,7 @@ const CreateContact = (props) => {
                 values={contactData.last_name}
                 handleChange={handleChange}
               />
-              {/* <Selectbox
-                label="Status"
-                name="status"
-                options={[
-                  {
-                    title: "Pending",
-                    id: "pending",
-                  },
-                  {
-                    title: "Subscribed",
-                    id: "subscribed",
-                  },
-                  {
-                    title: "Unsubscribed",
-                    id: "unsubscribed",
-                  },
-                ]}
-                value={contactData.status}
-                tags={false}
-                placeholder="Select Status"
-                multiple={false}
-                onSelect={onSelect}
-              /> */}
-              <div className="form-group status-dropdown">
+              <div className="form-group status-dropdown" ref={statusMenuRef}>
                 <label>Status</label>
                 <button
                   type="button"
@@ -261,16 +248,39 @@ const CreateContact = (props) => {
                       : "add-contact-status mintmrm-dropdown"
                   }
                 >
-                  <li onClick={() => handleSelectStatus("Pending")}>Pending</li>
-                  <li onClick={() => handleSelectStatus("Subscribe")}>
+                  <li
+                    className={
+                      isActivePending
+                        ? "single-column mrm-custom-select-single-column-selected"
+                        : "single-column"
+                    }
+                    onClick={() => handleSelectStatus("Pending")}
+                  >
+                    Pending
+                  </li>
+                  <li
+                    className={
+                      isActiveSubscribe
+                        ? "single-column mrm-custom-select-single-column-selected"
+                        : "single-column"
+                    }
+                    onClick={() => handleSelectStatus("Subscribe")}
+                  >
                     Subscribe
                   </li>
-                  <li onClick={() => handleSelectStatus("Unsubscribe")}>
+                  <li
+                    className={
+                      isActiveUnsubscribe
+                        ? "single-column mrm-custom-select-single-column-selected"
+                        : "single-column"
+                    }
+                    onClick={() => handleSelectStatus("Unsubscribe")}
+                  >
                     Unsubscribe
                   </li>
                 </ul>
               </div>
-              <div className="form-group lists-dropdown">
+              <div className="form-group lists-dropdown" ref={listMenuRef}>
                 <label>Lists</label>
                 <button
                   type="button"
@@ -296,7 +306,7 @@ const CreateContact = (props) => {
                   setRefresh={setRefresh}
                 />
               </div>
-              <div className="form-group tags-dropdown">
+              <div className="form-group tags-dropdown" ref={tagMenuRef}>
                 <label>Tags</label>
                 <button
                   type="button"

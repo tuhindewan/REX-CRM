@@ -33,6 +33,7 @@ export default function CustomSelect(props) {
     setFilterAdder,
     filterAdder,
     filterRequest,
+    
     prefix,
   } = props;
   const buttonRef = useRef(null);
@@ -68,7 +69,7 @@ export default function CustomSelect(props) {
     e.preventDefault();
     const value = e.target.value;
     setSearch(value);
-    if (value.length >= 3) setQuery(`&search=${value}`);
+    if (value.length >= 1) setQuery(`&search=${value}`);
     else setQuery("");
   }
 
@@ -174,38 +175,6 @@ export default function CustomSelect(props) {
       if (!options) getItems();
     }
   }, [query]);
-
-  // Handle new list or tag creation
-  const addNewItem = async () => {
-    let res = null;
-    let body = {
-      title: search,
-      slug: search.toLowerCase().replace(/[\W_]+/g, "-"),
-    };
-    try {
-      // create contact
-      setLoading(true);
-      res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      const resJson = await res.json();
-      if (resJson.code == 201) {
-        setSearch("");
-        setQuery("");
-        setSelected([...selected, { id: resJson.data, title: body.title }]);
-      } else {
-        window.alert(resJson.message);
-      }
-    } catch (e) {
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>
@@ -330,14 +299,7 @@ export default function CustomSelect(props) {
               );
             })}
           {items?.length == 0 && allowNewCreate && !loading && !options && (
-            <>
-              <button
-                className="mrm-custom-select-add-btn"
-                onClick={addNewItem}
-              >
-                {`+ Add new ${name} "${search}"`}
-              </button>
-            </>
+            <div>No Item Found</div>
           )}
           {loading && <LoadingIndicator type="table" />}
         </ul>

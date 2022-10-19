@@ -40,18 +40,19 @@
       position: absolute;
       left: 0;
       top: -2px;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 4px;
       border: 1px solid #bdc7eb;
       background-color: #f6f6f8;
       transition: all 0.3s ease;
+      box-sizing: border-box;
     }
     &:after {
       content: "";
       position: absolute;
-      left: 5px;
-      top: 3px;
+      left: 6px;
+      top: 4px;
       width: 9px;
       height: 5px;
       transform: rotate(-45deg);
@@ -60,6 +61,7 @@
       transition: all 0.3s ease;
       opacity: 0;
       visibility: hidden;
+      box-sizing: border-box;
     }
   }
 
@@ -228,6 +230,9 @@
   animation: spin 0.7s linear infinite;
   display: none;
   margin-left: 4px;
+  &.show {
+    display: block;
+  }
 }
 @-webkit-keyframes spin {
   0% {
@@ -513,7 +518,7 @@ ul.mintmrm-dropdown {
   background: #fff;
   right: 0;
   top: calc(100% + 16px);
-  width: 212px;
+  width: 300px;
   border: 1px solid #e2e5ed;
   z-index: 5;
   transition: all 0.3s ease;
@@ -524,6 +529,10 @@ ul.mintmrm-dropdown {
 
   &.show {
     display: block;
+  }
+
+  &.timezone {
+    width: 320px;
   }
 
   &:before {
@@ -1070,7 +1079,7 @@ ul.mintmrm-dropdown {
 //--------15.switcher style----------
 .wpfnl-switcher {
   position: relative;
-  
+
   input[type="checkbox"] {
     display: none;
   }
@@ -1084,25 +1093,25 @@ ul.mintmrm-dropdown {
     width: 50px;
     height: 25px;
     border-radius: 50px;
-    background-color: #F7F7FA;
-    border: 1px solid #E5E8F3;
+    background-color: #f7f7fa;
+    border: 1px solid #e5e8f3;
     transition: all 0.3s ease;
 
     &:after {
-        content: "";
-        width: 15px;
-        height: 15px;
-        filter: drop-shadow(0px 2px 2px rgba(193, 193, 218, 0.45));
-        background-color: #ffffff;
-        border-radius: 100%;
-        position: absolute;
-        top: 4px;
-        left: 4px;
-        transition: all 0.3s ease;
+      content: "";
+      width: 15px;
+      height: 15px;
+      filter: drop-shadow(0px 2px 2px rgba(193, 193, 218, 0.45));
+      background-color: #ffffff;
+      border-radius: 100%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      transition: all 0.3s ease;
     }
   }
 
-  input[type="checkbox"]:checked + label{
+  input[type="checkbox"]:checked + label {
     border-color: $primary-color;
     background-color: $primary-color;
   }
@@ -1110,7 +1119,6 @@ ul.mintmrm-dropdown {
     margin-left: 26px;
     filter: none;
   }
-
 }
 
 .wpfnl-switcher.sm label {
@@ -1126,7 +1134,6 @@ ul.mintmrm-dropdown {
 .wpfnl-switcher.sm input[type="checkbox"]:checked + label:after {
   margin-left: 16px;
 }
-
 
 //--------------
 .mintmrm-row {
@@ -1169,7 +1176,7 @@ ul.mintmrm-dropdown {
       flex-flow: row wrap;
       align-items: center;
       padding: 15px;
-      animation: scrollUp 3s ease 1;
+      animation: scrollUp 4s ease 1;
       animation-fill-mode: forwards;
 
       .successfull-icon,
@@ -1220,7 +1227,7 @@ ul.mintmrm-dropdown {
       flex-flow: row wrap;
       align-items: center;
       padding: 15px;
-      animation: scrollUp 3s ease 1;
+      animation: scrollUp 3s linear 1;
       animation-fill-mode: forwards;
 
       .successfull-icon,
@@ -1258,9 +1265,17 @@ ul.mintmrm-dropdown {
     transform: translateY(15px);
     opacity: 0;
   }
+  25% {
+    // transform: translateY(10px);
+    opacity: 1;
+  }
   50% {
     transform: translateY(0px);
     opacity: 1;
+  }
+  75% {
+    // transform: translateY(-10px);
+    opacity: 0.5;
   }
   100% {
     transform: translateY(-15px);

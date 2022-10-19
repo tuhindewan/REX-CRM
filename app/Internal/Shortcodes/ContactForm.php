@@ -138,6 +138,111 @@ class ContactForm {
                     background-color: #4C25A5;
                     color: #fff;
                 }
+
+                /*----checkbox style---- */
+                .mintmrm-checkbox input[type="checkbox"] {
+                    display: none;
+                }
+                .mintmrm-checkbox.no-title label {
+                    min-height: 20px;
+                }
+                .mintmrm-checkbox label {
+                    font-weight: 500;
+                    font-size: 15px;
+                    line-height: 1;
+                    letter-spacing: -0.01em;
+                    color: #344054;
+                    position: relative;
+                    padding-left: 29px;
+                    display: inline-block;
+                    text-transform: capitalize;
+                }
+                .mintmrm-checkbox label:before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: -2px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 4px;
+                    border: 1px solid #bdc7eb;
+                    background-color: #f6f6f8;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
+                }
+                .mintmrm-checkbox label:after {
+                    content: "";
+                    position: absolute;
+                    left: 6px;
+                    top: 4px;
+                    width: 9px;
+                    height: 5px;
+                    transform: rotate(-45deg);
+                    border-bottom: 2px solid #fff;
+                    border-left: 2px solid #fff;
+                    transition: all 0.3s ease;
+                    opacity: 0;
+                    visibility: hidden;
+                    box-sizing: border-box;
+                }
+                .mintmrm-checkbox input[type="checkbox"]:checked + label::before {
+                    background-color: #573bff;
+                    border-color: #573bff;
+                }
+                .mintmrm-checkbox input[type="checkbox"]:checked + label::after {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                /*----radio btn style---- */
+                .mintmrm-radiobtn input[type="radio"] {
+                    display: none;
+                }
+                .mintmrm-radiobtn.no-title label {
+                    height: 16px;
+                }
+                .mintmrm-radiobtn label {
+                    font-size: 15px;
+                    line-height: 1.1;
+                    font-weight: 500;
+                    color: #7a8b9a;
+                    position: relative;
+                    padding-left: 29px;
+                    display: inline-block;
+                    text-transform: capitalize;
+                }
+                .mintmrm-radiobtn label::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: -3px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 100%;
+                    background: #f7f7fa;
+                    border: 1px solid #bdc7eb;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
+                }
+                .mintmrm-radiobtn label::after {
+                    content: "";
+                    position: absolute;
+                    left: 5px;
+                    top: 2px;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 100%;
+                    background: #573bff;
+                    transform: scale(0);
+                    transition: all 0.3s ease;
+                }
+                .mintmrm-radiobtn input[type="radio"]:checked + label::before {
+                    border-color: #573bff;
+                }
+                .mintmrm-radiobtn input[type="radio"]:checked + label::after {
+                    transform: scale(1);
+                }
+
             </style>
 
         </div>

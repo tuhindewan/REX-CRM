@@ -182,7 +182,7 @@ class ContactData {
         $this->first_name       =  isset($args['first_name'])       ? sanitize_text_field( $args['first_name'] )        : '';
         $this->last_name        =  isset($args['last_name'])        ? sanitize_text_field( $args['last_name'] )         : '';
         $this->phone            =  isset($args['phone'])            ? sanitize_text_field( $args['phone'] )             : '';
-        $this->status           =  isset($args['status'])           ? $args['status'][0]                                : 'pending';
+        $this->status           =  isset($args['status'][0]) && !empty($args['status'][0]) ? $args['status'][0]         : 'pending';
         $this->source           =  isset($args['source'])           ? sanitize_text_field( $args['source'] )            : '';
         $this->date_of_birth    =  isset($args['date_of_birth'])    ? sanitize_text_field( $args['date_of_birth'] )     : '';
         $this->timezone         =  isset($args['timezone'])         ? sanitize_text_field( $args['timezone'] )          : '';

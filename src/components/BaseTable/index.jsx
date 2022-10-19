@@ -10,6 +10,7 @@ import Unsubscribe from "../Icons/Unsubscribe";
 import NavBar from "../Navbar/index";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
+import ContactNavbar from "../ContactNavbar/index";
 
 import "./style.css";
 
@@ -43,26 +44,31 @@ const BaseTable = () => {
 
   return (
     <>
+      <ContactNavbar />
       <div className="contact-list-page">
         <div className="mintmrm-container">
           <div className="contact-info-wrapper">
             <ContactCards
               source={<ContactProfile />}
+              url="#"
               cardTitle="Total Contacts"
               totalAmount={countData.total_contacts}
             />
             <ContactCards
               source={<Subscribe />}
+              url="#"
               cardTitle="Subscribed"
               totalAmount={countData.total_subscribed}
             />
             <ContactCards
               source={<Unsubscribe />}
+              url="#"
               cardTitle="Unsubscribed"
               totalAmount={countData.total_unsubscribed}
             />
             <ContactCards
               source={<Pending />}
+              url="#"
               cardTitle="Pending"
               totalAmount={countData.total_pending}
             />

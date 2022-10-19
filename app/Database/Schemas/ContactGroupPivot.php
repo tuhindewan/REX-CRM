@@ -50,6 +50,7 @@ class ContactGroupPivotSchema implements Schema {
             ON DELETE CASCADE,
             FOREIGN KEY (contact_id)
             REFERENCES `{$contact_table}` (id)
+            ON DELETE CASCADE
         ) ";
     }
 }
