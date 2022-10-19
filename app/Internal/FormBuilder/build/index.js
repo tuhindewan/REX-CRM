@@ -5967,7 +5967,7 @@ const FormEditor = props => {
   const [enable, setEnable] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.useParams)();
   const [load, setLoad] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const id = params.id;
+  const [id, setId] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(params.id);
   const [blockData, setBlockData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)();
   const [showPreview, setShowPreview] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [showNotification, setShowNotification] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("none");
@@ -6111,6 +6111,7 @@ const FormEditor = props => {
       setMessage(responseData === null || responseData === void 0 ? void 0 : responseData.message);
       if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(true);
+        setId(responseData === null || responseData === void 0 ? void 0 : responseData.data);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -6136,6 +6137,9 @@ const FormEditor = props => {
       return () => clearTimeout(timer);
     }
   };
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (id) navigate(`/form-builder/${id}`);
+  }, [id]);
   const [positionName, setPositionName] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
   const handleFormPosition = (param, name) => {
     setFormData(prevState => ({

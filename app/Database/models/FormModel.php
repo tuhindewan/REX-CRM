@@ -75,7 +75,7 @@ class FormModel {
                 self::update_meta_fields( $insert_id, $meta_fields );
             }
             
-            return true;
+            return $insert_id;
         } catch(Exception $e) {
             return false;
         }

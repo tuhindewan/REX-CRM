@@ -49,7 +49,7 @@ const FormEditor = (props) => {
 
   const [load, setLoad] = useState(false);
 
-  const id = params.id;
+  const [id, setId] = useState(params.id);
 
   const [blockData, setBlockData] = useState();
   const [showPreview, setShowPreview] = useState(false);
@@ -211,6 +211,7 @@ const FormEditor = (props) => {
       setMessage(responseData?.message);
       if (201 === responseData?.code) {
         setSaveSuccess(true);
+        setId(responseData?.data);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -239,6 +240,10 @@ const FormEditor = (props) => {
       return () => clearTimeout(timer);
     }
   };
+
+  useEffect(() => {
+    if (id) navigate(`/form-builder/${id}`);
+  }, [id]);
 
   const [positionName, setPositionName] = useState("");
   const handleFormPosition = (param, name) => {
