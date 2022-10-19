@@ -13,13 +13,16 @@
       flex-flow: row wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
+      padding: 20px 24px;
+      background: #ffffff;
+      border-radius: 10px 10px 0 0;
 
       .left-filters {
-        .form-group {
-          label {
-            display: none;
-          }
+        .table-title {
+          font-weight: 600;
+          font-size: 18px;
+          line-height: 24px;
+          color: #2d3149;
         }
       }
       .right-buttons {
@@ -68,13 +71,20 @@
 
     //---------campaign-list-body------
     .campaign-list-body {
-      border-bottom: 1px solid #e2e5ed;
       position: relative;
 
-      .contact-list-table {
+      .campaign-list-table {
         max-width: 100%;
         width: 100%;
         overflow-x: auto;
+
+        .campaign-table {
+          .table-head {
+            background-color: #fcfdfe;
+            border-top: 1px solid #ebedf0;
+            border-bottom: 1px solid #ebedf0;
+          }
+        }
 
         &::-webkit-scrollbar {
           width: 6px;
@@ -124,13 +134,11 @@
         }
         .table-body {
           .table-row {
-            box-shadow: 0px 1px 2px #dadada;
-            border-radius: 6px;
             background-color: #ffffff;
-            margin-bottom: 15px;
             display: flex;
             flex-flow: row wrap;
-            padding: 8px 0px;
+            padding: 5px 0px;
+            border-bottom: 1px solid #e9eaee;
 
             .table-data {
               padding: 15px 20px;
@@ -141,6 +149,13 @@
               color: #6a707c;
               // border-bottom: 1px solid #e2e5ed;
               text-align: left;
+
+              &.threedot {
+                width: calc(100% - 1070px);
+                display: flex;
+                justify-content: end;
+                padding-right: 27px;
+              }
 
               label {
                 color: #667085;
@@ -218,6 +233,7 @@
               font-size: 12px;
               line-height: 15px;
               padding: 4px 8px;
+              text-transform: capitalize;
 
               &.draft {
                 color: #121212;
@@ -342,7 +358,7 @@
 
   .campaign-list-table {
     .no-campaign-wrapper {
-      height: 540px;
+      height: 304px;
       display: flex;
       flex-flow: column;
       align-items: center;

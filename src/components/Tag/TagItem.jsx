@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import HoverMenu from "../HoverMenu";
 import Delete from "../Icons/Delete";
 import EditIcon from "../Icons/EditIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Portal from "../Portal";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function TagItem(props) {
   const navigate = useNavigate();
@@ -18,7 +19,20 @@ export default function TagItem(props) {
     handleSelectOne,
     selected,
   } = props;
+  const [listening, setListening] = useState(false);
+  const [isActiveDropdown, setIsActiveDropdown] = useState(false);
+
   const menuButtonRef = useRef(null);
+  const moreOptionRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      moreOptionRef,
+      setIsActiveDropdown
+    )
+  );
 
   return (
     <tr>
@@ -36,7 +50,7 @@ export default function TagItem(props) {
       </td>
       <td className="">{total_contacts}</td>
       <td className="">{new Date(created_at).toDateString()}</td>
-      <td>
+      <td ref={moreOptionRef}>
         <button
           className="more-option"
           onClick={() => {
@@ -49,16 +63,17 @@ export default function TagItem(props) {
                 return id;
               }
             });
+            setIsActiveDropdown((prev) => !prev);
           }}
           ref={menuButtonRef}
         >
           <ThreeDotIcon />
-          {currentActive == id && ( // only show the menu if both active and current active points to this listitem
+          {isActiveDropdown && ( // only show the menu if both active and current active points to this listitem
             <Portal>
               <HoverMenu elementRef={menuButtonRef} x={-10} y={-20}>
                 <ul
                   className={
-                    currentActive == id // only show the menu if both active and current active points to this listitem
+                    isActiveDropdown // only show the menu if both active and current active points to this listitem
                       ? "mintmrm-dropdown show"
                       : "mintmrm-dropdown"
                   }

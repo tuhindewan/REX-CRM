@@ -12,47 +12,55 @@ export default function CampaignsNavbar() {
   });
 
   return (
-    <div className="mintmrm-header">
-      <div className="mintmrm-container">
-        <div className="header-wrapper">
-          <div className="site-logo">
-            <Link to="/">
-              <CampaignsLogo />
-            </Link>
-          </div>
+    <>
+      <div className="campaign-header">
+        <div className="mintmrm-container">
+          <div className="header-wrapper">
+            <div className="left-header-section">
+              <div className="site-logo">
+                <Link to="/">
+                  <h1>Campaigns</h1>
+                </Link>
+              </div>
+              {/* <nav className="mintmrm-navbar">
+                <ul className="navbar-ul">
+                  {routes.map((route, index) => {
+                    if (route.campaignMenu) {
+                      return (
+                        <li
+                          className={
+                            location.pathname == route.path
+                              ? "navbar-li active"
+                              : "navbar-li "
+                          }
+                          key={index}
+                        >
+                          <Link to={route.path}>
+                            {__(route.title, "mintmrm")}
+                          </Link>
 
-          <nav className="mintmrm-navbar">
-            <ul className="navbar-ul">
-              {routes.map((route, index) => {
-                if (route.campaignMenu) {
-                  return (
-                    <li
-                      className={
-                        location.pathname == route.path
-                          ? "navbar-li active"
-                          : "navbar-li "
-                      }
-                      key={index}
-                    >
-                      <Link to={route.path}>{__(route.title, "mintmrm")}</Link>
-
-                      {route.bage && <span className="bage">{route.bage}</span>}
-                    </li>
-                  );
-                }
-              })}
-            </ul>
-          </nav>
-
-          <div className="navbar-buttons">
-            <Link to="/campaigns/create">
-              <button className="add-contact-btn mintmrm-btn ">
-                <Plus /> Add Campaign
-              </button>
-            </Link>
+                          {route.bage && (
+                            <span className="bage">{route.bage}</span>
+                          )}
+                        </li>
+                      );
+                    }
+                  })}
+                </ul>
+              </nav> */}
+            </div>
+            <div className="right-header-section">
+              <div className="navbar-buttons">
+                <Link to="/campaigns/create">
+                  <button className="add-contact-btn mintmrm-btn ">
+                    <Plus /> Add Campaign
+                  </button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
