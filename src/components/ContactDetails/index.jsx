@@ -1,5 +1,5 @@
 import { omit } from "lodash";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
@@ -126,7 +126,9 @@ export default function ContactDetails() {
     if (searchTimezone) {
       return timezones.filter(
         (timezone) =>
-          timezone.value.toLowerCase().indexOf(searchTimezone.toLocaleLowerCase()) > -1
+          timezone.value
+            .toLowerCase()
+            .indexOf(searchTimezone.toLocaleLowerCase()) > -1
       );
     }
     return timezones;
@@ -251,6 +253,7 @@ export default function ContactDetails() {
   const handleUpdate = async () => {
     contactData.meta_fields.gender = genderButton;
     contactData.meta_fields.timezone = selectedTimezone;
+    console.log(contactData);
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
       {
@@ -479,19 +482,23 @@ export default function ContactDetails() {
     } else {
       setGenderButton("Others");
     }
-
-    
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        [name]: genderButton,
+      },
+    }));
   };
 
   const handleTimezoneSelect = (event, id, value) => {
     setSelectedTimezone(value);
     setShowTimezone(!showTimezone);
-    // setContactData((prevState) => ({
-    //   ...prevState,
-    //   meta_fields: {
-    //     ["timezone"]: value,
-    //   },
-    // }));
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["timezone"]: value,
+      },
+    }));
   };
 
   // useEffect(() =>{
@@ -855,7 +862,9 @@ export default function ContactDetails() {
                               >
                                 {genderButton
                                   ? genderButton
-                                  : (contactData?.meta_fields.gender ? contactData?.meta_fields.gender : "Select Gender")}
+                                  : contactData?.meta_fields.gender
+                                  ? contactData?.meta_fields.gender
+                                  : "Select Gender"}
                               </button>
                               <ul
                                 className={
@@ -899,7 +908,7 @@ export default function ContactDetails() {
                               handleChange={handleMetaChange}
                               label="Designation"
                               value={contactData?.meta_fields?.designation}
-                            />                            
+                            />
                             <div
                               className="form-group contact-input-field"
                               ref={timezoneRef}
@@ -911,7 +920,9 @@ export default function ContactDetails() {
                               >
                                 {selectedTimezone
                                   ? selectedTimezone
-                                  : (contactData?.meta_fields.timezone ? contactData?.meta_fields.timezone : "Select Timezone")}
+                                  : contactData?.meta_fields.timezone
+                                  ? contactData?.meta_fields.timezone
+                                  : "Select Timezone"}
                               </button>
                               <ul
                                 className={
@@ -928,29 +939,30 @@ export default function ContactDetails() {
                                       name="column-search"
                                       placeholder="Seacrh..."
                                       value={searchTimezone}
-                                      onChange={(e) => setSearchTimezone(e.target.value)}
+                                      onChange={(e) =>
+                                        setSearchTimezone(e.target.value)
+                                      }
                                     />
                                   </span>
                                 </li>
                                 <div className="option-section">
-          
-                                  {filteredTimezone?.length > 0 && 
-                                  filteredTimezone?.map((timezone) => {
-                                    return (
-                                      <li
-                                        key={timezone.id}
-                                        onClick={(event) =>
-                                          handleTimezoneSelect(
-                                            event,
-                                            timezone.id,
-                                            timezone.value
-                                          )
-                                        }
-                                      >
-                                        {timezone.value}
-                                      </li>
-                                    );
-                                  })}
+                                  {filteredTimezone?.length > 0 &&
+                                    filteredTimezone?.map((timezone) => {
+                                      return (
+                                        <li
+                                          key={timezone.id}
+                                          onClick={(event) =>
+                                            handleTimezoneSelect(
+                                              event,
+                                              timezone.id,
+                                              timezone.value
+                                            )
+                                          }
+                                        >
+                                          {timezone.value}
+                                        </li>
+                                      );
+                                    })}
                                 </div>
                               </ul>
                             </div>

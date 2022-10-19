@@ -1,11 +1,13 @@
 import LoadingIndicator from "../components/LoadingIndicator";
 import React, { useRef, useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
+import ContactNavbar from "../components/ContactNavbar";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
 import TagIcon from "../components/Icons/TagIcon";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
+import LoadingIndicator from "../components/LoadingIndicator";
 import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
@@ -539,17 +541,15 @@ const Tags = () => {
                     </table>
                   </div>
                 </div>
-                {totalPages > 1 && (
-                  <div className="contact-list-footer">
-                    <Pagination
-                      currentPage={page}
-                      pageSize={perPage}
-                      onPageChange={setPage}
-                      totalCount={count}
-                      totalPages={totalPages}
-                    />
-                  </div>
-                )}
+                <div>
+                  <Pagination
+                    currentPage={page}
+                    pageSize={perPage}
+                    onPageChange={setPage}
+                    totalCount={count}
+                    totalPages={totalPages}
+                  />
+                </div>
               </>
             )}
           </div>
