@@ -82,34 +82,20 @@ class Editor extends Component {
 
     formFields = () => {
         let { attributes, setAttributes } 	= this.props,
-            firstName = attributes.firstName,
-            firstNameLabel = attributes.firstNameLabel,
-            firstNamePlaceholder = attributes.firstNamePlaceholder,
-            isRequiredName = attributes.isRequiredName,
-
-            lastName = attributes.lastName,
-            lastNameLabel = attributes.lastNameLabel,
-            lastNamePlaceholder = attributes.lastNamePlaceholder,
-            isRequiredLastName = attributes.isRequiredLastName,
-
             emailLabel = attributes.emailLabel,
-            emailPlaceholder = attributes.emailPlaceholder,
-
-            phone = attributes.phone,
-            phoneLabel = attributes.phoneLabel,
-            phonePlaceholder = attributes.phonePlaceholder,
-            isRequiredPhone = attributes.isRequiredPhone,
-            requiredMark = attributes.requiredMark;
+            emailPlaceholder = attributes.emailPlaceholder;
 
         return (
                 <PanelBody title="Email" className="inner-pannel">
                     <TextControl
+                        className="mrm-inline-label"
                         label="Email Label"
                         value={ emailLabel }
                         onChange={ (state ) => this.props.setAttributes({ emailLabel: state }) }
                     />
 
                     <TextControl
+                        className="mrm-inline-label"
                         label="Email Placeholder Text"
                         value={ emailPlaceholder }
                         onChange={ (state ) => this.props.setAttributes({ emailPlaceholder: state }) }
@@ -137,7 +123,6 @@ class Editor extends Component {
                 />
 
                 <hr className="mrm-hr"/>
-
 
                 <label className="blocks-base-control__label">Label Color</label>
                 <ColorPalette
@@ -236,8 +221,6 @@ class Editor extends Component {
                     value = { attributes.inputBorderColor }
                 />
 
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
@@ -246,7 +229,7 @@ class Editor extends Component {
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
-                <div id="mrm-block-inspected-inspector-control-wrapper">
+                <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper" >
                     <Panel>
                         {this.formFields()}
                         {this.formStyle()}
@@ -312,21 +295,14 @@ class Editor extends Component {
             <>
                 { this.getInspectorControls() }
 
-                <div className="mrm mrm-email-form mrm-gutenberg-email-form-wrapper">
-                    <div className={`mrm-mrm-form-wrapper ${this.props.attributes.formLayout}`}>
+                <div className="mrm-form-group email" style={fieldSpacing}>
+                    <label htmlFor="mrm-email" style={labelStyle}>
+                        {emailLabel ? __(emailLabel,'mrm') : __('Email','mrm')}
+                        {requiredMark && <span className="required-mark">*</span>}
+                    </label>
 
-                        <div className="mrm-mrm-form-group email" style={fieldSpacing}>
-                            <label htmlFor="mrm-email" style={labelStyle}>
-                                {emailLabel ? __(emailLabel,'mrm') : __('Email','mrm')}
-                                {requiredMark && <span className="required-mark">*</span>}
-                            </label>
-                            <div>
-                                <span className="input-wrapper">
-                                    <input type="email" name="email" id="mrm-email" placeholder={emailPlaceholder} required style={inputStyle} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
-                                </span>
-                            </div>
-
-                        </div>
+                    <div className="input-wrapper">
+                        <input type="email" name="email" id="mrm-email" placeholder={emailPlaceholder} required style={inputStyle} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
                     </div>
                 </div>
             </>

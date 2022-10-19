@@ -40,7 +40,7 @@ const {registerBlockType} = wp.blocks;
 registerBlockType( "mrmformfield/mrm-form-subscribe-form", {
     title: __( "MRM Form", "mrm" ),
     category: "common",
-    icon: icon.pricing,
+    icon: icon.MRMForm,
     supports: {
         align: ['left', 'right', 'center']
     },

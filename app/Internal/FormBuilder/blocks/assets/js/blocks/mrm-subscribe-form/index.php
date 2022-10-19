@@ -69,15 +69,48 @@ class MRM_Subscribe_form
     {
         $html = '';
         $form_placement = get_post_meta($attributes['form_id'],'mrm_form_replace_position',true);
-        $html .= '<div>
-            <div id="mrm-'.$form_placement.'">
-                    <form method="post" id="mrm-form">
-                        <input hidden name="form_id" value="'.$attributes['form_id'].'" />
-                        '.$attributes['render_block'].'
-                    </form>
+        $html .= '<div class="mintmrm">
+            <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper">
+                <form method="post" id="mrm-form">
+                    <input hidden name="form_id" value="'.$attributes['form_id'].'" />
+                    '.$attributes['render_block'].'
+                </form>
+                <div class="response"></div>
             </div>
 
+            <style>
+                .mintmrm label, 
+                .mintmrm .label {
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 15px;
+                    line-height: 18px;
+                    color: #344054;
+                    box-sizing: border-box;
+                }
+
+                .mintmrm input[type=date], 
+                .mintmrm input[type=email], 
+                .mintmrm input[type=text], 
+                .mintmrm textarea, 
+                .mintmrm select {
+                    font-size: 14px;
+                    line-height: 1;
+                    color: #7a8b9a;
+                    padding: 9px 15px;
+                    width: 100%;
+                    border-radius: 6px;
+                    display: block;
+                    border: 1px solid #e4e6eb;
+                    min-height: 30px;
+                    box-sizing: border-box;
+                    outline: none;
+                    box-shadow: none;
+                }
+            </style>
+
         </div>';
+
         return $html;
     }
 }

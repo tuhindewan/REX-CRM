@@ -15,28 +15,28 @@ const { RichText } = wp.blockEditor;
 
 
 const mrmEmailField = ({
-                           attributes: {
-                               formLayout,
-                               requiredMark,
-                               inputBgColor,
-                               inputTextColor,
-                               inputBorderRadius,
-                               emailLabel,
-                               emailPlaceholder,
-                               inputPaddingTop,
-                               inputPaddingRight,
-                               inputPaddingBottom,
-                               inputPaddingLeft,
-                               inputBorderStyle,
-                               inputBorderWidth,
-                               inputBorderColor,
-                               rowSpacing,
+        attributes: {
+            formLayout,
+            requiredMark,
+            inputBgColor,
+            inputTextColor,
+            inputBorderRadius,
+            emailLabel,
+            emailPlaceholder,
+            inputPaddingTop,
+            inputPaddingRight,
+            inputPaddingBottom,
+            inputPaddingLeft,
+            inputBorderStyle,
+            inputBorderWidth,
+            inputBorderColor,
+            rowSpacing,
 
-                               labelColor,
-                               labelSpacing,
+            labelColor,
+            labelSpacing,
 
-                           },
-                       }) => {
+        },
+    }) => {
 
     let layout = formLayout
     let fieldSpacing = {
@@ -67,21 +67,14 @@ const mrmEmailField = ({
     return (
 
         <>
-            <div className="mrm mrm-email-form mrm-gutenberg-email-form-wrapper">
-                <div className={`mrm-email-form-wrapper ${layout}`} >
-                    <div className="mrm-email-form-group email" style={fieldSpacing}>
-                        <label htmlFor="mrm-email" style={labelStyle}>
-                            {emailLabel ? __(emailLabel,'mrm') : __('Email','mrm')}
-                            {requiredMark && <span className="required-mark">*</span>}
-                        </label>
-                        <div>
-                            <span className="input-wrapper">
-                                <input type="email" name="email" id="mrm-email" placeholder={emailPlaceholder} required style={inputStyle} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
-                            </span>
-                        </div>
-
-                    </div>
-
+            <div className="mrm-form-group email" style={fieldSpacing}>
+                <label htmlFor="mrm-email" style={labelStyle}>
+                    {emailLabel ? __(emailLabel,'mrm') : __('Email','mrm')}
+                    {requiredMark && <span className="required-mark">*</span>}
+                </label>
+                
+                <div className="input-wrapper">
+                    <input type="email" name="email" id="mrm-email" placeholder={emailPlaceholder} required style={inputStyle} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
                 </div>
             </div>
         </>

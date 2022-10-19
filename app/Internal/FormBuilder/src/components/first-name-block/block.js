@@ -70,20 +70,14 @@ const mrmFirstName = ({
     return (
 
         <>
-            <div className="mrm mrm-optin-form mrm-gutenberg-optin-form-wrapper">
-                <div className={`mrm-optin-form-wrapper ${layout}`} >
-                    <div className="mrm-optin-form-group first-name" style={fieldSpacing}>
-                         <label htmlFor="mrm-first-name" style={labelStyle}>
-                            {firstNameLabel ? __(firstNameLabel,'mrm') : __('First Name','mrm')}
-                            {requiredMark && isRequiredName && <span className="required-mark">*</span>}
-                        </label>
-                        <div>
-                            <span className="input-wrapper">
-                                <input type="text" name="first_name" id="mrm-first-name" placeholder={firstNamePlaceholder} required={isRequiredName} style={inputStyle} />
-                            </span>
-                        </div>
+            <div className="mrm-form-group first-name" style={fieldSpacing}>
+                <label htmlFor="mrm-first-name" style={labelStyle}>
+                    {firstNameLabel ? __(firstNameLabel,'mrm') : __('First Name','mrm')}
+                    {requiredMark && isRequiredName && <span className="required-mark">*</span>}
+                </label>
 
-                    </div>
+                <div className="input-wrapper">
+                    <input type="text" name="first_name" id="mrm-first-name" placeholder={firstNamePlaceholder} required={isRequiredName} style={inputStyle} />
                 </div>
             </div>
         </>

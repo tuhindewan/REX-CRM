@@ -2,6 +2,8 @@
 
 namespace Mint\MRM\Internal\ShortCode;
 
+use Mint\MRM\DataBase\Models\FormModel;
+
 class ContactForm {
 
     /**
@@ -41,6 +43,8 @@ class ContactForm {
     protected function parse_attributes( $attributes ) {
         $attributes = shortcode_atts(
             array(
+                'id' 					    => 0,
+                'class'					    => ''
             ),
             $attributes
         );
@@ -65,32 +69,185 @@ class ContactForm {
      * @return string
      */
     public function get_content() {
+        $form_id = isset($this->attributes['id']) ? $this->attributes['id'] : 0 ;
+        $form_data = FormModel::get($form_id);
+        $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
+        if (empty($form_data)){
+            return __('Form ID is not valid','mrm');
+        }elseif(!$form_status){
+           return __('This form is not active. Please check');
+        }
         $output = '';
         ob_start();?>
+        <div class="mintmrm" >
+            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
+                <form method="post" id="mrm-form">
+                    <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
+                    <?php echo  $form_data['form_body'] ?>
+                </form>
 
-        <div class="success_msg" style="display: none; color:green">Please check your inbox to confirm your subscription</div>
+                <div class="response"></div>
+            </div>
 
-        <div class="error_msg" style="display: none; color:red">Email address is not valid</div>
-        <form action="<?php esc_url($_SERVER['REQUEST_URI']);
-        ?>" method="post" class="ajax">
-            <p>Your First Name (required)<br />
-                <input type="text" name="first_name" class="first_name" pattern="[a-zA-Z0-9 ]+" required value="<?php isset($_POST['first_name']) ? esc_attr($_POST['first_name']) : '';
-                ?>" size="40" />
-            </p>
-            <p>Your Last Name (required)<br />
-                <input type="text" name="last_name" class="last_name" pattern="[a-zA-Z0-9 ]+" required value="<?php isset($_POST['last_name']) ? esc_attr($_POST['last_name']) : '';
-                ?>" size="40" />
-            </p>
-            <p>Your Email (required)<br />
-                <input type="email" name="email" class="email" required value="<?php isset($_POST['email']) ? esc_attr($_POST['email']) : '';
-                ?>" size="40" />
-            </p>
-            <p><input type="submit" name="submit" value="Submit"/></p>
+            <style>
+                .mintmrm label, 
+                .mintmrm .label {
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 15px;
+                    line-height: 18px;
+                    color: #344054;
+                    box-sizing: border-box;
+                }
 
+                .mintmrm input[type=date], 
+                .mintmrm input[type=email], 
+                .mintmrm input[type=text], 
+                .mintmrm textarea, 
+                .mintmrm select {
+                    font-size: 14px;
+                    line-height: 1;
+                    color: #7a8b9a;
+                    padding: 9px 15px;
+                    width: 100%;
+                    border-radius: 6px;
+                    display: block;
+                    border: 1px solid #e4e6eb;
+                    min-height: 30px;
+                    box-sizing: border-box;
+                    outline: none;
+                    box-shadow: none;
+                }
+                .mintmrm-btn {
+                    display: inline-block;
+                    border: 1px solid transparent;
+                    color: #fff;
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 17px;
+                    letter-spacing: -0.01em;
+                    padding: 11px 15px;
+                    cursor: pointer;
+                    text-align: center;
+                    border-radius: 6px;
+                    text-transform: capitalize;
+                    background-color: #573BFF;
+                }
+                .mintmrm-btn:hover {
+                    background-color: #4C25A5;
+                    color: #fff;
+                }
 
-        </form>
+                /*----checkbox style---- */
+                .mintmrm-checkbox input[type="checkbox"] {
+                    display: none;
+                }
+                .mintmrm-checkbox.no-title label {
+                    min-height: 20px;
+                }
+                .mintmrm-checkbox label {
+                    font-weight: 500;
+                    font-size: 15px;
+                    line-height: 1;
+                    letter-spacing: -0.01em;
+                    color: #344054;
+                    position: relative;
+                    padding-left: 29px;
+                    display: inline-block;
+                    text-transform: capitalize;
+                }
+                .mintmrm-checkbox label:before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: -2px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 4px;
+                    border: 1px solid #bdc7eb;
+                    background-color: #f6f6f8;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
+                }
+                .mintmrm-checkbox label:after {
+                    content: "";
+                    position: absolute;
+                    left: 6px;
+                    top: 4px;
+                    width: 9px;
+                    height: 5px;
+                    transform: rotate(-45deg);
+                    border-bottom: 2px solid #fff;
+                    border-left: 2px solid #fff;
+                    transition: all 0.3s ease;
+                    opacity: 0;
+                    visibility: hidden;
+                    box-sizing: border-box;
+                }
+                .mintmrm-checkbox input[type="checkbox"]:checked + label::before {
+                    background-color: #573bff;
+                    border-color: #573bff;
+                }
+                .mintmrm-checkbox input[type="checkbox"]:checked + label::after {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                /*----radio btn style---- */
+                .mintmrm-radiobtn input[type="radio"] {
+                    display: none;
+                }
+                .mintmrm-radiobtn.no-title label {
+                    height: 16px;
+                }
+                .mintmrm-radiobtn label {
+                    font-size: 15px;
+                    line-height: 1.1;
+                    font-weight: 500;
+                    color: #7a8b9a;
+                    position: relative;
+                    padding-left: 29px;
+                    display: inline-block;
+                    text-transform: capitalize;
+                }
+                .mintmrm-radiobtn label::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: -3px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 100%;
+                    background: #f7f7fa;
+                    border: 1px solid #bdc7eb;
+                    transition: all 0.3s ease;
+                    box-sizing: border-box;
+                }
+                .mintmrm-radiobtn label::after {
+                    content: "";
+                    position: absolute;
+                    left: 5px;
+                    top: 2px;
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 100%;
+                    background: #573bff;
+                    transform: scale(0);
+                    transition: all 0.3s ease;
+                }
+                .mintmrm-radiobtn input[type="radio"]:checked + label::before {
+                    border-color: #573bff;
+                }
+                .mintmrm-radiobtn input[type="radio"]:checked + label::after {
+                    transform: scale(1);
+                }
+
+            </style>
+
+        </div>
         <?php
-        $output = ob_get_clean();
+        $output .= ob_get_clean();
 
         return $output;
     }

@@ -72,6 +72,7 @@ class Editor extends Component {
         return (
             <PanelBody title="Button Text" className="inner-pannel">
                 <TextControl
+                    className="mrm-inline-label"
                     label="Button Text"
                     value={ attributes.buttonText }
                     onChange={ (state ) => setAttributes({ buttonText: state }) }
@@ -152,8 +153,6 @@ class Editor extends Component {
                     onChange={ buttonBorderColor => this.onChangeAttribute( 'buttonBorderColor', buttonBorderColor )}
                     value = { attributes.buttonBorderColor }
                 />
-                <hr className="mrm-hr"/>
-
             </PanelBody>
         )
     }
@@ -161,7 +160,7 @@ class Editor extends Component {
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
-                <div id="mrm-block-inspected-inspector-control-wrapper">
+                <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper">
                     <Panel>
                         {this.buttonText()}
                         {this.buttonStyle()}
@@ -213,30 +212,27 @@ class Editor extends Component {
         return (
             <>
                 { this.getInspectorControls() }
+                
+                <div className="mrm-form-group submit" style={fieldSpacing}>
+                    <BlockControls>
+                        <BlockAlignmentToolbar
+                            value={ buttonAlign }
+                            onChange={ (newAlign) => this.props.setAttributes({ buttonAlign: newAlign }) }
+                            controls={["left", "center", "right"]}
+                        />
+                    </BlockControls>
+                    <RichText
+                        className='mrm-submit-button mintmrm-btn'
+                        tagName="button"
+                        type='button'
+                        value={ buttonText }
+                        style={ buttonStyle }
+                        onChange={ ( content ) => this.props.setAttributes( { buttonText: content } ) }
+                        placeholder={ __( 'Submit', 'mrm' ) }
+                    />
 
-                <div className="mrm mrm-gutenberg-mrm-form-wrapper">
-                    <div className="mrm-mrm-form-wrapper">
-                            <div className="mrm-mrm-form-group submit" style={fieldSpacing}>
-                                <BlockControls>
-                                    <BlockAlignmentToolbar
-                                        value={ buttonAlign }
-                                        onChange={ (newAlign) => this.props.setAttributes({ buttonAlign: newAlign }) }
-                                        controls={["left", "center", "right"]}
-                                    />
-                                </BlockControls>
-                                <RichText
-                                    className='mrm-submit-button'
-                                    tagName="button"
-                                    type='button'
-                                    value={ buttonText }
-                                    style={ buttonStyle }
-                                    onChange={ ( content ) => this.props.setAttributes( { buttonText: content } ) }
-                                    placeholder={ __( 'Submit', 'mrm' ) }
-                                />
-
-                            </div>
-                        </div>
                 </div>
+                       
             </>
 
 

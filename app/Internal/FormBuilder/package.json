@@ -26,6 +26,7 @@
     "@wordpress/interface": "^0.8.1",
     "@wordpress/media-utils": "^1.16.0",
     "@wordpress/scripts": "^24.3.0",
+    "react-router-dom": "^6.3.0",
     "css-loader": "^4.3.0",
     "node-sass": "^7.0.3",
     "postcss-loader": "^4.0.1",

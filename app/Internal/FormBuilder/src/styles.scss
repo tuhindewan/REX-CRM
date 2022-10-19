@@ -8,9 +8,10 @@
 
 
 // Internal
-@import "components/header/styles";
-@import "components/sidebar/styles";
-@import "components/block-editor/styles";
+@import "components/header/style";
+@import "components/sidebar/style";
+@import "components/block-editor/style";
+@import "components/first-name-block/style";
 
 // In order to use mix-blend-mode, this element needs to have an explicitly set background-color
 // We scope it to .wp-toolbar to be wp-admin only, to prevent bleed into other implementations

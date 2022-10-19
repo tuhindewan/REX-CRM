@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
@@ -15,9 +15,17 @@ import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import SettingIcon from "../Icons/SettingIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
+import MobileView from "./MobileView";
+import DesktopView from "./DesktopView";
+import EditIcon from "../Icons/EditIcon";
+
+import AlertPopup from "../AlertPopup";
+import SuccessfulNotification from "../SuccessfulNotification";
+import WarningNotification from "../WarningNotification";
 
 const FormEditor = (props) => {
-  const navigate = useNavigate();
+  const [preview, setPreview] = useState("editor");
+
   // lists
   const [lists, setLists] = useState([]);
 
@@ -33,8 +41,30 @@ const FormEditor = (props) => {
 
   const [enable, setEnable] = useState(false);
 
+  const params = useParams();
+
+  const [load, setLoad] = useState(false);
+
+  const [id, setId] = useState(params.id);
+
+  const [blockData, setBlockData] = useState();
+  const [showPreview, setShowPreview] = useState(false);
+
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
+  const [showAlert, setShowAlert] = useState("none");
+
+  const [savedSuccess, setSaveSuccess] = useState(false);
+
+  const navigate = useNavigate();
+
   const toggleEnable = () => {
     setEnable(!enable);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
   };
 
   // Fetch lists & tags
@@ -52,18 +82,47 @@ const FormEditor = (props) => {
     });
   }, []);
 
-  const [formData, setValues] = useState({
-    title: "",
-    form_position: "",
-    group_ids: [],
-  });
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    const getFormData = async () => {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+      );
+      const resJson = await res.json();
+
+      if (200 === resJson.code) {
+        setFormData(resJson.data);
+      }
+    };
+    if (id) {
+      getFormData();
+    }
+    reload();
+  }, []);
+
+  const reload = () => {
+    let hashCount = 0;
+    const loc = window.location.hash;
+
+    for (let i = 0; i < loc.length; i++) {
+      if (loc[i] === "#") {
+        hashCount = hashCount + 1;
+      }
+    }
+
+    if (1 === hashCount) {
+      window.location = window.location + "#";
+      window.location.reload();
+    }
+  };
 
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
   const handleChange = (event) => {
     event.persist();
     const { name, value } = event.target;
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -74,7 +133,7 @@ const FormEditor = (props) => {
       .filter((option) => option.selected)
       .map((x) => x.value);
 
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: updatedOptions,
     }));
@@ -82,7 +141,7 @@ const FormEditor = (props) => {
 
   const onRemove = (e, name) => {
     let unselectedItem = e.params.data.id;
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: prevState[name].filter((x) => x !== unselectedItem),
     }));
@@ -90,23 +149,77 @@ const FormEditor = (props) => {
 
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
+    // if (settingDataValidation(settingData)) {
+    //   console.log(settingData);
+    // }
+    const settingData = window.localStorage.getItem("settings");
+    console.log(JSON.parse(settingData));
+
     const post_data = {
-      title: formData.title,
+      title: formData?.title,
       form_body: storedBlocks,
-    };
-    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
+      meta_fields: {
+        settings: settingData,
       },
-      body: JSON.stringify(post_data),
-    });
-    const responseData = await res.json();
+    };
+    if (id == undefined) {
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      });
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+        setId(responseData?.data);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(post_data),
+        }
+      );
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   };
+
+  useEffect(() => {
+    if (id) {
+      navigate(`/form-builder/${id}`);
+    } else {
+      navigate(`/form-builder/`);
+    }
+  }, [id]);
 
   const [positionName, setPositionName] = useState("");
   const handleFormPosition = (param, name) => {
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       form_position: param,
     }));
@@ -123,7 +236,7 @@ const FormEditor = (props) => {
 
     const group_ids = lists.concat(tags);
 
-    setValues((prevState) => ({
+    setFormData((prevState) => ({
       ...prevState,
       group_ids: group_ids,
     }));
@@ -144,22 +257,40 @@ const FormEditor = (props) => {
     setSettingsPannel((current) => !current);
   };
 
+  const handlePreview = (view) => {
+    setPreview(view);
+    const block = window.localStorage.getItem("getmrmblocks");
+    setBlockData(block);
+  };
+
   return (
     <>
       <div className="form-editor-page">
         <div className="form-editor-topbar">
           <div className="topbar-left">
-            <button className="back-button">
-              <Link to="/form-editor/">
+            <Link to="/forms/">
+              <button className="back-button">
                 <DoubleAngleLeftIcon />
-              </Link>
-            </button>
+              </button>
+            </Link>
 
             <div className="responsive-section">
-              <button className="computer-view active">
+              <button
+                className="computer-view active"
+                onClick={(e) => handlePreview("editor")}
+              >
+                <EditIcon />
+              </button>
+              <button
+                className="computer-view active"
+                onClick={(e) => handlePreview("desktop")}
+              >
                 <ComputerIcon />
               </button>
-              <button className="mobile-view">
+              <button
+                className="mobile-view"
+                onClick={(e) => handlePreview("mobile")}
+              >
                 <MobileIcon />
               </button>
             </div>
@@ -211,6 +342,18 @@ const FormEditor = (props) => {
             </div>
           </div>
 
+          {/*Preview Mobile and Desktop*/}
+
+          {preview === "mobile" ? (
+            <MobileView blockData={blockData} />
+          ) : preview === "desktop" ? (
+            <>
+              <DesktopView blockData={blockData} />
+            </>
+          ) : (
+            ""
+          )}
+
           <div
             id="mrm-block-editor"
             className={
@@ -218,7 +361,21 @@ const FormEditor = (props) => {
                 ? "getdave-sbe-block-editor block-editor show-settings-pannel"
                 : "getdave-sbe-block-editor block-editor"
             }
+            style={{ display: preview === "editor" ? "block" : "none" }}
           ></div>
+
+          <div className="mintmrm-container" style={{ display: showAlert }}>
+            <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
+          </div>
+          {savedSuccess && (
+            <SuccessfulNotification
+              display={showNotification}
+              message={message}
+            />
+          )}
+          {!savedSuccess && (
+            <WarningNotification display={showNotification} message={message} />
+          )}
         </div>
       </div>
     </>

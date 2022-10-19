@@ -159,12 +159,15 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 30px;
 }
 .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content .editor-styles-wrapper {
-  width: 677px;
+  max-width: 697px;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar {
   width: 360px;
   margin-left: 35px;
+  min-height: 710px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .mrm-form-builder-sidebar {
   background: #FFFFFF;
@@ -193,6 +196,19 @@ body.is-fullscreen-mode .get-mrm-header {
   border: none;
   box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3019607843);
   border-radius: 6px;
+  height: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .components-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .components-panel::-webkit-scrollbar-track {
+  background: #f2f5f8;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .components-panel::-webkit-scrollbar-thumb {
+  background-color: #6F6AF8;
+  border-radius: 20px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel {
   position: absolute;
@@ -293,6 +309,56 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings textarea {
   height: 92px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select {
+  position: relative;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select .mintmrm-custom-select-btn {
+  position: relative;
+  line-height: 1;
+  padding: 7px 25px 7px 10px;
+  width: 100%;
+  text-align: left;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3019607843);
+  border-radius: 6px;
+  height: 38px;
+  border: none;
+  color: #B6B6B7;
+  font-size: 14px;
+  font-weight: 400;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select .mintmrm-custom-select-btn:before {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: calc(50% - 2px);
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  border-bottom: 1px solid #2D3149;
+  border-right: 1px solid #2D3149;
+  transition: all 0.3s ease;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select ul.mintmrm-dropdown {
+  position: absolute;
+  background: #fff;
+  right: 0;
+  top: calc(100% + 4px);
+  width: 100%;
+  border: 1px solid #e2e5ed;
+  z-index: 5;
+  transition: all 0.3s ease;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  padding: 8px;
+  display: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select ul.mintmrm-dropdown::before {
+  display: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select.show-dropdown .mintmrm-dropdown {
+  display: block;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-input-control__backdrop {
   border: none;
@@ -401,11 +467,17 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control__field {
   margin: 0;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select,
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control {
   width: 144px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper select {
   min-width: auto;
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper ul.mintmrm-dropdown {
+  bottom: calc(100% + 4px);
+  top: inherit;
   width: 100%;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter {
@@ -480,6 +552,41 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 5px 10px;
   line-height: 1;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPickerNavigation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  height: auto;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPickerNavigation .DayPickerNavigation_button {
+  position: relative;
+  top: 0;
+  left: inherit;
+  right: inherit;
+  display: block;
+  height: 26px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay {
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(51, 51, 51, 0.2117647059);
+  border: none;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarMonth_table {
+  border-spacing: 6px;
+  margin-top: 3px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarMonth_caption {
+  top: -37px;
+  position: relative;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid_month__horizontal {
+  padding-top: 48px;
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day {
   margin: 0 10px;
 }
@@ -531,17 +638,23 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_transitionContainer {
   width: 100% !important;
-  height: 250px !important;
+  height: 285px !important;
+  margin-bottom: 11px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day {
   padding: 8px;
+  font-size: 13px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay__selected .components-datetime__date__day {
+  color: #fff;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .DayPickerNavigation_button__horizontalDefault {
   top: -5px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader {
-  position: relative;
-  top: 0;
+  position: absolute;
+  top: 35px;
+  width: 100%;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul {
   display: flex;
@@ -551,6 +664,9 @@ body.is-fullscreen-mode .get-mrm-header {
   font-size: 16px;
   padding: 8px;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__buttons .components-button {
+  width: auto !important;
+}
 
 .form-editor-page .show-settings-pannel .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel {
   left: 0;
@@ -558,6 +674,55 @@ body.is-fullscreen-mode .get-mrm-header {
   visibility: visible;
 }
 
+@media only screen and (max-width: 1299px) {
+  .form-editor-page .form-editor-body {
+    padding: 20px;
+  }
+  .form-editor-page .form-editor-body .form-editor-title-area {
+    margin-bottom: 20px;
+  }
+  .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content {
+    width: calc(100% - 320px);
+    padding: 20px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar {
+    width: 300px;
+    margin-left: 20px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day {
+    margin: 0 7px;
+    width: 45px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day input.components-datetime__time-field-day-input {
+    width: 100%;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-minutes-input,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-hours-input {
+    padding: 5px 6px;
+    width: 50px !important;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid {
+    width: 100% !important;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul {
+    padding: 0 13px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul .DayPicker_weekHeader_li {
+    font-size: 13px;
+    padding: 2px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day {
+    padding: 1px;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper {
+    display: block;
+  }
+  .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
 .get-mrm-block-editor__block-list {
   padding-bottom: 48px;
   padding-top: 53px;
@@ -570,6 +735,277 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .get-mrm-block-editor__block-list .wp-block {
   max-width: 580px;
+}
+
+.pannel-toggle-btn-style, .mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button {
+  font-size: 15px;
+  line-height: 1.2;
+  color: #344054;
+  padding: 19px 32px 19px 13px;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent;
+}
+.pannel-toggle-btn-style > span:before, .mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button > span:before, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button > span:before {
+  content: url("data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20viewBox%3D%220%200%2012%207%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20stroke%3D%22%23A7A8B3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.8%22%20d%3D%22M11%201L6%206%201%201%22%2F%3E%3C%2Fsvg%3E");
+  width: 12px;
+  display: block;
+  position: absolute;
+  right: 12px;
+  top: 18px;
+  transition: all 0.3s ease;
+}
+.pannel-toggle-btn-style[aria-expanded=true] > span:before, .mrm-block-control-wrapper .components-panel__body [aria-expanded=true].components-panel__body-toggle.components-button > span:before, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced [aria-expanded=true].components-panel__body-toggle.components-button > span:before {
+  transform: rotate(180deg);
+}
+.pannel-toggle-btn-style .components-panel__arrow, .mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button .components-panel__arrow, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button .components-panel__arrow {
+  display: none;
+}
+
+.mrm-form-builder-sidebar .block-editor-block-inspector__no-blocks {
+  margin-top: 20px;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector .block-editor-block-card {
+  border-bottom: 1px solid #e0e0e0;
+  align-items: center;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector .block-editor-block-card__title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  color: #344054;
+  font-weight: 600;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector__advanced > .components-panel__body-title:hover {
+  background: transparent !important;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field .components-base-control__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #A7A8B3;
+  display: block;
+  width: calc(100% - 190px);
+  margin-bottom: 0;
+  padding-right: 10px;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field .components-text-control__input {
+  border-radius: 6px;
+  outline: none;
+  box-shadow: none;
+  background: #FFFFFF;
+  border: 1px solid #E4E6EB;
+  padding: 9px 12px;
+  line-height: 1.5715;
+  color: #1d2129;
+  font-size: 14px;
+  font-weight: 500;
+  height: auto;
+  width: 190px;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__help {
+  font-size: 13px;
+  font-style: italic;
+  margin-top: 12px;
+  color: #ebb51d;
+}
+
+.mrm-block-control-wrapper .components-panel__body .mrm-hr {
+  margin: 24px 0;
+}
+.mrm-block-control-wrapper .components-panel__body p, .mrm-block-control-wrapper .components-panel__body span, .mrm-block-control-wrapper .components-panel__body section, .mrm-block-control-wrapper .components-panel__body label, .mrm-block-control-wrapper .components-panel__body div {
+  color: inherit;
+}
+.mrm-block-control-wrapper .components-panel__body > .components-panel__body-title {
+  background: transparent !important;
+}
+.mrm-block-control-wrapper .components-panel__body .components-color-palette__custom-color {
+  padding: 12px;
+}
+.mrm-block-control-wrapper .components-panel__body .components-circular-option-picker__clear {
+  border: none;
+  box-shadow: none;
+  background: #573bff;
+  color: #fff;
+  border-radius: 4px;
+}
+.mrm-block-control-wrapper .components-panel__body .components-circular-option-picker__clear:hover {
+  color: #fff;
+}
+.mrm-block-control-wrapper .components-panel__body label.components-input-control__label,
+.mrm-block-control-wrapper .components-panel__body label.blocks-base-control__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #A7A8B3;
+  display: block;
+  margin-bottom: 8px;
+}
+.mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input,
+.mrm-block-control-wrapper .components-panel__body .components-base-control .components-select-control__input,
+.mrm-block-control-wrapper .components-panel__body .components-base-control .components-text-control__input {
+  border-radius: 6px;
+  outline: none;
+  box-shadow: none;
+  background: #FFFFFF;
+  border: 1px solid #E4E6EB;
+  padding: 9px 12px;
+  line-height: 1.5715;
+  color: #1d2129;
+  font-size: 14px;
+  font-weight: 500;
+  height: auto;
+}
+.mrm-block-control-wrapper .components-panel__body .components-input-control__backdrop {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.mrm-block-control-wrapper .components-panel__body .components-base-control .components-base-control__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #A7A8B3;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-base-control__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-base-control__label {
+  width: calc(100% - 190px);
+  margin-bottom: 0;
+  padding-right: 10px;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-text-control__input {
+  width: 190px;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control > .components-flex-item {
+  width: calc(100% - 190px);
+  margin-bottom: 0;
+  padding-right: 10px;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control > .components-input-control__container {
+  width: 190px;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-base-control__field {
+  flex-flow: row-reverse;
+  justify-content: space-between;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-form-toggle {
+  margin-right: 0;
+  margin-left: 12px;
+}
+.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-toggle-control__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #A7A8B3;
+  padding-right: 10px;
+}
+.mrm-block-control-wrapper .components-panel__body .components-range-control .components-range-control__root {
+  align-items: center;
+}
+.mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input {
+  height: 42px;
+}
+.mrm-block-control-wrapper .components-panel__body .components-range-control .components-range-control__reset {
+  height: 42px;
+  box-shadow: none;
+  background: #573bff;
+  color: #fff;
+  border-radius: 6px;
+}
+.mrm-block-control-wrapper .components-panel__body .components-range-control .components-range-control__track {
+  background-color: #007cba;
+}
+.mrm-block-control-wrapper .components-panel__body .components-range-control .components-simple-tooltip {
+  color: #fff;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper {
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-wrapper,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-wrapper h4,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-wrapper h4 {
+  font-size: 15px;
+  line-height: 1.2;
+  color: #344054;
+  font-weight: 600;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-button,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-button {
+  width: 38px;
+  height: 38px;
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  margin-left: auto;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin-top: 10px;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-base-control__field,
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-base-control,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-base-control__field,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-base-control {
+  margin: 0;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-base-control,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-base-control {
+  width: calc(100% - 49px);
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-text-control__input,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-text-control__input {
+  padding: 7px 12px;
+}
+.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .delete-option-button,
+.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .delete-option-button {
+  border: none;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
 }
 
 html.wp-toolbar {
@@ -586,6 +1022,9 @@ body.block-editor-page #wpcontent {
 }
 body.block-editor-page #wpbody-content {
   padding-bottom: 0;
+}
+body.block-editor-page #wpbody-content > div:not(.block-editor):not(#screen-meta) {
+  display: none;
 }
 body.block-editor-page #wpfooter {
   display: none;
