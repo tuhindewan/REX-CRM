@@ -58,6 +58,9 @@
 
 .form-list-page {
   min-height: 100vh;
+  .form-list {
+    padding-top: 50px;
+  }
 
   .contact-list-header {
     .header-title {
@@ -162,6 +165,15 @@
         color: #2d3149;
       }
     }
+<<<<<<< HEAD
+    .right-section {
+      .add-form-btn {
+        display: flex;
+        align-items: center;
+      }
+    }
+=======
+>>>>>>> origin/testing-branch
   }
 
   .contact-list-area {
