@@ -122,7 +122,6 @@ class AjaxAction {
 
                 $setting = FormModel::get_meta($form_id);
 //                $setting = unserialize($setting['meta_fields']['_form_setting']);
-
                 $response['status']  = 'success';
                 $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
                 echo json_encode($response, true);
