@@ -12,6 +12,7 @@ use Mint\MRM\Internal\FormBuilder\GetMRM_Block_Manager;
 use Mint\MRM\Internal\Optin\OptinConfirmation;
 use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
+use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
 
 class App {
 
@@ -49,6 +50,8 @@ class App {
             // Opt-in 
             OptinConfirmation::get_instance();
         }
+
+        CampaignsBackgroundProcess::get_instance()->init();
     }
 
 
