@@ -152,7 +152,7 @@ const FormEditor = (props) => {
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-    const settingData = window.localStorage.getItem("settings");
+    const settingData = window.localStorage.getItem("getsettings");
 
     const post_data = {
       title: formData?.title,
