@@ -1,7 +1,5 @@
-import LoadingIndicator from "../components/LoadingIndicator";
 import React, { useRef, useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
-import ContactNavbar from "../components/ContactNavbar";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
