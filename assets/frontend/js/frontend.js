@@ -29,7 +29,7 @@ jQuery(document).ready(function($){
     /**
      * Shortcode form submission ajax
      */
-    $('.mrm-form-form-wrapper form').on('submit', function (e) {
+    $('.mrm-form-wrapper form').on('submit', function (e) {
         e.preventDefault();
         jQuery(".response").html('')
         jQuery.ajax({
