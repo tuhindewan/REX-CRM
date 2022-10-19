@@ -4844,19 +4844,12 @@ function Sidebar() {
         const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
         const resJson = await res.json();
         if (200 === resJson.code) {
-          var _resJson$data, _resJson$data$meta_fi;
+          var _resJson$data, _resJson$data$meta_fi, _resJson$data2, _resJson$data2$meta_f;
           setFormData(resJson.data);
           setSettingData(JSON.parse((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$meta_fi = _resJson$data.meta_fields) === null || _resJson$data$meta_fi === void 0 ? void 0 : _resJson$data$meta_fi.settings));
-          // setMessageToShow(
-          //   settingData?.settings?.confirmation_type?.same_page?.message_to_show
-          // );
-          // setAfterFormSubmission(
-          //   settingData?.settings?.confirmation_type?.same_page
-          //     ?.after_form_submission
-          // );
+          setPrevSetting(JSON.parse((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$meta_f = _resJson$data2.meta_fields) === null || _resJson$data2$meta_f === void 0 ? void 0 : _resJson$data2$meta_f.settings));
         }
       };
-
       getFormData();
     }
   }, []);
@@ -4897,7 +4890,7 @@ function Sidebar() {
     });
   }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
   useEffect(() => {
-    localStorage.setItem("settings", JSON.stringify(settingData));
+    localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
@@ -6045,7 +6038,7 @@ const FormEditor = props => {
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-    const settingData = window.localStorage.getItem("settings");
+    const settingData = window.localStorage.getItem("getsettings");
     console.log(JSON.parse(settingData));
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,

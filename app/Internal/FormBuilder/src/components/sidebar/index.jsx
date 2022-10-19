@@ -120,13 +120,7 @@ function Sidebar() {
         if (200 === resJson.code) {
           setFormData(resJson.data);
           setSettingData(JSON.parse(resJson.data?.meta_fields?.settings));
-          // setMessageToShow(
-          //   settingData?.settings?.confirmation_type?.same_page?.message_to_show
-          // );
-          // setAfterFormSubmission(
-          //   settingData?.settings?.confirmation_type?.same_page
-          //     ?.after_form_submission
-          // );
+          setPrevSetting(JSON.parse(resJson.data?.meta_fields?.settings));
         }
       };
       getFormData();
@@ -185,7 +179,7 @@ function Sidebar() {
   ]);
 
   useEffect(() => {
-    localStorage.setItem("settings", JSON.stringify(settingData));
+    localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
 
   let currentDate = new Date();
