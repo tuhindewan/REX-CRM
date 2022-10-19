@@ -37,7 +37,7 @@ export default function CampaignCustomSelect(props) {
   // };
 
   const deleteSelectedTag = (e, id) => {
-    const index = selectedTags.findIndex((item) => item.id == id);
+    const index = selectedTags?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
@@ -45,7 +45,7 @@ export default function CampaignCustomSelect(props) {
     }
   };
   const deleteSelectedList = (e, id) => {
-    const index = selectedLists.findIndex((item) => item.id == id);
+    const index = selectedLists?.findIndex((item) => item.id == id);
 
     // already in selected list so remove it from the array
     if (index >= 0) {
@@ -71,11 +71,11 @@ export default function CampaignCustomSelect(props) {
   }, []);
 
   const checkIfSelectedList = (id) => {
-    const checkedList = selectedLists.findIndex((item) => item.id == id) >= 0;
+    const checkedList = selectedLists?.findIndex((item) => item.id == id) >= 0;
     return checkedList;
   };
   const checkIfSelectedTag = (id) => {
-    const checkedTag = selectedTags.findIndex((item) => item.id == id) >= 0;
+    const checkedTag = selectedTags?.findIndex((item) => item.id == id) >= 0;
     return checkedTag;
   };
 
