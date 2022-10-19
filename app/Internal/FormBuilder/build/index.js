@@ -4721,6 +4721,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
@@ -4731,10 +4732,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Icons_MinusIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Icons/MinusIcon */ "./src/components/Icons/MinusIcon.jsx");
 /* harmony import */ var _Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Icons/PlusIcon */ "./src/components/Icons/PlusIcon.jsx");
 /* harmony import */ var _src_components_Form_FormEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../../../src/components/Form/FormEditor */ "../../../src/components/Form/FormEditor.jsx");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_10__);
 
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -4780,24 +4784,9 @@ const {
   Fill: InspectorFill
 } = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
 function Sidebar() {
+  var _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10, _settingData$settings11, _settingData$settings12, _settingData$settings13, _settingData$settings14, _settingData$settings15, _settingData$settings16;
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
-
-  //confirmation types
-  const [messageToShow, setMessageToShow] = useState("");
-  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
-  const [page, setPage] = useState("");
-  const [redirectionMessage, setRedirectionMessage] = useState("");
-  const [customURL, setCustomURL] = useState("");
-  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("pop-up");
-  const [formScheduling, setFormScheduling] = useState(false);
-  const [date, setDate] = useState(new Date());
-  const [submissionStartDate, setSubmissionStartDate] = useState("");
-  const [submissionStartTime, setSubmissionStartTime] = useState("");
-  const [maxEntries, setMaxEntries] = useState(false);
-  const [maxNumber, setMaxNumber] = useState();
-  const [maxType, setMaxType] = useState();
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
@@ -4829,7 +4818,52 @@ function Sidebar() {
       }
     }
   });
+
+  //settings variables
+  const [messageToShow, setMessageToShow] = useState("");
+  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  const [page, setPage] = useState("");
+  const [redirectionMessage, setRedirectionMessage] = useState("");
+  const [customURL, setCustomURL] = useState("");
+  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
+  const [formLayout, setFormLayout] = useState("pop-up");
+  const [formScheduling, setFormScheduling] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [submissionStartDate, setSubmissionStartDate] = useState("");
+  const [submissionStartTime, setSubmissionStartTime] = useState("");
+  const [maxEntries, setMaxEntries] = useState(false);
+  const [maxNumber, setMaxNumber] = useState();
+  const [maxType, setMaxType] = useState();
+  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_11__.useParams)();
+  const [id, setId] = useState(window.location.hash.slice(15));
+  const [formData, setFormData] = useState({});
+  const [prevSetting, setPrevSetting] = useState({});
   useEffect(() => {
+    if (id) {
+      const getFormData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
+        const resJson = await res.json();
+        if (200 === resJson.code) {
+          var _resJson$data, _resJson$data$meta_fi;
+          setFormData(resJson.data);
+          setSettingData(JSON.parse((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$meta_fi = _resJson$data.meta_fields) === null || _resJson$data$meta_fi === void 0 ? void 0 : _resJson$data$meta_fi.settings));
+          // setMessageToShow(
+          //   settingData?.settings?.confirmation_type?.same_page?.message_to_show
+          // );
+          // setAfterFormSubmission(
+          //   settingData?.settings?.confirmation_type?.same_page
+          //     ?.after_form_submission
+          // );
+        }
+      };
+
+      getFormData();
+    }
+  }, []);
+  useEffect(() => {
+    console.log(settingData);
+  }, [settingData]);
+  useEffect(async () => {
     setSettingData({
       settings: {
         confirmation_type: {
@@ -4862,6 +4896,9 @@ function Sidebar() {
       }
     });
   }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
+  useEffect(() => {
+    localStorage.setItem("settings", JSON.stringify(settingData));
+  }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
     setTabState(index);
@@ -4898,8 +4935,6 @@ function Sidebar() {
     dateTimeSplitter();
   }, [date]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "form-editor-hidden"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
@@ -4949,6 +4984,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What message you want to show to the use?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "message_to_show",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.same_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.message_to_show,
     onChange: e => setMessageToShow(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -4957,7 +4993,7 @@ function Sidebar() {
   }, "After Form Submission", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Define behaviour of the form after submission"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: afterFormSubmission,
+    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.same_page) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.after_form_submission,
     options: [{
       label: "Hide Form",
       value: "hide-form"
@@ -4991,6 +5027,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What is the message after redirection of a page?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "redirection_message",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_page) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.redirection_message,
     onChange: e => setRedirectionMessage(e)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "custom-url" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -5002,6 +5039,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Enter a custom URL to redirect"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
     name: "custom-url",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : (_settingData$settings11 = _settingData$settings10.confirmation_type) === null || _settingData$settings11 === void 0 ? void 0 : (_settingData$settings12 = _settingData$settings11.to_a_custom_url) === null || _settingData$settings12 === void 0 ? void 0 : _settingData$settings12.custom_url,
     onChange: e => setCustomURL(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -5011,6 +5049,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Reidrectional message for custom URL"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "custom-redirection-message",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings13 = settingData.settings) === null || _settingData$settings13 === void 0 ? void 0 : (_settingData$settings14 = _settingData$settings13.confirmation_type) === null || _settingData$settings14 === void 0 ? void 0 : (_settingData$settings15 = _settingData$settings14.to_a_custom_url) === null || _settingData$settings15 === void 0 ? void 0 : _settingData$settings15.custom_redirection_message,
     onChange: e => setCustomRedirectionMessage(e)
   }))))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Layout",
@@ -5025,7 +5064,7 @@ function Sidebar() {
   }, "Label Alignment", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: formLayout,
+    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings16 = settingData.settings) === null || _settingData$settings16 === void 0 ? void 0 : _settingData$settings16.form_layout,
     options: [{
       label: "Fly In",
       value: "fly-in"
@@ -5034,67 +5073,7 @@ function Sidebar() {
       value: "pop-up"
     }],
     onChange: state => setFormLayout(state)
-  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-    title: "Schedule",
-    className: "schedule-settings",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "pannelbody-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings inline-label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Form Scheduling", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Schedule your form submission time"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-    checked: formScheduling,
-    onChange: state => setFormScheduling(!formScheduling)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Submission Starts", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Take Submissions from..."))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(DateTimePicker, {
-    currentDate: date,
-    onChange: newDate => setDate(newDate),
-    is12Hour: true,
-    __nextRemoveHelpButton: true,
-    __nextRemoveResetButton: true
-  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-    title: "Restrictions",
-    className: "restrictions-settings",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "pannelbody-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings inline-label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Maximum Number of Entries", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Restrict the total number of submissions"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-    checked: maxEntries,
-    onChange: state => setMaxEntries(!maxEntries)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Submission Starts "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "submission-counter-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "counter"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "counter-increment",
-    onClick: counterDecrement
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_MinusIcon__WEBPACK_IMPORTED_MODULE_7__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-    type: "number",
-    min: "1",
-    value: count
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "counter-decrement",
-    onClick: counterIncrement
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null))))))))));
+  })))))));
 }
 Sidebar.InspectorFill = InspectorFill;
 /* harmony default export */ __webpack_exports__["default"] = (Sidebar);
@@ -5962,11 +5941,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const FormEditor = props => {
-  const {
-    settingData,
-    setSettingData
-  } = props;
-  const [settingToSave, setSettingToSave] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(settingData);
   const [preview, setPreview] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("editor");
 
   // lists
@@ -6012,7 +5986,7 @@ const FormEditor = props => {
     (0,_services_Tag__WEBPACK_IMPORTED_MODULE_6__.getTags)().then(results => {
       setTags(results.data);
     });
-  }, [settingData]);
+  }, []);
   const [formData, setFormData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({});
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     const getFormData = async () => {
@@ -6022,7 +5996,9 @@ const FormEditor = props => {
         setFormData(resJson.data);
       }
     };
-    if (id) getFormData();
+    if (id) {
+      getFormData();
+    }
     reload();
   }, []);
   const reload = () => {
@@ -6064,15 +6040,19 @@ const FormEditor = props => {
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
   };
-  const saveForm = async settingData => {
+  const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-
+    const settingData = window.localStorage.getItem("settings");
+    console.log(JSON.parse(settingData));
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
-      form_body: storedBlocks
+      form_body: storedBlocks,
+      meta_fields: {
+        settings: settingData
+      }
     };
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
@@ -6195,7 +6175,7 @@ const FormEditor = props => {
     onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mintmrm-btn enable",
-    onClick: e => saveForm(settingData)
+    onClick: saveForm
   }, "Enable"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-body"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
