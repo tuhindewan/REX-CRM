@@ -1313,26 +1313,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 const icons = {};
-icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-  id: "Layer_1",
-  enableBackground: "new 0 0 48 48",
-  height: "512",
-  viewBox: "0 0 48 48",
-  width: "512",
+icons.EmailField = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  width: "18",
+  height: "18",
+  viewBox: "0 0 18 18",
+  fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
-}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
-})))));
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M16.0714 0H1.92857C1.41708 0 0.926543 0.203188 0.564866 0.564866C0.203188 0.926543 0 1.41708 0 1.92857V16.0714C0 16.5829 0.203188 17.0735 0.564866 17.4351C0.926543 17.7968 1.41708 18 1.92857 18H16.0714C16.5829 18 17.0735 17.7968 17.4351 17.4351C17.7968 17.0735 18 16.5829 18 16.0714V1.92857C18 1.41708 17.7968 0.926543 17.4351 0.564866C17.0735 0.203188 16.5829 0 16.0714 0ZM16.7143 16.0714C16.7143 16.2419 16.6466 16.4054 16.526 16.526C16.4054 16.6466 16.2419 16.7143 16.0714 16.7143H1.92857C1.75808 16.7143 1.59456 16.6466 1.474 16.526C1.35344 16.4054 1.28571 16.2419 1.28571 16.0714V5.14286H16.7143V16.0714ZM16.7143 3.85714H1.28571V1.92857C1.28571 1.75808 1.35344 1.59456 1.474 1.474C1.59456 1.35344 1.75808 1.28571 1.92857 1.28571H16.0714C16.2419 1.28571 16.4054 1.35344 16.526 1.474C16.6466 1.59456 16.7143 1.75808 16.7143 1.92857V3.85714Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M3.2154 1.92871H2.57254C2.40205 1.92871 2.23854 1.99644 2.11798 2.117C1.99742 2.23756 1.92969 2.40107 1.92969 2.57157C1.92969 2.74206 1.99742 2.90558 2.11798 3.02614C2.23854 3.1467 2.40205 3.21443 2.57254 3.21443H3.2154C3.3859 3.21443 3.54941 3.1467 3.66997 3.02614C3.79053 2.90558 3.85826 2.74206 3.85826 2.57157C3.85826 2.40107 3.79053 2.23756 3.66997 2.117C3.54941 1.99644 3.3859 1.92871 3.2154 1.92871Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M5.78571 1.92871H5.14286C4.97236 1.92871 4.80885 1.99644 4.68829 2.117C4.56773 2.23756 4.5 2.40107 4.5 2.57157C4.5 2.74206 4.56773 2.90558 4.68829 3.02614C4.80885 3.1467 4.97236 3.21443 5.14286 3.21443H5.78571C5.95621 3.21443 6.11972 3.1467 6.24028 3.02614C6.36084 2.90558 6.42857 2.74206 6.42857 2.57157C6.42857 2.40107 6.36084 2.23756 6.24028 2.117C6.11972 1.99644 5.95621 1.92871 5.78571 1.92871Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M3.85603 10.2859H14.1417C14.4827 10.2859 14.8098 10.1504 15.0509 9.90928C15.292 9.66816 15.4275 9.34113 15.4275 9.00014V7.71443C15.4275 7.37343 15.292 7.04641 15.0509 6.80529C14.8098 6.56417 14.4827 6.42871 14.1417 6.42871H3.85603C3.51503 6.42871 3.18801 6.56417 2.94689 6.80529C2.70577 7.04641 2.57031 7.37343 2.57031 7.71443V9.00014C2.57031 9.34113 2.70577 9.66816 2.94689 9.90928C3.18801 10.1504 3.51503 10.2859 3.85603 10.2859ZM3.85603 7.71443H14.1417V9.00014H3.85603V7.71443Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M13.5 11.5713H10.9286C10.4171 11.5713 9.92654 11.7745 9.56487 12.1362C9.20319 12.4978 9 12.9884 9 13.4999C9 14.0113 9.20319 14.5019 9.56487 14.8636C9.92654 15.2252 10.4171 15.4284 10.9286 15.4284H13.5C14.0115 15.4284 14.502 15.2252 14.8637 14.8636C15.2254 14.5019 15.4286 14.0113 15.4286 13.4999C15.4286 12.9884 15.2254 12.4978 14.8637 12.1362C14.502 11.7745 14.0115 11.5713 13.5 11.5713ZM13.5 14.1427H10.9286C10.7581 14.1427 10.5946 14.075 10.474 13.9544C10.3534 13.8339 10.2857 13.6704 10.2857 13.4999C10.2857 13.3294 10.3534 13.1659 10.474 13.0453C10.5946 12.9247 10.7581 12.857 10.9286 12.857H13.5C13.6705 12.857 13.834 12.9247 13.9546 13.0453C14.0751 13.1659 14.1429 13.3294 14.1429 13.4999C14.1429 13.6704 14.0751 13.8339 13.9546 13.9544C13.834 14.075 13.6705 14.1427 13.5 14.1427Z",
+  fill: "#2D3149"
+}));
 /* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
@@ -1880,26 +1882,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 const icons = {};
-icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-  id: "Layer_1",
-  enableBackground: "new 0 0 48 48",
-  height: "512",
-  viewBox: "0 0 48 48",
-  width: "512",
+icons.firstName = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  width: "26",
+  height: "20",
+  viewBox: "0 0 26 20",
+  fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
-}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
-})))));
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M22.7934 1H3.21124C2.4665 1.00071 1.75246 1.29688 1.22584 1.8235C0.699225 2.35011 0.403059 3.06415 0.402344 3.8089V16.1911C0.403059 16.9358 0.699225 17.6499 1.22584 18.1765C1.75246 18.7031 2.4665 18.9993 3.21124 19H22.7934C23.5382 18.9993 24.2522 18.7031 24.7788 18.1765C25.3055 17.6499 25.6016 16.9358 25.6023 16.1911V3.8089C25.6016 3.06415 25.3055 2.35011 24.7788 1.8235C24.2522 1.29688 23.5382 1.00071 22.7934 1V1ZM23.8023 16.1911C23.8021 16.4586 23.6957 16.7151 23.5066 16.9042C23.3174 17.0934 23.0609 17.1998 22.7934 17.2H3.21124C2.94374 17.1998 2.68726 17.0934 2.49811 16.9042C2.30895 16.7151 2.20258 16.4586 2.20234 16.1911V3.8089C2.20258 3.5414 2.30895 3.28492 2.49811 3.09576C2.68726 2.90661 2.94374 2.80024 3.21124 2.8H22.7934C23.0609 2.80024 23.3174 2.90661 23.5066 3.09576C23.6957 3.28492 23.8021 3.5414 23.8023 3.8089V16.1911Z",
+  fill: "#2D3149",
+  stroke: "white",
+  "stroke-width": "0.3"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+  x: "5",
+  y: "5.5",
+  width: "16",
+  height: "1.4",
+  rx: "0.7",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+  x: "5.65",
+  y: "9.65",
+  width: "14.7",
+  height: "4.2",
+  rx: "1.35",
+  stroke: "#2D3149",
+  "stroke-width": "1.3"
+}));
 /* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
@@ -2706,26 +2715,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 const icons = {};
-icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-  id: "Layer_1",
-  enableBackground: "new 0 0 48 48",
-  height: "512",
-  viewBox: "0 0 48 48",
-  width: "512",
+icons.lastName = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  width: "26",
+  height: "20",
+  viewBox: "0 0 26 20",
+  fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
-}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
-})))));
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M22.7934 1H3.21124C2.4665 1.00071 1.75246 1.29688 1.22584 1.8235C0.699225 2.35011 0.403059 3.06415 0.402344 3.8089V16.1911C0.403059 16.9358 0.699225 17.6499 1.22584 18.1765C1.75246 18.7031 2.4665 18.9993 3.21124 19H22.7934C23.5382 18.9993 24.2522 18.7031 24.7788 18.1765C25.3055 17.6499 25.6016 16.9358 25.6023 16.1911V3.8089C25.6016 3.06415 25.3055 2.35011 24.7788 1.8235C24.2522 1.29688 23.5382 1.00071 22.7934 1V1ZM23.8023 16.1911C23.8021 16.4586 23.6957 16.7151 23.5066 16.9042C23.3174 17.0934 23.0609 17.1998 22.7934 17.2H3.21124C2.94374 17.1998 2.68726 17.0934 2.49811 16.9042C2.30895 16.7151 2.20258 16.4586 2.20234 16.1911V3.8089C2.20258 3.5414 2.30895 3.28492 2.49811 3.09576C2.68726 2.90661 2.94374 2.80024 3.21124 2.8H22.7934C23.0609 2.80024 23.3174 2.90661 23.5066 3.09576C23.6957 3.28492 23.8021 3.5414 23.8023 3.8089V16.1911Z",
+  fill: "#2D3149",
+  stroke: "white",
+  "stroke-width": "0.3"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+  x: "5",
+  y: "5.5",
+  width: "10",
+  height: "1.4",
+  rx: "0.7",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+  x: "5.65",
+  y: "9.65",
+  width: "14.7",
+  height: "4.2",
+  rx: "1.35",
+  stroke: "#2D3149",
+  "stroke-width": "1.3"
+}));
 /* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
@@ -3401,26 +3417,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 const icons = {};
-icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-  id: "Layer_1",
-  enableBackground: "new 0 0 48 48",
-  height: "512",
-  viewBox: "0 0 48 48",
-  width: "512",
+icons.Button = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  width: "18",
+  height: "18",
+  viewBox: "0 0 18 18",
+  fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
-}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
-})))));
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", {
+  "clip-path": "url(#clip0_1876_4496)"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M15.3219 10.0868L11.2483 8.92378V5.25C11.2483 4.00775 10.241 3 8.99896 3C7.75693 3 6.74962 4.00775 6.74962 5.25V11.7275L6.08969 11.0683C5.21241 10.1894 3.78704 10.191 2.90796 11.0683C2.03068 11.9471 2.03068 13.3709 2.90796 14.25L6.65803 18.0001H15.2631L16.4687 11.9707C16.6305 11.1621 16.1142 10.314 15.3219 10.0868ZM14.0334 16.5H7.27977L3.96867 13.1893C3.67705 12.8979 3.67639 12.4218 3.96867 12.1288C4.26161 11.8357 4.73771 11.8357 5.02999 12.1288L8.25043 15.3486V5.24996C8.25022 4.83529 8.58411 4.50003 8.99878 4.50003C9.41345 4.50003 9.74871 4.83529 9.74871 5.24996V10.0559L15.0216 11.5619L14.0334 16.5Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M14.2499 0H3.75007C1.67871 0 0 1.67871 0 3.74985C0 5.82122 1.67871 7.49993 3.75007 7.49993H5.24993V5.99985H3.75007C2.50919 5.99985 1.50007 4.99074 1.50007 3.74985C1.50007 2.50919 2.50919 1.49985 3.75007 1.49985H14.2499C15.4908 1.49985 16.4999 2.50919 16.4999 3.74985C16.4999 4.99074 15.4908 5.99985 14.2499 5.99985H12.7501V7.49993H14.2499C16.3213 7.49993 18 5.82122 18 3.74985C18 1.67871 16.3213 0 14.2499 0Z",
+  fill: "#2D3149"
+})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("defs", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("clipPath", {
+  id: "clip0_1876_4496"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+  width: "18",
+  height: "18",
+  fill: "white"
+}))));
 /* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
@@ -4403,6 +4420,7 @@ class Editor extends Component {
       style: inputStyle
     }))));
   };
+
   /**
    * Render Date Field
    * @param attributes
@@ -4454,6 +4472,7 @@ class Editor extends Component {
       style: inputStyle
     }))));
   };
+
   /**
    * Render Select Field
    * @param attributes
@@ -4522,6 +4541,11 @@ class Editor extends Component {
       value: slug_name
     }, option.label));
   };
+
+  /**
+   * Render checkbox field
+   * @returns {JSX.Element}
+   */
   renderCheckboxField = attributes => {
     const slug_name = this.makeSlug(attributes.field_name);
     this.props.setAttributes({
@@ -4647,26 +4671,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 const icons = {};
-icons.pricing = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-  id: "Layer_1",
-  enableBackground: "new 0 0 48 48",
-  height: "512",
-  viewBox: "0 0 48 48",
-  width: "512",
+icons.CustomField = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  width: "19",
+  height: "20",
+  viewBox: "0 0 19 20",
+  fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
-}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m40.2 47.5h-32.4c-1 0-1.8-.8-1.8-1.8v-40.6c0-1 .8-1.8 1.8-1.8h32.4c1 0 1.8.8 1.8 1.8v40.5c0 1.1-.8 1.9-1.8 1.9zm-30.6-3.7h28.7v-36.8h-28.7z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m15.6 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m24 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c0 1.1-.8 1.9-1.8 1.9z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 9.4c-1 0-1.8-.8-1.8-1.8v-5.3c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v5.2c.1 1.1-.7 1.9-1.8 1.9z"
-}))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 21.7h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.9 1.8z"
-})), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "m32.4 32.8h-16.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8h16.9c1 0 1.8.8 1.8 1.8 0 .9-.8 1.8-1.9 1.8z"
-})))));
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M3.64397 4.99985H10.7868C10.9762 4.99985 11.1579 4.92459 11.2918 4.79064C11.4258 4.65669 11.501 4.47501 11.501 4.28557C11.501 4.09613 11.4258 3.91445 11.2918 3.7805C11.1579 3.64654 10.9762 3.57129 10.7868 3.57129H3.64397C3.45453 3.57129 3.27285 3.64654 3.13889 3.7805C3.00494 3.91445 2.92969 4.09613 2.92969 4.28557C2.92969 4.47501 3.00494 4.65669 3.13889 4.79064C3.27285 4.92459 3.45453 4.99985 3.64397 4.99985Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M3.64397 7.85727H10.7868C10.9762 7.85727 11.1579 7.78201 11.2918 7.64806C11.4258 7.51411 11.501 7.33243 11.501 7.14299C11.501 6.95355 11.4258 6.77187 11.2918 6.63792C11.1579 6.50397 10.9762 6.42871 10.7868 6.42871H3.64397C3.45453 6.42871 3.27285 6.50397 3.13889 6.63792C3.00494 6.77187 2.92969 6.95355 2.92969 7.14299C2.92969 7.33243 3.00494 7.51411 3.13889 7.64806C3.27285 7.78201 3.45453 7.85727 3.64397 7.85727Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M6.50108 9.28516H3.64397C3.45453 9.28516 3.27285 9.36041 3.13889 9.49436C3.00494 9.62832 2.92969 9.81 2.92969 9.99943C2.92969 10.1889 3.00494 10.3706 3.13889 10.5045C3.27285 10.6385 3.45453 10.7137 3.64397 10.7137H6.50108C6.69052 10.7137 6.8722 10.6385 7.00615 10.5045C7.1401 10.3706 7.21536 10.1889 7.21536 9.99943C7.21536 9.81 7.1401 9.62832 7.00615 9.49436C6.8722 9.36041 6.69052 9.28516 6.50108 9.28516Z",
+  fill: "#2D3149"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M18.6455 8.15278C18.6462 7.87134 18.5912 7.59254 18.4836 7.3325C18.3759 7.07246 18.2178 6.83634 18.0183 6.63779C17.61 6.24817 17.0673 6.03079 16.503 6.03079C15.9386 6.03079 15.3959 6.24817 14.9876 6.63779L14.3598 7.26564V2.14284C14.3598 1.57452 14.134 1.02948 13.7322 0.627622C13.3303 0.225762 12.7853 0 12.217 0H2.21705C1.64874 0 1.1037 0.225762 0.701841 0.627622C0.299981 1.02948 0.0742188 1.57452 0.0742188 2.14284V17.857C0.0742188 18.4253 0.299981 18.9703 0.701841 19.3722C1.1037 19.774 1.64874 19.9998 2.21705 19.9998H12.217C12.7853 19.9998 13.3303 19.774 13.7322 19.3722C14.134 18.9703 14.3598 18.4253 14.3598 17.857V13.3256L18.0176 9.66848C18.2174 9.46998 18.3758 9.23378 18.4835 8.97359C18.5913 8.7134 18.6464 8.4344 18.6455 8.15278V8.15278ZM12.9312 17.857C12.9312 18.0464 12.856 18.2281 12.722 18.362C12.5881 18.496 12.4064 18.5712 12.217 18.5712H2.21705C2.02762 18.5712 1.84594 18.496 1.71198 18.362C1.57803 18.2281 1.50278 18.0464 1.50278 17.857V2.14284C1.50278 1.9534 1.57803 1.77172 1.71198 1.63776C1.84594 1.50381 2.02762 1.42856 2.21705 1.42856H12.217C12.4064 1.42856 12.5881 1.50381 12.722 1.63776C12.856 1.77172 12.9312 1.9534 12.9312 2.14284V8.6942L8.25914 13.3656C8.16141 13.4634 8.09416 13.5874 8.06557 13.7227L7.52843 16.2806C7.50642 16.3846 7.50791 16.4922 7.5328 16.5956C7.55768 16.699 7.60533 16.7955 7.67227 16.8781C7.73921 16.9607 7.82375 17.0273 7.91972 17.0731C8.01569 17.1189 8.12067 17.1426 8.22699 17.1427C8.27642 17.1426 8.32571 17.1376 8.37414 17.1277L10.932 16.5898C11.0674 16.5613 11.1916 16.4938 11.2891 16.3956L12.9319 14.7527L12.9312 17.857ZM17.0076 8.65777L10.4313 15.2356L9.15198 15.5041L9.42055 14.2256L15.9983 7.64778C16.1342 7.51743 16.3151 7.44465 16.5033 7.44465C16.6916 7.44465 16.8725 7.51743 17.0083 7.64778C17.1422 7.78173 17.2175 7.96337 17.2175 8.15278C17.2175 8.34218 17.1422 8.52382 17.0083 8.65777H17.0076Z",
+  fill: "#2D3149"
+}));
 /* harmony default export */ __webpack_exports__["default"] = (icons);
 
 /***/ }),
@@ -4720,6 +4743,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
@@ -4730,10 +4754,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Icons_MinusIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Icons/MinusIcon */ "./src/components/Icons/MinusIcon.jsx");
 /* harmony import */ var _Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Icons/PlusIcon */ "./src/components/Icons/PlusIcon.jsx");
 /* harmony import */ var _src_components_Form_FormEditor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../../../src/components/Form/FormEditor */ "../../../src/components/Form/FormEditor.jsx");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_10__);
 
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -4779,24 +4806,9 @@ const {
   Fill: InspectorFill
 } = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
 function Sidebar() {
+  var _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10, _settingData$settings11, _settingData$settings12, _settingData$settings13, _settingData$settings14, _settingData$settings15, _settingData$settings16;
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
-
-  //confirmation types
-  const [messageToShow, setMessageToShow] = useState("");
-  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
-  const [page, setPage] = useState("");
-  const [redirectionMessage, setRedirectionMessage] = useState("");
-  const [customURL, setCustomURL] = useState("");
-  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("pop-up");
-  const [formScheduling, setFormScheduling] = useState(false);
-  const [date, setDate] = useState(new Date());
-  const [submissionStartDate, setSubmissionStartDate] = useState("");
-  const [submissionStartTime, setSubmissionStartTime] = useState("");
-  const [maxEntries, setMaxEntries] = useState(false);
-  const [maxNumber, setMaxNumber] = useState();
-  const [maxType, setMaxType] = useState();
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
@@ -4828,7 +4840,52 @@ function Sidebar() {
       }
     }
   });
+
+  //settings variables
+  const [messageToShow, setMessageToShow] = useState("");
+  const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  const [page, setPage] = useState("");
+  const [redirectionMessage, setRedirectionMessage] = useState("");
+  const [customURL, setCustomURL] = useState("");
+  const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
+  const [formLayout, setFormLayout] = useState("pop-up");
+  const [formScheduling, setFormScheduling] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [submissionStartDate, setSubmissionStartDate] = useState("");
+  const [submissionStartTime, setSubmissionStartTime] = useState("");
+  const [maxEntries, setMaxEntries] = useState(false);
+  const [maxNumber, setMaxNumber] = useState();
+  const [maxType, setMaxType] = useState();
+  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_11__.useParams)();
+  const [id, setId] = useState(window.location.hash.slice(15));
+  const [formData, setFormData] = useState({});
+  const [prevSetting, setPrevSetting] = useState({});
   useEffect(() => {
+    if (id) {
+      const getFormData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
+        const resJson = await res.json();
+        if (200 === resJson.code) {
+          var _resJson$data, _resJson$data$meta_fi;
+          setFormData(resJson.data);
+          setSettingData(JSON.parse((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$meta_fi = _resJson$data.meta_fields) === null || _resJson$data$meta_fi === void 0 ? void 0 : _resJson$data$meta_fi.settings));
+          // setMessageToShow(
+          //   settingData?.settings?.confirmation_type?.same_page?.message_to_show
+          // );
+          // setAfterFormSubmission(
+          //   settingData?.settings?.confirmation_type?.same_page
+          //     ?.after_form_submission
+          // );
+        }
+      };
+
+      getFormData();
+    }
+  }, []);
+  useEffect(() => {
+    console.log(settingData);
+  }, [settingData]);
+  useEffect(async () => {
     setSettingData({
       settings: {
         confirmation_type: {
@@ -4861,6 +4918,9 @@ function Sidebar() {
       }
     });
   }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
+  useEffect(() => {
+    localStorage.setItem("settings", JSON.stringify(settingData));
+  }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
     setTabState(index);
@@ -4897,8 +4957,6 @@ function Sidebar() {
     dateTimeSplitter();
   }, [date]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "form-editor-hidden"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
@@ -4948,6 +5006,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What message you want to show to the use?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "message_to_show",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.same_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.message_to_show,
     onChange: e => setMessageToShow(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -4956,7 +5015,7 @@ function Sidebar() {
   }, "After Form Submission", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Define behaviour of the form after submission"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: afterFormSubmission,
+    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.same_page) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.after_form_submission,
     options: [{
       label: "Hide Form",
       value: "hide-form"
@@ -4990,6 +5049,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What is the message after redirection of a page?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "redirection_message",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_page) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.redirection_message,
     onChange: e => setRedirectionMessage(e)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "custom-url" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -5001,6 +5061,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Enter a custom URL to redirect"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
     name: "custom-url",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : (_settingData$settings11 = _settingData$settings10.confirmation_type) === null || _settingData$settings11 === void 0 ? void 0 : (_settingData$settings12 = _settingData$settings11.to_a_custom_url) === null || _settingData$settings12 === void 0 ? void 0 : _settingData$settings12.custom_url,
     onChange: e => setCustomURL(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -5010,6 +5071,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Reidrectional message for custom URL"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "custom-redirection-message",
+    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings13 = settingData.settings) === null || _settingData$settings13 === void 0 ? void 0 : (_settingData$settings14 = _settingData$settings13.confirmation_type) === null || _settingData$settings14 === void 0 ? void 0 : (_settingData$settings15 = _settingData$settings14.to_a_custom_url) === null || _settingData$settings15 === void 0 ? void 0 : _settingData$settings15.custom_redirection_message,
     onChange: e => setCustomRedirectionMessage(e)
   }))))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Layout",
@@ -5024,7 +5086,7 @@ function Sidebar() {
   }, "Label Alignment", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: formLayout,
+    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings16 = settingData.settings) === null || _settingData$settings16 === void 0 ? void 0 : _settingData$settings16.form_layout,
     options: [{
       label: "Fly In",
       value: "fly-in"
@@ -5033,67 +5095,7 @@ function Sidebar() {
       value: "pop-up"
     }],
     onChange: state => setFormLayout(state)
-  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-    title: "Schedule",
-    className: "schedule-settings",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "pannelbody-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings inline-label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Form Scheduling", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Schedule your form submission time"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-    checked: formScheduling,
-    onChange: state => setFormScheduling(!formScheduling)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Submission Starts", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Take Submissions from..."))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(DateTimePicker, {
-    currentDate: date,
-    onChange: newDate => setDate(newDate),
-    is12Hour: true,
-    __nextRemoveHelpButton: true,
-    __nextRemoveResetButton: true
-  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-    title: "Restrictions",
-    className: "restrictions-settings",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "pannelbody-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings inline-label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Maximum Number of Entries", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Restrict the total number of submissions"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-    checked: maxEntries,
-    onChange: state => setMaxEntries(!maxEntries)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Submission Starts "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "submission-counter-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "counter"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "counter-increment",
-    onClick: counterDecrement
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_MinusIcon__WEBPACK_IMPORTED_MODULE_7__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-    type: "number",
-    min: "1",
-    value: count
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "counter-decrement",
-    onClick: counterIncrement
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_PlusIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null))))))))));
+  })))))));
 }
 Sidebar.InspectorFill = InspectorFill;
 /* harmony default export */ __webpack_exports__["default"] = (Sidebar);
@@ -5233,7 +5235,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
   registerBlockType("mrmformfield/email-field-block", {
     title: __("Email Field", "mrm"),
     category: "common",
-    icon: _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_5__["default"].pricing,
+    icon: _components_email_field_block_icon__WEBPACK_IMPORTED_MODULE_5__["default"].EmailField,
     supports: {
       align: ["left", "right", "center"]
     },
@@ -5244,7 +5246,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
   registerBlockType("mrmformfield/first-name-block", {
     title: __("First Name", "mrm"),
     category: "common",
-    icon: _components_first_name_block_icon__WEBPACK_IMPORTED_MODULE_10__["default"].pricing,
+    icon: _components_first_name_block_icon__WEBPACK_IMPORTED_MODULE_10__["default"].firstName,
     supports: {
       align: ["left", "right", "center"]
     },
@@ -5255,7 +5257,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
   registerBlockType("mrmformfield/last-name-block", {
     title: __("Last Name", "mrm"),
     category: "common",
-    icon: _components_last_name_block_icon__WEBPACK_IMPORTED_MODULE_14__["default"].pricing,
+    icon: _components_last_name_block_icon__WEBPACK_IMPORTED_MODULE_14__["default"].lastName,
     supports: {
       align: ["left", "right", "center"]
     },
@@ -5266,7 +5268,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
   registerBlockType("mrmformfield/mrm-button-block", {
     title: __("MRM Button", "mrm"),
     category: "common",
-    icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].pricing,
+    icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].Button,
     supports: {
       align: ["left", "right", "center"]
     },
@@ -5277,7 +5279,7 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
   registerBlockType("mrmformfield/mrm-custom-field", {
     title: __("MRM Custom Field", "mrm"),
     category: "common",
-    icon: _components_mrm_custom_field_icon__WEBPACK_IMPORTED_MODULE_22__["default"].pricing,
+    icon: _components_mrm_custom_field_icon__WEBPACK_IMPORTED_MODULE_22__["default"].CustomField,
     supports: {
       align: ["left", "right", "center"]
     },
@@ -5961,11 +5963,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const FormEditor = props => {
-  const {
-    settingData,
-    setSettingData
-  } = props;
-  const [settingToSave, setSettingToSave] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(settingData);
   const [preview, setPreview] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("editor");
 
   // lists
@@ -6011,7 +6008,7 @@ const FormEditor = props => {
     (0,_services_Tag__WEBPACK_IMPORTED_MODULE_6__.getTags)().then(results => {
       setTags(results.data);
     });
-  }, [settingData]);
+  }, []);
   const [formData, setFormData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({});
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     const getFormData = async () => {
@@ -6021,7 +6018,9 @@ const FormEditor = props => {
         setFormData(resJson.data);
       }
     };
-    if (id) getFormData();
+    if (id) {
+      getFormData();
+    }
     reload();
   }, []);
   const reload = () => {
@@ -6063,15 +6062,19 @@ const FormEditor = props => {
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
   };
-  const saveForm = async settingData => {
+  const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-
+    const settingData = window.localStorage.getItem("settings");
+    console.log(JSON.parse(settingData));
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
-      form_body: storedBlocks
+      form_body: storedBlocks,
+      meta_fields: {
+        settings: settingData
+      }
     };
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
@@ -6194,7 +6197,7 @@ const FormEditor = props => {
     onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mintmrm-btn enable",
-    onClick: e => saveForm(settingData)
+    onClick: saveForm
   }, "Enable"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-body"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

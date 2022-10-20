@@ -64,8 +64,11 @@ class Editor extends Component {
         this.props.setAttributes({
             ...this.props.attributes,
             [key]: value
-        })
+        });
 
+        this.props.setAttributes({
+            form_id: value
+        });
         let that =this;
         jQuery.ajax({
                 url: window.getwpf_block_object.ajaxUrl,
@@ -88,7 +91,7 @@ class Editor extends Component {
         return (
             <PanelBody title="Form List" className="inner-pannel">
                 <SelectControl
-                    label="Form List"
+                    label="Form Name"
                     value={attributes.form_id}
                     onChange={ id => this.onChangeAttribute( 'form_id', id )}
                     options={attributes.form_list_data}

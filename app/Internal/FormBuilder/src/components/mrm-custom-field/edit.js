@@ -140,14 +140,7 @@ class Editor extends Component {
                 }
 
                 {attributes.field_type == 'select' && 
-                    <div className="select-option-wrapper">
-                        {/*<TextControl*/}
-                        {/*    className="mrm-inline-label"*/}
-                        {/*    label="Option Name"*/}
-                        {/*    // value={ attributes.select_option_name }*/}
-                        {/*    onChange={ (state ) => setAttributes({ select_option_name: state }) }*/}
-                        {/*/>*/}
-                    
+                    <div className="select-option-wrapper">                   
                         <div className="add-option-wrapper">
                             <h4>Add New Option</h4>
                             <button onClick={() => { this.addNewOption() }} className="add-option-button" role="button" title="Add New Option">
@@ -337,7 +330,7 @@ class Editor extends Component {
                     onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
                     value = { attributes.labelColor }
                 />
-
+                
                 <label className="blocks-base-control__label">Label Spacing</label>
                 <RangeControl
                     value={ attributes.labelSpacing }
@@ -347,6 +340,7 @@ class Editor extends Component {
                     max={50}
                     step={1}
                 />
+                    
             </PanelBody>
 
         )
@@ -545,6 +539,7 @@ class Editor extends Component {
             </Fragment>
         )
     }
+
     /**
      * Render Date Field
      * @param attributes
@@ -593,6 +588,7 @@ class Editor extends Component {
             </Fragment>
         )
     }
+
     /**
      * Render Select Field
      * @param attributes
@@ -664,6 +660,10 @@ class Editor extends Component {
         )
     }
 
+    /**
+     * Render checkbox field
+     * @returns {JSX.Element}
+     */
     renderCheckboxField = (attributes) => {
         const slug_name =  this.makeSlug(attributes.field_name)
         this.props.setAttributes({ field_slug: slug_name })

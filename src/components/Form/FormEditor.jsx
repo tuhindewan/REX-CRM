@@ -24,10 +24,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
 
 const FormEditor = (props) => {
-  const { settingData, setSettingData } = props;
-
-  const [settingToSave, setSettingToSave] = useState(settingData);
-
   const [preview, setPreview] = useState("editor");
 
   // lists
@@ -84,7 +80,7 @@ const FormEditor = (props) => {
     getTags().then((results) => {
       setTags(results.data);
     });
-  }, [settingData]);
+  }, []);
 
   const [formData, setFormData] = useState({});
 
@@ -99,7 +95,9 @@ const FormEditor = (props) => {
         setFormData(resJson.data);
       }
     };
-    if (id) getFormData();
+    if (id) {
+      getFormData();
+    }
     reload();
   }, []);
 
@@ -149,15 +147,20 @@ const FormEditor = (props) => {
     }));
   };
 
-  const saveForm = async (settingData) => {
+  const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
+    const settingData = window.localStorage.getItem("settings");
+    console.log(JSON.parse(settingData));
 
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
+      meta_fields: {
+        settings: settingData,
+      },
     };
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
@@ -310,10 +313,7 @@ const FormEditor = (props) => {
             >
               <SettingIcon />
             </button>
-            <button
-              className="mintmrm-btn enable"
-              onClick={(e) => saveForm(settingData)}
-            >
+            <button className="mintmrm-btn enable" onClick={saveForm}>
               Enable
             </button>
           </div>
