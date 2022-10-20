@@ -405,4 +405,49 @@ class CampaignModel {
         $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
         return $wpdb->get_results( $select_query, ARRAY_A );
     }
+
+
+    /**
+     * Update a campaign status 
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $status
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_status($campaign_id, $status)
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+
+        $args['updated_at'] = current_time('mysql');
+
+        return $wpdb->update( $fields_table, array( 'status' => $status), array( 'id' => $campaign_id ) );
+    }
+
+
+    /**
+     * @desc Update a campaign email status
+     * @param mixed $campaign_id
+     * @param mixed $email_id
+     * @param mixed $status
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_email_status( $campaign_id, $email_id, $status)
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        return $wpdb->update(
+            $campaign_emails_table,
+            [
+                'status' => $status
+            ],
+            [
+                'id' => $email_id,
+                'campaign_id' => $campaign_id
+            ]
+        );
+    }
 }

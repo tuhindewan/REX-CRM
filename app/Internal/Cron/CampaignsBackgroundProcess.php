@@ -2,6 +2,7 @@
 namespace Mint\MRM\Internal\Cron;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
+use Mint\MRM\DataBase\Models\CampaignModel;
 use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
@@ -94,6 +95,7 @@ class CampaignsBackgroundProcess
                         $this->send_emails( $recipients_emails, $email_subject, $email_body, $headers, $campaign_id, $campaign_email_id, $offset );
                     } else {
                         delete_option('mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id );
+                        CampaignModel::update_campaign_email_status( $campaign_id, $campaign_email_id, 'sent' );
                     }
                     if ( $this->time_exceeded() || $this->memory_exceeded() ) {
                         break;
