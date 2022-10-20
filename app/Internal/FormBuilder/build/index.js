@@ -5938,6 +5938,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const FormEditor = props => {
   const [preview, setPreview] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("editor");
 
@@ -5961,6 +5962,10 @@ const FormEditor = props => {
   const [message, setMessage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
   const [showAlert, setShowAlert] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("none");
   const [savedSuccess, setSaveSuccess] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [recipientLists, setRecipientLists] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [recipientTags, setRecipientTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [dropDown, setDropDown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [groupIds, setGroupIds] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.useNavigate)();
   const toggleEnable = () => {
     setEnable(!enable);
@@ -6038,16 +6043,23 @@ const FormEditor = props => {
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
   };
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    const lists = recipientLists.filter(list => list.id > 0).map(list => list.id);
+    const tags = recipientTags.filter(tag => tag.id > 0).map(tag => tag.id);
+    const group_ids = lists.concat(tags);
+    setFormData(prevState => ({
+      ...prevState,
+      group_ids: group_ids
+    }));
+    setGroupIds(group_ids);
+  }, [recipientLists, recipientTags]);
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
-    // if (settingDataValidation(settingData)) {
-    //   console.log(settingData);
-    // }
     const settingData = window.localStorage.getItem("getsettings");
-    console.log(JSON.parse(settingData));
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
+      group_ids: groupIds,
       meta_fields: {
         settings: settingData
       }
@@ -6111,15 +6123,6 @@ const FormEditor = props => {
     setPositionName(name);
     setToggleDropdown(false);
   };
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    const lists = selectedLists.filter(list => list.id > 0).map(list => list.id);
-    const tags = selectedTags.filter(tag => tag.id > 0).map(tag => tag.id);
-    const group_ids = lists.concat(tags);
-    setFormData(prevState => ({
-      ...prevState,
-      group_ids: group_ids
-    }));
-  }, [selectedLists, selectedTags]);
 
   //-------show more option click function-------
   const clickShowOption = () => {
@@ -6127,8 +6130,8 @@ const FormEditor = props => {
   };
 
   //-------list click function-------
-  const showListDropdown = () => {
-    setListDropdown(current => !current);
+  const showDropDown = () => {
+    setDropDown(!dropDown);
   };
 
   //-------settings pannel open function-------
@@ -6187,13 +6190,28 @@ const FormEditor = props => {
     className: "form-group list"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "list-label"
-  }, "List"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "Assign To"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "list-content"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, recipientLists.length == 0 && recipientTags.length == 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "all-recipients",
-    onClick: showListDropdown
-  }, "All Subscriber", listDropdown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_14__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Campaign_CampaignCustomSelect__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    dropDown: listDropdown
+    onClick: showDropDown
+  }, "All Subscriber", dropDown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_14__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null)) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "all-recipients selected show",
+    onClick: showDropDown
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "tags"
+  }, recipientTags.length, " Tags"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "from"
+  }, "and"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "lists"
+  }, recipientLists.length, " Lists."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "recipients"
+  }, recipientLists.length + recipientTags.length, " Groups"), dropDown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_14__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Campaign_CampaignCustomSelect__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    dropDown: dropDown,
+    setRecipientTags: setRecipientTags,
+    recipientTags: recipientTags,
+    setRecipientLists: setRecipientLists,
+    recipientLists: recipientLists
   })))), preview === "mobile" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_MobileView__WEBPACK_IMPORTED_MODULE_15__["default"], {
     blockData: blockData
   }) : preview === "desktop" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DesktopView__WEBPACK_IMPORTED_MODULE_16__["default"], {
