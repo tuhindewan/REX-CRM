@@ -277,12 +277,16 @@ class CampaignModel {
      * @return array
      * @since 1.0.0
      */
-    public static function get_campaign_email( $id )
+    public static function get_campaign_email( $id, $scheduled_at = null )
     {
         global $wpdb;
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        $campaign_emails_query = $wpdb->prepare("SELECT * FROM {$campaign_emails_table} WHERE `campaign_id` = %d AND `status` = %s AND `scheduled_at` <= %s", $id, 'scheduled', current_time( 'Y-m-d H:i:s' ) );
-        $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
+        $campaign_emails_query = $wpdb->prepare("SELECT * FROM {$campaign_emails_table} WHERE `campaign_id` = %d AND `status` = %s", $id, 'scheduled' );
+        if ( $scheduled_at ) {
+			$campaign_emails_query .= $wpdb->prepare( "AND `scheduled_at` <= %s", $scheduled_at );
+		}
+
+		$emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
         $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
         if (!empty($emails)) {
