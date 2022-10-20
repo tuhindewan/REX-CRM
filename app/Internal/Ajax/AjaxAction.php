@@ -3,6 +3,7 @@
 namespace Mint\MRM\Internal\Ajax;
 
 
+use Mint\MRM\Admin\API\Controllers\MessageController;
 use Mint\MRM\Admin\API\Controllers\TagController;
 use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataBase\Models\CustomFieldModel;
@@ -105,6 +106,10 @@ class AjaxAction {
             $contact_id         = ContactModel::insert( $contact );
             if ( $contact_id ){
                 do_action('mrm/after_form_submit',$contact_id,$contact);
+                /**
+                 * Send Double Optin Email
+                 */
+                MessageController::get_instance()->send_double_opt_in( $contact_id );
 
                 $sign_up        = FormModel::get_meta($form_id);
                 $sign_up_count  = isset($sign_up['meta_fields']['sign_up']) ? $sign_up['meta_fields']['sign_up'] : 0;
@@ -120,8 +125,13 @@ class AjaxAction {
                 $meta_fields['meta_fields'] = isset($form_data['meta_fields']) ? $form_data['meta_fields'] : [];
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
 
-                $setting = FormModel::get_meta($form_id);
-//                $setting = unserialize($setting['meta_fields']['_form_setting']);
+                $get_setting        = FormModel::get_meta($form_id);
+                $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  [];
+                $form_setting       = json_decode($form_setting);
+                $confirmation_type  = $form_setting->settings->confirmation_type;
+                if(!empty($confirmation_type->same_page->message_to_show)){
+
+                }
                 $response['status']  = 'success';
                 $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
                 echo json_encode($response, true);

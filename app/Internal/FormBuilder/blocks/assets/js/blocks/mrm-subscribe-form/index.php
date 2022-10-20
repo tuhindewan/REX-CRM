@@ -4,6 +4,8 @@
  */
 namespace Mint\MRM\Internal\FormBuilder;
 
+use Mint\MRM\DataBase\Models\FormModel;
+
 class MRM_Subscribe_form
 {
     public function __construct()
@@ -68,7 +70,11 @@ class MRM_Subscribe_form
     public function mrm_subscribe_block_render($attributes)
     {
         $html = '';
-        $form_placement = get_post_meta($attributes['form_id'],'mrm_form_replace_position',true);
+        $form_id = isset($attributes['form_id']) ? $attributes['form_id'] : 0;
+        $get_setting        = FormModel::get_meta($form_id);
+        $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  [];
+        $form_setting       = json_decode($form_setting);
+        $form_placement      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
         $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper">
                 <form method="post" id="mrm-form">
