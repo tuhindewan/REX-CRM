@@ -159,7 +159,9 @@ class CampaignController extends BaseController {
                 $data['campaign'] = $this->campaign_data;
                 if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
                     //test_email_sending(for dev)
-                    $response = self::send_email_to_reciepents($this->campaign_data);
+                    // $response = self::send_email_to_reciepents($this->campaign_data);
+                    $response = ModelsCampaign::get_publish_campaign_id();
+                    error_log(print_r($response, 1));
                     return $this->get_success_response(__( 'Campaign has been started successfully', 'mrm' ), 201, $data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);

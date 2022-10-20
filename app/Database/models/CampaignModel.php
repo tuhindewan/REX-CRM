@@ -403,4 +403,12 @@ class CampaignModel {
         $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND email_index=%s", $campaign_id, $email_index );
         return $wpdb->get_row( $select_query );
     }
+
+    public static function get_publish_campaign_id() {
+        global $wpdb;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+
+        $select_query       = $wpdb->prepare("SELECT id FROM $campaign_table WHERE status = 'ongoing'");
+        return $wpdb->get_row( $select_query, ARRAY_A );
+    }
 }

@@ -56,9 +56,11 @@ class CampaignsBackgroundProcess
         if ( !$this->process_locked() ) {
             $this->lock_process();
             $campaign_id = 1;
+            error_log(print_r($campaign_id, 1));
             $offset = get_option( 'mrm_campaign_email_recipients_offset', 0 );
             $per_batch = 10;
             $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
+            error_log(print_r($recipients_emails, 1));
             $recipients_emails = array_column( array_values( array_filter( $recipients_emails ) ), 'email' );
             if ( !empty( $recipients_emails ) ) {
                 $this->send_emails( $recipients_emails, $campaign_id, $offset );
