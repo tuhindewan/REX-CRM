@@ -57,18 +57,19 @@ class CampaignsBackgroundProcess
     public function process_scheduled_emails() {
         if ( !$this->process_locked() ) {
             $this->lock_process();
-            $campaign_id = 1;
+            $campaign       = CampaignController::get_instance()->get_publish_campaign_id();
+            $campaign_id    = isset( $campaign['id'] ) ? $campaign['id'] : "";
             error_log(print_r($campaign_id, 1));
-            $offset = get_option( 'mrm_campaign_email_recipients_offset', 0 );
+            $offset = get_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id, 0 );
+            error_log(print_r($offset, 1));
             $per_batch = 10;
             $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
-            error_log(print_r($recipients_emails, 1));
             $recipients_emails = array_column( array_values( array_filter( $recipients_emails ) ), 'email' );
             if ( !empty( $recipients_emails ) ) {
                 $this->send_emails( $recipients_emails, $campaign_id, $offset );
             }
             else {
-                delete_option( 'mrm_campaign_email_recipients_offset' );
+                delete_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id );
             }
             $this->unlock_process();
         }
@@ -97,7 +98,7 @@ class CampaignsBackgroundProcess
             try {
                 wp_mail( $recipient, $email_subject, $email_body, $headers );
                 $offset++;
-                update_option( 'mrm_campaign_email_recipients_offset', $offset );
+                update_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id, $offset );
                 sleep( 0.5 );
             }
             catch(\Exception $e) {

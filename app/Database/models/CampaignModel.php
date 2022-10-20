@@ -408,7 +408,7 @@ class CampaignModel {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
-        $select_query       = $wpdb->prepare("SELECT id FROM $campaign_table WHERE status = 'ongoing'");
+        $select_query   = $wpdb->prepare("SELECT * FROM $campaign_table WHERE status = 'ongoing'");
         return $wpdb->get_row( $select_query, ARRAY_A );
     }
 }
