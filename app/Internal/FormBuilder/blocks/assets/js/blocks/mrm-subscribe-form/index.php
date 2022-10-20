@@ -249,6 +249,21 @@ class MRM_Subscribe_form
                 .mintmrm-radiobtn input[type="radio"]:checked + label::after {
                     transform: scale(1);
                 }
+
+                .mrm-form-wrapper .response {
+                    font-size: 15px;
+                    font-style: italic;
+                    color: #000;
+                }
+
+                .mrm-form-wrapper .response.mintmrm-error {
+                    color: #e71616;
+                }
+
+                .mrm-form-wrapper .response.mintmrm-success {
+                    color: #08c708;
+                }
+                
             </style>
 
         </div>';

@@ -19,10 +19,10 @@ const {
  */
 
 const mrmSubscribeForm = ({
-                            attributes: {
-                                render_block,
-                            },
-                        }) => {
+        attributes: {
+            render_block,
+        },
+    }) => {
 
     return (
 
