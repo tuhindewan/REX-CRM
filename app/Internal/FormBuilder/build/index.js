@@ -4825,7 +4825,7 @@ function Sidebar() {
   const [redirectionMessage, setRedirectionMessage] = useState("");
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("pop-up");
+  const [formLayout, setFormLayout] = useState("below-pages");
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
@@ -5037,11 +5037,14 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Define behaviour of the form after submission"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
     selected: afterFormSubmission,
     options: [{
+      label: "None",
+      value: "none"
+    }, {
       label: "Hide Form",
-      value: "hide-form"
+      value: "hide_form"
     }, {
       label: "Reset Form",
-      value: "reset-form"
+      value: "reset_form"
     }],
     onChange: state => setAfterFormSubmission(state)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -5108,11 +5111,17 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
     selected: formLayout,
     options: [{
-      label: "Fly In",
-      value: "fly-in"
+      label: "Below Pages",
+      value: "below-pages"
     }, {
       label: "Pop Up",
-      value: "pop-up"
+      value: "popup"
+    }, {
+      label: "Fly Ins",
+      value: "flyins"
+    }, {
+      label: "Fixed Bar",
+      value: "fixed-bar"
     }],
     onChange: state => setFormLayout(state)
   })))))));

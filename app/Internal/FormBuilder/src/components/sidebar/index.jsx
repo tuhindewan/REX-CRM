@@ -94,7 +94,7 @@ function Sidebar() {
   const [redirectionMessage, setRedirectionMessage] = useState("");
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("pop-up");
+  const [formLayout, setFormLayout] = useState("below-pages");
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
@@ -396,8 +396,9 @@ function Sidebar() {
                       <RadioControl
                         selected={afterFormSubmission}
                         options={[
-                          { label: "Hide Form", value: "hide-form" },
-                          { label: "Reset Form", value: "reset-form" },
+                          { label: "None", value: "none" },
+                          { label: "Hide Form", value: "hide_form" },
+                          { label: "Reset Form", value: "reset_form" },
                         ]}
                         onChange={(state) => setAfterFormSubmission(state)}
                       />
@@ -517,8 +518,10 @@ function Sidebar() {
                 <RadioControl
                   selected={formLayout}
                   options={[
-                    { label: "Fly In", value: "fly-in" },
-                    { label: "Pop Up", value: "pop-up" },
+                    { label: "Below Pages", value: "below-pages" },
+                    { label: "Pop Up", value: "popup" },
+                    { label: "Fly Ins", value: "flyins" },
+                    { label: "Fixed Bar", value: "fixed-bar" },
                   ]}
                   onChange={(state) => setFormLayout(state)}
                 />
