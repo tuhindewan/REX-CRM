@@ -303,7 +303,7 @@ class ContactForm {
                     padding: 5px;
                 }
 
-                .mrm-popup .mrm-form-wrapper-inner .mrm-form-close {
+                .mrm-form-wrapper .mrm-form-wrapper-inner .mrm-form-close {
                     position: absolute;
                     right: -12px;
                     top: -16px;

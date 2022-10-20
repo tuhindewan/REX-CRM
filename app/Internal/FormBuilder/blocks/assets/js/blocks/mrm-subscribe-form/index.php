@@ -290,6 +290,9 @@ class MRM_Subscribe_form
                     justify-content: center;
                     background: #33333357;
                 }
+                .mrm-form-wrapper .mrm-form-wrapper-inner {
+                    position: relative;
+                }
                 .mrm-popup .mrm-form-wrapper-inner {
                     max-width: 450px;
                     width: 100%;
@@ -301,7 +304,7 @@ class MRM_Subscribe_form
                     padding: 5px;
                 }
 
-                .mrm-popup .mrm-form-wrapper-inner .mrm-form-close {
+                .mrm-form-wrapper .mrm-form-wrapper-inner .mrm-form-close {
                     position: absolute;
                     right: -12px;
                     top: -16px;
@@ -322,18 +325,44 @@ class MRM_Subscribe_form
                     width: 100%;
                     height: 100%;
                 }
-                .mrm-popup .mrm-form-overflow::-webkit-scrollbar {
+                .mrm-form-wrapper .mrm-form-overflow::-webkit-scrollbar {
                     width: 6px;
                     height: 6px;
                 }
-                .mrm-popup .mrm-form-overflow::-webkit-scrollbar-track {
+                .mrm-form-wrapper .mrm-form-overflow::-webkit-scrollbar-track {
                     background: #f9fafb;
                 }
-                .mrm-popup .mrm-form-overflow::-webkit-scrollbar-thumb {
+                .mrm-form-wrapper .mrm-form-overflow::-webkit-scrollbar-thumb {
                     background-color: #ccd0d9;
                     border-radius: 20px;
                 }
                 
+
+                /*-------form flyins style------*/
+                .mrm-form-wrapper.mrm-flyins {
+                    position: fixed;
+                    right: 0;
+                    bottom: 0;
+                }
+
+                .mrm-flyins .mrm-form-wrapper-inner {
+                    background: #4cd79d;
+                    padding: 5px;
+                }
+
+                .mrm-flyins .mrm-form-overflow {
+                    height: 100%;
+                    max-width: 320px;
+                    max-height: 360px;
+                    width: 100%;
+                    overflow: auto;
+                    padding: 15px;
+                }
+                .mrm-flyins .mrm-form-wrapper-inner .mrm-form-close {
+                    right: inherit;
+                    left: -12px;
+                    background: #4cd79d;
+                }
 
 
             </style>
