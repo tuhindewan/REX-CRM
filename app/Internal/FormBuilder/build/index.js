@@ -4995,14 +4995,19 @@ function Sidebar() {
       getPageData();
     }
   };
+  const [pageId, setPageId] = useState();
+  const handlePageChange = state => {
+    console.log(state);
+  };
   useEffect(() => {
+    const optionArray = [];
     pageData === null || pageData === void 0 ? void 0 : pageData.map(page => {
-      console.log(page);
-      setPageOptions(...pageOptions, [{
+      optionArray.push({
         value: page.id,
         label: page.title.rendered
-      }]);
+      });
     });
+    setPageOptions(optionArray);
   }, [pageData]);
 
   //-------settings pannel open function-------
@@ -5123,9 +5128,10 @@ function Sidebar() {
   }, "Select a page", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Which page you want to redirect after the submitted the form?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-    value: "",
-    options: pageOptions
-  }), ";"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    value: pageId,
+    options: pageOptions,
+    onChange: state => handlePageChange(state)
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "settings-label"

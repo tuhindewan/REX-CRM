@@ -262,16 +262,21 @@ function Sidebar() {
     }
   };
 
+  const [pageId, setPageId] = useState();
+
+  const handlePageChange = (state) => {
+    console.log(state);
+  };
+
   useEffect(() => {
+    const optionArray = [];
     pageData?.map((page) => {
-      console.log(page);
-      setPageOptions(...pageOptions, [
-        {
-          value: page.id,
-          label: page.title.rendered,
-        },
-      ]);
+      optionArray.push({
+        value: page.id,
+        label: page.title.rendered,
+      });
     });
+    setPageOptions(optionArray);
   }, [pageData]);
 
   //-------settings pannel open function-------
@@ -456,7 +461,11 @@ function Sidebar() {
                           </p>
                         </span>
                       </label>
-                      <SelectControl value="" options={pageOptions} />;
+                      <SelectControl
+                        value={pageId}
+                        options={pageOptions}
+                        onChange={(state) => handlePageChange(state)}
+                      />
                     </div>
 
                     <div className="single-settings">
