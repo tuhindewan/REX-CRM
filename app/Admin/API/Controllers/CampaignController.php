@@ -159,7 +159,9 @@ class CampaignController extends BaseController {
                 $data['campaign'] = $this->campaign_data;
                 if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
                     //test_email_sending(for dev)
-                    $response = self::send_email_to_reciepents($this->campaign_data);
+                    // $response = self::send_email_to_reciepents($this->campaign_data);
+                    // $response = ModelsCampaign::get_publish_campaign_id();
+                    // $response = $this->get_publish_campaign_id();
                     return $this->get_success_response(__( 'Campaign has been started successfully', 'mrm' ), 201, $data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
@@ -461,6 +463,11 @@ class CampaignController extends BaseController {
         $recipients_ids = ContactGroupPivotModel::get_contacts_to_group( array_column( $group_ids, 'id' ), $offset, $per_batch );
         $recipients_ids = array_column( $recipients_ids, 'contact_id' );
         return ContactModel::get_single_email( $recipients_ids );
+    }
+
+    public function get_publish_campaign_id()
+    {
+        return ModelsCampaign::get_publish_campaign_id();
     }
 
 
