@@ -283,7 +283,6 @@ const FormEditor = (props) => {
 
   return (
     <>
-      {console.log(formData)}
       <div className="form-editor-page">
         <div className="form-editor-topbar">
           <div className="topbar-left">
