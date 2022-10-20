@@ -21,6 +21,7 @@ import EditIcon from "../Icons/EditIcon";
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
+import { set } from "rsuite/esm/utils/dateUtils";
 
 const FormEditor = (props) => {
   const [preview, setPreview] = useState("editor");
@@ -54,6 +55,13 @@ const FormEditor = (props) => {
   const [showAlert, setShowAlert] = useState("none");
 
   const [savedSuccess, setSaveSuccess] = useState(false);
+
+  const [recipientLists, setRecipientLists] = useState([]);
+  const [recipientTags, setRecipientTags] = useState([]);
+  const [dropDown, setDropDown] = useState(false);
+
+  const [groupIds, setGroupIds] = useState([]);
+  const [saveLoader, setsaveLoader] = useState(false);
 
   const navigate = useNavigate();
 
@@ -146,20 +154,40 @@ const FormEditor = (props) => {
     }));
   };
 
-  const saveForm = async () => {
+  useEffect(() => {
+    const lists = recipientLists
+      .filter((list) => list.id > 0)
+      .map((list) => list.id);
+
+    const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
+
+    const group_ids = lists.concat(tags);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      group_ids: group_ids,
+    }));
+
+    setGroupIds(group_ids);
+  }, [recipientLists, recipientTags]);
+
+  const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
-    // if (settingDataValidation(settingData)) {
-    //   console.log(settingData);
-    // }
+
     const settingData = window.localStorage.getItem("getsettings");
+
+    setsaveLoader(true);
 
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
+      group_ids: groupIds,
+      status: 0,
       meta_fields: {
         settings: settingData,
       },
     };
+
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
         method: "POST",
@@ -173,9 +201,11 @@ const FormEditor = (props) => {
       setMessage(responseData?.message);
       if (201 === responseData?.code) {
         setSaveSuccess(true);
+        setsaveLoader(false);
         setId(responseData?.data);
       } else if (200 === responseData?.code) {
         setSaveSuccess(false);
+        setsaveLoader(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -197,8 +227,78 @@ const FormEditor = (props) => {
       setMessage(responseData?.message);
       if (201 === responseData?.code) {
         setSaveSuccess(true);
+        setsaveLoader(false);
       } else if (200 === responseData?.code) {
         setSaveSuccess(false);
+        setsaveLoader(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  };
+
+  const saveForm = async () => {
+    const storedBlocks = window.localStorage.getItem("getmrmblocks");
+
+    const settingData = window.localStorage.getItem("getsettings");
+
+    setsaveLoader(true);
+
+    const post_data = {
+      title: formData?.title,
+      form_body: storedBlocks,
+      group_ids: groupIds,
+      status: 1,
+      meta_fields: {
+        settings: settingData,
+      },
+    };
+
+    if (id == undefined) {
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      });
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+        setsaveLoader(false);
+        setId(responseData?.data);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
+        setsaveLoader(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(post_data),
+        }
+      );
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+        setsaveLoader(false);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
+        setsaveLoader(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -225,29 +325,14 @@ const FormEditor = (props) => {
     setToggleDropdown(false);
   };
 
-  useEffect(() => {
-    const lists = selectedLists
-      .filter((list) => list.id > 0)
-      .map((list) => list.id);
-
-    const tags = selectedTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
-
-    const group_ids = lists.concat(tags);
-
-    setFormData((prevState) => ({
-      ...prevState,
-      group_ids: group_ids,
-    }));
-  }, [selectedLists, selectedTags]);
-
   //-------show more option click function-------
   const clickShowOption = () => {
     setMoreOption((current) => !current);
   };
 
   //-------list click function-------
-  const showListDropdown = () => {
-    setListDropdown((current) => !current);
+  const showDropDown = () => {
+    setDropDown(!dropDown);
   };
 
   //-------settings pannel open function-------
@@ -274,19 +359,25 @@ const FormEditor = (props) => {
 
             <div className="responsive-section">
               <button
-                className="computer-view active"
+                className={
+                  "editor" === preview ? "edit-view active" : "edit-view"
+                }
                 onClick={(e) => handlePreview("editor")}
               >
                 <EditIcon />
               </button>
               <button
-                className="computer-view active"
+                className={
+                  "desktop" === preview ? "desktop-view active" : "desktop-view"
+                }
                 onClick={(e) => handlePreview("desktop")}
               >
                 <ComputerIcon />
               </button>
               <button
-                className="mobile-view"
+                className={
+                  "mobile" === preview ? "mobile-view active" : "mobile-view"
+                }
                 onClick={(e) => handlePreview("mobile")}
               >
                 <MobileIcon />
@@ -301,7 +392,7 @@ const FormEditor = (props) => {
             >
               <ThreeDotIcon />
               <ul className="mintmrm-dropdown">
-                <li onClick={saveForm}>Save as Draft</li>
+                <li onClick={saveFormAsDraft}>Save as Draft</li>
                 {/*<li>Change Template</li>*/}
               </ul>
             </button>
@@ -311,8 +402,16 @@ const FormEditor = (props) => {
             >
               <SettingIcon />
             </button>
-            <button className="mintmrm-btn enable" onClick={saveForm}>
-              Enable
+            <button
+              className={
+                saveLoader
+                  ? "mintmrm-btn enable show-loader"
+                  : "mintmrm-btn enable"
+              }
+              onClick={saveForm}
+            >
+              {id ? "Update" : "Publish"}
+              <span className="mintmrm-loader"></span>
             </button>
           </div>
         </div>
@@ -327,15 +426,38 @@ const FormEditor = (props) => {
             />
 
             <div className="form-group list">
-              <label className="list-label">List</label>
+              <label className="list-label">Assign To</label>
 
               <div className="list-content">
-                <button className="all-recipients" onClick={showListDropdown}>
-                  All Subscriber
-                  {listDropdown ? <UpArrowIcon /> : <DownArrowIcon />}
-                </button>
+                {recipientLists.length == 0 && recipientTags.length == 0 ? (
+                  <button className="all-recipients" onClick={showDropDown}>
+                    All Subscriber
+                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                  </button>
+                ) : (
+                  <button
+                    className="all-recipients selected show"
+                    onClick={showDropDown}
+                  >
+                    <span className="tags">{recipientTags.length} Tags</span>
+                    <span className="from">and</span>
+                    <span className="lists">
+                      {recipientLists.length} Lists.
+                    </span>
+                    <span className="recipients">
+                      {recipientLists.length + recipientTags.length} Groups
+                    </span>
+                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                  </button>
+                )}
 
-                <CampaignCustomSelect dropDown={listDropdown} />
+                <CampaignCustomSelect
+                  dropDown={dropDown}
+                  setRecipientTags={setRecipientTags}
+                  recipientTags={recipientTags}
+                  setRecipientLists={setRecipientLists}
+                  recipientLists={recipientLists}
+                />
               </div>
             </div>
           </div>

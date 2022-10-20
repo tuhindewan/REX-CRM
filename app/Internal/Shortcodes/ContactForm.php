@@ -75,12 +75,17 @@ class ContactForm {
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
         }elseif(!$form_status){
-           return __('This form is not active. Please check');
+            return __('This form is not active. Please check');
         }
+
+        $get_setting        = FormModel::get_meta($form_id);
+        $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  [];
+        $form_setting       = json_decode($form_setting);
+        $form_position      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
         $output = '';
         ob_start();?>
         <div class="mintmrm" >
-            <div id="mrm-<?php echo isset($form_data['form_position']) ? $form_data['form_position'] : '' ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
+            <div id="mrm-<?php echo $form_position ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_position?>">
                 <form method="post" id="mrm-form">
                     <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                     <?php echo  $form_data['form_body'] ?>
@@ -118,7 +123,7 @@ class ContactForm {
                     outline: none;
                     box-shadow: none;
                 }
-                .mintmrm-btn {
+                .mintmrm .mintmrm-btn {
                     display: inline-block;
                     border: 1px solid transparent;
                     color: #fff;
@@ -134,7 +139,7 @@ class ContactForm {
                     text-transform: capitalize;
                     background-color: #573BFF;
                 }
-                .mintmrm-btn:hover {
+                .mintmrm .mintmrm-btn:hover {
                     background-color: #4C25A5;
                     color: #fff;
                 }
@@ -156,6 +161,7 @@ class ContactForm {
                     padding-left: 29px;
                     display: inline-block;
                     text-transform: capitalize;
+                    cursor: pointer;
                 }
                 .mintmrm-checkbox label:before {
                     content: "";
@@ -203,13 +209,14 @@ class ContactForm {
                 }
                 .mintmrm-radiobtn label {
                     font-size: 15px;
-                    line-height: 1.1;
+                    line-height: 14px;
                     font-weight: 500;
                     color: #7a8b9a;
                     position: relative;
                     padding-left: 29px;
                     display: inline-block;
                     text-transform: capitalize;
+                    cursor: pointer;
                 }
                 .mintmrm-radiobtn label::before {
                     content: "";
@@ -241,6 +248,19 @@ class ContactForm {
                 }
                 .mintmrm-radiobtn input[type="radio"]:checked + label::after {
                     transform: scale(1);
+                }
+                .mrm-form-wrapper .response {
+                    font-size: 15px;
+                    font-style: italic;
+                    color: #000;
+                }
+
+                .mrm-form-wrapper .response.mintmrm-error {
+                    color: #e71616;
+                }
+
+                .mrm-form-wrapper .response.mintmrm-success {
+                    color: #08c708;
                 }
 
             </style>
