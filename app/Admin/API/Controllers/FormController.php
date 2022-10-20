@@ -64,7 +64,6 @@ class FormController extends BaseController {
         try {
             $form = new FormData( $this->args );
 
-
             if( isset( $params['form_id']) ) {
                 $success = FormModel::update( $form, $params['form_id'], "forms" );
             } else {
@@ -171,6 +170,8 @@ class FormController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
 
         $group = FormModel::get( $params['form_id'] );
+
+        $group['group_ids'] = unserialize($group['group_ids']);
 
         if(isset($group)) {
             return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $group);
