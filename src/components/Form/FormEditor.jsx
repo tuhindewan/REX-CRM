@@ -62,6 +62,7 @@ const FormEditor = (props) => {
   const [dropDown, setDropDown] = useState(false);
 
   const [groupIds, setGroupIds] = useState([]);
+  const [saveLoader, setsaveLoader] = useState(false);
 
   const navigate = useNavigate();
 
@@ -176,6 +177,8 @@ const FormEditor = (props) => {
 
     const settingData = window.localStorage.getItem("getsettings");
 
+    setsaveLoader(true);
+
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
@@ -198,14 +201,18 @@ const FormEditor = (props) => {
       setMessage(responseData?.message);
       if (201 === responseData?.code) {
         setSaveSuccess(true);
+        setsaveLoader(false);
         setId(responseData?.data);
+        
       } else if (200 === responseData?.code) {
         setSaveSuccess(false);
+        setsaveLoader(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
       }, 3000);
       return () => clearTimeout(timer);
+
     } else {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
@@ -222,8 +229,11 @@ const FormEditor = (props) => {
       setMessage(responseData?.message);
       if (201 === responseData?.code) {
         setSaveSuccess(true);
+        setsaveLoader(false);
+
       } else if (200 === responseData?.code) {
         setSaveSuccess(false);
+        setsaveLoader(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -322,8 +332,9 @@ const FormEditor = (props) => {
             >
               <SettingIcon />
             </button>
-            <button className="mintmrm-btn enable" onClick={saveForm}>
-              Enable
+            <button className={saveLoader ? "mintmrm-btn enable show-loader" : "mintmrm-btn enable"} onClick={saveForm}>
+              Save
+              <span className="mintmrm-loader"></span>
             </button>
           </div>
         </div>

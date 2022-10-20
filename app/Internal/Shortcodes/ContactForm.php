@@ -123,7 +123,7 @@ class ContactForm {
                     outline: none;
                     box-shadow: none;
                 }
-                .mintmrm-btn {
+                .mintmrm .mintmrm-btn {
                     display: inline-block;
                     border: 1px solid transparent;
                     color: #fff;
@@ -139,7 +139,7 @@ class ContactForm {
                     text-transform: capitalize;
                     background-color: #573BFF;
                 }
-                .mintmrm-btn:hover {
+                .mintmrm .mintmrm-btn:hover {
                     background-color: #4C25A5;
                     color: #fff;
                 }

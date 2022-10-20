@@ -102,7 +102,6 @@ function Sidebar() {
   const [maxEntries, setMaxEntries] = useState(false);
   const [maxNumber, setMaxNumber] = useState();
   const [maxType, setMaxType] = useState();
-
   const params = useParams();
   const [id, setId] = useState(window.location.hash.slice(15));
   const [formData, setFormData] = useState({});
@@ -248,6 +247,12 @@ function Sidebar() {
     setTabState(index);
   };
 
+  //-------settings pannel open function-------
+  const showSettingsPannel = (event) => {
+    const el = document.getElementsByClassName('getdave-sbe-block-editor');
+    el[0].classList.remove('show-settings-pannel')
+  };
+
   //-----counter increment-------
   function counterIncrement() {
     setCount(function (prevCount) {
@@ -303,8 +308,8 @@ function Sidebar() {
               Settings
             </h2>
 
-            <span className="close-pannel">
-              <CrossIcon />
+            <span className="close-pannel" onClick={showSettingsPannel}>
+              <CrossIcon  />
             </span>
           </div>
 

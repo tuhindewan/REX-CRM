@@ -8201,6 +8201,12 @@ function Sidebar() {
     setTabState(index);
   };
 
+  //-------settings pannel open function-------
+  const showSettingsPannel = event => {
+    const el = document.getElementsByClassName('getdave-sbe-block-editor');
+    el[0].classList.remove('show-settings-pannel');
+  };
+
   //-----counter increment-------
   function counterIncrement() {
     setCount(function (prevCount) {
@@ -8246,7 +8252,8 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "components-panel__header"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingsIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), "Settings"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "close-pannel"
+    className: "close-pannel",
+    onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Confirmation Settings",
     className: "confirmation-settings",
@@ -9275,6 +9282,7 @@ const FormEditor = props => {
   const [recipientTags, setRecipientTags] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [dropDown, setDropDown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [groupIds, setGroupIds] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [saveLoader, setsaveLoader] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.useNavigate)();
   const toggleEnable = () => {
     setEnable(!enable);
@@ -9365,6 +9373,7 @@ const FormEditor = props => {
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     const settingData = window.localStorage.getItem("getsettings");
+    setsaveLoader(true);
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
@@ -9386,9 +9395,11 @@ const FormEditor = props => {
       setMessage(responseData === null || responseData === void 0 ? void 0 : responseData.message);
       if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(true);
+        setsaveLoader(false);
         setId(responseData === null || responseData === void 0 ? void 0 : responseData.data);
       } else if (200 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(false);
+        setsaveLoader(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -9407,8 +9418,10 @@ const FormEditor = props => {
       setMessage(responseData === null || responseData === void 0 ? void 0 : responseData.message);
       if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(true);
+        setsaveLoader(false);
       } else if (200 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
         setSaveSuccess(false);
+        setsaveLoader(false);
       }
       const timer = setTimeout(() => {
         setShowNotification("none");
@@ -9486,9 +9499,11 @@ const FormEditor = props => {
     className: "mintmrm-btn settings",
     onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "mintmrm-btn enable",
+    className: saveLoader ? "mintmrm-btn enable show-loader" : "mintmrm-btn enable",
     onClick: saveForm
-  }, "Enable"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "Save", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-loader"
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-body"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-title-area"
