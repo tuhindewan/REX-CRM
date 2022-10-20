@@ -110,6 +110,18 @@ class CampaignController extends BaseController {
                             $emails[$index]['send_time'] = $email['send_time'];
                         }
 
+                        $data['campaign'] = $this->campaign_data;
+                        
+                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = current_time('mysql');
+                            $email['status']    = 'scheduled';
+                        }
+
+                        if( isset( $data['campaign']['status'] ) && "draft" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = null;
+                            $email['status']    = 'draft';
+                        }
+
                         ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
@@ -148,6 +160,17 @@ class CampaignController extends BaseController {
                             $emails[$index]['send_time'] = $email['send_time'];
                         }
                         
+                        $data['campaign'] = $this->campaign_data;
+
+                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = current_time('mysql');
+                            $email['status']    = 'scheduled';
+                        }
+
+                        if( isset( $data['campaign']['status'] ) && "draft" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = null;
+                            $email['status']    = 'draft';
+                        }
                         ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
