@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
@@ -12,6 +12,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleListsItems, deleteSingleList } from "../services/List";
 import LoadingIndicator from "../components/LoadingIndicator";
 import ContactNavbar from "../components/ContactNavbar";
+import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -99,6 +100,24 @@ const Lists = () => {
   // loading or not
   const [loading, setLoading] = useState(false);
   const [showTableHead, setShowTableHead] = useState(false);
+
+  const [listening, setListening] = useState(false);
+
+  const sortByRef = useRef(null);
+  const moreOptionRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, sortByRef, setShowDropdown)
+  );
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      moreOptionRef,
+      setShowMoreOptions
+    )
+  );
 
   // set navbar Buttons
   useGlobalStore.setState({
@@ -411,7 +430,7 @@ const Lists = () => {
             <div className="contact-list-header">
               <div className="left-filters">
                 <p className="sort-by">Sort by</p>
-                <div className="sort-by-dropdown">
+                <div className="sort-by-dropdown" ref={sortByRef}>
                   <button
                     className={
                       showDropdown
@@ -479,7 +498,7 @@ const Lists = () => {
                     }}
                   />
                 </span>
-                <div className="bulk-action">
+                <div className="bulk-action" ref={moreOptionRef}>
                   {/* show more options section */}
                   <button
                     className="more-option"
@@ -544,7 +563,8 @@ const Lists = () => {
                               style={{ textAlign: "center" }}
                             >
                               <ListIcon />
-                              No List Found "{search}"
+                              No List Found{" "}
+                              {search ? `"${search}"` : null}
                             </td>
                           </tr>
                         )}
@@ -567,17 +587,15 @@ const Lists = () => {
                     </table>
                   </div>
                 </div>
-                {totalPages > 1 && (
-                  <div className="contact-list-footer">
-                    <Pagination
-                      currentPage={page}
-                      pageSize={perPage}
-                      onPageChange={setPage}
-                      totalCount={count}
-                      totalPages={totalPages}
-                    />
-                  </div>
-                )}
+                <div>
+                  <Pagination
+                    currentPage={page}
+                    pageSize={perPage}
+                    onPageChange={setPage}
+                    totalCount={count}
+                    totalPages={totalPages}
+                  />
+                </div>
               </>
             )}
           </div>

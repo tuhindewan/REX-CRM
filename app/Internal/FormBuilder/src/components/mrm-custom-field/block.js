@@ -52,8 +52,13 @@ const mrmCustomField = ({
 
     let labelStyle = {
         color:  labelColor,
-        marginBottom:  labelSpacing+'px',
+        marginBottom: labelSpacing+'px',
     }
+
+    let radioLabelColor = {
+        color:  labelColor,
+    }
+
     let checkboxLabelColor = {
         color:  labelColor,
     }
@@ -116,9 +121,9 @@ const mrmCustomField = ({
                 <div key={`mrm-${field_label}`} className="mrm-form-group radio">
                     {radioOption.map((option,index) => {
                         return (
-                            <div className="mrm-radio-group mintmrm-radiobtn">
-                                <input type="radio" id={option.label} name={field_slug} required={field_require} style={inputStyle}/>
-                                <label htmlFor={option.label} style={labelStyle}>
+                            <div className="mrm-radio-group mintmrm-radiobtn" style={fieldSpacing}>
+                                <input type="radio" id={option.label} name={field_slug} required={field_require} />
+                                <label htmlFor={option.label} style={radioLabelColor}>
                                     {option.label ? __(option.label,'mrm') : __('','mrm')}
                                     {field_require && <span className="required-mark">*</span>}
                                 </label>

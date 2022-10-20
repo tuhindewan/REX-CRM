@@ -3694,6 +3694,9 @@ const mrmCustomField = _ref => {
     color: labelColor,
     marginBottom: labelSpacing + 'px'
   };
+  let radioLabelColor = {
+    color: labelColor
+  };
   let checkboxLabelColor = {
     color: labelColor
   };
@@ -3766,16 +3769,16 @@ const mrmCustomField = _ref => {
     className: "mrm-form-group radio"
   }, radioOption.map((option, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "mrm-radio-group mintmrm-radiobtn"
+      className: "mrm-radio-group mintmrm-radiobtn",
+      style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: "radio",
       id: option.label,
       name: field_slug,
-      required: field_require,
-      style: inputStyle
+      required: field_require
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
-      style: labelStyle
+      style: radioLabelColor
     }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
@@ -4226,7 +4229,7 @@ class Editor extends Component {
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
       value: attributes.labelColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
@@ -4235,7 +4238,7 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    }));
+    })));
   };
   inputFieldStyle = () => {
     let {
@@ -4306,12 +4309,16 @@ class Editor extends Component {
     }));
   };
   getInspectorControls = () => {
+    let {
+      attributes,
+      setAttributes
+    } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       key: "mrm-mrm-form-inspector-controls"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: "mrm-block-inspected-inspector-control-wrapper",
       className: "mrm-block-control-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), this.inputFieldStyle())));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && this.inputFieldStyle())));
   };
 
   /**
@@ -4554,25 +4561,28 @@ class Editor extends Component {
     let fieldSpacing = {
       marginBottom: attributes.rowSpacing + 'px'
     };
-    let labelStyle = {
-      color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
-    };
+
+    // let labelStyle = {
+    //     color:  attributes.labelColor,
+    //     marginBottom:  attributes.labelSpacing+'px',
+    // }
+
     let checkboxLabelColor = {
       color: attributes.labelColor
     };
-    let inputStyle = {
-      backgroundColor: attributes.inputBgColor,
-      color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
-      borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
-    };
+
+    // let inputStyle = {
+    //     backgroundColor: attributes.inputBgColor,
+    //     color:  attributes.inputTextColor,
+    //     borderRadius:  attributes.inputBorderRadius+'px',
+    //     paddingTop:  attributes.inputPaddingTop+'px',
+    //     paddingRight:  attributes.inputPaddingRight+'px',
+    //     paddingBottom:  attributes.inputPaddingBottom+'px',
+    //     paddingLeft:  attributes.inputPaddingLeft+'px',
+    //     borderStyle:  attributes.inputBorderStyle,
+    //     borderWidth:  attributes.inputBorderWidth+'px',
+    //     borderColor:  attributes.inputBorderColor,
+    // }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
       className: "mrm-checkbox-group mintmrm-checkbox",
@@ -4581,8 +4591,7 @@ class Editor extends Component {
       type: "checkbox",
       id: attributes.field_slug,
       name: attributes.field_slug,
-      required: attributes.field_require,
-      style: inputStyle
+      required: attributes.field_require
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: checkboxLabelColor
@@ -4595,30 +4604,35 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
+    let fieldSpacing = {
+      //color:  attributes.labelColor,
+      marginBottom: attributes.rowSpacing + 'px'
+    };
     let labelStyle = {
-      color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      color: attributes.labelColor
+      //marginBottom:  attributes.labelSpacing+'px',
     };
-    let inputStyle = {
-      backgroundColor: attributes.inputBgColor,
-      color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
-      borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
-    };
+
+    // let inputStyle = {
+    //     backgroundColor: attributes.inputBgColor,
+    //     color:  attributes.inputTextColor,
+    //     borderRadius:  attributes.inputBorderRadius+'px',
+    //     paddingTop:  attributes.inputPaddingTop+'px',
+    //     paddingRight:  attributes.inputPaddingRight+'px',
+    //     paddingBottom:  attributes.inputPaddingBottom+'px',
+    //     paddingLeft:  attributes.inputPaddingLeft+'px',
+    //     borderStyle:  attributes.inputBorderStyle,
+    //     borderWidth:  attributes.inputBorderWidth+'px',
+    //     borderColor:  attributes.inputBorderColor,
+    // }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "mrm-radio-group mintmrm-radiobtn"
+      className: "mrm-radio-group mintmrm-radiobtn",
+      style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: "radio",
       id: option.label,
       name: field_slug,
-      required: attributes.field_require,
-      style: inputStyle
+      required: attributes.field_require
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
       style: labelStyle
@@ -4806,7 +4820,6 @@ const {
   Fill: InspectorFill
 } = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.createSlotFill)("MRMBlockEditorSidebarInspector");
 function Sidebar() {
-  var _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10, _settingData$settings11, _settingData$settings12, _settingData$settings13, _settingData$settings14, _settingData$settings15, _settingData$settings16;
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
   const [settingData, setSettingData] = useState({
@@ -4866,25 +4879,24 @@ function Sidebar() {
         const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
         const resJson = await res.json();
         if (200 === resJson.code) {
-          var _resJson$data, _resJson$data$meta_fi;
+          var _resJson$data, _resJson$data$meta_fi, _resJson$data2, _resJson$data2$meta_f;
           setFormData(resJson.data);
           setSettingData(JSON.parse((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$meta_fi = _resJson$data.meta_fields) === null || _resJson$data$meta_fi === void 0 ? void 0 : _resJson$data$meta_fi.settings));
-          // setMessageToShow(
-          //   settingData?.settings?.confirmation_type?.same_page?.message_to_show
-          // );
-          // setAfterFormSubmission(
-          //   settingData?.settings?.confirmation_type?.same_page
-          //     ?.after_form_submission
-          // );
+          setPrevSetting(JSON.parse((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$meta_f = _resJson$data2.meta_fields) === null || _resJson$data2$meta_f === void 0 ? void 0 : _resJson$data2$meta_f.settings));
         }
       };
-
       getFormData();
     }
   }, []);
   useEffect(() => {
-    console.log(settingData);
-  }, [settingData]);
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6, _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10;
+    setMessageToShow(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings = prevSetting.settings) === null || _prevSetting$settings === void 0 ? void 0 : (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) === null || _prevSetting$settings2 === void 0 ? void 0 : (_prevSetting$settings3 = _prevSetting$settings2.same_page) === null || _prevSetting$settings3 === void 0 ? void 0 : _prevSetting$settings3.message_to_show);
+    setAfterFormSubmission(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings4 = prevSetting.settings) === null || _prevSetting$settings4 === void 0 ? void 0 : (_prevSetting$settings5 = _prevSetting$settings4.confirmation_type) === null || _prevSetting$settings5 === void 0 ? void 0 : (_prevSetting$settings6 = _prevSetting$settings5.same_page) === null || _prevSetting$settings6 === void 0 ? void 0 : _prevSetting$settings6.after_form_submission);
+    setRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.to_a_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.redirection_message);
+    setCustomURL(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.to_a_custom_url) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.custom_url);
+    setCustomRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_custom_url) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.custom_redirection_message);
+    setFormLayout(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : _settingData$settings10.form_layout);
+  }, [prevSetting]);
   useEffect(async () => {
     setSettingData({
       settings: {
@@ -4919,7 +4931,7 @@ function Sidebar() {
     });
   }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
   useEffect(() => {
-    localStorage.setItem("settings", JSON.stringify(settingData));
+    localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
@@ -5006,7 +5018,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What message you want to show to the use?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "message_to_show",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.same_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.message_to_show,
+    value: messageToShow,
     onChange: e => setMessageToShow(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -5015,7 +5027,7 @@ function Sidebar() {
   }, "After Form Submission", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Define behaviour of the form after submission"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.same_page) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.after_form_submission,
+    selected: afterFormSubmission,
     options: [{
       label: "Hide Form",
       value: "hide-form"
@@ -5049,7 +5061,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "What is the message after redirection of a page?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "redirection_message",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_page) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.redirection_message,
+    value: redirectionMessage,
     onChange: e => setRedirectionMessage(e)
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "custom-url" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -5061,7 +5073,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Enter a custom URL to redirect"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
     name: "custom-url",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : (_settingData$settings11 = _settingData$settings10.confirmation_type) === null || _settingData$settings11 === void 0 ? void 0 : (_settingData$settings12 = _settingData$settings11.to_a_custom_url) === null || _settingData$settings12 === void 0 ? void 0 : _settingData$settings12.custom_url,
+    value: customURL,
     onChange: e => setCustomURL(e)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
@@ -5071,7 +5083,7 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Reidrectional message for custom URL"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
     name: "custom-redirection-message",
-    value: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings13 = settingData.settings) === null || _settingData$settings13 === void 0 ? void 0 : (_settingData$settings14 = _settingData$settings13.confirmation_type) === null || _settingData$settings14 === void 0 ? void 0 : (_settingData$settings15 = _settingData$settings14.to_a_custom_url) === null || _settingData$settings15 === void 0 ? void 0 : _settingData$settings15.custom_redirection_message,
+    value: customRedirectionMessage,
     onChange: e => setCustomRedirectionMessage(e)
   }))))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Layout",
@@ -5086,7 +5098,7 @@ function Sidebar() {
   }, "Label Alignment", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: settingData === null || settingData === void 0 ? void 0 : (_settingData$settings16 = settingData.settings) === null || _settingData$settings16 === void 0 ? void 0 : _settingData$settings16.form_layout,
+    selected: formLayout,
     options: [{
       label: "Fly In",
       value: "fly-in"
@@ -6067,8 +6079,7 @@ const FormEditor = props => {
     // if (settingDataValidation(settingData)) {
     //   console.log(settingData);
     // }
-    const settingData = window.localStorage.getItem("settings");
-    console.log(JSON.parse(settingData));
+    const settingData = window.localStorage.getItem("getsettings");
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
@@ -6192,7 +6203,9 @@ const FormEditor = props => {
     onClick: clickShowOption
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ThreeDotIcon__WEBPACK_IMPORTED_MODULE_11__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "mintmrm-dropdown"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Save as Draft"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Change Template"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    onClick: saveForm
+  }, "Save as Draft"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mintmrm-btn settings",
     onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {

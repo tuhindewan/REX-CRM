@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -22,6 +22,7 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -35,7 +36,7 @@ export default function ContactListTable(props) {
   const [filterPerPage, setFilterPerPage] = useState(10);
   const [filterPage, setFilterPage] = useState(1);
   const [filterCount, setFilterCount] = useState(0);
-  const [isActive, setActive] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [isAddColumn, setAddColumn] = useState(false);
   const [isAssignTo, setIsAssignTo] = useState(false);
   const [contactData, setContactData] = useState([]);
@@ -95,6 +96,21 @@ export default function ContactListTable(props) {
   const [filteredTags, setFilteredTags] = useState([]);
   const [listColumns, setListColumns] = useState([]);
   const [columns, setColumns] = useState([]);
+
+  const [listening, setListening] = useState(false);
+
+  const threedotRef = useRef(null);
+  const addColumnRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, threedotRef, setIsActive)
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, threedotRef, setIsAssignTo)
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, addColumnRef, setAddColumn)
+  );
 
   const filteredColumns = useMemo(() => {
     if (searchColumns) {
@@ -282,7 +298,7 @@ export default function ContactListTable(props) {
   }
 
   const showMoreOption = () => {
-    setActive(!isActive);
+    setIsActive(!isActive);
     setIsAssignTo(false);
   };
 
@@ -294,7 +310,7 @@ export default function ContactListTable(props) {
     } else {
       setShowAlert("block");
     }
-    setActive(false);
+    setIsActive(false);
   }
 
   // Delete multiple contacts after delete confirmation
@@ -376,9 +392,9 @@ export default function ContactListTable(props) {
     } else {
       setSelectGroup("lists");
       setIsAssignTo(!isAssignTo);
-      setActive(!isActive);
+      setIsActive(!isActive);
     }
-    setActive(false);
+    setIsActive(false);
   };
 
   const showTagDropdown = () => {
@@ -387,10 +403,10 @@ export default function ContactListTable(props) {
     } else {
       setSelectGroup("tags");
       setIsAssignTo(!isAssignTo);
-      setActive(!isActive);
+      setIsActive(!isActive);
     }
 
-    setActive(false);
+    setIsActive(false);
   };
 
   const showAddColumnList = () => {
@@ -572,17 +588,17 @@ export default function ContactListTable(props) {
             />
           </span>
 
-          <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
+          {/* <button className="export-btn mintmrm-btn outline" onClick={noteForm}>
             <ExportIcon />
             Export
-          </button>
+          </button> */}
           <ExportDrawer
             isOpenNote={isNoteForm}
             isCloseNote={isCloseNote}
             setIsCloseNote={setIsCloseNote}
           />
 
-          <div className="bulk-action">
+          <div className="bulk-action" ref={threedotRef}>
             <button className="more-option" onClick={showMoreOption}>
               <ThreeDotIcon />
             </button>
@@ -614,7 +630,7 @@ export default function ContactListTable(props) {
                 showSelectedInside={false}
                 allowNewCreate={true}
                 isAssignDropdown={isActive}
-                setIsAssignDropdown={setActive}
+                setIsAssignDropdown={setIsActive}
                 isActive={isAssignTo}
                 setIsActive={setIsAssignTo}
                 contactIds={selected}
@@ -714,7 +730,7 @@ export default function ContactListTable(props) {
         <LoadingIndicator type="table" />
       ) : (
         <>
-          <div className="pos-relative">
+          <div className="pos-relative" ref={addColumnRef}>
             <div className="add-column">
               <button className="add-column-btn" onClick={showAddColumnList}>
                 <PlusCircleIcon />
@@ -820,7 +836,8 @@ export default function ContactListTable(props) {
                         style={{ textAlign: "center" }}
                       >
                         <NoContactIcon />
-                        No contact data found "{search}"
+                        No contact data found{" "}
+                        {search ? `"${search}"` : null}
                       </td>
                     </tr>
                   )}

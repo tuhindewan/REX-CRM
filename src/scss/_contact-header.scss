@@ -1,11 +1,22 @@
-.contact-header {
+.contact-header,
+.campaign-header {
   padding: 37px 20px 20px 20px;
   width: 100%;
+
   .header-wrapper {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    &:before {
+      content: "";
+      position: absolute;
+      height: 1px;
+      width: 100%;
+      bottom: -11px;
+      background-color: #dee1e8;
+    }
 
     .left-header-section {
       display: flex;
@@ -113,18 +124,26 @@
               }
             }
           }
-          &:hover{
+          &:hover {
             color: #ffffff;
             svg {
-                g {
-                  path {
-                    stroke: #ffffff;
-                  }
+              g {
+                path {
+                  stroke: #ffffff;
                 }
               }
+            }
           }
         }
       }
+    }
+  }
+}
+
+.campaign-header{
+  .header-wrapper {
+    &:before {
+      display: none;
     }
   }
 }

@@ -97,7 +97,7 @@ export default function ImportMailchimp() {
             <div className="mintmrm-container">
               <ul className="mintmrm-breadcrumb">
                 <li>
-                  <a href="">Contact</a>
+                  <Link to={`../contacts`}>Contact</Link>
                 </li>
                 <li className="active">Import</li>
               </ul>
@@ -158,16 +158,20 @@ export default function ImportMailchimp() {
             <div className={isVerified ? "add-list show" : "add-list"}>
               <div className="select-list pos-relative">
                 <div
-                  className={isAddColumn ? "select-btn selected show" : "select-btn selected"}
+                  className={
+                    isAddColumn
+                      ? "select-btn selected show"
+                      : "select-btn selected"
+                  }
                   onClick={showLists}
                 >
                   <span className="selected-items">
-                    Product Feed 
-                    <CrossIcon/>
+                    Product Feed
+                    <CrossIcon />
                   </span>
                   <span className="selected-items">
                     WPVR
-                    <CrossIcon/>
+                    <CrossIcon />
                   </span>
                 </div>
                 <div
