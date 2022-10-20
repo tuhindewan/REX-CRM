@@ -4837,6 +4837,7 @@ function Sidebar() {
   const [id, setId] = useState(window.location.hash.slice(15));
   const [formData, setFormData] = useState({});
   const [prevSetting, setPrevSetting] = useState({});
+  const [currentTab, setCurrentTab] = useState("same-page");
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
@@ -4862,37 +4863,79 @@ function Sidebar() {
     setFormLayout(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : _settingData$settings10.form_layout);
   }, [prevSetting]);
   useEffect(async () => {
-    setSettingData({
-      settings: {
-        confirmation_type: {
-          same_page: {
-            message_to_show: messageToShow,
-            after_form_submission: afterFormSubmission
+    if ("same-page" === currentTab) {
+      setSettingData({
+        settings: {
+          confirmation_type: {
+            same_page: {
+              message_to_show: messageToShow,
+              after_form_submission: afterFormSubmission
+            }
           },
-          to_a_page: {
-            page: page,
-            redirection_message: redirectionMessage
+          form_layout: formLayout,
+          schedule: {
+            form_scheduling: formScheduling,
+            submission_start: {
+              date: submissionStartDate,
+              time: submissionStartTime
+            }
           },
-          to_a_custom_url: {
-            custom_url: customURL,
-            custom_redirection_message: customRedirectionMessage
+          restriction: {
+            max_entries: maxEntries,
+            max_number: count,
+            max_type: ""
           }
-        },
-        form_layout: formLayout,
-        schedule: {
-          form_scheduling: formScheduling,
-          submission_start: {
-            date: submissionStartDate,
-            time: submissionStartTime
-          }
-        },
-        restriction: {
-          max_entries: maxEntries,
-          max_number: count,
-          max_type: ""
         }
-      }
-    });
+      });
+    } else if ("page" === currentTab) {
+      setSettingData({
+        settings: {
+          confirmation_type: {
+            to_a_page: {
+              page: page,
+              redirection_message: redirectionMessage
+            }
+          },
+          form_layout: formLayout,
+          schedule: {
+            form_scheduling: formScheduling,
+            submission_start: {
+              date: submissionStartDate,
+              time: submissionStartTime
+            }
+          },
+          restriction: {
+            max_entries: maxEntries,
+            max_number: count,
+            max_type: ""
+          }
+        }
+      });
+    } else if ("custom-url" === currentTab) {
+      setSettingData({
+        settings: {
+          confirmation_type: {
+            to_a_custom_url: {
+              custom_url: customURL,
+              custom_redirection_message: customRedirectionMessage
+            }
+          },
+          form_layout: formLayout,
+          schedule: {
+            form_scheduling: formScheduling,
+            submission_start: {
+              date: submissionStartDate,
+              time: submissionStartTime
+            }
+          },
+          restriction: {
+            max_entries: maxEntries,
+            max_number: count,
+            max_type: ""
+          }
+        }
+      });
+    }
   }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
@@ -4920,6 +4963,7 @@ function Sidebar() {
     });
   }
   const handleConfirmationType = index => {
+    setCurrentTab(index);
     toggleTab(index);
   };
   let submissionType = "hide-form";
@@ -6056,6 +6100,7 @@ const FormEditor = props => {
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     const settingData = window.localStorage.getItem("getsettings");
+    console.log(JSON.parse(settingData));
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,

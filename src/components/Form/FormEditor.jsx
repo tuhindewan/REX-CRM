@@ -176,6 +176,8 @@ const FormEditor = (props) => {
 
     const settingData = window.localStorage.getItem("getsettings");
 
+    console.log(JSON.parse(settingData));
+
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
