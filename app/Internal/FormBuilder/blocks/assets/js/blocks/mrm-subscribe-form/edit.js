@@ -124,9 +124,11 @@ class Editor extends Component {
 
             <>
                 { this.getInspectorControls() }
-                <form action="">
-                    <div className="post__content" dangerouslySetInnerHTML={{__html: attributes.render_block}}></div>
-                </form>
+                <div className="mintmrm">
+                    <form action="">
+                        <div className="post__content" dangerouslySetInnerHTML={{__html: attributes.render_block}}></div>
+                    </form>
+                </div>
 
             </>
 

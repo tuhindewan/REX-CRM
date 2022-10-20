@@ -140,14 +140,7 @@ class Editor extends Component {
                 }
 
                 {attributes.field_type == 'select' && 
-                    <div className="select-option-wrapper">
-                        {/*<TextControl*/}
-                        {/*    className="mrm-inline-label"*/}
-                        {/*    label="Option Name"*/}
-                        {/*    // value={ attributes.select_option_name }*/}
-                        {/*    onChange={ (state ) => setAttributes({ select_option_name: state }) }*/}
-                        {/*/>*/}
-                    
+                    <div className="select-option-wrapper">                   
                         <div className="add-option-wrapper">
                             <h4>Add New Option</h4>
                             <button onClick={() => { this.addNewOption() }} className="add-option-button" role="button" title="Add New Option">
@@ -337,16 +330,21 @@ class Editor extends Component {
                     onChange={ labelColor => this.onChangeAttribute( 'labelColor', labelColor )}
                     value = { attributes.labelColor }
                 />
-
-                <label className="blocks-base-control__label">Label Spacing</label>
-                <RangeControl
-                    value={ attributes.labelSpacing }
-                    onChange={ labelSpacing => this.onChangeAttribute( 'labelSpacing', labelSpacing )}
-                    allowReset={true}
-                    min={0}
-                    max={50}
-                    step={1}
-                />
+                
+                {'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type &&
+                    <>
+                        <label className="blocks-base-control__label">Label Spacing</label>
+                        <RangeControl
+                            value={ attributes.labelSpacing }
+                            onChange={ labelSpacing => this.onChangeAttribute( 'labelSpacing', labelSpacing )}
+                            allowReset={true}
+                            min={0}
+                            max={50}
+                            step={1}
+                        />
+                    </>
+                }
+                    
             </PanelBody>
 
         )
@@ -432,13 +430,17 @@ class Editor extends Component {
         )
     }
     getInspectorControls = () => {
+        let { attributes, setAttributes } 	= this.props
+
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
                 <div id="mrm-block-inspected-inspector-control-wrapper" className="mrm-block-control-wrapper">
                     <Panel>
                         {this.customFields()}
                         {this.formStyle()}
-                        {this.inputFieldStyle()}
+                        {'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && 
+                            this.inputFieldStyle()
+                        }
                     </Panel>
                 </div>
             </InspectorControls>
@@ -545,6 +547,7 @@ class Editor extends Component {
             </Fragment>
         )
     }
+
     /**
      * Render Date Field
      * @param attributes
@@ -593,6 +596,7 @@ class Editor extends Component {
             </Fragment>
         )
     }
+
     /**
      * Render Select Field
      * @param attributes
@@ -664,39 +668,44 @@ class Editor extends Component {
         )
     }
 
+    /**
+     * Render checkbox field
+     * @returns {JSX.Element}
+     */
     renderCheckboxField = (attributes) => {
         const slug_name =  this.makeSlug(attributes.field_name)
         this.props.setAttributes({ field_slug: slug_name })
+        
         let fieldSpacing = {
             marginBottom:  attributes.rowSpacing+'px',
         }
 
-        let labelStyle = {
-            color:  attributes.labelColor,
-            marginBottom:  attributes.labelSpacing+'px',
-        }
+        // let labelStyle = {
+        //     color:  attributes.labelColor,
+        //     marginBottom:  attributes.labelSpacing+'px',
+        // }
 
         let checkboxLabelColor = {
             color:  attributes.labelColor,
         }
 
-        let inputStyle = {
-            backgroundColor: attributes.inputBgColor,
-            color:  attributes.inputTextColor,
-            borderRadius:  attributes.inputBorderRadius+'px',
-            paddingTop:  attributes.inputPaddingTop+'px',
-            paddingRight:  attributes.inputPaddingRight+'px',
-            paddingBottom:  attributes.inputPaddingBottom+'px',
-            paddingLeft:  attributes.inputPaddingLeft+'px',
-            borderStyle:  attributes.inputBorderStyle,
-            borderWidth:  attributes.inputBorderWidth+'px',
-            borderColor:  attributes.inputBorderColor,
-        }
+        // let inputStyle = {
+        //     backgroundColor: attributes.inputBgColor,
+        //     color:  attributes.inputTextColor,
+        //     borderRadius:  attributes.inputBorderRadius+'px',
+        //     paddingTop:  attributes.inputPaddingTop+'px',
+        //     paddingRight:  attributes.inputPaddingRight+'px',
+        //     paddingBottom:  attributes.inputPaddingBottom+'px',
+        //     paddingLeft:  attributes.inputPaddingLeft+'px',
+        //     borderStyle:  attributes.inputBorderStyle,
+        //     borderWidth:  attributes.inputBorderWidth+'px',
+        //     borderColor:  attributes.inputBorderColor,
+        // }
         return (
             <Fragment>
                 <div key={`mrm-${attributes.field_label}`} className="mrm-checkbox-group mintmrm-checkbox" style={fieldSpacing}>
 
-                    <input type="checkbox" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} style={inputStyle} />
+                    <input type="checkbox" id={attributes.field_slug} name={attributes.field_slug} required={attributes.field_require} />
                     <label htmlFor={attributes.field_slug} style={checkboxLabelColor}>
                         {attributes.field_label ? __(attributes.field_label,'mrm') : __('','mrm')}
                         {attributes.field_require && <span className="required-mark">*</span>}
@@ -708,26 +717,31 @@ class Editor extends Component {
 
     renderRadioOption = (option, index, field_slug) =>{
         const { attributes ,setAttributes} = this.props
-        let labelStyle = {
-            color:  attributes.labelColor,
-            marginBottom:  attributes.labelSpacing+'px',
+        let fieldSpacing = {
+            //color:  attributes.labelColor,
+            marginBottom:  attributes.rowSpacing+'px',
         }
 
-        let inputStyle = {
-            backgroundColor: attributes.inputBgColor,
-            color:  attributes.inputTextColor,
-            borderRadius:  attributes.inputBorderRadius+'px',
-            paddingTop:  attributes.inputPaddingTop+'px',
-            paddingRight:  attributes.inputPaddingRight+'px',
-            paddingBottom:  attributes.inputPaddingBottom+'px',
-            paddingLeft:  attributes.inputPaddingLeft+'px',
-            borderStyle:  attributes.inputBorderStyle,
-            borderWidth:  attributes.inputBorderWidth+'px',
-            borderColor:  attributes.inputBorderColor,
+        let labelStyle = {
+            color:  attributes.labelColor,
+            //marginBottom:  attributes.labelSpacing+'px',
         }
+
+        // let inputStyle = {
+        //     backgroundColor: attributes.inputBgColor,
+        //     color:  attributes.inputTextColor,
+        //     borderRadius:  attributes.inputBorderRadius+'px',
+        //     paddingTop:  attributes.inputPaddingTop+'px',
+        //     paddingRight:  attributes.inputPaddingRight+'px',
+        //     paddingBottom:  attributes.inputPaddingBottom+'px',
+        //     paddingLeft:  attributes.inputPaddingLeft+'px',
+        //     borderStyle:  attributes.inputBorderStyle,
+        //     borderWidth:  attributes.inputBorderWidth+'px',
+        //     borderColor:  attributes.inputBorderColor,
+        // }
         return (
-            <div className="mrm-radio-group mintmrm-radiobtn">
-                <input type="radio" id={option.label} name={field_slug} required={attributes.field_require} style={inputStyle}/>
+            <div className="mrm-radio-group mintmrm-radiobtn" style={fieldSpacing}>
+                <input type="radio" id={option.label} name={field_slug} required={attributes.field_require} />
                 <label htmlFor={option.label} style={labelStyle}>
                     {option.label ? __(option.label,'mrm') : __('','mrm')}
                     {attributes.field_require && <span className="required-mark">*</span>}

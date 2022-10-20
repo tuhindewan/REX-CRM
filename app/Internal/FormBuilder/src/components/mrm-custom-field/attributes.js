@@ -146,7 +146,7 @@ const attributes = {
     },
     inputPaddingRight: {
         type: 'integer',
-        default: 40,
+        default: 14,
     },
     inputPaddingBottom: {
         type: 'integer',
