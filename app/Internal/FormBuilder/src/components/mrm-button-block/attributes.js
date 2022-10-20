@@ -293,7 +293,7 @@ const attributes = {
     },
     buttonAlign: {
         type: 'string',
-        default: 'center'
+        default: 'left'
     },
 
     postAction: {

@@ -9,35 +9,37 @@
   }
 }
 
-.resposive-preview-mobile {
-  margin: 0 auto;
-  width: 360px !important;
-  background: #111;
-  padding: 40px 10px 70px;
-  border-radius: 30px;
-  z-index: 999;
-  position: relative;
-  height: 740px;
+.form-editor-page {
+  .resposive-preview-mobile {
+    margin: 0 auto;
+    width: 360px !important;
+    background: #111;
+    padding: 40px 10px 70px;
+    border-radius: 30px;
+    z-index: 999;
+    position: relative;
+    height: 740px;
 
-}
+  }
 
-.resposive-preview-desktop {
-  width: 768px !important;
-  height: 1024px !important;
-  background: #111;
-  padding: 40px 10px 70px;
-  border-radius: 30px;
-  margin: 0 auto;
-  z-index: 999;
-  position: relative;
-}
+  .resposive-preview-desktop {
+    width: 768px !important;
+    height: 1024px !important;
+    background: #111;
+    padding: 40px 10px 70px;
+    border-radius: 30px;
+    margin: 0 auto;
+    z-index: 999;
+    position: relative;
+  }
 
-
-.form-preview-inner {
-  height: 100%;
-  background: #fff;
-  padding: 0 15px;
-  overflow: auto;
+  .form-preview-inner {
+    height: 100%;
+    background: #fff;
+    padding: 15px;
+    overflow: auto;
+  }
+  
 }
 
 .add-form-btn {
