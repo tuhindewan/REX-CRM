@@ -493,10 +493,4 @@ class CampaignController extends BaseController {
     {
         return ModelsCampaign::get_publish_campaign_id();
     }
-
-    public static function get_sequence_emails() {
-        global $wpdb;
-        $campaigns_email_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        //$query = "SELECT"
-    }
 }
