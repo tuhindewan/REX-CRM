@@ -2,7 +2,7 @@
 namespace Mint\MRM\Internal\Cron;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
-use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
+use Mint\MRM\DataBase\Models\CampaignModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 
@@ -66,7 +66,7 @@ class CampaignsBackgroundProcess
             $campaigns       = CampaignController::get_instance()->get_publish_campaign_id();
             $campaign_ids = array_column( $campaigns, 'id' );
             foreach ( $campaign_ids as $campaign_id ) {
-                $campaign_emails = ModelsCampaign::get_campaign_email( $campaign_id );
+                $campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
 
                 foreach ( $campaign_emails as $campaign_email ) {
                     $campaign_email_id = isset( $campaign_email['id'] ) ? $campaign_email['id'] : '';
@@ -94,7 +94,7 @@ class CampaignsBackgroundProcess
                         $this->send_emails( $recipients_emails, $email_subject, $email_body, $headers, $campaign_id, $campaign_email_id, $offset );
                     } else {
                         delete_option('mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id );
-                        ModelsCampaign::update_campaign_status($campaign_id, 'completed');
+                        CampaignModel::update_campaign_email_status( $campaign_id, $campaign_email_id, 'sent' );
                     }
                     if ( $this->time_exceeded() || $this->memory_exceeded() ) {
                         break;
