@@ -10,7 +10,13 @@ class CampaignsBackgroundProcess
 {
     use Singleton;
 
-    private $process_creation_time;
+    /**
+     * @desc A private variable to save process [background]
+     * initialization time
+     * @since 1.0.0
+     * @var float $process_creation_time
+     */
+    private float $process_creation_time;
 
     /**
      * @desc Initialize cron functionalities
@@ -72,6 +78,14 @@ class CampaignsBackgroundProcess
         }
     }
 
+    /**
+     * @desc Send emails and handle time/memory limits
+     * @param array $email_addresses
+     * @param $campaign_id
+     * @param $offset
+     * @return void
+     * @since 1.0.0
+     */
     private function send_emails( array $email_addresses, $campaign_id, $offset ) {
         $emails = ModelsCampaign::get_campaign_email( $campaign_id );
         $first_email = isset($emails[0]) ? $emails[0] : [];
@@ -107,19 +121,41 @@ class CampaignsBackgroundProcess
         }
     }
 
+    /**
+     * @desc Check process status if
+     * its already running (locked) or not
+     * @return bool
+     * @since 1.0.0
+     */
     private function process_locked() {
         return 'locked' === get_option( 'mrm_process_lock_status', 'unlocked' );
     }
 
+    /**
+     * @desc Lock the process before starting
+     * @return void
+     * @since 1.0.0
+     */
     private function lock_process() {
         $this->process_creation_time = microtime( true );
         update_option( 'mrm_process_lock_status', 'locked' );
     }
 
+    /**
+     * @desc Unlock the process after
+     * finishing all tasks
+     * @return void
+     * @since 1.0.0
+     */
     private function unlock_process() {
         update_option( 'mrm_process_lock_status', 'unlocked' );
     }
 
+    /**
+     * @desc Check if process time limits already exceeded
+     * @return mixed|null
+     * @since 1.0.0
+     */
     private function time_exceeded() {
         $execution_time        = $this->get_execution_time();
         $max_execution_time    = ini_get( 'max_execution_time' );
@@ -129,6 +165,12 @@ class CampaignsBackgroundProcess
         return apply_filters( 'ebp_max_execution_time_exceeded', $likely_to_be_exceeded, $execution_time, $max_execution_time );
     }
 
+    /**
+     * @desc Calculate and get current process
+     * execution time by this time
+     * @return float|int|mixed
+     * @since 1.0.0
+     */
     private function get_execution_time() {
         $execution_time = microtime( true ) - $this->process_creation_time;
 
@@ -144,6 +186,12 @@ class CampaignsBackgroundProcess
         return $execution_time;
     }
 
+    /**
+     * @desc Check if current process exceeded
+     * available memory limits
+     * @return mixed|null
+     * @since 1.0.0
+     */
     private function memory_exceeded() {
         $allowed_memory = apply_filters( 'ebp_max_allowed_memory_limit', 20 ) / 100;
         $memory_limit   = $this->get_memory_limit() * $allowed_memory;
@@ -153,6 +201,11 @@ class CampaignsBackgroundProcess
         return apply_filters( 'ebp_memory_exceeded', $memory_exceeded, $this );
     }
 
+    /**
+     * @desc Get php memory limits
+     * @return int|mixed
+     * @since 1.0.0
+     */
     private function get_memory_limit() {
         if( function_exists( 'ini_get' ) ) {
             $memory_limit = ini_get( 'memory_limit' );
@@ -168,6 +221,12 @@ class CampaignsBackgroundProcess
         return $this->convert_hr_to_bytes( $memory_limit );
     }
 
+    /**
+     * @desc Converts a shorthand byte value to an integer byte value
+     * @param $value
+     * @return int|mixed
+     * @since 1.0.0
+     */
     private function convert_hr_to_bytes( $value ) {
         if( function_exists( 'wp_convert_hr_to_bytes' ) ) {
             return wp_convert_hr_to_bytes( $value );
