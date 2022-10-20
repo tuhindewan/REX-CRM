@@ -155,6 +155,21 @@
                 display: flex;
                 justify-content: end;
                 padding-right: 27px;
+                .more-option {
+                  background: white;
+                  position: relative;
+                  .mintmrm-dropdown {
+                    width: 180px;
+
+                    // &:last-child {
+                    //   top: calc(100% + -120px);
+                    //   &::before {
+                    //     top: calc(100% - 4px);
+                    //     transform: rotate(220deg);
+                    //   }
+                    // }
+                  }
+                }
               }
 
               label {

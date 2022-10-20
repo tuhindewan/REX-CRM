@@ -169,8 +169,18 @@
             align-items: flex-start;
           }
 
-          .delay_count_input {
-            display: flex;
+          &.email-delay {
+            .delay_count_input {
+              display: flex;
+
+              .delay-input {
+                width: calc(100%);
+                input {
+                  width: calc(70%);
+                  border: 1px solid #e3e4e8;
+                }
+              }
+            }
           }
 
           label {
@@ -505,11 +515,13 @@
               margin-right: 15px;
             }
           }
-          &.input-item {
-            .email-input {
-              border-left: 1px solid #d1d3da;
-              padding-left: 20px;
-              border-radius: 0;
+          .email-input {
+            width: calc(50% - 80px);
+            border-left: 1px solid #d1d3da;
+            padding-left: 20px;
+            border-radius: 0;
+            input {
+              width: calc(50%);
             }
           }
         }

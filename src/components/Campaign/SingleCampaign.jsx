@@ -79,32 +79,28 @@ export default function SingleCampaign(props) {
         >
           <ThreeDotIcon />
           {isActiveDropdown && ( // only show the menu if both active and current active points to this listitem
-            <Portal>
-              <HoverMenu elementRef={menuButtonRef} x={-150} y={-20}>
-                <ul
-                  className={
-                    isActiveDropdown // only show the menu if both active and current active points to this listitem
-                      ? "mintmrm-dropdown show"
-                      : "mintmrm-dropdown"
-                  }
-                >
-                  <li
-                    onClick={() => {
-                      props.editField(props.campaign);
-                    }}
-                  >
-                    {" "}
-                    Edit
-                  </li>
-                  <li
-                    className="delete"
-                    onClick={() => props.deleteCampaign(props.campaign.id)}
-                  >
-                    Delete
-                  </li>
-                </ul>
-              </HoverMenu>
-            </Portal>
+            <ul
+              className={
+                isActiveDropdown // only show the menu if both active and current active points to this listitem
+                  ? "mintmrm-dropdown show"
+                  : "mintmrm-dropdown"
+              }
+            >
+              <li
+                onClick={() => {
+                  props.editField(props.campaign);
+                }}
+              >
+                {" "}
+                Edit
+              </li>
+              <li
+                className="delete"
+                onClick={() => props.deleteCampaign(props.campaign.id)}
+              >
+                Delete
+              </li>
+            </ul>
           )}
         </button>
       </div>

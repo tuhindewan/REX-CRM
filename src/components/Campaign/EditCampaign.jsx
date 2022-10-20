@@ -542,15 +542,11 @@ export default function EditCampaign(props) {
                     </>
                   )}
                   {selectedEmailIndex > 0 && (
-                    <div className="email-from input-item">
+                    <div className="email-delay input-item">
                       <label>Delay</label>
                       <div className="delay_count_input">
-                        <div>
+                        <div className="delay-input">
                           <input
-                            style={{
-                              border: "1px solid #e3e4e8",
-                              marginRight: "15px",
-                            }}
                             type="number"
                             name="delay_count"
                             value={emailData[selectedEmailIndex]["delay_count"]}
@@ -577,7 +573,6 @@ export default function EditCampaign(props) {
                           </p>
                         </div>
                         <select
-                          style={{ maxWidth: "fit-content" }}
                           onChange={(e) =>
                             handleEmailFieldsChange(
                               e.target.value,
