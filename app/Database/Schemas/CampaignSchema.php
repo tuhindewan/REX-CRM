@@ -158,7 +158,7 @@ class CampaignSchema {
             `template_id` bigint(20) unsigned NULL,
             `email_body` longtext,
             `email_json` longtext,
-            `status` ENUM('draft', 'scheduled', 'sent'),
+            `status` ENUM('draft', 'scheduled', 'sent') DEFAULT 'draft',
             `scheduled_at` TIMESTAMP NULL,
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL

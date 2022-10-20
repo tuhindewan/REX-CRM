@@ -411,4 +411,24 @@ class CampaignModel {
         $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
         return $wpdb->get_row( $select_query, ARRAY_A );
     }
+
+
+    /**
+     * Update a campaign status 
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $status
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_status($campaign_id, $status)
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+
+        $args['updated_at'] = current_time('mysql');
+
+        return $wpdb->update( $fields_table, array( 'status' => $status), array( 'id' => $campaign_id ) );
+    }
 }

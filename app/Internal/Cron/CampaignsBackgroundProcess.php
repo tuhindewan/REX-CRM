@@ -74,6 +74,7 @@ class CampaignsBackgroundProcess
             }
             else {
                 delete_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id );
+                ModelsCampaign::update_campaign_status($campaign_id, 'completed');
             }
             $this->unlock_process();
         }
