@@ -129,11 +129,24 @@ class AjaxAction {
                 $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  [];
                 $form_setting       = json_decode($form_setting);
                 $confirmation_type  = $form_setting->settings->confirmation_type;
-                if(!empty($confirmation_type->same_page->message_to_show)){
+                if(!empty($confirmation_type->same_page)){
+                    $same_page  = $confirmation_type->same_page;
+                    $response['after_form_submission'] = $same_page->after_form_submission;
+                    $response['message']   = __($same_page->message_to_show,'mrm');
+
+                }if(!empty($confirmation_type->to_a_page)){
+                    $to_a_page  = $confirmation_type->to_a_page;
+                    $response['redirect_page'] = get_permalink( $to_a_page->page );
+                    $response['message']   = __($to_a_page->redirection_message,'mrm');
+
+                }
+                if(!empty($confirmation_type->to_a_custom_url)){
+                    $to_a_custom_url  = $confirmation_type->to_a_custom_url;
+                    $response['custom_url'] =  $to_a_custom_url->custom_url;
+                    $response['message']   = __($to_a_custom_url->custom_redirection_message,'mrm');
 
                 }
                 $response['status']  = 'success';
-                $response['message'] =  __( 'Form Submitted Successfully.', 'mrm' );
                 echo json_encode($response, true);
                 die();
             }

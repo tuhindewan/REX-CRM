@@ -22,6 +22,7 @@ import EditIcon from "../Icons/EditIcon";
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
+import { set } from "rsuite/esm/utils/dateUtils";
 
 const FormEditor = (props) => {
   const [preview, setPreview] = useState("editor");
@@ -55,6 +56,12 @@ const FormEditor = (props) => {
   const [showAlert, setShowAlert] = useState("none");
 
   const [savedSuccess, setSaveSuccess] = useState(false);
+
+  const [recipientLists, setRecipientLists] = useState([]);
+  const [recipientTags, setRecipientTags] = useState([]);
+  const [dropDown, setDropDown] = useState(false);
+
+  const [groupIds, setGroupIds] = useState([]);
 
   const navigate = useNavigate();
 
@@ -147,20 +154,37 @@ const FormEditor = (props) => {
     }));
   };
 
+  useEffect(() => {
+    const lists = recipientLists
+      .filter((list) => list.id > 0)
+      .map((list) => list.id);
+
+    const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
+
+    const group_ids = lists.concat(tags);
+
+    setFormData((prevState) => ({
+      ...prevState,
+      group_ids: group_ids,
+    }));
+
+    setGroupIds(group_ids);
+  }, [recipientLists, recipientTags]);
+
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
-    // if (settingDataValidation(settingData)) {
-    //   console.log(settingData);
-    // }
+
     const settingData = window.localStorage.getItem("getsettings");
 
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
+      group_ids: groupIds,
       meta_fields: {
         settings: settingData,
       },
     };
+
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
         method: "POST",
@@ -226,29 +250,14 @@ const FormEditor = (props) => {
     setToggleDropdown(false);
   };
 
-  useEffect(() => {
-    const lists = selectedLists
-      .filter((list) => list.id > 0)
-      .map((list) => list.id);
-
-    const tags = selectedTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
-
-    const group_ids = lists.concat(tags);
-
-    setFormData((prevState) => ({
-      ...prevState,
-      group_ids: group_ids,
-    }));
-  }, [selectedLists, selectedTags]);
-
   //-------show more option click function-------
   const clickShowOption = () => {
     setMoreOption((current) => !current);
   };
 
   //-------list click function-------
-  const showListDropdown = () => {
-    setListDropdown((current) => !current);
+  const showDropDown = () => {
+    setDropDown(!dropDown);
   };
 
   //-------settings pannel open function-------
@@ -328,15 +337,38 @@ const FormEditor = (props) => {
             />
 
             <div className="form-group list">
-              <label className="list-label">List</label>
+              <label className="list-label">Assign To</label>
 
               <div className="list-content">
-                <button className="all-recipients" onClick={showListDropdown}>
-                  All Subscriber
-                  {listDropdown ? <UpArrowIcon /> : <DownArrowIcon />}
-                </button>
+                {recipientLists.length == 0 && recipientTags.length == 0 ? (
+                  <button className="all-recipients" onClick={showDropDown}>
+                    All Subscriber
+                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                  </button>
+                ) : (
+                  <button
+                    className="all-recipients selected show"
+                    onClick={showDropDown}
+                  >
+                    <span className="tags">{recipientTags.length} Tags</span>
+                    <span className="from">and</span>
+                    <span className="lists">
+                      {recipientLists.length} Lists.
+                    </span>
+                    <span className="recipients">
+                      {recipientLists.length + recipientTags.length} Groups
+                    </span>
+                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                  </button>
+                )}
 
-                <CampaignCustomSelect dropDown={listDropdown} />
+                <CampaignCustomSelect
+                  dropDown={dropDown}
+                  setRecipientTags={setRecipientTags}
+                  recipientTags={recipientTags}
+                  setRecipientLists={setRecipientLists}
+                  recipientLists={recipientLists}
+                />
               </div>
             </div>
           </div>

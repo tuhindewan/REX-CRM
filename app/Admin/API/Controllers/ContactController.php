@@ -152,7 +152,7 @@ class ContactController extends BaseController {
                 
             if(isset($contact['created_by']) && !empty($contact['created_by']))$user_meta = get_userdata($contact['created_by']);
 
-            $contact ["added_by_login"] = $user_meta->data->user_login;
+            $contact ["added_by_login"] = !empty($user_meta->data->user_login) ? $user_meta->data->user_login : "External Source" ;
 
             $avatar_url = add_query_arg( array(
                 's' => '100',
