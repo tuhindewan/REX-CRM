@@ -39,6 +39,7 @@ jQuery(document).ready(function($){
             data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize(), security : MRM_Frontend_Vars.mrm_form_nonce},
             success: function(response) {
                 if (response.status == "success"){
+                    jQuery(".response").addClass('mintmrm-success')
                     if (response.confirmation_type == 'same_page'){
                         if(response.after_form_submission == 'hide_form'){
                             $(".mrm-form-wrapper form").hide();
@@ -68,6 +69,7 @@ jQuery(document).ready(function($){
                     jQuery(".response").html(response.message)
 
                 }else if(response.status == "failed"){
+                    jQuery(".response").addClass('mintmrm-error')
                     jQuery(".response").html(response.message)
 
                 }
