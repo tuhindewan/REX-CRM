@@ -360,19 +360,25 @@ const FormEditor = (props) => {
 
             <div className="responsive-section">
               <button
-                className="edit-view active"
+                className={
+                  "editor" === preview ? "edit-view active" : "edit-view"
+                }
                 onClick={(e) => handlePreview("editor")}
               >
                 <EditIcon />
               </button>
               <button
-                className="desktop-view"
+                className={
+                  "desktop" === preview ? "desktop-view active" : "desktop-view"
+                }
                 onClick={(e) => handlePreview("desktop")}
               >
                 <ComputerIcon />
               </button>
               <button
-                className="mobile-view"
+                className={
+                  "mobile" === preview ? "mobile-view active" : "mobile-view"
+                }
                 onClick={(e) => handlePreview("mobile")}
               >
                 <MobileIcon />
