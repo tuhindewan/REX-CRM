@@ -4,7 +4,6 @@ namespace Mint\MRM\Internal\Cron;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
 use Mint\MRM\DataBase\Models\CampaignModel;
-use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 
@@ -59,6 +58,7 @@ class CampaignsBackgroundProcess
 		}
 	}
 
+
 	/**
 	 * @desc Configure campaign emails
 	 * before initiating sending email process
@@ -72,12 +72,12 @@ class CampaignsBackgroundProcess
 			$campaigns = CampaignController::get_instance()->get_publish_campaign_id();
 			$campaign_ids = array_column( $campaigns, 'id' );
 			foreach ( $campaign_ids as $campaign_id ) {
-				$campaign_emails = ModelsCampaign::get_campaign_email( $campaign_id );
+				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
 				if ( empty( $campaign_emails ) ) {
-					ModelsCampaign::update_campaign_status( $campaign_id, 'completed' );
+					$status = CampaignModel::update_campaign_status( $campaign_id, 'completed' );
 				}
 				else {
-					$campaign_emails = ModelsCampaign::get_campaign_email( $campaign_id, current_time( 'Y-m-d H:i:s' ) );
+					$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id, current_time( 'Y-m-d H:i:s' ) );
 
 					if ( is_array( $campaign_emails ) && !empty( $campaign_emails ) ) {
 						foreach ( $campaign_emails as $campaign_email ) {

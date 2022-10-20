@@ -271,22 +271,21 @@ class CampaignModel {
     }
 
     /**
-     * Returns campaign email data
+     * Returns campaign email data for Cron background process
      * 
      * @param int $id   campaign ID
      * @return array
      * @since 1.0.0
      */
-    public static function get_campaign_email( $id, $scheduled_at = null )
-    {
-        global $wpdb;
-        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        $campaign_emails_query = $wpdb->prepare("SELECT * FROM {$campaign_emails_table} WHERE `campaign_id` = %d AND `status` = %s", $id, 'scheduled' );
-        if ( $scheduled_at ) {
+    public static function get_campaign_email_for_background( $id, $scheduled_at = null )
+	{
+		global $wpdb;
+		$campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+		$campaign_emails_query = $wpdb->prepare("SELECT * FROM {$campaign_emails_table} WHERE `campaign_id` = %d AND `status` = %s", $id, 'scheduled' );
+		if ( $scheduled_at ) {
 			$campaign_emails_query .= $wpdb->prepare( "AND `scheduled_at` <= %s", $scheduled_at );
 		}
-
-		$emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
+        $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
         $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
         if (!empty($emails)) {
@@ -299,6 +298,40 @@ class CampaignModel {
 
         return $emails;
     }
+
+
+    /**
+     * Returns campaign email data
+     * 
+     * @param int $id   campaign ID
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_campaign_email( $id )
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+
+        $campaign_emails_query = $wpdb->prepare("SELECT 
+                                    id,delay_count,delay_value,sender_email,
+                                    sender_name,email_index,email_subject,email_preview_text,email_json,
+                                    template_id,email_body, created_at, updated_at
+                                     FROM $campaign_emails_table  
+                                     WHERE campaign_id = %d", $id);
+        $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
+        $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
+        $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
+        if (!empty($emails)) {
+            $emails = array_map(function ($email) use($email_builder) {
+                $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
+                $email['email_body'] = $email_builder['email_body'];        //phpcs:ignore
+                return $email;
+            }, $emails);
+        }
+
+        return $emails;
+    }
+
 
 
     /**
