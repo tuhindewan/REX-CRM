@@ -76,7 +76,7 @@ class MRM_Subscribe_form
         $form_setting       = json_decode($form_setting);
         $form_placement      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
         $html .= '<div class="mintmrm">
-            <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper">
+            <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_placement.'">
                 <form method="post" id="mrm-form">
                     <input hidden name="form_id" value="'.$attributes['form_id'].'" />
                     '.$attributes['render_block'].'

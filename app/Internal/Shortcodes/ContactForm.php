@@ -85,7 +85,7 @@ class ContactForm {
         $output = '';
         ob_start();?>
         <div class="mintmrm" >
-            <div id="mrm-<?php echo $form_position ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ?>">
+            <div id="mrm-<?php echo $form_position ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_position?>">
                 <form method="post" id="mrm-form">
                     <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                     <?php echo  $form_data['form_body'] ?>
