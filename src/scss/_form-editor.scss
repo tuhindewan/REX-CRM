@@ -100,6 +100,12 @@
                     }
                 }
 
+                &.show-loader {
+                    .mintmrm-loader {
+                        display: inline-block;
+                    }
+                }
+
                 .mintmrm-dropdown {
                     width: 175px;
                     right: inherit;
