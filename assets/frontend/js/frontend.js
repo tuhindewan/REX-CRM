@@ -39,7 +39,6 @@ jQuery(document).ready(function($){
             data : {action: "mrm_submit_form" , post_data : jQuery("#mrm-form").serialize(), security : MRM_Frontend_Vars.mrm_form_nonce},
             success: function(response) {
                 if (response.status == "success"){
-
                     if (response.confirmation_type == 'same_page'){
                         if(response.after_form_submission == 'hide_form'){
                             $(".mrm-form-wrapper form").hide();
@@ -51,12 +50,11 @@ jQuery(document).ready(function($){
                         if(response.redirect_page){
                             setTimeout(function (){
                                 window.location.href = response.redirect_page
-                            },1000)
+                            },2000)
                         }else{
                             setTimeout(function (){
                                 jQuery(".response").html("Redirect URL not found")
-                            },1000)
-
+                            },2000)
                         }
                     }
                     if(response.confirmation_type == 'to_a_custom_url'){
