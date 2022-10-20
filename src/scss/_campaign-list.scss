@@ -195,6 +195,21 @@
                 width: 100%;
               }
             }
+
+            &:last-child {
+              .threedot {
+                .more-option {
+                  .mintmrm-dropdown {
+                    top: inherit;
+                    bottom: calc(100% + 8px);
+                    &::before {
+                      top: calc(100% - 4px);
+                      transform: rotate(220deg);
+                    }
+                  }
+                }
+              }
+            }
           }
           // .table-row:last-child {
           //     border-bottom: none;

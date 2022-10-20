@@ -6,7 +6,6 @@ import {
 } from "../../services/CustomField";
 import DynamicInput from "../DynamicInput";
 import InputItem from "../InputItem";
-import Selectbox from "../Selectbox";
 import "./style.css";
 
 export default function CustomFieldCreate() {
@@ -152,7 +151,7 @@ export default function CustomFieldCreate() {
                 handleChange={handleChange}
                 isRequired
               />
-              <Selectbox
+              {/* <Selectbox
                 label="Type"
                 name="type"
                 options={[
@@ -175,7 +174,7 @@ export default function CustomFieldCreate() {
                 value={customFields.type}
                 onSelect={onSelect}
                 error={errors?.type}
-              />
+              /> */}
               {isShow ? (
                 <DynamicInput
                   options={customFields?.options}

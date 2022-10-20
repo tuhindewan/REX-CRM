@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
 import { useLocation } from "react-router-dom";
-import Selectbox from "../Selectbox";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";

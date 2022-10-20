@@ -11,7 +11,6 @@ import Search from "../Icons/Search";
 import TagIcon from "../Icons/TagIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import Pagination from "../Pagination";
-import Selectbox from "../Selectbox";
 import SuccessfulNotification from "../SuccessfulNotification";
 import SingleField from "./SingleField";
 
@@ -143,7 +142,7 @@ const CustomFields = () => {
             <div className="contact-list-header">
               <div className="left-filters">
                 <p className="sort-by">Sort by</p>
-                <Selectbox
+                {/* <Selectbox
                   options={[
                     {
                       title: "Name",
@@ -157,7 +156,7 @@ const CustomFields = () => {
                   tags={false}
                   placeholder="Name"
                   multiple={false}
-                />
+                /> */}
               </div>
               <div className="right-buttons">
                 {/* search input */}

@@ -868,9 +868,9 @@ export default function ContactDetails() {
                                 name="addresses"
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.addresses}
-                                label="Address Line 1"
+                                label="Address"
                               />
-                              <InputItem
+                              {/* <InputItem
                                 name="addresses"
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.addresses}
@@ -1018,11 +1018,10 @@ export default function ContactDetails() {
                                     India
                                   </li>
                                 </ul>
-                              </div>
+                              </div> */}
                               {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
                           <InputItem label="City" value={contactData?.meta_fields?.city}/>
                           <InputItem label="Country" value={contactData?.meta_fields?.country}/> */}
-                              {/*<Selectbox label="Country" index="country" />*/}
                             </div>
                           </div>
                         </div>

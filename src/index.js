@@ -7,7 +7,6 @@ import App2 from './App2'
 /**
  * Import the stylesheet for the plugin.
  */
-import "rsuite/dist/rsuite.min.css";
 import "./scss/style.scss";
 import "./style/main.scss";
 

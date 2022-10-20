@@ -13,7 +13,6 @@
     "@arco-themes/react-easy-email-theme-purple": "^0.0.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "axios": "^0.27.2",
-    "bootstrap": "^5.1.3",
     "cross-env": "^7.0.3",
     "dotenv-webpack": "^8.0.1",
     "easy-email-core": "./packages/easy-email-core",
@@ -30,10 +29,6 @@
     "react-final-form": "^6.5.9",
     "react-flow-renderer": "^10.3.14",
     "react-router-dom": "^6.3.0",
-    "react-simple-wysiwyg": "^2.1.1",
-    "rsuite": "^5.16.6",
-    "select2": "^4.1.0-rc.0",
-    "sweetalert2": "^11.4.32",
     "url-loader": "^4.1.1",
     "webpack-merge": "^5.8.0",
     "zustand": "^4.0.0"

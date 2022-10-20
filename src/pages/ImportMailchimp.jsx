@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import InputItem from "../components/InputItem";
-import Selectbox from "../components/Selectbox";
 import Search from "../components/Icons/Search";
 import Plus from "../components/Icons/Plus";
 import CrossIcon from "../components/Icons/CrossIcon";
@@ -143,7 +142,7 @@ export default function ImportMailchimp() {
             </div>
             {listsOptions.length > 0 && (
               <div className="import-form-wrapper">
-                <Selectbox
+                {/* <Selectbox
                   label="Lists"
                   name="Lists"
                   options={listsOptions}
@@ -152,7 +151,7 @@ export default function ImportMailchimp() {
                   multiple={true}
                   onSelect={handleSelectBox}
                   onRemove={handleSelectBox}
-                />
+                /> */}
               </div>
             )}
             <div className={isVerified ? "add-list show" : "add-list"}>

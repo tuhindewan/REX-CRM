@@ -1,34 +1,30 @@
-import BaseTable from "../components/Base/BaseTable";
-import { Table, Button } from "rsuite";
-const { HeaderCell, Cell, Column } = Table;
-import BaseCreate from "../components/Base/BaseCreate";
-import { Link ,useParams} from "react-router-dom";
+// import BaseTable from "../components/Base/BaseTable";
+// import { Table, Button } from "rsuite";
+// const { HeaderCell, Cell, Column } = Table;
+// import BaseCreate from "../components/Base/BaseCreate";
+// import { Link ,useParams} from "react-router-dom";
 
 
-const leftMarkup = (
-  <Link to="/segements/create">
-    <Button appearance="primary">Create Segments</Button>
-  </Link>
-);
 
-const TitleCell = ({ rowData, dataKey, ...props }) => {
-  return (
-    <Cell {...props}>
-        <Link to={`/segments/update/${rowData.id}`}  state={ 
-          {id: rowData.id,
-           title: rowData.title, 
-           slug: rowData.slug}
-          }>
-          <div> {rowData.title}</div>
-        </Link> 
-    </Cell>
-  );
-};
+
+// const TitleCell = ({ rowData, dataKey, ...props }) => {
+//   return (
+//     <Cell {...props}>
+//         <Link to={`/segments/update/${rowData.id}`}  state={ 
+//           {id: rowData.id,
+//            title: rowData.title, 
+//            slug: rowData.slug}
+//           }>
+//           <div> {rowData.title}</div>
+//         </Link> 
+//     </Cell>
+//   );
+// };
 
 const Segments = () => {
   return (
     <>
-      <BaseTable endpoint="/segments" leftMarkup={leftMarkup}>
+      {/* <BaseTable endpoint="/segments">
         <Column width={100} align="center" fixed>
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey="id" />
@@ -46,7 +42,7 @@ const Segments = () => {
           <HeaderCell>Created At</HeaderCell>
           <Cell dataKey="created_at" />
         </Column>
-      </BaseTable>
+      </BaseTable> */}
     </>
   );
 };

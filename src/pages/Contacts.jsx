@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
-import { Button } from "rsuite";
+// import { Button } from "rsuite";
 import BaseTable from "../components/BaseTable/index";
 import Import from "../components/Icons/Import";
 import Plus from "../components/Icons/Plus";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
-const leftMarkup = (
-  <>
-    <Link to="/contacts/import">
-      <Button appearance="primary">+ Import</Button>
-    </Link>
-  </>
-);
+// const leftMarkup = (
+//   <>
+//     <Link to="/contacts/import">
+//       <Button appearance="primary">+ Import</Button>
+//     </Link>
+//   </>
+// );
 
 const Contacts = () => {
   AdminNavMenuClassChange("mrm-admin", "contacts");
@@ -37,7 +37,7 @@ const Contacts = () => {
     hideGlobalNav: false,
   });
 
-  return <BaseTable endpoint="contacts" leftMarkup={leftMarkup}></BaseTable>;
+  return <BaseTable endpoint="contacts" ></BaseTable>;
 };
 
 export default Contacts;
