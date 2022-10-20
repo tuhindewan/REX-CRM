@@ -63,8 +63,9 @@ class CampaignsBackgroundProcess
     public function process_scheduled_emails() {
         if ( !$this->process_locked() ) {
             $this->lock_process();
-            $campaign       = CampaignController::get_instance()->get_publish_campaign_id();
-            $campaign_id    = isset( $campaign['id'] ) ? $campaign['id'] : "";
+            //$campaign       = CampaignController::get_instance()->get_publish_campaign_id();
+            //error_log(print_r($campaign, 1));
+            $campaign_id    = 1;
             $offset = get_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id, 0 );
             $per_batch = 10;
             $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
@@ -90,35 +91,37 @@ class CampaignsBackgroundProcess
      */
     private function send_emails( array $email_addresses, $campaign_id, $offset ) {
         $emails = ModelsCampaign::get_campaign_email( $campaign_id );
-        $first_email = isset($emails[0]) ? $emails[0] : [];
+        error_log(print_r($emails, 1));
+        if ( is_array( $emails ) && !empty( $emails ) ) {
+            $first_email = isset($emails[0]) ? $emails[0] : [];
 
-        $email_builder = CampaignEmailBuilderModel::get($first_email['id']);
-        $sender_email   = isset( $first_email['sender_email'] )     ? $first_email['sender_email'] : "";
-        $sender_name    = isset( $first_email['sender_name'] )      ? $first_email['sender_name'] : "";
-        $email_subject  = isset( $first_email['email_subject'] )    ? $first_email['email_subject'] : "";
-        $email_body     = $email_builder["email_body"];
+            $email_builder = CampaignEmailBuilderModel::get($first_email['id']);
+            $sender_email = isset($first_email['sender_email']) ? $first_email['sender_email'] : "";
+            $sender_name = isset($first_email['sender_name']) ? $first_email['sender_name'] : "";
+            $email_subject = isset($first_email['email_subject']) ? $first_email['email_subject'] : "";
+            $email_body = $email_builder["email_body"];
 
-        $headers = array(
-            'MIME-Version: 1.0',
-            'Content-type: text/html;charset=UTF-8'
-        );
+            $headers = array(
+                'MIME-Version: 1.0',
+                'Content-type: text/html;charset=UTF-8'
+            );
 
-        $from = 'From: '. $sender_name;
-        $headers[] = $from . ' <' . $sender_email . '>';
-        $headers[] = 'Reply-To:  ' . $sender_email;
+            $from = 'From: ' . $sender_name;
+            $headers[] = $from . ' <' . $sender_email . '>';
+            $headers[] = 'Reply-To:  ' . $sender_email;
 
-        foreach( $email_addresses as $recipient ) {
-            try {
-                wp_mail( $recipient, $email_subject, $email_body, $headers );
-                $offset++;
-                update_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id, $offset );
-                sleep( 0.5 );
-            }
-            catch(\Exception $e) {
-                error_log(print_r( $e->getMessage(), 1 ));
-            }
-            if ( $this->time_exceeded() || $this->memory_exceeded() ) {
-                break;
+            foreach ($email_addresses as $recipient) {
+                try {
+                    wp_mail($recipient, $email_subject, $email_body, $headers);
+                    $offset++;
+                    update_option('mrm_campaign_email_recipients_offset_' . $campaign_id, $offset);
+                    sleep(0.5);
+                } catch (\Exception $e) {
+                    error_log(print_r($e->getMessage(), 1));
+                }
+                if ($this->time_exceeded() || $this->memory_exceeded()) {
+                    break;
+                }
             }
         }
     }

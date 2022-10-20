@@ -344,7 +344,7 @@ class ContactModel{
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
         if ( is_array( $ids ) ) {
-            $ids = !empty( $ids ) ? implode( ', ', $ids ) : '';
+            $ids = !empty( $ids ) ? implode( ', ', $ids ) : 0;
         }
 
         $sql = $wpdb->prepare( "SELECT `email` FROM {$contacts_table} WHERE `id` IN( %s ) AND `status` = %s", $ids, 'subscribed' );

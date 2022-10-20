@@ -281,13 +281,7 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-
-        $campaign_emails_query = $wpdb->prepare("SELECT 
-                                    id,delay_count,delay_value,sender_email,
-                                    sender_name,email_index,email_subject,email_preview_text,email_json,
-                                    template_id,email_body, created_at, updated_at
-                                     FROM $campaign_emails_table  
-                                     WHERE campaign_id = %d", $id);
+        $campaign_emails_query = $wpdb->prepare("SELECT * FROM {$campaign_emails_table} WHERE `campaign_id` = %d AND `status` = %s AND `scheduled_at` <= %s", $id, 'scheduled', current_time( 'Y-m-d H:i:s' ) );
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
         $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
@@ -409,7 +403,7 @@ class CampaignModel {
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
         $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
-        return $wpdb->get_row( $select_query, ARRAY_A );
+        return $wpdb->get_results( $select_query, ARRAY_A );
     }
 
 

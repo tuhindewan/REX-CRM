@@ -60,7 +60,10 @@ class ContactGroupPivotModel {
     {
         global $wpdb;
         $pivot_table = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
-        $ids = is_array( $ids ) && !empty( $ids ) ? implode( ', ', $ids ) : $ids;
+
+        if ( is_array( $ids ) ) {
+            $ids = !empty( $ids ) ? implode( ', ', $ids ) : 0;
+        }
 
         try {
             $select_query   = $wpdb->prepare( "SELECT DISTINCT `contact_id` FROM {$pivot_table} WHERE `group_id` IN( %s )", $ids );
