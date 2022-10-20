@@ -6321,13 +6321,13 @@ const FormEditor = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_9__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "responsive-section"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "edit-view active",
+    className: "editor" === preview ? "edit-view active" : "edit-view",
     onClick: e => handlePreview("editor")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_EditIcon__WEBPACK_IMPORTED_MODULE_17__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "desktop-view",
+    className: "desktop" === preview ? "desktop-view active" : "desktop-view",
     onClick: e => handlePreview("desktop")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ComputerIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "mobile-view",
+    className: "mobile" === preview ? "mobile-view active" : "mobile-view",
     onClick: e => handlePreview("mobile")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_MobileIcon__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "topbar-right"
