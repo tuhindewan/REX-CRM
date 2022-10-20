@@ -460,13 +460,7 @@ class CampaignController extends BaseController {
 
         $recipients_ids = ContactGroupPivotModel::get_contacts_to_group( array_column( $group_ids, 'id' ), $offset, $per_batch );
         $recipients_ids = array_column( $recipients_ids, 'contact_id' );
-
-        $recipients_emails = [];
-        foreach ( $recipients_ids as $contact_id ){
-            array_push($recipients_emails, ContactModel::get_single_email($contact_id));
-        }
-
-        return $recipients_emails;
+        return ContactModel::get_single_email( $recipients_ids );
     }
 
 
