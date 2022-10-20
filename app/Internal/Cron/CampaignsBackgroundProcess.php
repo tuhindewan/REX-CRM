@@ -53,13 +53,24 @@ class CampaignsBackgroundProcess
      * @return void
      */
     public function process_scheduled_emails() {
-        $campaign_id = 1;
-        $recipients_emails = CampaignController::get_reciepents_email( $campaign_id );
-        $recipients_emails = array_column( array_values( array_filter( $recipients_emails ) ), 'email' );
-        $this->send_emails( $recipients_emails, $campaign_id );
+        if ( !$this->process_locked() ) {
+            $this->lock_process();
+            $campaign_id = 1;
+            $offset = get_option( 'mrm_campaign_email_recipients_offset', 0 );
+            $per_batch = 10;
+            $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
+            $recipients_emails = array_column( array_values( array_filter( $recipients_emails ) ), 'email' );
+            if ( !empty( $recipients_emails ) ) {
+                $this->send_emails( $recipients_emails, $campaign_id, $offset );
+            }
+            else {
+                delete_option( 'mrm_campaign_email_recipients_offset' );
+            }
+            $this->unlock_process();
+        }
     }
 
-    private function send_emails( array $email_addresses, $campaign_id ) {
+    private function send_emails( array $email_addresses, $campaign_id, $offset ) {
         $emails = ModelsCampaign::get_campaign_email( $campaign_id );
         $first_email = isset($emails[0]) ? $emails[0] : [];
 
@@ -78,13 +89,103 @@ class CampaignsBackgroundProcess
         $headers[] = $from . ' <' . $sender_email . '>';
         $headers[] = 'Reply-To:  ' . $sender_email;
 
-        try {
-            foreach( $email_addresses as $recipient ){
+        foreach( $email_addresses as $recipient ) {
+            try {
                 wp_mail( $recipient, $email_subject, $email_body, $headers );
+                $offset++;
+                update_option( 'mrm_campaign_email_recipients_offset', $offset );
+                sleep( 0.5 );
             }
-
-        } catch(\Exception $e) {
-            error_log(print_r( $e->getMessage(), 1 ));
+            catch(\Exception $e) {
+                error_log(print_r( $e->getMessage(), 1 ));
+            }
+            if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+                break;
+            }
         }
+    }
+
+    private function process_locked() {
+        return 'locked' === get_option( 'mrm_process_lock_status', 'unlocked' );
+    }
+
+    private function lock_process() {
+        update_option( 'mrm_process_lock_status', 'locked' );
+    }
+
+    private function unlock_process() {
+        update_option( 'mrm_process_lock_status', 'unlocked' );
+    }
+
+    private function time_exceeded() {
+        $execution_time        = $this->get_execution_time();
+        $max_execution_time    = ini_get( 'max_execution_time' );
+        $max_execution_time    = $max_execution_time - ( apply_filters( 'ebp_exclude_safe_time_limits', 20 ) * $max_execution_time / 100 );
+        $likely_to_be_exceeded = $execution_time > $max_execution_time;
+
+        return apply_filters( 'ebp_max_execution_time_exceeded', $likely_to_be_exceeded, $execution_time, $max_execution_time );
+    }
+
+    private function get_execution_time() {
+        $execution_time = microtime( true ) - $this->created_time;
+
+        // Get the CPU time if the hosting environment uses it rather than wall-clock time to calculate a process's execution time.
+        if( function_exists( 'getrusage' ) && apply_filters( 'ebp_cpu_execution_time', defined( 'PANTHEON_ENVIRONMENT' ) ) ) {
+            $resource_usages = getrusage();
+
+            if( isset( $resource_usages[ 'ru_stime.tv_usec' ], $resource_usages[ 'ru_stime.tv_usec' ] ) ) {
+                $execution_time = $resource_usages[ 'ru_stime.tv_sec' ] + ( $resource_usages[ 'ru_stime.tv_usec' ] / 1000000 );
+            }
+        }
+
+        return $execution_time;
+    }
+
+    private function memory_exceeded() {
+        $allowed_memory = apply_filters( 'ebp_max_allowed_memory_limit', 20 ) / 100;
+        $memory_limit   = $this->get_memory_limit() * $allowed_memory;
+        $current_memory = memory_get_usage( true );
+        //        error_log(print_r('$current_memory: ' . $current_memory, 1));
+        //        error_log(print_r('$memory_limit: ' . $memory_limit, 1));
+        $memory_exceeded = $current_memory >= $memory_limit;
+
+        return apply_filters( 'ebp_memory_exceeded', $memory_exceeded, $this );
+    }
+
+    private function get_memory_limit() {
+        if( function_exists( 'ini_get' ) ) {
+            $memory_limit = ini_get( 'memory_limit' );
+        }
+        else {
+            $memory_limit = '128M'; // Sensible default, and minimum required by WooCommerce
+        }
+
+        if( !$memory_limit || -1 === $memory_limit || '-1' === $memory_limit ) {
+            // Unlimited, set to 32GB.
+            $memory_limit = '32G';
+        }
+        return $this->convert_hr_to_bytes( $memory_limit );
+    }
+
+    private function convert_hr_to_bytes( $value ) {
+        if( function_exists( 'wp_convert_hr_to_bytes' ) ) {
+            return wp_convert_hr_to_bytes( $value );
+        }
+
+        $value = strtolower( trim( $value ) );
+        $bytes = (int)$value;
+
+        if( false !== strpos( $value, 'g' ) ) {
+            $bytes *= GB_IN_BYTES;
+        }
+        elseif( false !== strpos( $value, 'm' ) ) {
+            $bytes *= MB_IN_BYTES;
+        }
+        elseif( false !== strpos( $value, 'k' ) ) {
+            $bytes *= KB_IN_BYTES;
+        }
+
+        // Deal with large (float) values which run into the maximum integer size.
+        return min( $bytes, PHP_INT_MAX );
     }
 }
