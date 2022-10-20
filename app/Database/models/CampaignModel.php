@@ -409,6 +409,6 @@ class CampaignModel {
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
         $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
-        return $wpdb->get_row( $select_query, ARRAY_A );
+        return $wpdb->get_results( $select_query, ARRAY_A );
     }
 }

@@ -64,6 +64,7 @@ class CampaignsBackgroundProcess
         if ( !$this->process_locked() ) {
             $this->lock_process();
             $campaign       = CampaignController::get_instance()->get_publish_campaign_id();
+            error_log(print_r($campaign, 1));
             $campaign_id    = isset( $campaign['id'] ) ? $campaign['id'] : "";
             $offset = get_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id, 0 );
             $per_batch = 10;
