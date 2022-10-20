@@ -95,6 +95,10 @@ class ContactForm {
             </div>
 
             <style>
+                .mrm-form-wrapper * {
+                    box-sizing: border-box;
+                }
+
                 .mintmrm label, 
                 .mintmrm .label {
                     font-style: normal;
@@ -103,6 +107,7 @@ class ContactForm {
                     line-height: 18px;
                     color: #344054;
                     box-sizing: border-box;
+                    display: block;
                 }
 
                 .mintmrm input[type=date], 
@@ -111,7 +116,7 @@ class ContactForm {
                 .mintmrm textarea, 
                 .mintmrm select {
                     font-size: 14px;
-                    line-height: 1;
+                    line-height: 1.3;
                     color: #7a8b9a;
                     padding: 9px 15px;
                     width: 100%;
@@ -121,6 +126,16 @@ class ContactForm {
                     min-height: 30px;
                     box-sizing: border-box;
                     outline: none;
+                    box-shadow: none;
+                    max-width: 100%;
+                }
+                .mintmrm input[type=date]:focus, 
+                .mintmrm input[type=email]:focus, 
+                .mintmrm input[type=text]:focus, 
+                .mintmrm textarea:focus, 
+                .mintmrm select:focus {
+                    border-color: #e4e6eb;
+                    color: #7a8b9a;
                     box-shadow: none;
                 }
                 .mintmrm .mintmrm-btn {
@@ -249,6 +264,7 @@ class ContactForm {
                 .mintmrm-radiobtn input[type="radio"]:checked + label::after {
                     transform: scale(1);
                 }
+
                 .mrm-form-wrapper .response {
                     font-size: 15px;
                     font-style: italic;
@@ -261,6 +277,63 @@ class ContactForm {
 
                 .mrm-form-wrapper .response.mintmrm-success {
                     color: #08c708;
+                }
+
+                /*------popup form design------*/
+                .mrm-form-wrapper.mrm-popup {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-flow: column;
+                    align-items: center;
+                    justify-content: center;
+                    background: #33333357;
+                }
+                .mrm-popup .mrm-form-wrapper-inner {
+                    max-width: 450px;
+                    width: 100%;
+                    margin: 0 auto;
+                    max-height: 80%;
+                    background: #fff;
+                    border-radius: 10px;
+                    position: relative;
+                    padding: 5px;
+                }
+
+                .mrm-popup .mrm-form-wrapper-inner .mrm-form-close {
+                    position: absolute;
+                    right: -12px;
+                    top: -16px;
+                    width: 30px;
+                    height: 30px;
+                    background: #573bff;
+                    z-index: 99;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 100%;
+                    cursor: pointer;
+                }
+
+                .mrm-popup .mrm-form-overflow {
+                    padding: 20px;
+                    overflow: auto;
+                    width: 100%;
+                    height: 100%;
+                }
+                .mrm-popup .mrm-form-overflow::-webkit-scrollbar {
+                    width: 6px;
+                    height: 6px;
+                }
+                .mrm-popup .mrm-form-overflow::-webkit-scrollbar-track {
+                    background: #f9fafb;
+                }
+                .mrm-popup .mrm-form-overflow::-webkit-scrollbar-thumb {
+                    background-color: #ccd0d9;
+                    border-radius: 20px;
                 }
 
             </style>

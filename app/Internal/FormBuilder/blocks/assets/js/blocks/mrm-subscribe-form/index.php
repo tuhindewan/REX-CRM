@@ -79,7 +79,7 @@ class MRM_Subscribe_form
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_placement.'">
                 <div class="mrm-form-wrapper-inner">
                     <span class="mrm-form-close">
-                        <svg width="14" height="13" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#A7A8B3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                        <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                     </span>
                 
                     <div class="mrm-form-overflow">
@@ -105,6 +105,7 @@ class MRM_Subscribe_form
                     line-height: 18px;
                     color: #344054;
                     box-sizing: border-box;
+                    display: block;
                 }
 
                 .mintmrm input[type=date], 
@@ -297,16 +298,22 @@ class MRM_Subscribe_form
                     background: #fff;
                     border-radius: 10px;
                     position: relative;
+                    padding: 5px;
                 }
 
                 .mrm-popup .mrm-form-wrapper-inner .mrm-form-close {
                     position: absolute;
-                    right: 0px;
-                    top: 0;
-                    width: 40px;
-                    height: 40px;
-                    background: red;
+                    right: -12px;
+                    top: -16px;
+                    width: 30px;
+                    height: 30px;
+                    background: #573bff;
                     z-index: 99;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 100%;
+                    cursor: pointer;
                 }
 
                 .mrm-popup .mrm-form-overflow {
@@ -314,6 +321,17 @@ class MRM_Subscribe_form
                     overflow: auto;
                     width: 100%;
                     height: 100%;
+                }
+                .mrm-popup .mrm-form-overflow::-webkit-scrollbar {
+                    width: 6px;
+                    height: 6px;
+                }
+                .mrm-popup .mrm-form-overflow::-webkit-scrollbar-track {
+                    background: #f9fafb;
+                }
+                .mrm-popup .mrm-form-overflow::-webkit-scrollbar-thumb {
+                    background-color: #ccd0d9;
+                    border-radius: 20px;
                 }
                 
 
