@@ -5151,7 +5151,7 @@ function Sidebar() {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "settings-label"
-  }, "Label Alignment", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, "Form Placement", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
     selected: formLayout,
@@ -6152,6 +6152,66 @@ const FormEditor = props => {
     }));
     setGroupIds(group_ids);
   }, [recipientLists, recipientTags]);
+  const saveFormAsDraft = async () => {
+    const storedBlocks = window.localStorage.getItem("getmrmblocks");
+    const settingData = window.localStorage.getItem("getsettings");
+    setsaveLoader(true);
+    const post_data = {
+      title: formData === null || formData === void 0 ? void 0 : formData.title,
+      form_body: storedBlocks,
+      group_ids: groupIds,
+      status: 0,
+      meta_fields: {
+        settings: settingData
+      }
+    };
+    if (id == undefined) {
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(post_data)
+      });
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData === null || responseData === void 0 ? void 0 : responseData.message);
+      if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
+        setSaveSuccess(true);
+        setsaveLoader(false);
+        setId(responseData === null || responseData === void 0 ? void 0 : responseData.data);
+      } else if (200 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
+        setSaveSuccess(false);
+        setsaveLoader(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(post_data)
+      });
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData === null || responseData === void 0 ? void 0 : responseData.message);
+      if (201 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
+        setSaveSuccess(true);
+        setsaveLoader(false);
+      } else if (200 === (responseData === null || responseData === void 0 ? void 0 : responseData.code)) {
+        setSaveSuccess(false);
+        setsaveLoader(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  };
   const saveForm = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     const settingData = window.localStorage.getItem("getsettings");
@@ -6160,6 +6220,7 @@ const FormEditor = props => {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
       group_ids: groupIds,
+      status: 1,
       meta_fields: {
         settings: settingData
       }
@@ -6276,14 +6337,14 @@ const FormEditor = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ThreeDotIcon__WEBPACK_IMPORTED_MODULE_11__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
     className: "mintmrm-dropdown"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
-    onClick: saveForm
+    onClick: saveFormAsDraft
   }, "Save as Draft"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mintmrm-btn settings",
     onClick: showSettingsPannel
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_12__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: saveLoader ? "mintmrm-btn enable show-loader" : "mintmrm-btn enable",
     onClick: saveForm
-  }, "Save", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, id ? "Update" : "Publish", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-loader"
   })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-editor-body"

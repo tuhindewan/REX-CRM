@@ -513,7 +513,7 @@ function Sidebar() {
             <div className="pannelbody-wrapper">
               <div className="single-settings">
                 <label className="settings-label">
-                  Label Alignment
+                  Form Placement
                   <span className="mintmrm-tooltip">
                     <QuestionIcon />
                     <p>Animation to show up your form</p>

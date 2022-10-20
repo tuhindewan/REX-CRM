@@ -77,14 +77,18 @@ class MRM_Subscribe_form
         $form_placement      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
         $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_placement.'">
-                <span class="mrm-form-close ">x</span>
-                 
                 <div class="mrm-form-wrapper-inner">
-                    <form method="post" id="mrm-form">
-                        <input hidden name="form_id" value="'.$attributes['form_id'].'" />
-                        '.$attributes['render_block'].'
-                    </form>
-                    <div class="response"></div>
+                    <span class="mrm-form-close">
+                        <svg width="14" height="13" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#A7A8B3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                    </span>
+                
+                    <div class="mrm-form-overflow">
+                        <form method="post" id="mrm-form">
+                            <input hidden name="form_id" value="'.$attributes['form_id'].'" />
+                            '.$attributes['render_block'].'
+                        </form>
+                        <div class="response"></div>
+                    </div>
                 </div>
             </div>
 
@@ -290,11 +294,29 @@ class MRM_Subscribe_form
                     width: 100%;
                     margin: 0 auto;
                     max-height: 80%;
-                    overflow: auto;
                     background: #fff;
-                    padding: 20px;
                     border-radius: 10px;
+                    position: relative;
                 }
+
+                .mrm-popup .mrm-form-wrapper-inner .mrm-form-close {
+                    position: absolute;
+                    right: 0px;
+                    top: 0;
+                    width: 40px;
+                    height: 40px;
+                    background: red;
+                    z-index: 99;
+                }
+
+                .mrm-popup .mrm-form-overflow {
+                    padding: 20px;
+                    overflow: auto;
+                    width: 100%;
+                    height: 100%;
+                }
+                
+
 
             </style>
 

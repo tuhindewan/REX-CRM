@@ -172,7 +172,7 @@ const FormEditor = (props) => {
     setGroupIds(group_ids);
   }, [recipientLists, recipientTags]);
 
-  const saveForm = async () => {
+  const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
 
     const settingData = window.localStorage.getItem("getsettings");
@@ -183,6 +183,7 @@ const FormEditor = (props) => {
       title: formData?.title,
       form_body: storedBlocks,
       group_ids: groupIds,
+      status: 0,
       meta_fields: {
         settings: settingData,
       },
@@ -203,7 +204,6 @@ const FormEditor = (props) => {
         setSaveSuccess(true);
         setsaveLoader(false);
         setId(responseData?.data);
-        
       } else if (200 === responseData?.code) {
         setSaveSuccess(false);
         setsaveLoader(false);
@@ -212,7 +212,6 @@ const FormEditor = (props) => {
         setShowNotification("none");
       }, 3000);
       return () => clearTimeout(timer);
-
     } else {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
@@ -230,7 +229,74 @@ const FormEditor = (props) => {
       if (201 === responseData?.code) {
         setSaveSuccess(true);
         setsaveLoader(false);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
+        setsaveLoader(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  };
 
+  const saveForm = async () => {
+    const storedBlocks = window.localStorage.getItem("getmrmblocks");
+
+    const settingData = window.localStorage.getItem("getsettings");
+
+    setsaveLoader(true);
+
+    const post_data = {
+      title: formData?.title,
+      form_body: storedBlocks,
+      group_ids: groupIds,
+      status: 1,
+      meta_fields: {
+        settings: settingData,
+      },
+    };
+
+    if (id == undefined) {
+      const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      });
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+        setsaveLoader(false);
+        setId(responseData?.data);
+      } else if (200 === responseData?.code) {
+        setSaveSuccess(false);
+        setsaveLoader(false);
+      }
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(post_data),
+        }
+      );
+      const responseData = await res.json();
+      setShowNotification("block");
+      setMessage(responseData?.message);
+      if (201 === responseData?.code) {
+        setSaveSuccess(true);
+        setsaveLoader(false);
       } else if (200 === responseData?.code) {
         setSaveSuccess(false);
         setsaveLoader(false);
@@ -321,7 +387,7 @@ const FormEditor = (props) => {
             >
               <ThreeDotIcon />
               <ul className="mintmrm-dropdown">
-                <li onClick={saveForm}>Save as Draft</li>
+                <li onClick={saveFormAsDraft}>Save as Draft</li>
                 {/*<li>Change Template</li>*/}
               </ul>
             </button>
@@ -331,8 +397,15 @@ const FormEditor = (props) => {
             >
               <SettingIcon />
             </button>
-            <button className={saveLoader ? "mintmrm-btn enable show-loader" : "mintmrm-btn enable"} onClick={saveForm}>
-              Save
+            <button
+              className={
+                saveLoader
+                  ? "mintmrm-btn enable show-loader"
+                  : "mintmrm-btn enable"
+              }
+              onClick={saveForm}
+            >
+              {id ? "Update" : "Publish"}
               <span className="mintmrm-loader"></span>
             </button>
           </div>
