@@ -379,7 +379,7 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="message_to_show"
-                        value={messageToShow}
+                        defaultValue={messageToShow}
                         onChange={(e) => setMessageToShow(e)}
                       />
                     </div>
@@ -451,7 +451,7 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="redirection_message"
-                        value={redirectionMessage}
+                        defaultValue={redirectionMessage}
                         onChange={(e) => setRedirectionMessage(e)}
                       />
                     </div>
@@ -475,7 +475,7 @@ function Sidebar() {
 
                       <TextControl
                         name="custom-url"
-                        value={customURL}
+                        defaultValue={customURL}
                         onChange={(e) => setCustomURL(e)}
                       />
                     </div>
@@ -490,7 +490,7 @@ function Sidebar() {
                       </label>
                       <TextareaControl
                         name="custom-redirection-message"
-                        value={customRedirectionMessage}
+                        defaultValue={customRedirectionMessage}
                         onChange={(e) => setCustomRedirectionMessage(e)}
                       />
                     </div>

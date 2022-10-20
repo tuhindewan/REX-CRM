@@ -2,6 +2,7 @@
 
 namespace Mint\MRM\DataBase\Models;
 
+use Error;
 use Exception;
 use Mint\MRM\DataBase\Tables\FormSchema;
 use Mint\MRM\DataBase\Tables\FormMetaSchema;
@@ -101,12 +102,12 @@ class FormModel {
         $args['title']        = !empty($form->get_title()) ? $form->get_title() : "";
         $args['form_body']    = !empty($form->get_form_body()) ? $form->get_form_body() : "";
         $args['form_position']= !empty($form->get_form_position()) ? $form->get_form_position() : "";
-        $args['group_ids']    = !empty($form->get_group_ids() ? $form->get_group_ids() : "");
         $args['status']       = !empty($form->get_status() ? $form->get_status() : 0);
         $args['template_id']  = !empty($form->get_template_id() ? $form->get_template_id() : "");
         $args['created_by']   = !empty($form->get_created_by() ? $form->get_created_by() : "");
         $args['updated_at']   = current_time('mysql'); 
         $args['meta_fields']  = $form->get_meta_fields();
+        $args['group_ids']    = $form->get_group_ids();
 
 
         if( !empty( $args['meta_fields'] )){
@@ -265,8 +266,10 @@ class FormModel {
             $form_result   = json_decode(json_encode($wpdb->get_results($form_query)), true);
             
             $new_meta = self::get_meta( $id );
-            
-            return array_merge($form_result[0], $new_meta);
+
+            $form = array_merge($form_result[0], $new_meta);
+
+            return $form;
         
         } catch(\Exception $e) {
             return false;

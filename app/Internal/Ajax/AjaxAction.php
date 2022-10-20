@@ -119,29 +119,40 @@ class AjaxAction {
                 );
                 FormModel::update_meta_fields($form_id,$args);
 
-                $group_id = ['1','2','3','4','5'];
+                /**
+                 * Assign Tag and List for contact
+                 */
+                $get_group_id   = FormModel::get($form_id);
+                $group_ids      = isset($get_group_id['group_ids']) ? unserialize($get_group_id['group_ids']) : [];
 
-                TagController::set_tags_to_contact($group_id,$contact_id);
+                TagController::set_tags_to_contact($group_ids,$contact_id);
                 $meta_fields['meta_fields'] = isset($form_data['meta_fields']) ? $form_data['meta_fields'] : [];
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
 
+                /**
+                 * After form submit
+                 * get status and check this will done after submit form
+                 */
                 $get_setting        = FormModel::get_meta($form_id);
                 $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  [];
                 $form_setting       = json_decode($form_setting);
                 $confirmation_type  = $form_setting->settings->confirmation_type;
                 if(!empty($confirmation_type->same_page)){
                     $same_page  = $confirmation_type->same_page;
+                    $response['confirmation_type'] = 'same_page';
                     $response['after_form_submission'] = $same_page->after_form_submission;
                     $response['message']   = __($same_page->message_to_show,'mrm');
 
                 }if(!empty($confirmation_type->to_a_page)){
                     $to_a_page  = $confirmation_type->to_a_page;
+                    $response['confirmation_type'] = 'to_a_page';
                     $response['redirect_page'] = get_permalink( $to_a_page->page );
                     $response['message']   = __($to_a_page->redirection_message,'mrm');
 
                 }
                 if(!empty($confirmation_type->to_a_custom_url)){
                     $to_a_custom_url  = $confirmation_type->to_a_custom_url;
+                    $response['confirmation_type'] = 'to_a_custom_url';
                     $response['custom_url'] =  $to_a_custom_url->custom_url;
                     $response['message']   = __($to_a_custom_url->custom_redirection_message,'mrm');
 
