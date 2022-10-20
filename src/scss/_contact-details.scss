@@ -328,11 +328,17 @@
                 margin-bottom: 5px;
                 display: block;
               }
-              .gender-button {
+              input {
+                padding: 15px 15px;
+              }
+              .gender-button,
+              .timezone-button,
+              .state-prove-region-button,
+              .country-button {
                 font-size: 14px;
                 font-weight: 400;
                 color: #7a8b9a;
-                padding: 14px 15px;
+                padding: 13px 15px;
                 width: 100%;
                 min-width: 190px;
                 border-radius: 6px;
@@ -343,6 +349,11 @@
               }
               .mintmrm-dropdown {
                 top: calc(100%);
+                .searchbar {
+                  input {
+                    padding: 4px 15px 4px 40px;
+                  }
+                }
               }
               .select2-selection__rendered {
                 font-weight: 400;

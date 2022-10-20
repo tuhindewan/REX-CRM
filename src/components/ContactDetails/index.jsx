@@ -58,7 +58,11 @@ export default function ContactDetails() {
   const [assignTags, setAssignTags] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
   const [gender, setGender] = useState(false);
+  const [country, setCountry] = useState(false);
+  const [stateRegion, setStateRegion] = useState(false);
   const [genderButton, setGenderButton] = useState();
+  const [stateRegionButton, setStateRegionButton] = useState();
+  const [countryButton, setCountryButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
   const [timezones, setTimezones] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
@@ -71,6 +75,9 @@ export default function ContactDetails() {
 
   const timezoneRef = useRef(null);
   const genderRef = useRef(null);
+  const stateRef = useRef(null);
+  const countryRef = useRef(null);
+
   const [listening, setListening] = useState(false);
   useEffect(
     ListenForOutsideClicks(
@@ -79,6 +86,9 @@ export default function ContactDetails() {
       timezoneRef,
       setShowTimezone
     )
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, stateRef, setStateRegion)
   );
 
   useEffect(
@@ -468,6 +478,12 @@ export default function ContactDetails() {
   const handleGender = () => {
     setGender(!gender);
   };
+  const handleState = () => {
+    setStateRegion(!stateRegion);
+  };
+  const handleCountry = () => {
+    setCountry(!country);
+  };
 
   const handleTimezoneShow = () => {
     setShowTimezone(!showTimezone);
@@ -488,6 +504,24 @@ export default function ContactDetails() {
         [name]: genderButton,
       },
     }));
+  };
+  const handleStateSelect = (e, name, stateValue) => {
+    setStateRegion(false);
+    if (name == "state" && stateValue == "barisal") {
+      setStateRegionButton("Barisal");
+    } else if (name == "state" && stateValue == "chittagong") {
+      setStateRegionButton("Chittagong");
+    } else {
+      setStateRegionButton("Dhaka");
+    }
+  };
+  const handleCountrySelect = (e, name, countryValue) => {
+    setCountry(false);
+    if (name == "country" && countryValue == "bangladesh") {
+      setCountryButton("Bangladesh");
+    } else if (name == "country" && countryValue == "india") {
+      setCountryButton("India");
+    }
   };
 
   const handleTimezoneSelect = (event, id, value) => {
@@ -834,7 +868,157 @@ export default function ContactDetails() {
                                 name="addresses"
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.addresses}
+                                label="Address Line 1"
                               />
+                              <InputItem
+                                name="addresses"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.addresses}
+                                label="Address Line 2"
+                              />
+                              <InputItem
+                                name="addresses"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.addresses}
+                                label="City"
+                              />
+                              <div
+                                className="form-group contact-input-field"
+                                ref={stateRef}
+                              >
+                                <label name="state-prove-region">
+                                  State/Prove/Region
+                                </label>
+                                <button
+                                  className="state-prove-region-button"
+                                  onClick={handleState}
+                                >
+                                  {stateRegionButton
+                                    ? stateRegionButton
+                                    : "Select State"}
+                                </button>
+                                <ul
+                                  className={
+                                    stateRegion
+                                      ? "mintmrm-dropdown show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li
+                                    onClick={(event) =>
+                                      handleStateSelect(
+                                        event,
+                                        "state",
+                                        "barisal"
+                                      )
+                                    }
+                                  >
+                                    Barisal
+                                  </li>
+                                  <li
+                                    onClick={(event) =>
+                                      handleStateSelect(
+                                        event,
+                                        "state",
+                                        "chittagong"
+                                      )
+                                    }
+                                  >
+                                    Chittagong
+                                  </li>
+                                  <li
+                                    onClick={(event) =>
+                                      handleStateSelect(event, "state", "dhaka")
+                                    }
+                                  >
+                                    Dhaka
+                                  </li>
+                                </ul>
+                                <ul
+                                  className={
+                                    stateRegion
+                                      ? "mintmrm-dropdown show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li
+                                    onClick={(event) =>
+                                      handleStateSelect(
+                                        event,
+                                        "state",
+                                        "barisal"
+                                      )
+                                    }
+                                  >
+                                    Barisal
+                                  </li>
+                                  <li
+                                    onClick={(event) =>
+                                      handleStateSelect(
+                                        event,
+                                        "state",
+                                        "chittagong"
+                                      )
+                                    }
+                                  >
+                                    Chittagong
+                                  </li>
+                                  <li
+                                    onClick={(event) =>
+                                      handleStateSelect(event, "state", "dhaka")
+                                    }
+                                  >
+                                    Dhaka
+                                  </li>
+                                </ul>
+                              </div>
+                              <InputItem
+                                name="addresses"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.addresses}
+                                label="Postal/Zip"
+                              />
+                              <div className="form-group contact-input-field">
+                                <label name="country">Country</label>
+                                <button
+                                  className="country-button"
+                                  onClick={handleCountry}
+                                >
+                                  {countryButton
+                                    ? countryButton
+                                    : "Select Country"}
+                                </button>
+                                <ul
+                                  className={
+                                    country
+                                      ? "mintmrm-dropdown show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li
+                                    onClick={(event) =>
+                                      handleCountrySelect(
+                                        event,
+                                        "country",
+                                        "bangladesh"
+                                      )
+                                    }
+                                  >
+                                    Bangladesh
+                                  </li>
+                                  <li
+                                    onClick={(event) =>
+                                      handleCountrySelect(
+                                        event,
+                                        "country",
+                                        "india"
+                                      )
+                                    }
+                                  >
+                                    India
+                                  </li>
+                                </ul>
+                              </div>
                               {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
                           <InputItem label="City" value={contactData?.meta_fields?.city}/>
                           <InputItem label="Country" value={contactData?.meta_fields?.country}/> */}
@@ -915,7 +1099,7 @@ export default function ContactDetails() {
                             >
                               <label name="gender">Timezone</label>
                               <button
-                                className="gender-button"
+                                className="timezone-button"
                                 onClick={handleTimezoneShow}
                               >
                                 {selectedTimezone
