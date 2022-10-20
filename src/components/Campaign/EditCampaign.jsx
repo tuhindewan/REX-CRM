@@ -500,8 +500,8 @@ export default function EditCampaign(props) {
                       <div className="email-to input-item">
                         <div className="select-options" ref={menuRef}>
                           <label>To:</label>
-                          {recipientLists.length == 0 &&
-                          recipientTags.length == 0 ? (
+                          {recipientLists?.length == 0 &&
+                          recipientTags?.length == 0 ? (
                             <button
                               className="all-recipients"
                               onClick={showDropDown}
@@ -515,14 +515,14 @@ export default function EditCampaign(props) {
                               onClick={showDropDown}
                             >
                               <span className="tags">
-                                {recipientTags.length} Tags
+                                {recipientTags?.length} Tags
                               </span>
                               <span className="from">and</span>
                               <span className="lists">
-                                {recipientLists.length} Lists.
+                                {recipientLists?.length} Lists.
                               </span>
                               <span className="recipients">
-                                {recipientLists.length + recipientTags.length}{" "}
+                                {recipientLists?.length + recipientTags?.length}{" "}
                                 Recipients
                               </span>
                               {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}

@@ -56,15 +56,25 @@ class ContactGroupPivotModel {
      * @return array
      * @since 1.0.0
      */
-    public static function get_contacts_to_group( $id )
+    public static function get_contacts_to_group( $ids, $offset = 0, $per_batch = 0 )
     {
         global $wpdb;
         $pivot_table = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
+        if ( is_array( $ids ) ) {
+            $ids = !empty( $ids ) ? implode( ', ', $ids ) : 0;
+        }
+
         try {
-            $select_query   = $wpdb->prepare( "SELECT contact_id FROM $pivot_table WHERE group_id = %d", array( $id ) );
-            $query_results  = $wpdb->get_results( $select_query );
-            return $query_results;
+            $select_query   = $wpdb->prepare( "SELECT DISTINCT `contact_id` FROM {$pivot_table} WHERE `group_id` IN( %s )", $ids );
+
+            if ( $per_batch ) {
+                $select_query = $wpdb->prepare($select_query . " LIMIT %d, %d", $offset, $per_batch );
+            }
+            $select_query = str_replace( '( \'', '( ', $select_query );
+            $select_query = str_replace( '\' )', ' )', $select_query );
+
+            return $wpdb->get_results( $select_query );
 
         } catch(\Exception $e) {
             return false;

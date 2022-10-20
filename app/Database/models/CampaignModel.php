@@ -271,6 +271,36 @@ class CampaignModel {
     }
 
     /**
+     * Returns campaign email data for Cron background process
+     * 
+     * @param int $id   campaign ID
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_campaign_email_for_background( $id, $scheduled_at = null )
+	{
+		global $wpdb;
+		$campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+		$campaign_emails_query = $wpdb->prepare("SELECT * FROM {$campaign_emails_table} WHERE `campaign_id` = %d AND `status` = %s", $id, 'scheduled' );
+		if ( $scheduled_at ) {
+			$campaign_emails_query .= $wpdb->prepare( "AND `scheduled_at` <= %s", $scheduled_at );
+		}
+        $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
+        $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
+        $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
+        if (!empty($emails)) {
+            $emails = array_map(function ($email) use($email_builder) {
+                $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
+                $email['email_body'] = $email_builder['email_body'];        //phpcs:ignore
+                return $email;
+            }, $emails);
+        }
+
+        return $emails;
+    }
+
+
+    /**
      * Returns campaign email data
      * 
      * @param int $id   campaign ID
@@ -301,6 +331,7 @@ class CampaignModel {
 
         return $emails;
     }
+
 
 
     /**
@@ -402,5 +433,58 @@ class CampaignModel {
         $email_table    = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
         $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND email_index=%s", $campaign_id, $email_index );
         return $wpdb->get_row( $select_query );
+    }
+
+    public static function get_publish_campaign_id() {
+        global $wpdb;
+        $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+
+        $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
+        return $wpdb->get_results( $select_query, ARRAY_A );
+    }
+
+
+    /**
+     * Update a campaign status 
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $status
+     * 
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_status($campaign_id, $status)
+    {
+        global $wpdb;
+        $fields_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+
+        $args['updated_at'] = current_time('mysql');
+
+        return $wpdb->update( $fields_table, array( 'status' => $status), array( 'id' => $campaign_id ) );
+    }
+
+
+    /**
+     * @desc Update a campaign email status
+     * @param mixed $campaign_id
+     * @param mixed $email_id
+     * @param mixed $status
+     * @return bool
+     * @since 1.0.0
+     */
+    public static function update_campaign_email_status( $campaign_id, $email_id, $status)
+    {
+        global $wpdb;
+        $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        return $wpdb->update(
+            $campaign_emails_table,
+            [
+                'status' => $status
+            ],
+            [
+                'id' => $email_id,
+                'campaign_id' => $campaign_id
+            ]
+        );
     }
 }

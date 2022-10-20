@@ -333,18 +333,24 @@ class ContactModel{
     /**
      * Run SQL Query to get a single contact email only
      * 
-     * @param mixed $id Contact ID
+     * @param mixed $ids Contact IDs
      * 
-     * @return object
+     * @return array
      * @since 1.0.0
      */
-    public static function get_single_email( $id )
+    public static function get_single_email( $ids )
     {
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-        return $wpdb->get_row( $wpdb->prepare( "SELECT `email` FROM $contacts_table WHERE id = %d AND status = 'subscribed'",array( $id ) ), ARRAY_A );
+        if ( is_array( $ids ) ) {
+            $ids = !empty( $ids ) ? implode( ', ', $ids ) : 0;
+        }
 
+        $sql = $wpdb->prepare( "SELECT `email` FROM {$contacts_table} WHERE `id` IN( %s ) AND `status` = %s", $ids, 'subscribed' );
+        $sql = str_replace( '( \'' , '( ', $sql );
+        $sql = str_replace( '\' )' , ' )', $sql );
+        return $wpdb->get_results( $sql, ARRAY_A );
     }
 
 
@@ -422,7 +428,6 @@ class ContactModel{
             return false;
 
         }
-        
     }
 
     

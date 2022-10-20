@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
+use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
@@ -110,6 +111,18 @@ class CampaignController extends BaseController {
                             $emails[$index]['send_time'] = $email['send_time'];
                         }
 
+                        $data['campaign'] = $this->campaign_data;
+
+                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = current_time('mysql');
+                            $email['status']    = 'scheduled';
+                        }
+
+                        if( isset( $data['campaign']['status'] ) && "draft" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = null;
+                            $email['status']    = 'draft';
+                        }
+
                         ModelsCampaign::update_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
@@ -148,6 +161,17 @@ class CampaignController extends BaseController {
                             $emails[$index]['send_time'] = $email['send_time'];
                         }
                         
+                        $data['campaign'] = $this->campaign_data;
+
+                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = current_time('mysql');
+                            $email['status']    = 'scheduled';
+                        }
+
+                        if( isset( $data['campaign']['status'] ) && "draft" == $data['campaign']['status'] ){
+                            $email['scheduled_at'] = null;
+                            $email['status']    = 'draft';
+                        }
                         ModelsCampaign::insert_campaign_emails( $email, $campaign_id, $index );
                     }
                 }
@@ -158,8 +182,6 @@ class CampaignController extends BaseController {
             if($this->campaign_data) {
                 $data['campaign'] = $this->campaign_data;
                 if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
-                    //test_email_sending(for dev)
-                    $response = self::send_email_to_reciepents($this->campaign_data);
                     return $this->get_success_response(__( 'Campaign has been started successfully', 'mrm' ), 201, $data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
@@ -446,44 +468,25 @@ class CampaignController extends BaseController {
      * @return array
      * @since 1.0.0 
      */
-    public function get_reciepents_email($campaign_id)
+    public static function get_reciepents_email( $campaign_id, $offset = 0, $per_batch = 0 )
     {
-        $all_receipents = ModelsCampaign::get_campaign_meta($campaign_id);
-        $group_ids = [];
+        $all_receipents = ModelsCampaign::get_campaign_meta( $campaign_id );
 
-        if( isset($all_receipents['recipients']['lists'], $all_receipents['recipients']['tags']) ){
-             $group_ids = array_merge($all_receipents['recipients']['lists'],$all_receipents['recipients']['tags']);
+        if( isset( $all_receipents['recipients']['lists'], $all_receipents['recipients']['tags'] ) ){
+             $group_ids = array_merge( $all_receipents['recipients']['lists'],  $all_receipents['recipients']['tags']);
         }else{
-            isset($all_receipents['recipients']['lists']) ? $group_ids = $all_receipents['recipients']['lists'] : 
-            (isset($all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
-            $group_ids = []);
-        }
-        $contact_ids = [];
-
-        foreach ($group_ids as $group_id){
-            $id = isset( $group_id['id'] ) ? $group_id['id'] : "";
-            array_push($contact_ids,ContactGroupPivotModel::get_contacts_to_group($id));
-        }
-        $recipients_ids = [];
-
-        foreach ($contact_ids as $contact_id){
-            if (is_array($contact_id ) ){
-                foreach ($contact_id as $id){
-                    if( isset( $id->contact_id ) ){
-                        array_push($recipients_ids, $id->contact_id);
-                    }
-                }
-            }
-        }
-        $unique_recipients_ids = array_unique($recipients_ids);
-
-        $recipients_emails = [];
-        foreach ($unique_recipients_ids as $contact_id){
-            array_push($recipients_emails, ContactModel::get_single_email($contact_id));
+            isset( $all_receipents['recipients']['lists']) ? $group_ids = $all_receipents['recipients']['lists'] :
+            ( isset( $all_receipents['recipients']['tags']) ?  $group_ids = $all_receipents['recipients']['tags'] :
+            $group_ids = [] );
         }
 
-        return $recipients_emails;
+        $recipients_ids = ContactGroupPivotModel::get_contacts_to_group( array_column( $group_ids, 'id' ), $offset, $per_batch );
+        $recipients_ids = array_column( $recipients_ids, 'contact_id' );
+        return ContactModel::get_single_email( $recipients_ids );
     }
 
-
+    public function get_publish_campaign_id()
+    {
+        return ModelsCampaign::get_publish_campaign_id();
+    }
 }
