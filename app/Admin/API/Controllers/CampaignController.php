@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
+use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
@@ -470,5 +471,9 @@ class CampaignController extends BaseController {
         return ModelsCampaign::get_publish_campaign_id();
     }
 
-
+    public static function get_sequence_emails() {
+        global $wpdb;
+        $campaigns_email_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        //$query = "SELECT"
+    }
 }
