@@ -10,6 +10,8 @@ class CampaignsBackgroundProcess
 {
     use Singleton;
 
+    private $process_creation_time;
+
     /**
      * @desc Initialize cron functionalities
      * @since 1.0.0
@@ -112,6 +114,7 @@ class CampaignsBackgroundProcess
     }
 
     private function lock_process() {
+        $this->process_creation_time = microtime( true );
         update_option( 'mrm_process_lock_status', 'locked' );
     }
 
@@ -129,7 +132,7 @@ class CampaignsBackgroundProcess
     }
 
     private function get_execution_time() {
-        $execution_time = microtime( true ) - $this->created_time;
+        $execution_time = microtime( true ) - $this->process_creation_time;
 
         // Get the CPU time if the hosting environment uses it rather than wall-clock time to calculate a process's execution time.
         if( function_exists( 'getrusage' ) && apply_filters( 'ebp_cpu_execution_time', defined( 'PANTHEON_ENVIRONMENT' ) ) ) {
@@ -147,8 +150,6 @@ class CampaignsBackgroundProcess
         $allowed_memory = apply_filters( 'ebp_max_allowed_memory_limit', 20 ) / 100;
         $memory_limit   = $this->get_memory_limit() * $allowed_memory;
         $current_memory = memory_get_usage( true );
-        //        error_log(print_r('$current_memory: ' . $current_memory, 1));
-        //        error_log(print_r('$memory_limit: ' . $memory_limit, 1));
         $memory_exceeded = $current_memory >= $memory_limit;
 
         return apply_filters( 'ebp_memory_exceeded', $memory_exceeded, $this );
