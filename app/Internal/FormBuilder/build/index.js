@@ -3038,7 +3038,7 @@ const attributes = {
   },
   buttonAlign: {
     type: 'string',
-    default: 'center'
+    default: 'left'
   },
   postAction: {
     type: 'string',
@@ -3120,6 +3120,7 @@ const mrmButton = _ref => {
   let {
     attributes: {
       formLayout,
+      buttonAlign,
       buttonText,
       rowSpacing,
       buttonTextColor,
@@ -3150,6 +3151,7 @@ const mrmButton = _ref => {
     borderWidth: buttonBorderWidth + 'px',
     borderColor: buttonBorderColor
   };
+  console.log('align-items' + buttonAlign);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group submit",
     style: fieldSpacing
@@ -6194,10 +6196,10 @@ const FormEditor = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_9__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "responsive-section"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "computer-view active",
+    className: "edit-view active",
     onClick: e => handlePreview("editor")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_EditIcon__WEBPACK_IMPORTED_MODULE_17__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "computer-view active",
+    className: "desktop-view",
     onClick: e => handlePreview("desktop")
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ComputerIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mobile-view",

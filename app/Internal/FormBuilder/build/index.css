@@ -1008,6 +1008,18 @@ body.is-fullscreen-mode .get-mrm-header {
   margin-left: 10px;
 }
 
+.get-mrm-block-editor__block-list .alignleft {
+  float: none;
+  text-align: left;
+}
+.get-mrm-block-editor__block-list .aligncenter {
+  text-align: center;
+}
+.get-mrm-block-editor__block-list .alignright {
+  float: none;
+  text-align: right;
+}
+
 html.wp-toolbar {
   background: white;
 }

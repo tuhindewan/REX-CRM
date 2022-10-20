@@ -15,22 +15,23 @@ const { RichText } = wp.blockEditor;
 
 
 const mrmButton = ({
-                           attributes: {
-                               formLayout,
-                               buttonText,
-                               rowSpacing,
-                               buttonTextColor,
-                               buttonBgColor,
-                               buttonBorderRadius,
-                               buttonPaddingTop,
-                               buttonPaddingRight,
-                               buttonPaddingBottom,
-                               buttonPaddingLeft,
-                               buttonBorderStyle,
-                               buttonBorderWidth,
-                               buttonBorderColor,
-                           },
-                       }) => {
+        attributes: {
+            formLayout,
+            buttonAlign,
+            buttonText,
+            rowSpacing,
+            buttonTextColor,
+            buttonBgColor,
+            buttonBorderRadius,
+            buttonPaddingTop,
+            buttonPaddingRight,
+            buttonPaddingBottom,
+            buttonPaddingLeft,
+            buttonBorderStyle,
+            buttonBorderWidth,
+            buttonBorderColor,
+        },
+    }) => {
 
     let layout = formLayout
     let fieldSpacing = {
@@ -49,6 +50,7 @@ const mrmButton = ({
         borderWidth:  buttonBorderWidth+'px',
         borderColor:  buttonBorderColor,
     }
+    console.log('align-items'+ buttonAlign);
 
     return (
         <>

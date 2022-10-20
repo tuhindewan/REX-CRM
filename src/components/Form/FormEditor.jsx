@@ -286,13 +286,13 @@ const FormEditor = (props) => {
 
             <div className="responsive-section">
               <button
-                className="computer-view active"
+                className="edit-view active"
                 onClick={(e) => handlePreview("editor")}
               >
                 <EditIcon />
               </button>
               <button
-                className="computer-view active"
+                className="desktop-view"
                 onClick={(e) => handlePreview("desktop")}
               >
                 <ComputerIcon />
