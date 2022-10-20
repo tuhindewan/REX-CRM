@@ -405,7 +405,7 @@ const FormEditor = (props) => {
               }
               onClick={saveForm}
             >
-              Save
+              {id ? "Update" : "Publish"}
               <span className="mintmrm-loader"></span>
             </button>
           </div>
