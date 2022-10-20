@@ -4979,14 +4979,26 @@ function Sidebar() {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
   let currentDate = new Date();
+  const [pageData, setPageData] = useState({});
   const toggleTab = index => {
+    console.log(index);
     setTabState(index);
+    if ("page" === index) {
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+        if (200 == res.status) {
+          setPageData(resJson);
+        }
+      };
+      getPageData();
+    }
   };
 
   //-------settings pannel open function-------
   const showSettingsPannel = event => {
-    const el = document.getElementsByClassName('getdave-sbe-block-editor');
-    el[0].classList.remove('show-settings-pannel');
+    const el = document.getElementsByClassName("getdave-sbe-block-editor");
+    el[0].classList.remove("show-settings-pannel");
   };
 
   //-----counter increment-------
@@ -5020,7 +5032,7 @@ function Sidebar() {
   useEffect(() => {
     dateTimeSplitter();
   }, [date]);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, console.log(pageData), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
@@ -5103,11 +5115,8 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Which page you want to redirect after the submitted the form?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
     value: "",
     options: [{
-      value: "",
-      label: "Home"
-    }, {
-      value: "",
-      label: "Thank you"
+      value: "page.title.rendered",
+      label: "page.title.rendered"
     }]
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
