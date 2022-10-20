@@ -65,7 +65,7 @@ class ContactGroupPivotModel {
         try {
             $select_query   = $wpdb->prepare( "SELECT DISTINCT `contact_id` FROM {$pivot_table} WHERE `group_id` IN( %s )", $ids );
 
-            if ( $offset && $per_batch ) {
+            if ( $per_batch ) {
                 $select_query = $wpdb->prepare($select_query . " LIMIT %d, %d", $offset, $per_batch );
             }
             $select_query = str_replace( '( \'', '( ', $select_query );

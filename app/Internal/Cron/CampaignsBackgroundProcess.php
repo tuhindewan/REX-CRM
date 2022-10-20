@@ -65,9 +65,7 @@ class CampaignsBackgroundProcess
             $this->lock_process();
             $campaign       = CampaignController::get_instance()->get_publish_campaign_id();
             $campaign_id    = isset( $campaign['id'] ) ? $campaign['id'] : "";
-            error_log(print_r($campaign_id, 1));
             $offset = get_option( 'mrm_campaign_email_recipients_offset_'. $campaign_id, 0 );
-            error_log(print_r($offset, 1));
             $per_batch = 10;
             $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
             $recipients_emails = array_column( array_values( array_filter( $recipients_emails ) ), 'email' );

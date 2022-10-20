@@ -342,7 +342,11 @@ class ContactModel{
     {
         global $wpdb;
         $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
-        $ids = is_array( $ids ) && !empty( $ids ) ? implode( ', ', $ids ) : $ids;
+
+        if ( is_array( $ids ) ) {
+            $ids = !empty( $ids ) ? implode( ', ', $ids ) : '';
+        }
+
         $sql = $wpdb->prepare( "SELECT `email` FROM {$contacts_table} WHERE `id` IN( %s ) AND `status` = %s", $ids, 'subscribed' );
         $sql = str_replace( '( \'' , '( ', $sql );
         $sql = str_replace( '\' )' , ' )', $sql );
