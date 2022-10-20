@@ -17,7 +17,7 @@ import QuestionIcon from "../Icons/QuestionIcon";
 import MinusIcon from "../Icons/MinusIcon";
 import PlusIcon from "../Icons/PlusIcon";
 import FormEditor from "../../../../../../src/components/Form/FormEditor";
-import { withFontSizes } from "@wordpress/editor";
+import { cleanForSlug, withFontSizes } from "@wordpress/editor";
 
 const {
   TextControl,
@@ -109,6 +109,9 @@ function Sidebar() {
   const [prevSetting, setPrevSetting] = useState({});
 
   const [currentTab, setCurrentTab] = useState("same-page");
+
+  const [pageData, setPageData] = useState([]);
+  const [pageOptions, setPageOptions] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -243,8 +246,6 @@ function Sidebar() {
 
   let currentDate = new Date();
 
-  const [pageData, setPageData] = useState({});
-
   const toggleTab = (index) => {
     console.log(index);
     setTabState(index);
@@ -260,6 +261,18 @@ function Sidebar() {
       getPageData();
     }
   };
+
+  useEffect(() => {
+    pageData?.map((page) => {
+      console.log(page);
+      setPageOptions(...pageOptions, [
+        {
+          value: page.id,
+          label: page.title.rendered,
+        },
+      ]);
+    });
+  }, [pageData]);
 
   //-------settings pannel open function-------
   const showSettingsPannel = (event) => {
@@ -305,7 +318,7 @@ function Sidebar() {
 
   return (
     <>
-      {console.log(pageData)}
+      {console.log(pageOptions)}
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -443,16 +456,7 @@ function Sidebar() {
                           </p>
                         </span>
                       </label>
-
-                      <SelectControl
-                        value=""
-                        options={[
-                          {
-                            value: "page.title.rendered",
-                            label: "page.title.rendered",
-                          },
-                        ]}
-                      />
+                      <SelectControl value="" options={pageOptions} />;
                     </div>
 
                     <div className="single-settings">
