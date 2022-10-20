@@ -77,14 +77,20 @@ class MRM_Subscribe_form
         $form_placement      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
         $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_placement.'">
-                <form method="post" id="mrm-form">
-                    <input hidden name="form_id" value="'.$attributes['form_id'].'" />
-                    '.$attributes['render_block'].'
-                </form>
-                <div class="response"></div>
+                <div class="mrm-form-wrapper-inner">
+                    <form method="post" id="mrm-form">
+                        <input hidden name="form_id" value="'.$attributes['form_id'].'" />
+                        '.$attributes['render_block'].'
+                    </form>
+                    <div class="response"></div>
+                </div>
             </div>
 
             <style>
+                .mrm-form-wrapper * {
+                    box-sizing: border-box;
+                }
+
                 .mintmrm label, 
                 .mintmrm .label {
                     font-style: normal;
@@ -263,7 +269,31 @@ class MRM_Subscribe_form
                 .mrm-form-wrapper .response.mintmrm-success {
                     color: #08c708;
                 }
-                
+
+                /*------popup form design------*/
+                .mrm-form-wrapper.mrm-popup {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-flow: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .mrm-popup .mrm-form-wrapper-inner {
+                    max-width: 450px;
+                    width: 100%;
+                    margin: 0 auto;
+                    max-height: 80%;
+                    overflow: auto;
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #33333357;
+                }
+
             </style>
 
         </div>';
