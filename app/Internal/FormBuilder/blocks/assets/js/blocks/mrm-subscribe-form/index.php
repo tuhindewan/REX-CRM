@@ -77,14 +77,29 @@ class MRM_Subscribe_form
         $form_placement      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
         $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_placement.'">
-                <form method="post" id="mrm-form">
-                    <input hidden name="form_id" value="'.$attributes['form_id'].'" />
-                    '.$attributes['render_block'].'
-                </form>
-                <div class="response"></div>
+                <div class="mrm-form-wrapper-inner">';
+                if('below-pages' != $form_placement){
+                    $html .= '<span class="mrm-form-close">
+                        <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                    </span>';
+                }
+
+                $html .= '
+                    <div class="mrm-form-overflow">
+                        <form method="post" id="mrm-form">
+                            <input hidden name="form_id" value="'.$attributes['form_id'].'" />
+                            '.$attributes['render_block'].'
+                        </form>
+                        <div class="response"></div>
+                    </div>
+                </div>
             </div>
 
             <style>
+                .mrm-form-wrapper * {
+                    box-sizing: border-box;
+                }
+
                 .mintmrm label, 
                 .mintmrm .label {
                     font-style: normal;
@@ -93,6 +108,7 @@ class MRM_Subscribe_form
                     line-height: 18px;
                     color: #344054;
                     box-sizing: border-box;
+                    display: block;
                 }
 
                 .mintmrm input[type=date], 
@@ -138,6 +154,7 @@ class MRM_Subscribe_form
                     border-radius: 6px;
                     text-transform: capitalize;
                     background-color: #573BFF;
+                    min-height: 44px;
                 }
                 .mintmrm .mintmrm-btn:hover {
                     background-color: #4C25A5;
@@ -263,7 +280,134 @@ class MRM_Subscribe_form
                 .mrm-form-wrapper .response.mintmrm-success {
                     color: #08c708;
                 }
+
+                /*------popup form design------*/
+                .mrm-form-wrapper.mrm-popup {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-flow: column;
+                    align-items: center;
+                    justify-content: center;
+                    background: #33333357;
+                }
+                .mrm-form-wrapper .mrm-form-wrapper-inner {
+                    position: relative;
+                }
+                .mrm-popup .mrm-form-wrapper-inner {
+                    max-width: 450px;
+                    width: 100%;
+                    margin: 0 auto;
+                    max-height: 80%;
+                    background: #fff;
+                    border-radius: 10px;
+                    position: relative;
+                    padding: 5px;
+                }
+
+                .mrm-form-wrapper .mrm-form-wrapper-inner .mrm-form-close {
+                    position: absolute;
+                    right: -12px;
+                    top: -16px;
+                    width: 30px;
+                    height: 30px;
+                    background: #573bff;
+                    z-index: 99;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 100%;
+                    cursor: pointer;
+                }
+
+                .mrm-popup .mrm-form-overflow {
+                    padding: 20px;
+                    overflow: auto;
+                    width: 100%;
+                    height: 100%;
+                }
+                .mrm-form-wrapper .mrm-form-overflow::-webkit-scrollbar {
+                    width: 6px;
+                    height: 6px;
+                }
+                .mrm-form-wrapper .mrm-form-overflow::-webkit-scrollbar-track {
+                    background: #f9fafb;
+                }
+                .mrm-form-wrapper .mrm-form-overflow::-webkit-scrollbar-thumb {
+                    background-color: #ccd0d9;
+                    border-radius: 20px;
+                }
                 
+
+                /*-------form flyins style------*/
+                .mrm-form-wrapper.mrm-flyins {
+                    position: fixed;
+                    right: 0;
+                    bottom: 0;
+                }
+
+                .mrm-flyins .mrm-form-wrapper-inner {
+                    background: #4cd79d;
+                    padding: 5px;
+                }
+
+                .mrm-flyins .mrm-form-overflow {
+                    height: 100%;
+                    max-width: 320px;
+                    max-height: 360px;
+                    width: 100%;
+                    overflow: auto;
+                    padding: 15px;
+                }
+                .mrm-flyins .mrm-form-wrapper-inner .mrm-form-close {
+                    right: inherit;
+                    left: -12px;
+                    background: #4cd79d;
+                }
+
+                /*----mrm submit button loader---- */
+                .mrm-form-wrapper .mrm-submit-button {
+                    position: relative;
+                }
+                .mrm-form-wrapper .mrm-submit-button::after {
+                    content: "";
+                    border: 2px solid #8265c5;
+                    border-radius: 50%;
+                    border-top: 2px solid #fff;
+                    width: 13px;
+                    height: 13px;
+                    animation: spin 0.7s linear infinite;
+                    margin-left: 7px;
+                    position: relative;
+                    top: 2px;
+                    display: none;
+                    box-sizing: border-box;
+                }
+                .mrm-form-wrapper .mrm-submit-button.show-loader::after {
+                    display: inline-block;
+                }
+
+                @-webkit-keyframes spin {
+                    0% {
+                        -webkit-transform: rotate(0deg);
+                    }
+                    100% {
+                        -webkit-transform: rotate(360deg);
+                    }
+                }
+                
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+
             </style>
 
         </div>';

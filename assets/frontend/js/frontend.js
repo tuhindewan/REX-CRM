@@ -77,5 +77,11 @@ jQuery(document).ready(function($){
         })
     })
 
+    /**
+     * Form Close button Function
+     */
 
+    $(".mrm-form-close").on("click",function(){
+        $(this).parent().parent().hide()
+    })
 });

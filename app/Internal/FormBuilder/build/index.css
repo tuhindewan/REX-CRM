@@ -268,6 +268,9 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button .components-panel__arrow {
   color: #A7A8B3;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel > .components-panel__body:last-child {
+  border-bottom-width: 1px;
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannelbody-wrapper {
   background: #F6F8FA;
   border-radius: 8px;
