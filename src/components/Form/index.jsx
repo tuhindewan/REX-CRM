@@ -18,7 +18,6 @@ import Delete from "../Icons/Delete";
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function FormIndex(props) {
-
   AdminNavMenuClassChange("mrm-admin", "forms");
 
   const [formData, setFormData] = useState({});
@@ -364,33 +363,29 @@ export default function FormIndex(props) {
 
             <div className="contact-list-area">
               <div className="contact-list-header">
-                <h4 className="header-title">List View</h4>
+                <div className="sorting">
+                  <h5>Sort by</h5>
+                  <div
+                    className={
+                      toggleDropdown ? "pos-relative show" : "pos-relative"
+                    }
+                  >
+                    <button onClick={() => setToggleDropdown(!toggleDropdown)}>
+                      {sortBy}
+                    </button>
+
+                    <ul className="mintmrm-dropdown">
+                      <li onClick={() => handleSort("created-at", "Date")}>
+                        Date
+                      </li>
+                      <li onClick={() => handleSort("title", "Title")}>
+                        Title
+                      </li>
+                    </ul>
+                  </div>
+                </div>
 
                 <div className="right-buttons">
-                  <div className="sorting">
-                    <h5>Sort by</h5>
-                    <div
-                      className={
-                        toggleDropdown ? "pos-relative show" : "pos-relative"
-                      }
-                    >
-                      <button
-                        onClick={() => setToggleDropdown(!toggleDropdown)}
-                      >
-                        {sortBy}
-                      </button>
-
-                      <ul className="mintmrm-dropdown">
-                        <li onClick={() => handleSort("created-at", "Date")}>
-                          Date
-                        </li>
-                        <li onClick={() => handleSort("title", "Title")}>
-                          Title
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
                   <span className="search-section">
                     <Search />
                     <input
@@ -593,7 +588,7 @@ export default function FormIndex(props) {
                         <tr className="no-data">
                           <td colSpan={6}>
                             <FormIconXL />
-                            <h5>No Form Found</h5>
+                            <h5>No Form(s) Found</h5>
                           </td>
                         </tr>
                       )}
