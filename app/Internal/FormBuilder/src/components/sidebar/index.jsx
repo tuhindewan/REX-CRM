@@ -175,7 +175,6 @@ function Sidebar() {
   }
 
   useEffect(() => {
-    console.log(prevSetting);
     // set selected confiramation type
     if (prevSetting?.settings?.confirmation_type?.selected_confirmation_type) {
       setSelectedConfirmationType(

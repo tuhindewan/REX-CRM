@@ -107,6 +107,8 @@ const FormEditor = (props) => {
 
       if (200 === resJson.code) {
         setFormData(resJson.data);
+        setRecipientLists(resJson.data.group_ids.lists);
+        setRecipientTags(resJson.data.group_ids.tags);
       }
     };
     if (id) {
@@ -198,7 +200,6 @@ const FormEditor = (props) => {
       },
     };
 
-
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
         method: "POST",
@@ -260,7 +261,10 @@ const FormEditor = (props) => {
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags,
+      },
       status: 1,
       meta_fields: {
         settings: settingData,
