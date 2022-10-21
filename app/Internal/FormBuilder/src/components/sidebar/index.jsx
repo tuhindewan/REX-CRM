@@ -560,14 +560,14 @@ function Sidebar() {
 
           {'below-pages' !== formLayout &&
             <PanelBody
-              title="Animation Type"
+              title="Form Animation"
               className="form-animation-settings"
               initialOpen={false}
             >
               <div className="pannelbody-wrapper">
                 <div className="single-settings">
                   <label className="settings-label">
-                    Form Animation
+                    Animation Type
                     <span className="mintmrm-tooltip">
                       <QuestionIcon />
                       <p>Animation to show up your form</p>
