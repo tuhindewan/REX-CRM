@@ -139,6 +139,10 @@
         }
       }
 
+      & > .components-panel__body:last-child {
+        border-bottom-width: 1px;
+      }
+
       .pannelbody-wrapper {
         background: #F6F8FA;
         border-radius: 8px;

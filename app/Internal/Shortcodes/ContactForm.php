@@ -153,6 +153,7 @@ class ContactForm {
                     border-radius: 6px;
                     text-transform: capitalize;
                     background-color: #573BFF;
+                    min-height: 44px;
                 }
                 .mintmrm .mintmrm-btn:hover {
                     background-color: #4C25A5;
@@ -334,6 +335,73 @@ class ContactForm {
                 .mrm-popup .mrm-form-overflow::-webkit-scrollbar-thumb {
                     background-color: #ccd0d9;
                     border-radius: 20px;
+                }
+
+
+                /*-------form flyins style------*/
+                .mrm-form-wrapper.mrm-flyins {
+                    position: fixed;
+                    right: 0;
+                    bottom: 0;
+                }
+
+                .mrm-flyins .mrm-form-wrapper-inner {
+                    background: #4cd79d;
+                    padding: 5px;
+                }
+
+                .mrm-flyins .mrm-form-overflow {
+                    height: 100%;
+                    max-width: 320px;
+                    max-height: 360px;
+                    width: 100%;
+                    overflow: auto;
+                    padding: 15px;
+                }
+                .mrm-flyins .mrm-form-wrapper-inner .mrm-form-close {
+                    right: inherit;
+                    left: -12px;
+                    background: #4cd79d;
+                }
+
+                /*----mrm submit button loader---- */
+                .mrm-form-wrapper .mrm-submit-button {
+                    position: relative;
+                }
+                .mrm-form-wrapper .mrm-submit-button::after {
+                    content: "";
+                    border: 2px solid #8265c5;
+                    border-radius: 50%;
+                    border-top: 2px solid #fff;
+                    width: 13px;
+                    height: 13px;
+                    animation: spin 0.7s linear infinite;
+                    margin-left: 7px;
+                    position: relative;
+                    top: 2px;
+                    display: none;
+                    box-sizing: border-box;
+                }
+                .mrm-form-wrapper .mrm-submit-button.show-loader::after {
+                    display: inline-block;
+                }
+
+                @-webkit-keyframes spin {
+                    0% {
+                        -webkit-transform: rotate(0deg);
+                    }
+                    100% {
+                        -webkit-transform: rotate(360deg);
+                    }
+                }
+                
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
                 }
 
             </style>

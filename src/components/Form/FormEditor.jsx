@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import InputItem from "../InputItem";
 import CustomSelect from "../CustomSelect";
@@ -18,6 +18,7 @@ import UpArrowIcon from "../Icons/UpArrowIcon";
 import MobileView from "./MobileView";
 import DesktopView from "./DesktopView";
 import EditIcon from "../Icons/EditIcon";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
@@ -65,6 +66,11 @@ const FormEditor = (props) => {
   const [saveLoader, setsaveLoader] = useState(false);
 
   const navigate = useNavigate();
+  const menuRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
+  );
 
   const toggleEnable = () => {
     setEnable(!enable);
@@ -429,7 +435,7 @@ const FormEditor = (props) => {
             <div className="form-group list">
               <label className="list-label">Assign To</label>
 
-              <div className="list-content">
+              <div className="list-content" ref={menuRef}>
                 {recipientLists.length == 0 && recipientTags.length == 0 ? (
                   <button className="all-recipients" onClick={showDropDown}>
                     All Subscriber

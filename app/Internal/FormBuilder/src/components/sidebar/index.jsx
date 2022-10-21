@@ -17,7 +17,7 @@ import QuestionIcon from "../Icons/QuestionIcon";
 import MinusIcon from "../Icons/MinusIcon";
 import PlusIcon from "../Icons/PlusIcon";
 import FormEditor from "../../../../../../src/components/Form/FormEditor";
-import { withFontSizes } from "@wordpress/editor";
+import { cleanForSlug, withFontSizes } from "@wordpress/editor";
 
 const {
   TextControl,
@@ -109,6 +109,9 @@ function Sidebar() {
   const [prevSetting, setPrevSetting] = useState({});
 
   const [currentTab, setCurrentTab] = useState("same-page");
+
+  const [pageData, setPageData] = useState([]);
+  const [pageOptions, setPageOptions] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -244,13 +247,42 @@ function Sidebar() {
   let currentDate = new Date();
 
   const toggleTab = (index) => {
+    console.log(index);
     setTabState(index);
+    if ("page" === index) {
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+
+        if (200 == res.status) {
+          setPageData(resJson);
+        }
+      };
+      getPageData();
+    }
   };
+
+  const [pageId, setPageId] = useState();
+
+  const handlePageChange = (state) => {
+    console.log(state);
+  };
+
+  useEffect(() => {
+    const optionArray = [];
+    pageData?.map((page) => {
+      optionArray.push({
+        value: page.id,
+        label: page.title.rendered,
+      });
+    });
+    setPageOptions(optionArray);
+  }, [pageData]);
 
   //-------settings pannel open function-------
   const showSettingsPannel = (event) => {
-    const el = document.getElementsByClassName('getdave-sbe-block-editor');
-    el[0].classList.remove('show-settings-pannel')
+    const el = document.getElementsByClassName("getdave-sbe-block-editor");
+    el[0].classList.remove("show-settings-pannel");
   };
 
   //-----counter increment-------
@@ -291,6 +323,7 @@ function Sidebar() {
 
   return (
     <>
+      {console.log(pageOptions)}
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -309,7 +342,7 @@ function Sidebar() {
             </h2>
 
             <span className="close-pannel" onClick={showSettingsPannel}>
-              <CrossIcon  />
+              <CrossIcon />
             </span>
           </div>
 
@@ -428,19 +461,10 @@ function Sidebar() {
                           </p>
                         </span>
                       </label>
-
                       <SelectControl
-                        value=""
-                        options={[
-                          {
-                            value: "",
-                            label: "Home",
-                          },
-                          {
-                            value: "",
-                            label: "Thank you",
-                          },
-                        ]}
+                        value={pageId}
+                        options={pageOptions}
+                        onChange={(state) => handlePageChange(state)}
                       />
                     </div>
 
