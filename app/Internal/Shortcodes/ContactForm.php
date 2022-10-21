@@ -88,7 +88,7 @@ class ContactForm {
             <div id="mrm-<?php echo $form_position ?>" class="mrm-form-wrapper mrm-slide-in-up <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_position?>">
                 <div class="mrm-form-wrapper-inner">
 
-                    <?php if('below-pages' != $form_placement){ ?>
+                    <?php if('below-pages' != $form_position){ ?>
                         <span class="mrm-form-close">
                             <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                         </span>
