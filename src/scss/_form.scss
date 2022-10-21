@@ -13,24 +13,25 @@
   .resposive-preview-mobile {
     margin: 0 auto;
     width: 360px !important;
-    background: #111;
-    padding: 40px 10px 70px;
+    height: 740px;
+    border: 2px solid#2D3149;
     border-radius: 30px;
     z-index: 999;
     position: relative;
-    height: 740px;
+    overflow: hidden;
+    box-shadow: 30px 25px 30px #cececead;
 
   }
 
   .resposive-preview-desktop {
     width: 768px !important;
     height: 1024px !important;
-    background: #111;
-    padding: 40px 10px 70px;
+    border: 2px solid#2D3149;
     border-radius: 30px;
     margin: 0 auto;
     z-index: 999;
     position: relative;
+    box-shadow: 30px 25px 30px #cececead;
   }
 
   .form-preview-inner {
@@ -38,6 +39,7 @@
     background: #fff;
     padding: 15px;
     overflow: auto;
+    border-radius: 27px;
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -50,7 +52,7 @@
       background-color: #ccd0d9;
       border-radius: 20px;
     }
-    
+
   }
   
 }
