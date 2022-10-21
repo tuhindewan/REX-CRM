@@ -71,7 +71,10 @@ function Sidebar() {
           custom_redirection_message: "",
         },
       },
-      form_layout: "",
+      form_layout: {
+        form_placement: "",
+        form_animation: "",
+      },
       schedule: {
         form_scheduling: false,
         submission_start: {
@@ -94,7 +97,8 @@ function Sidebar() {
   const [redirectionMessage, setRedirectionMessage] = useState("");
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("below-pages");
+  const [formPosition, setFormPosition] = useState("default");
+  const [formAnimation, setFormAnimation] = useState("none");
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
@@ -172,9 +176,9 @@ function Sidebar() {
     }
 
     // set "Page" for "to a page" tab
-    if (settingData?.settings?.confirmation_type?.to_a_page?.page) {
+    if (prevSetting?.settings?.confirmation_type?.to_a_page?.page) {
       setSelectedPageId(
-        settingData?.settings?.confirmation_type?.to_a_page?.page
+        prevSetting?.settings?.confirmation_type?.to_a_page?.page
       );
     } else {
       setSelectedPageId("");
@@ -182,10 +186,10 @@ function Sidebar() {
 
     // set "Redirection message" for "to a page" tab
     if (
-      settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
+      prevSetting?.settings?.confirmation_type?.to_a_page?.redirection_message
     ) {
       setRedirectionMessage(
-        settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
+        prevSetting?.settings?.confirmation_type?.to_a_page?.redirection_message
       );
     } else {
       setRedirectionMessage(
@@ -194,13 +198,13 @@ function Sidebar() {
     }
 
     // set custom url for "to a custom url" tab
-    if (settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url) {
+    if (prevSetting?.settings?.confirmation_type?.to_a_custom_url?.custom_url) {
       setCustomURL(
-        settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+        prevSetting?.settings?.confirmation_type?.to_a_custom_url?.custom_url
       );
       setIsValidUrl(
         validURL(
-          settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+          prevSetting?.settings?.confirmation_type?.to_a_custom_url?.custom_url
         )
       );
     } else {
@@ -209,22 +213,29 @@ function Sidebar() {
 
     // set message for a "to a custom url" tab
     if (
-      settingData?.settings?.confirmation_type?.to_a_custom_url
+      prevSetting?.settings?.confirmation_type?.to_a_custom_url
         ?.custom_redirection_message
     ) {
       setCustomRedirectionMessage(
-        settingData?.settings?.confirmation_type?.to_a_custom_url
+        prevSetting?.settings?.confirmation_type?.to_a_custom_url
           ?.custom_redirection_message
       );
     } else {
       setCustomRedirectionMessage("You are redirected to a new url.");
     }
 
-    // set form layout
-    if (settingData?.settings?.form_layout) {
-      setFormLayout(settingData?.settings?.form_layout);
+    // set form layout position
+    if (prevSetting?.settings?.form_layout?.form_position) {
+      setFormPosition(prevSetting?.settings?.form_layout?.form_position);
     } else {
-      setFormLayout("below-pages");
+      setFormPosition("default");
+    }
+
+    //set form layout animation
+    if (prevSetting?.settings?.form_layout?.form_animation) {
+      setFormPosition(prevSetting?.settings?.form_layout?.form_animation);
+    } else {
+      setFormPosition("default");
     }
   }, [prevSetting]);
 
@@ -238,7 +249,10 @@ function Sidebar() {
               after_form_submission: afterFormSubmission,
             },
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation,
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -262,7 +276,10 @@ function Sidebar() {
               redirection_message: redirectionMessage,
             },
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation,
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -286,7 +303,10 @@ function Sidebar() {
               custom_redirection_message: customRedirectionMessage,
             },
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation,
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -309,7 +329,8 @@ function Sidebar() {
     redirectionMessage,
     customURL,
     customRedirectionMessage,
-    formLayout,
+    formPosition,
+    formAnimation,
     formScheduling,
     submissionStartDate,
     submissionStartTime,
@@ -403,7 +424,7 @@ function Sidebar() {
 
   return (
     <>
-      {/* {console.log(isValidUrl)} */}
+      {console.log(settingData)}
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -589,7 +610,7 @@ function Sidebar() {
                       />
                       {!isValidUrl && (
                         <p className="validation-warning">
-                          **Warning : Your URL is not valid**
+                          **Warning : Your URL is not in a valid format**
                         </p>
                       )}
                     </div>
@@ -630,19 +651,19 @@ function Sidebar() {
                 </label>
 
                 <RadioControl
-                  selected={formLayout}
+                  selected={formPosition}
                   options={[
-                    { label: "Default", value: "below-pages" },
+                    { label: "Default", value: "default" },
                     { label: "Pop Up", value: "popup" },
                     { label: "Fly Ins", value: "flyins" },
                   ]}
-                  onChange={(state) => setFormLayout(state)}
+                  onChange={(state) => setFormPosition(state)}
                 />
               </div>
             </div>
           </PanelBody>
 
-          {'below-pages' !== formLayout &&
+          {"default" !== formPosition && (
             <PanelBody
               title="Form Animation"
               className="form-animation-settings"
@@ -654,21 +675,23 @@ function Sidebar() {
                     Animation Type
                     <span className="mintmrm-tooltip">
                       <QuestionIcon />
-                      <p>Animation to show up your form</p>
+                      <p>Type of animation to show your form</p>
                     </span>
                   </label>
 
                   <SelectControl
+                    selected={formAnimation}
                     options={[
+                      { label: "None", value: "none" },
                       { label: "Fade In", value: "fade-in" },
                       { label: "Slide In Up", value: "slide-in-up" },
                     ]}
+                    onChange={(state) => setFormAnimation(state)}
                   />
-                  
                 </div>
               </div>
             </PanelBody>
-          }
+          )}
 
           {/* <PanelBody
             title="Schedule"
