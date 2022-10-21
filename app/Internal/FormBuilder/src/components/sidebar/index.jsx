@@ -177,7 +177,7 @@ function Sidebar() {
         settingData?.settings?.confirmation_type?.to_a_page?.page
       );
     } else {
-      setSelectedPageId("2");
+      setSelectedPageId("");
     }
 
     // set "Redirection message" for "to a page" tab
@@ -217,7 +217,7 @@ function Sidebar() {
           ?.custom_redirection_message
       );
     } else {
-      setCustomRedirectionMessage("Redireceted to a new url.");
+      setCustomRedirectionMessage("You are redirected to a new url.");
     }
 
     // set form layout
@@ -348,7 +348,7 @@ function Sidebar() {
     pageData?.map((page) => {
       optionArray.push({
         value: page.id,
-        label: page.title.rendered,
+        label: page.id + " - " + page.title.rendered,
       });
     });
     setPageOptions(optionArray);
@@ -542,7 +542,7 @@ function Sidebar() {
                         </span>
                       </label>
                       <SelectControl
-                        value={pageId}
+                        value={selectedPageId}
                         options={pageOptions}
                         onChange={(state) => handlePageChange(state)}
                       />

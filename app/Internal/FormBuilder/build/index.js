@@ -8157,7 +8157,7 @@ function Sidebar() {
       var _settingData$settings4, _settingData$settings5, _settingData$settings6;
       setSelectedPageId(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.to_a_page) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.page);
     } else {
-      setSelectedPageId("2");
+      setSelectedPageId("");
     }
 
     // set "Redirection message" for "to a page" tab
@@ -8182,7 +8182,7 @@ function Sidebar() {
       var _settingData$settings25, _settingData$settings26, _settingData$settings27;
       setCustomRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings25 = settingData.settings) === null || _settingData$settings25 === void 0 ? void 0 : (_settingData$settings26 = _settingData$settings25.confirmation_type) === null || _settingData$settings26 === void 0 ? void 0 : (_settingData$settings27 = _settingData$settings26.to_a_custom_url) === null || _settingData$settings27 === void 0 ? void 0 : _settingData$settings27.custom_redirection_message);
     } else {
-      setCustomRedirectionMessage("Redireceted to a new url.");
+      setCustomRedirectionMessage("You are redirected to a new url.");
     }
 
     // set form layout
@@ -8293,7 +8293,7 @@ function Sidebar() {
     pageData === null || pageData === void 0 ? void 0 : pageData.map(page => {
       optionArray.push({
         value: page.id,
-        label: page.title.rendered
+        label: page.id + " - " + page.title.rendered
       });
     });
     setPageOptions(optionArray);
@@ -8421,7 +8421,7 @@ function Sidebar() {
   }, "Select a page", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Which page you want to redirect after the submitted the form?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-    value: pageId,
+    value: selectedPageId,
     options: pageOptions,
     onChange: state => handlePageChange(state)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

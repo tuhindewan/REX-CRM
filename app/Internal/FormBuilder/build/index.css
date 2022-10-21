@@ -672,6 +672,7 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .validation-warning {
   color: red;
+  font-style: italic;
 }
 
 .form-editor-page .show-settings-pannel .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel {
