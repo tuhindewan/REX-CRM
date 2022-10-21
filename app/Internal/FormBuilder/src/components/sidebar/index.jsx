@@ -55,9 +55,11 @@ function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
 
+  // preparing settings data for backend as JSON
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
+        selected_confirmation_type: "",
         same_page: {
           message_to_show: "",
           after_form_submission: "",
@@ -71,7 +73,10 @@ function Sidebar() {
           custom_redirection_message: "",
         },
       },
-      form_layout: "",
+      form_layout: {
+        form_placement: "",
+        form_animation: "",
+      },
       schedule: {
         form_scheduling: false,
         submission_start: {
@@ -87,27 +92,48 @@ function Sidebar() {
     },
   });
 
-  //settings variables
+  /* @settings variables */
+
+  // confirmation tabs
+  const [selectedConfirmationType, setSelectedConfirmationType] = useState("");
+  // confirmation type "Same Page"
   const [messageToShow, setMessageToShow] = useState("");
   const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  // confirmation type "To A Page"
   const [page, setPage] = useState("");
   const [redirectionMessage, setRedirectionMessage] = useState("");
+  // confirmation type "Custom URL"
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("below-pages");
+
+  // form position and animation
+  const [formPosition, setFormPosition] = useState("default");
+  const [formAnimation, setFormAnimation] = useState("none");
+
+  // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
   const [submissionStartTime, setSubmissionStartTime] = useState("");
+
+  // form restriction
   const [maxEntries, setMaxEntries] = useState(false);
   const [maxNumber, setMaxNumber] = useState();
   const [maxType, setMaxType] = useState();
+
+  // hook
   const params = useParams();
+
+  // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
+
+
   const [formData, setFormData] = useState({});
 
+  // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
 
+  // confirmation tab
   const [currentTab, setCurrentTab] = useState("same-page");
 
   const [pageData, setPageData] = useState([]);
@@ -150,6 +176,15 @@ function Sidebar() {
   }
 
   useEffect(() => {
+    // set selected confiramation type
+    if (prevSetting?.settings?.confirmation_type?.selected_confirmation_type) {
+      setSelectedConfirmationType(
+        prevSetting?.settings?.confirmation_type?.selected_confirmation_type
+      );
+    } else {
+      setSelectedConfirmationType("same-page");
+    }
+
     // set "Message to show" in same page tab
     if (prevSetting?.settings?.confirmation_type?.same_page?.message_to_show) {
       setMessageToShow(
@@ -172,9 +207,9 @@ function Sidebar() {
     }
 
     // set "Page" for "to a page" tab
-    if (settingData?.settings?.confirmation_type?.to_a_page?.page) {
+    if (prevSetting?.settings?.confirmation_type?.to_a_page?.page) {
       setSelectedPageId(
-        settingData?.settings?.confirmation_type?.to_a_page?.page
+        prevSetting?.settings?.confirmation_type?.to_a_page?.page
       );
     } else {
       setSelectedPageId("");
@@ -182,10 +217,10 @@ function Sidebar() {
 
     // set "Redirection message" for "to a page" tab
     if (
-      settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
+      prevSetting?.settings?.confirmation_type?.to_a_page?.redirection_message
     ) {
       setRedirectionMessage(
-        settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
+        prevSetting?.settings?.confirmation_type?.to_a_page?.redirection_message
       );
     } else {
       setRedirectionMessage(
@@ -194,13 +229,13 @@ function Sidebar() {
     }
 
     // set custom url for "to a custom url" tab
-    if (settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url) {
+    if (prevSetting?.settings?.confirmation_type?.to_a_custom_url?.custom_url) {
       setCustomURL(
-        settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+        prevSetting?.settings?.confirmation_type?.to_a_custom_url?.custom_url
       );
       setIsValidUrl(
         validURL(
-          settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+          prevSetting?.settings?.confirmation_type?.to_a_custom_url?.custom_url
         )
       );
     } else {
@@ -209,22 +244,29 @@ function Sidebar() {
 
     // set message for a "to a custom url" tab
     if (
-      settingData?.settings?.confirmation_type?.to_a_custom_url
+      prevSetting?.settings?.confirmation_type?.to_a_custom_url
         ?.custom_redirection_message
     ) {
       setCustomRedirectionMessage(
-        settingData?.settings?.confirmation_type?.to_a_custom_url
+        prevSetting?.settings?.confirmation_type?.to_a_custom_url
           ?.custom_redirection_message
       );
     } else {
       setCustomRedirectionMessage("You are redirected to a new url.");
     }
 
-    // set form layout
-    if (settingData?.settings?.form_layout) {
-      setFormLayout(settingData?.settings?.form_layout);
+    // set form layout position
+    if (prevSetting?.settings?.form_layout?.form_position) {
+      setFormPosition(prevSetting?.settings?.form_layout?.form_position);
     } else {
-      setFormLayout("below-pages");
+      setFormPosition("default");
+    }
+
+    //set form layout animation
+    if (prevSetting?.settings?.form_layout?.form_animation) {
+      setFormPosition(prevSetting?.settings?.form_layout?.form_animation);
+    } else {
+      setFormPosition("default");
     }
   }, [prevSetting]);
 
@@ -233,12 +275,16 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "same-page",
             same_page: {
               message_to_show: messageToShow,
               after_form_submission: afterFormSubmission,
             },
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation,
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -257,12 +303,16 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "page",
             to_a_page: {
               page: selectedPageId,
               redirection_message: redirectionMessage,
             },
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation,
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -281,12 +331,16 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "custom-url",
             to_a_custom_url: {
               custom_url: customURL,
               custom_redirection_message: customRedirectionMessage,
             },
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation,
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -303,19 +357,22 @@ function Sidebar() {
       });
     }
   }, [
+    selectedConfirmationType,
     messageToShow,
     afterFormSubmission,
     selectedPageId,
     redirectionMessage,
     customURL,
     customRedirectionMessage,
-    formLayout,
+    formPosition,
+    formAnimation,
     formScheduling,
     submissionStartDate,
     submissionStartTime,
     maxEntries,
     count,
     maxType,
+    currentTab,
   ]);
 
   useEffect(() => {
@@ -403,7 +460,7 @@ function Sidebar() {
 
   return (
     <>
-      {/* {console.log(isValidUrl)} */}
+      {console.log(settingData)}
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -589,7 +646,7 @@ function Sidebar() {
                       />
                       {!isValidUrl && (
                         <p className="validation-warning">
-                          **Warning : Your URL is not valid**
+                          **Warning : Your URL is not in a valid format**
                         </p>
                       )}
                     </div>
@@ -630,19 +687,19 @@ function Sidebar() {
                 </label>
 
                 <RadioControl
-                  selected={formLayout}
+                  selected={formPosition}
                   options={[
-                    { label: "Default", value: "below-pages" },
+                    { label: "Default", value: "default" },
                     { label: "Pop Up", value: "popup" },
                     { label: "Fly Ins", value: "flyins" },
                   ]}
-                  onChange={(state) => setFormLayout(state)}
+                  onChange={(state) => setFormPosition(state)}
                 />
               </div>
             </div>
           </PanelBody>
 
-          {'below-pages' !== formLayout &&
+          {"default" !== formPosition && (
             <PanelBody
               title="Form Animation"
               className="form-animation-settings"
@@ -654,21 +711,23 @@ function Sidebar() {
                     Animation Type
                     <span className="mintmrm-tooltip">
                       <QuestionIcon />
-                      <p>Animation to show up your form</p>
+                      <p>Type of animation to show your form</p>
                     </span>
                   </label>
 
                   <SelectControl
+                    selected={formAnimation}
                     options={[
+                      { label: "None", value: "none" },
                       { label: "Fade In", value: "fade-in" },
                       { label: "Slide In Up", value: "slide-in-up" },
                     ]}
+                    onChange={(state) => setFormAnimation(state)}
                   />
-                  
                 </div>
               </div>
             </PanelBody>
-          }
+          )}
 
           {/* <PanelBody
             title="Schedule"
