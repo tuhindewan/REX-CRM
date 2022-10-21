@@ -124,8 +124,14 @@ class AjaxAction {
                  */
                 $get_group_id   = FormModel::get($form_id);
                 $group_ids      = isset($get_group_id['group_ids']) ? unserialize($get_group_id['group_ids']) : [];
-
-                TagController::set_tags_to_contact($group_ids,$contact_id);
+                $group_tag = isset($group_ids['tags']) ? $group_ids['tags'] : [];
+                $group_list = isset($group_ids['lists']) ? $group_ids['lists'] : [];
+                $group_data = array_merge($group_tag,$group_list);
+                $ids = [];
+                foreach ($group_data as $id){
+                    $ids[] = $id['id'];
+                }
+                TagController::set_tags_to_contact($ids,$contact_id);
                 $meta_fields['meta_fields'] = isset($form_data['meta_fields']) ? $form_data['meta_fields'] : [];
                 ContactModel::update_meta_fields( $contact_id, $meta_fields );
 

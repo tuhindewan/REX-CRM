@@ -44,7 +44,6 @@ class FormController extends BaseController {
 
         // Get values from the API request
         $params = MRM_Common::get_api_params_values( $request );
-
         //Form title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
@@ -57,7 +56,7 @@ class FormController extends BaseController {
             'form_body'      => isset( $params['form_body'] ) ? $params['form_body'] : "",
             'form_position'  => isset( $params['form_position'] ) ? $params['form_position'] : "",
             'status'         => isset( $params['status'] ) ? $params['status'] : "",
-            'group_ids'      => isset( $params['group_ids'] ) ? $params['group_ids'] : "",
+            'group_ids'      => isset( $params['group_ids'] ) ? $params['group_ids'] : [],
             'meta_fields'    => isset( $params['meta_fields'] ) ? $params['meta_fields'] : [],
         );
         

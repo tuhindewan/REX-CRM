@@ -3751,6 +3751,10 @@ function BlockEditor(_ref) {
   function handleUpdateBlocks(blocks) {
     updateBlocks(blocks);
   }
+  function handleUpdateBlocksByOnInput(blocks) {
+    updateBlocks(blocks);
+    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
+  }
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
@@ -3759,7 +3763,7 @@ function BlockEditor(_ref) {
     className: "get-mrm-block-editor"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
     value: blocks,
-    onInput: handleUpdateBlocks,
+    onInput: handleUpdateBlocksByOnInput,
     onChange: handlePersistBlocks,
     settings: settings
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_7__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -6371,7 +6375,6 @@ const mrmButton = _ref => {
     borderWidth: buttonBorderWidth + 'px',
     borderColor: buttonBorderColor
   };
-  console.log('align-items' + buttonAlign);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group submit",
     style: fieldSpacing
@@ -8044,9 +8047,12 @@ const {
 function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
+
+  // preparing settings data for backend as JSON
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
+        selected_confirmation_type: "",
         same_page: {
           message_to_show: "",
           after_form_submission: ""
@@ -8060,7 +8066,10 @@ function Sidebar() {
           custom_redirection_message: ""
         }
       },
-      form_layout: "",
+      form_layout: {
+        form_placement: "",
+        form_animation: ""
+      },
       schedule: {
         form_scheduling: false,
         submission_start: {
@@ -8076,26 +8085,51 @@ function Sidebar() {
     }
   });
 
-  //settings variables
+  /* @settings variables */
+
+  // confirmation tabs
+  const [selectedConfirmationType, setSelectedConfirmationType] = useState("");
+  // confirmation type "Same Page"
   const [messageToShow, setMessageToShow] = useState("");
   const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  // confirmation type "To A Page"
   const [page, setPage] = useState("");
   const [redirectionMessage, setRedirectionMessage] = useState("");
+  // confirmation type "Custom URL"
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
-  const [formLayout, setFormLayout] = useState("below-pages");
+
+  // form position and animation
+  const [formPosition, setFormPosition] = useState("default");
+  const [formAnimation, setFormAnimation] = useState("none");
+
+  // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
   const [submissionStartTime, setSubmissionStartTime] = useState("");
+
+  // form restriction
   const [maxEntries, setMaxEntries] = useState(false);
   const [maxNumber, setMaxNumber] = useState();
   const [maxType, setMaxType] = useState();
+
+  // hook
   const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_11__.useParams)();
+
+  // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
   const [formData, setFormData] = useState({});
+
+  // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
+
+  // confirmation tab
   const [currentTab, setCurrentTab] = useState("same-page");
+  const [pageData, setPageData] = useState([]);
+  const [pageOptions, setPageOptions] = useState([]);
+  const [pageId, setPageId] = useState();
+  const [selectedPageId, setSelectedPageId] = useState();
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
@@ -8111,26 +8145,112 @@ function Sidebar() {
       getFormData();
     }
   }, []);
+  const [isValidUrl, setIsValidUrl] = useState(true);
+  function validURL(str) {
+    var pattern = new RegExp("^(https?:\\/\\/)?" +
+    // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+    // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" +
+    // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+    // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" +
+    // query string
+    "(\\#[-a-z\\d_]*)?$", "i"); // fragment locator
+    setIsValidUrl(!!pattern.test(str));
+    return !!pattern.test(str);
+  }
   useEffect(() => {
-    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6, _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings4, _settingData$settings5, _settingData$settings6, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings10;
-    setMessageToShow(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings = prevSetting.settings) === null || _prevSetting$settings === void 0 ? void 0 : (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) === null || _prevSetting$settings2 === void 0 ? void 0 : (_prevSetting$settings3 = _prevSetting$settings2.same_page) === null || _prevSetting$settings3 === void 0 ? void 0 : _prevSetting$settings3.message_to_show);
-    setAfterFormSubmission(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings4 = prevSetting.settings) === null || _prevSetting$settings4 === void 0 ? void 0 : (_prevSetting$settings5 = _prevSetting$settings4.confirmation_type) === null || _prevSetting$settings5 === void 0 ? void 0 : (_prevSetting$settings6 = _prevSetting$settings5.same_page) === null || _prevSetting$settings6 === void 0 ? void 0 : _prevSetting$settings6.after_form_submission);
-    setRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings = settingData.settings) === null || _settingData$settings === void 0 ? void 0 : (_settingData$settings2 = _settingData$settings.confirmation_type) === null || _settingData$settings2 === void 0 ? void 0 : (_settingData$settings3 = _settingData$settings2.to_a_page) === null || _settingData$settings3 === void 0 ? void 0 : _settingData$settings3.redirection_message);
-    setCustomURL(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings4 = settingData.settings) === null || _settingData$settings4 === void 0 ? void 0 : (_settingData$settings5 = _settingData$settings4.confirmation_type) === null || _settingData$settings5 === void 0 ? void 0 : (_settingData$settings6 = _settingData$settings5.to_a_custom_url) === null || _settingData$settings6 === void 0 ? void 0 : _settingData$settings6.custom_url);
-    setCustomRedirectionMessage(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings7 = settingData.settings) === null || _settingData$settings7 === void 0 ? void 0 : (_settingData$settings8 = _settingData$settings7.confirmation_type) === null || _settingData$settings8 === void 0 ? void 0 : (_settingData$settings9 = _settingData$settings8.to_a_custom_url) === null || _settingData$settings9 === void 0 ? void 0 : _settingData$settings9.custom_redirection_message);
-    setFormLayout(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings10 = settingData.settings) === null || _settingData$settings10 === void 0 ? void 0 : _settingData$settings10.form_layout);
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings5, _prevSetting$settings6, _prevSetting$settings7, _prevSetting$settings11, _prevSetting$settings12, _prevSetting$settings13, _prevSetting$settings17, _prevSetting$settings18, _prevSetting$settings19, _prevSetting$settings23, _prevSetting$settings24, _prevSetting$settings25, _prevSetting$settings29, _prevSetting$settings30, _prevSetting$settings31, _prevSetting$settings38, _prevSetting$settings39, _prevSetting$settings40, _prevSetting$settings44, _prevSetting$settings45, _prevSetting$settings48, _prevSetting$settings49;
+    // set selected confiramation type
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
+      var _prevSetting$settings3, _prevSetting$settings4;
+      setSelectedConfirmationType(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings3 = prevSetting.settings) === null || _prevSetting$settings3 === void 0 ? void 0 : (_prevSetting$settings4 = _prevSetting$settings3.confirmation_type) === null || _prevSetting$settings4 === void 0 ? void 0 : _prevSetting$settings4.selected_confirmation_type);
+    } else {
+      setSelectedConfirmationType("same-page");
+    }
+
+    // set "Message to show" in same page tab
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings5 = prevSetting.settings) !== null && _prevSetting$settings5 !== void 0 && (_prevSetting$settings6 = _prevSetting$settings5.confirmation_type) !== null && _prevSetting$settings6 !== void 0 && (_prevSetting$settings7 = _prevSetting$settings6.same_page) !== null && _prevSetting$settings7 !== void 0 && _prevSetting$settings7.message_to_show) {
+      var _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings10;
+      setMessageToShow(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings8 = prevSetting.settings) === null || _prevSetting$settings8 === void 0 ? void 0 : (_prevSetting$settings9 = _prevSetting$settings8.confirmation_type) === null || _prevSetting$settings9 === void 0 ? void 0 : (_prevSetting$settings10 = _prevSetting$settings9.same_page) === null || _prevSetting$settings10 === void 0 ? void 0 : _prevSetting$settings10.message_to_show);
+    } else {
+      setMessageToShow("Form submitted succesfully.");
+    }
+
+    // set "After form submission" in same page tab
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings11 = prevSetting.settings) !== null && _prevSetting$settings11 !== void 0 && (_prevSetting$settings12 = _prevSetting$settings11.confirmation_type) !== null && _prevSetting$settings12 !== void 0 && (_prevSetting$settings13 = _prevSetting$settings12.same_page) !== null && _prevSetting$settings13 !== void 0 && _prevSetting$settings13.after_form_submission) {
+      var _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings16;
+      setAfterFormSubmission(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings14 = prevSetting.settings) === null || _prevSetting$settings14 === void 0 ? void 0 : (_prevSetting$settings15 = _prevSetting$settings14.confirmation_type) === null || _prevSetting$settings15 === void 0 ? void 0 : (_prevSetting$settings16 = _prevSetting$settings15.same_page) === null || _prevSetting$settings16 === void 0 ? void 0 : _prevSetting$settings16.after_form_submission);
+    } else {
+      setAfterFormSubmission("none");
+    }
+
+    // set "Page" for "to a page" tab
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings17 = prevSetting.settings) !== null && _prevSetting$settings17 !== void 0 && (_prevSetting$settings18 = _prevSetting$settings17.confirmation_type) !== null && _prevSetting$settings18 !== void 0 && (_prevSetting$settings19 = _prevSetting$settings18.to_a_page) !== null && _prevSetting$settings19 !== void 0 && _prevSetting$settings19.page) {
+      var _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings22;
+      setSelectedPageId(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings20 = prevSetting.settings) === null || _prevSetting$settings20 === void 0 ? void 0 : (_prevSetting$settings21 = _prevSetting$settings20.confirmation_type) === null || _prevSetting$settings21 === void 0 ? void 0 : (_prevSetting$settings22 = _prevSetting$settings21.to_a_page) === null || _prevSetting$settings22 === void 0 ? void 0 : _prevSetting$settings22.page);
+    } else {
+      setSelectedPageId("");
+    }
+
+    // set "Redirection message" for "to a page" tab
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings23 = prevSetting.settings) !== null && _prevSetting$settings23 !== void 0 && (_prevSetting$settings24 = _prevSetting$settings23.confirmation_type) !== null && _prevSetting$settings24 !== void 0 && (_prevSetting$settings25 = _prevSetting$settings24.to_a_page) !== null && _prevSetting$settings25 !== void 0 && _prevSetting$settings25.redirection_message) {
+      var _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings28;
+      setRedirectionMessage(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings26 = prevSetting.settings) === null || _prevSetting$settings26 === void 0 ? void 0 : (_prevSetting$settings27 = _prevSetting$settings26.confirmation_type) === null || _prevSetting$settings27 === void 0 ? void 0 : (_prevSetting$settings28 = _prevSetting$settings27.to_a_page) === null || _prevSetting$settings28 === void 0 ? void 0 : _prevSetting$settings28.redirection_message);
+    } else {
+      setRedirectionMessage("Welcome to this page. Form Submitted Successfully!");
+    }
+
+    // set custom url for "to a custom url" tab
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings29 = prevSetting.settings) !== null && _prevSetting$settings29 !== void 0 && (_prevSetting$settings30 = _prevSetting$settings29.confirmation_type) !== null && _prevSetting$settings30 !== void 0 && (_prevSetting$settings31 = _prevSetting$settings30.to_a_custom_url) !== null && _prevSetting$settings31 !== void 0 && _prevSetting$settings31.custom_url) {
+      var _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings34, _prevSetting$settings35, _prevSetting$settings36, _prevSetting$settings37;
+      setCustomURL(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings32 = prevSetting.settings) === null || _prevSetting$settings32 === void 0 ? void 0 : (_prevSetting$settings33 = _prevSetting$settings32.confirmation_type) === null || _prevSetting$settings33 === void 0 ? void 0 : (_prevSetting$settings34 = _prevSetting$settings33.to_a_custom_url) === null || _prevSetting$settings34 === void 0 ? void 0 : _prevSetting$settings34.custom_url);
+      setIsValidUrl(validURL(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings35 = prevSetting.settings) === null || _prevSetting$settings35 === void 0 ? void 0 : (_prevSetting$settings36 = _prevSetting$settings35.confirmation_type) === null || _prevSetting$settings36 === void 0 ? void 0 : (_prevSetting$settings37 = _prevSetting$settings36.to_a_custom_url) === null || _prevSetting$settings37 === void 0 ? void 0 : _prevSetting$settings37.custom_url));
+    } else {
+      setCustomURL("https://");
+    }
+
+    // set message for a "to a custom url" tab
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings38 = prevSetting.settings) !== null && _prevSetting$settings38 !== void 0 && (_prevSetting$settings39 = _prevSetting$settings38.confirmation_type) !== null && _prevSetting$settings39 !== void 0 && (_prevSetting$settings40 = _prevSetting$settings39.to_a_custom_url) !== null && _prevSetting$settings40 !== void 0 && _prevSetting$settings40.custom_redirection_message) {
+      var _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings43;
+      setCustomRedirectionMessage(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings41 = prevSetting.settings) === null || _prevSetting$settings41 === void 0 ? void 0 : (_prevSetting$settings42 = _prevSetting$settings41.confirmation_type) === null || _prevSetting$settings42 === void 0 ? void 0 : (_prevSetting$settings43 = _prevSetting$settings42.to_a_custom_url) === null || _prevSetting$settings43 === void 0 ? void 0 : _prevSetting$settings43.custom_redirection_message);
+    } else {
+      setCustomRedirectionMessage("You are redirected to a new url.");
+    }
+
+    // set form layout position
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings44 = prevSetting.settings) !== null && _prevSetting$settings44 !== void 0 && (_prevSetting$settings45 = _prevSetting$settings44.form_layout) !== null && _prevSetting$settings45 !== void 0 && _prevSetting$settings45.form_position) {
+      var _prevSetting$settings46, _prevSetting$settings47;
+      setFormPosition(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings46 = prevSetting.settings) === null || _prevSetting$settings46 === void 0 ? void 0 : (_prevSetting$settings47 = _prevSetting$settings46.form_layout) === null || _prevSetting$settings47 === void 0 ? void 0 : _prevSetting$settings47.form_position);
+    } else {
+      setFormPosition("default");
+    }
+
+    //set form layout animation
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings48 = prevSetting.settings) !== null && _prevSetting$settings48 !== void 0 && (_prevSetting$settings49 = _prevSetting$settings48.form_layout) !== null && _prevSetting$settings49 !== void 0 && _prevSetting$settings49.form_animation) {
+      var _prevSetting$settings50, _prevSetting$settings51;
+      setFormAnimation(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings50 = prevSetting.settings) === null || _prevSetting$settings50 === void 0 ? void 0 : (_prevSetting$settings51 = _prevSetting$settings50.form_layout) === null || _prevSetting$settings51 === void 0 ? void 0 : _prevSetting$settings51.form_animation);
+    } else {
+      setFormAnimation("none");
+    }
   }, [prevSetting]);
   useEffect(async () => {
     if ("same-page" === currentTab) {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "same-page",
             same_page: {
               message_to_show: messageToShow,
               after_form_submission: afterFormSubmission
             }
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -8149,12 +8269,16 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "page",
             to_a_page: {
-              page: page,
+              page: selectedPageId,
               redirection_message: redirectionMessage
             }
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -8173,12 +8297,16 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "custom-url",
             to_a_custom_url: {
               custom_url: customURL,
               custom_redirection_message: customRedirectionMessage
             }
           },
-          form_layout: formLayout,
+          form_layout: {
+            form_position: formPosition,
+            form_animation: formAnimation
+          },
           schedule: {
             form_scheduling: formScheduling,
             submission_start: {
@@ -8194,19 +8322,42 @@ function Sidebar() {
         }
       });
     }
-  }, [messageToShow, afterFormSubmission, page, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
+  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
     setTabState(index);
+    if ("page" === index) {
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+        if (200 == res.status) {
+          setPageData(resJson);
+        }
+      };
+      getPageData();
+    }
   };
+  const handlePageChange = state => {
+    setSelectedPageId(state);
+  };
+  useEffect(() => {
+    const optionArray = [];
+    pageData === null || pageData === void 0 ? void 0 : pageData.map(page => {
+      optionArray.push({
+        value: page.id,
+        label: page.id + " - " + page.title.rendered
+      });
+    });
+    setPageOptions(optionArray);
+  }, [pageData]);
 
   //-------settings pannel open function-------
   const showSettingsPannel = event => {
-    const el = document.getElementsByClassName('getdave-sbe-block-editor');
-    el[0].classList.remove('show-settings-pannel');
+    const el = document.getElementsByClassName("getdave-sbe-block-editor");
+    el[0].classList.remove("show-settings-pannel");
   };
 
   //-----counter increment-------
@@ -8240,6 +8391,10 @@ function Sidebar() {
   useEffect(() => {
     dateTimeSplitter();
   }, [date]);
+  const handleCustomURL = e => {
+    setCustomURL(e);
+    validURL(e);
+  };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
@@ -8321,14 +8476,9 @@ function Sidebar() {
   }, "Select a page", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Which page you want to redirect after the submitted the form?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-    value: "",
-    options: [{
-      value: "",
-      label: "Home"
-    }, {
-      value: "",
-      label: "Thank you"
-    }]
+    value: selectedPageId,
+    options: pageOptions,
+    onChange: state => handlePageChange(state)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -8349,9 +8499,11 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Enter a custom URL to redirect"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
     name: "custom-url",
-    defaultValue: customURL,
-    onChange: e => setCustomURL(e)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    value: customURL,
+    onChange: e => handleCustomURL(e)
+  }), !isValidUrl && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "validation-warning"
+  }, "**Warning : Your URL is not in a valid format**")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "settings-label"
@@ -8374,21 +8526,43 @@ function Sidebar() {
   }, "Form Placement", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
-    selected: formLayout,
+    selected: formPosition,
     options: [{
-      label: "Below Pages",
-      value: "below-pages"
+      label: "Default",
+      value: "default"
     }, {
       label: "Pop Up",
       value: "popup"
     }, {
       label: "Fly Ins",
       value: "flyins"
-    }, {
-      label: "Fixed Bar",
-      value: "fixed-bar"
     }],
-    onChange: state => setFormLayout(state)
+    onChange: state => setFormPosition(state)
+  })))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Form Animation",
+    className: "form-animation-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "pannelbody-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Animation Type", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Type of animation to show your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+    value: formAnimation,
+    options: [{
+      label: "None",
+      value: "none"
+    }, {
+      label: "Fade In",
+      value: "fade_in"
+    }, {
+      label: "Slide In Up",
+      value: "slide_in_up"
+    }],
+    onChange: state => setFormAnimation(state)
   })))))));
 }
 Sidebar.InspectorFill = InspectorFill;
@@ -8971,26 +9145,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router-dom/dist/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router-dom/dist/index.js");
 /* harmony import */ var _services_List__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/List */ "../../../src/services/List.jsx");
 /* harmony import */ var _services_Tag__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/Tag */ "../../../src/services/Tag.jsx");
 /* harmony import */ var _Campaign_CampaignCustomSelect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Campaign/CampaignCustomSelect */ "../../../src/components/Campaign/CampaignCustomSelect.jsx");
 /* harmony import */ var _InputItem__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../InputItem */ "../../../src/components/InputItem/index.jsx");
-/* harmony import */ var _Icons_ComputerIcon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Icons/ComputerIcon */ "../../../src/components/Icons/ComputerIcon.jsx");
-/* harmony import */ var _Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Icons/DoubleAngleLeftIcon */ "../../../src/components/Icons/DoubleAngleLeftIcon.jsx");
-/* harmony import */ var _Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Icons/DownArrowIcon */ "../../../src/components/Icons/DownArrowIcon.jsx");
-/* harmony import */ var _Icons_EditIcon__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Icons/EditIcon */ "../../../src/components/Icons/EditIcon.jsx");
-/* harmony import */ var _Icons_MobileIcon__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../Icons/MobileIcon */ "../../../src/components/Icons/MobileIcon.jsx");
-/* harmony import */ var _Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../Icons/SettingIcon */ "../../../src/components/Icons/SettingIcon.jsx");
+/* harmony import */ var _Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Icons/DoubleAngleLeftIcon */ "../../../src/components/Icons/DoubleAngleLeftIcon.jsx");
+/* harmony import */ var _Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Icons/DownArrowIcon */ "../../../src/components/Icons/DownArrowIcon.jsx");
+/* harmony import */ var _Icons_EditIcon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Icons/EditIcon */ "../../../src/components/Icons/EditIcon.jsx");
+/* harmony import */ var _Icons_MobileIcon__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Icons/MobileIcon */ "../../../src/components/Icons/MobileIcon.jsx");
+/* harmony import */ var _Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../Icons/SettingIcon */ "../../../src/components/Icons/SettingIcon.jsx");
+/* harmony import */ var _Icons_TabIcon__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../Icons/TabIcon */ "../../../src/components/Icons/TabIcon.jsx");
 /* harmony import */ var _Icons_ThreeDotIcon__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../Icons/ThreeDotIcon */ "../../../src/components/Icons/ThreeDotIcon.jsx");
 /* harmony import */ var _Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../Icons/UpArrowIcon */ "../../../src/components/Icons/UpArrowIcon.jsx");
-/* harmony import */ var _DesktopView__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./DesktopView */ "../../../src/components/Form/DesktopView.jsx");
-/* harmony import */ var _MobileView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./MobileView */ "../../../src/components/Form/MobileView.jsx");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/@remix-run/router/dist/router.js");
-/* harmony import */ var _AlertPopup__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../AlertPopup */ "../../../src/components/AlertPopup.jsx");
-/* harmony import */ var _SuccessfulNotification__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../SuccessfulNotification */ "../../../src/components/SuccessfulNotification.jsx");
-/* harmony import */ var _WarningNotification__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../WarningNotification */ "../../../src/components/WarningNotification.jsx");
+/* harmony import */ var _ListenForOutsideClicks__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../ListenForOutsideClicks */ "../../../src/components/ListenForOutsideClicks.jsx");
+/* harmony import */ var _DesktopView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./DesktopView */ "../../../src/components/Form/DesktopView.jsx");
+/* harmony import */ var _MobileView__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./MobileView */ "../../../src/components/Form/MobileView.jsx");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/@remix-run/router/dist/router.js");
+/* harmony import */ var _AlertPopup__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../AlertPopup */ "../../../src/components/AlertPopup.jsx");
+/* harmony import */ var _SuccessfulNotification__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../SuccessfulNotification */ "../../../src/components/SuccessfulNotification.jsx");
+/* harmony import */ var _WarningNotification__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../WarningNotification */ "../../../src/components/WarningNotification.jsx");
+
 
 
 
@@ -9014,8 +9190,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const FormEditor = props => {
   // Hide WordPress admin notices
-  const location = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_19__.useLocation)();
-  const match = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_20__.matchPath)({
+  const location = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_20__.useLocation)();
+  const match = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.matchPath)({
     path: "form-builder"
   }, location.pathname);
   if (match) {
@@ -9034,7 +9210,7 @@ const FormEditor = props => {
   const [listDropdown, setListDropdown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [settingsPannel, setSettingsPannel] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [enable, setEnable] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_19__.useParams)();
+  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_20__.useParams)();
   const [load, setLoad] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [id, setId] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(params.id);
   const [blockData, setBlockData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)();
@@ -9048,7 +9224,10 @@ const FormEditor = props => {
   const [dropDown, setDropDown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [groupIds, setGroupIds] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [saveLoader, setsaveLoader] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_19__.useNavigate)();
+  const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_20__.useNavigate)();
+  const menuRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const [listening, setListening] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)((0,_ListenForOutsideClicks__WEBPACK_IMPORTED_MODULE_14__["default"])(listening, setListening, menuRef, setDropDown));
   const toggleEnable = () => {
     setEnable(!enable);
   };
@@ -9078,7 +9257,10 @@ const FormEditor = props => {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
       const resJson = await res.json();
       if (200 === resJson.code) {
+        var _resJson$data, _resJson$data$group_i, _resJson$data2, _resJson$data2$group_;
         setFormData(resJson.data);
+        setRecipientLists((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$group_i = _resJson$data.group_ids) === null || _resJson$data$group_i === void 0 ? void 0 : _resJson$data$group_i.lists);
+        setRecipientTags((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$group_ = _resJson$data2.group_ids) === null || _resJson$data2$group_ === void 0 ? void 0 : _resJson$data2$group_.tags);
       }
     };
     if (id) {
@@ -9125,16 +9307,24 @@ const FormEditor = props => {
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
   };
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    const lists = recipientLists.filter(list => list.id > 0).map(list => list.id);
-    const tags = recipientTags.filter(tag => tag.id > 0).map(tag => tag.id);
-    const group_ids = lists.concat(tags);
-    setFormData(prevState => ({
-      ...prevState,
-      group_ids: group_ids
-    }));
-    setGroupIds(group_ids);
-  }, [recipientLists, recipientTags]);
+
+  // useEffect(() => {
+  //   const lists = recipientLists
+  //     .filter((list) => list.id > 0)
+  //     .map((list) => list.id);
+
+  //   const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
+
+  //   const group_ids = lists.concat(tags);
+
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     group_ids: group_ids,
+  //   }));
+
+  //   setGroupIds(group_ids);
+  // }, [recipientLists, recipientTags]);
+
   const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     const settingData = window.localStorage.getItem("getsettings");
@@ -9142,7 +9332,10 @@ const FormEditor = props => {
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags
+      },
       status: 0,
       meta_fields: {
         settings: settingData
@@ -9202,7 +9395,10 @@ const FormEditor = props => {
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags
+      },
       status: 1,
       meta_fields: {
         settings: settingData
@@ -9297,22 +9493,22 @@ const FormEditor = props => {
     className: "form-editor-topbar"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "topbar-left"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_21__.Link, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_22__.Link, {
     to: "/forms/"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "back-button"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_7__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DoubleAngleLeftIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "responsive-section"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "editor" === preview ? "edit-view active" : "edit-view",
     onClick: e => handlePreview("editor")
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_EditIcon__WEBPACK_IMPORTED_MODULE_9__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_EditIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "desktop" === preview ? "desktop-view active" : "desktop-view",
     onClick: e => handlePreview("desktop")
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_ComputerIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_TabIcon__WEBPACK_IMPORTED_MODULE_11__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mobile" === preview ? "mobile-view active" : "mobile-view",
     onClick: e => handlePreview("mobile")
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_MobileIcon__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_MobileIcon__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "topbar-right"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: moreOption ? "three-dot-btn show" : "three-dot-btn",
@@ -9324,7 +9520,7 @@ const FormEditor = props => {
   }, "Save as Draft"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "mintmrm-btn settings",
     onClick: showSettingsPannel
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_11__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingIcon__WEBPACK_IMPORTED_MODULE_10__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: saveLoader ? "mintmrm-btn enable show-loader" : "mintmrm-btn enable",
     onClick: saveForm
   }, id ? "Update" : "Publish", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
@@ -9343,11 +9539,12 @@ const FormEditor = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "list-label"
   }, "Assign To"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "list-content"
+    className: "list-content",
+    ref: menuRef
   }, recipientLists.length == 0 && recipientTags.length == 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "all-recipients",
     onClick: showDropDown
-  }, "All Subscriber", dropDown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, "All Subscriber", dropDown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_7__["default"], null)) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "all-recipients selected show",
     onClick: showDropDown
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
@@ -9358,15 +9555,15 @@ const FormEditor = props => {
     className: "lists"
   }, recipientLists.length, " Lists."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "recipients"
-  }, recipientLists.length + recipientTags.length, " Groups"), dropDown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_8__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Campaign_CampaignCustomSelect__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, recipientLists.length + recipientTags.length, " Groups"), dropDown ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_UpArrowIcon__WEBPACK_IMPORTED_MODULE_13__["default"], null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_DownArrowIcon__WEBPACK_IMPORTED_MODULE_7__["default"], null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Campaign_CampaignCustomSelect__WEBPACK_IMPORTED_MODULE_4__["default"], {
     dropDown: dropDown,
     setRecipientTags: setRecipientTags,
     recipientTags: recipientTags,
     setRecipientLists: setRecipientLists,
     recipientLists: recipientLists
-  })))), preview === "mobile" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_MobileView__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  })))), preview === "mobile" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_MobileView__WEBPACK_IMPORTED_MODULE_16__["default"], {
     blockData: blockData
-  }) : preview === "desktop" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DesktopView__WEBPACK_IMPORTED_MODULE_14__["default"], {
+  }) : preview === "desktop" ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DesktopView__WEBPACK_IMPORTED_MODULE_15__["default"], {
     blockData: blockData
   })) : "", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "mrm-block-editor",
@@ -9379,13 +9576,13 @@ const FormEditor = props => {
     style: {
       display: showAlert
     }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AlertPopup__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AlertPopup__WEBPACK_IMPORTED_MODULE_17__["default"], {
     showAlert: showAlert,
     onShowAlert: onShowAlert
-  })), savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SuccessfulNotification__WEBPACK_IMPORTED_MODULE_17__["default"], {
+  })), savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SuccessfulNotification__WEBPACK_IMPORTED_MODULE_18__["default"], {
     display: showNotification,
     message: message
-  }), !savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WarningNotification__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  }), !savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WarningNotification__WEBPACK_IMPORTED_MODULE_19__["default"], {
     display: showNotification,
     message: message
   }))));
@@ -9422,64 +9619,6 @@ const MobileView = props => {
   })));
 };
 /* harmony default export */ __webpack_exports__["default"] = (MobileView);
-
-/***/ }),
-
-/***/ "../../../src/components/Icons/ComputerIcon.jsx":
-/*!******************************************************!*\
-  !*** ../../../src/components/Icons/ComputerIcon.jsx ***!
-  \******************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ ComputerIcon; }
-/* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-
-function ComputerIcon() {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-    width: "20",
-    height: "20",
-    viewBox: "0 0 20 20",
-    fill: "none",
-    xmlns: "http://www.w3.org/2000/svg"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", {
-    "clip-path": "url(#clip0_540_2530)"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-    d: "M16.6667 3.33334H3.33333C2.8731 3.33334 2.5 3.70644 2.5 4.16668V12.5C2.5 12.9602 2.8731 13.3333 3.33333 13.3333H16.6667C17.1269 13.3333 17.5 12.9602 17.5 12.5V4.16668C17.5 3.70644 17.1269 3.33334 16.6667 3.33334Z",
-    stroke: "#686F7F",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-    d: "M5.83594 16.6665H14.1693",
-    stroke: "#686F7F",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-    d: "M7.5 13.3333V16.6667",
-    stroke: "#686F7F",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-    d: "M12.5 13.3333V16.6667",
-    stroke: "#686F7F",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("defs", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("clipPath", {
-    id: "clip0_540_2530"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
-    width: "20",
-    height: "20",
-    fill: "white"
-  }))));
-}
 
 /***/ }),
 
@@ -9716,12 +9855,12 @@ function Search() {
     "fill-rule": "evenodd",
     "clip-rule": "evenodd",
     d: "M6.75 2.4233C3.8505 2.4233 1.5 4.70257 1.5 7.5142C1.5 10.3258 3.8505 12.6051 6.75 12.6051C9.64949 12.6051 12 10.3258 12 7.5142C12 4.70257 9.64949 2.4233 6.75 2.4233ZM0 7.5142C0 3.89925 3.02208 0.96875 6.75 0.96875C10.4779 0.96875 13.5 3.89925 13.5 7.5142C13.5 11.1292 10.4779 14.0597 6.75 14.0597C3.02208 14.0597 0 11.1292 0 7.5142Z",
-    fill: "#686F7F"
+    fill: "#C5C7D3"
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
     "fill-rule": "evenodd",
     "clip-rule": "evenodd",
     d: "M10.7197 11.3634C11.0126 11.0794 11.4874 11.0794 11.7803 11.3634L14.7803 14.2725C15.0732 14.5565 15.0732 15.017 14.7803 15.301C14.4874 15.585 14.0126 15.585 13.7197 15.301L10.7197 12.3919C10.4268 12.1079 10.4268 11.6474 10.7197 11.3634Z",
-    fill: "#686F7F"
+    fill: "#C5C7D3"
   }));
 }
 
@@ -9801,6 +9940,47 @@ function SuccessfulIcon() {
     d: "M19.2871 8.61787C19.602 8.93271 19.602 9.45068 19.2871 9.76553L11.6699 17.3827C11.5125 17.5401 11.3043 17.6214 11.0961 17.6214C10.8879 17.6214 10.6797 17.5401 10.5223 17.3827L6.71367 13.5741C6.39883 13.2593 6.39883 12.7413 6.71367 12.4265C7.02852 12.1116 7.54648 12.1116 7.86133 12.4265L11.0961 15.6612L18.1395 8.61787C18.4543 8.29795 18.9723 8.29795 19.2871 8.61787Z",
     fill: "white"
   }));
+}
+
+/***/ }),
+
+/***/ "../../../src/components/Icons/TabIcon.jsx":
+/*!*************************************************!*\
+  !*** ../../../src/components/Icons/TabIcon.jsx ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TabIcon; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+function TabIcon() {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+    width: "20",
+    height: "20",
+    fill: "none",
+    viewBox: "0 0 20 20",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", {
+    stroke: "#686F7F",
+    "stroke-linecap": "round",
+    "stroke-linejoin": "round",
+    "stroke-width": "1.5",
+    "clip-path": "url(#clip0_1970_4053)"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    d: "M15.001 2.5h-10a.833.833 0 00-.833.833v13.334c0 .46.373.833.833.833h10c.46 0 .834-.373.834-.833V3.333A.833.833 0 0015 2.5z"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    d: "M10.001 15a.833.833 0 100-1.667.833.833 0 000 1.667z"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("defs", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("clipPath", {
+    id: "clip0_1970_4053"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    fill: "#fff",
+    d: "M0 0h20v20H0z"
+  }))));
 }
 
 /***/ }),
@@ -9941,6 +10121,35 @@ function InputItem(props) {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: props !== null && props !== void 0 && props.error ? "error-message show" : "error-message"
   }, props === null || props === void 0 ? void 0 : props.error));
+}
+
+/***/ }),
+
+/***/ "../../../src/components/ListenForOutsideClicks.jsx":
+/*!**********************************************************!*\
+  !*** ../../../src/components/ListenForOutsideClicks.jsx ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ ListenForOutsideClicks; }
+/* harmony export */ });
+function ListenForOutsideClicks(listening, setListening, menuRef, setIsOpen) {
+  return () => {
+    if (listening) return;
+    if (!menuRef.current) return;
+    setListening(true);
+    [`click`, `touchstart`].forEach(type => {
+      document.addEventListener(`click`, evt => {
+        const cur = menuRef.current;
+        const node = evt.target;
+        if (cur !== null && cur !== void 0 && cur.contains(node)) return;
+        setIsOpen(false);
+      });
+    });
+  };
 }
 
 /***/ }),

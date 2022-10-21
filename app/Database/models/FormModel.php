@@ -204,6 +204,8 @@ class FormModel {
             $count = (int) $count_query;
             $total_pages = ceil($count / $limit);
 
+            $results = [];
+
             foreach( $select_query as $query_result ){
                 $q_id = isset($query_result['id']) ? $query_result['id'] : "";
                 $new_meta = self::get_meta( $q_id );
@@ -267,9 +269,7 @@ class FormModel {
             
             $new_meta = self::get_meta( $id );
 
-            $form = array_merge($form_result[0], $new_meta);
-
-            return $form;
+            return array_merge(isset($form_result[0])? $form_result[0] : [], $new_meta);
         
         } catch(\Exception $e) {
             return false;

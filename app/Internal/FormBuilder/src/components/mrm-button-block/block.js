@@ -50,7 +50,6 @@ const mrmButton = ({
         borderWidth:  buttonBorderWidth+'px',
         borderColor:  buttonBorderColor,
     }
-    console.log('align-items'+ buttonAlign);
 
     return (
         <>

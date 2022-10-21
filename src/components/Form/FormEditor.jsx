@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { default as React, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
 import InputItem from "../InputItem";
 
-import ComputerIcon from "../Icons/ComputerIcon";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import EditIcon from "../Icons/EditIcon";
 import MobileIcon from "../Icons/MobileIcon";
 import SettingIcon from "../Icons/SettingIcon";
+import TabIcon from "../Icons/TabIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
 
@@ -67,6 +68,11 @@ const FormEditor = (props) => {
   const [saveLoader, setsaveLoader] = useState(false);
 
   const navigate = useNavigate();
+  const menuRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
+  );
 
   const toggleEnable = () => {
     setEnable(!enable);
@@ -103,6 +109,8 @@ const FormEditor = (props) => {
 
       if (200 === resJson.code) {
         setFormData(resJson.data);
+        setRecipientLists(resJson.data?.group_ids?.lists);
+        setRecipientTags(resJson.data?.group_ids?.tags);
       }
     };
     if (id) {
@@ -157,22 +165,22 @@ const FormEditor = (props) => {
     }));
   };
 
-  useEffect(() => {
-    const lists = recipientLists
-      .filter((list) => list.id > 0)
-      .map((list) => list.id);
+  // useEffect(() => {
+  //   const lists = recipientLists
+  //     .filter((list) => list.id > 0)
+  //     .map((list) => list.id);
 
-    const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
+  //   const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
 
-    const group_ids = lists.concat(tags);
+  //   const group_ids = lists.concat(tags);
 
-    setFormData((prevState) => ({
-      ...prevState,
-      group_ids: group_ids,
-    }));
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     group_ids: group_ids,
+  //   }));
 
-    setGroupIds(group_ids);
-  }, [recipientLists, recipientTags]);
+  //   setGroupIds(group_ids);
+  // }, [recipientLists, recipientTags]);
 
   const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
@@ -184,7 +192,10 @@ const FormEditor = (props) => {
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags,
+      },
       status: 0,
       meta_fields: {
         settings: settingData,
@@ -252,7 +263,10 @@ const FormEditor = (props) => {
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags,
+      },
       status: 1,
       meta_fields: {
         settings: settingData,
@@ -375,7 +389,7 @@ const FormEditor = (props) => {
                 }
                 onClick={(e) => handlePreview("desktop")}
               >
-                <ComputerIcon />
+                <TabIcon />
               </button>
               <button
                 className={
@@ -431,7 +445,7 @@ const FormEditor = (props) => {
             <div className="form-group list">
               <label className="list-label">Assign To</label>
 
-              <div className="list-content">
+              <div className="list-content" ref={menuRef}>
                 {recipientLists.length == 0 && recipientTags.length == 0 ? (
                   <button className="all-recipients" onClick={showDropDown}>
                     All Subscriber
