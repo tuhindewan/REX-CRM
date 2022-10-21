@@ -453,15 +453,6 @@ export default function FormIndex(props) {
                     </thead>
 
                     <tbody>
-                      {0 === formData?.length && (
-                        <tr className="no-data">
-                          <td colSpan={6}>
-                            <FormIconXL />
-                            <h5>No Forms found</h5>
-                          </td>
-                        </tr>
-                      )}
-
                       {formData?.length > 0 ? (
                         formData.map((form) => {
                           return (

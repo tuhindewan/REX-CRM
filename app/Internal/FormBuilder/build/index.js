@@ -8163,7 +8163,6 @@ function Sidebar() {
   }
   useEffect(() => {
     var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings5, _prevSetting$settings6, _prevSetting$settings7, _prevSetting$settings11, _prevSetting$settings12, _prevSetting$settings13, _prevSetting$settings17, _prevSetting$settings18, _prevSetting$settings19, _prevSetting$settings23, _prevSetting$settings24, _prevSetting$settings25, _prevSetting$settings29, _prevSetting$settings30, _prevSetting$settings31, _prevSetting$settings38, _prevSetting$settings39, _prevSetting$settings40, _prevSetting$settings44, _prevSetting$settings45, _prevSetting$settings48, _prevSetting$settings49;
-    console.log(prevSetting);
     // set selected confiramation type
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
       var _prevSetting$settings3, _prevSetting$settings4;
@@ -9495,7 +9494,10 @@ const FormEditor = props => {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
       const resJson = await res.json();
       if (200 === resJson.code) {
+        var _resJson$data, _resJson$data$group_i, _resJson$data2, _resJson$data2$group_;
         setFormData(resJson.data);
+        setRecipientLists((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$group_i = _resJson$data.group_ids) === null || _resJson$data$group_i === void 0 ? void 0 : _resJson$data$group_i.lists);
+        setRecipientTags((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$group_ = _resJson$data2.group_ids) === null || _resJson$data2$group_ === void 0 ? void 0 : _resJson$data2$group_.tags);
       }
     };
     if (id) {
@@ -9630,7 +9632,10 @@ const FormEditor = props => {
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags
+      },
       status: 1,
       meta_fields: {
         settings: settingData
