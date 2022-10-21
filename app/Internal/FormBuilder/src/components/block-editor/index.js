@@ -92,6 +92,11 @@ function BlockEditor( { settings: _settings } ) {
 	function handleUpdateBlocks(blocks) {
 		updateBlocks( blocks );
 	}
+	function handleUpdateBlocksByOnInput(blocks) {
+		updateBlocks( blocks );
+		window.localStorage.setItem( 'getmrmblocks', serialize( blocks ) );
+
+	}
 
 	function handlePersistBlocks( newBlocks ) {
 		updateBlocks( newBlocks );
@@ -102,7 +107,7 @@ function BlockEditor( { settings: _settings } ) {
 			<ShortcutProvider>
 				<BlockEditorProvider
 					value={ blocks }
-					onInput={ handleUpdateBlocks }
+					onInput={ handleUpdateBlocksByOnInput }
 					onChange={ handlePersistBlocks }
 					settings={ settings }
 				>

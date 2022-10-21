@@ -3751,6 +3751,10 @@ function BlockEditor(_ref) {
   function handleUpdateBlocks(blocks) {
     updateBlocks(blocks);
   }
+  function handleUpdateBlocksByOnInput(blocks) {
+    updateBlocks(blocks);
+    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
+  }
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
@@ -3759,7 +3763,7 @@ function BlockEditor(_ref) {
     className: "get-mrm-block-editor"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
     value: blocks,
-    onInput: handleUpdateBlocks,
+    onInput: handleUpdateBlocksByOnInput,
     onChange: handlePersistBlocks,
     settings: settings
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_7__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
