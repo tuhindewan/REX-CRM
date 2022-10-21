@@ -267,9 +267,7 @@ class FormModel {
             
             $new_meta = self::get_meta( $id );
 
-            $form = array_merge($form_result[0], $new_meta);
-
-            return $form;
+            return array_merge(isset($form_result[0])? $form_result[0] : [], $new_meta);
         
         } catch(\Exception $e) {
             return false;

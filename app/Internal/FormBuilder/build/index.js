@@ -4876,6 +4876,8 @@ function Sidebar() {
   const [formData, setFormData] = useState({});
   const [prevSetting, setPrevSetting] = useState({});
   const [currentTab, setCurrentTab] = useState("same-page");
+  const [pageData, setPageData] = useState([]);
+  const [pageOptions, setPageOptions] = useState([]);
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
@@ -4980,13 +4982,38 @@ function Sidebar() {
   }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
+    console.log(index);
     setTabState(index);
+    if ("page" === index) {
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+        if (200 == res.status) {
+          setPageData(resJson);
+        }
+      };
+      getPageData();
+    }
   };
+  const [pageId, setPageId] = useState();
+  const handlePageChange = state => {
+    console.log(state);
+  };
+  useEffect(() => {
+    const optionArray = [];
+    pageData === null || pageData === void 0 ? void 0 : pageData.map(page => {
+      optionArray.push({
+        value: page.id,
+        label: page.title.rendered
+      });
+    });
+    setPageOptions(optionArray);
+  }, [pageData]);
 
   //-------settings pannel open function-------
   const showSettingsPannel = event => {
-    const el = document.getElementsByClassName('getdave-sbe-block-editor');
-    el[0].classList.remove('show-settings-pannel');
+    const el = document.getElementsByClassName("getdave-sbe-block-editor");
+    el[0].classList.remove("show-settings-pannel");
   };
 
   //-----counter increment-------
@@ -5020,7 +5047,7 @@ function Sidebar() {
   useEffect(() => {
     dateTimeSplitter();
   }, [date]);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, console.log(pageOptions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
@@ -5101,14 +5128,9 @@ function Sidebar() {
   }, "Select a page", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Which page you want to redirect after the submitted the form?"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-    value: "",
-    options: [{
-      value: "",
-      label: "Home"
-    }, {
-      value: "",
-      label: "Thank you"
-    }]
+    value: pageId,
+    options: pageOptions,
+    onChange: state => handlePageChange(state)
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -5992,8 +6014,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router-dom/dist/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/dist/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router-dom/dist/index.js");
 /* harmony import */ var _InputItem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../InputItem */ "../../../src/components/InputItem/index.jsx");
 /* harmony import */ var _CustomSelect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../CustomSelect */ "../../../src/components/CustomSelect/index.jsx");
 /* harmony import */ var _Selectbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Selectbox */ "../../../src/components/Selectbox/index.jsx");
@@ -6010,9 +6032,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MobileView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./MobileView */ "../../../src/components/Form/MobileView.jsx");
 /* harmony import */ var _DesktopView__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./DesktopView */ "../../../src/components/Form/DesktopView.jsx");
 /* harmony import */ var _Icons_EditIcon__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../Icons/EditIcon */ "../../../src/components/Icons/EditIcon.jsx");
-/* harmony import */ var _AlertPopup__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../AlertPopup */ "../../../src/components/AlertPopup.jsx");
-/* harmony import */ var _SuccessfulNotification__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../SuccessfulNotification */ "../../../src/components/SuccessfulNotification.jsx");
-/* harmony import */ var _WarningNotification__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../WarningNotification */ "../../../src/components/WarningNotification.jsx");
+/* harmony import */ var _ListenForOutsideClicks__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../ListenForOutsideClicks */ "../../../src/components/ListenForOutsideClicks.jsx");
+/* harmony import */ var _AlertPopup__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../AlertPopup */ "../../../src/components/AlertPopup.jsx");
+/* harmony import */ var _SuccessfulNotification__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../SuccessfulNotification */ "../../../src/components/SuccessfulNotification.jsx");
+/* harmony import */ var _WarningNotification__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../WarningNotification */ "../../../src/components/WarningNotification.jsx");
+
 
 
 
@@ -6051,7 +6075,7 @@ const FormEditor = props => {
   const [listDropdown, setListDropdown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [settingsPannel, setSettingsPannel] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [enable, setEnable] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.useParams)();
+  const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_22__.useParams)();
   const [load, setLoad] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [id, setId] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(params.id);
   const [blockData, setBlockData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)();
@@ -6065,7 +6089,10 @@ const FormEditor = props => {
   const [dropDown, setDropDown] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [groupIds, setGroupIds] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [saveLoader, setsaveLoader] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
-  const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_21__.useNavigate)();
+  const navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_22__.useNavigate)();
+  const menuRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const [listening, setListening] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)((0,_ListenForOutsideClicks__WEBPACK_IMPORTED_MODULE_18__["default"])(listening, setListening, menuRef, setDropDown));
   const toggleEnable = () => {
     setEnable(!enable);
   };
@@ -6314,7 +6341,7 @@ const FormEditor = props => {
     className: "form-editor-topbar"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "topbar-left"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_22__.Link, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_23__.Link, {
     to: "/forms/"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "back-button"
@@ -6360,7 +6387,8 @@ const FormEditor = props => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "list-label"
   }, "Assign To"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "list-content"
+    className: "list-content",
+    ref: menuRef
   }, recipientLists.length == 0 && recipientTags.length == 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "all-recipients",
     onClick: showDropDown
@@ -6396,13 +6424,13 @@ const FormEditor = props => {
     style: {
       display: showAlert
     }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AlertPopup__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AlertPopup__WEBPACK_IMPORTED_MODULE_19__["default"], {
     showAlert: showAlert,
     onShowAlert: onShowAlert
-  })), savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SuccessfulNotification__WEBPACK_IMPORTED_MODULE_19__["default"], {
+  })), savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SuccessfulNotification__WEBPACK_IMPORTED_MODULE_20__["default"], {
     display: showNotification,
     message: message
-  }), !savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WarningNotification__WEBPACK_IMPORTED_MODULE_20__["default"], {
+  }), !savedSuccess && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_WarningNotification__WEBPACK_IMPORTED_MODULE_21__["default"], {
     display: showNotification,
     message: message
   }))));
@@ -6958,6 +6986,35 @@ function InputItem(props) {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: props !== null && props !== void 0 && props.error ? "error-message show" : "error-message"
   }, props === null || props === void 0 ? void 0 : props.error));
+}
+
+/***/ }),
+
+/***/ "../../../src/components/ListenForOutsideClicks.jsx":
+/*!**********************************************************!*\
+  !*** ../../../src/components/ListenForOutsideClicks.jsx ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ ListenForOutsideClicks; }
+/* harmony export */ });
+function ListenForOutsideClicks(listening, setListening, menuRef, setIsOpen) {
+  return () => {
+    if (listening) return;
+    if (!menuRef.current) return;
+    setListening(true);
+    [`click`, `touchstart`].forEach(type => {
+      document.addEventListener(`click`, evt => {
+        const cur = menuRef.current;
+        const node = evt.target;
+        if (cur !== null && cur !== void 0 && cur.contains(node)) return;
+        setIsOpen(false);
+      });
+    });
+  };
 }
 
 /***/ }),
