@@ -72,13 +72,17 @@ class MRM_Subscribe_form
         $html = '';
         $form_id = isset($attributes['form_id']) ? $attributes['form_id'] : 0;
         $get_setting        = FormModel::get_meta($form_id);
-        $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  [];
+        $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  (object)[];
         $form_setting       = json_decode($form_setting);
-        $form_placement      = !empty($form_setting->settings->form_layout) ? $form_setting->settings->form_layout : '';
+        $form_placement     = !empty($form_setting->settings->form_layout->form_position) ? $form_setting->settings->form_layout->form_position: '';
+        $form_animation     = '';
+        if($form_placement != 'default' ){
+            $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
+        }
         $html .= '<div class="mintmrm">
-            <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-fade-in mrm-'.$form_placement.'">
+            <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_animation.' mrm-'.$form_placement.'">
                 <div class="mrm-form-wrapper-inner">';
-                if('below-pages' != $form_placement){
+                if('default' != $form_placement){
                     $html .= '<span class="mrm-form-close">
                         <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                     </span>';
