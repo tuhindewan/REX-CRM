@@ -86,12 +86,21 @@ class ContactForm {
         ob_start();?>
         <div class="mintmrm" >
             <div id="mrm-<?php echo $form_position ?>" class="mrm-form-wrapper <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_position?>">
-                <form method="post" id="mrm-form">
-                    <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
-                    <?php echo  $form_data['form_body'] ?>
-                </form>
+                <div class="mrm-form-wrapper-inner">
+                    <span class="mrm-form-close">
+                        <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                    </span>
 
-                <div class="response"></div>
+                    <div class="mrm-form-overflow">
+                        <form method="post" id="mrm-form">
+                            <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
+                            <?php echo  $form_data['form_body'] ?>
+                        </form>
+                        
+                        <div class="response"></div>
+                    </div>
+                    
+                </div>
             </div>
 
             <style>
