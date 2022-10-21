@@ -44,7 +44,6 @@ class FormController extends BaseController {
 
         // Get values from the API request
         $params = MRM_Common::get_api_params_values( $request );
-
         //Form title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {

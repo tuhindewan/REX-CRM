@@ -8,7 +8,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { createSlotFill } from "@wordpress/components";
+import { createSlotFill, G } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 
 import CrossIcon from "../Icons/CrossIcon";
@@ -127,7 +127,6 @@ function Sidebar() {
   // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
 
-
   const [formData, setFormData] = useState({});
 
   // it's a copy of main settingData
@@ -176,6 +175,7 @@ function Sidebar() {
   }
 
   useEffect(() => {
+    console.log(prevSetting);
     // set selected confiramation type
     if (prevSetting?.settings?.confirmation_type?.selected_confirmation_type) {
       setSelectedConfirmationType(
@@ -460,7 +460,6 @@ function Sidebar() {
 
   return (
     <>
-      {console.log(settingData)}
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -716,11 +715,11 @@ function Sidebar() {
                   </label>
 
                   <SelectControl
-                    selected={formAnimation}
+                    value={formAnimation}
                     options={[
                       { label: "None", value: "none" },
-                      { label: "Fade In", value: "fade-in" },
-                      { label: "Slide In Up", value: "slide-in-up" },
+                      { label: "Fade In", value: "fade_in" },
+                      { label: "Slide In Up", value: "slide_in_up" },
                     ]}
                     onChange={(state) => setFormAnimation(state)}
                   />

@@ -8163,6 +8163,7 @@ function Sidebar() {
   }
   useEffect(() => {
     var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings5, _prevSetting$settings6, _prevSetting$settings7, _prevSetting$settings11, _prevSetting$settings12, _prevSetting$settings13, _prevSetting$settings17, _prevSetting$settings18, _prevSetting$settings19, _prevSetting$settings23, _prevSetting$settings24, _prevSetting$settings25, _prevSetting$settings29, _prevSetting$settings30, _prevSetting$settings31, _prevSetting$settings38, _prevSetting$settings39, _prevSetting$settings40, _prevSetting$settings44, _prevSetting$settings45, _prevSetting$settings48, _prevSetting$settings49;
+    console.log(prevSetting);
     // set selected confiramation type
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
       var _prevSetting$settings3, _prevSetting$settings4;
@@ -8395,7 +8396,7 @@ function Sidebar() {
     setCustomURL(e);
     validURL(e);
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, console.log(settingData), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
@@ -8551,16 +8552,16 @@ function Sidebar() {
   }, "Animation Type", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Type of animation to show your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-    selected: formAnimation,
+    value: formAnimation,
     options: [{
       label: "None",
       value: "none"
     }, {
       label: "Fade In",
-      value: "fade-in"
+      value: "fade_in"
     }, {
       label: "Slide In Up",
-      value: "slide-in-up"
+      value: "slide_in_up"
     }],
     onChange: state => setFormAnimation(state)
   })))))));
