@@ -9,6 +9,7 @@ import { getTags } from "../../services/Tag";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
 
 import ComputerIcon from "../Icons/ComputerIcon";
+import TabIcon from "../Icons/TabIcon";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import MobileIcon from "../Icons/MobileIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
@@ -379,7 +380,7 @@ const FormEditor = (props) => {
                 }
                 onClick={(e) => handlePreview("desktop")}
               >
-                <ComputerIcon />
+                <TabIcon />
               </button>
               <button
                 className={

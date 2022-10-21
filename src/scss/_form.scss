@@ -38,6 +38,19 @@
     background: #fff;
     padding: 15px;
     overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f9fafb;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccd0d9;
+      border-radius: 20px;
+    }
+    
   }
   
 }
