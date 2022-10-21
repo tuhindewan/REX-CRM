@@ -56,7 +56,7 @@ class FormController extends BaseController {
             'form_body'      => isset( $params['form_body'] ) ? $params['form_body'] : "",
             'form_position'  => isset( $params['form_position'] ) ? $params['form_position'] : "",
             'status'         => isset( $params['status'] ) ? $params['status'] : "",
-            'group_ids'      => isset( $params['group_ids'] ) ? $params['group_ids'] : "",
+            'group_ids'      => isset( $params['group_ids'] ) ? $params['group_ids'] : [],
             'meta_fields'    => isset( $params['meta_fields'] ) ? $params['meta_fields'] : [],
         );
         

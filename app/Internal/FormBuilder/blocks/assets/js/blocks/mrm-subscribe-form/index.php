@@ -72,7 +72,7 @@ class MRM_Subscribe_form
         $html = '';
         $form_id = isset($attributes['form_id']) ? $attributes['form_id'] : 0;
         $get_setting        = FormModel::get_meta($form_id);
-        $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  (object)[];
+        $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  '';
         $form_setting       = json_decode($form_setting);
         $form_placement     = !empty($form_setting->settings->form_layout->form_position) ? $form_setting->settings->form_layout->form_position: '';
         $form_animation     = '';
