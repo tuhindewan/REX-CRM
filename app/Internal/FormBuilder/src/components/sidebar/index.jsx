@@ -134,7 +134,7 @@ function Sidebar() {
     }
   }, []);
 
-  const [isValidUrl, setIsValidUrl] = useState(false);
+  const [isValidUrl, setIsValidUrl] = useState(true);
   function validURL(str) {
     var pattern = new RegExp(
       "^(https?:\\/\\/)?" + // protocol
@@ -146,6 +146,7 @@ function Sidebar() {
       "i"
     ); // fragment locator
     setIsValidUrl(!!pattern.test(str));
+    return !!pattern.test(str);
   }
 
   useEffect(() => {
@@ -196,6 +197,11 @@ function Sidebar() {
     if (settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url) {
       setCustomURL(
         settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+      );
+      setIsValidUrl(
+        validURL(
+          settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+        )
       );
     } else {
       setCustomURL("https://");
