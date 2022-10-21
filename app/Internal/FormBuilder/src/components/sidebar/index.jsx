@@ -55,9 +55,11 @@ function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
 
+  // preparing settings data for backend as JSON
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
+        selected_confirmation_type: "",
         same_page: {
           message_to_show: "",
           after_form_submission: "",
@@ -90,28 +92,48 @@ function Sidebar() {
     },
   });
 
-  //settings variables
+  /* @settings variables */
+
+  // confirmation tabs
+  const [selectedConfirmationType, setSelectedConfirmationType] = useState("");
+  // confirmation type "Same Page"
   const [messageToShow, setMessageToShow] = useState("");
   const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  // confirmation type "To A Page"
   const [page, setPage] = useState("");
   const [redirectionMessage, setRedirectionMessage] = useState("");
+  // confirmation type "Custom URL"
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
+
+  // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+
+  // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
   const [submissionStartTime, setSubmissionStartTime] = useState("");
+
+  // form restriction
   const [maxEntries, setMaxEntries] = useState(false);
   const [maxNumber, setMaxNumber] = useState();
   const [maxType, setMaxType] = useState();
+
+  // hook
   const params = useParams();
+
+  // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
+
+
   const [formData, setFormData] = useState({});
 
+  // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
 
+  // confirmation tab
   const [currentTab, setCurrentTab] = useState("same-page");
 
   const [pageData, setPageData] = useState([]);
@@ -154,6 +176,15 @@ function Sidebar() {
   }
 
   useEffect(() => {
+    // set selected confiramation type
+    if (prevSetting?.settings?.confirmation_type?.selected_confirmation_type) {
+      setSelectedConfirmationType(
+        prevSetting?.settings?.confirmation_type?.selected_confirmation_type
+      );
+    } else {
+      setSelectedConfirmationType("same-page");
+    }
+
     // set "Message to show" in same page tab
     if (prevSetting?.settings?.confirmation_type?.same_page?.message_to_show) {
       setMessageToShow(
@@ -244,6 +275,7 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "same-page",
             same_page: {
               message_to_show: messageToShow,
               after_form_submission: afterFormSubmission,
@@ -271,6 +303,7 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "page",
             to_a_page: {
               page: selectedPageId,
               redirection_message: redirectionMessage,
@@ -298,6 +331,7 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "custom-url",
             to_a_custom_url: {
               custom_url: customURL,
               custom_redirection_message: customRedirectionMessage,
@@ -323,6 +357,7 @@ function Sidebar() {
       });
     }
   }, [
+    selectedConfirmationType,
     messageToShow,
     afterFormSubmission,
     selectedPageId,
@@ -337,6 +372,7 @@ function Sidebar() {
     maxEntries,
     count,
     maxType,
+    currentTab,
   ]);
 
   useEffect(() => {

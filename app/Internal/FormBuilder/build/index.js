@@ -4827,9 +4827,12 @@ const {
 function Sidebar() {
   const [tabState, setTabState] = useState("same-page");
   const [count, setCount] = useState(0);
+
+  // preparing settings data for backend as JSON
   const [settingData, setSettingData] = useState({
     settings: {
       confirmation_type: {
+        selected_confirmation_type: "",
         same_page: {
           message_to_show: "",
           after_form_submission: ""
@@ -4862,26 +4865,46 @@ function Sidebar() {
     }
   });
 
-  //settings variables
+  /* @settings variables */
+
+  // confirmation tabs
+  const [selectedConfirmationType, setSelectedConfirmationType] = useState("");
+  // confirmation type "Same Page"
   const [messageToShow, setMessageToShow] = useState("");
   const [afterFormSubmission, setAfterFormSubmission] = useState("hide-form");
+  // confirmation type "To A Page"
   const [page, setPage] = useState("");
   const [redirectionMessage, setRedirectionMessage] = useState("");
+  // confirmation type "Custom URL"
   const [customURL, setCustomURL] = useState("");
   const [customRedirectionMessage, setCustomRedirectionMessage] = useState("");
+
+  // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+
+  // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
   const [date, setDate] = useState(new Date());
   const [submissionStartDate, setSubmissionStartDate] = useState("");
   const [submissionStartTime, setSubmissionStartTime] = useState("");
+
+  // form restriction
   const [maxEntries, setMaxEntries] = useState(false);
   const [maxNumber, setMaxNumber] = useState();
   const [maxType, setMaxType] = useState();
+
+  // hook
   const params = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_11__.useParams)();
+
+  // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
   const [formData, setFormData] = useState({});
+
+  // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
+
+  // confirmation tab
   const [currentTab, setCurrentTab] = useState("same-page");
   const [pageData, setPageData] = useState([]);
   const [pageOptions, setPageOptions] = useState([]);
@@ -4919,68 +4942,76 @@ function Sidebar() {
     return !!pattern.test(str);
   }
   useEffect(() => {
-    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings3, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings34, _prevSetting$settings35, _prevSetting$settings36, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings44, _prevSetting$settings45;
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings5, _prevSetting$settings6, _prevSetting$settings7, _prevSetting$settings11, _prevSetting$settings12, _prevSetting$settings13, _prevSetting$settings17, _prevSetting$settings18, _prevSetting$settings19, _prevSetting$settings23, _prevSetting$settings24, _prevSetting$settings25, _prevSetting$settings29, _prevSetting$settings30, _prevSetting$settings31, _prevSetting$settings38, _prevSetting$settings39, _prevSetting$settings40, _prevSetting$settings44, _prevSetting$settings45, _prevSetting$settings48, _prevSetting$settings49;
+    // set selected confiramation type
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
+      var _prevSetting$settings3, _prevSetting$settings4;
+      setSelectedConfirmationType(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings3 = prevSetting.settings) === null || _prevSetting$settings3 === void 0 ? void 0 : (_prevSetting$settings4 = _prevSetting$settings3.confirmation_type) === null || _prevSetting$settings4 === void 0 ? void 0 : _prevSetting$settings4.selected_confirmation_type);
+    } else {
+      setSelectedConfirmationType("same-page");
+    }
+
     // set "Message to show" in same page tab
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && (_prevSetting$settings3 = _prevSetting$settings2.same_page) !== null && _prevSetting$settings3 !== void 0 && _prevSetting$settings3.message_to_show) {
-      var _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6;
-      setMessageToShow(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings4 = prevSetting.settings) === null || _prevSetting$settings4 === void 0 ? void 0 : (_prevSetting$settings5 = _prevSetting$settings4.confirmation_type) === null || _prevSetting$settings5 === void 0 ? void 0 : (_prevSetting$settings6 = _prevSetting$settings5.same_page) === null || _prevSetting$settings6 === void 0 ? void 0 : _prevSetting$settings6.message_to_show);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings5 = prevSetting.settings) !== null && _prevSetting$settings5 !== void 0 && (_prevSetting$settings6 = _prevSetting$settings5.confirmation_type) !== null && _prevSetting$settings6 !== void 0 && (_prevSetting$settings7 = _prevSetting$settings6.same_page) !== null && _prevSetting$settings7 !== void 0 && _prevSetting$settings7.message_to_show) {
+      var _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings10;
+      setMessageToShow(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings8 = prevSetting.settings) === null || _prevSetting$settings8 === void 0 ? void 0 : (_prevSetting$settings9 = _prevSetting$settings8.confirmation_type) === null || _prevSetting$settings9 === void 0 ? void 0 : (_prevSetting$settings10 = _prevSetting$settings9.same_page) === null || _prevSetting$settings10 === void 0 ? void 0 : _prevSetting$settings10.message_to_show);
     } else {
       setMessageToShow("Form submitted succesfully.");
     }
 
     // set "After form submission" in same page tab
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings7 = prevSetting.settings) !== null && _prevSetting$settings7 !== void 0 && (_prevSetting$settings8 = _prevSetting$settings7.confirmation_type) !== null && _prevSetting$settings8 !== void 0 && (_prevSetting$settings9 = _prevSetting$settings8.same_page) !== null && _prevSetting$settings9 !== void 0 && _prevSetting$settings9.after_form_submission) {
-      var _prevSetting$settings10, _prevSetting$settings11, _prevSetting$settings12;
-      setAfterFormSubmission(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings10 = prevSetting.settings) === null || _prevSetting$settings10 === void 0 ? void 0 : (_prevSetting$settings11 = _prevSetting$settings10.confirmation_type) === null || _prevSetting$settings11 === void 0 ? void 0 : (_prevSetting$settings12 = _prevSetting$settings11.same_page) === null || _prevSetting$settings12 === void 0 ? void 0 : _prevSetting$settings12.after_form_submission);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings11 = prevSetting.settings) !== null && _prevSetting$settings11 !== void 0 && (_prevSetting$settings12 = _prevSetting$settings11.confirmation_type) !== null && _prevSetting$settings12 !== void 0 && (_prevSetting$settings13 = _prevSetting$settings12.same_page) !== null && _prevSetting$settings13 !== void 0 && _prevSetting$settings13.after_form_submission) {
+      var _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings16;
+      setAfterFormSubmission(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings14 = prevSetting.settings) === null || _prevSetting$settings14 === void 0 ? void 0 : (_prevSetting$settings15 = _prevSetting$settings14.confirmation_type) === null || _prevSetting$settings15 === void 0 ? void 0 : (_prevSetting$settings16 = _prevSetting$settings15.same_page) === null || _prevSetting$settings16 === void 0 ? void 0 : _prevSetting$settings16.after_form_submission);
     } else {
       setAfterFormSubmission("none");
     }
 
     // set "Page" for "to a page" tab
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings13 = prevSetting.settings) !== null && _prevSetting$settings13 !== void 0 && (_prevSetting$settings14 = _prevSetting$settings13.confirmation_type) !== null && _prevSetting$settings14 !== void 0 && (_prevSetting$settings15 = _prevSetting$settings14.to_a_page) !== null && _prevSetting$settings15 !== void 0 && _prevSetting$settings15.page) {
-      var _prevSetting$settings16, _prevSetting$settings17, _prevSetting$settings18;
-      setSelectedPageId(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings16 = prevSetting.settings) === null || _prevSetting$settings16 === void 0 ? void 0 : (_prevSetting$settings17 = _prevSetting$settings16.confirmation_type) === null || _prevSetting$settings17 === void 0 ? void 0 : (_prevSetting$settings18 = _prevSetting$settings17.to_a_page) === null || _prevSetting$settings18 === void 0 ? void 0 : _prevSetting$settings18.page);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings17 = prevSetting.settings) !== null && _prevSetting$settings17 !== void 0 && (_prevSetting$settings18 = _prevSetting$settings17.confirmation_type) !== null && _prevSetting$settings18 !== void 0 && (_prevSetting$settings19 = _prevSetting$settings18.to_a_page) !== null && _prevSetting$settings19 !== void 0 && _prevSetting$settings19.page) {
+      var _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings22;
+      setSelectedPageId(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings20 = prevSetting.settings) === null || _prevSetting$settings20 === void 0 ? void 0 : (_prevSetting$settings21 = _prevSetting$settings20.confirmation_type) === null || _prevSetting$settings21 === void 0 ? void 0 : (_prevSetting$settings22 = _prevSetting$settings21.to_a_page) === null || _prevSetting$settings22 === void 0 ? void 0 : _prevSetting$settings22.page);
     } else {
       setSelectedPageId("");
     }
 
     // set "Redirection message" for "to a page" tab
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings19 = prevSetting.settings) !== null && _prevSetting$settings19 !== void 0 && (_prevSetting$settings20 = _prevSetting$settings19.confirmation_type) !== null && _prevSetting$settings20 !== void 0 && (_prevSetting$settings21 = _prevSetting$settings20.to_a_page) !== null && _prevSetting$settings21 !== void 0 && _prevSetting$settings21.redirection_message) {
-      var _prevSetting$settings22, _prevSetting$settings23, _prevSetting$settings24;
-      setRedirectionMessage(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings22 = prevSetting.settings) === null || _prevSetting$settings22 === void 0 ? void 0 : (_prevSetting$settings23 = _prevSetting$settings22.confirmation_type) === null || _prevSetting$settings23 === void 0 ? void 0 : (_prevSetting$settings24 = _prevSetting$settings23.to_a_page) === null || _prevSetting$settings24 === void 0 ? void 0 : _prevSetting$settings24.redirection_message);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings23 = prevSetting.settings) !== null && _prevSetting$settings23 !== void 0 && (_prevSetting$settings24 = _prevSetting$settings23.confirmation_type) !== null && _prevSetting$settings24 !== void 0 && (_prevSetting$settings25 = _prevSetting$settings24.to_a_page) !== null && _prevSetting$settings25 !== void 0 && _prevSetting$settings25.redirection_message) {
+      var _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings28;
+      setRedirectionMessage(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings26 = prevSetting.settings) === null || _prevSetting$settings26 === void 0 ? void 0 : (_prevSetting$settings27 = _prevSetting$settings26.confirmation_type) === null || _prevSetting$settings27 === void 0 ? void 0 : (_prevSetting$settings28 = _prevSetting$settings27.to_a_page) === null || _prevSetting$settings28 === void 0 ? void 0 : _prevSetting$settings28.redirection_message);
     } else {
       setRedirectionMessage("Welcome to this page. Form Submitted Successfully!");
     }
 
     // set custom url for "to a custom url" tab
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings25 = prevSetting.settings) !== null && _prevSetting$settings25 !== void 0 && (_prevSetting$settings26 = _prevSetting$settings25.confirmation_type) !== null && _prevSetting$settings26 !== void 0 && (_prevSetting$settings27 = _prevSetting$settings26.to_a_custom_url) !== null && _prevSetting$settings27 !== void 0 && _prevSetting$settings27.custom_url) {
-      var _prevSetting$settings28, _prevSetting$settings29, _prevSetting$settings30, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33;
-      setCustomURL(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings28 = prevSetting.settings) === null || _prevSetting$settings28 === void 0 ? void 0 : (_prevSetting$settings29 = _prevSetting$settings28.confirmation_type) === null || _prevSetting$settings29 === void 0 ? void 0 : (_prevSetting$settings30 = _prevSetting$settings29.to_a_custom_url) === null || _prevSetting$settings30 === void 0 ? void 0 : _prevSetting$settings30.custom_url);
-      setIsValidUrl(validURL(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings31 = prevSetting.settings) === null || _prevSetting$settings31 === void 0 ? void 0 : (_prevSetting$settings32 = _prevSetting$settings31.confirmation_type) === null || _prevSetting$settings32 === void 0 ? void 0 : (_prevSetting$settings33 = _prevSetting$settings32.to_a_custom_url) === null || _prevSetting$settings33 === void 0 ? void 0 : _prevSetting$settings33.custom_url));
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings29 = prevSetting.settings) !== null && _prevSetting$settings29 !== void 0 && (_prevSetting$settings30 = _prevSetting$settings29.confirmation_type) !== null && _prevSetting$settings30 !== void 0 && (_prevSetting$settings31 = _prevSetting$settings30.to_a_custom_url) !== null && _prevSetting$settings31 !== void 0 && _prevSetting$settings31.custom_url) {
+      var _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings34, _prevSetting$settings35, _prevSetting$settings36, _prevSetting$settings37;
+      setCustomURL(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings32 = prevSetting.settings) === null || _prevSetting$settings32 === void 0 ? void 0 : (_prevSetting$settings33 = _prevSetting$settings32.confirmation_type) === null || _prevSetting$settings33 === void 0 ? void 0 : (_prevSetting$settings34 = _prevSetting$settings33.to_a_custom_url) === null || _prevSetting$settings34 === void 0 ? void 0 : _prevSetting$settings34.custom_url);
+      setIsValidUrl(validURL(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings35 = prevSetting.settings) === null || _prevSetting$settings35 === void 0 ? void 0 : (_prevSetting$settings36 = _prevSetting$settings35.confirmation_type) === null || _prevSetting$settings36 === void 0 ? void 0 : (_prevSetting$settings37 = _prevSetting$settings36.to_a_custom_url) === null || _prevSetting$settings37 === void 0 ? void 0 : _prevSetting$settings37.custom_url));
     } else {
       setCustomURL("https://");
     }
 
     // set message for a "to a custom url" tab
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings34 = prevSetting.settings) !== null && _prevSetting$settings34 !== void 0 && (_prevSetting$settings35 = _prevSetting$settings34.confirmation_type) !== null && _prevSetting$settings35 !== void 0 && (_prevSetting$settings36 = _prevSetting$settings35.to_a_custom_url) !== null && _prevSetting$settings36 !== void 0 && _prevSetting$settings36.custom_redirection_message) {
-      var _prevSetting$settings37, _prevSetting$settings38, _prevSetting$settings39;
-      setCustomRedirectionMessage(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings37 = prevSetting.settings) === null || _prevSetting$settings37 === void 0 ? void 0 : (_prevSetting$settings38 = _prevSetting$settings37.confirmation_type) === null || _prevSetting$settings38 === void 0 ? void 0 : (_prevSetting$settings39 = _prevSetting$settings38.to_a_custom_url) === null || _prevSetting$settings39 === void 0 ? void 0 : _prevSetting$settings39.custom_redirection_message);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings38 = prevSetting.settings) !== null && _prevSetting$settings38 !== void 0 && (_prevSetting$settings39 = _prevSetting$settings38.confirmation_type) !== null && _prevSetting$settings39 !== void 0 && (_prevSetting$settings40 = _prevSetting$settings39.to_a_custom_url) !== null && _prevSetting$settings40 !== void 0 && _prevSetting$settings40.custom_redirection_message) {
+      var _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings43;
+      setCustomRedirectionMessage(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings41 = prevSetting.settings) === null || _prevSetting$settings41 === void 0 ? void 0 : (_prevSetting$settings42 = _prevSetting$settings41.confirmation_type) === null || _prevSetting$settings42 === void 0 ? void 0 : (_prevSetting$settings43 = _prevSetting$settings42.to_a_custom_url) === null || _prevSetting$settings43 === void 0 ? void 0 : _prevSetting$settings43.custom_redirection_message);
     } else {
       setCustomRedirectionMessage("You are redirected to a new url.");
     }
 
     // set form layout position
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings40 = prevSetting.settings) !== null && _prevSetting$settings40 !== void 0 && (_prevSetting$settings41 = _prevSetting$settings40.form_layout) !== null && _prevSetting$settings41 !== void 0 && _prevSetting$settings41.form_position) {
-      var _prevSetting$settings42, _prevSetting$settings43;
-      setFormPosition(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings42 = prevSetting.settings) === null || _prevSetting$settings42 === void 0 ? void 0 : (_prevSetting$settings43 = _prevSetting$settings42.form_layout) === null || _prevSetting$settings43 === void 0 ? void 0 : _prevSetting$settings43.form_position);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings44 = prevSetting.settings) !== null && _prevSetting$settings44 !== void 0 && (_prevSetting$settings45 = _prevSetting$settings44.form_layout) !== null && _prevSetting$settings45 !== void 0 && _prevSetting$settings45.form_position) {
+      var _prevSetting$settings46, _prevSetting$settings47;
+      setFormPosition(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings46 = prevSetting.settings) === null || _prevSetting$settings46 === void 0 ? void 0 : (_prevSetting$settings47 = _prevSetting$settings46.form_layout) === null || _prevSetting$settings47 === void 0 ? void 0 : _prevSetting$settings47.form_position);
     } else {
       setFormPosition("default");
     }
 
     //set form layout animation
-    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings44 = prevSetting.settings) !== null && _prevSetting$settings44 !== void 0 && (_prevSetting$settings45 = _prevSetting$settings44.form_layout) !== null && _prevSetting$settings45 !== void 0 && _prevSetting$settings45.form_animation) {
-      var _prevSetting$settings46, _prevSetting$settings47;
-      setFormPosition(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings46 = prevSetting.settings) === null || _prevSetting$settings46 === void 0 ? void 0 : (_prevSetting$settings47 = _prevSetting$settings46.form_layout) === null || _prevSetting$settings47 === void 0 ? void 0 : _prevSetting$settings47.form_animation);
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings48 = prevSetting.settings) !== null && _prevSetting$settings48 !== void 0 && (_prevSetting$settings49 = _prevSetting$settings48.form_layout) !== null && _prevSetting$settings49 !== void 0 && _prevSetting$settings49.form_animation) {
+      var _prevSetting$settings50, _prevSetting$settings51;
+      setFormPosition(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings50 = prevSetting.settings) === null || _prevSetting$settings50 === void 0 ? void 0 : (_prevSetting$settings51 = _prevSetting$settings50.form_layout) === null || _prevSetting$settings51 === void 0 ? void 0 : _prevSetting$settings51.form_animation);
     } else {
       setFormPosition("default");
     }
@@ -4990,6 +5021,7 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "same-page",
             same_page: {
               message_to_show: messageToShow,
               after_form_submission: afterFormSubmission
@@ -5017,6 +5049,7 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "page",
             to_a_page: {
               page: selectedPageId,
               redirection_message: redirectionMessage
@@ -5044,6 +5077,7 @@ function Sidebar() {
       setSettingData({
         settings: {
           confirmation_type: {
+            selected_confirmation_type: "custom-url",
             to_a_custom_url: {
               custom_url: customURL,
               custom_redirection_message: customRedirectionMessage
@@ -5068,7 +5102,7 @@ function Sidebar() {
         }
       });
     }
-  }, [messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
+  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
