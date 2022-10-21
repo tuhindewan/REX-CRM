@@ -107,8 +107,8 @@ const FormEditor = (props) => {
 
       if (200 === resJson.code) {
         setFormData(resJson.data);
-        setRecipientLists(resJson.data.group_ids.lists);
-        setRecipientTags(resJson.data.group_ids.tags);
+        setRecipientLists(resJson.data?.group_ids?.lists);
+        setRecipientTags(resJson.data?.group_ids?.tags);
       }
     };
     if (id) {

@@ -204,6 +204,8 @@ class FormModel {
             $count = (int) $count_query;
             $total_pages = ceil($count / $limit);
 
+            $results = [];
+
             foreach( $select_query as $query_result ){
                 $q_id = isset($query_result['id']) ? $query_result['id'] : "";
                 $new_meta = self::get_meta( $q_id );

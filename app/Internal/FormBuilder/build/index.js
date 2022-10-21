@@ -6274,9 +6274,10 @@ const FormEditor = props => {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
       const resJson = await res.json();
       if (200 === resJson.code) {
+        var _resJson$data, _resJson$data$group_i, _resJson$data2, _resJson$data2$group_;
         setFormData(resJson.data);
-        setRecipientLists(resJson.data.group_ids.lists);
-        setRecipientTags(resJson.data.group_ids.tags);
+        setRecipientLists((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$group_i = _resJson$data.group_ids) === null || _resJson$data$group_i === void 0 ? void 0 : _resJson$data$group_i.lists);
+        setRecipientTags((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$group_ = _resJson$data2.group_ids) === null || _resJson$data2$group_ === void 0 ? void 0 : _resJson$data2$group_.tags);
       }
     };
     if (id) {
