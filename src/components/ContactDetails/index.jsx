@@ -1,6 +1,12 @@
 import { omit } from "lodash";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  matchPath,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
@@ -255,6 +261,13 @@ export default function ContactDetails() {
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
+
+  // Hide WordPress admin notices
+  const location = useLocation();
+  const match = matchPath({ path: "contacts/update/:id" }, location.pathname);
+  if (match) {
+    document.getElementsByClassName("notice")[0].style.display = "none";
+  }
 
   const validate = (event, name, value) => {
     switch (name) {

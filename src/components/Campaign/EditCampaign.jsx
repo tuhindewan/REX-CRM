@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, matchPath, useLocation, useParams } from "react-router-dom";
 import {
   deleteCampaignEmail,
   updateCampaignRequest,
 } from "../../services/Campaign";
 import DeletePopup from "../DeletePopup";
 import Delete from "../Icons/Delete";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
@@ -19,7 +20,6 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
-import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -100,6 +100,12 @@ export default function EditCampaign(props) {
       id: "weeks",
     },
   ];
+
+  // Hide WordPress admin notices
+  const match = matchPath({ path: "campaign/edit/:id" }, location.pathname);
+  if (match) {
+    document.getElementsByClassName("notice")[0].style.display = "none";
+  }
 
   // fetch campaign data
   const fetchCampaignData = async () => {
@@ -688,6 +694,13 @@ export default function EditCampaign(props) {
                       disabled={true}
                     >
                       On Going
+                    </button>
+                  ) : "completed" == campaignStatus ? (
+                    <button
+                      className="campaign-save mintmrm-btn completed"
+                      disabled={true}
+                    >
+                      Completed
                     </button>
                   ) : (
                     <>
