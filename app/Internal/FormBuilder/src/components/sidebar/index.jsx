@@ -547,7 +547,7 @@ function Sidebar() {
                 <RadioControl
                   selected={formLayout}
                   options={[
-                    { label: "Below Pages", value: "below-pages" },
+                    { label: "Default", value: "below-pages" },
                     { label: "Pop Up", value: "popup" },
                     { label: "Fly Ins", value: "flyins" },
                     { label: "Fixed Bar", value: "fixed-bar" },
@@ -557,6 +557,34 @@ function Sidebar() {
               </div>
             </div>
           </PanelBody>
+
+          {'below-pages' !== formLayout &&
+            <PanelBody
+              title="Animation Type"
+              className="form-animation-settings"
+              initialOpen={false}
+            >
+              <div className="pannelbody-wrapper">
+                <div className="single-settings">
+                  <label className="settings-label">
+                    Form Animation
+                    <span className="mintmrm-tooltip">
+                      <QuestionIcon />
+                      <p>Animation to show up your form</p>
+                    </span>
+                  </label>
+
+                  <SelectControl
+                    options={[
+                      { label: "Fade In", value: "fade-in" },
+                      { label: "Slide In", value: "slide-in" },
+                    ]}
+                  />
+                  
+                </div>
+              </div>
+            </PanelBody>
+          }
 
           {/* <PanelBody
             title="Schedule"
