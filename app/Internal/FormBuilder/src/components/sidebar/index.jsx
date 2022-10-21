@@ -264,9 +264,9 @@ function Sidebar() {
 
     //set form layout animation
     if (prevSetting?.settings?.form_layout?.form_animation) {
-      setFormPosition(prevSetting?.settings?.form_layout?.form_animation);
+      setFormAnimation(prevSetting?.settings?.form_layout?.form_animation);
     } else {
-      setFormPosition("default");
+      setFormAnimation("none");
     }
   }, [prevSetting]);
 

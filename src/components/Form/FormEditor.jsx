@@ -161,22 +161,22 @@ const FormEditor = (props) => {
     }));
   };
 
-  useEffect(() => {
-    const lists = recipientLists
-      .filter((list) => list.id > 0)
-      .map((list) => list.id);
+  // useEffect(() => {
+  //   const lists = recipientLists
+  //     .filter((list) => list.id > 0)
+  //     .map((list) => list.id);
 
-    const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
+  //   const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
 
-    const group_ids = lists.concat(tags);
+  //   const group_ids = lists.concat(tags);
 
-    setFormData((prevState) => ({
-      ...prevState,
-      group_ids: group_ids,
-    }));
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     group_ids: group_ids,
+  //   }));
 
-    setGroupIds(group_ids);
-  }, [recipientLists, recipientTags]);
+  //   setGroupIds(group_ids);
+  // }, [recipientLists, recipientTags]);
 
   const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
@@ -188,12 +188,16 @@ const FormEditor = (props) => {
     const post_data = {
       title: formData?.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags,
+      },
       status: 0,
       meta_fields: {
         settings: settingData,
       },
     };
+
 
     if (id == undefined) {
       const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/`, {
