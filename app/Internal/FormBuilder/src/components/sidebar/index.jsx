@@ -134,6 +134,20 @@ function Sidebar() {
     }
   }, []);
 
+  const [isValidUrl, setIsValidUrl] = useState(false);
+  function validURL(str) {
+    var pattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // fragment locator
+    setIsValidUrl(!!pattern.test(str));
+  }
+
   useEffect(() => {
     // set "Message to show" in same page tab
     if (prevSetting?.settings?.confirmation_type?.same_page?.message_to_show) {
@@ -184,7 +198,7 @@ function Sidebar() {
         settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
       );
     } else {
-      ("https://");
+      setCustomURL("https://");
     }
 
     // set message for a "to a custom url" tab
@@ -288,6 +302,7 @@ function Sidebar() {
     selectedPageId,
     redirectionMessage,
     customURL,
+    customRedirectionMessage,
     formLayout,
     formScheduling,
     submissionStartDate,
@@ -304,7 +319,6 @@ function Sidebar() {
   let currentDate = new Date();
 
   const toggleTab = (index) => {
-    console.log(index);
     setTabState(index);
     if ("page" === index) {
       const getPageData = async () => {
@@ -376,9 +390,14 @@ function Sidebar() {
     dateTimeSplitter();
   }, [date]);
 
+  const handleCustomURL = (e) => {
+    setCustomURL(e);
+    validURL(e);
+  };
+
   return (
     <>
-      {console.log(pageOptions)}
+      {/* {console.log(isValidUrl)} */}
       <div
         className="mrm-form-builder-sidebar"
         role="region"
@@ -559,9 +578,14 @@ function Sidebar() {
 
                       <TextControl
                         name="custom-url"
-                        defaultValue={customURL}
-                        onChange={(e) => setCustomURL(e)}
+                        value={customURL}
+                        onChange={(e) => handleCustomURL(e)}
                       />
+                      {!isValidUrl && (
+                        <p className="validation-warning">
+                          **Warning : Your URL is not valid**
+                        </p>
+                      )}
                     </div>
 
                     <div className="single-settings">
@@ -605,7 +629,6 @@ function Sidebar() {
                     { label: "Below Pages", value: "below-pages" },
                     { label: "Pop Up", value: "popup" },
                     { label: "Fly Ins", value: "flyins" },
-                    { label: "Fixed Bar", value: "fixed-bar" },
                   ]}
                   onChange={(state) => setFormLayout(state)}
                 />

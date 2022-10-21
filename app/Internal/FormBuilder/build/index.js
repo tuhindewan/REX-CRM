@@ -4895,6 +4895,21 @@ function Sidebar() {
       getFormData();
     }
   }, []);
+  const [isValidUrl, setIsValidUrl] = useState(false);
+  function validURL(str) {
+    var pattern = new RegExp("^(https?:\\/\\/)?" +
+    // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+    // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" +
+    // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+    // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" +
+    // query string
+    "(\\#[-a-z\\d_]*)?$", "i"); // fragment locator
+    setIsValidUrl(!!pattern.test(str));
+  }
   useEffect(() => {
     var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings3, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _settingData$settings, _settingData$settings2, _settingData$settings3, _settingData$settings7, _settingData$settings8, _settingData$settings9, _settingData$settings13, _settingData$settings14, _settingData$settings15, _settingData$settings19, _settingData$settings20, _settingData$settings21, _settingData$settings25;
     // set "Message to show" in same page tab
@@ -4934,7 +4949,7 @@ function Sidebar() {
       var _settingData$settings16, _settingData$settings17, _settingData$settings18;
       setCustomURL(settingData === null || settingData === void 0 ? void 0 : (_settingData$settings16 = settingData.settings) === null || _settingData$settings16 === void 0 ? void 0 : (_settingData$settings17 = _settingData$settings16.confirmation_type) === null || _settingData$settings17 === void 0 ? void 0 : (_settingData$settings18 = _settingData$settings17.to_a_custom_url) === null || _settingData$settings18 === void 0 ? void 0 : _settingData$settings18.custom_url);
     } else {
-      "https://";
+      setCustomURL("https://");
     }
 
     // set message for a "to a custom url" tab
@@ -5027,13 +5042,12 @@ function Sidebar() {
         }
       });
     }
-  }, [messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
+  }, [messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formLayout, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
   let currentDate = new Date();
   const toggleTab = index => {
-    console.log(index);
     setTabState(index);
     if ("page" === index) {
       const getPageData = async () => {
@@ -5097,7 +5111,11 @@ function Sidebar() {
   useEffect(() => {
     dateTimeSplitter();
   }, [date]);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, console.log(pageOptions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  const handleCustomURL = e => {
+    setCustomURL(e);
+    validURL(e);
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-builder-sidebar",
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("MRM Block Editor advanced settings."),
@@ -5201,9 +5219,11 @@ function Sidebar() {
     className: "mintmrm-tooltip"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Enter a custom URL to redirect"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
     name: "custom-url",
-    defaultValue: customURL,
-    onChange: e => setCustomURL(e)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    value: customURL,
+    onChange: e => handleCustomURL(e)
+  }), !isValidUrl && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "validation-warning"
+  }, "**Warning : Your URL is not valid**")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "single-settings"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "settings-label"
@@ -5236,9 +5256,6 @@ function Sidebar() {
     }, {
       label: "Fly Ins",
       value: "flyins"
-    }, {
-      label: "Fixed Bar",
-      value: "fixed-bar"
     }],
     onChange: state => setFormLayout(state)
   })))))));
