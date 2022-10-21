@@ -14,7 +14,7 @@ export default function InputDate(props) {
         onChange={props.handleChange}
         defaultValue={props.value}
         max={today}
-        onkeypress="return disablekeys();"
+        onKeyPress="return disablekeys();"
       />
       <p>{props?.error}</p>
     </div>

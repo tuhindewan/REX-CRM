@@ -37,7 +37,7 @@ export default function ContactListTable(props) {
   const [filterPage, setFilterPage] = useState(1);
   const [filterCount, setFilterCount] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [isAddColumn, setAddColumn] = useState(false);
+  const [isAddColumn, setIsAddColumn] = useState(false);
   const [isAssignTo, setIsAssignTo] = useState(false);
   const [contactData, setContactData] = useState([]);
   const [search, setSearch] = useState("");
@@ -100,16 +100,24 @@ export default function ContactListTable(props) {
   const [listening, setListening] = useState(false);
 
   const threedotRef = useRef(null);
+
   const addColumnRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      addColumnRef,
+      setIsAddColumn
+    )
+  );
 
   useEffect(
     ListenForOutsideClicks(listening, setListening, threedotRef, setIsActive)
   );
+
   useEffect(
     ListenForOutsideClicks(listening, setListening, threedotRef, setIsAssignTo)
-  );
-  useEffect(
-    ListenForOutsideClicks(listening, setListening, addColumnRef, setAddColumn)
   );
 
   const filteredColumns = useMemo(() => {
@@ -410,11 +418,11 @@ export default function ContactListTable(props) {
   };
 
   const showAddColumnList = () => {
-    setAddColumn(!isAddColumn);
+    setIsAddColumn(!isAddColumn);
   };
 
   const hideAddColumnList = () => {
-    setAddColumn(!isAddColumn);
+    setIsAddColumn(!isAddColumn);
   };
 
   const noteForm = () => {
@@ -482,7 +490,7 @@ export default function ContactListTable(props) {
       setShowNotification("block");
       setMessage(responseData?.message);
       setColumns(responseData.data);
-      setAddColumn(!isAddColumn);
+      // setIsAddColumn(!isAddColumn);
       toggleRefresh();
     } else {
       // Validation messages
@@ -730,8 +738,8 @@ export default function ContactListTable(props) {
         <LoadingIndicator type="table" />
       ) : (
         <>
-          <div className="pos-relative" ref={addColumnRef}>
-            <div className="add-column">
+          <div className="pos-relative">
+            <div className="add-column" ref={addColumnRef}>
               <button className="add-column-btn" onClick={showAddColumnList}>
                 <PlusCircleIcon />
                 <span className="tooltip">Add Column</span>
@@ -836,8 +844,7 @@ export default function ContactListTable(props) {
                         style={{ textAlign: "center" }}
                       >
                         <NoContactIcon />
-                        No contact data found{" "}
-                        {search ? `"${search}"` : null}
+                        No contact data found {search ? `"${search}"` : null}
                       </td>
                     </tr>
                   )}

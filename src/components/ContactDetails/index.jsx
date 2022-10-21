@@ -78,6 +78,10 @@ export default function ContactDetails() {
   const stateRef = useRef(null);
   const countryRef = useRef(null);
 
+  const threedotRef = useRef(null);
+  const selectListRef = useRef(null);
+  const selectTagRef = useRef(null);
+
   const [listening, setListening] = useState(false);
   useEffect(
     ListenForOutsideClicks(
@@ -95,6 +99,20 @@ export default function ContactDetails() {
     ListenForOutsideClicks(listening, setListening, genderRef, setGender)
   );
 
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, threedotRef, setActive)
+  );
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      selectListRef,
+      setSelectList
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, selectTagRef, setSelectTag)
+  );
   const [errors, setErrors] = useState({});
 
   // Error message
@@ -639,7 +657,7 @@ export default function ContactDetails() {
                     setRefresh={setRefresh}
                   />
 
-                  <div className="pos-relative">
+                  <div className="pos-relative" ref={threedotRef}>
                     <button className="more-option" onClick={shoMoreOption}>
                       <ThreeDotIcon />
                     </button>
@@ -1309,55 +1327,57 @@ export default function ContactDetails() {
                         <div className="no-item-found">No list found</div>
                       )}
                     </div>
-                    <div className="list-wrapper">
-                      {contactData?.lists?.map((list, idx) => {
-                        return (
-                          <span className="single-list" key={list.id}>
-                            {list.title}
+                    <div ref={selectListRef}>
+                      <div className="list-wrapper">
+                        {contactData?.lists?.map((list, idx) => {
+                          return (
+                            <span className="single-list" key={list.id}>
+                              {list.title}
 
-                            <button
-                              className="close-list"
-                              title="Delete"
-                              onClick={() => {
-                                handleTagListDelete(list.id);
-                              }}
-                            >
-                              <CrossIcon />
-                            </button>
-                          </span>
-                        );
-                      })}
-                      {/* {contactData?.lists?.length == 0 && (
+                              <button
+                                className="close-list"
+                                title="Delete"
+                                onClick={() => {
+                                  handleTagListDelete(list.id);
+                                }}
+                              >
+                                <CrossIcon />
+                              </button>
+                            </span>
+                          );
+                        })}
+                        {/* {contactData?.lists?.length == 0 && (
                       <span>No List Found </span>
                     )} */}
-                      <button className="add-list" onClick={selectLists}>
-                        <PlusIconSmall /> Add List
-                      </button>
+                        <button className="add-list" onClick={selectLists}>
+                          <PlusIconSmall /> Add List
+                        </button>
+                      </div>
+                      <AddItems
+                        selected={assignLists}
+                        setSelected={setAssignLists}
+                        endpoint="lists"
+                        placeholder="List"
+                        name="list"
+                        listTitle="CHOOSE LIST"
+                        listTitleOnNotFound="No Data Found"
+                        searchPlaceHolder="Search..."
+                        allowMultiple={true}
+                        showSearchBar={true}
+                        showListTitle={true}
+                        showSelectedInside={false}
+                        allowNewCreate={true}
+                        setIsAssignTo={setSelectList}
+                        contactId={id}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
+                        setShowNotification={setShowNotification}
+                        showNotification={"mone"}
+                        setMessage={setMessage}
+                        message={message}
+                        isActive={selectList}
+                      />
                     </div>
-                    <AddItems
-                      selected={assignLists}
-                      setSelected={setAssignLists}
-                      endpoint="lists"
-                      placeholder="List"
-                      name="list"
-                      listTitle="CHOOSE LIST"
-                      listTitleOnNotFound="No Data Found"
-                      searchPlaceHolder="Search..."
-                      allowMultiple={true}
-                      showSearchBar={true}
-                      showListTitle={true}
-                      showSelectedInside={false}
-                      allowNewCreate={true}
-                      setIsAssignTo={setSelectList}
-                      contactId={id}
-                      refresh={refresh}
-                      setRefresh={setRefresh}
-                      setShowNotification={setShowNotification}
-                      showNotification={"mone"}
-                      setMessage={setMessage}
-                      message={message}
-                      isActive={selectList}
-                    />
                   </div>
 
                   <div className="tags">
@@ -1367,55 +1387,57 @@ export default function ContactDetails() {
                         <div className="no-item-found">No tag found</div>
                       )}
                     </div>
-                    <div className="tag-wrapper">
-                      {contactData?.tags?.map((tag, idx) => {
-                        return (
-                          <span className="single-list" key={tag.id}>
-                            {tag.title}
-                            <button
-                              className="close-list"
-                              title="Delete"
-                              onClick={() => {
-                                handleTagListDelete(tag.id);
-                              }}
-                            >
-                              <CrossIcon />
-                            </button>
-                          </span>
-                        );
-                      })}
+                    <div ref={selectTagRef}>
+                      <div className="tag-wrapper">
+                        {contactData?.tags?.map((tag, idx) => {
+                          return (
+                            <span className="single-list" key={tag.id}>
+                              {tag.title}
+                              <button
+                                className="close-list"
+                                title="Delete"
+                                onClick={() => {
+                                  handleTagListDelete(tag.id);
+                                }}
+                              >
+                                <CrossIcon />
+                              </button>
+                            </span>
+                          );
+                        })}
 
-                      {/* {contactData?.tags?.length == 0 && <span>No Tag Found  </span>} */}
-                      <button className="add-list" onClick={selectTags}>
-                        <PlusIconSmall /> Add Tag
-                      </button>
+                        {/* {contactData?.tags?.length == 0 && <span>No Tag Found  </span>} */}
+                        <button className="add-list" onClick={selectTags}>
+                          <PlusIconSmall /> Add Tag
+                        </button>
+                      </div>
+                      {selectTag && (
+                        <AddItems
+                          selected={assignTags}
+                          setSelected={setAssignTags}
+                          endpoint="tags"
+                          placeholder="Tags"
+                          name="tag"
+                          listTitle="CHOOSE Tag"
+                          listTitleOnNotFound="No Data Found"
+                          searchPlaceHolder="Search..."
+                          allowMultiple={true}
+                          showSearchBar={true}
+                          showListTitle={true}
+                          showSelectedInside={false}
+                          allowNewCreate={true}
+                          isActive={selectTag}
+                          setIsAssignTo={setSelectTag}
+                          contactId={id}
+                          refresh={refresh}
+                          setRefresh={setRefresh}
+                          setShowNotification={setShowNotification}
+                          showNotification={"mone"}
+                          setMessage={setMessage}
+                          message={message}
+                        />
+                      )}
                     </div>
-                    {selectTag && (
-                      <AddItems
-                        selected={assignTags}
-                        setSelected={setAssignTags}
-                        endpoint="tags"
-                        placeholder="Tags"
-                        name="tag"
-                        listTitle="CHOOSE Tag"
-                        listTitleOnNotFound="No Data Found"
-                        searchPlaceHolder="Search..."
-                        allowMultiple={true}
-                        showSearchBar={true}
-                        showListTitle={true}
-                        showSelectedInside={false}
-                        allowNewCreate={true}
-                        isActive={selectTag}
-                        setIsAssignTo={setSelectTag}
-                        contactId={id}
-                        refresh={refresh}
-                        setRefresh={setRefresh}
-                        setShowNotification={setShowNotification}
-                        showNotification={"mone"}
-                        setMessage={setMessage}
-                        message={message}
-                      />
-                    )}
                   </div>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
@@ -27,7 +27,6 @@ export default function SingleContact(props) {
   const [isCloseNote, setIsCloseNote] = useState(true);
   const [isEmailForm, setIsEmailForm] = useState(true);
   const [isClose, setIsClose] = useState(true);
-
 
   const {
     index,
@@ -196,6 +195,7 @@ export default function SingleContact(props) {
               <Portal>
                 <HoverMenu elementRef={menuButtonRef} x={-10} y={-20}>
                   <ul
+                    style={{ width: "190px" }}
                     className={
                       currentActive == contact.id && isActive
                         ? "mintmrm-dropdown show"

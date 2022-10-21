@@ -75,6 +75,7 @@ export default function ListItem(props) {
             <Portal>
               <HoverMenu elementRef={menuButtonRef} x={-10} y={-20}>
                 <ul
+                  style={{ width: "190px" }}
                   className={
                     isActiveDropdown // only show the menu  current active points to this listitem id
                       ? "mintmrm-dropdown show"

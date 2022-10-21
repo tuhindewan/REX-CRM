@@ -8,11 +8,11 @@
   margin-top: 30px;
 
   .single-card {
-    border: 1px solid #e4e6eb;
     border-radius: 10px;
-    width: calc(100% / 4 - 15px);
+    width: calc(25% - 15px);
     margin-left: 20px;
     padding: 20px;
+    box-shadow: 0px 1px 1px rgb(182 185 191 / 30%);
     background-color: #ffffff;
 
     &:first-child {

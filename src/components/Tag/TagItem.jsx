@@ -72,6 +72,7 @@ export default function TagItem(props) {
             <Portal>
               <HoverMenu elementRef={menuButtonRef} x={-10} y={-20}>
                 <ul
+                  style={{ width: "190px" }}
                   className={
                     isActiveDropdown // only show the menu if both active and current active points to this listitem
                       ? "mintmrm-dropdown show"

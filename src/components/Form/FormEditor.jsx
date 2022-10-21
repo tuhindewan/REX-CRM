@@ -21,7 +21,6 @@ import EditIcon from "../Icons/EditIcon";
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
-import { set } from "rsuite/esm/utils/dateUtils";
 
 const FormEditor = (props) => {
   const [preview, setPreview] = useState("editor");
