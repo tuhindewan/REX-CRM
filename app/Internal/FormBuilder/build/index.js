@@ -5011,9 +5011,9 @@ function Sidebar() {
     //set form layout animation
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings48 = prevSetting.settings) !== null && _prevSetting$settings48 !== void 0 && (_prevSetting$settings49 = _prevSetting$settings48.form_layout) !== null && _prevSetting$settings49 !== void 0 && _prevSetting$settings49.form_animation) {
       var _prevSetting$settings50, _prevSetting$settings51;
-      setFormPosition(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings50 = prevSetting.settings) === null || _prevSetting$settings50 === void 0 ? void 0 : (_prevSetting$settings51 = _prevSetting$settings50.form_layout) === null || _prevSetting$settings51 === void 0 ? void 0 : _prevSetting$settings51.form_animation);
+      setFormAnimation(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings50 = prevSetting.settings) === null || _prevSetting$settings50 === void 0 ? void 0 : (_prevSetting$settings51 = _prevSetting$settings50.form_layout) === null || _prevSetting$settings51 === void 0 ? void 0 : _prevSetting$settings51.form_animation);
     } else {
-      setFormPosition("default");
+      setFormAnimation("none");
     }
   }, [prevSetting]);
   useEffect(async () => {
@@ -6321,16 +6321,24 @@ const FormEditor = props => {
       [name]: prevState[name].filter(x => x !== unselectedItem)
     }));
   };
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    const lists = recipientLists.filter(list => list.id > 0).map(list => list.id);
-    const tags = recipientTags.filter(tag => tag.id > 0).map(tag => tag.id);
-    const group_ids = lists.concat(tags);
-    setFormData(prevState => ({
-      ...prevState,
-      group_ids: group_ids
-    }));
-    setGroupIds(group_ids);
-  }, [recipientLists, recipientTags]);
+
+  // useEffect(() => {
+  //   const lists = recipientLists
+  //     .filter((list) => list.id > 0)
+  //     .map((list) => list.id);
+
+  //   const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
+
+  //   const group_ids = lists.concat(tags);
+
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     group_ids: group_ids,
+  //   }));
+
+  //   setGroupIds(group_ids);
+  // }, [recipientLists, recipientTags]);
+
   const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
     const settingData = window.localStorage.getItem("getsettings");
@@ -6338,7 +6346,10 @@ const FormEditor = props => {
     const post_data = {
       title: formData === null || formData === void 0 ? void 0 : formData.title,
       form_body: storedBlocks,
-      group_ids: groupIds,
+      group_ids: {
+        lists: recipientLists,
+        tags: recipientTags
+      },
       status: 0,
       meta_fields: {
         settings: settingData
