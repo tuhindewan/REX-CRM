@@ -1,23 +1,14 @@
 /**
  * WordPress dependencies
  */
-import React from "react";
-import {
-  BrowserRouter,
-  Router,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import { createSlotFill, G } from "@wordpress/components";
+import { createSlotFill } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
+import React from "react";
+import { useParams } from "react-router-dom";
 
 import CrossIcon from "../Icons/CrossIcon";
-import SettingsIcon from "../Icons/SettingsIcon";
 import QuestionIcon from "../Icons/QuestionIcon";
-import MinusIcon from "../Icons/MinusIcon";
-import PlusIcon from "../Icons/PlusIcon";
-import FormEditor from "../../../../../../src/components/Form/FormEditor";
-import { cleanForSlug, withFontSizes } from "@wordpress/editor";
+import SettingsIcon from "../Icons/SettingsIcon";
 
 const {
   TextControl,
@@ -717,8 +708,8 @@ function Sidebar() {
                     value={formAnimation}
                     options={[
                       { label: "None", value: "none" },
-                      { label: "Fade In", value: "fade_in" },
-                      { label: "Slide In Up", value: "slide_in_up" },
+                      { label: "Fade In", value: "fade-in" },
+                      { label: "Slide In Up", value: "slide-in-up" },
                     ]}
                     onChange={(state) => setFormAnimation(state)}
                   />
