@@ -26,7 +26,10 @@ const FormEditor = (props) => {
   const location = useLocation();
   const match = matchPath({ path: "form-builder" }, location.pathname);
   if (match) {
-    document.getElementsByClassName("notice")[0].style.display = "none";
+    const elems = document.getElementsByClassName("notice");
+    for (var i=0;i<elems.length;i+=1){
+      elems[i].style.display = 'none';
+    }
   }
   const [preview, setPreview] = useState("editor");
 
@@ -446,7 +449,7 @@ const FormEditor = (props) => {
               <label className="list-label">Assign To</label>
 
               <div className="list-content" ref={menuRef}>
-                {recipientLists.length == 0 && recipientTags.length == 0 ? (
+                {recipientLists?.length == 0 && recipientTags?.length == 0 ? (
                   <button className="all-recipients" onClick={showDropDown}>
                     All Subscriber
                     {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
@@ -456,13 +459,13 @@ const FormEditor = (props) => {
                     className="all-recipients selected show"
                     onClick={showDropDown}
                   >
-                    <span className="tags">{recipientTags.length} Tags</span>
+                    <span className="tags">{recipientTags?.length} Tags</span>
                     <span className="from">and</span>
                     <span className="lists">
-                      {recipientLists.length} Lists.
+                      {recipientLists?.length} Lists.
                     </span>
                     <span className="recipients">
-                      {recipientLists.length + recipientTags.length} Groups
+                      {recipientLists?.length + recipientTags?.length} Groups
                     </span>
                     {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                   </button>

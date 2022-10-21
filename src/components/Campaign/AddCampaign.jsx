@@ -90,7 +90,10 @@ export default function AddCampaign(props) {
   const location = useLocation();
   const match = matchPath({ path: "campaigns/create" }, location.pathname);
   if (match) {
-    document.getElementsByClassName("notice")[0].style.display = "none";
+    const elems = document.getElementsByClassName("notice");
+    for (var i=0;i<elems.length;i+=1){
+      elems[i].style.display = 'none';
+    }
   }
 
   // Prepare campaign object and send post request to backend

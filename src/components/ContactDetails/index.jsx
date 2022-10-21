@@ -266,7 +266,10 @@ export default function ContactDetails() {
   const location = useLocation();
   const match = matchPath({ path: "contacts/update/:id" }, location.pathname);
   if (match) {
-    document.getElementsByClassName("notice")[0].style.display = "none";
+    const elems = document.getElementsByClassName("notice");
+    for (var i=0;i<elems.length;i+=1){
+      elems[i].style.display = 'none';
+    }
   }
 
   const validate = (event, name, value) => {

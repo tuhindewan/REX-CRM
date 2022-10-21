@@ -104,7 +104,10 @@ export default function EditCampaign(props) {
   // Hide WordPress admin notices
   const match = matchPath({ path: "campaign/edit/:id" }, location.pathname);
   if (match) {
-    document.getElementsByClassName("notice")[0].style.display = "none";
+    const elems = document.getElementsByClassName("notice");
+    for (var i=0;i<elems.length;i+=1){
+      elems[i].style.display = 'none';
+    }
   }
 
   // fetch campaign data
