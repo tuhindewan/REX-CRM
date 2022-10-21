@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import HoverMenu from "../HoverMenu";
 import CompletedCampaignIcon from "../Icons/CompletedCampaignIcon";
 import DraftCampaignIcon from "../Icons/DraftCampaignIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import Portal from "../Portal";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function SingleCampaign(props) {
@@ -57,7 +55,11 @@ export default function SingleCampaign(props) {
       <div className="table-data click-rate">-</div>
       <div className="table-data unsubscribers">-</div>
       <div className="table-data status">
-        <span className="draft">{props.campaign.status}</span>
+        <span
+          className={props.campaign.status == "draft" ? "draft" : "completed"}
+        >
+          {props.campaign.status}
+        </span>
       </div>
       <div className="table-data threedot" ref={moreOptionRef}>
         <button
