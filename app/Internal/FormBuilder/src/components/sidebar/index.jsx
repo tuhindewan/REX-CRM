@@ -113,6 +113,9 @@ function Sidebar() {
   const [pageData, setPageData] = useState([]);
   const [pageOptions, setPageOptions] = useState([]);
 
+  const [pageId, setPageId] = useState();
+  const [selectedPageId, setSelectedPageId] = useState();
+
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
@@ -132,23 +135,77 @@ function Sidebar() {
   }, []);
 
   useEffect(() => {
-    setMessageToShow(
-      prevSetting?.settings?.confirmation_type?.same_page?.message_to_show
-    );
-    setAfterFormSubmission(
+    // set "Message to show" in same page tab
+    if (prevSetting?.settings?.confirmation_type?.same_page?.message_to_show) {
+      setMessageToShow(
+        prevSetting?.settings?.confirmation_type?.same_page?.message_to_show
+      );
+    } else {
+      setMessageToShow("Form submitted succesfully.");
+    }
+
+    // set "After form submission" in same page tab
+    if (
       prevSetting?.settings?.confirmation_type?.same_page?.after_form_submission
-    );
-    setRedirectionMessage(
+    ) {
+      setAfterFormSubmission(
+        prevSetting?.settings?.confirmation_type?.same_page
+          ?.after_form_submission
+      );
+    } else {
+      setAfterFormSubmission("none");
+    }
+
+    // set "Page" for "to a page" tab
+    if (settingData?.settings?.confirmation_type?.to_a_page?.page) {
+      setSelectedPageId(
+        settingData?.settings?.confirmation_type?.to_a_page?.page
+      );
+    } else {
+      setSelectedPageId("2");
+    }
+
+    // set "Redirection message" for "to a page" tab
+    if (
       settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
-    );
-    setCustomURL(
-      settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
-    );
-    setCustomRedirectionMessage(
+    ) {
+      setRedirectionMessage(
+        settingData?.settings?.confirmation_type?.to_a_page?.redirection_message
+      );
+    } else {
+      setRedirectionMessage(
+        "Welcome to this page. Form Submitted Successfully!"
+      );
+    }
+
+    // set custom url for "to a custom url" tab
+    if (settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url) {
+      setCustomURL(
+        settingData?.settings?.confirmation_type?.to_a_custom_url?.custom_url
+      );
+    } else {
+      ("https://");
+    }
+
+    // set message for a "to a custom url" tab
+    if (
       settingData?.settings?.confirmation_type?.to_a_custom_url
         ?.custom_redirection_message
-    );
-    setFormLayout(settingData?.settings?.form_layout);
+    ) {
+      setCustomRedirectionMessage(
+        settingData?.settings?.confirmation_type?.to_a_custom_url
+          ?.custom_redirection_message
+      );
+    } else {
+      setCustomRedirectionMessage("Redireceted to a new url.");
+    }
+
+    // set form layout
+    if (settingData?.settings?.form_layout) {
+      setFormLayout(settingData?.settings?.form_layout);
+    } else {
+      setFormLayout("below-pages");
+    }
   }, [prevSetting]);
 
   useEffect(async () => {
@@ -181,7 +238,7 @@ function Sidebar() {
         settings: {
           confirmation_type: {
             to_a_page: {
-              page: page,
+              page: selectedPageId,
               redirection_message: redirectionMessage,
             },
           },
@@ -228,7 +285,7 @@ function Sidebar() {
   }, [
     messageToShow,
     afterFormSubmission,
-    page,
+    selectedPageId,
     redirectionMessage,
     customURL,
     formLayout,
@@ -262,10 +319,8 @@ function Sidebar() {
     }
   };
 
-  const [pageId, setPageId] = useState();
-
   const handlePageChange = (state) => {
-    console.log(state);
+    setSelectedPageId(state);
   };
 
   useEffect(() => {
@@ -577,7 +632,7 @@ function Sidebar() {
                   <SelectControl
                     options={[
                       { label: "Fade In", value: "fade-in" },
-                      { label: "Slide In", value: "slide-in" },
+                      { label: "Slide In Up", value: "slide-in-up" },
                     ]}
                   />
                   
