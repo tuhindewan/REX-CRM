@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
 import Delete from "../Icons/Delete";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import InboxIcon from "../Icons/InboxIcon";
 import Plus from "../Icons/Plus";
@@ -13,7 +14,6 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
-import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -85,6 +85,13 @@ export default function AddCampaign(props) {
       id: "weeks",
     },
   ];
+
+  // Hide WordPress admin notices
+  const location = useLocation();
+  const match = matchPath({ path: "campaigns/create" }, location.pathname);
+  if (match) {
+    document.getElementsByClassName("notice")[0].style.display = "none";
+  }
 
   // Prepare campaign object and send post request to backend
   const saveCampaign = async (status) => {

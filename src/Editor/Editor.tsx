@@ -525,12 +525,11 @@ export default function Editor(props) {
 
   return (
     <>
-      { emailLoader &&
-        <div className='email-builder-loader show-loader'>
+      {emailLoader && (
+        <div className="email-builder-loader show-loader">
           <span className="mintmrm-loader"></span>
         </div>
-      }
-
+      )}
 
       <div className="mrm-email-editor">
         <EmailEditorProvider

@@ -3,7 +3,10 @@
 //#crm-app {
 //  margin-left: -20px;
 //}
-
+.crm-app-wrapper {
+  display: block;
+  margin-left: -20px;
+}
 .mintmrm {
   background: $body-background-color;
   position: relative;

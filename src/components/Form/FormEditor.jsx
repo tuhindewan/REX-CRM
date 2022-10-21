@@ -1,29 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import InputItem from "../InputItem";
-import CustomSelect from "../CustomSelect";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
+import InputItem from "../InputItem";
 
 import ComputerIcon from "../Icons/ComputerIcon";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
-import MobileIcon from "../Icons/MobileIcon";
-import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import SettingIcon from "../Icons/SettingIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
-import UpArrowIcon from "../Icons/UpArrowIcon";
-import MobileView from "./MobileView";
-import DesktopView from "./DesktopView";
 import EditIcon from "../Icons/EditIcon";
+import MobileIcon from "../Icons/MobileIcon";
+import SettingIcon from "../Icons/SettingIcon";
+import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import UpArrowIcon from "../Icons/UpArrowIcon";
+import DesktopView from "./DesktopView";
+import MobileView from "./MobileView";
 
+import { matchPath } from "react-router-dom";
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
-import { set } from "rsuite/esm/utils/dateUtils";
-
 const FormEditor = (props) => {
+  // Hide WordPress admin notices
+  const location = useLocation();
+  const match = matchPath({ path: "form-builder" }, location.pathname);
+  if (match) {
+    document.getElementsByClassName("notice")[0].style.display = "none";
+  }
   const [preview, setPreview] = useState("editor");
 
   // lists
