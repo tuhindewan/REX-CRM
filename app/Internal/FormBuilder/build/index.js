@@ -8473,7 +8473,7 @@ function Sidebar() {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RadioControl, {
     selected: formLayout,
     options: [{
-      label: "Below Pages",
+      label: "Default",
       value: "below-pages"
     }, {
       label: "Pop Up",
@@ -8483,6 +8483,26 @@ function Sidebar() {
       value: "flyins"
     }],
     onChange: state => setFormLayout(state)
+  })))), 'below-pages' !== formLayout && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Form Animation",
+    className: "form-animation-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "pannelbody-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Animation Type", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Animation to show up your form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+    options: [{
+      label: "Fade In",
+      value: "fade-in"
+    }, {
+      label: "Slide In Up",
+      value: "slide-in-up"
+    }]
   })))))));
 }
 Sidebar.InspectorFill = InspectorFill;
