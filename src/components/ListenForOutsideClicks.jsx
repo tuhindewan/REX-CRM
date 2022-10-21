@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 export default function ListenForOutsideClicks(listening, setListening, menuRef, setIsOpen) {
     return () => {
         if (listening) return
@@ -13,3 +15,20 @@ export default function ListenForOutsideClicks(listening, setListening, menuRef,
         })
     }
 }
+
+export function useOutsideAlerter(ref, setIsOpen ) {
+    useEffect(() => {
+      
+      function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+            setIsOpen(false)
+        }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }

@@ -23,6 +23,7 @@ import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
+import { useOutsideAlerter } from "../ListenForOutsideClicks";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -99,25 +100,15 @@ export default function ContactListTable(props) {
 
   const [listening, setListening] = useState(false);
 
-  const threedotRef = useRef(null);
 
+  // Outside click events for add column checkbox dropdown
   const addColumnRef = useRef(null);
+  useOutsideAlerter(addColumnRef, setIsAddColumn);
 
-  useEffect(
-    ListenForOutsideClicks(
-      listening,
-      setListening,
-      addColumnRef,
-      setIsAddColumn
-    )
-  );
-
+  // Outside click events for bulk action dropdown
+  const threedotRef = useRef(null);
   useEffect(
     ListenForOutsideClicks(listening, setListening, threedotRef, setIsActive)
-  );
-
-  useEffect(
-    ListenForOutsideClicks(listening, setListening, threedotRef, setIsAssignTo)
   );
 
   const filteredColumns = useMemo(() => {
