@@ -32,6 +32,7 @@ jQuery(document).ready(function($){
     $('.mrm-form-wrapper form').on('submit', function (e) {
         e.preventDefault();
         jQuery(".response").html('')
+        $(".mrm-submit-button").addClass("show-loader");
         jQuery.ajax({
             type : "post",
             dataType : "json",
@@ -40,6 +41,7 @@ jQuery(document).ready(function($){
             success: function(response) {
                 if (response.status == "success"){
                     jQuery(".response").addClass('mintmrm-success')
+                    $(".mrm-submit-button").removeClass("show-loader");
                     if (response.confirmation_type == 'same_page'){
                         if(response.after_form_submission == 'hide_form'){
                             $(".mrm-form-wrapper form").hide();
