@@ -358,7 +358,7 @@ const Tags = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
-                    <p className="error-message">{errors?.tag}</p>
+                    <p className={errors ? "error-message show" : "error-message"}>{errors?.tag}</p>
                   </div>
                   <div className="contact-button-field">
                     <button

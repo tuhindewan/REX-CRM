@@ -43,3 +43,36 @@ export async function deleteMultipleListsItems(selected) {
     }
   });
 }
+
+// Submit list via POST request
+export async function submitList(list) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/lists`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(list),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
+
+// Update list via PUT request
+export async function updateList(list) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/lists/${list.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(list),
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
