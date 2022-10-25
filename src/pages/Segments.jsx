@@ -11,20 +11,8 @@ import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import Delete from "../components/Icons/Delete";
 import NoSegmentIcon from "../components/Icons/NoSegmentIcon";
+import SegmentList from "../components/Segment/SegmentList";
 
-// const TitleCell = ({ rowData, dataKey, ...props }) => {
-//   return (
-//     <Cell {...props}>
-//         <Link to={`/segments/update/${rowData.id}`}  state={
-//           {id: rowData.id,
-//            title: rowData.title,
-//            slug: rowData.slug}
-//           }>
-//           <div> {rowData.title}</div>
-//         </Link>
-//     </Cell>
-//   );
-// };
 
 const Segments = () => {
   const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -157,7 +145,7 @@ const Segments = () => {
 
                   <tbody>
                     {/* List empty or search not found ui */}
-                    {
+                    {/* {
                       <tr>
                         <td
                           className="no-contact"
@@ -166,24 +154,10 @@ const Segments = () => {
                         >
                           <NoSegmentIcon />
                           No Segment Found
-                          {/* {search ? `"${search}"` : null} */}
                         </td>
                       </tr>
-                    }
-                    {/* {tags.map((list, idx) => {
-                          return (
-                            <TagItem
-                              key={idx}
-                              list={list}
-                              deleteTag={deleteTag}
-                              currentActive={currentActive}
-                              setCurrentActive={setCurrentActive}
-                              handleSelectOne={handleSelectOne}
-                              selected={selected}
-                              editList={editList}
-                            />
-                          );
-                        })} */}
+                    } */}
+                    {<SegmentList />}
                   </tbody>
                 </table>
               </div>
