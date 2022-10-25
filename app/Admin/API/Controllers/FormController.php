@@ -183,7 +183,6 @@ class FormController extends BaseController {
         $form['group_ids'] = unserialize($form['group_ids']);
 
         if( isset($form['created_at']) ){
-            error_log(print_r("inside"));
             $form['created_ago'] = human_time_diff(strtotime($form['created_at']), time());
         }
 

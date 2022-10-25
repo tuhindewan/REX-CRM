@@ -322,7 +322,7 @@ const FormEditor = (props) => {
   };
 
   //-------settings pannel open function-------
-  const showSettingsPannel = () => {
+  const showSettingsPannel = async () => {
     // if (!localStorage.settingsPannel) {
     //   localStorage.setItem("settingsPannel", true);
     //   setSettingsPannel(false);
