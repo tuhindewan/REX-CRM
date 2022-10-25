@@ -216,6 +216,7 @@ export default function EditCampaign(props) {
       status: status,
       emails: emailData.map((email) => {
         return {
+          id: email?.id,
           email_subject: email.email_subject,
           email_preview_text: email.email_preview_text,
           sender_email: email.sender_email,
@@ -251,8 +252,6 @@ export default function EditCampaign(props) {
   };
 
   const validate = () => {
-    console.log(emailData);
-
     if (
       campaignTitle.length > 0 ||
       recipientLists?.length != 0 ||

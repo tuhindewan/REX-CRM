@@ -174,13 +174,13 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $index );
-        if($campaign_email->email_index == $index){
+        $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $email );
+        if($campaign_email){
             $wpdb->update(
                 $fields_table,
                 $email,
                 array(
-                    'campaign_id' => $campaign_id, 'email_index' => $index
+                    'campaign_id' => $campaign_id, 'id' => $email['id']
                 ));
         }else{
             self::insert_campaign_emails( $email, $campaign_id, $index );
@@ -343,15 +343,15 @@ class CampaignModel {
      * @return object
      * @since 1.0.0
      */
-    public static function get_campaign_email_by_index($campaign_id, $index)
+    public static function get_campaign_email_by_index($campaign_id, $email)
     {
         global $wpdb;
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-
+        $email_id  = isset( $email['id'] ) ? $email['id'] : "";
         $campaign_emails_query = $wpdb->prepare("SELECT 
                                     id,email_index
                                      FROM $campaign_emails_table  
-                                     WHERE campaign_id = %d AND email_index = %d", $campaign_id, $index);
+                                     WHERE campaign_id = %d AND id = %d", $campaign_id, $email_id);
         return $wpdb->get_row($campaign_emails_query);
     }
 
