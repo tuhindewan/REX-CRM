@@ -37,13 +37,13 @@ function BlockEditor( { settings: _settings } ) {
 		return _canUserCreateMedia || _canUserCreateMedia !== false;
 	}, [] );
 
-	const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' +
+	const defaultData ='<!-- wp:mrmformfield/email-field-block -->\n' +
 		'<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px">Email<span class="required-mark">*</span></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' +
 		'<!-- /wp:mrmformfield/email-field-block -->\n' +
 		'\n' +
 		'<!-- wp:mrmformfield/mrm-button-block -->\n' +
 		'<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color: !important;border-radius:5px;padding-top:12px;padding-right:20px;padding-bottom:13px;padding-left:20px;border-style:none;border-width:1px;border-color:">Submit</button></div>\n' +
-		'<!-- /wp:mrmformfield/mrm-button-block -->';
+		'<!-- /wp:mrmformfield/mrm-button-block -->'
 
 	const settings = useMemo(() => {
 		if ( ! canUserCreateMedia ) {
@@ -74,18 +74,15 @@ function BlockEditor( { settings: _settings } ) {
 
 					if ( storedBlocks?.length ) {
 						handleUpdateBlocks(() => parse(storedBlocks));
-						// createInfoNotice( 'Blocks loaded', {
-						// 	type: 'snackbar',
-						// 	isDismissible: true,
-						// } );
 					}
 				}else{
-					window.localStorage.setItem( 'getmrmblocks', '' )
 					handleUpdateBlocks(() => parse(defaultData));
+					window.localStorage.setItem( 'getmrmblocks',defaultData )
+
 				}
 			}else{
-				window.localStorage.setItem( 'getmrmblocks', '' )
 				handleUpdateBlocks(() => parse(defaultData));
+				window.localStorage.setItem( 'getmrmblocks',defaultData )
 			}
 
 		};

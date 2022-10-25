@@ -3656,12 +3656,13 @@ function BlockEditor(_ref) {
             // } );
           }
         } else {
-          window.localStorage.setItem('getmrmblocks', '');
+          // updateBlocks( defaultData );
           handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
+          window.localStorage.setItem('getmrmblocks', defaultData);
         }
       } else {
-        window.localStorage.setItem('getmrmblocks', '');
         handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
+        window.localStorage.setItem('getmrmblocks', defaultData);
       }
     };
     getFormData();
