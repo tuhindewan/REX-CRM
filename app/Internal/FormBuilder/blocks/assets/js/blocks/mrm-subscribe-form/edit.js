@@ -129,6 +129,12 @@ class Editor extends Component {
                         <div className="post__content" dangerouslySetInnerHTML={{__html: attributes.render_block}}></div>
                     </form>
                 </div>
+                {attributes.form_id == '0' && <SelectControl
+                    label="Form Name"
+                    value={attributes.form_id}
+                    onChange={ id => this.onChangeAttribute( 'form_id', id )}
+                    options={attributes.form_list_data}
+                />}
 
             </>
 
