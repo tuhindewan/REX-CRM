@@ -30,6 +30,7 @@ export default function Navbar(props) {
 
   return (
     <>
+    
       <div className="contact-header">
         <div className="mintmrm-container">
           <div className="header-wrapper">
@@ -76,6 +77,10 @@ export default function Navbar(props) {
                               {dataCount.total_tags
                                 ? dataCount.total_tags
                                 : "0"}
+                            </span>
+                          ) : "Segments" === route.title ? (
+                            <span className="bage">
+                              {"0"}
                             </span>
                           ) : (
                             ""
