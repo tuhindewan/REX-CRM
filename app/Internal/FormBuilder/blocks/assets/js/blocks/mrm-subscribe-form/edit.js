@@ -56,7 +56,6 @@ class Editor extends Component {
     componentDidMount() {
         wp.apiFetch( { path : 'mrm/v1/forms/form-list' } ).then( response => {
             const form_list = response.data;
-
             this.props.setAttributes({form_list_data: form_list});
         } );
     }
@@ -124,17 +123,26 @@ class Editor extends Component {
 
             <>
                 { this.getInspectorControls() }
-                <div className="mintmrm">
+                {attributes.form_list_data.length == 1 &&
+
+                    <div className="mintmrm">
+                        <p>No form added</p>
+                    </div>
+                }
+                {attributes.form_list_data.length != 1 && <div className="mintmrm">
                     <form action="">
                         <div className="post__content" dangerouslySetInnerHTML={{__html: attributes.render_block}}></div>
                     </form>
                 </div>
-                {attributes.form_id == '0' && <SelectControl
+                }
+                {attributes.form_id == '0' && attributes.form_list_data.length != 1 &&  <SelectControl
                     label="Form Name"
                     value={attributes.form_id}
                     onChange={ id => this.onChangeAttribute( 'form_id', id )}
                     options={attributes.form_list_data}
                 />}
+
+                
 
             </>
 
