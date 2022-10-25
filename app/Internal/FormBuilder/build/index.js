@@ -5050,7 +5050,7 @@ function Sidebar() {
 
   //-------settings pannel open function-------
   const showSettingsPannel = event => {
-    localStorage.setItem("settingsPannel", false);
+    localStorage.setItem("settingsPannel", "hide");
     const el = document.getElementsByClassName("getdave-sbe-block-editor");
     el[0].classList.remove("show-settings-pannel");
   };

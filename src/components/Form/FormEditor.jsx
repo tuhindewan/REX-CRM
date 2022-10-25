@@ -16,7 +16,7 @@ import UpArrowIcon from "../Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
-
+import LoadingIndicator from "../LoadingIndicator";
 import { matchPath } from "react-router-dom";
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
@@ -38,6 +38,9 @@ const FormEditor = (props) => {
 
   // tags
   const [tags, setTags] = useState([]);
+
+  //loading
+  const [loading, setLoading] = useState(true);
 
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
@@ -69,6 +72,8 @@ const FormEditor = (props) => {
 
   const [groupIds, setGroupIds] = useState([]);
   const [saveLoader, setsaveLoader] = useState(false);
+
+  const [isReloaded, setIsReloaded] = useState(false);
 
   const navigate = useNavigate();
   const menuRef = useRef(null);
@@ -104,6 +109,7 @@ const FormEditor = (props) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
+    localStorage.setItem("settingsPannel", "hide");
     const getFormData = async () => {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
@@ -114,6 +120,7 @@ const FormEditor = (props) => {
         setFormData(resJson.data);
         setRecipientLists(resJson.data?.group_ids?.lists);
         setRecipientTags(resJson.data?.group_ids?.tags);
+        setLoading(false);
       }
     };
     if (id) {
@@ -320,21 +327,15 @@ const FormEditor = (props) => {
   };
 
   //-------settings pannel open function-------
-  const showSettingsPannel = async () => {
-    // if (!localStorage.settingsPannel) {
-    //   localStorage.setItem("settingsPannel", true);
-    //   setSettingsPannel(false);
-    // } else {
-    //   localStorage.setItem("settingsPannel", false);
-    //   setSettingsPannel((current) => !current);
-    // }
-    //setSettingsPannel((current) => !current);
-    const crossClicked = localStorage.getItem("settingsPannel");
-    if (crossClicked) {
-      setSettingsPannel(false);
-      localStorage.removeItem("settingsPannel");
+  const showSettingsPannel = () => {
+    if ("show" === localStorage.settingsPannel) {
+      const el = document.getElementsByClassName("getdave-sbe-block-editor");
+      el[0].classList.remove("show-settings-pannel");
+      localStorage.setItem("settingsPannel", "hide");
     } else {
-      setSettingsPannel(!settingsPannel);
+      const el = document.getElementsByClassName("getdave-sbe-block-editor");
+      el[0].classList.add("show-settings-pannel");
+      localStorage.setItem("settingsPannel", "show");
     }
   };
 
@@ -475,7 +476,7 @@ const FormEditor = (props) => {
           <div
             id="mrm-block-editor"
             className={
-              settingsPannel
+              "show" === localStorage.settingsPannel
                 ? "getdave-sbe-block-editor block-editor show-settings-pannel"
                 : "getdave-sbe-block-editor block-editor"
             }
