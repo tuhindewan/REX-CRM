@@ -19,20 +19,21 @@ class Model {
     public static function get_tables() {
         self::autoload_table_classes();
         return apply_filters( 'mrm/database_tables', array(
-            'contact_group'         => 'ContactGroupSchema',
-            'contact'               => 'ContactSchema',
-            'contact_meta'          => 'ContactMetaSchema',
-            'contact_note'          => 'ContactNoteSchema',
-            'contact_group_pivot'   => 'ContactGroupPivotSchema',
-            'interaction'           => 'InteractionSchema',
-            'message'               => 'MessageSchema',
-            'work_flow'             => 'WorkFlowSchema',
-            'custom_fields'         => 'CustomFieldSchema',
-            'campaign_schema'       => 'CampaignSchema',
-            'form'                  => 'FormSchema',
-            'form_meta'             => 'FormMetaSchema',
-            'campaign_email_builder_schema'       => 'CampaignEmailBuilderSchema',
-        ));
+            'contact_group'                 => 'ContactGroupSchema',
+            'contact'                       => 'ContactSchema',
+            'contact_meta'                  => 'ContactMetaSchema',
+            'contact_note'                  => 'ContactNoteSchema',
+            'contact_group_pivot'           => 'ContactGroupPivotSchema',
+            'interaction'                   => 'InteractionSchema',
+            'message'                       => 'MessageSchema',
+            'work_flow'                     => 'WorkFlowSchema',
+            'custom_fields'                 => 'CustomFieldSchema',
+            'campaign_schema'               => 'CampaignSchema',
+            'form'                          => 'FormSchema',
+            'form_meta'                     => 'FormMetaSchema',
+            'campaign_email_builder_schema' => 'CampaignEmailBuilderSchema',
+            'campaign_scheduled_emails'     => 'CampaignScheduledEmails',
+        ) );
     }
 
 
