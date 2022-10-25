@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import AlertPopup from "../AlertPopup";
@@ -77,6 +77,8 @@ export default function FormIndex(props) {
 
   const [sortBy, setSortBy] = useState("Date");
   const [sortByType, setSortByType] = useState("DESC");
+
+  const navigate = useNavigate();
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -557,6 +559,9 @@ export default function FormIndex(props) {
                                       <li
                                         className="action-list"
                                         style={{ display: "flex" }}
+                                        onClick={() =>
+                                          navigate(`../form-builder/${form.id}`)
+                                        }
                                       >
                                         <EditIcon />
                                         Edit
