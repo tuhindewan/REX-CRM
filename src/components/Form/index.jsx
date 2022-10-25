@@ -16,6 +16,7 @@ import EditIcon from "../Icons/EditIcon";
 import Delete from "../Icons/Delete";
 import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
+import FormTemplate from "./FormTemplate";
 
 export default function FormIndex(props) {
   AdminNavMenuClassChange("mrm-admin", "forms");
@@ -82,6 +83,9 @@ export default function FormIndex(props) {
   const [sortByType, setSortByType] = useState("DESC");
 
   const navigate = useNavigate();
+
+  const [isClose, setIsClose] = useState(true);
+  const [isTemplate, setIsTemplate] = useState(true);
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -332,8 +336,15 @@ export default function FormIndex(props) {
     return () => clearTimeout(timer);
   };
 
+  const redirectFormBuilder = () => {
+    setIsTemplate(true);
+    setIsClose(!isClose);
+    // window.location.href =
+    //   "http://mrmcrm.local/wp-admin/admin.php?page=mrm-admin#/form-builder/";
+  };
+
   return (
-    <>
+    <div>
       <div className="form-list-page">
         <div className="contact-list-page form-list">
           <div className="mintmrm-container">
@@ -343,9 +354,12 @@ export default function FormIndex(props) {
               </div>
 
               <div className="right-section">
-                <Link className="add-form-btn mintmrm-btn" to="/form-builder/">
+                <button
+                  className="add-form-btn mintmrm-btn"
+                  onClick={redirectFormBuilder}
+                >
                   <Plus /> Add Form
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -612,6 +626,13 @@ export default function FormIndex(props) {
         </div>
         <SuccessfulNotification display={showNotification} message={message} />
       </div>
-    </>
+      <FormTemplate
+        isOpen={isTemplate}
+        isClose={isClose}
+        isNewCampaign={true}
+        setIsClose={setIsClose}
+        setIsTemplate={setIsTemplate}
+      />
+    </div>
   );
 }
