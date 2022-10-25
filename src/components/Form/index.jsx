@@ -450,7 +450,6 @@ export default function FormIndex(props) {
                         <th className="signup">Signup</th>
                         <th className="shortcode">Shortcode</th>
                         <th className="status">Status</th>
-                        <th className="action"></th>
                       </tr>
                     </thead>
 

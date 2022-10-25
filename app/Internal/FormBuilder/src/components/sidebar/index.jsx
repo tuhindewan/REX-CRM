@@ -168,6 +168,9 @@ function Sidebar() {
   useEffect(() => {
     // set selected confiramation type
     if (prevSetting?.settings?.confirmation_type?.selected_confirmation_type) {
+      setTabState(
+        prevSetting?.settings?.confirmation_type?.selected_confirmation_type
+      );
       setSelectedConfirmationType(
         prevSetting?.settings?.confirmation_type?.selected_confirmation_type
       );
