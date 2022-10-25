@@ -43,6 +43,7 @@ class CampaignEmailController extends BaseController {
      */
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
 
         $response   = array(
             'success'   => true,
@@ -146,6 +147,7 @@ class CampaignEmailController extends BaseController {
      */
     public function create_email( WP_REST_Request $request ) {
         $params         = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
         $email_index    = isset($params['email_index']) ? $params['email_index'] : null;
         $response   = array(
             'success'   => true,

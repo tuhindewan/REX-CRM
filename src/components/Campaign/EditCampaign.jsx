@@ -105,8 +105,8 @@ export default function EditCampaign(props) {
   const match = matchPath({ path: "campaign/edit/:id" }, location.pathname);
   if (match) {
     const elems = document.getElementsByClassName("notice");
-    for (var i=0;i<elems.length;i+=1){
-      elems[i].style.display = 'none';
+    for (var i = 0; i < elems.length; i += 1) {
+      elems[i].style.display = "none";
     }
   }
 
@@ -251,6 +251,8 @@ export default function EditCampaign(props) {
   };
 
   const validate = () => {
+    console.log(emailData);
+
     if (
       campaignTitle.length > 0 ||
       recipientLists?.length != 0 ||
