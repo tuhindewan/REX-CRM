@@ -27,8 +27,8 @@ const FormEditor = (props) => {
   const match = matchPath({ path: "form-builder" }, location.pathname);
   if (match) {
     const elems = document.getElementsByClassName("notice");
-    for (var i=0;i<elems.length;i+=1){
-      elems[i].style.display = 'none';
+    for (var i = 0; i < elems.length; i += 1) {
+      elems[i].style.display = "none";
     }
   }
   const [preview, setPreview] = useState("editor");
@@ -44,7 +44,9 @@ const FormEditor = (props) => {
 
   const [moreOption, setMoreOption] = useState(false);
   const [listDropdown, setListDropdown] = useState(false);
-  const [settingsPannel, setSettingsPannel] = useState(false);
+  const [settingsPannel, setSettingsPannel] = useState(
+    localStorage.getItem("settingsPanel")
+  );
 
   const [enable, setEnable] = useState(false);
 
@@ -148,42 +150,6 @@ const FormEditor = (props) => {
       [name]: value,
     }));
   };
-
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
-
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
-  };
-
-  // useEffect(() => {
-  //   const lists = recipientLists
-  //     .filter((list) => list.id > 0)
-  //     .map((list) => list.id);
-
-  //   const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
-
-  //   const group_ids = lists.concat(tags);
-
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     group_ids: group_ids,
-  //   }));
-
-  //   setGroupIds(group_ids);
-  // }, [recipientLists, recipientTags]);
 
   const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
@@ -357,7 +323,21 @@ const FormEditor = (props) => {
 
   //-------settings pannel open function-------
   const showSettingsPannel = () => {
-    setSettingsPannel((current) => !current);
+    // if (!localStorage.settingsPannel) {
+    //   localStorage.setItem("settingsPannel", true);
+    //   setSettingsPannel(false);
+    // } else {
+    //   localStorage.setItem("settingsPannel", false);
+    //   setSettingsPannel((current) => !current);
+    // }
+    //setSettingsPannel((current) => !current);
+    const crossClicked = localStorage.getItem("settingsPannel");
+    if (crossClicked) {
+      setSettingsPannel(true);
+      localStorage.removeItem("settingsPannel");
+    }
+    setSettingsPannel(!settingsPannel);
+    console.log(settingsPannel);
   };
 
   const handlePreview = (view) => {

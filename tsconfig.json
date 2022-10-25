@@ -23,14 +23,10 @@
       "@demo/*": ["src/*"],
       "easy-email-editor/*": ["./packages/easy-email-editor/src/index.tsx"],
       "easy-email-core/*": ["./packages/easy-email-core/src/index.tsx"],
-      "easy-email-extensions/*": [
-        "./packages/easy-email-extensions/src/*"
-      ],
-      "easy-email-config-panel/*": [
-        "./packages/easy-email-config-panel/src/*"
-      ]
+      "easy-email-extensions/*": ["./packages/easy-email-extensions/src/*"],
+      "easy-email-config-panel/*": ["./packages/easy-email-config-panel/src/*"]
     }
   },
-  "include": ["./src"],
+  "include": ["./src", "app/Internal/FormBuilder/src/components/sidebar"],
   "exclude": ["node_modules"]
 }

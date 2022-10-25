@@ -128,24 +128,6 @@ export default function FormIndex(props) {
     }
   };
 
-  //get current date
-  const date = new Date();
-
-  // get how many days ago the form is created
-  const getDaysAgo = (created_at) => {
-    const created = new Date(created_at);
-
-    const day = parseInt((date - created) / (1000 * 3600 * 24));
-
-    let ago = day + " day";
-
-    if (day > 1) {
-      ago = day + " days";
-      return ago;
-    }
-
-    return ago;
-  };
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
@@ -482,7 +464,7 @@ export default function FormIndex(props) {
                                       </Link>
 
                                       <small>
-                                        {getDaysAgo(form.created_at)} ago
+                                        {form.created_ago} ago
                                       </small>
                                     </span>
                                   </div>

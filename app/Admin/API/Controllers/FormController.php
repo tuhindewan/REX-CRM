@@ -112,10 +112,20 @@ class FormController extends BaseController {
         // Form Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
-        $groups = FormModel::get_all( $offset, $perPage, $search, $order_by, $order_type);
+        $forms = FormModel::get_all( $offset, $perPage, $search, $order_by, $order_type);
 
-        if(isset($groups)) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
+        // Prepare human_time_diff for every form
+        if(isset( $forms['data'] )){
+            $forms['data'] = array_map(function($form){
+                if( isset($form['created_at']) ){
+                    $form['created_ago'] = human_time_diff(strtotime($form['created_at']), time());
+                }
+                return $form;
+            }, $forms['data']);
+        }
+
+        if(isset($forms)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $forms);
         }
         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
     }
@@ -168,12 +178,17 @@ class FormController extends BaseController {
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
 
-        $group = FormModel::get( $params['form_id'] );
+        $form = FormModel::get( $params['form_id'] );
 
-        $group['group_ids'] = unserialize($group['group_ids']);
+        $form['group_ids'] = unserialize($form['group_ids']);
 
-        if(isset($group)) {
-            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $group);
+        if( isset($form['created_at']) ){
+            error_log(print_r("inside"));
+            $form['created_ago'] = human_time_diff(strtotime($form['created_at']), time());
+        }
+
+        if(isset($form)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $form);
         }
         return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
 
