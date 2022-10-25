@@ -12,7 +12,6 @@ import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import Delete from "../components/Icons/Delete";
 import NoSegmentIcon from "../components/Icons/NoSegmentIcon";
 
-
 // const TitleCell = ({ rowData, dataKey, ...props }) => {
 //   return (
 //     <Cell {...props}>
@@ -120,8 +119,8 @@ const Segments = () => {
                     <ul
                       className={
                         showMoreOptions
-                          ? "mintmrm-dropdown show"
-                          : "mintmrm-dropdown"
+                          ? "select-option mintmrm-dropdown show"
+                          : "select-option mintmrm-dropdown"
                       }
                     >
                       <li>
@@ -150,6 +149,7 @@ const Segments = () => {
                         </span>
                       </th>
                       <th>Contacts</th>
+                      <th className="">Description</th>
                       <th className="creation-date">Creation Date</th>
                       <th className="action"></th>
                     </tr>
@@ -165,7 +165,7 @@ const Segments = () => {
                           style={{ textAlign: "center" }}
                         >
                           <NoSegmentIcon />
-                          No Segment Found 
+                          No Segment Found
                           {/* {search ? `"${search}"` : null} */}
                         </td>
                       </tr>

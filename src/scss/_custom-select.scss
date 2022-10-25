@@ -113,7 +113,7 @@
   line-height: 17px;
   letter-spacing: -0.01em;
   padding: 4px 8px;
-  margin: 4px 0px;
+  margin: 0px 0px 14px;
   cursor: pointer;
   text-align: center;
   border-radius: 6px;
@@ -157,11 +157,11 @@
   display: flex;
 }
 
+.single-column {
+  list-style: none;
+  margin: 2px 0px;
+}
 .mrm-custom-select-single-column-selected {
   color: #6f6af8 !important;
   background: rgba(111, 106, 248, 0.1);
-  margin: 2px 0px;
-}
-.single-column {
-  list-style: none;
 }

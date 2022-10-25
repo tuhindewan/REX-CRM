@@ -466,8 +466,8 @@ const Tags = () => {
                     <ul
                       className={
                         showMoreOptions
-                          ? "mintmrm-dropdown show"
-                          : "mintmrm-dropdown"
+                          ? "select-option mintmrm-dropdown show"
+                          : "select-option mintmrm-dropdown"
                       }
                     >
                       <li onClick={deleteMultipleList}>

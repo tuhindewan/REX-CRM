@@ -244,6 +244,9 @@
           cursor: pointer;
           margin-left: 12px;
         }
+        .select-option {
+          width: 200px;
+        }
         .assigned-to.mintmrm-dropdown {
           width: 332px !important;
 
@@ -506,7 +509,7 @@
       tbody {
         tr {
           .no-contact {
-            padding: 235px 500px;
+            padding: 205px 0;
             background-color: #ffffff;
             font-weight: 600;
             font-size: 18px;
