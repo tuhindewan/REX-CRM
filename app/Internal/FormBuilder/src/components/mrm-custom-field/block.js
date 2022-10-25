@@ -27,6 +27,8 @@ const mrmCustomField = ({
             field_require,
             selectOption,
             select_option_name_slug,
+            custom_text_placeholder,
+            custom_textarea_placeholder,
             radioOption,
             field_slug,
             rowSpacing,
@@ -86,7 +88,7 @@ const mrmCustomField = ({
                     </label>
 
                     <div className="input-wrapper">
-                        <input type="text" name={field_name} id={field_name} placeholder={field_name} required={field_require} style={inputStyle} />
+                        <input type="text" name={field_name} id={field_name} placeholder={custom_text_placeholder} required={field_require} style={inputStyle} />
                     </div>
                 </div>
             }
@@ -99,7 +101,7 @@ const mrmCustomField = ({
                     </label>
 
                     <div className="input-wrapper">
-                        <textarea id={field_slug} name={field_slug} placeholder={field_name} required={field_require} rows="4" cols="50" style={inputStyle}></textarea>
+                        <textarea id={field_slug} name={field_slug} placeholder={custom_textarea_placeholder} required={field_require} rows="4" cols="50" style={inputStyle}></textarea>
                     </div>
                 </div>
             }

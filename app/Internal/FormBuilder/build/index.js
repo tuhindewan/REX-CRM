@@ -3390,6 +3390,14 @@ const attributes = {
     type: 'string',
     default: ''
   },
+  custom_text_placeholder: {
+    type: 'string',
+    default: ''
+  },
+  custom_textarea_placeholder: {
+    type: 'string',
+    default: 'Type here...'
+  },
   field_require: {
     type: 'boolean',
     default: false
@@ -3597,6 +3605,8 @@ const mrmCustomField = _ref => {
       field_require,
       selectOption,
       select_option_name_slug,
+      custom_text_placeholder,
+      custom_textarea_placeholder,
       radioOption,
       field_slug,
       rowSpacing,
@@ -3653,7 +3663,7 @@ const mrmCustomField = _ref => {
     type: "text",
     name: field_name,
     id: field_name,
-    placeholder: field_name,
+    placeholder: custom_text_placeholder,
     required: field_require,
     style: inputStyle
   }))), field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -3669,7 +3679,7 @@ const mrmCustomField = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
     id: field_slug,
     name: field_slug,
-    placeholder: field_name,
+    placeholder: custom_textarea_placeholder,
     required: field_require,
     rows: "4",
     cols: "50",
@@ -3903,6 +3913,20 @@ class Editor extends Component {
       value: attributes.field_label,
       onChange: state => setAttributes({
         field_label: state
+      })
+    }), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
+      label: " Placeholder Text",
+      value: attributes.custom_textarea_placeholder,
+      onChange: state => setAttributes({
+        custom_textarea_placeholder: state
+      })
+    }), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+      className: "mrm-inline-label",
+      label: " Placeholder Text",
+      value: attributes.custom_text_placeholder,
+      onChange: state => setAttributes({
+        custom_text_placeholder: state
       })
     }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "select-option-wrapper"
@@ -4295,7 +4319,7 @@ class Editor extends Component {
       type: "text",
       name: attributes.field_slug,
       id: attributes.field_slug,
-      placeholder: attributes.field_name,
+      placeholder: attributes.custom_text_placeholder,
       required: attributes.field_require,
       style: inputStyle
     }))));
@@ -4347,7 +4371,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
       id: attributes.field_slug,
       name: attributes.field_slug,
-      placeholder: attributes.field_name,
+      placeholder: attributes.custom_textarea_placeholder,
       required: attributes.field_require,
       rows: "4",
       cols: "50",
