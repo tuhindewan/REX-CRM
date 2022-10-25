@@ -44,9 +44,7 @@ const FormEditor = (props) => {
 
   const [moreOption, setMoreOption] = useState(false);
   const [listDropdown, setListDropdown] = useState(false);
-  const [settingsPannel, setSettingsPannel] = useState(
-    localStorage.getItem("settingsPanel")
-  );
+  const [settingsPannel, setSettingsPannel] = useState(false);
 
   const [enable, setEnable] = useState(false);
 
@@ -333,11 +331,11 @@ const FormEditor = (props) => {
     //setSettingsPannel((current) => !current);
     const crossClicked = localStorage.getItem("settingsPannel");
     if (crossClicked) {
-      setSettingsPannel(true);
+      setSettingsPannel(false);
       localStorage.removeItem("settingsPannel");
+    } else {
+      setSettingsPannel(!settingsPannel);
     }
-    setSettingsPannel(!settingsPannel);
-    console.log(settingsPannel);
   };
 
   const handlePreview = (view) => {

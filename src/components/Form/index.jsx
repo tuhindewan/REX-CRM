@@ -14,13 +14,16 @@ import Pagination from "../Pagination";
 import EyeIcon from "../Icons/EyeIcon";
 import EditIcon from "../Icons/EditIcon";
 import Delete from "../Icons/Delete";
-
+import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
 
 export default function FormIndex(props) {
   AdminNavMenuClassChange("mrm-admin", "forms");
 
   const [formData, setFormData] = useState({});
+
+  // loading or not
+  const [loading, setLoading] = useState(false);
 
   // how many to show per page
   const [perPage, setPerPage] = useState(10);
@@ -128,11 +131,11 @@ export default function FormIndex(props) {
     }
   };
 
-
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
   useEffect(() => {
     async function getForms() {
+      setLoading(true);
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms?order-by=${sortBy}&order-type=${sortByType}&page=${page}&per-page=${perPage}${query}`
       );
@@ -141,6 +144,7 @@ export default function FormIndex(props) {
         setFormData(resJson.data.data);
         setCount(resJson.data.count);
         setTotalPages(resJson.data.total_pages);
+        setLoading(false);
       }
     }
     getForms();
@@ -411,168 +415,174 @@ export default function FormIndex(props) {
                 </div>
               </div>
 
-              <div className="contact-list-body">
-                <div class="contact-list-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th className="form-name">
-                          <span class="mintmrm-checkbox no-title">
-                            <input
-                              type="checkbox"
-                              name="bulk-select"
-                              id="bulk-select"
-                              onChange={handleSelectAll}
-                              checked={allSelected}
-                            />
-                            <label for="bulk-select">Forms Name</label>
-                          </span>
-                        </th>
-                        {/* <th className="view">View</th> */}
-                        <th className="signup">Signup</th>
-                        <th className="shortcode">Shortcode</th>
-                        <th className="status">Status</th>
-                      </tr>
-                    </thead>
+              {loading ? (
+                <LoadingIndicator type="table" />
+              ) : (
+                <div className="contact-list-body">
+                  <div class="contact-list-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th className="form-name">
+                            <span class="mintmrm-checkbox no-title">
+                              <input
+                                type="checkbox"
+                                name="bulk-select"
+                                id="bulk-select"
+                                onChange={handleSelectAll}
+                                checked={allSelected}
+                              />
+                              <label for="bulk-select">Forms Name</label>
+                            </span>
+                          </th>
+                          {/* <th className="view">View</th> */}
+                          <th className="signup">Signup</th>
+                          <th className="shortcode">Shortcode</th>
+                          <th className="status">Status</th>
+                        </tr>
+                      </thead>
 
-                    <tbody>
-                      {formData?.length > 0 ? (
-                        formData.map((form) => {
-                          return (
-                            <tr key={form.id}>
-                              <td className="form-name">
-                                <div class="name-checkbox">
-                                  <span class="mintmrm-checkbox no-title">
-                                    <input
-                                      type="checkbox"
-                                      name={form.id}
-                                      id={form.id}
-                                      onChange={handleSelectOne}
-                                      checked={selected.includes(form.id)}
-                                    />
-                                    <label for={form.id}></label>
-                                  </span>
-
-                                  <div className="name-wrapper">
-                                    <span className="icon">
-                                      <FormIconSM />
+                      <tbody>
+                        {formData?.length > 0 ? (
+                          formData.map((form) => {
+                            return (
+                              <tr key={form.id}>
+                                <td className="form-name">
+                                  <div class="name-checkbox">
+                                    <span class="mintmrm-checkbox no-title">
+                                      <input
+                                        type="checkbox"
+                                        name={form.id}
+                                        id={form.id}
+                                        onChange={handleSelectOne}
+                                        checked={selected.includes(form.id)}
+                                      />
+                                      <label for={form.id}></label>
                                     </span>
 
-                                    <span className="name">
-                                      <Link to={`../form-builder/${form.id}`}>
-                                        {form.title}
-                                      </Link>
+                                    <div className="name-wrapper">
+                                      <span className="icon">
+                                        <FormIconSM />
+                                      </span>
 
-                                      <small>
-                                        {form.created_ago} ago
-                                      </small>
-                                    </span>
+                                      <span className="name">
+                                        <Link to={`../form-builder/${form.id}`}>
+                                          {form.title}
+                                        </Link>
+
+                                        <small>{form.created_ago} ago</small>
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
+                                </td>
 
-                              {/* <td className="view">453</td> */}
+                                {/* <td className="view">453</td> */}
 
-                              <td className="signup">
-                                {form.meta_fields?.sign_up
-                                  ? form.meta_fields?.sign_up
-                                  : 0}
-                              </td>
+                                <td className="signup">
+                                  {form.meta_fields?.sign_up
+                                    ? form.meta_fields?.sign_up
+                                    : 0}
+                                </td>
 
-                              <td className="shortcode">
-                                <span id="myTooltip"></span>
-                                <div className="shortcode-wrapper">
-                                  <input
-                                    type="text"
-                                    value={'[mintmrm id="' + form.id + '"]'}
-                                    id={"shortcode-" + form.id}
-                                    readOnly
-                                  />
-                                  <button
-                                    type="button"
-                                    className="copy"
-                                    id={"copybtn-" + form.id}
-                                    onClick={() => handleCopyShortcode(form.id)}
-                                  >
-                                    <CopyIcon />
-                                  </button>
-                                </div>
-                              </td>
-
-                              <td className="status">
-                                <span className="wpfnl-switcher">
-                                  <input
-                                    checked={form.status === "1"}
-                                    type="checkbox"
-                                    name="checkedB"
-                                    id={"st-" + form.id}
-                                    onChange={statusSwitch}
-                                  />
-                                  <label htmlFor={"st-" + form.id}></label>
-                                </span>
-                              </td>
-
-                              <td className="action">
-                                <button
-                                  className="more-option"
-                                  onClick={() => {
-                                    setCurrentActive((prevActive) => {
-                                      // if current list item is already active then hide the overlay menu by setting current active to 0
-                                      if (prevActive == form.id) {
-                                        return 0;
-                                      } else {
-                                        // show current active as ususal
-                                        return form.id;
-                                      }
-                                    });
-                                  }}
-                                >
-                                  <ThreeDotIcon />
-
-                                  {currentActive == form.id && ( // only show the menu if both active and current active points to this listitem
-                                    <ul
-                                      className={
-                                        currentActive == form.id
-                                          ? "mintmrm-dropdown show"
-                                          : "mintmrm-dropdown"
+                                <td className="shortcode">
+                                  <span id="myTooltip"></span>
+                                  <div className="shortcode-wrapper">
+                                    <input
+                                      type="text"
+                                      value={'[mintmrm id="' + form.id + '"]'}
+                                      id={"shortcode-" + form.id}
+                                      readOnly
+                                    />
+                                    <button
+                                      type="button"
+                                      className="copy"
+                                      id={"copybtn-" + form.id}
+                                      onClick={() =>
+                                        handleCopyShortcode(form.id)
                                       }
                                     >
-                                      <li
-                                        className="action-list"
-                                        style={{ display: "flex" }}
-                                        onClick={() =>
-                                          navigate(`../form-builder/${form.id}`)
+                                      <CopyIcon />
+                                    </button>
+                                  </div>
+                                </td>
+
+                                <td className="status">
+                                  <span className="wpfnl-switcher">
+                                    <input
+                                      checked={form.status === "1"}
+                                      type="checkbox"
+                                      name="checkedB"
+                                      id={"st-" + form.id}
+                                      onChange={statusSwitch}
+                                    />
+                                    <label htmlFor={"st-" + form.id}></label>
+                                  </span>
+                                </td>
+
+                                <td className="action">
+                                  <button
+                                    className="more-option"
+                                    onClick={() => {
+                                      setCurrentActive((prevActive) => {
+                                        // if current list item is already active then hide the overlay menu by setting current active to 0
+                                        if (prevActive == form.id) {
+                                          return 0;
+                                        } else {
+                                          // show current active as ususal
+                                          return form.id;
+                                        }
+                                      });
+                                    }}
+                                  >
+                                    <ThreeDotIcon />
+
+                                    {currentActive == form.id && ( // only show the menu if both active and current active points to this listitem
+                                      <ul
+                                        className={
+                                          currentActive == form.id
+                                            ? "mintmrm-dropdown show"
+                                            : "mintmrm-dropdown"
                                         }
                                       >
-                                        <EditIcon />
-                                        Edit
-                                      </li>
-                                      <li
-                                        className="action-list"
-                                        onClick={() => deleteForm(form.id)}
-                                      >
-                                        <Delete />
-                                        Delete
-                                      </li>
-                                    </ul>
-                                  )}
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr className="no-data">
-                          <td colSpan={6}>
-                            <FormIconXL />
-                            <h5>No Form(s) Found</h5>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                                        <li
+                                          className="action-list"
+                                          style={{ display: "flex" }}
+                                          onClick={() =>
+                                            navigate(
+                                              `../form-builder/${form.id}`
+                                            )
+                                          }
+                                        >
+                                          <EditIcon />
+                                          Edit
+                                        </li>
+                                        <li
+                                          className="action-list"
+                                          onClick={() => deleteForm(form.id)}
+                                        >
+                                          <Delete />
+                                          Delete
+                                        </li>
+                                      </ul>
+                                    )}
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr className="no-data">
+                            <td colSpan={6}>
+                              <FormIconXL />
+                              <h5>No Form(s) Found</h5>
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
               {totalPages > 1 && (
                 <div className="contact-list-footer">
                   <Pagination
