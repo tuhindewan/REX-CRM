@@ -9,14 +9,14 @@ export default function DoubleAngleRight() {
     >
       <path
         d="M6.7998 1.35254L11.7998 6.34699L6.7998 11.3414"
-        stroke="#686F7F"
+        stroke="#A7A8B3"
         stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M0.799801 1.35254L5.7998 6.34699L0.799801 11.3414"
-        stroke="#686F7F"
+        stroke="#A7A8B3"
         stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"

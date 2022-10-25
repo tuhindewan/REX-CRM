@@ -73,7 +73,7 @@
   //--------contact-list-header------
   .contact-list-header {
     padding: 20px 25px;
-    border-bottom: 1px solid #e2e5ed;
+    border-bottom: 1px solid #ebedf0;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
@@ -155,6 +155,9 @@
 
         .mrm-custom-select-container {
           margin: 6px;
+          .mrm-custom-select-btn::before {
+            top: 40%;
+          }
         }
       }
 
@@ -193,7 +196,7 @@
         position: relative;
 
         input {
-          padding: 2px 10px 2px 40px;
+          padding: 8px 10px 8px 40px;
           width: 200px;
         }
         svg {
@@ -233,10 +236,10 @@
         position: relative;
         .more-option {
           background: #ffffff;
-          border: 1px solid #e4e6eb;
+          border: 1px solid #ebedf0;
           border-radius: 6px;
-          height: 34px;
-          width: 34px;
+          height: 36px;
+          width: 36px;
           padding: 0;
           display: flex;
           align-items: center;
@@ -479,13 +482,13 @@
       thead {
         th {
           background: #f9fafb;
-          padding: 14px 24px 9px 24px;
+          padding: 15px 24px;
           vertical-align: middle;
           font-weight: 500;
           font-size: 15px;
           line-height: 18px;
           color: #667085;
-          border-bottom: 1px solid #e2e5ed;
+          border-bottom: 1px solid #ebedf0;
           text-align: left;
           position: sticky;
           top: 0;
@@ -532,6 +535,14 @@
             // border-bottom: 1px solid #e2e5ed;
             text-align: left;
 
+            &.first-name,
+            &.last-name {
+              font-weight: 500;
+              font-size: 14px;
+              line-height: 20px;
+              color: #2d3149;
+            }
+
             label {
               color: #667085;
               padding-left: 40px;
@@ -576,6 +587,7 @@
         }
         tr {
           background-color: #ffffff;
+          border-bottom: 1px solid #ebedf0;
         }
         tr:hover {
           background-color: #f9fafb;
@@ -599,6 +611,12 @@
         .email {
           display: flex;
           align-items: center;
+          a {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 17px;
+            color: #573bff;
+          }
 
           .title {
             font-size: 14px;
@@ -687,7 +705,6 @@
     justify-content: space-between;
     background-color: #ffffff;
     padding: 25px 29px 25px 27px;
-    border-top: 1px solid #e2e5ed;
     border-radius: 0 0 10px 10px;
 
     .footer-show-number {
@@ -695,6 +712,12 @@
       align-items: center;
       flex-flow: row wrap;
       gap: 9px;
+      .showing {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 17px;
+        color: #2d3149;
+      }
 
       input {
         width: 52px;
@@ -704,7 +727,10 @@
       }
 
       .single-page-data {
-        color: #6a707c;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        color: #9398a5;
       }
     }
 
@@ -717,8 +743,8 @@
         margin-left: 2px;
         font-weight: 500;
         font-size: 14px;
-        line-height: 1.2;
-        color: #6a707c;
+        line-height: 1.21;
+        color: #9398a5;
         display: flex;
         flex-flow: column;
         align-items: center;
