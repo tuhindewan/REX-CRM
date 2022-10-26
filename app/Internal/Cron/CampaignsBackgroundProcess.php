@@ -61,8 +61,8 @@ class CampaignsBackgroundProcess
 
 
 	/**
-	 * @desc Configure campaign emails
-	 * before initiating sending email process
+	 * @desc Configure campaign emails and insert
+     * the recipient emails to mrm_campaign_scheduled_emails table
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -77,68 +77,49 @@ class CampaignsBackgroundProcess
 
 			foreach ( $campaign_ids as $campaign_id ) {
 				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
-				if ( empty( $campaign_emails ) ) {
-					$status = CampaignModel::update_campaign_status( $campaign_id, 'completed' );
-				}
-				else {
-					$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id, current_time( 'Y-m-d H:i:s' ) );
+                if ( is_array( $campaign_emails ) && !empty( $campaign_emails ) ) {
+                    foreach ( $campaign_emails as $campaign_email ) {
+                        $campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
 
-					if ( is_array( $campaign_emails ) && !empty( $campaign_emails ) ) {
-						foreach ( $campaign_emails as $campaign_email ) {
-							$campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
-                            /*$email_builder = CampaignEmailBuilderModel::get( $campaign_email_id );
-                            $sender_email = isset( $campaign_email[ 'sender_email' ] ) ? $campaign_email[ 'sender_email' ] : "";
-                            $sender_name = isset( $campaign_email[ 'sender_name' ] ) ? $campaign_email[ 'sender_name' ] : "";
-                            $email_subject = isset( $campaign_email[ 'email_subject' ] ) ? $campaign_email[ 'email_subject' ] : "";
-                            $email_body = isset( $email_builder[ "email_body" ] ) ? $email_builder[ "email_body" ] : '';
+                        $offset = get_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
+                        $per_batch = 10;
+                        $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
+                        $delay_count = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
+                        $delay_val = isset( $campaign_email[ 'delay_value' ] ) ? $campaign_email[ 'delay_value' ] : '';
+                        $delay_val = str_replace( 's', '', $delay_val );
 
-                            $headers = array(
-                                'MIME-Version: 1.0',
-                                'Content-type: text/html;charset=UTF-8'
-                            );
+                        if ( is_array( $recipients_emails ) && !empty( $recipients_emails ) ) {
 
-                            $from = 'From: ' . $sender_name;
-                            $headers[] = $from . ' <' . $sender_email . '>';
-                            $headers[] = 'Reply-To:  ' . $sender_email;*/
+                            foreach( $recipients_emails as $email ) {
+                                if( isset( $email[ 'id' ], $email[ 'email' ] ) && $email[ 'id' ] && $email[ 'email' ] ) {
+                                    $mysql_format = 'Y-m-d H:i:s';
+                                    $scheduled_at = date( $mysql_format, strtotime( '+' . $delay_count . ' ' . $delay_val ) );
+                                    $updated_at = date( $mysql_format );
 
-							$offset = get_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
-							$per_batch = 10;
-							$recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
-                            $delay_count = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
-                            $delay_val = isset( $campaign_email[ 'delay_value' ] ) ? $campaign_email[ 'delay_value' ] : '';
-                            $delay_val = str_replace( 's', '', $delay_val );
-
-							if ( is_array( $recipients_emails ) && !empty( $recipients_emails ) ) {
-								//$this->send_emails( $recipients_emails, $email_subject, $email_body, $headers, $campaign_id, $campaign_email_id, $offset );
-                                foreach( $recipients_emails as $email ) {
-                                    if( isset( $email[ 'id' ], $email[ 'email' ] ) && $email[ 'id' ] && $email[ 'email' ] ) {
-                                        $scheduled_at = time() + strtotime( '+' . $delay_count . ' ' . $delay_val );
-                                        //error_log(print_r(date('H:i', $scheduled_at), 1));
-                                        $wpdb->insert(
-                                            $campaign_scheduled_emails_table,
-                                            [
-                                                'campaign_id' => $campaign_id,
-                                                'email_id' => $campaign_email_id,
-                                                'contact_id' => $email[ 'id' ],
-                                                'email' => $email[ 'email' ],
-                                                'status' => 'scheduled',
-                                                'scheduled_at' => $scheduled_at,
-                                                'updated_at' => time()
-                                            ]
-                                        );
-                                    }
+                                    $wpdb->insert(
+                                        $campaign_scheduled_emails_table,
+                                        [
+                                            'campaign_id' => $campaign_id,
+                                            'email_id' => $campaign_email_id,
+                                            'contact_id' => $email[ 'id' ],
+                                            'email' => $email[ 'email' ],
+                                            'status' => 'scheduled',
+                                            'scheduled_at' => $scheduled_at,
+                                            //'updated_at' => $updated_at
+                                        ]
+                                    );
                                 }
-							}
-							else {
-								delete_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id );
-								CampaignModel::update_campaign_email_status( $campaign_id, $campaign_email_id, 'sent' );
-							}
-							if ( $this->time_exceeded() || $this->memory_exceeded() ) {
-								break;
-							}
-						}
-					}
-				}
+                            }
+                        }
+                        else {
+                            delete_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id );
+                            //CampaignModel::update_campaign_email_status( $campaign_id, $campaign_email_id, 'sent' );
+                        }
+                        if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+                            break;
+                        }
+                    }
+                }
 				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
 					break;
 				}
