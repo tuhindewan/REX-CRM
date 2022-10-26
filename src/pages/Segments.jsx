@@ -10,7 +10,7 @@ import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import SegmentList from "../components/Segment/SegmentList";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-import { deleteSingleSegment, getAllSegments } from "../services/Segment";
+import { deleteMultipleSegmentItems, deleteSingleSegment, getAllSegments } from "../services/Segment";
 import LoadingIndicator from "../components/LoadingIndicator";
 import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
@@ -190,7 +190,26 @@ const Segments = () => {
     }
     setIsDelete("none");
   };
-  const onMultiDelete = () => {
+  const onMultiDelete = (status) => {
+    if (status) {
+      deleteMultipleSegmentItems(selected).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          setAllSelected(false);
+          setSelected([]);
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
     setIsDelete("none");
   };
 

@@ -56,41 +56,43 @@ const Pagination = (props) => {
           )}
         </div>
 
+        {totalCount > 0 && (
         <ul className="footer-pagination">
-          {/* Left navigation arrow */}
-          <li href="#" onClick={onPrevious}>
-            <DoubleAngleLeftIcon />
-          </li>
+        {/* Left navigation arrow */}
+        <li href="#" onClick={onPrevious}>
+          <DoubleAngleLeftIcon />
+        </li>
 
-          {paginationRange?.map((pageNumber, key) => {
-            // If the pageItem is a DOT, render the DOTS unicode character
-            if (pageNumber === DOTS) {
-              return (
-                <li key={key} className="pagination-item dots">
-                  &#8230;
-                </li>
-              );
-            }
-
-            // Render our Page Pills
+        {paginationRange?.map((pageNumber, key) => {
+          // If the pageItem is a DOT, render the DOTS unicode character
+          if (pageNumber === DOTS) {
             return (
-              <li
-                key={key}
-                className={classnames("pagination-item", {
-                  active: pageNumber === currentPage,
-                })}
-                onClick={() => onPageChange(pageNumber)}
-              >
-                {pageNumber}
+              <li key={key} className="pagination-item dots">
+                &#8230;
               </li>
             );
-          })}
+          }
 
-          {/* Right navigation arrow */}
-          <li onClick={onNext}>
-            <DoubleAngleRightIcon />
-          </li>
-        </ul>
+          // Render our Page Pills
+          return (
+            <li
+              key={key}
+              className={classnames("pagination-item", {
+                active: pageNumber === currentPage,
+              })}
+              onClick={() => onPageChange(pageNumber)}
+            >
+              {pageNumber}
+            </li>
+          );
+        })}
+
+        {/* Right navigation arrow */}
+        <li onClick={onNext}>
+          <DoubleAngleRightIcon />
+        </li>
+      </ul>
+        )}
       </div>
     </>
   );

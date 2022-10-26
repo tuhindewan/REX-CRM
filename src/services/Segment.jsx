@@ -22,3 +22,20 @@ export async function deleteSingleSegment(id) {
     }
   });
 }
+
+// Multiple lists delete request
+export async function deleteMultipleSegmentItems(selected) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/segments/`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      segment_ids: selected,
+    }),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
