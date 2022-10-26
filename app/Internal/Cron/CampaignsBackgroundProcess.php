@@ -222,7 +222,7 @@ class CampaignsBackgroundProcess
         $campaign_email_scheduled_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
         $wpdb->update(
             $campaign_email_scheduled_table,
-            [ 'status' => $status ],
+            [ 'status' => $status, 'updated_at' => current_time( 'mysql' ) ],
             [ 'id' => $email_scheduled_id ]
         );
     }
