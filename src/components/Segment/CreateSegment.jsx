@@ -1,13 +1,18 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import SingleCondition from './SingleCondition'
 
 import DoubleAngleLeftIcon from '../Icons/DoubleAngleLeftIcon'
 import DoubleAngleRightIcon from '../Icons/DoubleAngleRightIcon'
-import DeleteIcon from '../Icons/Delete'
 
 const CreateSegment = () => {
     const [matchDropdown, setMatchDropdown] = useState(false);
+    const [preview, setPreview] = useState(false);
+    
+    const handlePreview = () => {
+        setPreview(!preview);
+    };
 
     const showMatchDropdown = () => {
         setMatchDropdown(!matchDropdown);
@@ -59,10 +64,12 @@ const CreateSegment = () => {
     return (
         <>
             <div className="add-segment-page">
-                <button className="backto-segment">
-                    <DoubleAngleLeftIcon />
-                    Back
-                </button>
+                <Link to="/segments">
+                    <button className="backto-segment">
+                        <DoubleAngleLeftIcon />
+                        Back
+                    </button>
+                </Link>
 
                 <h4 className="add-segment-title">Add Segment</h4>
 
@@ -103,21 +110,24 @@ const CreateSegment = () => {
 
                     </div>
 
-                    <button className="preview-segment">
+                    <button className="preview-segment" onClick={handlePreview}>
                         Preview Segment
                         <DoubleAngleRightIcon />
                     </button>
                 </div>
 
-                <div className="preview-contact-wrapper">
-                    <div className="contact-list-header">
-                        <h4>2 Contacts</h4>
-                    </div>
+                {preview && (
+                    <div className="preview-contact-wrapper">
+                        <div className="contact-list-header">
+                            <h4>2 Contacts</h4>
+                        </div>
 
-                    <div className="preview-contact-list">
-                        here will be contact list preview according to segment condition.
+                        <div className="preview-contact-list">
+                            here will be contact list preview according to
+                            segment condition.
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div className="save-btn-area">
                     <button className="mintmrm-btn cancel">Cancel</button>
@@ -125,7 +135,7 @@ const CreateSegment = () => {
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default CreateSegment
+export default CreateSegment;
