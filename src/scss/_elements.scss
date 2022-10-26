@@ -537,19 +537,19 @@ ul.mintmrm-dropdown {
     width: 320px;
   }
 
-  &:before {
-    content: "";
-    position: absolute;
-    right: 11px;
-    top: -6px;
-    width: 10px;
-    height: 10px;
-    background: white;
-    transform: rotate(45deg);
-    z-index: 0;
-    border-top: 1px solid #e5e8f3;
-    border-left: 1px solid #e5e8f3;
-  }
+  // &:before {
+  //   content: "";
+  //   position: absolute;
+  //   right: 11px;
+  //   top: -6px;
+  //   width: 10px;
+  //   height: 10px;
+  //   background: white;
+  //   transform: rotate(45deg);
+  //   z-index: 0;
+  //   border-top: 1px solid #e5e8f3;
+  //   border-left: 1px solid #e5e8f3;
+  // }
 
   li {
     font-weight: 500;
@@ -622,8 +622,8 @@ ul.mintmrm-dropdown {
     border-radius: 0;
     background: #f9fafb;
     position: relative;
-    left: -12px;
-    width: calc(100% + 24px);
+    left: -8px;
+    width: calc(100% + 16px);
     cursor: text;
     margin-bottom: 10px;
   }

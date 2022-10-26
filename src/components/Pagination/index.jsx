@@ -45,7 +45,7 @@ const Pagination = (props) => {
         <div className="footer-show-number">
           {currentPage <= totalPages && (
             <>
-              <p>Showing</p>
+              <p className="showing">Showing</p>
               {/* <input type="number" value={perPage} onChange={setPerPage} /> */}
               <p className="single-page-data">{`${Math.max(
                 1,
