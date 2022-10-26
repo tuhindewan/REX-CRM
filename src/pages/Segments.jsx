@@ -10,9 +10,10 @@ import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import SegmentList from "../components/Segment/SegmentList";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-import { getAllSegments } from "../services/Segment";
+import { deleteSingleSegment, getAllSegments } from "../services/Segment";
 import LoadingIndicator from "../components/LoadingIndicator";
 import Pagination from "../components/Pagination";
+import SuccessfulNotification from "../components/SuccessfulNotification";
 
 const Segments = () => {
   // global counter update real time
@@ -23,7 +24,7 @@ const Segments = () => {
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
-  const [listID, setListID] = useState();
+  const [segmentId, setSegmentId] = useState();
   const [search, setSearch] = useState("");
   const [showAlert, setShowAlert] = useState("none");
   const [loading, setLoading] = useState(false);
@@ -50,6 +51,8 @@ const Segments = () => {
   // the select all checkbox
   const [allSelected, setAllSelected] = useState(false);
   const [segments, setSegments] = useState([]);
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -64,6 +67,10 @@ const Segments = () => {
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   const [listening, setListening] = useState(false);
+
+  function toggleRefresh() {
+    setRefresh((prev) => !prev);
+  }
 
   const sortByRef = useRef(null);
   const moreOptionRef = useRef(null);
@@ -135,11 +142,11 @@ const Segments = () => {
   };
 
   // Get field id from child component
-  const deleteSegment = async (list_id) => {
+  const deleteSegment = async (segment_id) => {
     setIsDelete("block");
-    setDeleteTitle("Delete List");
-    setDeleteMessage("Are you sure you want to delete the list?");
-    setListID(list_id);
+    setDeleteTitle("Delete Segment");
+    setDeleteMessage("Are you sure you want to delete the segment?");
+    setSegmentId(segment_id);
     setAllSelected(false);
     setSelected([]);
     setShowMoreOptions(false);
@@ -163,7 +170,24 @@ const Segments = () => {
   const onDeleteShow = async (status) => {
     setIsDelete(status);
   };
-  const onDeleteStatus = () => {
+  const onDeleteStatus = (status) => {
+    if (status) {
+      deleteSingleSegment(segmentId).then((response) => {
+        if (200 === response.code) {
+          setShowNotification("block");
+          setMessage(response.message);
+          toggleRefresh();
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: response?.message,
+          });
+        }
+      });
+    }
     setIsDelete("none");
   };
   const onMultiDelete = () => {
@@ -362,6 +386,7 @@ const Segments = () => {
       <div className="mintmrm-container" style={{ display: showAlert }}>
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
+      <SuccessfulNotification display={showNotification} message={message} />
     </>
   );
 };

@@ -8,3 +8,17 @@ export async function getAllSegments(orderBy, orderType, page, perPage, query) {
     }
   });
 }
+
+// List delete request
+export async function deleteSingleSegment(id) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/segments/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}
