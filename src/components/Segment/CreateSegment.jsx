@@ -1,10 +1,15 @@
 import React from "react";
-import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
-import DeleteIcon from "../Icons/Delete";
 import { useState } from "react";
+import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
+import DoubleAngleRightIcon from "../Icons/DoubleAngleRightIcon";
+import DeleteIcon from "../Icons/Delete";
 
 const CreateSegment = () => {
-    const [conditionDropdown, setIsActiveDropdown] = useState(false);
+    const [conditionDropdown, setConditionDropdown] = useState(false);
+    const [preview, setPreview] = useState(false);
+    const handlePreview = () => {
+        setPreview(!preview);
+    };
 
     return (
         <>
@@ -71,7 +76,11 @@ const CreateSegment = () => {
 
                             <div className="condition-repeater">
                                 <span
-                                    className="add-condition"
+                                    className={
+                                        conditionDropdown
+                                            ? "add-condition show"
+                                            : "add-condition"
+                                    }
                                     title="Add Condition"
                                 >
                                     <svg
@@ -189,18 +198,25 @@ const CreateSegment = () => {
                             </div>
                         </div>
                     </div>
+
+                    <button className="preview-segment" onClick={handlePreview}>
+                        Preview Segment
+                        <DoubleAngleRightIcon />
+                    </button>
                 </div>
 
-                <div className="preview-contact-wrapper">
-                    <div className="contact-list-header">
-                        <h4>2 Contacts</h4>
-                    </div>
+                {preview && (
+                    <div className="preview-contact-wrapper">
+                        <div className="contact-list-header">
+                            <h4>2 Contacts</h4>
+                        </div>
 
-                    <div className="preview-contact-list">
-                        here will be contact list preview according to segment
-                        condition.
+                        <div className="preview-contact-list">
+                            here will be contact list preview according to
+                            segment condition.
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div className="save-btn-area">
                     <button className="mintmrm-btn cancel">Cancel</button>
