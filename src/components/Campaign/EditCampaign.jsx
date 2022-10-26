@@ -436,7 +436,7 @@ export default function EditCampaign(props) {
 
   return (
     <>
-    {console.log(emailData)}
+      {console.log(emailData)}
       <div className="mintmrm-add-campaign">
         <div className="single-campaign-header">
           <div className="mintmrm-container">
@@ -757,6 +757,8 @@ export default function EditCampaign(props) {
       <WarningNotification display={showWarning} message={message} />
       {!isClose && (
         <CampaignTemplates
+          refresh={refresh}
+          setRefresh={setRefresh}
           isOpen={isTemplate}
           isClose={isClose}
           setIsClose={setIsClose}

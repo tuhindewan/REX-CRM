@@ -14,6 +14,8 @@ export default function CampaignTemplates(props) {
     isNewCampaign,
     campaignData,
     setIsTemplate,
+    refresh,
+    setRefresh,
   } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
@@ -111,6 +113,8 @@ export default function CampaignTemplates(props) {
       </div>
 
       <EmailBuilder
+        refresh={refresh}
+        setRefresh={setRefresh}
         isOpen={isTemplateBuilder}
         isCloseBuilder={isCloseBuilder}
         isEmailBuilderOpen={isEmailBuilderOpen}

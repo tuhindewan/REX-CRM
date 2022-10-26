@@ -175,6 +175,8 @@ export default function Editor(props) {
     campaignData,
     setIsTemplate,
     setIsCloseBuilder,
+    refresh,
+    setRefresh,
   } = props;
 
   const [campaignId, setCampaignId] = useState(0);
@@ -446,12 +448,17 @@ export default function Editor(props) {
   };
 
   const backToCampaign = (e) => {
+    setRefresh(!refresh);
     if (id == undefined && !campaignId) {
       navigate(`/campaigns/create`);
     } else if (!id) {
-      navigate(`/campaign/edit/${campaignId}`);
+      navigate(`/campaign/edit/${campaignId}`, {
+        state: { data: "builder-saved" },
+      });
     } else if (id) {
-      navigate(`/campaign/edit/${id}`);
+      navigate(`/campaign/edit/${id}`, {
+        state: { data: "builder-saved" },
+      });
     } else {
       navigate(`/campaigns/create`);
     }
