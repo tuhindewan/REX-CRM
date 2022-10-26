@@ -4,7 +4,7 @@ namespace Mint\MRM\DataBase\Tables;
 
 use Mint\MRM\Interfaces\Schema;
 
-class CampaignScheduledEmails implements Schema {
+class CampaignScheduledEmailsSchema implements Schema {
     /**
      * @desc Table name for mrm_campaign_scheduled_emails
      * @var string

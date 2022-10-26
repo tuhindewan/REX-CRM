@@ -32,7 +32,7 @@ class Model {
             'form'                          => 'FormSchema',
             'form_meta'                     => 'FormMetaSchema',
             'campaign_email_builder_schema' => 'CampaignEmailBuilderSchema',
-            'campaign_scheduled_emails'     => 'CampaignScheduledEmails',
+            'campaign_scheduled_emails'     => 'CampaignScheduledEmailsSchema',
         ) );
     }
 

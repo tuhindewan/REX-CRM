@@ -6,19 +6,27 @@ use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
 use Mint\MRM\DataBase\Models\CampaignModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
-use Mint\MRM\DataBase\Tables\CampaignScheduledEmails;
+use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
 
 class CampaignsBackgroundProcess
 {
 	use Singleton;
 
 	/**
-	 * @desc A private variable to save process [background]
+	 * @desc A private variable to save scheduling emails process [background]
 	 * initialization time
 	 * @since 1.0.0
 	 * @var float $process_creation_time
 	 */
-	private float $process_creation_time;
+
+	private float $email_schedule_creation_time;
+	/**
+	 * @desc A private variable to save sending emails process [background]
+	 * initialization time
+	 * @since 1.0.0
+	 * @var float $email_sending_process_creation_time
+	 */
+	private float $email_sending_process_creation_time;
 
 	/**
 	 * @desc Initialize cron functionalities
@@ -28,8 +36,9 @@ class CampaignsBackgroundProcess
 	public function init()
 	{
 		add_filter( 'cron_schedules', [ $this, 'add_five_mins_cron_hook' ] );
-		add_action( 'admin_init', [ $this, 'register_cron_schedule' ] );
+		add_action( 'admin_init', [ $this, 'register_cron_schedules' ] );
 		add_action( 'mrm_schedule_emails', [ $this, 'process_scheduled_campaign_emails' ] );
+		add_action( 'mrm_send_recipient_emails', [ $this, 'send_recipient_emails' ] );
 	}
 
 	/**
@@ -52,10 +61,13 @@ class CampaignsBackgroundProcess
 	 * @return void
 	 * @since 1.0.0
 	 */
-	public function register_cron_schedule()
+	public function register_cron_schedules()
 	{
 		if ( !wp_next_scheduled( 'mrm_schedule_emails' ) ) {
 			wp_schedule_event( time(), 'every_five_minutes', 'mrm_schedule_emails', [], true );
+		}
+		if ( !wp_next_scheduled( 'mrm_send_recipient_emails' ) ) {
+			wp_schedule_event( time(), 'every_five_minutes', 'mrm_send_recipient_emails', [], true );
 		}
 	}
 
@@ -68,12 +80,14 @@ class CampaignsBackgroundProcess
 	 */
 	public function process_scheduled_campaign_emails()
 	{
-		if ( !$this->process_locked() ) {
-			$this->lock_process();
+        $schedule_email_status = 'mrm_email_scheduling_process_status';
+		if ( !$this->process_locked( $schedule_email_status ) ) {
             global $wpdb;
+            $this->lock_process( $schedule_email_status );
+            $this->email_schedule_creation_time = microtime( true );
 			$campaigns = CampaignController::get_instance()->get_publish_campaign_id();
 			$campaign_ids = array_column( $campaigns, 'id' );
-            $campaign_scheduled_emails_table = $wpdb->prefix . CampaignScheduledEmails::$campaign_scheduled_emails_table;
+            $campaign_scheduled_emails_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
 
 			foreach ( $campaign_ids as $campaign_id ) {
 				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
@@ -81,7 +95,7 @@ class CampaignsBackgroundProcess
                     foreach ( $campaign_emails as $campaign_email ) {
                         $campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
 
-                        $offset = get_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
+                        $offset = get_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
                         $per_batch = 10;
                         $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
                         $delay_count = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
@@ -109,49 +123,127 @@ class CampaignsBackgroundProcess
                                         ]
                                     );
                                 }
+                                if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
+                                    break;
+                                }
                             }
                         }
                         else {
-                            delete_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id );
-                            //CampaignModel::update_campaign_email_status( $campaign_id, $campaign_email_id, 'sent' );
+                            delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
                         }
-                        if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+                        if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                             break;
                         }
                     }
                 }
-				if ( $this->time_exceeded() || $this->memory_exceeded() ) {
+				if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
 					break;
 				}
 			}
-			$this->unlock_process();
+			$this->unlock_process( $schedule_email_status );
 		}
 	}
 
 	/**
 	 * @desc Send emails and handle time/memory limits
-	 * @param array $email_addresses
-	 * @param $campaign_id
-	 * @param $offset
 	 * @return void
 	 * @since 1.0.0
 	 */
-	private function send_emails( array $email_addresses, $email_subject, $email_body, $headers, $campaign_id, $campaign_email_id, $offset )
+	public function send_recipient_emails()
 	{
-		foreach ( $email_addresses as $recipient ) {
-			try {
-				wp_mail( $recipient, $email_subject, $email_body, $headers );
-				$offset++;
-				update_option( 'mrm_campaign_email_recipients_offset_' . $campaign_id . '_' . $campaign_email_id, $offset );
-				sleep( 0.5 );
-			} catch ( \Exception $e ) {
-				error_log( print_r( $e->getMessage(), 1 ) );
-			}
-			if ( $this->time_exceeded() || $this->memory_exceeded() ) {
-				break;
-			}
-		}
+        $sending_emails_status = 'mrm_sending_emails_process_status';
+        if ( !$this->process_locked( $sending_emails_status ) ) {
+            $this->email_sending_process_creation_time = microtime( true );
+            $this->lock_process( $sending_emails_status );
+            $per_batch = 5;
+            //$offset = get_option( 'mrm_scheduled_emails_recipients_sending', 0 );
+            $offset = 0;
+            $recipient_emails = $this->get_recipient_emails( $offset, $per_batch );
+
+            if( is_array( $recipient_emails ) && !empty( $recipient_emails ) ) {
+                foreach( $recipient_emails as $recipient ) {
+                    $recipient_email    = isset( $recipient[ 'email' ] ) ? sanitize_email( $recipient[ 'email' ] ) : '';
+                    $email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int)$recipient[ 'id' ] : '';
+                    $scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int)$recipient[ 'email_id' ] : '';
+                    $campaign_id = isset( $recipient[ 'campaign_id' ] ) ? (int)$recipient[ 'campaign_id' ] : '';
+                    $campaign_emails = $campaign_id ? CampaignModel::get_campaign_email( $campaign_id ) : [];
+                    $campaign_email = [];
+
+                    foreach( $campaign_emails as $email ) {
+                        if( isset( $email[ 'id' ] ) && $scheduled_email_id == isset( $email[ 'id' ] ) ) {
+                            $campaign_email = $email;
+                        }
+                    }
+
+                    $headers            = [
+                        'MIME-Version: 1.0',
+                        'Content-type: text/html;charset=UTF-8'
+                    ];
+                    $email_builder = CampaignEmailBuilderModel::get( $scheduled_email_id );
+                    $email_body = isset( $email_builder[ 'email_body' ] ) ? $email_builder[ 'email_body' ] : '';
+                    $sender_email = isset( $campaign_email[ 'sender_email' ] ) ? $campaign_email[ 'sender_email' ] : '';
+                    $sender_name = isset( $campaign_email[ 'sender_name' ] ) ? $campaign_email[ 'sender_name' ] : '';
+                    $email_subject = isset( $campaign_email[ 'email_subject' ] ) ? $campaign_email[ 'email_subject' ] : '';
+
+                    $from = 'From: '. $sender_name;
+                    $headers[] = $from . ' <' . $sender_email . '>';
+                    $headers[] = 'Reply-To: ' . $sender_email;
+
+                    $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
+                    /*$offset++;
+                    update_option( 'mrm_scheduled_emails_recipients_sending', $offset );*/
+
+                    if( $email_sent ) {
+                        self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
+                    }
+                    else {
+                        self::update_scheduled_emails_status( $email_scheduled_id, 'failed' );
+                    }
+
+                    if( $this->time_exceeded( $sending_emails_status ) || $this->memory_exceeded() ) {
+                        break;
+                    }
+                }
+            }
+
+            $this->unlock_process( $sending_emails_status );
+        }
 	}
+
+    /**
+     * @desc Update email status in mrm_campaign_scheduled_emails table
+     * @param int $email_scheduled_id
+     * @param string $status
+     * @return void
+     * @since 1.0.0
+     */
+    private static function update_scheduled_emails_status( int $email_scheduled_id, string $status ) {
+        global $wpdb;
+        $campaign_email_scheduled_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
+        $wpdb->update(
+            $campaign_email_scheduled_table,
+            [ 'status' => $status ],
+            [ 'id' => $email_scheduled_id ]
+        );
+    }
+
+    /**
+     * @desc Get recipient emails from mrm_campaign_scheduled_emails table batch wise
+     * @param int $offset
+     * @param int $per_batch
+     * @return array|object|\stdClass[]|null
+     * @since 1.0.0
+     */
+    private function get_recipient_emails( int $offset, int $per_batch ) {
+        global $wpdb;
+        $campaign_email_scheduled_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
+        $sql_query                      = "SELECT * FROM {$campaign_email_scheduled_table} ";
+        $sql_query                      .= "WHERE `status` = %s ";
+        $sql_query                      .= "AND `scheduled_at` <= %s ";
+        $sql_query                      .= "LIMIT %d, %d";
+        $sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql' ), $offset, $per_batch );
+        return $wpdb->get_results( $sql_query, ARRAY_A );
+    }
 
 	/**
 	 * @desc Check process status if
@@ -159,9 +251,9 @@ class CampaignsBackgroundProcess
 	 * @return bool
 	 * @since 1.0.0
 	 */
-	private function process_locked()
+	private function process_locked( string $process_name )
 	{
-		return 'locked' === get_option( 'mrm_process_lock_status', 'unlocked' );
+		return 'locked' === get_option( $process_name, 'unlocked' );
 	}
 
 	/**
@@ -169,10 +261,9 @@ class CampaignsBackgroundProcess
 	 * @return void
 	 * @since 1.0.0
 	 */
-	private function lock_process()
+	private function lock_process( string $process_name )
 	{
-		$this->process_creation_time = microtime( true );
-		update_option( 'mrm_process_lock_status', 'locked' );
+		update_option( $process_name, 'locked' );
 	}
 
 	/**
@@ -181,9 +272,9 @@ class CampaignsBackgroundProcess
 	 * @return void
 	 * @since 1.0.0
 	 */
-	private function unlock_process()
+	private function unlock_process( string $process_name )
 	{
-		update_option( 'mrm_process_lock_status', 'unlocked' );
+		update_option( $process_name, 'unlocked' );
 	}
 
 	/**
@@ -191,9 +282,9 @@ class CampaignsBackgroundProcess
 	 * @return mixed|null
 	 * @since 1.0.0
 	 */
-	private function time_exceeded()
+	private function time_exceeded( string $process_name )
 	{
-		$execution_time = $this->get_execution_time();
+		$execution_time = $this->get_execution_time( $process_name );
 		$max_execution_time = ini_get( 'max_execution_time' );
 		$max_execution_time = $max_execution_time - ( apply_filters( 'ebp_exclude_safe_time_limits', 20 ) * $max_execution_time / 100 );
 		$likely_to_be_exceeded = $execution_time > $max_execution_time;
@@ -207,9 +298,16 @@ class CampaignsBackgroundProcess
 	 * @return float|int|mixed
 	 * @since 1.0.0
 	 */
-	private function get_execution_time()
+	private function get_execution_time( string $process_name )
 	{
-		$execution_time = microtime( true ) - $this->process_creation_time;
+        if( 'mrm_email_scheduling_process_status' === $process_name ) {
+            $process_start_time = $this->email_schedule_creation_time;
+        }
+        elseif( 'mrm_sending_emails_process_status' === $process_name ) {
+            $process_start_time = $this->email_sending_process_creation_time;
+        }
+
+		$execution_time = microtime( true ) - $process_start_time;
 
 		// Get the CPU time if the hosting environment uses it rather than wall-clock time to calculate a process's execution time.
 		if ( function_exists( 'getrusage' ) && apply_filters( 'ebp_cpu_execution_time', defined( 'PANTHEON_ENVIRONMENT' ) ) ) {
