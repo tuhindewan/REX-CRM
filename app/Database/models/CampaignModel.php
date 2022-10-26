@@ -175,7 +175,6 @@ class CampaignModel {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
         $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $email );
-        error_log(print_r($campaign_email, 1));
 
         if($campaign_email){
             $wpdb->update(
@@ -488,5 +487,23 @@ class CampaignModel {
                 'campaign_id' => $campaign_id
             ]
         );
+    }
+
+
+    /**
+     * Get email template data from email builder
+     * 
+     * @param mixed $campaign_id
+     * @param mixed $email_id
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_campaign_email_to_builder( $campaign_id, $email_id )
+    {
+        global $wpdb;
+        $email_table    = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND id=%s", $campaign_id, $email_id );
+        return $wpdb->get_row( $select_query );
     }
 }

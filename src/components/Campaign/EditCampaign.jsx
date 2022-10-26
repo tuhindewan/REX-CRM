@@ -436,7 +436,6 @@ export default function EditCampaign(props) {
 
   return (
     <>
-      {console.log(emailData)}
       <div className="mintmrm-add-campaign">
         <div className="single-campaign-header">
           <div className="mintmrm-container">

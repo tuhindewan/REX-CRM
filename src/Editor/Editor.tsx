@@ -296,7 +296,7 @@ export default function Editor(props) {
 
   const fetchEmailBuilderData = async () => {
     setShouldCallAPI(false);
-    let rest_url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex}`;
+    let rest_url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email-builder/${emailData?.id}`;
     const response = await fetch(rest_url);
     return await response.json();
   };
@@ -518,7 +518,6 @@ export default function Editor(props) {
 
     emailSendApi(mailData).then((response) => {
       setTestMailMessage(response.message);
-      console.log(response);
     });
   };
 

@@ -116,7 +116,6 @@ class CampaignEmailController extends BaseController {
      */
     public function get_single(WP_REST_Request $request) {
         $params     = MRM_Common::get_api_params_values( $request );
-        
         $email      = CampaignModel::get_email_by_index($params['campaign_id'], $params['email_index']);
         $response   = array(
             'success'   => true,
@@ -254,6 +253,36 @@ class CampaignEmailController extends BaseController {
         $params = $request->get_file_params();
         $movefile = wp_handle_upload( $params['image'], array('test_form' => FALSE ));
         return $movefile;
+    }
+
+
+    /**
+     * Get email template data from email builder
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_email_builder_data( WP_REST_Request $request )
+    {
+        $params     = MRM_Common::get_api_params_values( $request );
+        
+        $email      = CampaignModel::get_campaign_email_to_builder( $params['campaign_id'], $params['email_id'] );
+        $response   = array(
+            'success'   => true,
+            'message'   => ''
+        );
+        if ( !$email ) {
+            $response   = array(
+                'success'   => false,
+                'message'   => 'No email data found!'
+            );
+            return rest_ensure_response($response);
+        }
+        $email_builder_data     = CampaignEmailBuilderModel::get($email->id);
+        $response['email_data'] = $email_builder_data;
+        return rest_ensure_response($response);
     }
 
 }
