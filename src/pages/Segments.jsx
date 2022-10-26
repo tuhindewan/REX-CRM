@@ -1,8 +1,3 @@
-// import BaseTable from "../components/Base/BaseTable";
-// import { Table, Button } from "rsuite";
-// const { HeaderCell, Cell, Column } = Table;
-// import BaseCreate from "../components/Base/BaseCreate";
-// import { Link ,useParams} from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import AlertPopup from "../components/AlertPopup";
@@ -16,6 +11,7 @@ import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import SegmentList from "../components/Segment/SegmentList";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { getAllSegments } from "../services/Segment";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 const Segments = () => {
   // global counter update real time
@@ -29,7 +25,7 @@ const Segments = () => {
   const [listID, setListID] = useState();
   const [search, setSearch] = useState("");
   const [showAlert, setShowAlert] = useState("none");
-
+  const [loading, setLoading] = useState(false);
   // current active menu id, whenever a option button is selected this
   // var tracks the current id of
   const [currentActive, setCurrentActive] = useState(0);
@@ -55,12 +51,13 @@ const Segments = () => {
   const [segments, setSegments] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     getAllSegments(orderBy, orderType, page, perPage, query).then(
       (response) => {
-        console.log(response);
         setSegments(response.data.data);
         setCount(response.count);
         setTotalPages(response.total_pages);
+        setLoading(false);
       }
     );
   }, [page, perPage, query, refresh, orderBy, orderType]);
@@ -174,7 +171,6 @@ const Segments = () => {
 
   return (
     <>
-    {console.log(segments)}
       <ContactNavbar />
       <div className="contact-list-page segment-page">
         <div className="mintmrm-container">
@@ -275,6 +271,10 @@ const Segments = () => {
               </div>
             </div>
 
+            {loading ? (
+              <LoadingIndicator type="table" />
+            ) : (
+              <>
             <div className="contact-list-body">
               <div class="contact-list-table">
                 <table>
@@ -342,7 +342,10 @@ const Segments = () => {
                     totalCount={count}
                     totalPages={totalPages}
                   /> */}
+                  
             </div>
+            </>
+            )}
           </div>
         </div>
       </div>
