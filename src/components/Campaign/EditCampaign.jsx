@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, matchPath, useLocation, useParams } from "react-router-dom";
 import {
   deleteCampaignEmail,
-  updateCampaignRequest,
+  updateCampaignRequest
 } from "../../services/Campaign";
 import DeletePopup from "../DeletePopup";
 import Delete from "../Icons/Delete";
@@ -106,7 +106,7 @@ export default function EditCampaign(props) {
   if (match) {
     const elems = document.getElementsByClassName("notice");
     for (var i=0;i<elems.length;i+=1){
-      elems[i].style.display = 'none';
+      elems[i]?.style.display = 'none';
     }
   }
 

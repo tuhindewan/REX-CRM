@@ -5,7 +5,7 @@ import {
   matchPath,
   useLocation,
   useNavigate,
-  useParams,
+  useParams
 } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteSingleContact } from "../../services/Contact";
@@ -268,7 +268,7 @@ export default function ContactDetails() {
   if (match) {
     const elems = document.getElementsByClassName("notice");
     for (var i=0;i<elems.length;i+=1){
-      elems[i].style.display = 'none';
+      elems[i]?.style.display = 'none';
     }
   }
 

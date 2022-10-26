@@ -28,7 +28,7 @@ const FormEditor = (props) => {
   if (match) {
     const elems = document.getElementsByClassName("notice");
     for (var i=0;i<elems.length;i+=1){
-      elems[i].style.display = 'none';
+      elems[i]?.style.display = 'none';
     }
   }
   const [preview, setPreview] = useState("editor");
