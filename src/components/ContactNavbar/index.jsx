@@ -80,7 +80,9 @@ export default function Navbar(props) {
                             </span>
                           ) : "Segments" === route.title ? (
                             <span className="bage">
-                              {"0"}
+                              {dataCount.total_segments
+                                ? dataCount.total_segments
+                                : "0"}
                             </span>
                           ) : (
                             ""

@@ -18,6 +18,8 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import { getAllSegments } from "../services/Segment";
 
 const Segments = () => {
+  // global counter update real time
+  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
