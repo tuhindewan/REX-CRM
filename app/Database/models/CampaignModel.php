@@ -436,6 +436,22 @@ class CampaignModel {
         return $wpdb->get_row( $select_query );
     }
 
+    /**
+     * Get campaign email by email id of that campaign
+     *
+     * @param $campaign_id
+     * @param $email_index
+     * @return object|array
+     *
+     * @since 1.0.0
+     */
+    public static function get_campaign_email_by_id( $campaign_id, $email_index ) {
+        global $wpdb;
+        $email_table    = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND id=%s", $campaign_id, $email_index );
+        return $wpdb->get_row( $select_query );
+    }
+
     public static function get_publish_campaign_id() {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;

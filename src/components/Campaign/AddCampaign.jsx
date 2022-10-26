@@ -49,7 +49,7 @@ export default function AddCampaign(props) {
   const [delay, setDelay] = useState();
   const [dropDown, setDropDown] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const [refresh, setRefresh] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showWarning, setShowWarning] = useState("none");
@@ -679,6 +679,8 @@ export default function AddCampaign(props) {
       </div>
       <WarningNotification display={showWarning} message={message} />
       <CampaignTemplates
+        refresh={refresh}
+        setRefresh={setRefresh}
         isOpen={isTemplate}
         isClose={isClose}
         isNewCampaign={true}

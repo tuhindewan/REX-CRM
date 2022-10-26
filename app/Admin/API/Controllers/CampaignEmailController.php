@@ -50,18 +50,12 @@ class CampaignEmailController extends BaseController {
             'message'   => ''
         );
         
-        $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
-        
-        $emailData = isset($params['campaign_data']['emails'][0]) ? $params['campaign_data']['emails'][0] : "";
-        $emailData['email_body'] = $params['email_body'];
-        // $email_id = CampaignModel::update_campaign_emails( $emailData, $params['campaign_id'], $params['email_index'] );
+        // $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
+        $email = CampaignModel::get_campaign_email_by_id( $params['campaign_id'], $params['email_index'] );
         
         if($email){
             $email_builder_data = CampaignEmailBuilderModel::is_new_email_template($email->id);
             if ( !$email_builder_data ) {
-
-                // save the email first
-                // $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
     
                 CampaignEmailBuilderModel::insert(array(
                     'email_id'      => $email->id,

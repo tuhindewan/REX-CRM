@@ -339,7 +339,7 @@ export default function Editor(props) {
       return await response.json();
     } else {
       const response = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex}`,
+        `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailData?.id}`,
         {
           method: "POST",
           headers: {
@@ -349,7 +349,7 @@ export default function Editor(props) {
             email_body: html,
             json_data: values,
             status: "published",
-            email_index: selectedEmailIndex,
+            email_index: emailData?.id,
             campaign_data: campaignData,
           }),
         }
