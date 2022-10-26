@@ -16,7 +16,7 @@ const Pagination = (props) => {
     pageSize,
     totalPages,
   } = props;
-
+  
   const paginationRange = usePagination({
     currentPage,
     totalCount,
@@ -25,9 +25,7 @@ const Pagination = (props) => {
   });
 
   // If there are less than 2 times in pagination range we shall not render the component
-  if (currentPage === 0 || paginationRange.length < 2) {
-    return null;
-  }
+  
 
   const onNext = () => {
     onPageChange(Math.min(totalPages, currentPage + 1), pageSize, "");
@@ -37,7 +35,7 @@ const Pagination = (props) => {
     onPageChange(Math.max(1, currentPage - 1), pageSize, "");
   };
 
-  let lastPage = paginationRange[paginationRange.length - 1];
+  // let lastPage = paginationRange[paginationRange.length - 1];
 
   return (
     <>
@@ -64,7 +62,7 @@ const Pagination = (props) => {
             <DoubleAngleLeftIcon />
           </li>
 
-          {paginationRange.map((pageNumber, key) => {
+          {paginationRange?.map((pageNumber, key) => {
             // If the pageItem is a DOT, render the DOTS unicode character
             if (pageNumber === DOTS) {
               return (

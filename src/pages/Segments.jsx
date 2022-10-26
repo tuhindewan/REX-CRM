@@ -12,6 +12,7 @@ import SegmentList from "../components/Segment/SegmentList";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { getAllSegments } from "../services/Segment";
 import LoadingIndicator from "../components/LoadingIndicator";
+import Pagination from "../components/Pagination";
 
 const Segments = () => {
   // global counter update real time
@@ -55,8 +56,8 @@ const Segments = () => {
     getAllSegments(orderBy, orderType, page, perPage, query).then(
       (response) => {
         setSegments(response.data.data);
-        setCount(response.count);
-        setTotalPages(response.total_pages);
+        setCount(response.data.count);
+        setTotalPages(response.data.total_pages);
         setLoading(false);
       }
     );
@@ -312,7 +313,7 @@ const Segments = () => {
                         >
                           <NoSegmentIcon />
                           No Segment Found
-                          {search ? `"${search}"` : null}
+                          {search ? ` "${search}"` : null}
                         </td>
                       </tr>
                     )}
@@ -335,14 +336,13 @@ const Segments = () => {
               </div>
             </div>
             <div>
-              {/* <Pagination
-                    currentPage={page}
-                    pageSize={perPage}
-                    onPageChange={setPage}
-                    totalCount={count}
-                    totalPages={totalPages}
-                  /> */}
-                  
+              <Pagination
+                currentPage={page}
+                pageSize={perPage}
+                onPageChange={setPage}
+                totalCount={count}
+                totalPages={totalPages}
+              /> 
             </div>
             </>
             )}
