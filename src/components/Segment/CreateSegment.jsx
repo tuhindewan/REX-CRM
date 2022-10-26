@@ -23,12 +23,26 @@ const CreateSegment = () => {
                             <label htmlFor="">Segment Description</label>
                             <input type="text" name="segment-description" />
                         </div>
-
-                        <div className="form-group submit-btn">
-                            <label htmlFor="">submit</label>
-                            <button className="mintmrm-btn">Save <span className="mintmrm-loader"></span> </button>
-                        </div>
                     </div>
+
+                    <div className="segment-condition-wrapper">
+                        
+                    </div>
+                </div>
+
+                <div className="preview-contact-wrapper">
+                    <div className="contact-list-header">
+                        <h4>2 Contacts</h4>
+                    </div>
+
+                    <div className="preview-contact-list">
+                        here will be contact list preview according to segment condition.
+                    </div>
+                </div>
+
+                <div className="save-btn-area">
+                    <button className="mintmrm-btn cancel">Cancel</button>
+                    <button className="mintmrm-btn save">Save</button>
                 </div>
             </div>
         </>
