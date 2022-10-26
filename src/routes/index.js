@@ -5,7 +5,7 @@ import EditCampaign from "../components/Campaign/EditCampaign";
 import EmailBuilder from "../components/Campaign/EmailBuilder";
 import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
-import CreateSegment from "../components/CreateSegment";
+import CreateSegment from "../components/Segment/CreateSegment";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";

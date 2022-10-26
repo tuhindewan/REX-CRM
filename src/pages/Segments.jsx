@@ -13,11 +13,36 @@ import Delete from "../components/Icons/Delete";
 import NoSegmentIcon from "../components/Icons/NoSegmentIcon";
 import SegmentList from "../components/Segment/SegmentList";
 
-
 const Segments = () => {
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
+  const [segment, setSegment] = useState([
+    {
+      created_at: "2022-10-20 04:44:48",
+      data: "",
+      id: "1",
+      slug: "Segment-1",
+      title: "Segment-1",
+      total_contacts: "6",
+    },
+    {
+      created_at: "2022-10-25 04:44:48",
+      data: "",
+      id: "2",
+      slug: "Segment-2",
+      title: "Segment-2",
+      total_contacts: "4",
+    },
+    {
+      created_at: "2022-10-24 04:44:48",
+      data: "",
+      id: "3",
+      slug: "Segment-3",
+      title: "Segment-3",
+      total_contacts: "5",
+    },
+  ]);
 
   useGlobalStore.setState({
     navbarMarkup: (

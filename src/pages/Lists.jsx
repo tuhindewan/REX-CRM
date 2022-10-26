@@ -343,6 +343,7 @@ const Lists = () => {
 
   return (
     <>
+    {console.log(lists)}
       <ContactNavbar />
       {showCreate && (
         <div className="tag-contact">
