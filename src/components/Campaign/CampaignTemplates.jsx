@@ -14,6 +14,8 @@ export default function CampaignTemplates(props) {
     isNewCampaign,
     campaignData,
     setIsTemplate,
+    refresh,
+    setRefresh,
   } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
@@ -82,7 +84,7 @@ export default function CampaignTemplates(props) {
                 className="template-select-section"
                 onClick={openTemplateBuilder}
               >
-                {campaignData?.emails[0].email_body.length != 0 ? (
+                {emailData?.email_body.length != 0 ? (
                   <Link to="">
                     <button
                       type="submit"
@@ -111,6 +113,8 @@ export default function CampaignTemplates(props) {
       </div>
 
       <EmailBuilder
+        refresh={refresh}
+        setRefresh={setRefresh}
         isOpen={isTemplateBuilder}
         isCloseBuilder={isCloseBuilder}
         isEmailBuilderOpen={isEmailBuilderOpen}

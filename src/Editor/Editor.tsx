@@ -175,6 +175,8 @@ export default function Editor(props) {
     campaignData,
     setIsTemplate,
     setIsCloseBuilder,
+    refresh,
+    setRefresh,
   } = props;
 
   const [campaignId, setCampaignId] = useState(0);
@@ -294,7 +296,7 @@ export default function Editor(props) {
 
   const fetchEmailBuilderData = async () => {
     setShouldCallAPI(false);
-    let rest_url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${selectedEmailIndex}`;
+    let rest_url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email-builder/${emailData?.id}`;
     const response = await fetch(rest_url);
     return await response.json();
   };
@@ -446,12 +448,17 @@ export default function Editor(props) {
   };
 
   const backToCampaign = (e) => {
+    setRefresh(!refresh);
     if (id == undefined && !campaignId) {
       navigate(`/campaigns/create`);
     } else if (!id) {
-      navigate(`/campaign/edit/${campaignId}`);
+      navigate(`/campaign/edit/${campaignId}`, {
+        state: { data: "builder-saved" },
+      });
     } else if (id) {
-      navigate(`/campaign/edit/${id}`);
+      navigate(`/campaign/edit/${id}`, {
+        state: { data: "builder-saved" },
+      });
     } else {
       navigate(`/campaigns/create`);
     }
@@ -511,7 +518,6 @@ export default function Editor(props) {
 
     emailSendApi(mailData).then((response) => {
       setTestMailMessage(response.message);
-      console.log(response);
     });
   };
 
