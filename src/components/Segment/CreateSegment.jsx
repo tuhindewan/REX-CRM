@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DoubleAngleRightIcon from "../Icons/DoubleAngleRightIcon";
 import DeleteIcon from "../Icons/Delete";
@@ -14,10 +15,12 @@ const CreateSegment = () => {
     return (
         <>
             <div className="add-segment-page">
-                <button className="backto-segment">
-                    <DoubleAngleLeftIcon />
-                    Back
-                </button>
+                <Link to="/segments">
+                    <button className="backto-segment">
+                        <DoubleAngleLeftIcon />
+                        Back
+                    </button>
+                </Link>
 
                 <h4 className="add-segment-title">Add Segment</h4>
 
