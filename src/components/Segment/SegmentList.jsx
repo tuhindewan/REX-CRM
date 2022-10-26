@@ -16,7 +16,8 @@ export default function SegmentList(props) {
         setCurrentActive,
         handleSelectOne,
     } = props;
-    const { title, data, created_at, total_contacts, id } = segment;
+    
+    const { title, data, created_at, total_contacts, id, description } = segment;
     const [isActiveDropdown, setIsActiveDropdown] = useState(false);
     const [listening, setListening] = useState(false);
 
@@ -48,7 +49,7 @@ export default function SegmentList(props) {
             </td>
             <td className="">{total_contacts}</td>
             <td className="">
-                {data?.length > 20 ? data.substring(0, 20) + "..." : data}
+                {description?.length > 30 ? description.substring(0, 30) + "..." : description}
             </td>
             <td className="">{new Date(created_at).toDateString()}</td>
             <td ref={moreOptionRef}>

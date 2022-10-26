@@ -41,6 +41,7 @@ const Segments = () => {
   const [orderBy, setOrderBy] = useState("title");
   const [refresh, setRefresh] = useState(true);
   const [count, setCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   // order type asc or desc
   const [orderType, setOrderType] = useState("asc");
   // showCreate shows the create form if true
@@ -60,11 +61,6 @@ const Segments = () => {
         setTotalPages(response.total_pages);
       }
     );
-
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   const [listening, setListening] = useState(false);
@@ -176,6 +172,7 @@ const Segments = () => {
 
   return (
     <>
+    {console.log(segments)}
       <ContactNavbar />
       <div className="contact-list-page segment-page">
         <div className="mintmrm-container">
@@ -302,7 +299,7 @@ const Segments = () => {
 
                   <tbody>
                     {/* List empty or search not found ui */}
-                    {!segments.length && (
+                    {!segments?.length && (
                       <tr>
                         <td
                           className="no-contact"
@@ -317,7 +314,7 @@ const Segments = () => {
                         </td>
                       </tr>
                     )}
-                    {segments.map((segment, idx) => {
+                    {segments?.map((segment, idx) => {
                       return (
                         <SegmentList
                           key={idx}
