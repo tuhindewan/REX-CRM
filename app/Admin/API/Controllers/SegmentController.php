@@ -94,6 +94,7 @@ class SegmentController extends BaseController {
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
 
         $segments = ContactGroupModel::get_all( "segments", $offset, $perPage, $search );
+        error_log(print_r($segments, 1));
         if( isset( $segments ) ) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $segments);
         }
