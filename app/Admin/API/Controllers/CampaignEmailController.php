@@ -44,42 +44,51 @@ class CampaignEmailController extends BaseController {
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
 
+        error_log(print_r($params, 1));
         $response   = array(
             'success'   => true,
             'message'   => ''
         );
         
         $email = CampaignModel::get_email_by_index( $params['campaign_id'], $params['email_index'] );
-        $email_builder_data = CampaignEmailBuilderModel::is_new_email_template($email->id);
+        
         $emailData = isset($params['campaign_data']['emails'][0]) ? $params['campaign_data']['emails'][0] : "";
         $emailData['email_body'] = $params['email_body'];
-        $email_id = CampaignModel::update_campaign_emails( $emailData, $params['campaign_id'], $params['email_index'] );
-        $is_new = true;
-        if ( $email ) {
-            $is_new   = false;
-        }
-        if ( !$email_builder_data ) {
+        // $email_id = CampaignModel::update_campaign_emails( $emailData, $params['campaign_id'], $params['email_index'] );
+        
+        if($email){
+            $email_builder_data = CampaignEmailBuilderModel::is_new_email_template($email->id);
+            if ( !$email_builder_data ) {
 
-            // save the email first
-            // $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
-
+                // save the email first
+                // $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
+    
+                CampaignEmailBuilderModel::insert(array(
+                    'email_id'      => $email->id,
+                    'status'        => 'published',
+                    'email_body' => $params['email_body'],
+                    'json_data'  => serialize($params['json_data']),
+                ));
+                $response['message'] = __( 'Data successfully inserted', 'mrm' );
+            } else {
+                CampaignEmailBuilderModel::update(
+                    $email->id,
+                    array(
+                        'status'    => 'published',
+                        'email_body' => $params['email_body'],
+                        'json_data'  => serialize($params['json_data']),
+                    )
+                );
+                $response['message'] = __( 'Data successfully updated', 'mrm' );
+            }
+        }else{
+            $email_id = CampaignModel::insert_campaign_emails( $params['campaign_data']['emails'][$params['email_index'] ], $params['campaign_id'], $params['email_index'] );
             CampaignEmailBuilderModel::insert(array(
-                'email_id'      => $email->id,
+                'email_id'      => $email_id,
                 'status'        => 'published',
                 'email_body' => $params['email_body'],
                 'json_data'  => serialize($params['json_data']),
             ));
-            $response['message'] = __( 'Data successfully inserted', 'mrm' );
-        } else {
-            CampaignEmailBuilderModel::update(
-                $email->id,
-                array(
-                    'status'    => 'published',
-                    'email_body' => $params['email_body'],
-                    'json_data'  => serialize($params['json_data']),
-                )
-            );
-            $response['message'] = __( 'Data successfully updated', 'mrm' );
         }
         $response['campaign_id']    = $params['campaign_id'];
         return rest_ensure_response($response);
@@ -172,18 +181,21 @@ class CampaignEmailController extends BaseController {
         CampaignModel::insert_campaign_recipients( $recipients, $campaign_id );
 
         $params['campaign_data'][$email_index]['campaign_id'] = $campaign_id;
-        $emailData = isset($params['campaign_data']['emails'][0]) ? $params['campaign_data']['emails'][0] : "";
+        $emails = isset($params['campaign_data']['emails']) ? $params['campaign_data']['emails'] : "";
         // Step #2
-        $email_id = CampaignModel::insert_campaign_emails( $emailData, $campaign_id, $email_index );
-
-
-        // Step #3
-        CampaignEmailBuilderModel::insert(array(
-            'email_id'   => $email_id,
-            'status'     => 'published',
-            'email_body' => $params['email_body'],
-            'json_data'  => serialize($params['json_data']),
-        ));
+        foreach($emails as $index => $email){
+            $email_id = CampaignModel::insert_campaign_emails( $email, $campaign_id, $index );
+            if( $index == $email_index ){
+                // Step #3
+                CampaignEmailBuilderModel::insert(array(
+                    'email_id'   => $email_id,
+                    'status'     => 'published',
+                    'email_body' => $params['email_body'],
+                    'json_data'  => serialize($params['json_data']),
+                ));
+            }
+            
+        }
         $response['message'] = __( 'Data successfully inserted', 'mrm' );
         $response['campaign_id']    = $campaign_id;
         return rest_ensure_response($response);

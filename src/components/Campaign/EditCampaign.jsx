@@ -436,6 +436,7 @@ export default function EditCampaign(props) {
 
   return (
     <>
+    {console.log(emailData)}
       <div className="mintmrm-add-campaign">
         <div className="single-campaign-header">
           <div className="mintmrm-container">
@@ -444,7 +445,7 @@ export default function EditCampaign(props) {
                 <DoubleAngleLeftIcon />
                 <Link to="/campaigns">Campaigns</Link>
               </div>
-              <h2 className="campaign-title">Add Campaigns</h2>
+              <h2 className="campaign-title">Edit Campaigns</h2>
             </div>
             <div className="right-section">
               {/* <button className="mrm-custom-select-btn">Month</button> */}
@@ -785,6 +786,7 @@ export default function EditCampaign(props) {
             created_by: `${window.MRM_Vars.current_userID}`,
             emails: emailData.map((email) => {
               return {
+                id: email.id,
                 email_subject: email.email_subject,
                 email_preview_text: email.email_preview_text,
                 sender_email: email.sender_email,

@@ -175,6 +175,8 @@ class CampaignModel {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
         $campaign_email     = self::get_campaign_email_by_index( $campaign_id, $email );
+        error_log(print_r($campaign_email, 1));
+
         if($campaign_email){
             $wpdb->update(
                 $fields_table,
