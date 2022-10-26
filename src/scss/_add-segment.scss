@@ -78,9 +78,136 @@
 
         }
 
+        .condition-matching {
+            margin-bottom: 15px;
+        }
+        
         //-----segment-condition-wrapper-----
         .segment-condition-wrapper {
-            
+
+            .single-condition {
+                padding-top: 20px;
+                display: flex;
+                align-items: center;
+                position: relative;
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    right: 0;
+                    bottom: calc(50% - 11px);
+                    width: 2px;
+                    height: 100%;
+                    background: #E5E8F3;
+                    z-index: 0;
+                }
+
+                &:first-child {
+                    padding-top: 0;
+
+                    &:before {
+                        display: none;
+                    }
+                }
+
+                .condition-repeater {
+                    margin-left: 20px;
+                    position: relative;
+                    width: 70px;
+                    cursor: pointer;
+
+                    .add-condition {
+                        &:before {
+                            content: "";
+                            position: absolute;
+                            left: 22px;
+                            top: 11px;
+                            background: #E4E6EB;
+                            width: 48px;
+                            height: 2px;
+                            z-index: 0;
+                        }
+                    }
+
+                    svg {
+                        display: block;
+                    }
+                }
+
+                .condition-symbol {
+                    position: absolute;
+                    top: 0;
+                    right: -10px;
+
+                    & > span {
+                        width: 24px;
+                        height: 24px;
+                        border: 2px solid #E5E8F3;
+                        color: #6E42D3;
+                        background: #eef1f4;
+                        border-radius: 100%;
+                        font-size: 12px;
+                        font-weight: 500;
+                        display: block;
+                        padding: 1px 2px;
+                        text-align: center;
+                    }
+                }
+
+                &:first-child {
+                    .condition-symbol {
+                        display: none;
+                    }
+                }
+
+            }
+
+            .single-condition-inner {
+                display: flex;
+                flex-flow: row wrap;
+                align-items: flex-start;
+                justify-content: flex-start;
+                width: calc(100% - 91px);
+                position: relative;
+                background: #FFFFFF;
+                box-shadow: 0px 1px 1px #b6b9bf4d;
+                border-radius: 10px;
+                padding: 20px 24px;
+
+                .single-condition-filed {
+                    margin-left: 15px;
+
+                    &:first-child {
+                        margin-left: 0;
+                    }
+
+                    &.delete-condition {
+                        button {
+                            background: #FFFFFF;
+                            border: 1px solid #EBEDF0;
+                            border-radius: 6px;
+                            width: 42px;
+                            height: 42px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+
+                            path {
+                                fill: #A7A8B3;
+                            }
+
+                            &:hover {
+                                background-color: #f7f7f7
+                            }
+                        }
+                    }
+                }
+
+                .single-condition-filed:not(.delete-condition) {
+                    width: calc((100% - 88px) / 3);
+                }
+            }
         }
 
         .preview-contact-wrapper {
