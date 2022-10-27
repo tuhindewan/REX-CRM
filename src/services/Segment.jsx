@@ -39,3 +39,18 @@ export async function deleteMultipleSegmentItems(selected) {
     }
   });
 }
+
+// Campaign submit post request
+export async function submitSegment(segment) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/segments`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(segment),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

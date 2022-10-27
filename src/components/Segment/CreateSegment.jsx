@@ -10,14 +10,62 @@ const CreateSegment = () => {
   const [preview, setPreview] = useState(false);
   const [segmentName, setSegmentName] = useState("");
   const [segmentDescription, setSegmentDescription] = useState("");
+  const [errors, setErrors] = useState({});
   const handlePreview = () => {
     setPreview(!preview);
   };
 
   // Redirect to segments index page
-  const routeChange = () => {
+  const routeChange = async () => {
     let path = `/segments`;
     navigate(path);
+  };
+
+  // Submit segmentation to the API
+  const submitSegment = async () => {
+    let segment = {
+      title: segmentName,
+      data: {
+        description: segmentDescription,
+        filters: [
+          [
+            {
+              source: "email_addresses",
+              operator: "contains",
+              value: [],
+            },
+            {
+              source: "last_name",
+              operator: "contains",
+              value: [],
+            },
+          ],
+          [
+            {
+              source: "subscription_status",
+              operator: "is",
+              value: [],
+            },
+          ],
+        ],
+      },
+    };
+
+    submitSegment(segment).then((response) => {
+      console.log(response);
+      if (201 === response.code) {
+        // Navigate to campaigns list with success message
+        navigate("../segments", {
+          state: { status: "segment-created", message: response?.message },
+        });
+      } else {
+        // Validation messages
+        setErrors({
+          ...errors,
+          title: response?.message,
+        });
+      }
+    });
   };
 
   return (
@@ -43,6 +91,13 @@ const CreateSegment = () => {
                 value={segmentName}
                 onChange={(e) => setSegmentName(e.target.value)}
               />
+              <p
+                className={
+                  errors?.title ? "error-message show" : "error-message"
+                }
+              >
+                {errors?.title}
+              </p>
             </div>
 
             <div className="form-group">
@@ -225,7 +280,9 @@ const CreateSegment = () => {
           <button className="mintmrm-btn cancel" onClick={routeChange}>
             Cancel
           </button>
-          <button className="mintmrm-btn save">Save</button>
+          <button className="mintmrm-btn save" onClick={submitSegment}>
+            Save
+          </button>
         </div>
       </div>
     </>
