@@ -8,6 +8,7 @@ import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";
+import FormIndex from "../components/Form";
 import FormEditor from "../components/Form/FormEditor";
 import ImportConfirmation from "../components/ImportConfirmation";
 import SelectFieldsMap from "../components/SelectFieldsMap";
@@ -20,7 +21,6 @@ import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
-import FormIndex from "../components/Form";
 
 const routes = [
   {
@@ -102,7 +102,17 @@ const routes = [
     title: __("Tags", "mrm"),
     // bage: 18,
   },
-  ,
+  // {
+  //   path: "/segments",
+  //   element: Segments,
+  //   title: __("Segments", "mrm"),
+  //   // bage: 18,
+  // },
+  // {
+  //   path: "/segments/create",
+  //   element: CreateSegment,
+  //   hideInMenu: true,
+  // },
   {
     path: "/custom-fields",
     element: CustomFields,

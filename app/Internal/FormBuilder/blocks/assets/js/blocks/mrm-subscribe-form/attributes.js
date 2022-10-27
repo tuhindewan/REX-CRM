@@ -12,7 +12,7 @@ const attributes = {
     },
     render_block: {
         type : 'string',
-        default : ''
+        default : 'Please Select a Form'
     },
 
 
