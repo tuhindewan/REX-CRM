@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { default as React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import DeleteIcon from "../Icons/Delete";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DoubleAngleRightIcon from "../Icons/DoubleAngleRightIcon";
+import SingleCondition from "./SingleCondition";
 
 const CreateSegment = () => {
   let navigate = useNavigate();
@@ -11,6 +11,55 @@ const CreateSegment = () => {
   const [segmentName, setSegmentName] = useState("");
   const [segmentDescription, setSegmentDescription] = useState("");
   const [errors, setErrors] = useState({});
+
+  const [refresh, setRefresh] = useState();
+  const [contactData, setContactData] = useState([]);
+  const [matchDropdown, setMatchDropdown] = useState(false);
+
+  const showMatchDropdown = () => {
+    setMatchDropdown(!matchDropdown);
+  };
+
+  let segmentConditions = [
+    {
+      field_type: {
+        "their-email-addresses": "Their email addresses",
+        "their-last-names": "Their last names",
+        "their-first-names": "Their first names",
+        "their-mobile-numbers": "Their mobile phone numbers",
+      },
+      field_condition: {
+        "are-exactly": "Are exactly",
+        "are-not": "Are Not",
+      },
+      field_action: {
+        "action-1": "Action 1",
+        "action-2": "Action 2",
+        "action-3": "Action 3",
+        "action-4": "Action 4",
+      },
+      field_action_input: "input-text",
+    },
+    {
+      field_type: {
+        "their-email-addresses": "Their email addresses",
+        "their-last-names": "Their last names",
+        "their-first-names": "Their first names",
+        "their-mobile-numbers": "Their mobile phone numbers",
+      },
+      field_condition: {
+        "are-exactly": "Are exactly",
+        "are-not": "Are Not",
+      },
+      field_action: {
+        "action-1": "Action 1",
+        "action-2": "Action 2",
+        "action-3": "Action 3",
+        "action-4": "Action 4",
+      },
+      field_action_input: "input-text",
+    },
+  ];
   const handlePreview = () => {
     setPreview(!preview);
   };
@@ -110,179 +159,104 @@ const CreateSegment = () => {
                 onChange={(e) => setSegmentDescription(e.target.value)}
               />
             </div>
-          </div>
 
-          <div className="condition-matching">of the following conditions:</div>
-          <div className="segment-condition-wrapper">
-            <div className="single-condition">
-              <ul className="single-condition-inner">
-                <li className="single-condition-filed field-type">
-                  <select name="" id="">
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                  </select>
-                </li>
-
-                <li className="single-condition-filed field-condition">
-                  <select name="" id="">
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                  </select>
-                </li>
-
-                <li className="single-condition-filed field-action">
-                  <select name="" id="">
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                  </select>
-                </li>
-
-                <li className="single-condition-filed delete-condition">
-                  <button type="button">
-                    <DeleteIcon />
-                  </button>
-                </li>
-              </ul>
-
-              <div className="condition-repeater">
-                <span
-                  className={
-                    conditionDropdown ? "add-condition show" : "add-condition"
-                  }
-                  title="Add Condition"
+            <div className="condition-matching">
+              <b>Match</b>
+              <div
+                className={
+                  matchDropdown
+                    ? "mrm-custom-select-container show-dropdown"
+                    : "mrm-custom-select-container"
+                }
+              >
+                <button
+                  className="mrm-custom-select-btn"
+                  type="button"
+                  onClick={() => showMatchDropdown()}
                 >
-                  <svg
-                    width="22"
-                    height="22"
-                    fill="none"
-                    viewBox="0 0 26 26"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g fill="#573BFF" clip-path="url(#clip0_616_1195)">
-                      <path d="M13 0C5.831 0 0 5.831 0 13s5.831 13 13 13 13-5.832 13-13S20.169 0 13 0zm0 23.986C6.943 23.986 2.014 19.058 2.014 13 2.014 6.942 6.944 2.014 13 2.014c6.057 0 10.986 4.928 10.986 10.986 0 6.058-4.928 10.986-10.986 10.986z" />
-                      <path d="M18.035 11.902h-4.028V7.875a1.007 1.007 0 10-2.014 0v4.027H7.965a1.007 1.007 0 100 2.014h4.028v4.028a1.007 1.007 0 102.014 0v-4.027h4.028a1.007 1.007 0 100-2.014z" />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_616_1195">
-                        <path fill="#fff" d="M0 0h26v26H0z" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-
-                  <ul className="conditions mintmrm-dropdown">
-                    <li>and</li>
-                    <li>or</li>
-                  </ul>
-                </span>
+                  All
+                </button>
+                <ul className="mintmrm-dropdown mrm-custom-select-dropdown">
+                  <li value="all">All</li>
+                  <li value="any">Any</li>
+                </ul>
               </div>
-
-              <div className="condition-symbol">
-                <span className="symbol-and">&</span>
-                <span className="symbol-or">or</span>
-              </div>
+              of the following conditions:
             </div>
 
-            <div className="single-condition">
-              <ul className="single-condition-inner">
-                <li className="single-condition-filed field-type">
-                  <select name="" id="">
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                  </select>
-                </li>
-
-                <li className="single-condition-filed field-condition">
-                  <select name="" id="">
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                  </select>
-                </li>
-
-                <li className="single-condition-filed field-action">
-                  <select name="" id="">
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                    <option value="">field type</option>
-                  </select>
-                </li>
-
-                <li className="single-condition-filed delete-condition">
-                  <button type="button">
-                    <DeleteIcon />
-                  </button>
-                </li>
-              </ul>
-
-              <div className="condition-repeater">
-                <span className="add-condition" title="Add Condition">
-                  <svg
-                    width="22"
-                    height="22"
-                    fill="none"
-                    viewBox="0 0 26 26"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g fill="#573BFF" clip-path="url(#clip0_616_1195)">
-                      <path d="M13 0C5.831 0 0 5.831 0 13s5.831 13 13 13 13-5.832 13-13S20.169 0 13 0zm0 23.986C6.943 23.986 2.014 19.058 2.014 13 2.014 6.942 6.944 2.014 13 2.014c6.057 0 10.986 4.928 10.986 10.986 0 6.058-4.928 10.986-10.986 10.986z" />
-                      <path d="M18.035 11.902h-4.028V7.875a1.007 1.007 0 10-2.014 0v4.027H7.965a1.007 1.007 0 100 2.014h4.028v4.028a1.007 1.007 0 102.014 0v-4.027h4.028a1.007 1.007 0 100-2.014z" />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_616_1195">
-                        <path fill="#fff" d="M0 0h26v26H0z" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-
-                  <ul className="conditions mintmrm-dropdown">
-                    <li>and</li>
-                    <li>or</li>
-                  </ul>
-                </span>
-              </div>
-
-              <div className="condition-symbol">
-                <span className="symbol-and">&</span>
-                <span className="symbol-or">or</span>
-              </div>
+            <div className="segment-condition-wrapper">
+              {segmentConditions.map((segmentCondition, idx) => {
+                return (
+                  <SingleCondition
+                    key={idx}
+                    segmentCondition={segmentCondition}
+                  />
+                );
+              })}
             </div>
+
+            <button className="preview-segment" onClick={handlePreview}>
+              Preview Segment
+              <DoubleAngleRightIcon />
+            </button>
           </div>
 
-          <button className="preview-segment" onClick={handlePreview}>
-            Preview Segment
-            <DoubleAngleRightIcon />
-          </button>
-        </div>
+          {preview && (
+            <div className="preview-contact-wrapper">
+              <div className="contact-list-header">
+                <h4>2 Contacts</h4>
+              </div>
 
-        {preview && (
-          <div className="preview-contact-wrapper">
-            <div className="contact-list-header">
-              <h4>2 Contacts</h4>
-            </div>
+              <div className="preview-contact-list">
+                <div className="contact-list-area">
+                  <div className="contact-list-body">
+                    {/* <ContactListTable refresh={refresh} setRefresh={setRefresh} /> */}
+                    <div className="contact-list-table">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th className="email">Email</th>
+                            <th className="first-name">First Name</th>
+                            <th className="last-name">Last Name</th>
+                            <th className="list">Lists</th>
+                            <th className="tag">Tags</th>
+                            <th className="status">Status</th>
+                            <th className="action"></th>
+                          </tr>
+                        </thead>
 
-            <div className="preview-contact-list">
-              here will be contact list preview according to segment condition.
+                        <tbody>
+                          {contactData.map((contact, idx) => {
+                            return (
+                              <SingleContact
+                                key={idx}
+                                contact={contact}
+                                toggleRefresh={toggleRefresh}
+                                currentActive={currentActive}
+                                setCurrentActive={setCurrentActive}
+                                handleSelectOne={handleSelectOne}
+                                selected={selected}
+                                columns={columns}
+                              />
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          )}
+
+          <div className="save-btn-area">
+            <button className="mintmrm-btn cancel" onClick={routeChange}>
+              Cancel
+            </button>
+            <button className="mintmrm-btn save" onClick={submitSegment}>
+              Save
+            </button>
           </div>
-        )}
-
-        <div className="save-btn-area">
-          <button className="mintmrm-btn cancel" onClick={routeChange}>
-            Cancel
-          </button>
-          <button className="mintmrm-btn save" onClick={submitSegment}>
-            Save
-          </button>
         </div>
       </div>
     </>
