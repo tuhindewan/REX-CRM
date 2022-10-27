@@ -8,7 +8,7 @@ const SingleCondition = (props) => {
     const [fieldConditionDropdown, setFieldConditionDropdown] = useState(false);
     const [fieldActionDropdown, setfieldActionDropdown] = useState(false);
 
-    const addCondition = () => {
+    const showCondition = () => {
         setConditionDropdown(!conditionDropdown);
     };
 
@@ -94,12 +94,12 @@ const SingleCondition = (props) => {
                 </ul>
 
                 <div className="condition-repeater">
-                    <span className={ conditionDropdown ? "add-condition show-dropdown" : "add-condition" } title="Add Condition" onClick={addCondition}>
+                    <span className={ conditionDropdown ? "add-condition show-dropdown" : "add-condition" } title="Add Condition" onClick={showCondition}>
                         <svg width="22" height="22" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><g fill="#573BFF" clip-path="url(#clip0_616_1195)"><path d="M13 0C5.831 0 0 5.831 0 13s5.831 13 13 13 13-5.832 13-13S20.169 0 13 0zm0 23.986C6.943 23.986 2.014 19.058 2.014 13 2.014 6.942 6.944 2.014 13 2.014c6.057 0 10.986 4.928 10.986 10.986 0 6.058-4.928 10.986-10.986 10.986z"/><path d="M18.035 11.902h-4.028V7.875a1.007 1.007 0 10-2.014 0v4.027H7.965a1.007 1.007 0 100 2.014h4.028v4.028a1.007 1.007 0 102.014 0v-4.027h4.028a1.007 1.007 0 100-2.014z"/></g><defs><clipPath id="clip0_616_1195"><path fill="#fff" d="M0 0h26v26H0z"/></clipPath></defs></svg>
 
                         <ul className="conditions mintmrm-dropdown">
-                            <li>and</li>
-                            <li>or</li>
+                            <li onClick={() => addCondition('and')}>and</li>
+                            <li onClick={() => addCondition('or')}>or</li>
                         </ul>
                     </span>
                 </div>
