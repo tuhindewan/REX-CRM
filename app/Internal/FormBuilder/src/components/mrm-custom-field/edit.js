@@ -131,12 +131,30 @@ class Editor extends Component {
                 />
 
                 {attributes.field_type != 'radio' &&
-                <TextControl
-                    className="mrm-inline-label"
-                    label=" Field Label"
-                    value={attributes.field_label}
-                    onChange={(state) => setAttributes({field_label: state})}
-                />
+                    <TextControl
+                        className="mrm-inline-label"
+                        label=" Field Label"
+                        value={attributes.field_label}
+                        onChange={(state) => setAttributes({field_label: state})}
+                    />
+                }
+
+                {attributes.field_type == 'textarea' &&
+                    <TextControl
+                        className="mrm-inline-label"
+                        label=" Placeholder Text"
+                        value={attributes.custom_textarea_placeholder}
+                        onChange={(state) => setAttributes({custom_textarea_placeholder: state})}
+                    />
+                }
+
+                {attributes.field_type == 'text' &&
+                    <TextControl
+                        className="mrm-inline-label"
+                        label=" Placeholder Text"
+                        value={attributes.custom_text_placeholder}
+                        onChange={(state) => setAttributes({custom_text_placeholder: state})}
+                    />
                 }
 
                 {attributes.field_type == 'select' && 
@@ -429,6 +447,7 @@ class Editor extends Component {
             </PanelBody>
         )
     }
+
     getInspectorControls = () => {
         let { attributes, setAttributes } 	= this.props
 
@@ -492,7 +511,7 @@ class Editor extends Component {
                     </label>
 
                     <div className="input-wrapper">
-                        <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} style={inputStyle} />
+                        <input type="text" name={attributes.field_slug} id={attributes.field_slug} placeholder={attributes.custom_text_placeholder} required={attributes.field_require} style={inputStyle} />
                     </div>
                 </div>
             </Fragment>
@@ -541,7 +560,7 @@ class Editor extends Component {
                     </label>
 
                     <div className="input-wrapper">
-                        <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.field_name} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
+                        <textarea id={attributes.field_slug} name={attributes.field_slug} placeholder={attributes.custom_textarea_placeholder} required={attributes.field_require} rows="4" cols="50" style={inputStyle}></textarea>
                     </div>
                 </div>
             </Fragment>
