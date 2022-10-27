@@ -35,8 +35,8 @@ Class FormBuilderHelper {
               'dependencies' => array(),
            );
         $script_url        = plugins_url( $script_path, __FILE__ );
-     
-        wp_enqueue_script( $script_handle, $script_url, $script_asset['dependencies'], $script_asset['version'] );
+        $version = isset( $script_asset['version'] ) ? $script_asset['version'] : "";
+        wp_enqueue_script( $script_handle, $script_url, $script_asset['dependencies'], $version );
 
         $settings = $this->get_block_editor_settings();
         wp_add_inline_script( $script_handle, 'window.getmrmsetting = ' . wp_json_encode( $settings ) . ';' );

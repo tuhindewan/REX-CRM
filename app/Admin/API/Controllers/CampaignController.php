@@ -55,6 +55,7 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
         // Assign Untitled as value if title is empty
         if ( isset($params['title']) && empty( $params['title'] )) {
             $params['title'] = "Untitled";
