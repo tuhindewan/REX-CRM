@@ -91,8 +91,8 @@ export default function AddCampaign(props) {
   const match = matchPath({ path: "campaigns/create" }, location.pathname);
   if (match) {
     const elems = document.getElementsByClassName("notice");
-    for (var i=0;i<elems.length;i+=1){
-      elems[i].style.display = 'none';
+    for (var i = 0; i < elems.length; i += 1) {
+      elems[i].style.display = "none";
     }
   }
 
