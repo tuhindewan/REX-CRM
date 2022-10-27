@@ -2,11 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import SingleCondition from './SingleCondition'
+import ContactListTable from "../BaseTable/ContactListTable";
 
 import DoubleAngleLeftIcon from '../Icons/DoubleAngleLeftIcon'
 import DoubleAngleRightIcon from '../Icons/DoubleAngleRightIcon'
 
 const CreateSegment = () => {
+    const [refresh, setRefresh] = useState();
+    const [contactData, setContactData] = useState([]);
     const [matchDropdown, setMatchDropdown] = useState(false);
     const [preview, setPreview] = useState(false);
     
@@ -123,8 +126,47 @@ const CreateSegment = () => {
                         </div>
 
                         <div className="preview-contact-list">
-                            here will be contact list preview according to
-                            segment condition.
+                            <div className="contact-list-area">
+                                <div className="contact-list-body">
+                                    {/* <ContactListTable refresh={refresh} setRefresh={setRefresh} /> */}
+                                    <div className="contact-list-table">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th className="email">
+                                                        Email
+                                                    </th>
+                                                    <th className="first-name">First Name</th>
+                                                    <th className="last-name">Last Name</th>
+                                                    <th className="list">Lists</th>
+                                                    <th className="tag">Tags</th>
+                                                    <th className="status">Status</th>
+                                                    <th className="action"></th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                                {contactData.map((contact, idx) => {
+                                                    return (
+                                                        <SingleContact
+                                                            key={idx}
+                                                            contact={contact}
+                                                            toggleRefresh={toggleRefresh}
+                                                            currentActive={currentActive}
+                                                            setCurrentActive={setCurrentActive}
+                                                            handleSelectOne={handleSelectOne}
+                                                            selected={selected}
+                                                            columns={columns}
+                                                        />
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
