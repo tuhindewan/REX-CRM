@@ -5,6 +5,7 @@ import EditCampaign from "../components/Campaign/EditCampaign";
 import EmailBuilder from "../components/Campaign/EmailBuilder";
 import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
+import CreateSegment from "../components/Segment/CreateSegment";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";
@@ -21,6 +22,7 @@ import ImportWordpress from "../pages/ImportWordpress";
 import Lists from "../pages/Lists";
 import Tags from "../pages/Tags";
 import FormIndex from "../components/Form";
+import Segments from "../pages/Segments";
 
 const routes = [
   {
@@ -102,7 +104,17 @@ const routes = [
     title: __("Tags", "mrm"),
     // bage: 18,
   },
-  ,
+  {
+    path: "/segments",
+    element: Segments,
+    title: __("Segments", "mrm"),
+    // bage: 18,
+  },
+  {
+    path: "/segments/create",
+    element: CreateSegment,
+    hideInMenu: true,
+  },
   {
     path: "/custom-fields",
     element: CustomFields,
