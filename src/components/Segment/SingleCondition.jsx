@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from "react";
 import DeleteIcon from '../Icons/Delete'
 
-const SingleCondition = (props) => {
+const SingleCondition = ({ index, segmentCondition, addCondition, deleteCondition }) => {
     const [conditionDropdown, setConditionDropdown] = useState(false);
     const [fieldTypeDropdown, setFieldTypeDropdown] = useState(false);
     const [fieldConditionDropdown, setFieldConditionDropdown] = useState(false);
@@ -31,7 +31,6 @@ const SingleCondition = (props) => {
 
     };
 
-    const  segmentCondition = props.segmentCondition;
     const  field_types = segmentCondition.field_type;
     const  field_conditions = segmentCondition.field_condition;
     const  field_actions = segmentCondition.field_action;
@@ -87,7 +86,7 @@ const SingleCondition = (props) => {
                     </li>
 
                     <li className="single-condition-filed delete-condition">
-                        <button type="button" title="Delete this Condition">
+                        <button type="button" title="Delete this Condition" onClick={() => deleteCondition(index)}>
                             <DeleteIcon />
                         </button>
                     </li>

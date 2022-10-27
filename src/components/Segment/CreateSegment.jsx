@@ -12,16 +12,7 @@ const CreateSegment = () => {
     const [contactData, setContactData] = useState([]);
     const [matchDropdown, setMatchDropdown] = useState(false);
     const [preview, setPreview] = useState(false);
-    
-    const handlePreview = () => {
-        setPreview(!preview);
-    };
-
-    const showMatchDropdown = () => {
-        setMatchDropdown(!matchDropdown);
-    };
-
-    let segmentConditions = [
+    const [segmentConditions, setSegmentConditions] = useState([
         { 
             field_type: [
                 {
@@ -56,7 +47,63 @@ const CreateSegment = () => {
             field_action_input: 'input-text',
         }
         
-    ];
+    ]);
+    
+    const handlePreview = () => {
+        setPreview(!preview);
+    };
+
+    const showMatchDropdown = () => {
+        setMatchDropdown(!matchDropdown);
+    };
+
+
+    const addCondition = (value) => {
+
+        setSegmentConditions(prevState => {
+            return [...prevState, { 
+                field_type: [
+                    {
+                        field_type_label: 'Their email addresses',
+                        field_type_value: "their-email-addresses",
+                    }, 
+                    {
+                        field_type_label: 'Their first names',
+                        field_type_value: "their-first-names",
+                    }, 
+                ],
+                field_condition: [
+                    {
+                        field_condition_label: 'Are exactly',
+                        field_condition_value: "are-exactly",
+                    }, 
+                    {
+                        field_condition_label: 'Are Not',
+                        field_condition_value: "are-not",
+                    }, 
+                ],
+                field_action: [
+                    {
+                        field_action_label: 'Action 1',
+                        field_action_value: "action-1",
+                    }, 
+                    {
+                        field_action_label: 'Action 2',
+                        field_action_value: "action-2",
+                    }, 
+                ],
+                field_action_input: 'input-text',
+            }];
+        })
+    };
+
+    const deleteCondition = (index) => {
+
+        setSegmentConditions([
+            ...segmentConditions.slice(0, index),
+            ...segmentConditions.slice(index + 1, segmentConditions.length)
+        ]);
+    };
       
     return (
         <>
@@ -100,7 +147,10 @@ const CreateSegment = () => {
                             return (
                                 <SingleCondition
                                 key={idx}
+                                index={idx}
                                 segmentCondition={segmentCondition}
+                                addCondition={addCondition}
+                                deleteCondition={deleteCondition}
                                 />
                             );
                         })}
