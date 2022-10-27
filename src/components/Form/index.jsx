@@ -501,9 +501,9 @@ export default function FormIndex(props) {
 
                                 {/* <td className="view">453</td> */}
 
-                                <td className="signup">
-                                  {form.meta_fields?.sign_up
-                                    ? form.meta_fields?.sign_up
+                                <td className="entries">
+                                  {form.meta_fields?.entries
+                                    ? form.meta_fields?.entries
                                     : 0}
                                 </td>
 
