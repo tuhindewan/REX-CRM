@@ -265,12 +265,17 @@ class FormModel {
         $form_table = $wpdb->prefix . FormSchema::$table_name;
 
         try {
-            $form_query     = $wpdb->prepare("SELECT * FROM $form_table WHERE id = %d",array( $id ));
+            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids`, `status`, `form_body`, `status` FROM $form_table WHERE id = %d",array( $id ));
             $form_result   = json_decode(json_encode($wpdb->get_results($form_query)), true);
-            
-            $new_meta = self::get_meta( $id );
 
-            return array_merge(isset($form_result[0])? $form_result[0] : [], $new_meta);
+
+            foreach( $form_result as $query_result ){
+                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
+                $entries = self::get_form_meta_value_with_key( $q_id, 'settings');
+
+                return !empty($entries) ? array_merge($query_result, $entries) : $query_result;
+            }
+
         
         } catch(\Exception $e) {
             return false;
