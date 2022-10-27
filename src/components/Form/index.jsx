@@ -24,6 +24,7 @@ export default function FormIndex(props) {
   const [formData, setFormData] = useState({});
 
   // loading or not
+  const [loading, setLoading] = useState(false);
 
   // how many to show per page
   const [perPage, setPerPage] = useState(10);
