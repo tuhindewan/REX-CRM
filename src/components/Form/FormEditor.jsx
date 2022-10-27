@@ -91,21 +91,6 @@ const FormEditor = (props) => {
     setShowAlert(status);
   };
 
-  // Fetch lists & tags
-  useEffect(() => {
-    // Get lists
-    getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
-      });
-    });
-
-    // Get tags
-    getTags().then((results) => {
-      setTags(results.data);
-    });
-  }, []);
-
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
