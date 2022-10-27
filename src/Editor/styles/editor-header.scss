@@ -125,6 +125,7 @@
             border: 1px solid #E4E6EB;
             border-radius: 6px;
             margin-left: 15px;
+            display: flex;
 
             button {
                 height: 40px;
@@ -147,7 +148,11 @@
                 }
 
                 &:hover {
-                    background: #FCFDFE!important;
+                    background: #f1f1f1!important;
+                }
+
+                &.active {
+                    background-color: #f1f1f1!important;
                 }
             }
         }
