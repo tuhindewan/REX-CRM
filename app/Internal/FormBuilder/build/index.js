@@ -442,6 +442,13 @@ function BlockEditor(_ref) {
     };
     getFormData();
   }, []);
+  const SettingPlanelShowHide = () => {
+    if ("show" === localStorage.settingsPannel) {
+      const el = document.getElementsByClassName("getdave-sbe-block-editor");
+      el[0].classList.remove("show-settings-pannel");
+      localStorage.setItem("settingsPannel", "hide");
+    }
+  };
 
   /**
    * Wrapper for updating blocks. Required as `onInput` callback passed to
@@ -4740,7 +4747,8 @@ const {
   ToggleControl,
   Radio,
   DateTimePicker,
-  DatePicker
+  DatePicker,
+  TabPanel
 } = wp.components;
 const {
   Component,
@@ -5118,18 +5126,11 @@ function Sidebar() {
     role: "region",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("MRM Block Editor advanced settings."),
     tabIndex: "-1"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
-    header: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("Inspector")
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorSlot, {
-    bubblesVirtually: true
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
     className: "settings-pannel"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "components-panel__header"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingsIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), "Settings"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "close-pannel",
-    onClick: showSettingsPannel
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_SettingsIcon__WEBPACK_IMPORTED_MODULE_6__["default"], null), "Settings")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Confirmation Settings",
     className: "confirmation-settings",
     initialOpen: true
@@ -5281,7 +5282,9 @@ function Sidebar() {
       value: "slide-in-up"
     }],
     onChange: state => setFormAnimation(state)
-  })))))));
+  }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorSlot, {
+    bubblesVirtually: true
+  }))));
 }
 Sidebar.InspectorFill = InspectorFill;
 /* harmony default export */ __webpack_exports__["default"] = (Sidebar);

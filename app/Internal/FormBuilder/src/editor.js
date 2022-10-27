@@ -20,6 +20,8 @@ import BlockEditor from "./components/block-editor";
 import { Fragment } from "@wordpress/element";
 import { BrowserRouter } from "react-router-dom";
 
+
+
 function Editor({ settings }) {
   return (
     <div className="mrm-editor-builder">
