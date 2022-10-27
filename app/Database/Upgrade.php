@@ -65,6 +65,7 @@ class Upgrade {
         global $wpdb;
         $schema             = $this->get_db_schema();
         $charset_collate    = $wpdb->get_charset_collate();
+
         foreach ( $schema as $table_name => $table_class ) {
             $table_class_name   = "Mint\\MRM\\DataBase\\Tables\\".$table_class;
             $table              = new $table_class_name();
