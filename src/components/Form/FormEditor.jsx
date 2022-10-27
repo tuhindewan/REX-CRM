@@ -410,50 +410,54 @@ const FormEditor = (props) => {
         )}
 
         <div className="form-editor-body">
-          <div className="form-editor-title-area">
-            <InputItem
-              label="Title"
-              name="title"
-              handleChange={handleChange}
-              value={formData?.title}
-            />
+          {loading ? (
+            <LoadingIndicator type="table" />
+          ) : (
+            <div className="form-editor-title-area">
+              <InputItem
+                label="Title"
+                name="title"
+                handleChange={handleChange}
+                value={formData?.title}
+              />
 
-            <div className="form-group list">
-              <label className="list-label">Assign To</label>
+              <div className="form-group list">
+                <label className="list-label">Assign To</label>
 
-              <div className="list-content" ref={menuRef}>
-                {recipientLists?.length == 0 && recipientTags?.length == 0 ? (
-                  <button className="all-recipients" onClick={showDropDown}>
-                    All Subscriber
-                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                  </button>
-                ) : (
-                  <button
-                    className="all-recipients selected show"
-                    onClick={showDropDown}
-                  >
-                    <span className="tags">{recipientTags?.length} Tags</span>
-                    <span className="from">and</span>
-                    <span className="lists">
-                      {recipientLists?.length} Lists.
-                    </span>
-                    <span className="recipients">
-                      {recipientLists?.length + recipientTags?.length} Groups
-                    </span>
-                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                  </button>
-                )}
+                <div className="list-content" ref={menuRef}>
+                  {recipientLists?.length == 0 && recipientTags?.length == 0 ? (
+                    <button className="all-recipients" onClick={showDropDown}>
+                      All Subscriber
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                  ) : (
+                    <button
+                      className="all-recipients selected show"
+                      onClick={showDropDown}
+                    >
+                      <span className="tags">{recipientTags?.length} Tags</span>
+                      <span className="from">and</span>
+                      <span className="lists">
+                        {recipientLists?.length} Lists.
+                      </span>
+                      <span className="recipients">
+                        {recipientLists?.length + recipientTags?.length} Groups
+                      </span>
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                  )}
 
-                <CampaignCustomSelect
-                  dropDown={dropDown}
-                  setRecipientTags={setRecipientTags}
-                  recipientTags={recipientTags}
-                  setRecipientLists={setRecipientLists}
-                  recipientLists={recipientLists}
-                />
+                  <CampaignCustomSelect
+                    dropDown={dropDown}
+                    setRecipientTags={setRecipientTags}
+                    recipientTags={recipientTags}
+                    setRecipientLists={setRecipientLists}
+                    recipientLists={recipientLists}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/*Preview Mobile and Desktop*/}
 
