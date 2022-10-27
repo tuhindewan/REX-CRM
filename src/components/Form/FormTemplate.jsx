@@ -64,7 +64,10 @@ const FormTemplate = (props) => {
                 className="template-select-section"
                 onClick={openTemplateBuilder}
               >
-                <Link to="/form-builder/">
+                <Link
+                  to="/form-builder"
+                  // onClick={() => window.location.reload()}
+                >
                   <button type="submit" className="save-template mintmrm-btn ">
                     Start From Scratch
                   </button>
