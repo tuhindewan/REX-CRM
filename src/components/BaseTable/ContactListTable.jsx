@@ -603,7 +603,7 @@ export default function ContactListTable(props) {
             </button>
             <ul
               className={
-                isActive ? "mintmrm-dropdown show" : "mintmrm-dropdown"
+                isActive ? "select-option mintmrm-dropdown show" : "select-option mintmrm-dropdown"
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>

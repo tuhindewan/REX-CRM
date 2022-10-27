@@ -2,25 +2,12 @@ import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CrossIcon from "../Icons/CrossIcon";
 
-import EmailBuilder from "./EmailBuilder";
+const FormTemplate = (props) => {
+  const { isClose, setIsClose, setIsTemplate, isOpen } = props;
 
-export default function CampaignTemplates(props) {
-  const {
-    isClose,
-    setIsClose,
-    setEmailBody,
-    emailData,
-    selectedEmailIndex,
-    isNewCampaign,
-    campaignData,
-    setIsTemplate,
-    refresh,
-    setRefresh,
-  } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
-  const [isEmailBuilderOpen, setIsEmailBuilderOpen] = useState(false);
-  const [dataTest, setData] = useState({});
+  const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
 
   const closeSection = () => {
     setIsClose(!isClose);
@@ -28,7 +15,7 @@ export default function CampaignTemplates(props) {
 
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
-    setIsEmailBuilderOpen(true);
+    setIsFormBuilderOpen(true);
     setIsTemplateBuilder(true);
     setIsCloseBuilder(!isCloseBuilder);
   };
@@ -44,18 +31,11 @@ export default function CampaignTemplates(props) {
   const closeEmailBuilder = () => {
     setIsCloseBuilder("none");
   };
-
-  const exportHtml = () => {
-    emailEditorRef.current.editor.exportHtml((data) => {
-      const { design, html } = data;
-    });
-  };
-
   return (
     <>
       <div
         className={
-          props.isOpen && !isClose
+          isOpen && !isClose
             ? "mintmrm-template-alert-wrapper"
             : "mintmrm-template-alert-wrapper inactive"
         }
@@ -84,25 +64,14 @@ export default function CampaignTemplates(props) {
                 className="template-select-section"
                 onClick={openTemplateBuilder}
               >
-                {emailData?.email_body.length != 0 ? (
-                  <Link to="">
-                    <button
-                      type="submit"
-                      className="save-template mintmrm-btn "
-                    >
-                      Edit Template
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="">
-                    <button
-                      type="submit"
-                      className="save-template mintmrm-btn "
-                    >
-                      Start From Scratch
-                    </button>
-                  </Link>
-                )}
+                <Link
+                  to="/form-builder"
+                  // onClick={() => window.location.reload()}
+                >
+                  <button type="submit" className="save-template mintmrm-btn ">
+                    Start From Scratch
+                  </button>
+                </Link>
               </div>
               <div className="template-select-section coming-soon">
                 <h2>Amazing Templates Are Coming Soon</h2>
@@ -111,23 +80,8 @@ export default function CampaignTemplates(props) {
           </div>
         </div>
       </div>
-
-      <EmailBuilder
-        refresh={refresh}
-        setRefresh={setRefresh}
-        isOpen={isTemplateBuilder}
-        isCloseBuilder={isCloseBuilder}
-        isEmailBuilderOpen={isEmailBuilderOpen}
-        isNewCampaign={isNewCampaign}
-        emailData={emailData}
-        campaignData={campaignData}
-        selectedEmailIndex={selectedEmailIndex}
-        setEmailBody={setEmailBody}
-        setIsEmailBuilderOpen={setIsEmailBuilderOpen}
-        setIsTemplate={setIsTemplate}
-        setIsCloseBuilder={closeEmailBuilder}
-        setCloseTemplateSelection={setCloseTemplateSelection}
-      />
     </>
   );
-}
+};
+
+export default FormTemplate;

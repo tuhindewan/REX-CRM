@@ -90,10 +90,28 @@ class SegmentController extends BaseController {
         $perPage    =  isset($params['per-page']) ? $params['per-page'] : 25;
         $offset     =  ($page - 1) * $perPage;
 
+        $order_by = isset($params['order-by']) ? strtolower($params['order-by']) : 'id';
+        $order_type = isset($params['order-type']) ? strtolower($params['order-type']) : 'desc';
+
+        // valid order by fields and types
+        $allowed_order_by_fields = array("title", "created_at");
+        $allowed_order_by_types = array("asc", "desc");
+
+        // validate order by fields or use default otherwise
+        $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
+        $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
+
         // Segment Search keyword
         $search = isset($params['search']) ? sanitize_text_field( $params['search'] ) : '';
 
-        $segments = ContactGroupModel::get_all( "segments", $offset, $perPage, $search );
+        $segments = ContactGroupModel::get_all( "segments", $offset, $perPage, $search, $order_by, $order_type );
+
+        $segments['data'] = array_map(function($segment){
+                                $segment_data = maybe_unserialize( $segment->data );
+                                $segment->description = $segment_data['description'];
+                                return $segment;
+                            }, $segments['data']);
+
         if( isset( $segments ) ) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $segments);
         }

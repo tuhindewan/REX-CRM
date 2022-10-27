@@ -16,7 +16,7 @@ import UpArrowIcon from "../Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
-
+import LoadingIndicator from "../LoadingIndicator";
 import { matchPath } from "react-router-dom";
 import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
@@ -38,6 +38,9 @@ const FormEditor = (props) => {
 
   // tags
   const [tags, setTags] = useState([]);
+
+  //loading
+  const [loading, setLoading] = useState(true);
 
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
@@ -69,6 +72,8 @@ const FormEditor = (props) => {
 
   const [groupIds, setGroupIds] = useState([]);
   const [saveLoader, setsaveLoader] = useState(false);
+
+  const [isReloaded, setIsReloaded] = useState(false);
 
   const navigate = useNavigate();
   const menuRef = useRef(null);
@@ -104,6 +109,7 @@ const FormEditor = (props) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
+    localStorage.setItem("settingsPannel", "hide");
     const getFormData = async () => {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
@@ -114,6 +120,7 @@ const FormEditor = (props) => {
         setFormData(resJson.data);
         setRecipientLists(resJson.data?.group_ids?.lists);
         setRecipientTags(resJson.data?.group_ids?.tags);
+        setLoading(false);
       }
     };
     if (id) {
@@ -148,42 +155,6 @@ const FormEditor = (props) => {
       [name]: value,
     }));
   };
-
-  const onSelect = (e, name) => {
-    const updatedOptions = [...e.target.options]
-      .filter((option) => option.selected)
-      .map((x) => x.value);
-
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: updatedOptions,
-    }));
-  };
-
-  const onRemove = (e, name) => {
-    let unselectedItem = e.params.data.id;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: prevState[name].filter((x) => x !== unselectedItem),
-    }));
-  };
-
-  // useEffect(() => {
-  //   const lists = recipientLists
-  //     .filter((list) => list.id > 0)
-  //     .map((list) => list.id);
-
-  //   const tags = recipientTags.filter((tag) => tag.id > 0).map((tag) => tag.id);
-
-  //   const group_ids = lists.concat(tags);
-
-  //   setFormData((prevState) => ({
-  //     ...prevState,
-  //     group_ids: group_ids,
-  //   }));
-
-  //   setGroupIds(group_ids);
-  // }, [recipientLists, recipientTags]);
 
   const saveFormAsDraft = async () => {
     const storedBlocks = window.localStorage.getItem("getmrmblocks");
@@ -357,7 +328,15 @@ const FormEditor = (props) => {
 
   //-------settings pannel open function-------
   const showSettingsPannel = () => {
-    setSettingsPannel((current) => !current);
+    if ("show" === localStorage.settingsPannel) {
+      const el = document.getElementsByClassName("getdave-sbe-block-editor");
+      el[0].classList.remove("show-settings-pannel");
+      localStorage.setItem("settingsPannel", "hide");
+    } else {
+      const el = document.getElementsByClassName("getdave-sbe-block-editor");
+      el[0].classList.add("show-settings-pannel");
+      localStorage.setItem("settingsPannel", "show");
+    }
   };
 
   const handlePreview = (view) => {
@@ -497,7 +476,7 @@ const FormEditor = (props) => {
           <div
             id="mrm-block-editor"
             className={
-              settingsPannel
+              "show" === localStorage.settingsPannel
                 ? "getdave-sbe-block-editor block-editor show-settings-pannel"
                 : "getdave-sbe-block-editor block-editor"
             }

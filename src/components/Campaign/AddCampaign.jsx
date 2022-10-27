@@ -49,7 +49,7 @@ export default function AddCampaign(props) {
   const [delay, setDelay] = useState();
   const [dropDown, setDropDown] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const [refresh, setRefresh] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showWarning, setShowWarning] = useState("none");
@@ -249,10 +249,10 @@ export default function AddCampaign(props) {
       campaignTitle.length > 0 ||
       recipientLists.length != 0 ||
       recipientTags.length != 0 ||
-      emailData[selectedEmailIndex]["subject"].length != 0 ||
-      emailData[selectedEmailIndex]["preview"].length != 0 ||
-      emailData[selectedEmailIndex]["senderName"].length != 0 ||
-      emailData[selectedEmailIndex]["senderEmail"].length != 0 ||
+      emailData[selectedEmailIndex]?.subject.length != 0 ||
+      emailData[selectedEmailIndex]?.preview.length != 0 ||
+      emailData[selectedEmailIndex]?.senderName.length != 0 ||
+      emailData[selectedEmailIndex]?.senderEmail.length != 0 ||
       emailData[selectedEmailIndex].email_body.length != 0
     ) {
       return true;
@@ -263,10 +263,10 @@ export default function AddCampaign(props) {
     if (
       campaignTitle.length > 0 &&
       (recipientLists.length != 0 || recipientTags.length != 0) &&
-      emailData[selectedEmailIndex]["subject"].length != 0 &&
-      emailData[selectedEmailIndex]["preview"].length != 0 &&
-      emailData[selectedEmailIndex]["senderName"].length != 0 &&
-      emailData[selectedEmailIndex]["senderEmail"].length != 0 &&
+      emailData[selectedEmailIndex]?.subject.length != 0 &&
+      emailData[selectedEmailIndex]?.preview.length != 0 &&
+      emailData[selectedEmailIndex]?.senderName.length != 0 &&
+      emailData[selectedEmailIndex]?.senderEmail.length != 0 &&
       emailData[selectedEmailIndex].email_body.length != 0
     ) {
       return true;
@@ -282,12 +282,12 @@ export default function AddCampaign(props) {
     campaignTitle,
     recipientLists,
     recipientTags,
-    emailData[selectedEmailIndex]["subject"],
-    emailData[selectedEmailIndex]["preview"],
-    emailData[selectedEmailIndex]["senderName"],
-    emailData[selectedEmailIndex]["senderEmail"],
-    emailData[selectedEmailIndex].email_body,
-    emailData[selectedEmailIndex].email_json,
+    emailData[selectedEmailIndex]?.subject,
+    emailData[selectedEmailIndex]?.preview,
+    emailData[selectedEmailIndex]?.senderName,
+    emailData[selectedEmailIndex]?.senderEmail,
+    emailData[selectedEmailIndex]?.email_body,
+    emailData[selectedEmailIndex]?.email_json,
   ]);
 
   let handlePublish = async () => {};
@@ -516,7 +516,7 @@ export default function AddCampaign(props) {
                           <input
                             type="number"
                             name="delay_count"
-                            value={emailData[selectedEmailIndex]["delay_count"]}
+                            value={emailData[selectedEmailIndex]?.delay_count}
                             onChange={handleEmailFieldsChange}
                             min="0"
                             onKeyDown={(e) =>
@@ -538,7 +538,7 @@ export default function AddCampaign(props) {
                         <select
                           onChange={handleEmailFieldsChange}
                           name="delay_value"
-                          value={emailData[selectedEmailIndex]["delay_value"]}
+                          value={emailData[selectedEmailIndex]?.delay_value}
                         >
                           <option disabled={true} value="">
                             --Choose delay--
@@ -556,12 +556,12 @@ export default function AddCampaign(props) {
                   <input
                     type="text"
                     name="subject"
-                    value={emailData[selectedEmailIndex]["subject"]}
+                    value={emailData[selectedEmailIndex]?.subject}
                     onChange={handleEmailFieldsChange}
                     placeholder="Be Specific and concise to spark interest"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]["subject"].length}/200
+                    {emailData[selectedEmailIndex]?.subject.length}/200
                   </span>
                   <div className="setting-section">
                     <div>
@@ -574,12 +574,12 @@ export default function AddCampaign(props) {
                   <input
                     type="text"
                     name="preview"
-                    value={emailData[selectedEmailIndex]["preview"]}
+                    value={emailData[selectedEmailIndex]?.preview}
                     onChange={handleEmailFieldsChange}
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
-                    {emailData[selectedEmailIndex]["preview"].length}/200
+                    {emailData[selectedEmailIndex]?.preview.length}/200
                   </span>
                   <div className="setting-section">
                     <div
@@ -611,7 +611,7 @@ export default function AddCampaign(props) {
                   <input
                     type="text"
                     name="senderName"
-                    value={emailData[selectedEmailIndex]["senderName"]}
+                    value={emailData[selectedEmailIndex]?.senderName}
                     onChange={handleEmailFieldsChange}
                     placeholder="Enter Name"
                   />
@@ -619,7 +619,7 @@ export default function AddCampaign(props) {
                     <input
                       type="email"
                       name="senderEmail"
-                      value={emailData[selectedEmailIndex]["senderEmail"]}
+                      value={emailData[selectedEmailIndex]?.senderEmail}
                       onChange={handleEmailFieldsChange}
                       placeholder="Enter Email"
                     />
@@ -679,6 +679,8 @@ export default function AddCampaign(props) {
       </div>
       <WarningNotification display={showWarning} message={message} />
       <CampaignTemplates
+        refresh={refresh}
+        setRefresh={setRefresh}
         isOpen={isTemplate}
         isClose={isClose}
         isNewCampaign={true}

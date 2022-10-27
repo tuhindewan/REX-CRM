@@ -256,6 +256,7 @@ export default function ContactDetails() {
 
   const showEditMode = () => {
     setEditMode(!editMode);
+    toggleRefresh();
   };
 
   const [isDelete, setIsDelete] = useState("none");
@@ -274,6 +275,25 @@ export default function ContactDetails() {
 
   const validate = (event, name, value) => {
     switch (name) {
+      case "email":
+        if (!value.length) {
+          setErrors({
+            ...errors,
+            email: "Email address is mandatory",
+          });
+        } else if (
+          !new RegExp(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
+          ).test(value)
+        ) {
+          setErrors({
+            ...errors,
+            email: "Enter a valid email address",
+          });
+        } else {
+          setErrors({});
+        }
+        break;
       case "phone_number":
         if (
           !new RegExp(
@@ -868,6 +888,7 @@ export default function ContactDetails() {
                               error={errors?.email}
                               isRequired
                               value={contactData.email}
+                              type="email"
                             />
                             <InputItem
                               name="first_name"
