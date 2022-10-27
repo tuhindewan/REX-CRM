@@ -41,6 +41,8 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
             echo $output;
             die();
         }
+        echo __("Please Select a Form ","mrm");
+        die();
     }
     /**
      * Render the Featured Product block.
