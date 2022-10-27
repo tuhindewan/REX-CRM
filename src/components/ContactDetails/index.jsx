@@ -1,4 +1,3 @@
-import { omit } from "lodash";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Link,
@@ -73,6 +72,7 @@ export default function ContactDetails() {
   const [timezones, setTimezones] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
   const [showWarning, setShowWarning] = useState("none");
+  const [isValidate, setIsValidate] = useState(true);
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -281,6 +281,7 @@ export default function ContactDetails() {
             ...errors,
             email: "Email address is mandatory",
           });
+          setIsValidate(false);
         } else if (
           !new RegExp(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
@@ -290,12 +291,15 @@ export default function ContactDetails() {
             ...errors,
             email: "Enter a valid email address",
           });
+          setIsValidate(false);
         } else {
           setErrors({});
+          setIsValidate(true);
         }
         break;
       case "phone_number":
         if (
+          value.length &&
           !new RegExp(
             /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i
           ).test(value)
@@ -304,9 +308,10 @@ export default function ContactDetails() {
             ...errors,
             phone_number: "Enter a valid phone number",
           });
+          setIsValidate(false);
         } else {
-          let newObj = omit(errors, "phone_number");
-          setErrors(newObj);
+          setErrors({});
+          setIsValidate(true);
         }
         break;
       default:
@@ -317,32 +322,34 @@ export default function ContactDetails() {
   const handleUpdate = async () => {
     contactData.meta_fields.gender = genderButton;
     contactData.meta_fields.timezone = selectedTimezone;
-    console.log(contactData);
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(contactData),
-      }
-    );
-    const responseData = await res.json();
-    const code = responseData?.code;
+    if (isValidate) {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(contactData),
+        }
+      );
+      const responseData = await res.json();
+      const code = responseData?.code;
 
-    if (code === 201) {
-      setShowNotification("block");
-      setMessage(responseData?.message);
-      toggleRefresh();
-      showEditMode();
-    } else {
-      // Validation messages
-      setErrors({
-        ...errors,
-        email: responseData?.message,
-      });
+      if (code === 201) {
+        setShowNotification("block");
+        setMessage(responseData?.message);
+        toggleRefresh();
+        showEditMode();
+      } else {
+        // Validation messages
+        setErrors({
+          ...errors,
+          email: responseData?.message,
+        });
+      }
     }
+
     const timer = setTimeout(() => {
       setShowNotification("none");
     }, 3000);
@@ -595,6 +602,7 @@ export default function ContactDetails() {
 
   return (
     <>
+      {console.log(isValidate)}
       <div className="mintmrm-contact-details">
         {showLoader ? (
           <LoadingIndicator type="table" />
