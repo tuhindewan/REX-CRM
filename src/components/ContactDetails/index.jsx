@@ -256,6 +256,7 @@ export default function ContactDetails() {
 
   const showEditMode = () => {
     setEditMode(!editMode);
+    toggleRefresh();
   };
 
   const [isDelete, setIsDelete] = useState("none");
