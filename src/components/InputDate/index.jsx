@@ -3,7 +3,7 @@ import "./style.css";
 export default function InputDate(props) {
   const today = new Date().toISOString().split("T")[0];
   return (
-    <div className="form-group contact-input-field">
+    <div className="form-group contact-input-field date_field">
       <label htmlFor="" aria-required>
         {props.label}
         {props.isRequired ? <span>*</span> : null}

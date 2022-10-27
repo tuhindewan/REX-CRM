@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -11,19 +11,19 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import DeletePopup from "../DeletePopup";
 import ExportDrawer from "../ExportDrawer";
 import CrossIcon from "../Icons/CrossIcon";
-import ExportIcon from "../Icons/ExportIcon";
 import NoContactIcon from "../Icons/NoContactIcon";
 import PlusCircleIcon from "../Icons/PlusCircleIcon";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import ListenForOutsideClicks, {
+  useOutsideAlerter,
+} from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
-import ListenForOutsideClicks from "../ListenForOutsideClicks";
-import { useOutsideAlerter } from "../ListenForOutsideClicks";
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -99,7 +99,6 @@ export default function ContactListTable(props) {
   const [columns, setColumns] = useState([]);
 
   const [listening, setListening] = useState(false);
-
 
   // Outside click events for add column checkbox dropdown
   const addColumnRef = useRef(null);
@@ -603,7 +602,9 @@ export default function ContactListTable(props) {
             </button>
             <ul
               className={
-                isActive ? "select-option mintmrm-dropdown show" : "select-option mintmrm-dropdown"
+                isActive
+                  ? "select-option mintmrm-dropdown show"
+                  : "select-option mintmrm-dropdown"
               }
             >
               <li onClick={showListDropdown}>Assign to list</li>

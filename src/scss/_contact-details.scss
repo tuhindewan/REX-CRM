@@ -318,6 +318,12 @@
               width: 100%;
               display: flex;
               flex-flow: row wrap;
+
+              .date_field {
+                input {
+                  padding: 9px 15px;
+                }
+              }
             }
 
             .form-group {
@@ -338,7 +344,7 @@
                 font-size: 14px;
                 font-weight: 400;
                 color: #7a8b9a;
-                padding: 13px 15px;
+                padding: 15px 15px;
                 width: 100%;
                 min-width: 190px;
                 border-radius: 6px;
