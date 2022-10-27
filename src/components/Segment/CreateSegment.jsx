@@ -23,44 +23,38 @@ const CreateSegment = () => {
 
     let segmentConditions = [
         { 
-            'field_type': {
-                'their-email-addresses': 'Their email addresses',
-                'their-last-names': 'Their last names',
-                'their-first-names': 'Their first names',
-                'their-mobile-numbers': 'Their mobile phone numbers',
-            }, 
-            'field_condition': {
-                'are-exactly': 'Are exactly',
-                'are-not': 'Are Not',
-            },
-            'field_action': {
-                'action-1': 'Action 1',
-                'action-2': 'Action 2',
-                'action-3': 'Action 3',
-                'action-4': 'Action 4',
-            },
-            'field_action_input': 'input-text',
-        },
-        { 
-            'field_type': {
-                'their-email-addresses': 'Their email addresses',
-                'their-last-names': 'Their last names',
-                'their-first-names': 'Their first names',
-                'their-mobile-numbers': 'Their mobile phone numbers',
-            }, 
-            'field_condition': {
-                'are-exactly': 'Are exactly',
-                'are-not': 'Are Not',
-            },
-            'field_action': {
-                'action-1': 'Action 1',
-                'action-2': 'Action 2',
-                'action-3': 'Action 3',
-                'action-4': 'Action 4',
-            },
-            'field_action_input': 'input-text',
-        },
-        
+            field_type: [
+                {
+                    field_type_label: 'Their email addresses',
+                    field_type_value: "their-email-addresses",
+                }, 
+                {
+                    field_type_label: 'Their first names',
+                    field_type_value: "their-first-names",
+                }, 
+            ],
+            field_condition: [
+                {
+                    field_condition_label: 'Are exactly',
+                    field_condition_value: "are-exactly",
+                }, 
+                {
+                    field_condition_label: 'Are Not',
+                    field_condition_value: "are-not",
+                }, 
+            ],
+            field_action: [
+                {
+                    field_action_label: 'Action 1',
+                    field_action_value: "action-1",
+                }, 
+                {
+                    field_action_label: 'Action 2',
+                    field_action_value: "action-2",
+                }, 
+            ],
+            field_action_input: 'input-text',
+        }
         
     ];
       
@@ -113,7 +107,7 @@ const CreateSegment = () => {
 
                     </div>
 
-                    <button className="preview-segment" onClick={handlePreview}>
+                    <button className="preview-segment" title="Click to Preview Contacts" onClick={handlePreview}>
                         Preview Segment
                         <DoubleAngleRightIcon />
                     </button>
@@ -164,7 +158,7 @@ const CreateSegment = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         </div>

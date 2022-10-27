@@ -13,7 +13,6 @@ const SingleCondition = (props) => {
     };
 
     const showDropdownOption = (param) => {
-        
         if( 'field-type' == param ){
             setFieldTypeDropdown(!fieldTypeDropdown);
             setFieldConditionDropdown(false);
@@ -32,48 +31,63 @@ const SingleCondition = (props) => {
 
     };
 
+    const  segmentCondition = props.segmentCondition;
+    const  field_types = segmentCondition.field_type;
+    const  field_conditions = segmentCondition.field_condition;
+    const  field_actions = segmentCondition.field_action;
+    const  field_action_input = segmentCondition.field_action_input;
+
     return (
         <>
             <div className="single-condition">
                 <ul className="single-condition-inner">
                     <li className="single-condition-filed field-type">
                         <div className={ fieldTypeDropdown ? "mrm-custom-select-container show-dropdown" : "mrm-custom-select-container" } >
-                            <button className="mrm-custom-select-btn" type="button" onClick={() => showDropdownOption('field-type')} >Select field type</button>
+                            <button className="mrm-custom-select-btn" type="button" onClick={() => showDropdownOption('field-type')} >Select Field Type</button>
                             <ul className="mintmrm-dropdown mrm-custom-select-dropdown">
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
+                                <li value="">Select Field Type</li>
+
+                                {field_types.map((field_type, idx) => {
+                                    return (
+                                        <li key={idx} value={field_type.field_type_value}>{field_type.field_type_label}</li>
+                                    );
+                                })}
                             </ul>
                         </div>
                     </li>
 
                     <li className="single-condition-filed field-condition">
                         <div className={ fieldConditionDropdown ? "mrm-custom-select-container show-dropdown" : "mrm-custom-select-container" } >
-                            <button className="mrm-custom-select-btn" type="button" onClick={() => showDropdownOption('field-condition')} >Select field type</button>
+                            <button className="mrm-custom-select-btn" type="button" onClick={() => showDropdownOption('field-condition')} >Select Condition</button>
                             <ul className="mintmrm-dropdown mrm-custom-select-dropdown">
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
+                                <li value="">Select Condition</li>
+                                
+                                {field_conditions.map((field_condition, idx) => {
+                                    return (
+                                        <li key={idx} value={field_condition.field_condition_value}>{field_condition.field_condition_label}</li>
+                                    );
+                                })}
                             </ul>
                         </div>
                     </li>
 
                     <li className="single-condition-filed field-action">
                         <div className={ fieldActionDropdown ? "mrm-custom-select-container show-dropdown" : "mrm-custom-select-container" } >
-                            <button className="mrm-custom-select-btn" type="button" onClick={() => showDropdownOption('field-action')} >Select field type</button>
+                            <button className="mrm-custom-select-btn" type="button" onClick={() => showDropdownOption('field-action')} >Select Action</button>
                             <ul className="mintmrm-dropdown mrm-custom-select-dropdown">
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
-                                <li value="sg">twst</li>
+                                <li value="">Select Action</li>
+                                
+                                {field_actions.map((field_action, idx) => {
+                                    return (
+                                        <li key={idx} value={field_action.field_action_value}>{field_action.field_action_label}</li>
+                                    );
+                                })}
                             </ul>
                         </div>
                     </li>
 
                     <li className="single-condition-filed delete-condition">
-                        <button type="button">
+                        <button type="button" title="Delete this Condition">
                             <DeleteIcon />
                         </button>
                     </li>
