@@ -80,6 +80,7 @@ const FormEditor = (props) => {
   const [listening, setListening] = useState(false);
   useEffect(
     ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
+
   );
 
   const toggleEnable = () => {
@@ -109,7 +110,7 @@ const FormEditor = (props) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    localStorage.setItem("settingsPannel", "hide");
+    localStorage.setItem("settingsPannel", "show");
     const getFormData = async () => {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
@@ -395,12 +396,12 @@ const FormEditor = (props) => {
                 {/*<li>Change Template</li>*/}
               </ul>
             </button>
-            <button
-              className="mintmrm-btn settings"
-              onClick={showSettingsPannel}
-            >
-              <SettingIcon />
-            </button>
+            {/*<button*/}
+            {/*  className="mintmrm-btn settings"*/}
+            {/*  onClick={showSettingsPannel}*/}
+            {/*>*/}
+            {/*  <SettingIcon />*/}
+            {/*</button>*/}
             <button
               className={
                 saveLoader

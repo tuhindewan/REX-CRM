@@ -90,6 +90,14 @@ function BlockEditor( { settings: _settings } ) {
 
 	}, [] );
 
+	const SettingPlanelShowHide = () => {
+		if ("show" === localStorage.settingsPannel) {
+			const el = document.getElementsByClassName("getdave-sbe-block-editor");
+			el[0].classList.remove("show-settings-pannel");
+			localStorage.setItem("settingsPannel", "hide");
+		}
+	}
+
 	/**
 	 * Wrapper for updating blocks. Required as `onInput` callback passed to
 	 * `BlockEditorProvider` is now called with more than 1 argument. Therefore
@@ -108,6 +116,7 @@ function BlockEditor( { settings: _settings } ) {
 	function handlePersistBlocks( newBlocks ) {
 		updateBlocks( newBlocks );
 		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
+
 	}
 	return (
 		<div className="get-mrm-block-editor">
