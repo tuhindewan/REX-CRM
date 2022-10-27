@@ -82,7 +82,8 @@ class AdminAssets {
                 'nonce' 			    => wp_create_nonce('wp_rest'),
                 'current_userID'        => get_current_user_id(),
                 'editor_data_source'    => $this->get_editor_source(),
-                'timezone_list'         => Constants::get_timezone_list()
+                'timezone_list'         => Constants::get_timezone_list(),
+                'countries'             => Constants::get_country_name()
             )
         );
     }
