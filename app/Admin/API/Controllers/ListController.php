@@ -121,8 +121,6 @@ class ListController extends BaseController {
         $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
         $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
 
-
-
         // List Search keyword
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 

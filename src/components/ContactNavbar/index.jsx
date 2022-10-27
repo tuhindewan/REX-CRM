@@ -1,8 +1,8 @@
 import { __ } from "@wordpress/i18n";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import routes from "../../routes";
-import { useState, useEffect } from "react";
 
 import "./style.css";
 
@@ -30,7 +30,6 @@ export default function Navbar(props) {
 
   return (
     <>
-    
       <div className="contact-header">
         <div className="mintmrm-container">
           <div className="header-wrapper">
@@ -78,11 +77,14 @@ export default function Navbar(props) {
                                 ? dataCount.total_tags
                                 : "0"}
                             </span>
-                          ) : "Segments" === route.title ? (
-                            <span className="bage">
-                              {"0"}
-                            </span>
                           ) : (
+                            // : "Segments" === route.title ? (
+                            //   <span className="bage">
+                            //     {dataCount.total_segments
+                            //       ? dataCount.total_segments
+                            //       : "0"}
+                            //   </span>
+                            // )
                             ""
                           )}
                         </li>

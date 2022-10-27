@@ -347,7 +347,7 @@ class ContactModel{
             $ids = !empty( $ids ) ? implode( ', ', $ids ) : 0;
         }
 
-        $sql = $wpdb->prepare( "SELECT `email` FROM {$contacts_table} WHERE `id` IN( %s ) AND `status` = %s", $ids, 'subscribed' );
+        $sql = $wpdb->prepare( "SELECT `id`, `email` FROM {$contacts_table} WHERE `id` IN( %s ) AND `status` = %s", $ids, 'subscribed' );
         $sql = str_replace( '( \'' , '( ', $sql );
         $sql = str_replace( '\' )' , ' )', $sql );
         return $wpdb->get_results( $sql, ARRAY_A );

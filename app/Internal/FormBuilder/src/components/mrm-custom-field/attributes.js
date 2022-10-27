@@ -11,6 +11,14 @@ const attributes = {
         type: 'string',
         default: ''
     },
+    custom_text_placeholder: {
+        type: 'string',
+        default: ''
+    },
+    custom_textarea_placeholder: {
+        type: 'string',
+        default: 'Type here...'
+    },
     field_require: {
         type: 'boolean',
         default: false

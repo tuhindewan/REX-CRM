@@ -36,14 +36,15 @@ class GeneralController{
 
          $lists = ContactGroupModel::get_all( 'lists' );
          $tags = ContactGroupModel::get_all( 'tags' );
+         $segments = ContactGroupModel::get_all( 'segments' );
          $contacts = ContactModel::get_all();
 
          $data = array(
-            'total_contacts' => isset($contacts['count']) ? $contacts['count']: 0,
-            'total_lists'    => isset($lists['count']) ? $lists['count'] : 0,
-            'total_tags'     => isset($tags['count']) ? $tags['count'] : 0
+            'total_contacts'       => isset($contacts['count'])  ? $contacts['count']     : 0,
+            'total_lists'          => isset($lists['count'])     ? $lists['count']        : 0,
+            'total_tags'           => isset($tags['count'])      ? $tags['count']         : 0,
+            'total_segments'       => isset($segments['count'])  ? $segments['count']     : 0
          );
-
          if(isset($lists) && isset($tags) && isset($contacts)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $data);
          }

@@ -79,16 +79,21 @@ class MRM_Subscribe_form
         if($form_placement != 'default' ){
             $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
         }
-        $html .= '<div class="mintmrm">
+        if( 0 == $form_id ){
+            $html = '<div class="mintmrm">
+                        <p>No form added</p>
+                    </div>';
+        }else{
+            $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_animation.' mrm-'.$form_placement.'">
                 <div class="mrm-form-wrapper-inner">';
-                if('default' != $form_placement){
-                    $html .= '<span class="mrm-form-close">
+            if('default' != $form_placement){
+                $html .= '<span class="mrm-form-close">
                         <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                     </span>';
-                }
+            }
 
-                $html .= '
+            $html .= '
                     <div class="mrm-form-overflow">
                         <form method="post" id="mrm-form">
                             <input hidden name="form_id" value="'.$attributes['form_id'].'" />
@@ -100,6 +105,8 @@ class MRM_Subscribe_form
             </div>
 
         </div>';
+        }
+
 
         return $html;
     }

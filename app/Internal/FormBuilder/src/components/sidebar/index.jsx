@@ -168,6 +168,9 @@ function Sidebar() {
   useEffect(() => {
     // set selected confiramation type
     if (prevSetting?.settings?.confirmation_type?.selected_confirmation_type) {
+      setTabState(
+        prevSetting?.settings?.confirmation_type?.selected_confirmation_type
+      );
       setSelectedConfirmationType(
         prevSetting?.settings?.confirmation_type?.selected_confirmation_type
       );
@@ -403,6 +406,7 @@ function Sidebar() {
 
   //-------settings pannel open function-------
   const showSettingsPannel = (event) => {
+    localStorage.setItem("settingsPannel", "hide");
     const el = document.getElementsByClassName("getdave-sbe-block-editor");
     el[0].classList.remove("show-settings-pannel");
   };

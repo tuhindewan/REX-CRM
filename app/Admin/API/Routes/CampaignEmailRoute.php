@@ -128,6 +128,20 @@ class CampaignEmailRoute {
             ],
         ]);
 
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)/email-builder/(?P<email_id>[\d]+)', [
+            array(
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_email_builder_data'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            )
+        ]);
+
     }
 
 }

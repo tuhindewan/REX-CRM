@@ -70,6 +70,9 @@ class ContactForm {
      */
     public function get_content() {
         $form_id = isset($this->attributes['id']) ? $this->attributes['id'] : 0 ;
+        if (0 == $form_id){
+            return __('No form added','mrm');
+        }
         $form_data = FormModel::get($form_id);
         $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
         if (empty($form_data)){

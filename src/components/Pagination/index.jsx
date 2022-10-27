@@ -16,7 +16,7 @@ const Pagination = (props) => {
     pageSize,
     totalPages,
   } = props;
-
+  
   const paginationRange = usePagination({
     currentPage,
     totalCount,
@@ -25,9 +25,7 @@ const Pagination = (props) => {
   });
 
   // If there are less than 2 times in pagination range we shall not render the component
-  if (currentPage === 0 || paginationRange.length < 2) {
-    return null;
-  }
+  
 
   const onNext = () => {
     onPageChange(Math.min(totalPages, currentPage + 1), pageSize, "");
@@ -37,7 +35,7 @@ const Pagination = (props) => {
     onPageChange(Math.max(1, currentPage - 1), pageSize, "");
   };
 
-  let lastPage = paginationRange[paginationRange.length - 1];
+  // let lastPage = paginationRange[paginationRange.length - 1];
 
   return (
     <>
@@ -58,41 +56,43 @@ const Pagination = (props) => {
           )}
         </div>
 
+        {totalCount > 0 && (
         <ul className="footer-pagination">
-          {/* Left navigation arrow */}
-          <li href="#" onClick={onPrevious}>
-            <DoubleAngleLeftIcon />
-          </li>
+        {/* Left navigation arrow */}
+        <li href="#" onClick={onPrevious}>
+          <DoubleAngleLeftIcon />
+        </li>
 
-          {paginationRange.map((pageNumber, key) => {
-            // If the pageItem is a DOT, render the DOTS unicode character
-            if (pageNumber === DOTS) {
-              return (
-                <li key={key} className="pagination-item dots">
-                  &#8230;
-                </li>
-              );
-            }
-
-            // Render our Page Pills
+        {paginationRange?.map((pageNumber, key) => {
+          // If the pageItem is a DOT, render the DOTS unicode character
+          if (pageNumber === DOTS) {
             return (
-              <li
-                key={key}
-                className={classnames("pagination-item", {
-                  active: pageNumber === currentPage,
-                })}
-                onClick={() => onPageChange(pageNumber)}
-              >
-                {pageNumber}
+              <li key={key} className="pagination-item dots">
+                &#8230;
               </li>
             );
-          })}
+          }
 
-          {/* Right navigation arrow */}
-          <li onClick={onNext}>
-            <DoubleAngleRightIcon />
-          </li>
-        </ul>
+          // Render our Page Pills
+          return (
+            <li
+              key={key}
+              className={classnames("pagination-item", {
+                active: pageNumber === currentPage,
+              })}
+              onClick={() => onPageChange(pageNumber)}
+            >
+              {pageNumber}
+            </li>
+          );
+        })}
+
+        {/* Right navigation arrow */}
+        <li onClick={onNext}>
+          <DoubleAngleRightIcon />
+        </li>
+      </ul>
+        )}
       </div>
     </>
   );
