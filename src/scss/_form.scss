@@ -20,7 +20,6 @@
     position: relative;
     overflow: hidden;
     box-shadow: 30px 25px 30px #cececead;
-
   }
 
   .resposive-preview-desktop {
@@ -52,9 +51,7 @@
       background-color: #ccd0d9;
       border-radius: 20px;
     }
-
   }
-  
 }
 
 .add-form-btn {
@@ -203,7 +200,7 @@
           .view {
             width: 70px;
           }
-          .signup {
+          .entries {
             width: 80px;
           }
           .shortcode {
@@ -312,6 +309,7 @@
 
                 &:hover {
                   color: $primary-color;
+                  cursor: pointer;
                 }
               }
 

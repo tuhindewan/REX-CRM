@@ -339,8 +339,13 @@ export default function FormIndex(props) {
   const redirectFormBuilder = () => {
     setIsTemplate(true);
     setIsClose(!isClose);
-    // window.location.href =
-    //   "http://mrmcrm.local/wp-admin/admin.php?page=mrm-admin#/form-builder/";
+  };
+
+  const openFormBuilder = (id) => {
+    window.location.replace(
+      `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/${id}`
+    );
+    window.location.reload();
   };
 
   return (
@@ -450,7 +455,7 @@ export default function FormIndex(props) {
                             </span>
                           </th>
                           {/* <th className="view">View</th> */}
-                          <th className="signup">Signup</th>
+                          <th className="entries">Entries</th>
                           <th className="shortcode">Shortcode</th>
                           <th className="status">Status</th>
                         </tr>
@@ -480,9 +485,13 @@ export default function FormIndex(props) {
                                       </span>
 
                                       <span className="name">
-                                        <Link to={`../form-builder/${form.id}`}>
+                                        <a
+                                          onClick={() =>
+                                            openFormBuilder(form.id)
+                                          }
+                                        >
                                           {form.title}
-                                        </Link>
+                                        </a>
 
                                         <small>{form.created_ago} ago</small>
                                       </span>
@@ -562,9 +571,7 @@ export default function FormIndex(props) {
                                           className="action-list"
                                           style={{ display: "flex" }}
                                           onClick={() =>
-                                            navigate(
-                                              `../form-builder/${form.id}`
-                                            )
+                                            openFormBuilder(form.id)
                                           }
                                         >
                                           <EditIcon />

@@ -8,6 +8,9 @@ const FormTemplate = (props) => {
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
+  const [formBuilderUrl, setFormBuilderUrl] = useState(
+    `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
+  );
 
   const closeSection = () => {
     setIsClose(!isClose);
@@ -28,9 +31,11 @@ const FormTemplate = (props) => {
   };
   const emailEditorRef = useRef(null);
 
-  const closeEmailBuilder = () => {
-    setIsCloseBuilder("none");
+  const openFormBuilder = () => {
+    window.location.replace(formBuilderUrl);
+    window.location.reload();
   };
+
   return (
     <>
       <div
@@ -64,14 +69,11 @@ const FormTemplate = (props) => {
                 className="template-select-section"
                 onClick={openTemplateBuilder}
               >
-                <Link
-                  to="/form-builder"
-                  // onClick={() => window.location.reload()}
-                >
+                <a onClick={openFormBuilder}>
                   <button type="submit" className="save-template mintmrm-btn ">
                     Start From Scratch
                   </button>
-                </Link>
+                </a>
               </div>
               <div className="template-select-section coming-soon">
                 <h2>Amazing Templates Are Coming Soon</h2>
