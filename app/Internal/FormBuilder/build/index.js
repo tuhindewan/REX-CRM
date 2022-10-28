@@ -11299,7 +11299,7 @@ const mrmButton = _ref => {
     // borderWidth:  buttonBorderWidth+'px',
     borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
     borderColor: buttonBorderColor,
-    width: buttonWidth + "%"
+    minWidth: buttonWidth + "%"
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group submit",
@@ -11632,7 +11632,7 @@ class Editor extends Component {
       // borderWidth:  buttonBorderWidth+'px',
       borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
       borderColor: buttonBorderColor,
-      width: buttonWidth + "%"
+      minWidth: buttonWidth + "%"
     };
 
     // display the map selector

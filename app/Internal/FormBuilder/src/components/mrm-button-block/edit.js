@@ -323,7 +323,7 @@ class Editor extends Component {
             // borderWidth:  buttonBorderWidth+'px',
             borderWidth: outline === 'fill' ? '0' : buttonBorderWidth+'px',
             borderColor:  buttonBorderColor,
-            width : buttonWidth+"%"
+            minWidth : buttonWidth+"%"
         }
 
 
