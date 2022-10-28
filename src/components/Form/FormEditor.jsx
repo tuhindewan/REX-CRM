@@ -75,6 +75,9 @@ const FormEditor = (props) => {
 
   const [isReloaded, setIsReloaded] = useState(false);
 
+  const [formData, setFormData] = useState({});
+  const [resTime, setResTime] = useState(2000);
+
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -90,9 +93,6 @@ const FormEditor = (props) => {
   const onShowAlert = async (status) => {
     setShowAlert(status);
   };
-
-  const [formData, setFormData] = useState({});
-  const [resTime, setResTime] = useState(1000);
 
   useEffect(() => {
     localStorage.setItem("settingsPannel", "show");
@@ -337,13 +337,14 @@ const FormEditor = (props) => {
     setBlockData(block);
   };
 
+  // to fix relaod issue
   const [loadComponent, setLoadComponent] = useState(true);
 
   useEffect(() => {
     const toRef = setTimeout(() => {
       setLoadComponent(false);
       clearTimeout(toRef);
-    }, resTime);
+    }, resTime); // resTime is calculated from server response time
   }, [loadComponent]);
 
   return (
@@ -428,14 +429,14 @@ const FormEditor = (props) => {
           ) : (
             <div className="form-editor-title-area">
               <InputItem
-                label="Title"
+                label="Title*"
                 name="title"
                 handleChange={handleChange}
                 value={formData?.title}
               />
 
               <div className="form-group list">
-                <label className="list-label">Assign To</label>
+                <label className="list-label">Assign To*</label>
 
                 <div className="list-content" ref={menuRef}>
                   {recipientLists?.length == 0 && recipientTags?.length == 0 ? (

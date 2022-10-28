@@ -49,6 +49,11 @@ class FormController extends BaseController {
         if (empty($title)) {
             return $this->get_error_response( __( 'Form name is mandatory', 'mrm' ), 200);
         }
+        //group Ids validation
+        $group_ids = isset( $params['group_ids'] ) ? $params['group_ids'] : [];
+        if (empty($group_ids['lists']) && empty($group_ids['tags'])){
+            return $this->get_error_response( __( 'It is mandatory to select at least one group', 'mrm' ), 200);
+        }
 
         // Form object create and insert or update to database
         $this->args = array(
