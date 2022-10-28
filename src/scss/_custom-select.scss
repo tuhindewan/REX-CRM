@@ -7,7 +7,7 @@
     font-size: 14px;
     line-height: 20px;
     color: #2D3149;
-    padding: 6px 30px 6px 9px;
+    padding: 7px 30px 7px 9px;
     background: #ffffff;
     border: 1px solid #EBEDF0;
     border-radius: 6px;
@@ -18,28 +18,18 @@
       border-style: solid;
       border-color: #686f7f;
       border-width: 0px 1px 1px 0px;
-      transform: rotate(45deg);
-      transition: border-width 150ms ease-in-out;
-      height: 5px;
-      right: 10px;
-      top: 45%;
-      width: 5px;
+      transition: all 0.3s ease;
+      height: 6px;
+      width: 6px;
+      right: 11px;
+      top: calc(50% - 2px);
+      transform: rotate(45deg) translateY(-50%);
       cursor: pointer;
     }
     &.show:before {
-      content: " ";
-      display: block;
-      position: absolute;
-      border-style: solid;
-      border-color: #686f7f;
-      border-width: 0px 1px 1px 0px;
-      transform: rotate(225deg);
-      transition: border-width 150ms ease-in-out;
-      height: 5px;
-      right: 10px;
-      top: 45%;
-      width: 5px;
-      cursor: pointer;
+      transform: rotate(225deg) translateY(-50%);
+      top: calc(50% - 5px);
+      right: 8px;
     }
   }
 }

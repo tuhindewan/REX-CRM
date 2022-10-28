@@ -198,7 +198,7 @@ class FormModel {
         try {
             
             // Return forms in list view
-            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $form_table {$search_terms} ORDER BY $order_by $order_type LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+            $select_query  = $wpdb->get_results( $wpdb->prepare( "SELECT `id`, `title`, `status`, `created_at` FROM $form_table {$search_terms} ORDER BY $order_by $order_type LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
             $count_query   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $form_table", array(  ) ) );
             
             $count = (int) $count_query;
@@ -208,8 +208,9 @@ class FormModel {
 
             foreach( $select_query as $query_result ){
                 $q_id = isset($query_result['id']) ? $query_result['id'] : "";
-                $new_meta = self::get_meta( $q_id );
-                $results[] = array_merge($query_result, $new_meta);
+                $entries = self::get_form_meta_value_with_key( $q_id, 'entries');
+
+                $results[] = !empty($entries) ? array_merge($query_result, $entries) : $query_result;
             }
 
 
@@ -264,12 +265,17 @@ class FormModel {
         $form_table = $wpdb->prefix . FormSchema::$table_name;
 
         try {
-            $form_query     = $wpdb->prepare("SELECT * FROM $form_table WHERE id = %d",array( $id ));
+            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids`, `status`, `form_body`, `status` FROM $form_table WHERE id = %d",array( $id ));
             $form_result   = json_decode(json_encode($wpdb->get_results($form_query)), true);
-            
-            $new_meta = self::get_meta( $id );
 
-            return array_merge(isset($form_result[0])? $form_result[0] : [], $new_meta);
+
+            foreach( $form_result as $query_result ){
+                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
+                $entries = self::get_form_meta_value_with_key( $q_id, 'settings');
+
+                return !empty($entries) ? array_merge($query_result, $entries) : $query_result;
+            }
+
         
         } catch(\Exception $e) {
             return false;
@@ -364,7 +370,7 @@ class FormModel {
 
 
     /**
-     * Check existing from meta key
+     * Get from meta value with meta key
      * 
      * @param int $form_id
      * @param string $meta_key 
@@ -372,7 +378,7 @@ class FormModel {
      * @return bool
      * @since 1.0.0
      */
-    public static function is_form_meta_key_exist( $form_id, $meta_key )
+    public static function get_form_meta_value_with_key( $form_id, $meta_key )
     {
         global $wpdb;
         $table_name = $wpdb->prefix . FormMetaSchema::$table_name;
@@ -380,8 +386,13 @@ class FormModel {
         try {
             $select_query = $wpdb->prepare("SELECT * FROM $table_name WHERE form_id = %d AND meta_key=%s", array( $form_id, $meta_key ));
             $results = $wpdb->get_results($select_query);
+
+            $new_meta['meta_fields'] = [];
+
             if( !empty($results) ){
-                return true;
+                $new_meta['meta_fields'][$results[0]->meta_key] = $results[0]->meta_value;
+
+                return $new_meta;
             }
         } catch (\Throwable $th) {
             return false;

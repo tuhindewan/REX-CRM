@@ -356,7 +356,7 @@ export default function AddCampaign(props) {
                 <DoubleAngleLeftIcon />
                 <Link to="/campaigns">Campaigns</Link>
               </div>
-              <h2 className="campaign-title">Add Campaigns</h2>
+              <h2 className="campaign-title">Add Campaign</h2>
             </div>
             <div className="right-section">
               {/* <button className="mrm-custom-select-btn">Month</button> */}

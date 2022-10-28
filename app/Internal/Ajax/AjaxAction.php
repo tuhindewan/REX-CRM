@@ -111,11 +111,11 @@ class AjaxAction {
                  */
                 MessageController::get_instance()->send_double_opt_in( $contact_id );
 
-                $sign_up        = FormModel::get_meta($form_id);
-                $sign_up_count  = isset($sign_up['meta_fields']['sign_up']) ? $sign_up['meta_fields']['sign_up'] : 0;
+                $entries        = FormModel::get_form_meta_value_with_key($form_id, 'entries');
+                $entries_count  = isset($entries['meta_fields']['entries']) ? $entries['meta_fields']['entries'] : 0;
 
                 $args['meta_fields'] = array(
-                    'sign_up' => $sign_up_count + 1
+                    'entries' => $entries_count + 1
                 );
                 FormModel::update_meta_fields($form_id,$args);
 

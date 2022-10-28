@@ -25,6 +25,7 @@ const {
   Radio,
   DateTimePicker,
   DatePicker,
+  TabPanel
 } = wp.components;
 
 const { Component, RawHTML, useEffect, useState } = wp.element;
@@ -460,269 +461,268 @@ function Sidebar() {
         aria-label={__("MRM Block Editor advanced settings.")}
         tabIndex="-1"
       >
-        <Panel header={__("Inspector")}>
-          <InspectorSlot bubblesVirtually />
-        </Panel>
 
-        <Panel className="settings-pannel">
-          <div className="components-panel__header">
-            <h2>
-              <SettingsIcon />
-              Settings
-            </h2>
 
-            <span className="close-pannel" onClick={showSettingsPannel}>
-              <CrossIcon />
-            </span>
-          </div>
+        <Panel>
+          <Panel className="settings-pannel">
+            <div className="components-panel__header">
+              <h2>
+                <SettingsIcon />
+                Settings
+              </h2>
 
-          <PanelBody
-            title="Confirmation Settings"
-            className="confirmation-settings"
-            initialOpen={true}
-          >
-            <div className="pannelbody-wrapper">
-              <div className="pannel-single-settings">
-                <label className="settings-label">
-                  Confirmation Type
-                  <span className="mintmrm-tooltip">
+            {/*  <span className="close-pannel" onClick={showSettingsPannel}>*/}
+            {/*  <CrossIcon />*/}
+            {/*</span>*/}
+            </div>
+
+            <PanelBody
+                title="Confirmation Settings"
+                className="confirmation-settings"
+                initialOpen={true}
+            >
+              <div className="pannelbody-wrapper">
+                <div className="pannel-single-settings">
+                  <label className="settings-label">
+                    Confirmation Type
+                    <span className="mintmrm-tooltip">
                     <QuestionIcon />
                     <p>
                       Where do you want to send the user after form
                       confirmation?
                     </p>
                   </span>
-                </label>
+                  </label>
 
-                <div className="pannel-tab-nav">
+                  <div className="pannel-tab-nav">
                   <span
-                    className={
-                      tabState === "same-page"
-                        ? "tab-nav-item active"
-                        : "tab-nav-item"
-                    }
-                    onClick={() => handleConfirmationType("same-page")}
+                      className={
+                        tabState === "same-page"
+                            ? "tab-nav-item active"
+                            : "tab-nav-item"
+                      }
+                      onClick={() => handleConfirmationType("same-page")}
                   >
                     Same Page
                   </span>
 
-                  <span
-                    className={
-                      tabState === "page"
-                        ? "tab-nav-item active"
-                        : "tab-nav-item"
-                    }
-                    onClick={() => handleConfirmationType("page")}
-                  >
+                    <span
+                        className={
+                          tabState === "page"
+                              ? "tab-nav-item active"
+                              : "tab-nav-item"
+                        }
+                        onClick={() => handleConfirmationType("page")}
+                    >
                     To a page
                   </span>
 
-                  <span
-                    className={
-                      tabState === "custom-url"
-                        ? "tab-nav-item active"
-                        : "tab-nav-item"
-                    }
-                    onClick={() => handleConfirmationType("custom-url")}
-                  >
+                    <span
+                        className={
+                          tabState === "custom-url"
+                              ? "tab-nav-item active"
+                              : "tab-nav-item"
+                        }
+                        onClick={() => handleConfirmationType("custom-url")}
+                    >
                     To a custom URL
                   </span>
-                </div>
+                  </div>
 
-                <div className="pannel-tab-content">
-                  <div
-                    className={
-                      tabState === "same-page"
-                        ? "single-tab-content same-page-tab-content active"
-                        : "single-tab-content same-page-tab-content"
-                    }
-                  >
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        Message to show
-                        <span className="mintmrm-tooltip">
+                  <div className="pannel-tab-content">
+                    <div
+                        className={
+                          tabState === "same-page"
+                              ? "single-tab-content same-page-tab-content active"
+                              : "single-tab-content same-page-tab-content"
+                        }
+                    >
+                      <div className="single-settings">
+                        <label className="settings-label">
+                          Message to show
+                          <span className="mintmrm-tooltip">
                           <QuestionIcon />
                           <p>What message you want to show to the use?</p>
                         </span>
-                      </label>
-                      <TextareaControl
-                        name="message_to_show"
-                        defaultValue={messageToShow}
-                        onChange={(e) => setMessageToShow(e)}
-                      />
-                    </div>
+                        </label>
+                        <TextareaControl
+                            name="message_to_show"
+                            defaultValue={messageToShow}
+                            onChange={(e) => setMessageToShow(e)}
+                        />
+                      </div>
 
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        After Form Submission
-                        <span className="mintmrm-tooltip">
+                      <div className="single-settings">
+                        <label className="settings-label">
+                          After Form Submission
+                          <span className="mintmrm-tooltip">
                           <QuestionIcon />
                           <p>Define behaviour of the form after submission</p>
                         </span>
-                      </label>
+                        </label>
 
-                      <RadioControl
-                        selected={afterFormSubmission}
-                        options={[
-                          { label: "None", value: "none" },
-                          { label: "Hide Form", value: "hide_form" },
-                          { label: "Reset Form", value: "reset_form" },
-                        ]}
-                        onChange={(state) => setAfterFormSubmission(state)}
-                      />
+                        <RadioControl
+                            selected={afterFormSubmission}
+                            options={[
+                              { label: "None", value: "none" },
+                              { label: "Hide Form", value: "hide_form" },
+                              { label: "Reset Form", value: "reset_form" },
+                            ]}
+                            onChange={(state) => setAfterFormSubmission(state)}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div
-                    className={
-                      tabState === "page"
-                        ? "single-tab-content same-page-tab-content active"
-                        : "single-tab-content same-page-tab-content"
-                    }
-                  >
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        Select a page
-                        <span className="mintmrm-tooltip">
+                    <div
+                        className={
+                          tabState === "page"
+                              ? "single-tab-content same-page-tab-content active"
+                              : "single-tab-content same-page-tab-content"
+                        }
+                    >
+                      <div className="single-settings">
+                        <label className="settings-label">
+                          Select a page
+                          <span className="mintmrm-tooltip">
                           <QuestionIcon />
                           <p>
                             Which page you want to redirect after the submitted
                             the form?
                           </p>
                         </span>
-                      </label>
-                      <SelectControl
-                        value={selectedPageId}
-                        options={pageOptions}
-                        onChange={(state) => handlePageChange(state)}
-                      />
-                    </div>
+                        </label>
+                        <SelectControl
+                            value={selectedPageId}
+                            options={pageOptions}
+                            onChange={(state) => handlePageChange(state)}
+                        />
+                      </div>
 
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        Redirection Message
-                        <span className="mintmrm-tooltip">
+                      <div className="single-settings">
+                        <label className="settings-label">
+                          Redirection Message
+                          <span className="mintmrm-tooltip">
                           <QuestionIcon />
                           <p>
                             What is the message after redirection of a page?
                           </p>
                         </span>
-                      </label>
-                      <TextareaControl
-                        name="redirection_message"
-                        defaultValue={redirectionMessage}
-                        onChange={(e) => setRedirectionMessage(e)}
-                      />
+                        </label>
+                        <TextareaControl
+                            name="redirection_message"
+                            defaultValue={redirectionMessage}
+                            onChange={(e) => setRedirectionMessage(e)}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div
-                    className={
-                      tabState === "custom-url"
-                        ? "single-tab-content same-page-tab-content active"
-                        : "single-tab-content same-page-tab-content"
-                    }
-                  >
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        Custom URL
-                        <span className="mintmrm-tooltip">
+                    <div
+                        className={
+                          tabState === "custom-url"
+                              ? "single-tab-content same-page-tab-content active"
+                              : "single-tab-content same-page-tab-content"
+                        }
+                    >
+                      <div className="single-settings">
+                        <label className="settings-label">
+                          Custom URL
+                          <span className="mintmrm-tooltip">
                           <QuestionIcon />
                           <p>Enter a custom URL to redirect</p>
                         </span>
-                      </label>
+                        </label>
 
-                      <TextControl
-                        name="custom-url"
-                        value={customURL}
-                        onChange={(e) => handleCustomURL(e)}
-                      />
-                      {!isValidUrl && (
-                        <p className="validation-warning">
-                          **Warning : Your URL is not in a valid format**
-                        </p>
-                      )}
-                    </div>
+                        <TextControl
+                            name="custom-url"
+                            value={customURL}
+                            onChange={(e) => handleCustomURL(e)}
+                        />
+                        {!isValidUrl && (
+                            <p className="validation-warning">
+                              **Warning : Your URL is not in a valid format**
+                            </p>
+                        )}
+                      </div>
 
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        Redirection Message
-                        <span className="mintmrm-tooltip">
+                      <div className="single-settings">
+                        <label className="settings-label">
+                          Redirection Message
+                          <span className="mintmrm-tooltip">
                           <QuestionIcon />
                           <p>Reidrectional message for custom URL</p>
                         </span>
-                      </label>
-                      <TextareaControl
-                        name="custom-redirection-message"
-                        defaultValue={customRedirectionMessage}
-                        onChange={(e) => setCustomRedirectionMessage(e)}
-                      />
+                        </label>
+                        <TextareaControl
+                            name="custom-redirection-message"
+                            defaultValue={customRedirectionMessage}
+                            onChange={(e) => setCustomRedirectionMessage(e)}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </PanelBody>
+            </PanelBody>
 
-          <PanelBody
-            title="Form Layout"
-            className="form-layout-settings"
-            initialOpen={false}
-          >
-            <div className="pannelbody-wrapper">
-              <div className="single-settings">
-                <label className="settings-label">
-                  Form Placement
-                  <span className="mintmrm-tooltip">
-                    <QuestionIcon />
-                    <p>Animation to show up your form</p>
-                  </span>
-                </label>
-
-                <RadioControl
-                  selected={formPosition}
-                  options={[
-                    { label: "Default", value: "default" },
-                    { label: "Pop Up", value: "popup" },
-                    { label: "Fly Ins", value: "flyins" },
-                  ]}
-                  onChange={(state) => setFormPosition(state)}
-                />
-              </div>
-            </div>
-          </PanelBody>
-
-          {"default" !== formPosition && (
             <PanelBody
-              title="Form Animation"
-              className="form-animation-settings"
-              initialOpen={false}
+                title="Form Layout"
+                className="form-layout-settings"
+                initialOpen={false}
             >
               <div className="pannelbody-wrapper">
                 <div className="single-settings">
                   <label className="settings-label">
-                    Animation Type
+                    Form Placement
                     <span className="mintmrm-tooltip">
-                      <QuestionIcon />
-                      <p>Type of animation to show your form</p>
-                    </span>
+                    <QuestionIcon />
+                    <p>Animation to show up your form</p>
+                  </span>
                   </label>
 
-                  <SelectControl
-                    value={formAnimation}
-                    options={[
-                      { label: "None", value: "none" },
-                      { label: "Fade In", value: "fade-in" },
-                      { label: "Slide In Up", value: "slide-in-up" },
-                    ]}
-                    onChange={(state) => setFormAnimation(state)}
+                  <RadioControl
+                      selected={formPosition}
+                      options={[
+                        { label: "Default", value: "default" },
+                        { label: "Pop Up", value: "popup" },
+                        { label: "Fly Ins", value: "flyins" },
+                      ]}
+                      onChange={(state) => setFormPosition(state)}
                   />
                 </div>
               </div>
             </PanelBody>
-          )}
 
-          {/* <PanelBody
+            {"default" !== formPosition && (
+                <PanelBody
+                    title="Form Animation"
+                    className="form-animation-settings"
+                    initialOpen={false}
+                >
+                  <div className="pannelbody-wrapper">
+                    <div className="single-settings">
+                      <label className="settings-label">
+                        Animation Type
+                        <span className="mintmrm-tooltip">
+                      <QuestionIcon />
+                      <p>Type of animation to show your form</p>
+                    </span>
+                      </label>
+
+                      <SelectControl
+                          value={formAnimation}
+                          options={[
+                            { label: "None", value: "none" },
+                            { label: "Fade In", value: "fade-in" },
+                            { label: "Slide In Up", value: "slide-in-up" },
+                          ]}
+                          onChange={(state) => setFormAnimation(state)}
+                      />
+                    </div>
+                  </div>
+                </PanelBody>
+            )}
+
+            {/* <PanelBody
             title="Schedule"
             className="schedule-settings"
             initialOpen={false}
@@ -808,7 +808,14 @@ function Sidebar() {
               </div>
             </div>
           </PanelBody> */}
+          </Panel>
+          <InspectorSlot bubblesVirtually />
+
+
+
         </Panel>
+
+
       </div>
     </>
   );

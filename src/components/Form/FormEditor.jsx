@@ -91,25 +91,10 @@ const FormEditor = (props) => {
     setShowAlert(status);
   };
 
-  // Fetch lists & tags
-  useEffect(() => {
-    // Get lists
-    getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
-      });
-    });
-
-    // Get tags
-    getTags().then((results) => {
-      setTags(results.data);
-    });
-  }, []);
-
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    localStorage.setItem("settingsPannel", "hide");
+    localStorage.setItem("settingsPannel", "show");
     const getFormData = async () => {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
@@ -125,8 +110,11 @@ const FormEditor = (props) => {
     };
     if (id) {
       getFormData();
+    } else {
+      setLoading(false);
     }
-    reload();
+
+    //reload();
   }, []);
 
   const reload = () => {
@@ -348,72 +336,78 @@ const FormEditor = (props) => {
   return (
     <>
       <div className="form-editor-page">
-        <div className="form-editor-topbar">
-          <div className="topbar-left">
-            <Link to="/forms/">
-              <button className="back-button">
-                <DoubleAngleLeftIcon />
-              </button>
-            </Link>
+        {loading ? (
+          <LoadingIndicator type="table" />
+        ) : (
+          <div className="form-editor-topbar">
+            <div className="topbar-left">
+              <Link to="/forms/">
+                <button className="back-button">
+                  <DoubleAngleLeftIcon />
+                </button>
+              </Link>
 
-            <div className="responsive-section">
+              <div className="responsive-section">
+                <button
+                  className={
+                    "editor" === preview ? "edit-view active" : "edit-view"
+                  }
+                  onClick={(e) => handlePreview("editor")}
+                >
+                  <EditIcon />
+                </button>
+                <button
+                  className={
+                    "desktop" === preview
+                      ? "desktop-view active"
+                      : "desktop-view"
+                  }
+                  onClick={(e) => handlePreview("desktop")}
+                >
+                  <TabIcon />
+                </button>
+                <button
+                  className={
+                    "mobile" === preview ? "mobile-view active" : "mobile-view"
+                  }
+                  onClick={(e) => handlePreview("mobile")}
+                >
+                  <MobileIcon />
+                </button>
+              </div>
+            </div>
+
+            <div className="topbar-right">
               <button
-                className={
-                  "editor" === preview ? "edit-view active" : "edit-view"
-                }
-                onClick={(e) => handlePreview("editor")}
+                className={moreOption ? "three-dot-btn show" : "three-dot-btn"}
+                onClick={clickShowOption}
               >
-                <EditIcon />
+                <ThreeDotIcon />
+                <ul className="mintmrm-dropdown">
+                  <li onClick={saveFormAsDraft}>Save as Draft</li>
+                  {/*<li>Change Template</li>*/}
+                </ul>
               </button>
+              {/* <button
+                className="mintmrm-btn settings"
+                onClick={showSettingsPannel}
+              >
+                <SettingIcon />
+              </button> */}
               <button
                 className={
-                  "desktop" === preview ? "desktop-view active" : "desktop-view"
+                  saveLoader
+                    ? "mintmrm-btn enable show-loader"
+                    : "mintmrm-btn enable"
                 }
-                onClick={(e) => handlePreview("desktop")}
+                onClick={saveForm}
               >
-                <TabIcon />
-              </button>
-              <button
-                className={
-                  "mobile" === preview ? "mobile-view active" : "mobile-view"
-                }
-                onClick={(e) => handlePreview("mobile")}
-              >
-                <MobileIcon />
+                {id ? "Update" : "Publish"}
+                <span className="mintmrm-loader"></span>
               </button>
             </div>
           </div>
-
-          <div className="topbar-right">
-            <button
-              className={moreOption ? "three-dot-btn show" : "three-dot-btn"}
-              onClick={clickShowOption}
-            >
-              <ThreeDotIcon />
-              <ul className="mintmrm-dropdown">
-                <li onClick={saveFormAsDraft}>Save as Draft</li>
-                {/*<li>Change Template</li>*/}
-              </ul>
-            </button>
-            <button
-              className="mintmrm-btn settings"
-              onClick={showSettingsPannel}
-            >
-              <SettingIcon />
-            </button>
-            <button
-              className={
-                saveLoader
-                  ? "mintmrm-btn enable show-loader"
-                  : "mintmrm-btn enable"
-              }
-              onClick={saveForm}
-            >
-              {id ? "Update" : "Publish"}
-              <span className="mintmrm-loader"></span>
-            </button>
-          </div>
-        </div>
+        )}
 
         <div className="form-editor-body">
           <div className="form-editor-title-area">
