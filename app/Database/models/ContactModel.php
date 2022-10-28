@@ -273,9 +273,7 @@ class ContactModel{
         
         // Prepare sql results for list view
         try {
-            $select_query  =  "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
-            $query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
-            
+            $query_results  =  $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", [$offset, $limit] ), ARRAY_A ) ;
             $results = array();
             
             foreach( $query_results as $query_result ){
@@ -284,16 +282,12 @@ class ContactModel{
                 $results[] = array_merge($query_result, $new_meta);
             }
 
-
-            $count_query    = "SELECT COUNT(*) as total FROM $contact_table $search_terms";
-            $count_result   = $wpdb->get_results($count_query);
-            
-            $count = (int) $count_result['0']->total;
-            $total_pages = ceil($count / $limit);
+            $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $contact_table $search_terms" ) );
+            $totalPages = ceil($count / $limit);
 
             return array(
                 'data'=> $results,
-                'total_pages' => $total_pages,
+                'total_pages' => $totalPages,
                 'count' => $count
             );
         } catch(\Exception $e) {

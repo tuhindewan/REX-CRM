@@ -15,6 +15,7 @@ import TemplateIcon from "../Icons/TemplateIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
+import PublishAlert from "../PublishAlert";
 import SuccessfulNotification from "../SuccessfulNotification";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
@@ -67,6 +68,9 @@ export default function EditCampaign(props) {
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [campaignStatus, setCampaignStatus] = useState("");
+  const [isReadonly, setIsReadonly] = useState(false);
+  const [isPublish, setIsPublish] = useState("none");
+  const [publishCampaign, setPublishCampaign] = useState(false);
   const [listAdder, setListAdder] = useState({
     lists: [],
     tags: [],
@@ -137,6 +141,9 @@ export default function EditCampaign(props) {
       setCampaignStatus(campaign.status);
       satRecipientsCount(campaign.total_recipients);
       setShowLoader(false);
+      if ("ongoing" == campaign.status || "completed" == campaign.status) {
+        setIsReadonly(true);
+      }
 
       // toggleRefresh();
     });
@@ -189,6 +196,10 @@ export default function EditCampaign(props) {
     }
   };
 
+  const publishCampaignNow = async () => {
+    setIsPublish("block");
+  };
+
   // Prepare campaign object and send post request to backend
   const updateCampaign = async (status) => {
     if (campaignTitle.length < 3) {
@@ -213,7 +224,7 @@ export default function EditCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: status,
+      status: status == "ongoing" ? "ongoing" : status,
       emails: emailData.map((email) => {
         return {
           id: email?.id,
@@ -299,11 +310,13 @@ export default function EditCampaign(props) {
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
-    setEmailData((prevEmailData) => {
-      setSelectedEmailIndex(prevEmailData.length);
-      setActiveEmailData(defaultEmailData);
-      return [...prevEmailData, { ...defaultEmailData }];
-    });
+    if ("ongoing" != campaignStatus && "completed" != campaignStatus) {
+      setEmailData((prevEmailData) => {
+        setSelectedEmailIndex(prevEmailData.length);
+        setActiveEmailData(defaultEmailData);
+        return [...prevEmailData, { ...defaultEmailData }];
+      });
+    }
   };
 
   // function for removing an email from the sequence
@@ -317,6 +330,68 @@ export default function EditCampaign(props) {
 
   const onDeleteShow = async (status) => {
     setIsEmailDelete(status);
+  };
+
+  const onNotPublish = async (status) => {
+    setIsPublish(status);
+  };
+
+  const onPublishStatus = async (status) => {
+    if (status) {
+      const campaign = {
+        title: campaignTitle,
+        recipients: {
+          lists: recipientLists?.map((list) => {
+            return {
+              id: list.id,
+              title: list.title,
+            };
+          }),
+          tags: recipientTags?.map((tag) => {
+            return {
+              id: tag.id,
+              title: tag.title,
+            };
+          }),
+        },
+        type: emailData.length > 1 ? "sequence" : "regular",
+        status: "ongoing",
+        emails: emailData.map((email) => {
+          return {
+            id: email?.id,
+            email_subject: email.email_subject,
+            email_preview_text: email.email_preview_text,
+            sender_email: email.sender_email,
+            delay_count: email.delay_count,
+            delay_value: email.delay_value,
+            sender_name: email.sender_name,
+            // email_body: email.email_body,
+            email_body: "Dummy Email Body",
+            email_json: email.email_json,
+          };
+        }),
+        campaign_id: id,
+      };
+
+      updateCampaignRequest(campaign).then((response) => {
+        if (201 === response.code) {
+          // Show success message
+          setShowNotification("block");
+          setMessage(response?.message);
+          toggleRefresh();
+        } else {
+          setShowWarning("block");
+          setMessage(response?.message);
+        }
+      });
+      setIsPublish("none");
+      const isValid = validate();
+      setIsValid(isValid);
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   };
 
   const onDeleteStatus = async (status) => {
@@ -444,7 +519,7 @@ export default function EditCampaign(props) {
                 <DoubleAngleLeftIcon />
                 <Link to="/campaigns">Campaigns</Link>
               </div>
-              <h2 className="campaign-title">Edit Campaigns</h2>
+              <h2 className="campaign-title">Edit Campaign</h2>
             </div>
             <div className="right-section">
               {/* <button className="mrm-custom-select-btn">Month</button> */}
@@ -505,6 +580,7 @@ export default function EditCampaign(props) {
                             setCampaignTitle(e.target.value);
                           }}
                           placeholder="Enter Campaign title"
+                          disabled={isReadonly}
                         />
                       </div>
                       <div className="email-to input-item">
@@ -515,6 +591,7 @@ export default function EditCampaign(props) {
                             <button
                               className="all-recipients"
                               onClick={showDropDown}
+                              disabled={isReadonly}
                             >
                               All Subscriber
                               {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
@@ -523,6 +600,7 @@ export default function EditCampaign(props) {
                             <button
                               className="all-recipients selected show"
                               onClick={showDropDown}
+                              disabled={isReadonly}
                             >
                               <span className="tags">
                                 {recipientTags?.length} Tags
@@ -560,6 +638,7 @@ export default function EditCampaign(props) {
                             type="number"
                             name="delay_count"
                             value={emailData[selectedEmailIndex]["delay_count"]}
+                            disabled={isReadonly}
                             onChange={(e) =>
                               handleEmailFieldsChange(
                                 e.target.value,
@@ -591,6 +670,7 @@ export default function EditCampaign(props) {
                           }
                           name="delay_value"
                           value={emailData[selectedEmailIndex]["delay_value"]}
+                          disabled={isReadonly}
                         >
                           <option disabled={true} value="">
                             --Choose delay--
@@ -612,6 +692,7 @@ export default function EditCampaign(props) {
                         handleEmailFieldsChange(e.target.value, "email_subject")
                       }
                       placeholder="Be Specific and concise to spark interest"
+                      disabled={isReadonly}
                     />
                     <span>
                       {emailData[selectedEmailIndex]?.email_subject?.length}/200
@@ -635,6 +716,7 @@ export default function EditCampaign(props) {
                         )
                       }
                       placeholder="Write a summary of your email to display after the subject line"
+                      disabled={isReadonly}
                     />
                     <span>
                       {
@@ -657,6 +739,7 @@ export default function EditCampaign(props) {
                         handleEmailFieldsChange(e.target.value, "sender_name")
                       }
                       placeholder="Enter Name"
+                      disabled={isReadonly}
                     />
                     <div className="email-input">
                       <input
@@ -670,6 +753,7 @@ export default function EditCampaign(props) {
                           )
                         }
                         placeholder="Enter Email"
+                        disabled={isReadonly}
                       />
                       <p
                         className={
@@ -719,7 +803,7 @@ export default function EditCampaign(props) {
                         <button
                           className="campaign-schedule mintmrm-btn outline"
                           // disabled={!isPublishValid}
-                          onClick={() => updateCampaign("ongoing")}
+                          onClick={publishCampaignNow}
                         >
                           Publish
                         </button>
@@ -743,6 +827,14 @@ export default function EditCampaign(props) {
             </div>
           </div>
         )}
+      </div>
+      <div className="mintmrm-container" style={{ display: isPublish }}>
+        <PublishAlert
+          title="Campaign Publish"
+          message="Are you sure to run this campaign? It can not be edited after launch."
+          onNotPublish={onNotPublish}
+          onPublishStatus={onPublishStatus}
+        />
       </div>
       <div className="mintmrm-container" style={{ display: isEmailDelete }}>
         <DeletePopup
