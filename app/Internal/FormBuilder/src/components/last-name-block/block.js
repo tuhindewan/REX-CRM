@@ -1,91 +1,94 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
+import classnames from "classnames";
+import PropTypes from "prop-types";
 import React from "react";
-import {__} from "@wordpress/i18n";
-const { RawHTML, Component, useEffect, } = wp.element;
+import { __ } from "@wordpress/i18n";
+const { RawHTML, Component, useEffect } = wp.element;
 const { RichText } = wp.blockEditor;
-
 
 /**
  * Internal dependencies
  */
 
-
 const mrmLastName = ({
-        attributes: {
-            formLayout,
-            lastNameLabel,
-            lastNamePlaceholder,
-            isRequiredLastName,
+  attributes: {
+    formLayout,
+    lastNameLabel,
+    lastNamePlaceholder,
+    isRequiredLastName,
 
+    fieldLabel,
+    requiredMark,
+    inputBgColor,
+    inputTextColor,
+    inputBorderRadius,
+    inputPaddingTop,
+    inputPaddingRight,
+    inputPaddingBottom,
+    inputPaddingLeft,
+    inputBorderStyle,
+    inputBorderWidth,
+    inputBorderColor,
+    rowSpacing,
 
-            fieldLabel,
-            requiredMark,
-            inputBgColor,
-            inputTextColor,
-            inputBorderRadius,
-            inputPaddingTop,
-            inputPaddingRight,
-            inputPaddingBottom,
-            inputPaddingLeft,
-            inputBorderStyle,
-            inputBorderWidth,
-            inputBorderColor,
-            rowSpacing,
+    labelColor,
+    labelSpacing,
+  },
+}) => {
+  let layout = formLayout;
+  let fieldSpacing = {
+    marginBottom: rowSpacing + "px",
+  };
 
-            labelColor,
-            labelSpacing,
-        },
-    }) => {
+  let labelStyle = {
+    color: labelColor,
+    marginBottom: labelSpacing + "px",
+  };
+  let checkboxLabelColor = {
+    color: labelColor,
+  };
 
-    let layout = formLayout
-    let fieldSpacing = {
-        marginBottom:  rowSpacing+'px',
-    }
+  let inputStyle = {
+    backgroundColor: inputBgColor,
+    color: inputTextColor,
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
+    borderStyle: inputBorderStyle,
+    borderWidth: inputBorderWidth + "px",
+    borderColor: inputBorderColor,
+  };
 
-    let labelStyle = {
-        color:  labelColor,
-        marginBottom:  labelSpacing+'px',
-    }
-    let checkboxLabelColor = {
-        color:  labelColor,
-    }
+  return (
+    <>
+      <div className="mrm-form-group last-name" style={fieldSpacing}>
+        <label htmlFor="wpfnl-last-name" style={labelStyle}>
+          {lastNameLabel}
+          {requiredMark && isRequiredLastName && (
+            <span className="required-mark">*</span>
+          )}
+        </label>
 
-    let inputStyle = {
-        backgroundColor: inputBgColor,
-        color:  inputTextColor,
-        borderRadius:  inputBorderRadius+'px',
-        paddingTop:  inputPaddingTop+'px',
-        paddingRight:  inputPaddingRight+'px',
-        paddingBottom:  inputPaddingBottom+'px',
-        paddingLeft:  inputPaddingLeft+'px',
-        borderStyle:  inputBorderStyle,
-        borderWidth:  inputBorderWidth+'px',
-        borderColor:  inputBorderColor,
-    }
-
-    return (
-
-        <>
-            <div className="mrm-form-group last-name" style={fieldSpacing}>
-                <label htmlFor="wpfnl-last-name" style={labelStyle}>
-                    {lastNameLabel ? __(lastNameLabel,'mrm') : __('Last Name','wpfnl')}
-                    {requiredMark && isRequiredLastName && <span className="required-mark">*</span>}
-                </label>
-
-                <div className="input-wrapper">
-                    <input type="text" name="last_name" id="wpfnl-last-name" placeholder={lastNamePlaceholder} required={isRequiredLastName} style={inputStyle} />
-                </div>
-
-            </div>
-        </>
-    )
-}
+        <div className="input-wrapper">
+          <input
+            type="text"
+            name="last_name"
+            id="wpfnl-last-name"
+            placeholder={lastNamePlaceholder}
+            required={isRequiredLastName}
+            style={inputStyle}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
 
 mrmLastName.propTypes = {
-    attributes: PropTypes.object.isRequired,
+  attributes: PropTypes.object.isRequired,
 };
 export default mrmLastName;

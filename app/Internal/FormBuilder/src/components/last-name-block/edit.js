@@ -310,7 +310,7 @@ class Editor extends Component {
 
                 <div className="mrm-form-group last-name" style={fieldSpacing}>
                     <label htmlFor="mrm-last-name" style={labelStyle}>
-                        {lastNameLabel ? __(lastNameLabel,'mrm') : __('Last Name','mrm')}
+                        {lastNameLabel}
                         {requiredMark && isRequiredLastName && <span className="required-mark">*</span>}
                     </label>
                     
