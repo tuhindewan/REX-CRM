@@ -154,7 +154,7 @@
                 position: relative;
 
                 .mrm-custom-select-container {
-                    margin: 6px;
+                    margin-right: 10px;
                 }
             }
 
@@ -267,6 +267,7 @@
     .selected-result {
         padding: 20px 25px;
         display: flex;
+        align-items: center;
         flex-flow: row wrap;
         border-bottom: 1px solid #e2e5ed;
         background-color: #ffffff;
@@ -311,6 +312,7 @@
             display: flex;
             align-items: center;
             flex-flow: row wrap;
+            cursor: pointer;
 
             span {
                 font-weight: 500;
@@ -747,7 +749,7 @@
                 padding: 8px 12px;
 
                 &.active {
-                    background: #6f6af8;
+                    background: #573bff;
                     color: #ffffff;
                 }
             }

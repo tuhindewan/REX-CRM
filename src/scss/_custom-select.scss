@@ -126,8 +126,8 @@
   color: #6f6af8;
   border-radius: 4px;
   background-color: #f1f0fe;
-  padding: 5px 7px;
-  margin: 4px 8px;
+  padding: 6px 7px;
+  margin: 4px 8px 4px 0;
   font-weight: 500;
   font-size: 12px;
   line-height: 14px;
@@ -136,7 +136,7 @@
   svg {
     width: 8px;
     height: 8px;
-    margin: 0px 6px;
+    margin-left: 6px;
     path {
       fill: #6f6af8;
     }
