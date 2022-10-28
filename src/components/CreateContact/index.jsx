@@ -41,6 +41,8 @@ const CreateContact = (props) => {
   const [isActiveUnsubscribe, setIsActiveUnsubscribe] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState();
 
+  const [contactSaveLoader, setContactSaveLoader] = useState(false);
+
   //Detect Outside Click to Hide Dropdown Element
   const statusMenuRef = useRef(null);
   const listMenuRef = useRef(null);
@@ -118,6 +120,8 @@ const CreateContact = (props) => {
     contactData.tags = assignTags;
     contactData.status = [selectedStatus];
 
+    setContactSaveLoader(true);
+
     if (validate(event, "email", contactData.email)) {
       createContact(contactData).then((response) => {
         if (201 === response.code) {
@@ -128,14 +132,20 @@ const CreateContact = (props) => {
           useGlobalStore.setState({
             counterRefresh: !counterRefresh,
           });
+          setContactSaveLoader(false);
         } else {
           // Validation messages
+          setContactSaveLoader(false);
+
           setErrors({
             ...errors,
             email: response?.message,
           });
         }
       });
+
+    }else{
+      setContactSaveLoader(false);
     }
   };
 
@@ -347,6 +357,9 @@ const CreateContact = (props) => {
                 className="contact-save mintmrm-btn "
               >
                 Save
+                {contactSaveLoader &&
+                  <span className="mintmrm-loader"></span>
+                }
               </button>
             </div>
           </div>

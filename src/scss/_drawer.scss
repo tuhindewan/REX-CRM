@@ -3,7 +3,7 @@
 .mintmrm-step-settings-drawer {
   position: fixed;
   top: 32px;
-  right: -190px;
+  right: 0;
   background-color: #fff;
   z-index: 99;
   width: 644px;
@@ -148,6 +148,10 @@
         }
         .contact-save {
           margin-left: 15px;
+
+          .mintmrm-loader {
+            display: inline-block;
+          }
         }
 
         .outline {
@@ -198,6 +202,10 @@
         .add-btn {
           width: auto;
           height: auto;
+
+          .mintmrm-loader {
+            display: inline-block;
+          }
         }
       }
     }

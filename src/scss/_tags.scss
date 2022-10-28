@@ -24,38 +24,34 @@
     .contact-form-body {
       padding: 20px 25px;
       display: flex;
+      align-items: flex-start;
       background-color: #ffffff;
       border-radius: 10px;
 
-            .form-group {
-                width: calc(100% / 2 - 10px);
-                margin-left: 20px;
-                input {
-                  background: #f9fafb;
-                  border: 1px solid #e4e6eb;
-                  border-radius: 6px;
-                  padding: 5px 15px !important;
-                }
+      .form-group {
+          width: calc(100% / 2 - 10px);
+          margin-left: 20px;
+          input {
+            background: transparent;
+            border: 1px solid #e4e6eb;
+            border-radius: 6px;
+            padding: 10px 15px !important;
+          }
 
-                &:nth-child(odd) {
-                  margin-left: 0;
-                }
+          &:nth-child(odd) {
+            margin-left: 0;
+          }
 
-                label {
-                    display: block;
-                    padding-bottom: 10px;
-                }
-
-                input,
-                select{
-                    padding: 9px 15px;
-                }
-                textarea {
-                    min-width: auto;
-                }
-                  
-            }
-        }
+          label {
+              display: block;
+              padding-bottom: 10px;
+          }
+          textarea {
+              min-width: auto;
+          }
+            
+      }
+    }
 
 
     // contact from button style
@@ -63,7 +59,7 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      padding-top: 10px;
+      margin-top: 27px;
 
       .import-save,
       .import-cancel {

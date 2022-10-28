@@ -572,8 +572,8 @@ ul.mintmrm-dropdown {
       margin-right: 12px;
     }
 
-    &:hover,
-    &.active {
+    &:not(.searchbar):not(.list-title):hover,
+    &:not(.searchbar):not(.list-title).active {
       color: $primary-color;
       background: rgba(111, 106, 248, 0.1);
 
@@ -773,6 +773,8 @@ ul.mintmrm-dropdown {
         display: flex;
         justify-content: center;
         align-items: center;
+        cursor: pointer;
+
         svg {
           path {
             fill: #686f7f;
@@ -804,8 +806,7 @@ ul.mintmrm-dropdown {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    border-radius: 100%;
+    // display: none;
 
     svg {
       width: 18px;

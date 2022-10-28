@@ -200,6 +200,9 @@ export default function Editor(props) {
   const [emailLoader, setEmailLoader] = useState(false);
 
   const [testMailModal, setTestMailModal] = useState(false);
+  const [testMailLoader, setTestMailLoader] = useState(false);
+  const [testMailMessageColor, setTestMailMessageColor] = useState('');
+
   const [testEmail, setTestEmail] = useState("");
   const [testMailMessage, setTestMailMessage] = useState("");
 
@@ -497,6 +500,8 @@ export default function Editor(props) {
 
   const sendTestEmail = (values: IEmailTemplate) => {
     setTestMailMessage("");
+    setTestMailLoader(true);
+
     let mergeTagsPayload = {};
 
     const mjmlContent = JsonToMjml({
@@ -518,7 +523,14 @@ export default function Editor(props) {
 
     emailSendApi(mailData).then((response) => {
       setTestMailMessage(response.message);
+      setTestMailLoader(false);
+
+      if( 'error' == response.status){
+        setTestMailMessageColor ('error');
+      }
+
     });
+
   };
 
   const onUploadImage = async (blob: Blob) => {
@@ -571,6 +583,7 @@ export default function Editor(props) {
 
                     <div className="delete-confirmation-body">
                       <div className="form-group">
+                        <label htmlFor="">Email</label>
                         <input
                           type="email"
                           name="email"
@@ -582,16 +595,20 @@ export default function Editor(props) {
                     </div>
 
                     <ul className="mintmrm-delete-confirm-btn">
-                      <li>
+                      <li  className={ testMailMessageColor == 'error' ? "alert-message mintmrm-error" : "alert-message" }>
                         <p>{testMailMessage}</p>
                       </li>
+                      
                       <li>
                         <button
-                          className="btn-default cancel"
+                          className="mintmrm-btn"
                           onClick={() => sendTestEmail(values)}
                         >
                           {" "}
-                          Ok{" "}
+                          Send{" "}
+                          {testMailLoader &&
+                            <span className="mintmrm-loader"></span>
+                          }
                         </button>
                       </li>
                     </ul>
@@ -612,7 +629,7 @@ export default function Editor(props) {
 
                     <div className="responsive-check">
                       <Button
-                        className="edit-mode"
+                        className={ activePreview == 'edit' ? "edit-mode active" : "edit-mode" }
                         title="Edit Mode"
                         onClick={(e) => setActivePreview("edit")}
                       >
@@ -620,7 +637,7 @@ export default function Editor(props) {
                       </Button>
 
                       <Button
-                        className="desktop-mode"
+                        className={ activePreview == 'pc' ? "desktop-mode active" : "desktop-mode" }
                         title="Desktop View"
                         onClick={(e) => setActivePreview("pc")}
                       >
@@ -628,7 +645,7 @@ export default function Editor(props) {
                       </Button>
 
                       <Button
-                        className="mobile-mode"
+                        className={ activePreview == 'mobile' ? "mobile-mode active" : "mobile-mode" }
                         title="Mobile View"
                         onClick={(e) => setActivePreview("mobile")}
                       >
@@ -668,14 +685,14 @@ export default function Editor(props) {
                     </Button>
 
                     <Button onClick={() => sendTestMailModal()}>
-                      Send Test
+                      Send Test mail
                     </Button>
                     <Button
                       // loading={isSubmitting}
                       type="primary"
                       onClick={() => submit()}
                     >
-                      Save
+                      Next
                     </Button>
                   </div>
                 </div>
