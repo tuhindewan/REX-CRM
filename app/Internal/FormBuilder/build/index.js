@@ -11203,7 +11203,7 @@ const attributes = {
   },
   lineHeight: {
     type: "number",
-    default: 0
+    default: 1.2
   },
   letterSpacing: {
     type: "number",
@@ -11300,7 +11300,7 @@ const mrmButton = _ref => {
     // borderWidth:  buttonBorderWidth+'px',
     borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
     borderColor: buttonBorderColor,
-    minWidth: buttonWidth + "%"
+    width: buttonWidth + "%"
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group submit",
@@ -11633,7 +11633,7 @@ class Editor extends Component {
       // borderWidth:  buttonBorderWidth+'px',
       borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
       borderColor: buttonBorderColor,
-      minWidth: buttonWidth + "%"
+      width: buttonWidth + "%"
     };
 
     // display the map selector

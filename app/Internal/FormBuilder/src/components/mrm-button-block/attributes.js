@@ -362,7 +362,7 @@ const attributes = {
     },
     lineHeight: {
         type: "number",
-        default: 0,
+        default: 1.2,
     },
     letterSpacing: {
         type: "number",
