@@ -25,7 +25,7 @@ const {
   Radio,
   DateTimePicker,
   DatePicker,
-  TabPanel
+  TabPanel,
 } = wp.components;
 
 const { Component, RawHTML, useEffect, useState } = wp.element;
@@ -119,8 +119,6 @@ function Sidebar() {
   // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
 
-  const [formData, setFormData] = useState({});
-
   // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
 
@@ -133,21 +131,37 @@ function Sidebar() {
   const [pageId, setPageId] = useState();
   const [selectedPageId, setSelectedPageId] = useState();
 
+  const [refresh, setRefresh] = useState(false);
+
+  const toggleRefresh = () => {
+    setRefresh(!refresh);
+  };
+
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
         const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+          `${window.MRM_Vars.api_base_url}mrm/v1/forms/get-form-settings/${id}`
         );
         const resJson = await res.json();
 
         if (200 === resJson.code) {
-          setFormData(resJson.data);
           setSettingData(JSON.parse(resJson.data?.meta_fields?.settings));
           setPrevSetting(JSON.parse(resJson.data?.meta_fields?.settings));
         }
       };
       getFormData();
+
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+
+        if (200 == res.status) {
+          setPageData(resJson);
+          toggleRefresh();
+        }
+      };
+      getPageData();
     }
   }, []);
 
@@ -377,17 +391,6 @@ function Sidebar() {
 
   const toggleTab = (index) => {
     setTabState(index);
-    if ("page" === index) {
-      const getPageData = async () => {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
-        const resJson = await res.json();
-
-        if (200 == res.status) {
-          setPageData(resJson);
-        }
-      };
-      getPageData();
-    }
   };
 
   const handlePageChange = (state) => {
@@ -461,8 +464,6 @@ function Sidebar() {
         aria-label={__("MRM Block Editor advanced settings.")}
         tabIndex="-1"
       >
-
-
         <Panel>
           <Panel className="settings-pannel">
             <div className="components-panel__header">
@@ -471,84 +472,84 @@ function Sidebar() {
                 Settings
               </h2>
 
-            {/*  <span className="close-pannel" onClick={showSettingsPannel}>*/}
-            {/*  <CrossIcon />*/}
-            {/*</span>*/}
+              {/*  <span className="close-pannel" onClick={showSettingsPannel}>*/}
+              {/*  <CrossIcon />*/}
+              {/*</span>*/}
             </div>
 
             <PanelBody
-                title="Confirmation Settings"
-                className="confirmation-settings"
-                initialOpen={true}
+              title="Confirmation Settings"
+              className="confirmation-settings"
+              initialOpen={true}
             >
               <div className="pannelbody-wrapper">
                 <div className="pannel-single-settings">
                   <label className="settings-label">
                     Confirmation Type
                     <span className="mintmrm-tooltip">
-                    <QuestionIcon />
-                    <p>
-                      Where do you want to send the user after form
-                      confirmation?
-                    </p>
-                  </span>
+                      <QuestionIcon />
+                      <p>
+                        Where do you want to send the user after form
+                        confirmation?
+                      </p>
+                    </span>
                   </label>
 
                   <div className="pannel-tab-nav">
-                  <span
+                    <span
                       className={
                         tabState === "same-page"
-                            ? "tab-nav-item active"
-                            : "tab-nav-item"
+                          ? "tab-nav-item active"
+                          : "tab-nav-item"
                       }
                       onClick={() => handleConfirmationType("same-page")}
-                  >
-                    Same Page
-                  </span>
+                    >
+                      Same Page
+                    </span>
 
                     <span
-                        className={
-                          tabState === "page"
-                              ? "tab-nav-item active"
-                              : "tab-nav-item"
-                        }
-                        onClick={() => handleConfirmationType("page")}
+                      className={
+                        tabState === "page"
+                          ? "tab-nav-item active"
+                          : "tab-nav-item"
+                      }
+                      onClick={() => handleConfirmationType("page")}
                     >
-                    To a page
-                  </span>
+                      To a page
+                    </span>
 
                     <span
-                        className={
-                          tabState === "custom-url"
-                              ? "tab-nav-item active"
-                              : "tab-nav-item"
-                        }
-                        onClick={() => handleConfirmationType("custom-url")}
+                      className={
+                        tabState === "custom-url"
+                          ? "tab-nav-item active"
+                          : "tab-nav-item"
+                      }
+                      onClick={() => handleConfirmationType("custom-url")}
                     >
-                    To a custom URL
-                  </span>
+                      To a custom URL
+                    </span>
                   </div>
 
                   <div className="pannel-tab-content">
                     <div
-                        className={
-                          tabState === "same-page"
-                              ? "single-tab-content same-page-tab-content active"
-                              : "single-tab-content same-page-tab-content"
-                        }
+                      className={
+                        tabState === "same-page"
+                          ? "single-tab-content same-page-tab-content active"
+                          : "single-tab-content same-page-tab-content"
+                      }
                     >
                       <div className="single-settings">
                         <label className="settings-label">
                           Message to show
                           <span className="mintmrm-tooltip">
-                          <QuestionIcon />
-                          <p>What message you want to show to the user?</p>
-                        </span>
+                            <QuestionIcon />
+                            <p>What message you want to show to the user?</p>
+                          </span>
                         </label>
                         <TextareaControl
-                            name="message_to_show"
-                            defaultValue={messageToShow}
-                            onChange={(e) => setMessageToShow(e)}
+                          name="message_to_show"
+                          defaultValue={messageToShow}
+                          onChange={(e) => setMessageToShow(e)}
                         />
                       </div>
 
@@ -556,45 +557,45 @@ function Sidebar() {
                         <label className="settings-label">
                           After Form Submission
                           <span className="mintmrm-tooltip">
-                          <QuestionIcon />
-                          <p>Define behaviour of the form after submission</p>
-                        </span>
+                            <QuestionIcon />
+                            <p>Define behaviour of the form after submission</p>
+                          </span>
                         </label>
 
                         <RadioControl
-                            selected={afterFormSubmission}
-                            options={[
-                              { label: "None", value: "none" },
-                              { label: "Hide Form", value: "hide_form" },
-                              { label: "Reset Form", value: "reset_form" },
-                            ]}
-                            onChange={(state) => setAfterFormSubmission(state)}
+                          selected={afterFormSubmission}
+                          options={[
+                            { label: "None", value: "none" },
+                            { label: "Hide Form", value: "hide_form" },
+                            { label: "Reset Form", value: "reset_form" },
+                          ]}
+                          onChange={(state) => setAfterFormSubmission(state)}
                         />
                       </div>
                     </div>
 
                     <div
-                        className={
-                          tabState === "page"
-                              ? "single-tab-content same-page-tab-content active"
-                              : "single-tab-content same-page-tab-content"
-                        }
+                      className={
+                        tabState === "page"
+                          ? "single-tab-content same-page-tab-content active"
+                          : "single-tab-content same-page-tab-content"
+                      }
                     >
                       <div className="single-settings">
                         <label className="settings-label">
                           Select a page
                           <span className="mintmrm-tooltip">
-                          <QuestionIcon />
-                          <p>
-                            Which page you want to redirect after the submitted
-                            the form?
-                          </p>
-                        </span>
+                            <QuestionIcon />
+                            <p>
+                              Which page you want to redirect after the
+                              submitted the form?
+                            </p>
+                          </span>
                         </label>
                         <SelectControl
-                            value={selectedPageId}
-                            options={pageOptions}
-                            onChange={(state) => handlePageChange(state)}
+                          value={selectedPageId}
+                          options={pageOptions}
+                          onChange={(state) => handlePageChange(state)}
                         />
                       </div>
 
@@ -602,45 +603,45 @@ function Sidebar() {
                         <label className="settings-label">
                           Redirection Message
                           <span className="mintmrm-tooltip">
-                          <QuestionIcon />
-                          <p>
-                            What is the message after redirection of a page?
-                          </p>
-                        </span>
+                            <QuestionIcon />
+                            <p>
+                              What is the message after redirection of a page?
+                            </p>
+                          </span>
                         </label>
                         <TextareaControl
-                            name="redirection_message"
-                            defaultValue={redirectionMessage}
-                            onChange={(e) => setRedirectionMessage(e)}
+                          name="redirection_message"
+                          defaultValue={redirectionMessage}
+                          onChange={(e) => setRedirectionMessage(e)}
                         />
                       </div>
                     </div>
 
                     <div
-                        className={
-                          tabState === "custom-url"
-                              ? "single-tab-content same-page-tab-content active"
-                              : "single-tab-content same-page-tab-content"
-                        }
+                      className={
+                        tabState === "custom-url"
+                          ? "single-tab-content same-page-tab-content active"
+                          : "single-tab-content same-page-tab-content"
+                      }
                     >
                       <div className="single-settings">
                         <label className="settings-label">
                           Custom URL
                           <span className="mintmrm-tooltip">
-                          <QuestionIcon />
-                          <p>Enter a custom URL to redirect</p>
-                        </span>
+                            <QuestionIcon />
+                            <p>Enter a custom URL to redirect</p>
+                          </span>
                         </label>
 
                         <TextControl
-                            name="custom-url"
-                            value={customURL}
-                            onChange={(e) => handleCustomURL(e)}
+                          name="custom-url"
+                          value={customURL}
+                          onChange={(e) => handleCustomURL(e)}
                         />
                         {!isValidUrl && (
-                            <p className="validation-warning">
-                              **Warning : Your URL is not in a valid format**
-                            </p>
+                          <p className="validation-warning">
+                            **Warning : Your URL is not in a valid format**
+                          </p>
                         )}
                       </div>
 
@@ -648,14 +649,14 @@ function Sidebar() {
                         <label className="settings-label">
                           Redirection Message
                           <span className="mintmrm-tooltip">
-                          <QuestionIcon />
-                          <p>Reidrectional message for custom URL</p>
-                        </span>
+                            <QuestionIcon />
+                            <p>Reidrectional message for custom URL</p>
+                          </span>
                         </label>
                         <TextareaControl
-                            name="custom-redirection-message"
-                            defaultValue={customRedirectionMessage}
-                            onChange={(e) => setCustomRedirectionMessage(e)}
+                          name="custom-redirection-message"
+                          defaultValue={customRedirectionMessage}
+                          onChange={(e) => setCustomRedirectionMessage(e)}
                         />
                       </div>
                     </div>
@@ -665,61 +666,61 @@ function Sidebar() {
             </PanelBody>
 
             <PanelBody
-                title="Form Layout"
-                className="form-layout-settings"
-                initialOpen={false}
+              title="Form Layout"
+              className="form-layout-settings"
+              initialOpen={false}
             >
               <div className="pannelbody-wrapper">
                 <div className="single-settings">
                   <label className="settings-label">
                     Form Placement
                     <span className="mintmrm-tooltip">
-                    <QuestionIcon />
-                    <p>Animation to show up your form</p>
-                  </span>
+                      <QuestionIcon />
+                      <p>Animation to show up your form</p>
+                    </span>
                   </label>
 
                   <RadioControl
-                      selected={formPosition}
-                      options={[
-                        { label: "Default", value: "default" },
-                        { label: "Pop Up", value: "popup" },
-                        { label: "Fly Ins", value: "flyins" },
-                      ]}
-                      onChange={(state) => setFormPosition(state)}
+                    selected={formPosition}
+                    options={[
+                      { label: "Default", value: "default" },
+                      { label: "Pop Up", value: "popup" },
+                      { label: "Fly Ins", value: "flyins" },
+                    ]}
+                    onChange={(state) => setFormPosition(state)}
                   />
                 </div>
               </div>
             </PanelBody>
 
             {"default" !== formPosition && (
-                <PanelBody
-                    title="Form Animation"
-                    className="form-animation-settings"
-                    initialOpen={false}
-                >
-                  <div className="pannelbody-wrapper">
-                    <div className="single-settings">
-                      <label className="settings-label">
-                        Animation Type
-                        <span className="mintmrm-tooltip">
-                      <QuestionIcon />
-                      <p>Type of animation to show your form</p>
-                    </span>
-                      </label>
+              <PanelBody
+                title="Form Animation"
+                className="form-animation-settings"
+                initialOpen={false}
+              >
+                <div className="pannelbody-wrapper">
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Animation Type
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>Type of animation to show your form</p>
+                      </span>
+                    </label>
 
-                      <SelectControl
-                          value={formAnimation}
-                          options={[
-                            { label: "None", value: "none" },
-                            { label: "Fade In", value: "fade-in" },
-                            { label: "Slide In Up", value: "slide-in-up" },
-                          ]}
-                          onChange={(state) => setFormAnimation(state)}
-                      />
-                    </div>
+                    <SelectControl
+                      value={formAnimation}
+                      options={[
+                        { label: "None", value: "none" },
+                        { label: "Fade In", value: "fade-in" },
+                        { label: "Slide In Up", value: "slide-in-up" },
+                      ]}
+                      onChange={(state) => setFormAnimation(state)}
+                    />
                   </div>
-                </PanelBody>
+                </div>
+              </PanelBody>
             )}
 
             {/* <PanelBody
@@ -810,12 +811,7 @@ function Sidebar() {
           </PanelBody> */}
           </Panel>
           <InspectorSlot bubblesVirtually />
-
-
-
         </Panel>
-
-
       </div>
     </>
   );

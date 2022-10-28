@@ -8659,321 +8659,321 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 const attributes = {
   formLayout: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   firstName: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   firstNameLabel: {
-    type: 'string',
-    default: 'First Name'
+    type: "string",
+    default: "First Name"
   },
   firstNamePlaceholder: {
-    type: 'string',
-    default: 'First Name'
+    type: "string",
+    default: "First Name"
   },
   isRequiredName: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   lastName: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   lastNameLabel: {
-    type: 'string',
-    default: 'Last Name'
+    type: "string",
+    default: "Last Name"
   },
   lastNamePlaceholder: {
-    type: 'string',
-    default: 'Last Name'
+    type: "string",
+    default: "Last Name"
   },
   isRequiredLastName: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   emailLabel: {
-    type: 'string',
-    default: 'Email'
+    type: "string",
+    default: ""
   },
   emailPlaceholder: {
-    type: 'string',
-    default: 'Email'
+    type: "string",
+    default: "Email"
   },
   phone: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   phoneLabel: {
-    type: 'string',
-    default: 'Phone'
+    type: "string",
+    default: "Phone"
   },
   phonePlaceholder: {
-    type: 'string',
-    default: 'Phone'
+    type: "string",
+    default: "Phone"
   },
   isRequiredPhone: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   websiteUrl: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   websiteUrlLabel: {
-    type: 'string',
-    default: 'Website Url'
+    type: "string",
+    default: "Website Url"
   },
   websiteUrlPlaceholder: {
-    type: 'string',
-    default: 'Website Url'
+    type: "string",
+    default: "Website Url"
   },
   isRequiredWebsiteUrl: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   message: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   messageLabel: {
-    type: 'string',
-    default: 'Message'
+    type: "string",
+    default: "Message"
   },
   messagePlaceholder: {
-    type: 'string',
-    default: 'Write your message here...'
+    type: "string",
+    default: "Write your message here..."
   },
   isRequiredMessage: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   acceptance_checkbox: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   acceptanceCheckboxText: {
-    type: 'string',
-    default: 'I have read and agree the Terms & Condition.'
+    type: "string",
+    default: "I have read and agree the Terms & Condition."
   },
   isRequiredAcceptance: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   registration_checkbox: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   data_to_checkout: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   registration_permission: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   registrationPermissionCheckboxText: {
-    type: 'string',
-    default: 'I agree to be registered as a subscriber.'
+    type: "string",
+    default: "I agree to be registered as a subscriber."
   },
   inputFieldIcon: {
-    type: 'boolean',
+    type: "boolean",
     default: true
   },
   fieldLabel: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   requiredMark: {
-    type: 'boolean',
+    type: "boolean",
     default: true
   },
   enable_recaptcha: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   recaptcha_site_key: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   recaptcha_secret_key: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   recapcha_token: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   rowSpacing: {
-    type: 'number',
+    type: "number",
     default: 12
   },
   labelTypography: {
-    type: 'object',
+    type: "object",
     default: {},
     style: [{
-      selector: '.wpfnl-optin-form .wpfnl-optin-form-group > label'
+      selector: ".wpfnl-optin-form .wpfnl-optin-form-group > label"
     }]
   },
   labelColor: {
-    type: 'string',
-    default: '#363B4E'
+    type: "string",
+    default: "#363B4E"
   },
   labelSpacing: {
-    type: 'number',
+    type: "number",
     default: 7
   },
   inputTypography: {
-    type: 'object',
+    type: "object",
     default: {},
     style: [{
-      selector: '.wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]'
+      selector: ".wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]"
     }]
   },
   device: {
-    type: 'string',
-    default: 'md'
+    type: "string",
+    default: "md"
   },
   inputTextColor: {
-    type: 'string',
-    default: '#7A8B9A'
+    type: "string",
+    default: "#7A8B9A"
   },
   inputBgColor: {
-    type: 'string',
-    default: '#ffffff'
+    type: "string",
+    default: "#ffffff"
   },
   inputBorderRadius: {
-    type: 'number',
+    type: "number",
     default: 5
   },
   inputPaddingTop: {
-    type: 'integer',
+    type: "integer",
     default: 11
   },
   inputPaddingRight: {
-    type: 'integer',
+    type: "integer",
     default: 14
   },
   inputPaddingBottom: {
-    type: 'integer',
+    type: "integer",
     default: 11
   },
   inputPaddingLeft: {
-    type: 'integer',
+    type: "integer",
     default: 14
   },
   inputBorderStyle: {
-    type: 'string',
-    default: 'solid'
+    type: "string",
+    default: "solid"
   },
   inputBorderWidth: {
-    type: 'number',
+    type: "number",
     default: 1
   },
   inputBorderColor: {
-    type: 'string',
-    default: '#DFE1E8'
+    type: "string",
+    default: "#DFE1E8"
   },
   buttonTypography: {
-    type: 'object',
+    type: "object",
     default: {},
     style: [{
-      selector: '.wpfnl-optin-form .wpfnl-optin-form-group .btn-default'
+      selector: ".wpfnl-optin-form .wpfnl-optin-form-group .btn-default"
     }]
   },
   buttonTextColor: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   buttonBgColor: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   buttonHvrTextColor: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   buttonHvrBgColor: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   buttonBorderRadius: {
-    type: 'number',
+    type: "number",
     default: 5
   },
   buttonPaddingTop: {
-    type: 'integer',
+    type: "integer",
     default: 12
   },
   buttonPaddingRight: {
-    type: 'integer',
+    type: "integer",
     default: 20
   },
   buttonPaddingBottom: {
-    type: 'integer',
+    type: "integer",
     default: 13
   },
   buttonPaddingLeft: {
-    type: 'integer',
+    type: "integer",
     default: 20
   },
   buttonBorderStyle: {
-    type: 'string',
-    default: 'none'
+    type: "string",
+    default: "none"
   },
   buttonBorderWidth: {
-    type: 'number',
+    type: "number",
     default: 1
   },
   buttonBorderColor: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   buttonHvrBorderColor: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   buttonText: {
-    type: 'string',
-    default: 'Submit'
+    type: "string",
+    default: "Submit"
   },
   buttonAlign: {
-    type: 'string',
-    default: 'center'
+    type: "string",
+    default: "center"
   },
   postAction: {
-    type: 'string',
-    default: 'notification'
+    type: "string",
+    default: "notification"
   },
   notification: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   redirect_action: {
-    type: 'string',
-    default: 'next_step'
+    type: "string",
+    default: "next_step"
   },
   redirect_url: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   adminEmail: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   emailSubject: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   customFieldTitle: {
-    type: '',
-    default: 'New Field'
+    type: "",
+    default: "New Field"
   },
   customFieldSlug: {
-    type: '',
-    default: 'Field Slug'
+    type: "",
+    default: "Field Slug"
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (attributes);
@@ -9043,11 +9043,11 @@ const mrmEmailField = _ref => {
   } = _ref;
   let layout = formLayout;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px"
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -9055,13 +9055,13 @@ const mrmEmailField = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
+    borderWidth: inputBorderWidth + "px",
     borderColor: inputBorderColor
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -9070,7 +9070,7 @@ const mrmEmailField = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: "mrm-email",
     style: labelStyle
-  }, emailLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(emailLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Email', 'mrm'), requiredMark && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, emailLabel, emailLabel != "" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -9229,7 +9229,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9239,13 +9239,13 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9265,12 +9265,12 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -9278,7 +9278,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -9287,28 +9287,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -9316,7 +9316,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
     }));
   };
@@ -9350,11 +9350,11 @@ class Editor extends Component {
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + "px"
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + 'px'
+      marginBottom: labelSpacing + "px"
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -9362,13 +9362,13 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: inputBgColor,
       color: inputTextColor,
-      borderRadius: inputBorderRadius + 'px',
-      paddingTop: inputPaddingTop + 'px',
-      paddingRight: inputPaddingRight + 'px',
-      paddingBottom: inputPaddingBottom + 'px',
-      paddingLeft: inputPaddingLeft + 'px',
+      borderRadius: inputBorderRadius + "px",
+      paddingTop: inputPaddingTop + "px",
+      paddingRight: inputPaddingRight + "px",
+      paddingBottom: inputPaddingBottom + "px",
+      paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
-      borderWidth: inputBorderWidth + 'px',
+      borderWidth: inputBorderWidth + "px",
       borderColor: inputBorderColor
     };
 
@@ -9379,7 +9379,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: "mrm-email",
       style: labelStyle
-    }, emailLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(emailLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Email', 'mrm'), requiredMark && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, emailLabel, emailLabel != "" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9446,106 +9446,106 @@ icons.EmailField = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElem
 __webpack_require__.r(__webpack_exports__);
 const attributes = {
   formLayout: {
-    type: 'string',
-    default: ''
+    type: "string",
+    default: ""
   },
   firstName: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   firstNameLabel: {
-    type: 'string',
-    default: 'First Name'
+    type: "string",
+    default: ""
   },
   firstNamePlaceholder: {
-    type: 'string',
-    default: 'First Name'
+    type: "string",
+    default: "First Name"
   },
   isRequiredName: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   inputFieldIcon: {
-    type: 'boolean',
+    type: "boolean",
     default: true
   },
   fieldLabel: {
-    type: 'boolean',
+    type: "boolean",
     default: false
   },
   requiredMark: {
-    type: 'boolean',
+    type: "boolean",
     default: true
   },
   rowSpacing: {
-    type: 'number',
+    type: "number",
     default: 12
   },
   labelTypography: {
-    type: 'object',
+    type: "object",
     default: {},
     style: [{
-      selector: '.wpfnl-optin-form .wpfnl-optin-form-group > label'
+      selector: ".wpfnl-optin-form .wpfnl-optin-form-group > label"
     }]
   },
   labelColor: {
-    type: 'string',
-    default: '#363B4E'
+    type: "string",
+    default: "#363B4E"
   },
   labelSpacing: {
-    type: 'number',
+    type: "number",
     default: 7
   },
   inputTypography: {
-    type: 'object',
+    type: "object",
     default: {},
     style: [{
-      selector: '.wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]'
+      selector: ".wpfnl-optin-form .wpfnl-optin-form-group input[type=text], .wpfnl-optin-form .wpfnl-optin-form-group input[type=email]"
     }]
   },
   device: {
-    type: 'string',
-    default: 'md'
+    type: "string",
+    default: "md"
   },
   inputTextColor: {
-    type: 'string',
-    default: '#7A8B9A'
+    type: "string",
+    default: "#7A8B9A"
   },
   inputBgColor: {
-    type: 'string',
-    default: '#ffffff'
+    type: "string",
+    default: "#ffffff"
   },
   inputBorderRadius: {
-    type: 'number',
+    type: "number",
     default: 5
   },
   inputPaddingTop: {
-    type: 'integer',
+    type: "integer",
     default: 11
   },
   inputPaddingRight: {
-    type: 'integer',
+    type: "integer",
     default: 14
   },
   inputPaddingBottom: {
-    type: 'integer',
+    type: "integer",
     default: 11
   },
   inputPaddingLeft: {
-    type: 'integer',
+    type: "integer",
     default: 14
   },
   inputBorderStyle: {
-    type: 'string',
-    default: 'solid'
+    type: "string",
+    default: "solid"
   },
   inputBorderWidth: {
-    type: 'number',
+    type: "number",
     default: 1
   },
   inputBorderColor: {
-    type: 'string',
-    default: '#DFE1E8'
+    type: "string",
+    default: "#DFE1E8"
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (attributes);
@@ -9617,11 +9617,11 @@ const mrmFirstName = _ref => {
   } = _ref;
   let layout = formLayout;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px"
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -9629,13 +9629,13 @@ const mrmFirstName = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
+    borderWidth: inputBorderWidth + "px",
     borderColor: inputBorderColor
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -9644,7 +9644,7 @@ const mrmFirstName = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: "mrm-first-name",
     style: labelStyle
-  }, firstNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(firstNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('First Name', 'mrm'), requiredMark && isRequiredName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, firstNameLabel, requiredMark && isRequiredName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -9798,7 +9798,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9808,13 +9808,13 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9834,12 +9834,12 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -9847,7 +9847,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -9856,28 +9856,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -9885,7 +9885,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
     }));
   };
@@ -9922,11 +9922,11 @@ class Editor extends Component {
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + "px"
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + 'px'
+      marginBottom: labelSpacing + "px"
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -9934,13 +9934,13 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: inputBgColor,
       color: inputTextColor,
-      borderRadius: inputBorderRadius + 'px',
-      paddingTop: inputPaddingTop + 'px',
-      paddingRight: inputPaddingRight + 'px',
-      paddingBottom: inputPaddingBottom + 'px',
-      paddingLeft: inputPaddingLeft + 'px',
+      borderRadius: inputBorderRadius + "px",
+      paddingTop: inputPaddingTop + "px",
+      paddingRight: inputPaddingRight + "px",
+      paddingBottom: inputPaddingBottom + "px",
+      paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
-      borderWidth: inputBorderWidth + 'px',
+      borderWidth: inputBorderWidth + "px",
       borderColor: inputBorderColor
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -9949,7 +9949,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: "mrm-first-name",
       style: labelStyle
-    }, firstNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(firstNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('First Name', 'mrm'), requiredMark && isRequiredName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, firstNameLabel, requiredMark && isRequiredName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -10076,7 +10076,7 @@ const attributes = {
   },
   lastNameLabel: {
     type: 'string',
-    default: 'Last Name'
+    default: ''
   },
   lastNamePlaceholder: {
     type: 'string',
@@ -10437,11 +10437,11 @@ const mrmLastName = _ref => {
   } = _ref;
   let layout = formLayout;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px"
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -10449,13 +10449,13 @@ const mrmLastName = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
+    borderWidth: inputBorderWidth + "px",
     borderColor: inputBorderColor
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -10464,7 +10464,7 @@ const mrmLastName = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: "wpfnl-last-name",
     style: labelStyle
-  }, lastNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(lastNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Last Name', 'wpfnl'), requiredMark && isRequiredLastName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, lastNameLabel, requiredMark && isRequiredLastName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -10782,7 +10782,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: "mrm-last-name",
       style: labelStyle
-    }, lastNameLabel ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(lastNameLabel, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Last Name', 'mrm'), requiredMark && isRequiredLastName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, lastNameLabel, requiredMark && isRequiredLastName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -13167,7 +13167,6 @@ function Sidebar() {
 
   // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
-  const [formData, setFormData] = useState({});
 
   // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
@@ -13178,19 +13177,31 @@ function Sidebar() {
   const [pageOptions, setPageOptions] = useState([]);
   const [pageId, setPageId] = useState();
   const [selectedPageId, setSelectedPageId] = useState();
+  const [refresh, setRefresh] = useState(false);
+  const toggleRefresh = () => {
+    setRefresh(!refresh);
+  };
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
+        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/get-form-settings/${id}`);
         const resJson = await res.json();
         if (200 === resJson.code) {
           var _resJson$data, _resJson$data$meta_fi, _resJson$data2, _resJson$data2$meta_f;
-          setFormData(resJson.data);
           setSettingData(JSON.parse((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$meta_fi = _resJson$data.meta_fields) === null || _resJson$data$meta_fi === void 0 ? void 0 : _resJson$data$meta_fi.settings));
           setPrevSetting(JSON.parse((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$meta_f = _resJson$data2.meta_fields) === null || _resJson$data2$meta_f === void 0 ? void 0 : _resJson$data2$meta_f.settings));
         }
       };
       getFormData();
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+        if (200 == res.status) {
+          setPageData(resJson);
+          toggleRefresh();
+        }
+      };
+      getPageData();
     }
   }, []);
   const [isValidUrl, setIsValidUrl] = useState(true);
@@ -13378,16 +13389,6 @@ function Sidebar() {
   let currentDate = new Date();
   const toggleTab = index => {
     setTabState(index);
-    if ("page" === index) {
-      const getPageData = async () => {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
-        const resJson = await res.json();
-        if (200 == res.status) {
-          setPageData(resJson);
-        }
-      };
-      getPageData();
-    }
   };
   const handlePageChange = state => {
     setSelectedPageId(state);

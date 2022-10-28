@@ -26,7 +26,7 @@ const attributes = {
     },
     lastNameLabel: {
         type: 'string',
-        default: 'Last Name'
+        default: ''
     },
     lastNamePlaceholder: {
         type: 'string',

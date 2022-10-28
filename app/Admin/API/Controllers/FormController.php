@@ -49,6 +49,11 @@ class FormController extends BaseController {
         if (empty($title)) {
             return $this->get_error_response( __( 'Form name is mandatory', 'mrm' ), 200);
         }
+        //group Ids validation
+        $group_ids = isset( $params['group_ids'] ) ? $params['group_ids'] : [];
+        if (empty($group_ids['lists']) && empty($group_ids['tags'])){
+            return $this->get_error_response( __( 'It is mandatory to select at least one group', 'mrm' ), 200);
+        }
 
         // Form object create and insert or update to database
         $this->args = array(
@@ -270,6 +275,52 @@ class FormController extends BaseController {
         }
     }
 
+
+    
+    /**
+     * Function used to get settings of a single form
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_form_settings( WP_REST_Request $request ){
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $form = FormModel::get_form_settings( $params['form_id'] );
+
+        if(isset($form)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $form);
+        }
+        return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+
+    }
+
+
+    /**
+     * Function used to get title status and group form a single form
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_title_status_group( WP_REST_Request $request ){
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $form = FormModel::get_title_status_group( $params['form_id'] );
+
+        // $form[0]['group_ids'] = isset($form[0]['group_ids']) ? unserialize($form[0]['group_ids']) : [];
+
+        if(isset($form)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $form);
+        }
+        return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+
+    }
 
 
 }

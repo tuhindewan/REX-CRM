@@ -1,90 +1,94 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
+import classnames from "classnames";
+import PropTypes from "prop-types";
 import React from "react";
-import {__} from "@wordpress/i18n";
-const { RawHTML, Component, useEffect, } = wp.element;
+import { __ } from "@wordpress/i18n";
+const { RawHTML, Component, useEffect } = wp.element;
 const { RichText } = wp.blockEditor;
-
 
 /**
  * Internal dependencies
  */
 
-
 const mrmFirstName = ({
-        attributes: {
-            formLayout,
-            firstNameLabel,
-            firstNamePlaceholder,
-            isRequiredName,
+  attributes: {
+    formLayout,
+    firstNameLabel,
+    firstNamePlaceholder,
+    isRequiredName,
 
-            fieldLabel,
-            requiredMark,
-            inputBgColor,
-            inputTextColor,
-            inputBorderRadius,
-            inputPaddingTop,
-            inputPaddingRight,
-            inputPaddingBottom,
-            inputPaddingLeft,
-            inputBorderStyle,
-            inputBorderWidth,
-            inputBorderColor,
-            rowSpacing,
+    fieldLabel,
+    requiredMark,
+    inputBgColor,
+    inputTextColor,
+    inputBorderRadius,
+    inputPaddingTop,
+    inputPaddingRight,
+    inputPaddingBottom,
+    inputPaddingLeft,
+    inputBorderStyle,
+    inputBorderWidth,
+    inputBorderColor,
+    rowSpacing,
 
-            labelColor,
-            labelSpacing,
+    labelColor,
+    labelSpacing,
+  },
+}) => {
+  let layout = formLayout;
+  let fieldSpacing = {
+    marginBottom: rowSpacing + "px",
+  };
 
-        },
-    }) => {
+  let labelStyle = {
+    color: labelColor,
+    marginBottom: labelSpacing + "px",
+  };
+  let checkboxLabelColor = {
+    color: labelColor,
+  };
 
-    let layout = formLayout
-    let fieldSpacing = {
-        marginBottom:  rowSpacing+'px',
-    }
+  let inputStyle = {
+    backgroundColor: inputBgColor,
+    color: inputTextColor,
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
+    borderStyle: inputBorderStyle,
+    borderWidth: inputBorderWidth + "px",
+    borderColor: inputBorderColor,
+  };
 
-    let labelStyle = {
-        color:  labelColor,
-        marginBottom:  labelSpacing+'px',
-    }
-    let checkboxLabelColor = {
-        color:  labelColor,
-    }
+  return (
+    <>
+      <div className="mrm-form-group first-name" style={fieldSpacing}>
+        <label htmlFor="mrm-first-name" style={labelStyle}>
+          {firstNameLabel}
+          {requiredMark && isRequiredName && (
+            <span className="required-mark">*</span>
+          )}
+        </label>
 
-    let inputStyle = {
-        backgroundColor: inputBgColor,
-        color:  inputTextColor,
-        borderRadius:  inputBorderRadius+'px',
-        paddingTop:  inputPaddingTop+'px',
-        paddingRight:  inputPaddingRight+'px',
-        paddingBottom:  inputPaddingBottom+'px',
-        paddingLeft:  inputPaddingLeft+'px',
-        borderStyle:  inputBorderStyle,
-        borderWidth:  inputBorderWidth+'px',
-        borderColor:  inputBorderColor,
-    }
-
-    return (
-
-        <>
-            <div className="mrm-form-group first-name" style={fieldSpacing}>
-                <label htmlFor="mrm-first-name" style={labelStyle}>
-                    {firstNameLabel ? __(firstNameLabel,'mrm') : __('First Name','mrm')}
-                    {requiredMark && isRequiredName && <span className="required-mark">*</span>}
-                </label>
-
-                <div className="input-wrapper">
-                    <input type="text" name="first_name" id="mrm-first-name" placeholder={firstNamePlaceholder} required={isRequiredName} style={inputStyle} />
-                </div>
-            </div>
-        </>
-    )
-}
+        <div className="input-wrapper">
+          <input
+            type="text"
+            name="first_name"
+            id="mrm-first-name"
+            placeholder={firstNamePlaceholder}
+            required={isRequiredName}
+            style={inputStyle}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
 
 mrmFirstName.propTypes = {
-    attributes: PropTypes.object.isRequired,
+  attributes: PropTypes.object.isRequired,
 };
 export default mrmFirstName;
