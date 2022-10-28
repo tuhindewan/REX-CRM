@@ -276,5 +276,27 @@ class FormController extends BaseController {
     }
 
 
+    
+    /**
+     * Function used to get settings of a single form
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_form_settings( WP_REST_Request $request ){
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $form = FormModel::get_form_settings( $params['form_id'] );
+
+        if(isset($form)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $form);
+        }
+        return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+
+    }
+
 
 }

@@ -4843,7 +4843,6 @@ function Sidebar() {
 
   // get id from URL
   const [id, setId] = useState(window.location.hash.slice(15));
-  const [formData, setFormData] = useState({});
 
   // it's a copy of main settingData
   const [prevSetting, setPrevSetting] = useState({});
@@ -4854,19 +4853,31 @@ function Sidebar() {
   const [pageOptions, setPageOptions] = useState([]);
   const [pageId, setPageId] = useState();
   const [selectedPageId, setSelectedPageId] = useState();
+  const [refresh, setRefresh] = useState(false);
+  const toggleRefresh = () => {
+    setRefresh(!refresh);
+  };
   useEffect(() => {
     if (id) {
       const getFormData = async () => {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
+        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/get-form-settings/${id}`);
         const resJson = await res.json();
         if (200 === resJson.code) {
           var _resJson$data, _resJson$data$meta_fi, _resJson$data2, _resJson$data2$meta_f;
-          setFormData(resJson.data);
           setSettingData(JSON.parse((_resJson$data = resJson.data) === null || _resJson$data === void 0 ? void 0 : (_resJson$data$meta_fi = _resJson$data.meta_fields) === null || _resJson$data$meta_fi === void 0 ? void 0 : _resJson$data$meta_fi.settings));
           setPrevSetting(JSON.parse((_resJson$data2 = resJson.data) === null || _resJson$data2 === void 0 ? void 0 : (_resJson$data2$meta_f = _resJson$data2.meta_fields) === null || _resJson$data2$meta_f === void 0 ? void 0 : _resJson$data2$meta_f.settings));
         }
       };
       getFormData();
+      const getPageData = async () => {
+        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
+        const resJson = await res.json();
+        if (200 == res.status) {
+          setPageData(resJson);
+          toggleRefresh();
+        }
+      };
+      getPageData();
     }
   }, []);
   const [isValidUrl, setIsValidUrl] = useState(true);
@@ -5054,16 +5065,6 @@ function Sidebar() {
   let currentDate = new Date();
   const toggleTab = index => {
     setTabState(index);
-    if ("page" === index) {
-      const getPageData = async () => {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`);
-        const resJson = await res.json();
-        if (200 == res.status) {
-          setPageData(resJson);
-        }
-      };
-      getPageData();
-    }
   };
   const handlePageChange = state => {
     setSelectedPageId(state);

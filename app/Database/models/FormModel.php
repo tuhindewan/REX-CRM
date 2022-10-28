@@ -436,4 +436,27 @@ class FormModel {
         return true;
         
     }
+
+
+    /**
+     * Run SQL query to get settings for a single form
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_form_settings( $id )
+    {
+        global $wpdb;
+
+
+        // Prepare sql to get settings from meta table
+        try {        
+            $settings = self::get_form_meta_value_with_key( $id, 'settings');
+
+            return $settings;
+        } catch(\Exception $e) {
+            return NULL;
+        }
+	
+    }
 }
