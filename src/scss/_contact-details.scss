@@ -13,8 +13,13 @@
   }
 
   .contact-details-wrapper {
-    // margin-top: -280px;
     padding-top: 40px;
+    overflow: hidden;
+
+    .mintmrm-step-settings-drawer {
+      right: 0;
+    }
+
   }
 
   .contact-details-header {
@@ -352,9 +357,25 @@
                 text-align: left;
                 display: block;
                 border: 1px solid #e4e6eb;
+                position: relative;
+
+                &:before {
+                  content: "";
+                  position: absolute;
+                  right: 13px;
+                  top: calc(50% - 1px);
+                  width: 7px;
+                  height: 7px;
+                  border-right: 1px solid #6e6e6e;
+                  border-bottom: 1px solid #6e6e6e;
+                  transform: translateY(-50%) rotate(45deg);
+                  transform-origin: center;
+                }
               }
               .mintmrm-dropdown {
                 top: calc(100%);
+                width: 100%;
+                
                 .searchbar {
                   input {
                     padding: 4px 15px 4px 40px;

@@ -566,19 +566,19 @@
         justify-content: flex-end;
         align-items: center;
         padding: 25px 0;
+
         .campaign-save {
           font-weight: 600;
           font-size: 15px;
           line-height: 18px;
+
           &.disable {
-            color: rgba(255, 255, 255, 0.4);
-            background: #573bff;
-            &:hover {
-              color: rgba(255, 255, 255, 0.4);
-              background: #573bff;
-            }
+            color: #fff;
+            opacity: 0.3;
+            cursor: not-allowed;
           }
         }
+
         .campaign-schedule {
           margin-right: 15px;
 
@@ -590,16 +590,6 @@
             color: #b6b6b7;
             border: 1px solid #dee1e8;
             background-color: transparent;
-          }
-        }
-        .campaign-save {
-          &.disable {
-            color: rgba(255, 255, 255, 0.4);
-            background: #573bff;
-          }
-          &.disable:hover {
-            color: rgba(255, 255, 255, 0.4);
-            background: #573bff;
           }
         }
       }

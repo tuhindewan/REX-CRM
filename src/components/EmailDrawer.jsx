@@ -9,6 +9,8 @@ export default function EmailDrawer(props) {
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
 
+  const [sendEmailLoader, setSendEmailLoader] = useState(false);
+
   const [email, setEmail] = useState({
     email_subject: "",
     email_body: "",
@@ -34,6 +36,8 @@ export default function EmailDrawer(props) {
     event.preventDefault();
     email.email_address = contact.email;
 
+    setSendEmailLoader(true);
+
     submitEmail(email, contact.id).then((response) => {
       if (201 === response.code) {
         setShowNotification("block");
@@ -48,9 +52,14 @@ export default function EmailDrawer(props) {
         const timer = setTimeout(() => {
           setShowNotification("none");
         }, 3000);
+        setSendEmailLoader(false);
+
         return () => clearTimeout(timer);
+
       } else {
         // Error messages
+        setSendEmailLoader(false);
+
         setErrors({
           ...errors,
           email: response.message,
@@ -122,7 +131,10 @@ export default function EmailDrawer(props) {
                   onClick={handleSubmit}
                   className="contact-save mintmrm-btn "
                 >
-                  Save
+                  Send
+                  {sendEmailLoader &&
+                    <span className="mintmrm-loader"></span>
+                  }
                 </button>
               </div>
             </div>

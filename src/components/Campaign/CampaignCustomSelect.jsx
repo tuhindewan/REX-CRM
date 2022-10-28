@@ -6,8 +6,8 @@ import Search from "../Icons/Search";
 import OptionList from "./OptionList";
 
 export default function CampaignCustomSelect(props) {
-  const [activeTag, setActiveTag] = useState(true);
-  const [activeList, setActiveList] = useState(false);
+  const [activeList, setActiveList] = useState(true);
+  const [activeTag, setActiveTag] = useState(false);
   const [lists, setLists] = useState([]);
   const [tags, setTags] = useState([]);
   const [searchTag, setSearchTag] = useState("");
@@ -112,20 +112,22 @@ export default function CampaignCustomSelect(props) {
           <div className="dropdown-header">
             <button
                 className={
-                  activeTag ? "tab-button active tag-btn" : "tab-button tag-btn"
-                }
-                onClick={showTag}
-            >
-              Tag
-            </button>
-            <button
-                className={
                   activeList ? "tab-button active list-btn" : "tab-button list-btn"
                 }
                 onClick={showList}
             >
               List
             </button>
+
+            <button
+              className={
+                activeTag ? "tab-button active tag-btn" : "tab-button tag-btn"
+              }
+              onClick={showTag}
+            >
+              Tag
+            </button>
+            
           </div>
           {activeTag ? (
               <div className="options-section">

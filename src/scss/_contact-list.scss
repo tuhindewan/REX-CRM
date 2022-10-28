@@ -19,7 +19,7 @@
       position: relative;
 
       .drop-down-button {
-        background: #f9fafb;
+        background: transparent;
         border: 1px solid #e4e6eb;
         border-radius: 6px;
         padding: 7px 31px 7px 10px;
@@ -37,12 +37,13 @@
         border-color: #686f7f;
         border-width: 0px 1px 1px 0px;
         transform: rotate(45deg);
-        transition: border-width 150ms ease-in-out;
+        transition: all 0.3s ease;
         height: 5px;
         right: 10px;
-        top: 40%;
+        top: calc(50% - 4px);
         width: 5px;
         cursor: pointer;
+        transform-origin: center;
       }
 
       .drop-down-button.show:before {

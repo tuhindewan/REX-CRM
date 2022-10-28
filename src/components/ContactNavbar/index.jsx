@@ -44,49 +44,35 @@ export default function Navbar(props) {
                   {routes.map((route, index) => {
                     if (!route.hideInMenu) {
                       return (
-                        <li
-                          className={
-                            location.pathname == route.path
-                              ? "navbar-li active"
-                              : "navbar-li "
-                          }
-                          key={index}
-                        >
+                        <li className={ location.pathname == route.path ? "navbar-li active" : "navbar-li " } key={index} >
                           <Link to={route.path}>
                             {__(route.title, "mintmrm")}
-                          </Link>
 
-                          {route.bage && (
-                            <span className="bage">{route.bage}</span>
-                          )}
-                          {"Contacts" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_contacts
-                                ? dataCount.total_contacts
-                                : "0"}
-                            </span>
-                          ) : "Lists" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_lists
-                                ? dataCount.total_lists
-                                : "0"}
-                            </span>
-                          ) : "Tags" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_tags
-                                ? dataCount.total_tags
-                                : "0"}
-                            </span>
-                          ) : (
-                            // : "Segments" === route.title ? (
-                            //   <span className="bage">
-                            //     {dataCount.total_segments
-                            //       ? dataCount.total_segments
-                            //       : "0"}
-                            //   </span>
-                            // )
-                            ""
-                          )}
+                            {route.bage && (
+                              <span className="bage">{route.bage}</span>
+                            )}
+
+                            {
+                              "Contacts" === route.title ? (
+                                <span className="bage">
+                                  { dataCount.total_contacts ? dataCount.total_contacts : "0" }
+                                </span>
+                              ) : "Lists" === route.title ? (
+                                <span className="bage">
+                                  { dataCount.total_lists ? dataCount.total_lists : "0" }
+                                </span>
+                              ) : "Tags" === route.title ? (
+                                <span className="bage">
+                                  { dataCount.total_tags ? dataCount.total_tags : "0" }
+                                </span>
+                              ) : (
+                                
+                                ""
+                              )
+                            }
+
+                          </Link>
+                          
                         </li>
                       );
                     }
