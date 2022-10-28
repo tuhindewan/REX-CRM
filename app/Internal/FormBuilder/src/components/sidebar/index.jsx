@@ -542,7 +542,7 @@ function Sidebar() {
                           Message to show
                           <span className="mintmrm-tooltip">
                           <QuestionIcon />
-                          <p>What message you want to show to the use?</p>
+                          <p>What message you want to show to the user?</p>
                         </span>
                         </label>
                         <TextareaControl
