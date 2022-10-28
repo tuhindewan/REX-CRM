@@ -265,7 +265,7 @@ class FormModel {
         $form_table = $wpdb->prefix . FormSchema::$table_name;
 
         try {
-            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids`, `status`, `form_body`, `status` FROM $form_table WHERE id = %d",array( $id ));
+            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids`, `status`, `form_body` FROM $form_table WHERE id = %d",array( $id ));
             $form_result   = json_decode(json_encode($wpdb->get_results($form_query)), true);
 
 
@@ -448,7 +448,6 @@ class FormModel {
     {
         global $wpdb;
 
-
         // Prepare sql to get settings from meta table
         try {        
             $settings = self::get_form_meta_value_with_key( $id, 'settings');
@@ -458,5 +457,30 @@ class FormModel {
             return NULL;
         }
 	
+    }
+
+
+    /**
+     * Run SQL Query to get a single form information
+     * 
+     * @param mixed $id Form ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get_title_status_group( $id )
+    {
+        global $wpdb;
+        $form_table = $wpdb->prefix . FormSchema::$table_name;
+
+        try {
+            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids`, `status` FROM $form_table WHERE id = %d",array( $id ));
+            $form_result   = json_decode(json_encode($wpdb->get_results($form_query)), true);
+
+            return $form_result;
+        
+        } catch(\Exception $e) {
+            return false;
+        }
     }
 }

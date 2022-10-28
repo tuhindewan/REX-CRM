@@ -299,4 +299,28 @@ class FormController extends BaseController {
     }
 
 
+    /**
+     * Function used to get title status and group form a single form
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_title_status_group( WP_REST_Request $request ){
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $form = FormModel::get_title_status_group( $params['form_id'] );
+
+        // $form[0]['group_ids'] = isset($form[0]['group_ids']) ? unserialize($form[0]['group_ids']) : [];
+
+        if(isset($form)) {
+            return $this -> get_success_response(__('Query Successful.', 'mrm' ), 200, $form);
+        }
+        return $this -> get_error_response(__('Failed to get data.', 'mrm' ), 400);
+
+    }
+
+
 }
