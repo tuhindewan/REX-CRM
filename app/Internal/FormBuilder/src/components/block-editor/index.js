@@ -65,11 +65,11 @@ function BlockEditor( { settings: _settings } ) {
 		const getFormData = async () => {
 			if(id){
 				const res = await fetch(
-					`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+					`${window.MRM_Vars.api_base_url}mrm/v1/forms/get-form-body/${id}`
 				);
 				const resJson = await res.json();
 				if (200 === resJson.code) {
-					window.localStorage.setItem( 'getmrmblocks', resJson.data.form_body )
+					window.localStorage.setItem( 'getmrmblocks', resJson?.data[0]?.form_body )
 					const storedBlocks = window.localStorage.getItem( 'getmrmblocks' );
 
 					if ( storedBlocks?.length ) {

@@ -3643,10 +3643,11 @@ function BlockEditor(_ref) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const getFormData = async () => {
       if (id) {
-        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`);
+        const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms/get-form-body/${id}`);
         const resJson = await res.json();
         if (200 === resJson.code) {
-          window.localStorage.setItem('getmrmblocks', resJson.data.form_body);
+          var _resJson$data$;
+          window.localStorage.setItem('getmrmblocks', resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
           const storedBlocks = window.localStorage.getItem('getmrmblocks');
           if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
             handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));

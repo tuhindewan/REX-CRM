@@ -30,12 +30,6 @@ export default function LoadingIndicator(props) {
       <div class="shimmer-wrapper">
         <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
         <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
-        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
-        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
-        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
-        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
-        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
-        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
       </div>
     );
   }

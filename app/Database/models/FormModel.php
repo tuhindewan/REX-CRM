@@ -468,16 +468,40 @@ class FormModel {
      * @return object
      * @since 1.0.0
      */
-    public static function get_title_status_group( $id )
+    public static function get_title_group( $id )
     {
         global $wpdb;
         $form_table = $wpdb->prefix . FormSchema::$table_name;
 
         try {
-            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids`, `status` FROM $form_table WHERE id = %d",array( $id ));
+            $form_query     = $wpdb->prepare("SELECT `id`, `title`, `group_ids` FROM $form_table WHERE id = %d",array( $id ));
             $form_result   = json_decode(json_encode($wpdb->get_results($form_query)), true);
 
             return $form_result;
+        
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Run SQL Query to get a single form information
+     * 
+     * @param mixed $id Form ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get_form_body( $id )
+    {
+        global $wpdb;
+        $form_table = $wpdb->prefix . FormSchema::$table_name;
+
+        try {
+            $query     = $wpdb->prepare("SELECT `id`, `form_body` FROM $form_table WHERE id = %d",array( $id ));
+            $result   = json_decode(json_encode($wpdb->get_results($query)), true);
+
+            return $result;
         
         } catch(\Exception $e) {
             return false;
