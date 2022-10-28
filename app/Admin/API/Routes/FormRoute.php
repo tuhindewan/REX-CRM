@@ -201,17 +201,37 @@ class FormRoute{
         ]);
 
         /**
-         * Route for get id, title, group_ids and status
+         * Route for get id, title, group_ids
          * 
          * @return void
          * @since 1.0.0
          */
-        register_rest_route($this->namespace, '/' . $this->rest_base. '/get-title-status-group' . '/(?P<form_id>[\d]+)', [
+        register_rest_route($this->namespace, '/' . $this->rest_base. '/get-title-group' . '/(?P<form_id>[\d]+)', [
             [
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->controller ,
-                    'get_title_status_group'
+                    'get_title_group'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
+        /**
+         * Route for get id and body
+         * 
+         * @return void
+         * @since 1.0.0
+         */
+        register_rest_route($this->namespace, '/' . $this->rest_base. '/get-form-body' . '/(?P<form_id>[\d]+)', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_form_body'
                 ],
                 'permission_callback' => [
                     $this->controller ,

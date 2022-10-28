@@ -99,14 +99,14 @@ const FormEditor = (props) => {
     const getFormData = async () => {
       const start = new Date();
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/get-title-group/${id}`
       );
       const resJson = await res.json();
 
       if (200 === resJson.code) {
-        setFormData(resJson.data);
-        setRecipientLists(resJson.data?.group_ids?.lists);
-        setRecipientTags(resJson.data?.group_ids?.tags);
+        setFormData(resJson.data[0]);
+        setRecipientLists(resJson.data[0]?.group_ids?.lists);
+        setRecipientTags(resJson.data[0]?.group_ids?.tags);
         setLoading(false);
 
         setResTime(new Date() - start + 500);
