@@ -92,10 +92,12 @@ const FormEditor = (props) => {
   };
 
   const [formData, setFormData] = useState({});
+  const [resTime, setResTime] = useState(1000);
 
   useEffect(() => {
     localStorage.setItem("settingsPannel", "show");
     const getFormData = async () => {
+      const start = new Date();
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
       );
@@ -106,6 +108,8 @@ const FormEditor = (props) => {
         setRecipientLists(resJson.data?.group_ids?.lists);
         setRecipientTags(resJson.data?.group_ids?.tags);
         setLoading(false);
+
+        setResTime(new Date() - start + 500);
       }
     };
     if (id) {
@@ -333,11 +337,20 @@ const FormEditor = (props) => {
     setBlockData(block);
   };
 
+  const [loadComponent, setLoadComponent] = useState(true);
+
+  useEffect(() => {
+    const toRef = setTimeout(() => {
+      setLoadComponent(false);
+      clearTimeout(toRef);
+    }, resTime);
+  }, [loadComponent]);
+
   return (
     <>
       <div className="form-editor-page">
-        {loading ? (
-          <LoadingIndicator type="table" />
+        {loadComponent ? (
+          <LoadingIndicator type="table-full" />
         ) : (
           <div className="form-editor-topbar">
             <div className="topbar-left">
@@ -389,11 +402,11 @@ const FormEditor = (props) => {
                 </ul>
               </button>
               {/* <button
-                className="mintmrm-btn settings"
-                onClick={showSettingsPannel}
-              >
-                <SettingIcon />
-              </button> */}
+            className="mintmrm-btn settings"
+            onClick={showSettingsPannel}
+          >
+            <SettingIcon />
+          </button> */}
               <button
                 className={
                   saveLoader
@@ -410,8 +423,8 @@ const FormEditor = (props) => {
         )}
 
         <div className="form-editor-body">
-          {loading ? (
-            <LoadingIndicator type="table" />
+          {loadComponent ? (
+            <LoadingIndicator type="table-full" />
           ) : (
             <div className="form-editor-title-area">
               <InputItem
