@@ -1,6 +1,7 @@
 import React from "react";
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import Typography from '../../components/components/Typography';
 
 import {__} from "@wordpress/i18n";
 const {
@@ -29,6 +30,7 @@ const {
     RadioGroup,
     RadioControl,
     Radio,
+    FontSizePicker
 } = wp.components;
 const {
     InspectorControls,
@@ -60,6 +62,14 @@ class Editor extends Component {
             [key]: value
         })
     }
+    onChangeOutlineStyle = (outline,onChangeOutlineStyle) => {
+        this.props.setAttributes( {
+            outline: onChangeOutlineStyle,
+            buttonBorderStyle : 'solid',
+            buttonTextColor : "#573bff",
+            buttonBorderColor : "#573bff"
+        } );
+    }
 
     onChangePadding = ( type, attribute, value ) => {
         this.props.setAttributes({
@@ -80,9 +90,11 @@ class Editor extends Component {
             </PanelBody>
         )
     }
+
     buttonStyle = () => {
         let { attributes, setAttributes } 	= this.props;
-
+        let typography = attributes.typography,
+            device = attributes.device;
         return (
             <PanelBody title="Button Style" initialOpen={false}>
 
@@ -137,6 +149,27 @@ class Editor extends Component {
                         }
                     ]}
                 />
+                <SelectControl
+                    label={__(
+                        'Button Outline Style',
+                        'mrm'
+                    )}
+                    value={attributes.outline}
+                    onChange={ outline_style => this.onChangeOutlineStyle( 'outline',outline_style )}
+                    options={[
+                        {value: "fill", label: "Fill"},
+                        {value: "outline", label: "Outline"},
+                    ]}
+                />
+                <label className="blocks-base-control__label">Button Width</label>
+                <RangeControl
+                    value={ attributes.buttonWidth }
+                    onChange={ buttonWidth => this.onChangeAttribute( 'buttonWidth', buttonWidth )}
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={10}
+                />
 
                 <label className="blocks-base-control__label">Border Width</label>
                 <RangeControl
@@ -153,10 +186,86 @@ class Editor extends Component {
                     onChange={ buttonBorderColor => this.onChangeAttribute( 'buttonBorderColor', buttonBorderColor )}
                     value = { attributes.buttonBorderColor }
                 />
+
+                <RangeControl
+                    label={__(
+                        'Padding Top & Bottom',
+                        'wpfnl'
+                    )}
+                    value={attributes.paddingTopBottom}
+                    onChange={(btn_padding_top_bottom) =>
+                        setAttributes({paddingTopBottom: btn_padding_top_bottom})
+                    }
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+                <RangeControl
+                    label={__(
+                        'Padding Left & Right',
+                        'mrm'
+                    )}
+                    value={attributes.paddingLeftRight}
+                    onChange={(btn_padding_left_right) =>
+                        setAttributes({paddingLeftRight: btn_padding_left_right})
+                    }
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+                <RangeControl
+                    label={__(
+                        'Line Height',
+                        'mrm'
+                    )}
+                    value={attributes.lineHeight}
+                    onChange={(btn_lineHeight) =>
+                        setAttributes({lineHeight: btn_lineHeight})
+                    }
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+                <RangeControl
+                    label={__(
+                        'Letter Spacing',
+                        'mrm'
+                    )}
+                    value={attributes.letterSpacing}
+                    onChange={(btn_letterSpacing) =>
+                        setAttributes({letterSpacing: btn_letterSpacing})
+                    }
+                    allowReset={true}
+                    min={0}
+                    max={20}
+                    step={1}
+                />
+
+                <label className="blocks-base-control__label">Font size</label>
+                <RangeControl
+                    value={ attributes.buttonFontSize }
+                    onChange={ btnBorder => this.onChangeAttribute( 'buttonFontSize', btnBorder )}
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+
+                <label className="blocks-base-control__label"></label>
+                <Typography
+                    // label={__('Typography')}
+                    value={typography}
+                    onChange={ (value) => setAttributes({ typography: value }) }
+                    disableLineHeight
+                    device={device}
+                    onDeviceChange={value => setAttributes({ device: value })}
+                />
             </PanelBody>
         )
     }
-
     getInspectorControls = () => {
         return (
             <InspectorControls key="mrm-mrm-form-inspector-controls">
@@ -170,6 +279,7 @@ class Editor extends Component {
         );
     };
 
+
     render() {
         const {
             attributes : {
@@ -179,13 +289,17 @@ class Editor extends Component {
                 buttonTextColor,
                 buttonBgColor,
                 buttonBorderRadius,
-                buttonPaddingTop,
-                buttonPaddingRight,
-                buttonPaddingBottom,
-                buttonPaddingLeft,
                 buttonBorderStyle,
                 buttonBorderWidth,
                 buttonBorderColor,
+                outline,
+                buttonWidth,
+                typography,
+                buttonFontSize,
+                lineHeight,
+                letterSpacing,
+                paddingTopBottom,
+                paddingLeftRight
             },
         } = this.props;
 
@@ -193,18 +307,23 @@ class Editor extends Component {
         let fieldSpacing = {
             marginBottom:  rowSpacing+'px',
         }
-
         let buttonStyle = {
-            backgroundColor: buttonBgColor,
+            // backgroundColor: buttonBgColor,
+            backgroundColor: outline === 'fill' ? buttonBgColor : 'transparent',
             color:  buttonTextColor,
             borderRadius:  buttonBorderRadius+'px',
-            paddingTop:  buttonPaddingTop+'px',
-            paddingRight:  buttonPaddingRight+'px',
-            paddingBottom:  buttonPaddingBottom+'px',
-            paddingLeft:  buttonPaddingLeft+'px',
+            padding: ""+paddingTopBottom+"px "+paddingLeftRight+"px",
+            lineHeight : lineHeight,
+            letterSpacing :letterSpacing,
             borderStyle:  buttonBorderStyle,
-            borderWidth:  buttonBorderWidth+'px',
+            fontWeight: typography.weight,
+            fontFamily: typography.family,
+            fontSize : buttonFontSize,
+            textAlign: buttonAlign,
+            // borderWidth:  buttonBorderWidth+'px',
+            borderWidth: outline === 'fill' ? '0' : buttonBorderWidth+'px',
             borderColor:  buttonBorderColor,
+            width : buttonWidth+"%"
         }
 
 
