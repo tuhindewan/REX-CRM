@@ -2,7 +2,7 @@ import domReady from "@wordpress/dom-ready";
 import { render } from "@wordpress/element";
 import { registerCoreBlocks } from "@wordpress/block-library";
 import Editor from "./editor";
-const { registerBlockType } = wp.blocks;
+const { registerBlockType} = wp.blocks;
 const { __ } = wp.i18n;
 import "./styles.scss";
 //Email

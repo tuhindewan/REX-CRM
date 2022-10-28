@@ -30,6 +30,14 @@ const mrmButton = ({
             buttonBorderStyle,
             buttonBorderWidth,
             buttonBorderColor,
+            outline,
+             buttonWidth,
+            typography,
+            buttonFontSize,
+            lineHeight,
+            letterSpacing,
+            paddingTopBottom,
+            paddingLeftRight
         },
     }) => {
 
@@ -39,16 +47,22 @@ const mrmButton = ({
     }
 
     let buttonStyle = {
-        backgroundColor: buttonBgColor,
-        color:  buttonTextColor +' !important',
+        // backgroundColor: buttonBgColor,
+        backgroundColor: outline === 'fill' ? buttonBgColor : 'transparent',
+        color:  buttonTextColor,
         borderRadius:  buttonBorderRadius+'px',
-        paddingTop:  buttonPaddingTop+'px',
-        paddingRight:  buttonPaddingRight+'px',
-        paddingBottom:  buttonPaddingBottom+'px',
-        paddingLeft:  buttonPaddingLeft+'px',
+        padding: ""+paddingTopBottom+"px "+paddingLeftRight+"px",
+        lineHeight : lineHeight,
+        letterSpacing :letterSpacing,
         borderStyle:  buttonBorderStyle,
-        borderWidth:  buttonBorderWidth+'px',
+        fontWeight: typography.weight,
+        fontFamily: typography.family,
+        fontSize : buttonFontSize,
+        textAlign: buttonAlign,
+        // borderWidth:  buttonBorderWidth+'px',
+        borderWidth: outline === 'fill' ? '0' : buttonBorderWidth+'px',
         borderColor:  buttonBorderColor,
+        width : buttonWidth+"%"
     }
 
     return (
