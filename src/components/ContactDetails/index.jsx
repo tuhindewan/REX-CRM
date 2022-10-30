@@ -320,7 +320,7 @@ export default function ContactDetails() {
         if (
           value.length &&
           !new RegExp(
-            /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i
+            /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/i
           ).test(value)
         ) {
           setErrors({
