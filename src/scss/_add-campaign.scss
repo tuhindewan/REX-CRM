@@ -146,6 +146,9 @@
         justify-content: center;
         align-items: center;
       }
+      .add-another-email:hover {
+        cursor: pointer;
+      }
     }
     .email-content-section {
       width: 100%;
@@ -191,6 +194,7 @@
             width: 120px;
             display: inline-block;
             padding-right: 20px;
+            cursor: auto;
           }
           input {
             border: none;
