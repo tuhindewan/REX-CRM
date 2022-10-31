@@ -1,7 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import Typography from "../components/Typography";
+import Typography from '../../components/components/Typography';
 
 import { __ } from "@wordpress/i18n";
 const { withSelect, withDispatch, useSelect, useDispatch } = wp.data;
@@ -956,7 +956,7 @@ class Editor extends Component {
           name={field_slug}
           required={attributes.field_require}
         />
-        <label htmlFor={option.label} style={labelStyle}>
+        <label key={index} htmlFor={option.label} style={labelStyle}>
           {option.label ? __(option.label, "mrm") : __("", "mrm")}
           {attributes.field_require && <span className="required-mark">*</span>}
         </label>
