@@ -94,14 +94,19 @@ export default function SingleCampaign(props) {
                   : "mintmrm-dropdown"
               }
             >
-              <li
-                onClick={() => {
-                  props.editField(props.campaign);
-                }}
-              >
-                {" "}
-                Edit
-              </li>
+              {"active" == props.campaign.status ? (
+                <li> Pause</li>
+              ) : (
+                <li
+                  onClick={() => {
+                    props.editField(props.campaign);
+                  }}
+                >
+                  {" "}
+                  Edit
+                </li>
+              )}
+
               <li
                 className="delete"
                 onClick={() => props.deleteCampaign(props.campaign.id)}
