@@ -75,6 +75,9 @@ const FormEditor = (props) => {
 
   const [isReloaded, setIsReloaded] = useState(false);
 
+  const [formData, setFormData] = useState({});
+  const [resTime, setResTime] = useState(2000);
+
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -91,21 +94,22 @@ const FormEditor = (props) => {
     setShowAlert(status);
   };
 
-  const [formData, setFormData] = useState({});
-
   useEffect(() => {
     localStorage.setItem("settingsPannel", "show");
     const getFormData = async () => {
+      const start = new Date();
       const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`
+        `${window.MRM_Vars.api_base_url}mrm/v1/forms/get-title-group/${id}`
       );
       const resJson = await res.json();
 
       if (200 === resJson.code) {
-        setFormData(resJson.data);
-        setRecipientLists(resJson.data?.group_ids?.lists);
-        setRecipientTags(resJson.data?.group_ids?.tags);
+        setFormData(resJson.data[0]);
+        setRecipientLists(resJson.data[0]?.group_ids?.lists);
+        setRecipientTags(resJson.data[0]?.group_ids?.tags);
         setLoading(false);
+
+        setResTime(new Date() - start + 500);
       }
     };
     if (id) {
@@ -333,11 +337,21 @@ const FormEditor = (props) => {
     setBlockData(block);
   };
 
+  // to fix relaod issue
+  const [loadComponent, setLoadComponent] = useState(true);
+
+  useEffect(() => {
+    const toRef = setTimeout(() => {
+      setLoadComponent(false);
+      clearTimeout(toRef);
+    }, resTime); // resTime is calculated from server response time
+  }, [loadComponent]);
+
   return (
     <>
       <div className="form-editor-page">
-        {loading ? (
-          <LoadingIndicator type="table" />
+        {loadComponent ? (
+          <LoadingIndicator type="table-full" />
         ) : (
           <div className="form-editor-topbar">
             <div className="topbar-left">
@@ -389,11 +403,11 @@ const FormEditor = (props) => {
                 </ul>
               </button>
               {/* <button
-                className="mintmrm-btn settings"
-                onClick={showSettingsPannel}
-              >
-                <SettingIcon />
-              </button> */}
+            className="mintmrm-btn settings"
+            onClick={showSettingsPannel}
+          >
+            <SettingIcon />
+          </button> */}
               <button
                 className={
                   saveLoader
@@ -410,50 +424,54 @@ const FormEditor = (props) => {
         )}
 
         <div className="form-editor-body">
-          <div className="form-editor-title-area">
-            <InputItem
-              label="Title"
-              name="title"
-              handleChange={handleChange}
-              value={formData?.title}
-            />
+          {loadComponent ? (
+            <LoadingIndicator type="table-full" />
+          ) : (
+            <div className="form-editor-title-area">
+              <InputItem
+                label="Title*"
+                name="title"
+                handleChange={handleChange}
+                value={formData?.title}
+              />
 
-            <div className="form-group list">
-              <label className="list-label">Assign To</label>
+              <div className="form-group list">
+                <label className="list-label">Assign To*</label>
 
-              <div className="list-content" ref={menuRef}>
-                {recipientLists?.length == 0 && recipientTags?.length == 0 ? (
-                  <button className="all-recipients" onClick={showDropDown}>
-                    All Subscriber
-                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                  </button>
-                ) : (
-                  <button
-                    className="all-recipients selected show"
-                    onClick={showDropDown}
-                  >
-                    <span className="tags">{recipientTags?.length} Tags</span>
-                    <span className="from">and</span>
-                    <span className="lists">
-                      {recipientLists?.length} Lists.
-                    </span>
-                    <span className="recipients">
-                      {recipientLists?.length + recipientTags?.length} Groups
-                    </span>
-                    {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
-                  </button>
-                )}
+                <div className="list-content" ref={menuRef}>
+                  {recipientLists?.length == 0 && recipientTags?.length == 0 ? (
+                    <button className="all-recipients" onClick={showDropDown}>
+                      All Subscriber
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                  ) : (
+                    <button
+                      className="all-recipients selected show"
+                      onClick={showDropDown}
+                    >
+                      <span className="tags">{recipientTags?.length} Tags</span>
+                      <span className="from">and</span>
+                      <span className="lists">
+                        {recipientLists?.length} Lists.
+                      </span>
+                      <span className="recipients">
+                        {recipientLists?.length + recipientTags?.length} Groups
+                      </span>
+                      {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
+                    </button>
+                  )}
 
-                <CampaignCustomSelect
-                  dropDown={dropDown}
-                  setRecipientTags={setRecipientTags}
-                  recipientTags={recipientTags}
-                  setRecipientLists={setRecipientLists}
-                  recipientLists={recipientLists}
-                />
+                  <CampaignCustomSelect
+                    dropDown={dropDown}
+                    setRecipientTags={setRecipientTags}
+                    recipientTags={recipientTags}
+                    setRecipientLists={setRecipientLists}
+                    recipientLists={recipientLists}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/*Preview Mobile and Desktop*/}
 
