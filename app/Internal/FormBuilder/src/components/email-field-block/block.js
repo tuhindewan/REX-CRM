@@ -46,8 +46,8 @@ const mrmEmailField = ({
   let labelStyle = {
     color: labelColor,
     marginBottom: labelSpacing + "px",
-    fontWeight: inputTypography.weight,
-    fontFamily: inputTypography.family,
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family,
   };
   let checkboxLabelColor = {
     color: labelColor,
