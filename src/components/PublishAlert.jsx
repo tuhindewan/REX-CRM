@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CrossIcon from "./Icons/CrossIcon";
-import Delete from "./Icons/Delete";
+import UpdateConfirmation from "./Icons/UpdateConfirmation";
 
 export default function PublishAlert(props) {
   const [deleteClass, setDeleteClass] = useState(false);
@@ -30,7 +30,7 @@ export default function PublishAlert(props) {
           </div>
         </div>
         <div className="delete-confirmation-body">
-          <Delete />
+          <UpdateConfirmation />
           <p>{props.message}</p>
         </div>
 
