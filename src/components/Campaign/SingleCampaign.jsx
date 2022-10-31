@@ -35,7 +35,7 @@ export default function SingleCampaign(props) {
             />
             <label for={props.campaign.id}></label>
           </span>
-          {props.campaign.status == "draft" ? (
+          {props.campaign.type == "sequence" ? (
             <DraftCampaignIcon />
           ) : (
             <CompletedCampaignIcon />
