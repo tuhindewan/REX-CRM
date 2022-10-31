@@ -108,6 +108,9 @@
             }
           }
         }
+        .delete-option:hover {
+          cursor: pointer;
+        }
       }
       .email-select-section {
         &.selected {
