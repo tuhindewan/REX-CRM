@@ -565,6 +565,9 @@
                 color: $secondary-color;
               }
             }
+            .add-template-section:hover {
+              cursor: pointer;
+            }
           }
         }
       }
