@@ -171,7 +171,6 @@ export default function AllCampaigns() {
     <>
       <div className="campaign-index-page">
         <CampaignsNavbar />
-        {/* <SearchNavbar /> */}
         <div className="campaign-list-page">
           <div className="mintmrm-container">
             <div className="campaign-list-area">
