@@ -46,7 +46,7 @@ export default function PublishAlert(props) {
               class="btn-default delete product-trash"
               onClick={onPublish}
             >
-              Publish
+              {props.buttonText}
             </button>
           </li>
         </ul>

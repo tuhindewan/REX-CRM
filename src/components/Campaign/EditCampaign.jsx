@@ -373,7 +373,6 @@ export default function EditCampaign(props) {
         campaign_id: id,
       };
 
-      console.log(campaign);
       updateCampaignRequest(campaign).then((response) => {
         if (201 === response.code) {
           // Show success message
@@ -828,6 +827,7 @@ export default function EditCampaign(props) {
           message="Are you sure to run this campaign? It can not be edited after launch."
           onNotPublish={onNotPublish}
           onPublishStatus={onPublishStatus}
+          buttonText={"Publish"}
         />
       </div>
       <div className="mintmrm-container" style={{ display: isEmailDelete }}>

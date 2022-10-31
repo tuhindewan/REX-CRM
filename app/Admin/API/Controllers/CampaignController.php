@@ -487,9 +487,12 @@ class CampaignController extends BaseController {
 
     
     /**
+     * Update a campaign's status
+     * 
      * @param WP_REST_Request $request
      * 
-     * @return 
+     * @return WP_REST_Response
+     * @since 1.0.0
      */
     public function status_update( WP_REST_Request $request  )
     {

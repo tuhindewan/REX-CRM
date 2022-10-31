@@ -277,6 +277,10 @@
                 color: #239654;
                 background: rgba(35, 150, 84, 0.1);
               }
+              &.suspended {
+                color: #f7900a;
+                background: rgba(247, 144, 10, 0.1);
+              }
             }
           }
 

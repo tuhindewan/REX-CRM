@@ -61,6 +61,8 @@ export default function SingleCampaign(props) {
               ? "draft"
               : props.campaign.status == "active"
               ? "active"
+              : props.campaign.status == "suspended"
+              ? "suspended"
               : "archived"
           }
         >
@@ -95,7 +97,10 @@ export default function SingleCampaign(props) {
               }
             >
               {"active" == props.campaign.status ? (
-                <li> Pause</li>
+                <li onClick={() => props.handleStatusUpdate(props.campaign.id)}>
+                  {" "}
+                  Pause
+                </li>
               ) : (
                 <li
                   onClick={() => {
