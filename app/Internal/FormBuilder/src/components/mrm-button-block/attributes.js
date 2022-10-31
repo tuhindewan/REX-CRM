@@ -335,7 +335,7 @@ const attributes = {
     },
     buttonWidth: {
         type: 'number',
-        default: 25
+        default: ''
     },
     typography:{
         type: 'object',
