@@ -5475,6 +5475,13 @@ const attributes = {
     type: "boolean",
     default: false
   },
+  typography: {
+    type: "object",
+    default: {},
+    style: [{
+      selector: "mrm-form-group.submit .mrm-submit-button"
+    }]
+  },
   emailLabel: {
     type: "string",
     default: ""
@@ -5819,7 +5826,10 @@ const mrmEmailField = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      inputTypography,
+      labelTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -5828,7 +5838,9 @@ const mrmEmailField = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -5843,7 +5855,9 @@ const mrmEmailField = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group email",
@@ -5886,10 +5900,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -5941,10 +5957,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -6004,7 +6020,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -6031,6 +6047,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -6099,6 +6129,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -6127,7 +6171,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        typography,
+        inputTypography,
+        labelTypography
       }
     } = this.props;
     let fieldSpacing = {
@@ -6135,7 +6182,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -6150,7 +6199,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
