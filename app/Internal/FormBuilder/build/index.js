@@ -1137,7 +1137,7 @@ class Typography extends Component {
       });
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
         className: fontClasses,
-        id: `qubely-font-family-${index}`,
+        key: `qubely-font-family-${index}`,
         onClick: () => {
           this.setState({
             showFontFamiles: false,
@@ -1169,9 +1169,10 @@ class Typography extends Component {
       ref: "qubelyFontWeightWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "qubely-font-family-weights"
-    }, ['Default', ...this._getWeight()].map(font => {
+    }, ['Default', ...this._getWeight()].map((font, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
         className: `${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`,
+        key: `qubely-font-weights-${index}`,
         onClick: () => {
           this.setState({
             showFontWeights: false
@@ -8869,15 +8870,19 @@ const mrmCustomField = _ref => {
       inputPaddingLeft,
       inputBorderStyle,
       inputBorderWidth,
-      inputBorderColor
+      inputBorderColor,
+      inputTypography,
+      labelTypography
     }
   } = _ref;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let radioLabelColor = {
     color: labelColor
@@ -8888,22 +8893,24 @@ const mrmCustomField = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
-    borderColor: inputBorderColor
+    borderWidth: inputBorderWidth + "px",
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group text",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8914,13 +8921,13 @@ const mrmCustomField = _ref => {
     placeholder: custom_text_placeholder,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group textarea",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8932,13 +8939,13 @@ const mrmCustomField = _ref => {
     rows: "4",
     cols: "50",
     style: inputStyle
-  }))), field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group date",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8949,7 +8956,7 @@ const mrmCustomField = _ref => {
     placeholder: field_name,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group radio"
   }, radioOption.map((option, index) => {
@@ -8957,6 +8964,7 @@ const mrmCustomField = _ref => {
       className: "mrm-radio-group mintmrm-radiobtn",
       style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      key: index,
       type: "radio",
       id: option.label,
       name: field_slug,
@@ -8964,10 +8972,10 @@ const mrmCustomField = _ref => {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
       style: radioLabelColor
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
-  })), field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
@@ -8982,16 +8990,16 @@ const mrmCustomField = _ref => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: checkboxLabelColor
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
-  }, "*")))), field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "*")))), field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group select",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -9001,6 +9009,7 @@ const mrmCustomField = _ref => {
     style: inputStyle
   }, selectOption.map((option, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      key: index,
       value: makeSlug(option.value)
     }, option.label);
   })))));
@@ -9026,10 +9035,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -9081,10 +9092,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -9109,9 +9120,9 @@ class Editor extends Component {
     });
     let defaultOption = {
       value: slug_name,
-      label: 'Label' + '-' + attributes.radio_option_count
+      label: "Label" + "-" + attributes.radio_option_count
     };
-    if ('radio' === attributes.field_type) {
+    if ("radio" === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
       setAttributes(attributes.radioOption);
     }
@@ -9128,25 +9139,25 @@ class Editor extends Component {
       className: "mrm-inline-label",
       label: "Field Type",
       value: attributes.field_type,
-      onChange: select_type => this.onChangeAttribute('field_type', select_type),
+      onChange: select_type => this.onChangeAttribute("field_type", select_type),
       options: [{
-        value: 'text',
-        label: 'Text'
+        value: "text",
+        label: "Text"
       }, {
-        value: 'textarea',
-        label: 'Text Area'
+        value: "textarea",
+        label: "Text Area"
       }, {
-        value: 'radio',
-        label: 'Radio Button'
+        value: "radio",
+        label: "Radio Button"
       }, {
-        value: 'checkbox',
-        label: 'Checkbox'
+        value: "checkbox",
+        label: "Checkbox"
       }, {
-        value: 'select',
-        label: 'Select'
+        value: "select",
+        label: "Select"
       }, {
-        value: 'date',
-        label: 'Date'
+        value: "date",
+        label: "Date"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
@@ -9155,28 +9166,28 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_name: state
       })
-    }), attributes.field_type != 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type != "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Field Label",
       value: attributes.field_label,
       onChange: state => setAttributes({
         field_label: state
       })
-    }), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_textarea_placeholder,
       onChange: state => setAttributes({
         custom_textarea_placeholder: state
       })
-    }), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_text_placeholder,
       onChange: state => setAttributes({
         custom_text_placeholder: state
       })
-    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "select-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -9233,7 +9244,7 @@ class Editor extends Component {
         fill: "#fff",
         d: "M0 0h22v22H0z"
       }))))));
-    })), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "radio-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -9396,27 +9407,29 @@ class Editor extends Component {
       select_option_count: attributes.select_option_count + 1
     });
     let defaultOption = {
-      value: 'option' + '-' + attributes.select_option_count,
-      label: 'Option' + '-' + attributes.select_option_count
+      value: "option" + "-" + attributes.select_option_count,
+      label: "Option" + "-" + attributes.select_option_count
     };
-    if ('select' === attributes.field_type) {
+    if ("select" === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
       setAttributes(attributes.selectOption);
     }
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9426,18 +9439,30 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
-    }), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
-    })));
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    }));
   };
   inputFieldStyle = () => {
     let {
@@ -9452,12 +9477,12 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -9465,7 +9490,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -9474,28 +9499,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -9503,8 +9528,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -9517,7 +9554,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: "mrm-block-inspected-inspector-control-wrapper",
       className: "mrm-block-control-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && this.inputFieldStyle())));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && this.inputFieldStyle())));
   };
 
   /**
@@ -9531,11 +9568,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9543,14 +9582,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9559,7 +9600,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9584,11 +9625,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9596,14 +9639,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9612,7 +9657,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9638,11 +9683,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9650,14 +9697,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9666,7 +9715,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9690,11 +9739,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9702,14 +9753,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9718,7 +9771,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9758,7 +9811,7 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
 
     // let labelStyle = {
@@ -9767,7 +9820,9 @@ class Editor extends Component {
     // }
 
     let checkboxLabelColor = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
 
     // let inputStyle = {
@@ -9794,7 +9849,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: checkboxLabelColor
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*"))));
   };
@@ -9805,10 +9860,12 @@ class Editor extends Component {
     } = this.props;
     let fieldSpacing = {
       //color:  attributes.labelColor,
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
       //marginBottom:  attributes.labelSpacing+'px',
     };
 
@@ -9835,7 +9892,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
       style: labelStyle
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
   };
@@ -9865,7 +9922,7 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
   }
 }
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));

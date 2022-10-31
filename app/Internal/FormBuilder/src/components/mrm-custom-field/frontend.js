@@ -82,7 +82,7 @@ const PricingBlock = ( {
 
                                         <div className="tbl-body">
                                             <ul>
-                                                { item.features.map((feature, i) => {
+                                                { item.features.map((feature, index) => {
                                                     return (
                                                         <li dangerouslySetInnerHTML={{ __html: feature.feature }} key={`annual-single-plan-features-${index}`}/>
                                                     )
@@ -126,7 +126,7 @@ const PricingBlock = ( {
 
                                         <div className="tbl-body">
                                             <ul>
-                                                { item.features.map((feature, i) => {
+                                                { item.features.map((feature, index) => {
                                                     return (
                                                         <li dangerouslySetInnerHTML={{ __html: feature.feature }} key={`lifetime-single-plan-features-${index}`}/>
                                                     )

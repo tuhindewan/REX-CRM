@@ -274,7 +274,7 @@ class Typography extends Component {
 															)
 															return (
 																<div className={fontClasses}
-																	 id={`qubely-font-family-${index}`}
+																	 key={`qubely-font-family-${index}`}
 																	 onClick={() => {
 																		 this.setState({ showFontFamiles: false, filterText: '' });
 																		 font.n == 'Default' ? this.setSettings('family', 'default') : this.handleTypographyChange(font.n)
@@ -301,10 +301,10 @@ class Typography extends Component {
 											showFontWeights && <div className="qubely-font-weight-wrapper" ref="qubelyFontWeightWrapper">
 												<div className="qubely-font-family-weights" >
 													{
-														['Default', ...this._getWeight()].map(font => {
+														['Default', ...this._getWeight()].map((font, index) => {
 															return (
 																<div className={`${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`}
-																	 onClick={() => { this.setState({ showFontWeights: false }); this.setSettings('weight', font) }}
+																	 key={`qubely-font-weights-${index}`} onClick={() => { this.setState({ showFontWeights: false }); this.setSettings('weight', font) }}
 																>
 																	{font}
 																</div>
