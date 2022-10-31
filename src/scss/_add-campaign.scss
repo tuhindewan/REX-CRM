@@ -234,6 +234,9 @@
               }
             }
           }
+          .setting-section:hover {
+            cursor: pointer;
+          }
         }
         .input-item:last-child {
           border-bottom: none;
