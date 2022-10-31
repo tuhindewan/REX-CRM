@@ -269,7 +269,11 @@
                 color: #121212;
                 background: #f4f4f4;
               }
-              &.completed {
+              &.archived {
+                color: #573bff;
+                background: #f1f0fe;
+              }
+              &.active {
                 color: #239654;
                 background: rgba(35, 150, 84, 0.1);
               }

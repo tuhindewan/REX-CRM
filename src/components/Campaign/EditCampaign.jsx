@@ -141,7 +141,7 @@ export default function EditCampaign(props) {
       setCampaignStatus(campaign.status);
       satRecipientsCount(campaign.total_recipients);
       setShowLoader(false);
-      if ("ongoing" == campaign.status || "completed" == campaign.status) {
+      if ("active" == campaign.status || "archived" == campaign.status) {
         setIsReadonly(true);
       }
 
@@ -224,7 +224,7 @@ export default function EditCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: status == "ongoing" ? "ongoing" : status,
+      status: status == "active" ? "active" : status,
       emails: emailData.map((email) => {
         return {
           id: email?.id,
@@ -310,7 +310,7 @@ export default function EditCampaign(props) {
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
-    if ("ongoing" != campaignStatus && "completed" != campaignStatus) {
+    if ("active" != campaignStatus && "archived" != campaignStatus) {
       setEmailData((prevEmailData) => {
         setSelectedEmailIndex(prevEmailData.length);
         setActiveEmailData(defaultEmailData);
@@ -355,7 +355,7 @@ export default function EditCampaign(props) {
           }),
         },
         type: emailData.length > 1 ? "sequence" : "regular",
-        status: "ongoing",
+        status: "active",
         emails: emailData.map((email) => {
           return {
             id: email?.id,
@@ -373,6 +373,7 @@ export default function EditCampaign(props) {
         campaign_id: id,
       };
 
+      console.log(campaign);
       updateCampaignRequest(campaign).then((response) => {
         if (201 === response.code) {
           // Show success message
@@ -776,29 +777,22 @@ export default function EditCampaign(props) {
                   </div>
                 </div>
                 <div className="content-save-section">
-                  {"ongoing" == campaignStatus ? (
+                  {"active" == campaignStatus ? (
                     <button
                       className="campaign-save mintmrm-btn"
                       disabled={true}
                     >
-                      On Going
+                      Active
                     </button>
-                  ) : "completed" == campaignStatus ? (
+                  ) : "archived" == campaignStatus ? (
                     <button
                       className="campaign-save mintmrm-btn completed"
                       disabled={true}
                     >
-                      Completed
+                      Archived
                     </button>
                   ) : (
                     <>
-                      {/* <button
-                      className="campaign-schedule mintmrm-btn outline"
-                      disabled={!isPublishValid}
-                      onClick={() => updateCampaign("ongoing")}
-                    >
-                      Publish
-                    </button> */}
                       {isPublishValid ? (
                         <button
                           className="campaign-schedule mintmrm-btn outline"

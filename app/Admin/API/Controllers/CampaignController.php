@@ -114,7 +114,7 @@ class CampaignController extends BaseController {
 
                         $data['campaign'] = $this->campaign_data;
 
-                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                        if( isset( $data['campaign']['status'] ) && "active" == $data['campaign']['status'] ){
                             $email['scheduled_at'] = current_time('mysql');
                             $email['status']    = 'scheduled';
                         }
@@ -164,7 +164,7 @@ class CampaignController extends BaseController {
                         
                         $data['campaign'] = $this->campaign_data;
 
-                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                        if( isset( $data['campaign']['status'] ) && "active" == $data['campaign']['status'] ){
                             $email['scheduled_at'] = current_time('mysql');
                             $email['status']    = 'scheduled';
                         }
@@ -182,7 +182,7 @@ class CampaignController extends BaseController {
             // Send renponses back to the frontend
             if($this->campaign_data) {
                 $data['campaign'] = $this->campaign_data;
-                if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                if( isset( $data['campaign']['status'] ) && "active" == $data['campaign']['status'] ){
                     return $this->get_success_response(__( 'Campaign has been started successfully', 'mrm' ), 201, $data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);

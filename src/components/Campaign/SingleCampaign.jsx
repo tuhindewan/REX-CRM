@@ -56,7 +56,13 @@ export default function SingleCampaign(props) {
       <div className="table-data unsubscribers">-</div>
       <div className="table-data status">
         <span
-          className={props.campaign.status == "draft" ? "draft" : "completed"}
+          className={
+            props.campaign.status == "draft"
+              ? "draft"
+              : props.campaign.status == "active"
+              ? "active"
+              : "archived"
+          }
         >
           {props.campaign.status}
         </span>

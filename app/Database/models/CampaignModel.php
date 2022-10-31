@@ -78,7 +78,6 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
-
         $inserted = $wpdb->insert( $campaign_meta_table, [
             'meta_key'      => 'recipients',
             'meta_value'    => $recipients,
@@ -456,7 +455,7 @@ class CampaignModel {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
-        $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
+        $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'active');
         return $wpdb->get_results( $select_query, ARRAY_A );
     }
 
