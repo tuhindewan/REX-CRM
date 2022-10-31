@@ -201,7 +201,7 @@ export default function Editor(props) {
 
   const [testMailModal, setTestMailModal] = useState(false);
   const [testMailLoader, setTestMailLoader] = useState(false);
-  const [testMailMessageColor, setTestMailMessageColor] = useState('');
+  const [testMailMessageColor, setTestMailMessageColor] = useState("");
 
   const [testEmail, setTestEmail] = useState("");
   const [testMailMessage, setTestMailMessage] = useState("");
@@ -341,23 +341,44 @@ export default function Editor(props) {
       );
       return await response.json();
     } else {
-      const response = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailData?.id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            email_body: html,
-            json_data: values,
-            status: "published",
-            email_index: emailData?.id,
-            campaign_data: campaignData,
-          }),
-        }
-      );
-      return await response.json();
+      console.log(emailData);
+
+      if (emailData?.id) {
+        const response = await fetch(
+          `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailData?.id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              email_body: html,
+              json_data: values,
+              status: "published",
+              email_index: emailData?.id,
+              campaign_data: campaignData,
+            }),
+          }
+        );
+        return await response.json();
+      } else {
+        const response = await fetch(
+          `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              email_body: html,
+              json_data: values,
+              status: "published",
+              email_data: emailData,
+            }),
+          }
+        );
+        return await response.json();
+      }
     }
   };
 
@@ -525,12 +546,10 @@ export default function Editor(props) {
       setTestMailMessage(response.message);
       setTestMailLoader(false);
 
-      if( 'error' == response.status){
-        setTestMailMessageColor ('error');
+      if ("error" == response.status) {
+        setTestMailMessageColor("error");
       }
-
     });
-
   };
 
   const onUploadImage = async (blob: Blob) => {
@@ -595,10 +614,16 @@ export default function Editor(props) {
                     </div>
 
                     <ul className="mintmrm-delete-confirm-btn">
-                      <li  className={ testMailMessageColor == 'error' ? "alert-message mintmrm-error" : "alert-message" }>
+                      <li
+                        className={
+                          testMailMessageColor == "error"
+                            ? "alert-message mintmrm-error"
+                            : "alert-message"
+                        }
+                      >
                         <p>{testMailMessage}</p>
                       </li>
-                      
+
                       <li>
                         <button
                           className="mintmrm-btn"
@@ -606,9 +631,9 @@ export default function Editor(props) {
                         >
                           {" "}
                           Send{" "}
-                          {testMailLoader &&
+                          {testMailLoader && (
                             <span className="mintmrm-loader"></span>
-                          }
+                          )}
                         </button>
                       </li>
                     </ul>
@@ -629,7 +654,11 @@ export default function Editor(props) {
 
                     <div className="responsive-check">
                       <Button
-                        className={ activePreview == 'edit' ? "edit-mode active" : "edit-mode" }
+                        className={
+                          activePreview == "edit"
+                            ? "edit-mode active"
+                            : "edit-mode"
+                        }
                         title="Edit Mode"
                         onClick={(e) => setActivePreview("edit")}
                       >
@@ -637,7 +666,11 @@ export default function Editor(props) {
                       </Button>
 
                       <Button
-                        className={ activePreview == 'pc' ? "desktop-mode active" : "desktop-mode" }
+                        className={
+                          activePreview == "pc"
+                            ? "desktop-mode active"
+                            : "desktop-mode"
+                        }
                         title="Desktop View"
                         onClick={(e) => setActivePreview("pc")}
                       >
@@ -645,7 +678,11 @@ export default function Editor(props) {
                       </Button>
 
                       <Button
-                        className={ activePreview == 'mobile' ? "mobile-mode active" : "mobile-mode" }
+                        className={
+                          activePreview == "mobile"
+                            ? "mobile-mode active"
+                            : "mobile-mode"
+                        }
                         title="Mobile View"
                         onClick={(e) => setActivePreview("mobile")}
                       >

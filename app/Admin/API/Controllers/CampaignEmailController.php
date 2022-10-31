@@ -44,7 +44,6 @@ class CampaignEmailController extends BaseController {
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
 
-        error_log(print_r($params, 1));
         $response   = array(
             'success'   => true,
             'message'   => ''
@@ -102,6 +101,23 @@ class CampaignEmailController extends BaseController {
     public function delete_all(WP_REST_Request $request)
     {
         // TODO: Implement delete_all() method.
+    }
+
+
+    public function create_new_campaign_email( WP_REST_Request $request )
+    {
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $email_id = CampaignModel::insert_campaign_emails( $params['email_data'], $params['campaign_id'], null );
+        CampaignEmailBuilderModel::insert(array(
+            'email_id'      => $email_id,
+            'status'        => 'published',
+            'email_body' => $params['email_body'],
+            'json_data'  => serialize($params['json_data']),
+        ));
+        
+        $response['campaign_id']    = $params['campaign_id'];
+        return rest_ensure_response($response);
     }
 
 

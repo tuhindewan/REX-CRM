@@ -104,7 +104,8 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-
+        unset($email['toError']);
+        unset($email['senderEmailError']);
         $email['campaign_id']   = $campaign_id;
         $email['created_at']    = current_time('mysql');
         $email['email_index']   = $index;
