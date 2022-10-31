@@ -60,7 +60,7 @@ class UpdateCampaignStatusTest extends WP_UnitTestCase {
 
     public function test_prepare_request()
     {
-        $request = new \WP_REST_Request( 'POST', '/mrm/v1/campaigns/4/status-update');
+        $request = new \WP_REST_Request( 'PUT', '/mrm/v1/campaigns/4/status-update');
         $request->set_body_params(
             [
                 "status"        => "suspended",
@@ -72,6 +72,14 @@ class UpdateCampaignStatusTest extends WP_UnitTestCase {
         $params = MRM_Common::get_api_params_values( $request );
         $this->assertArrayHasKey("status", $params);
         $this->assertArrayHasKey("campaign_id", $params);
+
+        $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+        $status     = isset( $params['status'] ) ? $params['status'] : "";
+
+        $this->assertEquals($campaign_id, 4);
+
+        $update = CampaignModel::update_campaign_status( $campaign_id, $status );
+        $this->assertEquals($update, 0);
     }
 
 }

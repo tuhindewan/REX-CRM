@@ -486,9 +486,24 @@ class CampaignController extends BaseController {
     }
 
     
+    /**
+     * @param WP_REST_Request $request
+     * 
+     * @return 
+     */
     public function status_update( WP_REST_Request $request  )
     {
         // Get params from status update API request
         $params = MRM_Common::get_api_params_values( $request );
+
+        $status      = isset( $params['status'] ) ? $params['status'] : "";
+        $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+
+        $update = ModelsCampaign::update_campaign_status( $campaign_id, $status );
+        
+        if( $update ){
+            return $this->get_success_response(__( 'Campaign status has been updated successfully', 'mrm' ), 201);
+        }
+        return $this->get_error_response(__( 'Failed to update campaign status', 'mrm' ), 400);
     }
 }
