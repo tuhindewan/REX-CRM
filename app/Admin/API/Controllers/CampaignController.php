@@ -55,7 +55,6 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         // Assign Untitled as value if title is empty
         if ( isset($params['title']) && empty( $params['title'] )) {
             $params['title'] = "Untitled";
@@ -486,8 +485,10 @@ class CampaignController extends BaseController {
         return ContactModel::get_single_email( $recipients_ids );
     }
 
-    public function get_publish_campaign_id()
+    
+    public function status_update( WP_REST_Request $request  )
     {
-        return ModelsCampaign::get_publish_campaign_id();
+        // Get params from status update API request
+        $params = MRM_Common::get_api_params_values( $request );
     }
 }

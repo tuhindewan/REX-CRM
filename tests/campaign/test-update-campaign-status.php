@@ -1,5 +1,8 @@
 <?php
 
+use Mint\MRM\DataBase\Models\CampaignModel;
+use MRM\Common\MRM_Common;
+
 class UpdateCampaignStatusTest extends WP_UnitTestCase {
     /**
      * Holds the WP REST Server object
@@ -54,4 +57,21 @@ class UpdateCampaignStatusTest extends WP_UnitTestCase {
         global $wp_rest_server;
         $wp_rest_server = null;
     }
+
+    public function test_prepare_request()
+    {
+        $request = new \WP_REST_Request( 'POST', '/mrm/v1/campaigns/4/status-update');
+        $request->set_body_params(
+            [
+                "status"        => "suspended",
+                "campaign_id"   => 4
+            ]
+        );
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+        $this->assertArrayHasKey("status", $params);
+        $this->assertArrayHasKey("campaign_id", $params);
+    }
+
 }

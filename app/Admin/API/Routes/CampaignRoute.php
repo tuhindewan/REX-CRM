@@ -138,6 +138,28 @@ class CampaignRoute{
 
 
         /**
+         * Update campaign status
+         * 
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)'. '/status-update' , [
+
+        [
+            'methods' => WP_REST_Server::EDITABLE,
+            'callback' => [
+                $this->controller ,
+                'status_update'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ] ,
+        ]
+
+    ]);
+
+
+        /**
          * Delete a campaign email
          * 
          * @since 1.0.0
