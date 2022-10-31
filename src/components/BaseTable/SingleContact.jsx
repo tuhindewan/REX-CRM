@@ -115,7 +115,7 @@ export default function SingleContact(props) {
         </td>
 
         <td className="list">
-          {contact.lists.length
+          {contact?.lists?.length
             ? contact.lists.map((list) => {
                 return (
                   <span className="list-item" key={list.id}>
@@ -127,7 +127,7 @@ export default function SingleContact(props) {
         </td>
 
         <td className="tag">
-          {contact.tags.length
+          {contact?.tags?.length
             ? contact.tags.map((tag) => {
                 return (
                   <span className="tag-item" key={tag.id}>
