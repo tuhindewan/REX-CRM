@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { createSlotFill } from "@wordpress/components";
+
 import { __ } from "@wordpress/i18n";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -26,6 +27,7 @@ const {
   DateTimePicker,
   DatePicker,
   TabPanel,
+  ColorPicker,
 } = wp.components;
 
 const { Component, RawHTML, useEffect, useState } = wp.element;
@@ -68,6 +70,8 @@ function Sidebar() {
       form_layout: {
         form_placement: "",
         form_animation: "",
+        close_button_color: "",
+        close_background_color: "",
       },
       schedule: {
         form_scheduling: false,
@@ -101,6 +105,8 @@ function Sidebar() {
   // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+  const [closeButtonColor, setCloseButtonColor] = useState("#000");
+  const [closeBackgroundColor, setCloseBackgroundColor] = useState("#fff");
 
   // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
@@ -276,6 +282,22 @@ function Sidebar() {
     } else {
       setFormAnimation("none");
     }
+
+    //set form close button color
+    if (prevSetting?.settings?.form_layout?.close_button_color) {
+      setCloseButtonColor(prevSetting?.settings?.form_layout?.close_button_color);
+    } else {
+      setCloseButtonColor("#000");
+    }
+
+    //set form close button background color
+    if (prevSetting?.settings?.form_layout?.close_background_color) {
+      setCloseBackgroundColor(
+        prevSetting?.settings?.form_layout?.close_background_color
+      );
+    } else {
+      setCloseBackgroundColor("#fff");
+    }
   }, [prevSetting]);
 
   useEffect(async () => {
@@ -292,6 +314,8 @@ function Sidebar() {
           form_layout: {
             form_position: formPosition,
             form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor,
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -320,6 +344,8 @@ function Sidebar() {
           form_layout: {
             form_position: formPosition,
             form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor,
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -348,6 +374,8 @@ function Sidebar() {
           form_layout: {
             form_position: formPosition,
             form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor,
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -374,6 +402,8 @@ function Sidebar() {
     customRedirectionMessage,
     formPosition,
     formAnimation,
+    closeButtonColor,
+    closeBackgroundColor,
     formScheduling,
     submissionStartDate,
     submissionStartTime,
@@ -690,6 +720,62 @@ function Sidebar() {
                     onChange={(state) => setFormPosition(state)}
                   />
                 </div>
+
+                <PanelBody
+                  title="Close Button Color"
+                  className="form-layout-settings"
+                  initialOpen={false}
+                >
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Close Icon
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>
+                          Choose a color for the <CrossIcon /> icon for form
+                        </p>
+                      </span>
+                    </label>
+
+                    <ColorPicker
+                      color={closeButtonColor}
+                      onChange={setCloseButtonColor}
+                      enableAlpha
+                      defaultValue={closeButtonColor}
+                    />
+                    <ColorPalette
+                      color={closeButtonColor}
+                      onChange={setCloseButtonColor}
+                      enableAlpha
+                      defaultValue={closeButtonColor}
+                    />
+                  </div>
+
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Background
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>
+                          Choose a color for the <CrossIcon /> icon Background
+                        </p>
+                      </span>
+                    </label>
+
+                    <ColorPicker
+                      color={closeBackgroundColor}
+                      onChange={setCloseBackgroundColor}
+                      enableAlpha
+                      defaultValue={closeBackgroundColor}
+                    />
+                    <ColorPalette
+                      color={closeBackgroundColor}
+                      onChange={setCloseBackgroundColor}
+                      enableAlpha
+                      defaultValue={closeBackgroundColor}
+                    />
+                  </div>
+                </PanelBody>
               </div>
             </PanelBody>
 

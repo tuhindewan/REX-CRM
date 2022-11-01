@@ -395,7 +395,7 @@ function BlockEditor(_ref) {
     const _canUserCreateMedia = select('core').canUser('create', 'media');
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px">Email<span class="required-mark">*</span></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color: !important;border-radius:5px;padding-top:12px;padding-right:20px;padding-bottom:13px;padding-left:20px;border-style:none;border-width:1px;border-color:">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:20px 25px;line-height:0.2;letter-spacing:0;border-style:none;font-size:15px;text-align:center;border-width:0;border-color:;width:20%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -10053,7 +10053,7 @@ const attributes = {
   },
   paddingTopBottom: {
     type: "number",
-    default: 25
+    default: 20
   },
   paddingLeftRight: {
     type: "number",
@@ -10061,7 +10061,7 @@ const attributes = {
   },
   lineHeight: {
     type: "number",
-    default: 1.2
+    default: 0.2
   },
   letterSpacing: {
     type: "number",
@@ -11988,7 +11988,8 @@ const {
   Radio,
   DateTimePicker,
   DatePicker,
-  TabPanel
+  TabPanel,
+  ColorPicker
 } = wp.components;
 const {
   Component,
@@ -12032,7 +12033,9 @@ function Sidebar() {
       },
       form_layout: {
         form_placement: "",
-        form_animation: ""
+        form_animation: "",
+        close_button_color: "",
+        close_background_color: ""
       },
       schedule: {
         form_scheduling: false,
@@ -12066,6 +12069,8 @@ function Sidebar() {
   // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+  const [closeButtonColor, setCloseButtonColor] = useState("#000");
+  const [closeBackgroundColor, setCloseBackgroundColor] = useState("#fff");
 
   // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
@@ -12137,7 +12142,7 @@ function Sidebar() {
     return !!pattern.test(str);
   }
   useEffect(() => {
-    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51;
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51, _prevSetting$settings54, _prevSetting$settings55, _prevSetting$settings58, _prevSetting$settings59;
     // set selected confiramation type
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
       var _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6;
@@ -12211,6 +12216,22 @@ function Sidebar() {
     } else {
       setFormAnimation("none");
     }
+
+    //set form close button color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings54 = prevSetting.settings) !== null && _prevSetting$settings54 !== void 0 && (_prevSetting$settings55 = _prevSetting$settings54.form_layout) !== null && _prevSetting$settings55 !== void 0 && _prevSetting$settings55.close_button_color) {
+      var _prevSetting$settings56, _prevSetting$settings57;
+      setCloseButtonColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings56 = prevSetting.settings) === null || _prevSetting$settings56 === void 0 ? void 0 : (_prevSetting$settings57 = _prevSetting$settings56.form_layout) === null || _prevSetting$settings57 === void 0 ? void 0 : _prevSetting$settings57.close_button_color);
+    } else {
+      setCloseButtonColor("#000");
+    }
+
+    //set form close button background color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings58 = prevSetting.settings) !== null && _prevSetting$settings58 !== void 0 && (_prevSetting$settings59 = _prevSetting$settings58.form_layout) !== null && _prevSetting$settings59 !== void 0 && _prevSetting$settings59.close_background_color) {
+      var _prevSetting$settings60, _prevSetting$settings61;
+      setCloseBackgroundColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings60 = prevSetting.settings) === null || _prevSetting$settings60 === void 0 ? void 0 : (_prevSetting$settings61 = _prevSetting$settings60.form_layout) === null || _prevSetting$settings61 === void 0 ? void 0 : _prevSetting$settings61.close_background_color);
+    } else {
+      setCloseBackgroundColor("#fff");
+    }
   }, [prevSetting]);
   useEffect(async () => {
     if ("same-page" === currentTab) {
@@ -12225,7 +12246,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -12253,7 +12276,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -12281,7 +12306,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -12298,7 +12325,7 @@ function Sidebar() {
         }
       });
     }
-  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
+  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, closeButtonColor, closeBackgroundColor, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
@@ -12498,7 +12525,43 @@ function Sidebar() {
       value: "flyins"
     }],
     onChange: state => setFormPosition(state)
-  })))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Close Button Color",
+    className: "form-layout-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Close Icon", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon for form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Background", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon Background"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }))))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Animation",
     className: "form-animation-settings",
     initialOpen: false
