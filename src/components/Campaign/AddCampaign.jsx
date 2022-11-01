@@ -10,6 +10,7 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
+import ToolTip from "../ToolTip";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
@@ -632,16 +633,23 @@ export default function AddCampaign(props) {
                 </div>
               </div>
               <div className="content-save-section">
-                <button
-                  className={
-                    isPublishValid
-                      ? "campaign-schedule mintmrm-btn outline"
-                      : "campaign-schedule mintmrm-btn outline disable"
-                  }
-                  disabled={!isPublishValid}
+                <ToolTip
+                  title="Please complete all required steps to schedule the email."
+                  containerClass="tooltipStyleChange"
                 >
-                  Schedule
-                </button>
+                  <button
+                    className={
+                      isPublishValid
+                        ? "campaign-schedule mintmrm-btn outline"
+                        : "campaign-schedule mintmrm-btn outline disable"
+                    }
+                    disabled={!isPublishValid}
+                    data-tip="By adding this class you can provide almost any element with a tool tip."
+                  >
+                    Schedule
+                  </button>
+                </ToolTip>
+
                 {/* <ScheduleAlert /> */}
                 <button
                   type="submit"

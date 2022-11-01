@@ -17,6 +17,7 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import PublishAlert from "../PublishAlert";
 import SuccessfulNotification from "../SuccessfulNotification";
+import ToolTip from "../ToolTip";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
@@ -821,17 +822,36 @@ export default function EditCampaign(props) {
                     </button>
                   ) : (
                     <>
-                      <button
-                        className={
-                          isPublishValid
-                            ? "campaign-schedule mintmrm-btn outline"
-                            : "campaign-schedule mintmrm-btn outline disable"
-                        }
-                        disabled={!isPublishValid}
-                        onClick={publishCampaignNow}
-                      >
-                        Schedule
-                      </button>
+                      {isPublishValid ? (
+                        <button
+                          className={
+                            isPublishValid
+                              ? "campaign-schedule mintmrm-btn outline"
+                              : "campaign-schedule mintmrm-btn outline disable"
+                          }
+                          disabled={!isPublishValid}
+                          onClick={publishCampaignNow}
+                        >
+                          Schedule
+                        </button>
+                      ) : (
+                        <ToolTip
+                          title="Please complete all required steps to schedule the email."
+                          containerClass="tooltipStyleChange"
+                        >
+                          <button
+                            className={
+                              isPublishValid
+                                ? "campaign-schedule mintmrm-btn outline"
+                                : "campaign-schedule mintmrm-btn outline disable"
+                            }
+                            disabled={!isPublishValid}
+                            onClick={publishCampaignNow}
+                          >
+                            Schedule
+                          </button>
+                        </ToolTip>
+                      )}
                       <button
                         type="submit"
                         className="campaign-save mintmrm-btn"
