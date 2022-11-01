@@ -159,8 +159,8 @@
             }
 
             .mintmrm-dropdown {
-                left: -2px;
-                top: calc(100% + 20px);
+                left: 0!important;
+                top: calc(100% + 7px);
 
                 &:before {
                     left: 21px;
@@ -179,10 +179,6 @@
                     }
                 }
             }
-            //   .mintmrm-checkbox {
-            //     display: block;
-            //     padding: 10px 0;
-            // }
         }
 
         .right-buttons {
@@ -198,7 +194,7 @@
                 }
                 svg {
                     position: absolute;
-                    top: 9px;
+                    top: 10px;
                     left: 16px;
                 }
             }
