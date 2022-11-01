@@ -686,6 +686,8 @@ function Sidebar() {
                       { label: "Default", value: "default" },
                       { label: "Pop Up", value: "popup" },
                       { label: "Fly Ins", value: "flyins" },
+                      { label: "Fixed on top", value: "fixed-on-top" },
+                      { label: "Fixed on bottom", value: "fixed-on-bottom" },
                     ]}
                     onChange={(state) => setFormPosition(state)}
                   />
