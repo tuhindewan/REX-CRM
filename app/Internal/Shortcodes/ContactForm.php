@@ -89,6 +89,10 @@ class ContactForm {
         if($form_placement != 'default' ){
             $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
         }
+
+        $form_close_button_color     = !empty($form_setting->settings->form_layout->close_button_color) ? $form_setting->settings->form_layout->close_button_color: '#fff';
+        $form_close_background_color = !empty($form_setting->settings->form_layout->close_background_color) ? $form_setting->settings->form_layout->close_background_color: '#000';
+
         $blocks = parse_blocks( $form_data['form_body'] );
         $output = '';
         ob_start();?>
@@ -97,8 +101,8 @@ class ContactForm {
                 <div class="mrm-form-wrapper-inner">
 
                     <?php if('default' != $form_placement){ ?>
-                        <span class="mrm-form-close">
-                            <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                        <span style="background:<?php echo $form_close_background_color;?>" class="mrm-form-close">
+                            <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="<?php echo $form_close_button_color;?>" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                         </span>
                     <?php } ?>
 
