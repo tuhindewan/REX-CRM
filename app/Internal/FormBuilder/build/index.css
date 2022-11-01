@@ -263,8 +263,21 @@ body.is-fullscreen-mode .get-mrm-header {
   outline: none;
   box-shadow: none;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button > span:before {
+  content: url("data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20viewBox%3D%220%200%2012%207%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20stroke%3D%22%23A7A8B3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.8%22%20d%3D%22M11%201L6%206%201%201%22%2F%3E%3C%2Fsvg%3E");
+  width: 12px;
+  display: block;
+  position: absolute;
+  right: 12px;
+  top: 18px;
+  transition: all 0.3s ease;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button[aria-expanded=true] > span:before {
+  transform: rotate(180deg);
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button .components-panel__arrow {
   color: #a7a8b3;
+  display: none;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel > .components-panel__body:last-child {
   border-bottom-width: 1px;
@@ -404,8 +417,8 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label::after {
   content: "";
   position: absolute;
-  left: 5px;
-  top: 3px;
+  left: 6px;
+  top: 4px;
   width: 8px;
   height: 8px;
   border-radius: 100%;
