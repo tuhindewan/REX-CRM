@@ -82,6 +82,15 @@ class MRM_Subscribe_form
         $form_close_button_color     = !empty($form_setting->settings->form_layout->close_button_color) ? $form_setting->settings->form_layout->close_button_color: '#fff';
         $form_close_background_color = !empty($form_setting->settings->form_layout->close_background_color) ? $form_setting->settings->form_layout->close_background_color: '#000';
 
+        $form_data = FormModel::get($form_id);
+        $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
+
+        if (empty($form_data)){
+            return __('Form ID is not valid','mrm');
+        }elseif(!$form_status){
+            return __('This form is not active. Please check','mrm');
+        }
+
 
         $blocks = parse_blocks( $attributes['render_block'] );
         if( 0 == $form_id ){
