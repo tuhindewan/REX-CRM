@@ -145,11 +145,15 @@ export default function EditCampaign(props) {
         setIsReadonly(true);
       }
 
-      // toggleRefresh();
+      const isPublishValid = validateCampaignPublish(
+        emails,
+        campaign.title,
+        campaign.meta.recipients?.lists,
+        campaign.meta.recipients?.tags
+      );
+      setIsPublishValid(isPublishValid);
     });
 
-    const isPublishValid = validatePublish();
-    setIsPublishValid(isPublishValid);
     if ("campaign-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
@@ -277,24 +281,49 @@ export default function EditCampaign(props) {
     }
   };
 
-  const validatePublish = () => {
+  const validatePublish = (email) => {
     if (
       campaignTitle.length > 0 &&
       recipientLists?.length != 0 &&
       recipientTags?.length != 0 &&
-      emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
-      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
-      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
-      emailData[selectedEmailIndex]["sender_email"]?.length != 0 &&
-      emailData[selectedEmailIndex].email_body?.length != 0
+      email.email_subject?.length != 0 &&
+      email.email_preview_text?.length != 0 &&
+      email.sender_name?.length != 0 &&
+      email.sender_email?.length != 0 &&
+      email.email_body?.length != 0
     ) {
       return true;
     }
   };
 
+  const validateCampaignPublish = (
+    emails,
+    campaignTitle,
+    recipientLists,
+    recipientTags
+  ) => {
+    emails.map((email) => {
+      if (
+        campaignTitle.length < 0 ||
+        recipientLists?.length == 0 ||
+        recipientTags?.length == 0 ||
+        email.email_subject?.length == 0 ||
+        email.email_preview_text?.length == 0 ||
+        email.sender_name?.length == 0 ||
+        email.sender_email?.length == 0 ||
+        email.email_body?.length == 0
+      ) {
+        setIsPublishValid(false);
+      }
+    });
+  };
+
   useEffect(() => {
-    const isPublishValid = validatePublish();
-    setIsPublishValid(isPublishValid);
+    emailData.map((email) => {
+      const isPublishValid = validatePublish(email);
+      setIsPublishValid(isPublishValid);
+    });
+
     const isValid = validate();
     setIsValid(isValid);
   }, [
