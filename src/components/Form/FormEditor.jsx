@@ -4,7 +4,6 @@ import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
 import InputItem from "../InputItem";
-
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import EditIcon from "../Icons/EditIcon";
