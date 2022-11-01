@@ -54,6 +54,8 @@ export default function AddCampaign(props) {
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [previewTextPlaceholder, setPreviewTextPlaceholder] = useState("");
+  let previewRef = useRef(null );
 
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -207,7 +209,9 @@ export default function AddCampaign(props) {
 
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = async (e) => {
+    console.log('triggered-0');
     setEmailData((prevEmailData) => {
+      console.log('triggered');
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
@@ -334,6 +338,26 @@ export default function AddCampaign(props) {
       tags: [],
     });
   };
+
+  // Set email preview text custom tag/placeholder
+  const setPreviewPlaceholder = ( placeholder ) => {
+    const prevData = emailData[selectedEmailIndex]?.preview;
+    const newData = prevData + ' ' + placeholder;
+    const event = new Event( 'change', { bubbles: true, isTrusted: true } );
+    //setPreviewTextPlaceholder( newData );
+    console.log('prevData');
+    console.log(prevData);
+    console.log(newData);
+    console.log('event');
+    console.log(previewRef);
+    console.log('here-0');
+    previewRef.removeAttribute( 'value' );
+    console.log('here-1');
+    previewRef.setAttribute( 'value', newData );
+    console.log('here-2');
+    previewRef.dispatchEvent( event );
+    console.log('here-3');
+  }
 
   return (
     <>
@@ -577,6 +601,7 @@ export default function AddCampaign(props) {
                     value={emailData[selectedEmailIndex]?.preview}
                     onChange={handleEmailFieldsChange}
                     placeholder="Write a summary of your email to display after the subject line"
+                    ref={ref => (previewRef = ref)}
                   />
                   <span>
                     {emailData[selectedEmailIndex]?.preview.length}/200
@@ -597,12 +622,12 @@ export default function AddCampaign(props) {
                       }
                     >
                       <div className="title">Personalization</div>
-                      <li>First name</li>
-                      <li>Last Name</li>
-                      <li>Email</li>
-                      <li>City</li>
-                      <li>State / Province</li>
-                      <li>Country</li>
+                      <li onClick={setPreviewPlaceholder.bind( this, '{first_name}' )}>First name</li>
+                      <li onClick={setPreviewPlaceholder.bind( this, '{last_name}' )}>Last Name</li>
+                      <li onClick={setPreviewPlaceholder.bind( this, '{email}' )}>Email</li>
+                      <li onClick={setPreviewPlaceholder.bind( this, '{city}' )}>City</li>
+                      <li onClick={setPreviewPlaceholder.bind( this, '{state}' )}>State / Province</li>
+                      <li onClick={setPreviewPlaceholder.bind( this, '{country}' )}>Country</li>
                     </ul>
                   </div>
                 </div>
