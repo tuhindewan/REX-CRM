@@ -632,17 +632,16 @@ export default function AddCampaign(props) {
                 </div>
               </div>
               <div className="content-save-section">
-                {isPublishValid ? (
-                  <button
-                    className="campaign-schedule mintmrm-btn outline"
-                    // disabled={!isPublishValid}
-                    onClick={handlePublish}
-                  >
-                    Publish
-                  </button>
-                ) : (
-                  ""
-                )}
+                <button
+                  className={
+                    isPublishValid
+                      ? "campaign-schedule mintmrm-btn outline"
+                      : "campaign-schedule mintmrm-btn outline disable"
+                  }
+                  disabled={!isPublishValid}
+                >
+                  Schedule
+                </button>
                 {/* <ScheduleAlert /> */}
                 <button
                   type="submit"

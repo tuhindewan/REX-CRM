@@ -821,17 +821,17 @@ export default function EditCampaign(props) {
                     </button>
                   ) : (
                     <>
-                      {isPublishValid ? (
-                        <button
-                          className="campaign-schedule mintmrm-btn outline"
-                          // disabled={!isPublishValid}
-                          onClick={publishCampaignNow}
-                        >
-                          Publish
-                        </button>
-                      ) : (
-                        ""
-                      )}
+                      <button
+                        className={
+                          isPublishValid
+                            ? "campaign-schedule mintmrm-btn outline"
+                            : "campaign-schedule mintmrm-btn outline disable"
+                        }
+                        disabled={!isPublishValid}
+                        onClick={publishCampaignNow}
+                      >
+                        Schedule
+                      </button>
                       <button
                         type="submit"
                         className="campaign-save mintmrm-btn"
