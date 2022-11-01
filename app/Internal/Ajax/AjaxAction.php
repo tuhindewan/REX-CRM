@@ -105,6 +105,21 @@ class AjaxAction {
             do_action('mrm/before_form_submit',$contact);
             $contact_id         = ContactModel::insert( $contact );
             if ( $contact_id ){
+                $today = strtotime('today UTC');
+                $next = strtotime("+7 day", $today);
+                $cookie_time = apply_filters('mrm/set_form_cookies_time',get_option('_mrm_form_dismissed', $next));
+                if (!$cookie_time){
+                    $cookie_time = $next;
+                }
+                $cookie_name = "mrm_form_dismissed";
+                $cookie_value = (object)[
+                    'show' => 1,
+                    'expire' => $cookie_time
+                ];
+                if(!isset($_COOKIE[$cookie_name])) {
+                    setcookie($cookie_name,json_encode($cookie_value), time() + $cookie_time, "/");
+                }
+                update_option('_mrm_form_dismissed',$cookie_time);
                 do_action('mrm/after_form_submit',$contact_id,$contact);
                 /**
                  * Send Double Optin Email

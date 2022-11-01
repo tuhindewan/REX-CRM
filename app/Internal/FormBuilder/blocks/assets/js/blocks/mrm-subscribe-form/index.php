@@ -92,13 +92,14 @@ class MRM_Subscribe_form
         }
         $cookies = isset($_COOKIE['mrm_form_dismissed']) ? $_COOKIE['mrm_form_dismissed'] : '';
         $cookies = json_decode(stripslashes($cookies));
+
         $show = true;
         if(!empty($cookies->expire)){
             $expire  = $cookies->expire;
 
             $today = strtotime('today UTC');
 
-            if ($today < $expire) {
+            if ($expire > $today ) {
                 $show = false;
             }
         }
