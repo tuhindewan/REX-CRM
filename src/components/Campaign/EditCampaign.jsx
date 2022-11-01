@@ -351,11 +351,22 @@ export default function EditCampaign(props) {
 
   // function for removing an email from the sequence
   const deleteEmail = (index, email_id) => {
-    setIsEmailDelete("block");
-    setDeleteTitle("Delete Sequence Email");
-    setDeleteMessage("Are you sure you want to delete the email?");
-    setEmailIndex(index);
-    setEmailID(email_id);
+    if (email_id) {
+      setIsEmailDelete("block");
+      setDeleteTitle("Delete Sequence Email");
+      setDeleteMessage("Are you sure you want to delete the email?");
+      setEmailIndex(index);
+      setEmailID(email_id);
+    } else {
+      setEmailData((prevEmailData) => {
+        const copy = [...prevEmailData];
+        copy.splice(index, 1);
+        setSelectedEmailIndex(
+          index < copy.length ? index : Math.max(0, index - 1)
+        );
+        return copy;
+      });
+    }
   };
 
   const onDeleteShow = async (status) => {
