@@ -4,6 +4,7 @@ namespace Mint\MRM\Internal\Cron;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
 use Mint\MRM\DataBase\Models\CampaignModel;
+use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
@@ -101,7 +102,6 @@ class CampaignsBackgroundProcess
                         $delay_count = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
                         $delay_val = isset( $campaign_email[ 'delay_value' ] ) ? $campaign_email[ 'delay_value' ] : '';
                         $delay_val = str_replace( 's', '', $delay_val );
-						error_log(print_r($recipients_emails, 1));
                         if ( is_array( $recipients_emails ) && !empty( $recipients_emails ) ) {
                             foreach( $recipients_emails as $email ) {
                                 if( isset( $email[ 'id' ], $email[ 'email' ] ) && $email[ 'id' ] && $email[ 'email' ] ) {
@@ -129,7 +129,7 @@ class CampaignsBackgroundProcess
                             }
                         }
                         else {
-                            delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
+                            //delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
                         }
                         if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                             break;
@@ -155,8 +155,7 @@ class CampaignsBackgroundProcess
         if ( !$this->process_locked( $sending_emails_status ) ) {
             $this->email_sending_process_creation_time = microtime( true );
             $this->lock_process( $sending_emails_status );
-            $per_batch = 5;
-            //$offset = get_option( 'mrm_scheduled_emails_recipients_sending', 0 );
+            $per_batch = 10;
             $offset = 0;
             $recipient_emails = $this->get_recipient_emails( $offset, $per_batch );
 
@@ -190,8 +189,6 @@ class CampaignsBackgroundProcess
                     $headers[] = 'Reply-To: ' . $sender_email;
 
                     $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
-                    /*$offset++;
-                    update_option( 'mrm_scheduled_emails_recipients_sending', $offset );*/
 
                     if( $email_sent ) {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
