@@ -127,6 +127,8 @@ export default function CampaignTemplates(props) {
         setIsTemplate={setIsTemplate}
         setIsCloseBuilder={closeEmailBuilder}
         setCloseTemplateSelection={setCloseTemplateSelection}
+        setIsReadonly={props.setIsReadonly}
+        isReadonly={props.isReadonly}
       />
     </>
   );

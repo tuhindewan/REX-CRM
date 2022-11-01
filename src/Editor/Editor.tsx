@@ -729,6 +729,7 @@ export default function Editor(props) {
                       // loading={isSubmitting}
                       type="primary"
                       onClick={() => submit()}
+                      disabled={props.isReadonly}
                     >
                       Next
                     </Button>

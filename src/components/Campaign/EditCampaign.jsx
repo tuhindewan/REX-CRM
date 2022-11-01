@@ -912,6 +912,8 @@ export default function EditCampaign(props) {
           emailData={emailData[selectedEmailIndex]}
           setEmailBody={setEmailBody}
           setIsTemplate={setIsTemplate}
+          setIsReadonly={setIsReadonly}
+          isReadonly={isReadonly}
           campaignData={{
             title: campaignTitle,
             recipients: {
