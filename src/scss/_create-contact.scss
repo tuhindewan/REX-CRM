@@ -148,6 +148,12 @@
 
       .contact-save {
         margin-left: 12px;
+
+        .mintmrm-loader {
+          display: inline-block;
+          position: relative;
+          top: 2px;
+        }
       }
     }
   }

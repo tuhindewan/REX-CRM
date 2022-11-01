@@ -320,7 +320,7 @@ export default function ContactDetails() {
         if (
           value.length &&
           !new RegExp(
-            /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i
+            /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/i
           ).test(value)
         ) {
           setErrors({
@@ -655,7 +655,7 @@ export default function ContactDetails() {
                     </div>
 
                     <p>
-                      Added via {contactData.added_by_login} Add on{" "}
+                      Added via {contactData.added_by_login} on{" "}
                       {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
                       at {contactData.created_time}
                     </p>
@@ -692,26 +692,10 @@ export default function ContactDetails() {
                   <button className="create-note" onClick={noteForm}>
                     <CreateNoteIcon />
                   </button>
-                  <NoteDrawer
-                    isOpenNote={isNoteForm}
-                    isCloseNote={isCloseNote}
-                    setIsCloseNote={setIsCloseNote}
-                    contactID={id}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                  />
-
+                  
                   <button className="create-mail" onClick={emailForm}>
                     <EmailIcon />
                   </button>
-                  <EmailDrawer
-                    isOpen={isEmailForm}
-                    isClose={isClose}
-                    setIsClose={setIsClose}
-                    contact={contactData}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                  />
 
                   <div className="pos-relative" ref={threedotRef}>
                     <button className="more-option" onClick={shoMoreOption}>
@@ -1333,7 +1317,7 @@ export default function ContactDetails() {
                 </div>
               </div> */}
 
-                  <hr />
+                  {/* <hr /> */}
 
                   <div className="lists">
                     <div className="title-section">
@@ -1457,6 +1441,25 @@ export default function ContactDetails() {
                 </div>
               </div>
             </div>
+
+            <EmailDrawer
+              isOpen={isEmailForm}
+              isClose={isClose}
+              setIsClose={setIsClose}
+              contact={contactData}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+
+            <NoteDrawer
+              isOpenNote={isNoteForm}
+              isCloseNote={isCloseNote}
+              setIsCloseNote={setIsCloseNote}
+              contactID={id}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+
           </div>
         )}
       </div>

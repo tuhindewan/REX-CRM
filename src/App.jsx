@@ -1,6 +1,5 @@
 import { ReactFlowProvider } from "react-flow-renderer";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import { useGlobalStore } from "./hooks/useGlobalStore";
 import routes from "./routes/index.js";
 import SearchNavbar from "./components/SearchNavbar";
@@ -19,7 +18,6 @@ const App = () => {
         <HashRouter>
           <>
             <SearchNavbar />
-            {/* <Navbar /> */}
 
             <Routes>
               {routes.map((route, index) => (

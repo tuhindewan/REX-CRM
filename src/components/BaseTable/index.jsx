@@ -7,7 +7,6 @@ import ContactProfile from "../Icons/ContactProfile";
 import Pending from "../Icons/Pending";
 import Subscribe from "../Icons/Subscribe";
 import Unsubscribe from "../Icons/Unsubscribe";
-import NavBar from "../Navbar/index";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
 import ContactNavbar from "../ContactNavbar/index";
@@ -40,7 +39,6 @@ const BaseTable = () => {
     return () => clearTimeout(timer);
   }, [refresh]);
 
-  <NavBar refresh={refresh} />;
 
   return (
     <>

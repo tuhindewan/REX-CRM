@@ -54,6 +54,47 @@
         border-bottom: 1px solid #ddd;
     }
 
+    .mintmrm-delete-alert-wrapper .mintmrm-delete-confirmation {
+        .delete-confirmation-body {
+            display: block;
+            padding: 30px;
+
+            .form-group {
+                label {
+                    margin-bottom: 7px;
+                }
+                input[type=email] {
+                    min-height: 42px;
+                }
+            }
+           
+        }
+
+        .mintmrm-delete-confirm-btn {
+            li {
+                margin: 0;
+            }
+            .alert-message {
+                p {
+                    color: #09af09;
+                    margin-right: 10px;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+                
+                &.mintmrm-error p {
+                    color: #eb1010;
+                }
+            }
+
+            .mintmrm-loader {
+                display: inline-block;
+                position: relative;
+                top: 2px;
+            }
+        }
+    }
+
     .arco-card-body {
         & > .arco-layout {
             width: 100%!important;

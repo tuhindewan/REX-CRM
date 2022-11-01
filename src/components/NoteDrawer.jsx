@@ -9,6 +9,9 @@ export default function NoteDrawer(props) {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [isEdit, setIsEdit] = useState(false);
+
+  const [addNoteLoader, setAddNoteLoader] = useState(false);
+
   const [note, setNote] = useState({
     description: "",
     title: "MRM Note",
@@ -52,6 +55,8 @@ export default function NoteDrawer(props) {
       result = submitNote(note, props.contactID);
     }
 
+    setAddNoteLoader(true);
+
     result.then((response) => {
       if (201 === response.code) {
         setShowNotification("block");
@@ -67,8 +72,12 @@ export default function NoteDrawer(props) {
         const timer = setTimeout(() => {
           setShowNotification("none");
         }, 3000);
+        setAddNoteLoader(false);
+
         return () => clearTimeout(timer);
       } else {
+        setAddNoteLoader(false);
+
         // Error messages
         setErrors({
           ...errors,
@@ -125,6 +134,9 @@ export default function NoteDrawer(props) {
               <Attachment /> */}
                   <button type="submit" className="add-btn mintmrm-btn ">
                     Add Note
+                    {addNoteLoader &&
+                      <span className="mintmrm-loader"></span>
+                    }
                   </button>
                 </div>
               </div>
