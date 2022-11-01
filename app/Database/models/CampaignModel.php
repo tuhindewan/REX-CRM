@@ -453,7 +453,14 @@ class CampaignModel {
         $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND id=%s", $campaign_id, $email_index );
         return $wpdb->get_row( $select_query );
     }
+    
 
+    /**
+     * Returns all publish campaigns
+     * 
+     * @return array
+     * @since 1.0.0
+     */
     public static function get_publish_campaign_id() {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;

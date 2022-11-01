@@ -101,9 +101,8 @@ class CampaignsBackgroundProcess
                         $delay_count = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
                         $delay_val = isset( $campaign_email[ 'delay_value' ] ) ? $campaign_email[ 'delay_value' ] : '';
                         $delay_val = str_replace( 's', '', $delay_val );
-
+						error_log(print_r($recipients_emails, 1));
                         if ( is_array( $recipients_emails ) && !empty( $recipients_emails ) ) {
-
                             foreach( $recipients_emails as $email ) {
                                 if( isset( $email[ 'id' ], $email[ 'email' ] ) && $email[ 'id' ] && $email[ 'email' ] ) {
                                     $mysql_format = 'Y-m-d H:i:s';
@@ -122,6 +121,7 @@ class CampaignsBackgroundProcess
                                             //'updated_at' => $updated_at
                                         ]
                                     );
+									update_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, ++$offset );
                                 }
                                 if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                                     break;

@@ -510,4 +510,17 @@ class CampaignController extends BaseController {
         }
         return $this->get_error_response(__( 'Failed to update campaign status', 'mrm' ), 400);
     }
+
+
+    /**
+     * Returns all publish campaigns
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_publish_campaign_id()
+    {
+        return ModelsCampaign::get_publish_campaign_id();
+    }
+
 }
