@@ -6,6 +6,13 @@ use Mint\MRM\DataBase\Tables\ContactSchema;
 
 class ContactData {
 
+    /**
+     * @desc Get contact meta value from contact meta table
+     * @param $contact_id
+     * @param $meta_key
+     * @return string|null
+     * @since 1.0.0
+     */
     public static function get_meta( $contact_id, $meta_key ) {
         global $wpdb;
 
@@ -17,6 +24,13 @@ class ContactData {
         return $wpdb->get_var( $sql );
     }
 
+    /**
+     * @desc Get contact info from contact table
+     * @param $contact_id
+     * @param $key
+     * @return string|null
+     * @since 1.0.0
+     */
     public static function get_info( $contact_id, $key ) {
         global $wpdb;
 
