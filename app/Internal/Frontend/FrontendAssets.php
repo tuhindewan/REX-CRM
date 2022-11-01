@@ -67,12 +67,7 @@ class FrontendAssets
 
     public function set_mrm_dissmiss_time()
     {
-        $today = strtotime('today UTC');
-        $next = strtotime("+7 day", $today);
-        $time =  get_option('_mrm_form_dismissed', $next);
-        if(!$time){
-             $time = 7;
-        }
+        $time =  get_option('_mrm_form_dismissed', 7);
         return $time;
     }
 
