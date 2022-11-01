@@ -33,12 +33,9 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
                 echo __('This form is not active. Please check');
                 die();
             }
-            $blocks = parse_blocks( $get_form_data_by_id["form_body"] );
             ob_start();
             $output = '';
-            foreach( $blocks as $block ) {
-                $output .= render_block( $block );
-            }
+            $output .= $get_form_data_by_id["form_body"];
             $output .=  ob_get_clean();
             echo $output;
             die();
