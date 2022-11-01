@@ -338,23 +338,13 @@ export default function AddCampaign(props) {
   return (
     <>
       <div className="mintmrm-add-campaign">
-        {/* <div className="add-campaign-breadcrumb">
-          <div className="mintmrm-container">
-            <ul className="mintmrm-breadcrumb">
-              <li>
-                <Link to="/campaigns">Campaigns</Link>
-              </li>
-              <li className="active">Add Campaign</li>
-            </ul>
-          </div>
-        </div> */}
-
         <div className="single-campaign-header">
           <div className="mintmrm-container">
             <div className="left-section">
               <div className="back-button">
-                <DoubleAngleLeftIcon />
-                <Link to="/campaigns">Campaigns</Link>
+                <Link to="/campaigns">
+                  <DoubleAngleLeftIcon /> Campaigns
+                </Link>
               </div>
               <h2 className="campaign-title">Add Campaign</h2>
             </div>

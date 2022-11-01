@@ -366,6 +366,7 @@ class CampaignController extends BaseController {
 
         $campaign       = ModelsCampaign::get( $campaign_id );
         $campaign['total_recipients'] = count($recipients_emails);
+
         if(isset($campaign)) {
             return $this->get_success_response("Query Successfull", 200, $campaign);
         }

@@ -189,7 +189,6 @@ export default function AllCampaigns() {
 
       updateCampaignStatus(campaign).then((response) => {
         if (201 === response.code) {
-          console.log(response);
           // Show success message
           setShowNotification("block");
           setMessage(response?.message);

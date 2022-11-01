@@ -84,13 +84,13 @@ export default function CampaignTemplates(props) {
                 className="template-select-section"
                 onClick={openTemplateBuilder}
               >
-                {emailData?.email_body.length != 0 ? (
+                {emailData?.email_body?.length === 0 ? (
                   <Link to="">
                     <button
                       type="submit"
                       className="save-template mintmrm-btn "
                     >
-                      Edit Template
+                      Start From Scratch
                     </button>
                   </Link>
                 ) : (
@@ -99,7 +99,7 @@ export default function CampaignTemplates(props) {
                       type="submit"
                       className="save-template mintmrm-btn "
                     >
-                      Start From Scratch
+                      Edit Template
                     </button>
                   </Link>
                 )}

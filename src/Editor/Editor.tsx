@@ -299,8 +299,10 @@ export default function Editor(props) {
 
   const fetchEmailBuilderData = async () => {
     setShouldCallAPI(false);
+
     let rest_url = `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email-builder/${emailData?.id}`;
     const response = await fetch(rest_url);
+
     return await response.json();
   };
 
@@ -341,8 +343,6 @@ export default function Editor(props) {
       );
       return await response.json();
     } else {
-      console.log(emailData);
-
       if (emailData?.id) {
         const response = await fetch(
           `${window.MRM_Vars.api_base_url}mrm/v1/campaign/${id}/email/${emailData?.id}`,
@@ -373,6 +373,7 @@ export default function Editor(props) {
               email_body: html,
               json_data: values,
               status: "published",
+              email_index: selectedEmailIndex,
               email_data: emailData,
             }),
           }

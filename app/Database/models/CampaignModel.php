@@ -320,16 +320,18 @@ class CampaignModel {
                                      FROM $campaign_emails_table  
                                      WHERE campaign_id = %d", $id);
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
-        $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
-        $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
+        // $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
+        
         if (!empty($emails)) {
-            $emails = array_map(function ($email) use($email_builder) {
+            $emails = array_map(function ($email) {
+                $email_id  = isset( $email['id'] ) ? $email['id'] : "";
+                $email_builder = CampaignEmailBuilderModel::get( $email_id );
                 $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
-                $email['email_body'] = $email_builder['email_body'];        //phpcs:ignore
+                $email['email_body'] = isset( $email_builder['email_body'] ) ? $email_builder['email_body'] : "";        //phpcs:ignore
                 return $email;
             }, $emails);
         }
-
+    
         return $emails;
     }
 
@@ -512,7 +514,7 @@ class CampaignModel {
      * @param mixed $campaign_id
      * @param mixed $email_id
      * 
-     * @return array
+     * @return object
      * @since 1.0.0
      */
     public static function get_campaign_email_to_builder( $campaign_id, $email_id )
