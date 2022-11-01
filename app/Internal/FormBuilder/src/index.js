@@ -75,9 +75,9 @@ domReady(function () {
     title: __("MRM Button", "mrm"),
     category: "common",
     icon: ButtonIcon.Button,
-    supports: {
-      align: ["left", "right", "center"],
-    },
+    // supports: {
+    //   align: ["left", "right", "center"],
+    // },
     attributes: ButtonAttributes,
     edit: ButtonEdit,
     save: mrmButton,

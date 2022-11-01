@@ -11136,7 +11136,7 @@ const attributes = {
   },
   buttonAlign: {
     type: 'string',
-    default: 'center'
+    default: 'left'
   },
   postAction: {
     type: 'string',
@@ -11282,7 +11282,8 @@ const mrmButton = _ref => {
   } = _ref;
   let layout = formLayout;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + 'px',
+    textAlign: buttonAlign
   };
   let buttonStyle = {
     // backgroundColor: buttonBgColor,
@@ -11296,7 +11297,7 @@ const mrmButton = _ref => {
     fontWeight: typography.weight,
     fontFamily: typography.family,
     fontSize: buttonFontSize,
-    textAlign: buttonAlign,
+    // textAlign: buttonAlign,
     // borderWidth:  buttonBorderWidth+'px',
     borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
     borderColor: buttonBorderColor,
@@ -11615,7 +11616,8 @@ class Editor extends Component {
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + 'px',
+      textAlign: buttonAlign
     };
     let buttonStyle = {
       // backgroundColor: buttonBgColor,
@@ -11629,7 +11631,7 @@ class Editor extends Component {
       fontWeight: typography.weight,
       fontFamily: typography.family,
       fontSize: buttonFontSize,
-      textAlign: buttonAlign,
+      // textAlign: buttonAlign,
       // borderWidth:  buttonBorderWidth+'px',
       borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
       borderColor: buttonBorderColor,
@@ -16921,9 +16923,9 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     title: __("MRM Button", "mrm"),
     category: "common",
     icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].Button,
-    supports: {
-      align: ["left", "right", "center"]
-    },
+    // supports: {
+    //   align: ["left", "right", "center"],
+    // },
     attributes: _components_mrm_button_block_attributes__WEBPACK_IMPORTED_MODULE_19__["default"],
     edit: _components_mrm_button_block_edit__WEBPACK_IMPORTED_MODULE_20__["default"],
     save: _components_mrm_button_block_block__WEBPACK_IMPORTED_MODULE_17__["default"]
