@@ -7,6 +7,7 @@ use Mint\MRM\DataBase\Models\CampaignModel;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
+use Mint\MRM\Utilites\Helper\ContactData;
 
 class CampaignsBackgroundProcess
 {
@@ -156,7 +157,6 @@ class CampaignsBackgroundProcess
             $this->email_sending_process_creation_time = microtime( true );
             $this->lock_process( $sending_emails_status );
             $per_batch = 5;
-            //$offset = get_option( 'mrm_scheduled_emails_recipients_sending', 0 );
             $offset = 0;
             $recipient_emails = $this->get_recipient_emails( $offset, $per_batch );
 
@@ -166,6 +166,7 @@ class CampaignsBackgroundProcess
                     $email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int)$recipient[ 'id' ] : '';
                     $scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int)$recipient[ 'email_id' ] : '';
                     $campaign_id = isset( $recipient[ 'campaign_id' ] ) ? (int)$recipient[ 'campaign_id' ] : '';
+                    $contact_id  = isset( $recipient[ 'contact_id' ] ) ? (int)$recipient[ 'contact_id' ] : '';
                     $campaign_emails = $campaign_id ? CampaignModel::get_campaign_email( $campaign_id ) : [];
                     $campaign_email = [];
 
@@ -184,14 +185,13 @@ class CampaignsBackgroundProcess
                     $sender_email = isset( $campaign_email[ 'sender_email' ] ) ? $campaign_email[ 'sender_email' ] : '';
                     $sender_name = isset( $campaign_email[ 'sender_name' ] ) ? $campaign_email[ 'sender_name' ] : '';
                     $email_subject = isset( $campaign_email[ 'email_subject' ] ) ? $campaign_email[ 'email_subject' ] : '';
+                    $email_subject = self::update_subject_placeholders( $email_subject, $contact_id );
 
                     $from = 'From: '. $sender_name;
                     $headers[] = $from . ' <' . $sender_email . '>';
                     $headers[] = 'Reply-To: ' . $sender_email;
 
                     $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
-                    /*$offset++;
-                    update_option( 'mrm_scheduled_emails_recipients_sending', $offset );*/
 
                     if( $email_sent ) {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
@@ -386,4 +386,19 @@ class CampaignsBackgroundProcess
 		// Deal with large (float) values which run into the maximum integer size.
 		return min( $bytes, PHP_INT_MAX );
 	}
+
+    /**
+     * @desc Replace custom placeholders from email subject
+     * @param string $email_subject
+     * @param int $contact_id
+     * @return array|string|string[]
+     * @since 1.0.0
+     */
+    private function update_subject_placeholders( string $email_subject, int $contact_id ) {
+        $email_subject = str_replace( '{{first_name}}', ContactData::get_info( $contact_id, 'first_name' ), $email_subject );
+        $email_subject = str_replace( '{{last_name}}', ContactData::get_info( $contact_id, 'last_name' ), $email_subject );
+        $email_subject = str_replace( '{{email}}', ContactData::get_info( $contact_id, 'email' ), $email_subject );
+        $email_subject = str_replace( '{{city}}', ContactData::get_meta( $contact_id, 'city' ), $email_subject );
+        return $email_subject;
+    }
 }
