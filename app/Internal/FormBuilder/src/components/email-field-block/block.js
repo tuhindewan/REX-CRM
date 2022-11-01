@@ -32,6 +32,10 @@ const mrmEmailField = ({
 
     labelColor,
     labelSpacing,
+
+    inputTypography,
+    labelTypography,
+    Typography
   },
 }) => {
   let layout = formLayout;
@@ -42,6 +46,8 @@ const mrmEmailField = ({
   let labelStyle = {
     color: labelColor,
     marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family,
   };
   let checkboxLabelColor = {
     color: labelColor,
@@ -58,6 +64,8 @@ const mrmEmailField = ({
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
     borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family,
   };
 
   return (

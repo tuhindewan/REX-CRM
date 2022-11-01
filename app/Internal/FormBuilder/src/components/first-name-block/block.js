@@ -35,6 +35,9 @@ const mrmFirstName = ({
 
     labelColor,
     labelSpacing,
+    labelTypography,
+    inputTypography,
+    Typography
   },
 }) => {
   let layout = formLayout;
@@ -45,6 +48,8 @@ const mrmFirstName = ({
   let labelStyle = {
     color: labelColor,
     marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family,
   };
   let checkboxLabelColor = {
     color: labelColor,
@@ -61,6 +66,8 @@ const mrmFirstName = ({
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
     borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family,
   };
 
   return (
