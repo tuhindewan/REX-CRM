@@ -1,11 +1,11 @@
-.qubely-gradient.qubely-field.popup {
+.mrmTypography-gradient.mrmTypography-field.popup {
   label {
     flex-grow: 1;
   }
-  > .qubely-field-child {
+  > .mrmTypography-field-child {
     text-align: right;
     flex-grow: 0;
-    .qubely-panel {
+    .mrmTypography-panel {
       height: 28px;
       width: 28px;
       border-radius: 50%;
@@ -17,30 +17,30 @@
       &:hover {
         transform: scale(1.1);
       }
-      .qubely-gradient {
+      .mrmTypography-gradient {
         padding: 15px;
       }
     }
   }
 }
 
-.qubely-gradient.qubely-field.inline > label {
+.mrmTypography-gradient.mrmTypography-field.inline > label {
   width: 100%;
   margin-bottom: 10px;
 }
 
-.qubely-gradient-popup {
+.mrmTypography-gradient-popup {
   padding: 0;
   > div:not(:last-child) {
     margin-bottom: 15px;
   }
 }
 
-.qubely-field-gradient-preview {
+.mrmTypography-field-gradient-preview {
   height: 10px;
   border-radius: 6px;
   position: relative;
-  .qubely-color-picker-container {
+  .mrmTypography-color-picker-container {
     position: absolute;
     width: 18px;
     height: 18px;
@@ -48,13 +48,13 @@
     top: 50%;
     transform: translateY(-50%);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
-    &.qubely-position-left {
+    &.mrmTypography-position-left {
       left: 0;
     }
-    &.qubely-position-right {
+    &.mrmTypography-position-right {
       right: 0;
     }
-    .qubely-color-picker {
+    .mrmTypography-color-picker {
       width: 18px;
       height: 18px;
       border: 4px solid #ffffff;
@@ -63,12 +63,12 @@
     }
   }
 }
-.qubely-gradient-color.gradient-color-position-left {
+.mrmTypography-gradient-color.gradient-color-position-left {
   margin-left: -230px;
 }
-.qubely-gradient-color.gradient-color-position-right {
+.mrmTypography-gradient-color.gradient-color-position-right {
   margin-right: -230px;
 }
-.qubely-gradient-color-picker.is-bottom {
+.mrmTypography-gradient-color-picker.is-bottom {
   margin-top: 20px !important;
 }

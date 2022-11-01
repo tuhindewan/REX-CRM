@@ -1,4 +1,4 @@
-.qubely-context-menu{
+.mrmTypography-context-menu{
     font-size: 12px;
     line-height: 1.5;
     color: #6d7882;
@@ -20,19 +20,19 @@
     z-index: 3;
     padding: 5px 0px 5px 0px;
 
-    .qubely-context-menu-group{
+    .mrmTypography-context-menu-group{
         padding: 5px 0px 5px 0px;
 
-        .qubely-context-menu-item{
+        .mrmTypography-context-menu-item{
             padding: 5px 20px 5px 10px;
             display: flex;
             cursor: pointer;
-            .qubely-context-menu-item-icon{
+            .mrmTypography-context-menu-item-icon{
                 width: 20px;
                 color: #c2cbd2;
             }
 
-            .qubely-context-menu-item-title{
+            .mrmTypography-context-menu-item-title{
                 -webkit-box-flex: 1;
                 -webkit-flex-grow: 1;
                 -ms-flex-positive: 1;
@@ -42,7 +42,7 @@
                 -o-text-overflow: ellipsis;
                 text-overflow: ellipsis;
             }
-            .qubely-context-menu-item-shortcut{
+            .mrmTypography-context-menu-item-shortcut{
                 color: #d5dadf;
             }
         }
@@ -51,22 +51,22 @@
             pointer-events: none;
             opacity: 0.9;
         }
-        .qubely-context-menu-item:hover{
+        .mrmTypography-context-menu-item:hover{
             color: #fff;
-            .qubely-context-menu-item-icon,.qubely-context-menu-item-shortcut{
+            .mrmTypography-context-menu-item-icon,.mrmTypography-context-menu-item-shortcut{
                 color: #fff
             }
         }
     }
-    .qubely-context-menu-group:not(:last-child) {
+    .mrmTypography-context-menu-group:not(:last-child) {
         border-bottom: 1px solid #e6e9ec;
     }
 }
 
-    .qubely-context-menu-item.with-border-bottom {
+    .mrmTypography-context-menu-item.with-border-bottom {
         border-bottom: 1px solid #e6e9ec;
     }
-    .qubely-context-menu-item:hover{
+    .mrmTypography-context-menu-item:hover{
         background-color: #71d7f7;
         cursor: pointer;
     }
@@ -74,7 +74,7 @@
         color: #d5dadf;
     }
 
-.qubely-context-menu-wraper {
+.mrmTypography-context-menu-wraper {
 display: none;
 position: fixed;
 background: white;
@@ -102,6 +102,6 @@ z-index: 100;
 }
 }
 
-div.is-selected[data-type*="qubely/"]{
+div.is-selected[data-type*="mrmTypography/"]{
     z-index: 1;
 }

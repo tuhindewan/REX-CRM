@@ -1,8 +1,8 @@
-.qubely-field {
-    &.qubely-field-inner-panel {
+.mrmTypography-field {
+    &.mrmTypography-field-inner-panel {
         border: 1px solid #e2e4e7;
         margin: -1px 0 0 0;
-        .qubely-field-inner-panel-title {
+        .mrmTypography-field-inner-panel-title {
             background: #f8f9f9;
             padding: 12px 10px;
             display: flex;
@@ -18,7 +18,7 @@
             }
         }
     
-        .qubely-field-inner-panel-body {
+        .mrmTypography-field-inner-panel-body {
             border-top: 1px solid #e2e4e7;
             padding: 10px 16px;
         }

@@ -3742,7 +3742,7 @@ const {
     onDeviceChange
   } = _ref;
   const [device, setDevice] = useState('md');
-  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.qubelyDevice;
+  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.mrmTypographyDevice;
   const getValue = () => value ? responsive ? value[responsiveDevice] || '' : value : '';
   const onButtonClick = val => onChange(responsive ? Object.assign({}, value, {
     [responsiveDevice]: val
@@ -3755,18 +3755,18 @@ const {
     setDevice(newDevice);
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: 'qubely-field-group-btn qubely-field ' + (responsive ? 'qubely-responsive' : 'qubely-d-flex')
+    className: 'mrmTypography-field-group-btn mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : 'mrmTypography-d-flex')
   }, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "qubely-d-flex qubely-align-center qubely-mb-10"
+    className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
   }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
     device: responsiveDevice,
     commonResponsiveDevice: device,
-    className: "qubely-ml-10",
+    className: "mrmTypography-ml-10",
     onChange: val => {
       device && onDeviceChange ? onDeviceChange(val) : updateDevice(val);
     }
   })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, {
-    className: "qubely-field-child qubely-d-flex"
+    className: "mrmTypography-field-child mrmTypography-d-flex"
   }, options.map(_ref2 => {
     let [title, option] = _ref2;
     const activeBtn = option === getValue() ? 'qubley-active-group-btn' : '';
@@ -3808,11 +3808,11 @@ class Device extends Component {
   }
   componentDidMount() {
     if (typeof this.props.device !== 'undefined' && this.props.device !== '') {
-      window.qubelyDevice = this.props.device;
+      window.mrmTypographyDevice = this.props.device;
     }
   }
   setSettings(value) {
-    window.qubelyDevice = value;
+    window.mrmTypographyDevice = value;
     this.setState({
       current: value
     });
@@ -3828,7 +3828,7 @@ class Device extends Component {
       commonResponsiveDevice
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `qubely-device ${className ? className : ''}`
+      className: `mrmTypography-device ${className ? className : ''}`
     });
   }
 }
@@ -3872,7 +3872,7 @@ class Range extends Component {
     if (type == 'unit') {
       return value ? value.unit || 'px' : 'px';
     } else {
-      return value ? responsive ? value[window.qubelyDevice] || '' : value : '';
+      return value ? responsive ? value[window.mrmTypographyDevice] || '' : value : '';
     }
   }
   setSettings(val, type) {
@@ -3895,7 +3895,7 @@ class Range extends Component {
       newValue.unit = val;
     } else {
       newValue = responsive ? Object.assign(newValue, value, {
-        [window.qubelyDevice]: val
+        [window.mrmTypographyDevice]: val
       }) : val;
       newValue = min ? newValue < min ? min : newValue : newValue < 0 ? 0 : newValue;
       newValue = max ? newValue > max ? max : newValue : newValue > 1000 ? 1000 : newValue;
@@ -3938,22 +3938,22 @@ class Range extends Component {
       onDeviceChange,
       disabled = false
     } = this.props;
-    let responsiveDevice = responsive ? device ? device : this.state.device : window.qubelyDevice;
+    let responsiveDevice = responsive ? device ? device : this.state.device : window.mrmTypographyDevice;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: 'qubely-field-range qubely-field ' + (responsive ? 'qubely-responsive' : '')
+      className: 'mrmTypography-field-range mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : '')
     }, (label || unit || responsive) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-d-flex qubely-align-center qubely-mb-10"
+      className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
     }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
       htmlFor: 'input'
     }, label)), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_3__["default"], {
       device: responsiveDevice,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => {
         device && onDeviceChange ? onDeviceChange(val) : this.updateDevice(val);
       }
     }), unit && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-unit-btn-group qubely-ml-auto"
+      className: "mrmTypography-unit-btn-group mrmTypography-ml-auto"
     }, (typeof unit == 'object' ? unit : ['px', 'em', '%']).map(value => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("button", {
       className: this.props.value && value == this.props.value.unit ? 'active' : '',
       onClick: () => {
@@ -3962,9 +3962,9 @@ class Range extends Component {
         // this.setSettings(this._filterValue(), 'range');
       }
     }, value)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-child"
+      className: "mrmTypography-field-child"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-input-range"
+      className: "mrmTypography-input-range"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "range",
       min: this._minMax('min'),
@@ -4018,7 +4018,7 @@ class Toggle extends Component {
     };
   }
   _filterValue() {
-    return this.props.value ? this.props.responsive ? this.props.value[window.qubelyDevice] || '' : this.props.value : '';
+    return this.props.value ? this.props.responsive ? this.props.value[window.mrmTypographyDevice] || '' : this.props.value : '';
   }
   setSettings(val) {
     const {
@@ -4027,7 +4027,7 @@ class Toggle extends Component {
       onChange
     } = this.props;
     let final = responsive ? Object.assign({}, value, {
-      [window.qubelyDevice]: val
+      [window.mrmTypographyDevice]: val
     }) : val;
     onChange(final);
     this.setState({
@@ -4043,11 +4043,11 @@ class Toggle extends Component {
       onDeviceChange
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: 'qubely-field-toggle qubely-field' + (this.props.responsive ? ' qubely-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
+      className: 'mrmTypography-field-toggle mrmTypography-field' + (this.props.responsive ? ' mrmTypography-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, label && label, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, device ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       device: device,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => onDeviceChange(val)
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       onChange: val => this.setState({
@@ -4130,18 +4130,18 @@ class Typography extends Component {
       showFontWeights
     } = this.state;
     if (showFontFamiles) {
-      const qubelyFontFamilyWrapper = this.refs.qubelyFontFamilyWrapper;
-      const qubelySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
-      if (qubelyFontFamilyWrapper && !qubelyFontFamilyWrapper.contains(event.target)) {
-        qubelySelectedFontFamily && !qubelySelectedFontFamily.contains(event.target) && this.setState({
+      const mrmTypographyFontFamilyWrapper = this.refs.mrmTypographyFontFamilyWrapper;
+      const mrmTypographySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
+      if (mrmTypographyFontFamilyWrapper && !mrmTypographyFontFamilyWrapper.contains(event.target)) {
+        mrmTypographySelectedFontFamily && !mrmTypographySelectedFontFamily.contains(event.target) && this.setState({
           showFontFamiles: false
         });
       }
     } else if (showFontWeights) {
-      const qubelyFontWeightWrapper = this.refs.qubelyFontWeightWrapper;
-      const qubelySelectedFontWeight = this.refs.qubelySelectedFontWeight;
-      if (qubelyFontWeightWrapper && !qubelyFontWeightWrapper.contains(event.target)) {
-        qubelySelectedFontWeight && !qubelySelectedFontWeight.contains(event.target) && this.setState({
+      const mrmTypographyFontWeightWrapper = this.refs.mrmTypographyFontWeightWrapper;
+      const mrmTypographySelectedFontWeight = this.refs.mrmTypographySelectedFontWeight;
+      if (mrmTypographyFontWeightWrapper && !mrmTypographyFontWeightWrapper.contains(event.target)) {
+        mrmTypographySelectedFontWeight && !mrmTypographySelectedFontWeight.contains(event.target) && this.setState({
           showFontWeights: false
         });
       }
@@ -4190,9 +4190,9 @@ class Typography extends Component {
   }
   findArrayIndex = font => {
     let index = 0;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     while (index < 10) {
-      if (qubelyFonts[index].n == font) {
+      if (mrmTypographyFonts[index].n == font) {
         break;
       }
       index++;
@@ -4201,22 +4201,22 @@ class Typography extends Component {
   };
   handleTypographyChange(val) {
     this.setSettings('family', val);
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let selectedFont = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => font.n == val);
-    if (qubelyFonts) {
-      let oldFont = qubelyFonts.filter(font => font.n == val).length > 0;
+    if (mrmTypographyFonts) {
+      let oldFont = mrmTypographyFonts.filter(font => font.n == val).length > 0;
       if (oldFont) {
         let index = this.findArrayIndex(val);
-        qubelyFonts.splice(index, 1);
-        qubelyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.splice(index, 1);
+        mrmTypographyFonts.unshift(...selectedFont);
       } else {
-        qubelyFonts.unshift(...selectedFont);
-        qubelyFonts.length > 10 && qubelyFonts.pop();
+        mrmTypographyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.length > 10 && mrmTypographyFonts.pop();
       }
     } else {
-      qubelyFonts = [...selectedFont];
+      mrmTypographyFonts = [...selectedFont];
     }
-    localStorage.setItem('qubelyFonts', JSON.stringify(qubelyFonts));
+    localStorage.setItem('mrmTypographyFonts', JSON.stringify(mrmTypographyFonts));
   }
   render() {
     const {
@@ -4234,22 +4234,22 @@ class Typography extends Component {
       showFontFamiles,
       showFontWeights
     } = this.state;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let filteredFontList = [],
       newFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"];
-    if (qubelyFonts) {
-      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !qubelyFonts.filter(qubelyFont => qubelyFont.n == font.n || font.n == 'Default').length > 0);
+    if (mrmTypographyFonts) {
+      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !mrmTypographyFonts.filter(mrmTypographyFont => mrmTypographyFont.n == font.n || font.n == 'Default').length > 0);
       newFontList = [{
         n: 'Default',
         f: 'default',
         v: []
-      }, ...qubelyFonts, ...filteredFontList];
+      }, ...mrmTypographyFonts, ...filteredFontList];
     }
     if (filterText.length >= 2) {
       newFontList = newFontList.filter(item => item.n.toLowerCase().search(filterText.toLowerCase()) !== -1);
     }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-typography"
+      className: "mrmTypography-field mrmTypography-field-typography"
     }, !globalSettings && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Toggle__WEBPACK_IMPORTED_MODULE_4__["default"], {
       value: value.openTypography,
       label: label || __('Typography'),
@@ -4317,11 +4317,11 @@ class Typography extends Component {
         }
       }
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-group qubely-65-35"
+      className: "mrmTypography-field-group mrmTypography-65-35"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-family"
+      className: "mrmTypography-field mrmTypography-field-font-family"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Font Family')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-picker",
+      className: "mrmTypography-font-family-picker",
       ref: "wpfnlSelectedFontFamily",
       onClick: () => {
         this.setState({
@@ -4329,35 +4329,35 @@ class Typography extends Component {
         });
       }
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-family-search-wrapper"
+      className: "mrmTypography-font-family-search-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "text",
-      className: `qubely-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
+      className: `mrmTypography-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
       placeholder: __(showFontFamiles ? 'Search' : value && value.family || 'Select'),
       value: filterText,
       onChange: e => this.setState({
         filterText: e.target.value
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontFamiles ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  ")))), showFontFamiles && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-option-wrapper",
-      ref: "qubelyFontFamilyWrapper"
+      className: "mrmTypography-font-family-option-wrapper",
+      ref: "mrmTypographyFontFamilyWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-options"
+      className: "mrmTypography-font-family-options"
     }, newFontList.length > 0 ? newFontList.map((font, index) => {
       let isActiveFont = false;
       if (value && font.n == value.family) {
         isActiveFont = true;
       }
       let fontClasses = classnames__WEBPACK_IMPORTED_MODULE_5___default()({
-        ['qubely-font-family-option']: !isActiveFont
+        ['mrmTypography-font-family-option']: !isActiveFont
       }, {
-        ['qubely-active-font-family']: isActiveFont
+        ['mrmTypography-active-font-family']: isActiveFont
       });
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
         className: fontClasses,
-        key: `qubely-font-family-${index}`,
+        key: `mrmTypography-font-family-${index}`,
         onClick: () => {
           this.setState({
             showFontFamiles: false,
@@ -4367,32 +4367,32 @@ class Typography extends Component {
         }
       }, font.n);
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: `qubely-font-family-option no-match`,
+      className: `mrmTypography-font-family-option no-match`,
       onClick: () => this.setState({
         showFontFamiles: false,
         filterText: ''
       })
     }, "  No matched font  "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-weight"
+      className: "mrmTypography-field mrmTypography-field-font-weight"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Weight')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker-wrapper",
-      ref: "qubelySelectedFontWeight",
+      className: "mrmTypography-font-weight-picker-wrapper",
+      ref: "mrmTypographySelectedFontWeight",
       onClick: () => this.setState({
         showFontWeights: !showFontWeights
       })
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker"
+      className: "mrmTypography-font-weight-picker"
     }, "  ", value && value.weight || 'Select', "   "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontWeights ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  "))), showFontWeights && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-wrapper",
-      ref: "qubelyFontWeightWrapper"
+      className: "mrmTypography-font-weight-wrapper",
+      ref: "mrmTypographyFontWeightWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-weights"
+      className: "mrmTypography-font-family-weights"
     }, ['Default', ...this._getWeight()].map((font, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-        className: `${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`,
-        key: `qubely-font-weights-${index}`,
+        className: `${font == value.weight ? 'mrmTypography-active-font-weight' : 'mrmTypography-font-weight-option'}`,
+        key: `mrmTypography-font-weights-${index}`,
         onClick: () => {
           this.setState({
             showFontWeights: false
@@ -10408,18 +10408,18 @@ __webpack_require__.r(__webpack_exports__);
 
 // const { __ } = wp.i18n;
 // const icons = {};
-// const img_path = qubely_admin.plugin + 'assets/img/blocks';
+// const img_path = mrmTypography_admin.plugin + 'assets/img/blocks';
 //
-// icons.qubely = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
+// icons.mrmTypography = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
 //
 // icons.solid = <svg xmlns="http://www.w3.org/2000/svg" width="19" height="2"><switch><g><path d="M0 0h19v2H0z" /></g></switch></svg>;
 // icons.dot = <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><g><g transform="translate(-1378 -121)"><g transform="translate(1229 110)"><g transform="translate(149 11)"><circle class="st0" cx="1" cy="1" r="1" /><circle class="st0" cx="17" cy="1" r="1" /><circle class="st0" cx="5" cy="1" r="1" /><circle class="st0" cx="13" cy="1" r="1" /><circle class="st0" cx="9" cy="1" r="1" /></g></g></g></g></g></switch></svg>;
 // icons.dash = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><path d="M18 2h-2V0h2v2zm-4 0h-2V0h2v2zm-4 0H8V0h2v2zM6 2H4V0h2v2zM2 2H0V0h2v2z" /></g></switch></svg>;
 // icons.wave = <svg xmlns="http://www.w3.org/2000/svg" width="21" height="4"><switch><g><path d="M8 3.5c-.8 0-1.7-.3-2.5-.9C4 1.5 2.4 1.5.7 2.6c-.2.1-.5.1-.7-.2-.1-.2-.1-.5.2-.7 2-1.3 4-1.3 5.8 0 1.5 1 2.8 1 4.2-.2 1.6-1.4 3.4-1.4 5.3 0 1.5 1.1 3.1 1.2 4.7.1.2-.1.5-.1.7.1.1.2.1.5-.1.7-2 1.3-3.9 1.3-5.8-.1-1.5-1.1-2.9-1.1-4.1 0C9.9 3.1 9 3.5 8 3.5z" /></g></switch></svg>;
 //
-// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="qubely-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="qubely-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="mrmTypography-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="mrmTypography-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
 //
 // icons.icon_classic = <img src={`${img_path}/icon/classic.svg`} alt={__('Classic')} />;
 // icons.icon_fill = <img src={`${img_path}/icon/fill.svg`} alt={__('Fill')} />;
@@ -10432,9 +10432,9 @@ __webpack_require__.r(__webpack_exports__);
 // icons.pie_outline = <img src={`${img_path}/pieprogress/outline.svg`} alt={__('Outline')} />;
 // icons.pie_outline_fill = <img src={`${img_path}/pieprogress/outline-fill.svg`} alt={__('Outline Fill')} />;
 //
-// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
+// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
 //
 // icons.tab_tabs = <img src={`${img_path}/tab/tabs.svg`} alt={__('Tabs')} />;
 // icons.tab_pills = <img src={`${img_path}/tab/pills.svg`} alt={__('Pills')} />;
@@ -10489,12 +10489,12 @@ __webpack_require__.r(__webpack_exports__);
 // icons.postgrid_design_6 = <img src={`${img_path}/postgrid/16.svg`} alt={__('Design 6')} />;
 //
 //
-// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
-// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
-// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
-// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
-// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
-// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
+// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
+// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
+// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
+// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
+// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
+// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
 // icons.p = <svg width="20px" height="20px" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1534 189v73q0 29-18.5 61t-42.5 32q-50 0-54 1-26 6-32 31-3 11-3 64v1152q0 25-18 43t-43 18h-108q-25 0-43-18t-18-43v-1218h-143v1218q0 25-17.5 43t-43.5 18h-108q-26 0-43.5-18t-17.5-43v-496q-147-12-245-59-126-58-192-179-64-117-64-259 0-166 88-286 88-118 209-159 111-37 417-37h479q25 0 43 18t18 43z" /></svg>
 // icons.span = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
 // icons.div = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>

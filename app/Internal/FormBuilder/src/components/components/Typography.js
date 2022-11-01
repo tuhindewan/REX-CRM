@@ -31,16 +31,16 @@ class Typography extends Component {
 	handleClickOutside = (event) => {
 		const { showFontFamiles, showFontWeights } = this.state
 		if (showFontFamiles) {
-			const qubelyFontFamilyWrapper = this.refs.qubelyFontFamilyWrapper
-			const qubelySelectedFontFamily = this.refs.wpfnlSelectedFontFamily
-			if (qubelyFontFamilyWrapper && !qubelyFontFamilyWrapper.contains(event.target)) {
-				qubelySelectedFontFamily && !qubelySelectedFontFamily.contains(event.target) && this.setState({ showFontFamiles: false })
+			const mrmTypographyFontFamilyWrapper = this.refs.mrmTypographyFontFamilyWrapper
+			const mrmTypographySelectedFontFamily = this.refs.wpfnlSelectedFontFamily
+			if (mrmTypographyFontFamilyWrapper && !mrmTypographyFontFamilyWrapper.contains(event.target)) {
+				mrmTypographySelectedFontFamily && !mrmTypographySelectedFontFamily.contains(event.target) && this.setState({ showFontFamiles: false })
 			}
 		} else if (showFontWeights) {
-			const qubelyFontWeightWrapper = this.refs.qubelyFontWeightWrapper
-			const qubelySelectedFontWeight = this.refs.qubelySelectedFontWeight
-			if (qubelyFontWeightWrapper && !qubelyFontWeightWrapper.contains(event.target)) {
-				qubelySelectedFontWeight && !qubelySelectedFontWeight.contains(event.target) && this.setState({ showFontWeights: false })
+			const mrmTypographyFontWeightWrapper = this.refs.mrmTypographyFontWeightWrapper
+			const mrmTypographySelectedFontWeight = this.refs.mrmTypographySelectedFontWeight
+			if (mrmTypographyFontWeightWrapper && !mrmTypographyFontWeightWrapper.contains(event.target)) {
+				mrmTypographySelectedFontWeight && !mrmTypographySelectedFontWeight.contains(event.target) && this.setState({ showFontWeights: false })
 			}
 		}
 
@@ -79,9 +79,9 @@ class Typography extends Component {
 	}
 	findArrayIndex = (font) => {
 		let index = 0
-		let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'))
+		let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'))
 		while (index < 10) {
-			if (qubelyFonts[index].n == font) {
+			if (mrmTypographyFonts[index].n == font) {
 				break
 			}
 			index++
@@ -91,25 +91,25 @@ class Typography extends Component {
 	handleTypographyChange(val) {
 		this.setSettings('family', val)
 
-		let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'))
+		let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'))
 		let selectedFont = FontList.filter(font => font.n == val)
 
-		if (qubelyFonts) {
-			let oldFont = qubelyFonts.filter(font => font.n == val).length > 0
+		if (mrmTypographyFonts) {
+			let oldFont = mrmTypographyFonts.filter(font => font.n == val).length > 0
 			if (oldFont) {
 				let index = this.findArrayIndex(val)
-				qubelyFonts.splice(index, 1)
-				qubelyFonts.unshift(...selectedFont)
+				mrmTypographyFonts.splice(index, 1)
+				mrmTypographyFonts.unshift(...selectedFont)
 			} else {
-				qubelyFonts.unshift(...selectedFont)
-				qubelyFonts.length > 10 && qubelyFonts.pop()
+				mrmTypographyFonts.unshift(...selectedFont)
+				mrmTypographyFonts.length > 10 && mrmTypographyFonts.pop()
 			}
 
 		} else {
-			qubelyFonts = [...selectedFont]
+			mrmTypographyFonts = [...selectedFont]
 		}
 
-		localStorage.setItem('qubelyFonts', JSON.stringify(qubelyFonts))
+		localStorage.setItem('mrmTypographyFonts', JSON.stringify(mrmTypographyFonts))
 	}
 	render() {
 		const {
@@ -129,13 +129,13 @@ class Typography extends Component {
 			showFontWeights,
 		} = this.state;
 
-		let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+		let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
 		let filteredFontList = [], newFontList = FontList;
-		if (qubelyFonts) {
-			filteredFontList = FontList.filter(font => !qubelyFonts.filter(qubelyFont => qubelyFont.n == font.n || font.n == 'Default').length > 0)
+		if (mrmTypographyFonts) {
+			filteredFontList = FontList.filter(font => !mrmTypographyFonts.filter(mrmTypographyFont => mrmTypographyFont.n == font.n || font.n == 'Default').length > 0)
 			newFontList = [
 				{ n: 'Default', f: 'default', v: [] },
-				...qubelyFonts,
+				...mrmTypographyFonts,
 				...filteredFontList
 			]
 		}
@@ -145,7 +145,7 @@ class Typography extends Component {
 			)
 		}
 		return (
-			<div className="qubely-field qubely-field-typography">
+			<div className="mrmTypography-field mrmTypography-field-typography">
 				{
 					!globalSettings && <Toggle
 						value={value.openTypography}
@@ -241,27 +241,27 @@ class Typography extends Component {
 								/>
 								:
 								<Fragment>
-									<div className="qubely-field-group qubely-65-35">
-										<div className="qubely-field qubely-field-font-family">
+									<div className="mrmTypography-field-group mrmTypography-65-35">
+										<div className="mrmTypography-field mrmTypography-field-font-family">
 											<label>{__('Font Family')}</label>
-											<div className="qubely-font-family-picker" ref="wpfnlSelectedFontFamily"
+											<div className="mrmTypography-font-family-picker" ref="wpfnlSelectedFontFamily"
 												 onClick={() => {
 													 this.setState({ showFontFamiles: !showFontFamiles })
 												 }}>
-                                                <span className="qubely-font-family-search-wrapper">
+                                                <span className="mrmTypography-font-family-search-wrapper">
                                                     <input
 														type="text"
-														className={`qubely-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`}
+														className={`mrmTypography-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`}
 														placeholder={__(showFontFamiles ? 'Search' : value && value.family || 'Select')}
 														value={filterText}
 														onChange={e => this.setState({ filterText: e.target.value })} />
-                                                    <span className="qubely-font-select-icon">   {showFontFamiles ? icons.arrow_up : icons.arrow_down}  </span>
+                                                    <span className="mrmTypography-font-select-icon">   {showFontFamiles ? icons.arrow_up : icons.arrow_down}  </span>
                                                 </span>
 											</div>
 										</div>
 										{
-											showFontFamiles && <div className="qubely-font-family-option-wrapper" ref="qubelyFontFamilyWrapper">
-												<div className="qubely-font-family-options" >
+											showFontFamiles && <div className="mrmTypography-font-family-option-wrapper" ref="mrmTypographyFontFamilyWrapper">
+												<div className="mrmTypography-font-family-options" >
 													{newFontList.length > 0 ?
 														newFontList.map((font, index) => {
 															let isActiveFont = false;
@@ -269,12 +269,12 @@ class Typography extends Component {
 																isActiveFont = true;
 															}
 															let fontClasses = classnames(
-																{ ['qubely-font-family-option']: !isActiveFont },
-																{ ['qubely-active-font-family']: isActiveFont }
+																{ ['mrmTypography-font-family-option']: !isActiveFont },
+																{ ['mrmTypography-active-font-family']: isActiveFont }
 															)
 															return (
 																<div className={fontClasses}
-																	 key={`qubely-font-family-${index}`}
+																	 key={`mrmTypography-font-family-${index}`}
 																	 onClick={() => {
 																		 this.setState({ showFontFamiles: false, filterText: '' });
 																		 font.n == 'Default' ? this.setSettings('family', 'default') : this.handleTypographyChange(font.n)
@@ -285,26 +285,26 @@ class Typography extends Component {
 															)
 														})
 														:
-														<div className={`qubely-font-family-option no-match`} onClick={() => this.setState({ showFontFamiles: false, filterText: '' })}  >  No matched font  </div>
+														<div className={`mrmTypography-font-family-option no-match`} onClick={() => this.setState({ showFontFamiles: false, filterText: '' })}  >  No matched font  </div>
 													}
 												</div>
 											</div>
 										}
-										<div className="qubely-field qubely-field-font-weight">
+										<div className="mrmTypography-field mrmTypography-field-font-weight">
 											<label>{__('Weight')}</label>
-											<div className="qubely-font-weight-picker-wrapper" ref="qubelySelectedFontWeight" onClick={() => this.setState({ showFontWeights: !showFontWeights })}>
-												<div className="qubely-font-weight-picker" >  {value && value.weight || 'Select'}   </div>
-												<span className="qubely-font-select-icon">   {showFontWeights ? icons.arrow_up : icons.arrow_down}  </span>
+											<div className="mrmTypography-font-weight-picker-wrapper" ref="mrmTypographySelectedFontWeight" onClick={() => this.setState({ showFontWeights: !showFontWeights })}>
+												<div className="mrmTypography-font-weight-picker" >  {value && value.weight || 'Select'}   </div>
+												<span className="mrmTypography-font-select-icon">   {showFontWeights ? icons.arrow_up : icons.arrow_down}  </span>
 											</div>
 										</div>
 										{
-											showFontWeights && <div className="qubely-font-weight-wrapper" ref="qubelyFontWeightWrapper">
-												<div className="qubely-font-family-weights" >
+											showFontWeights && <div className="mrmTypography-font-weight-wrapper" ref="mrmTypographyFontWeightWrapper">
+												<div className="mrmTypography-font-family-weights" >
 													{
 														['Default', ...this._getWeight()].map((font, index) => {
 															return (
-																<div className={`${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`}
-																	 key={`qubely-font-weights-${index}`} onClick={() => { this.setState({ showFontWeights: false }); this.setSettings('weight', font) }}
+																<div className={`${font == value.weight ? 'mrmTypography-active-font-weight' : 'mrmTypography-font-weight-option'}`}
+																	 key={`mrmTypography-font-weights-${index}`} onClick={() => { this.setState({ showFontWeights: false }); this.setSettings('weight', font) }}
 																>
 																	{font}
 																</div>
@@ -318,12 +318,12 @@ class Typography extends Component {
 									</div>
 
 									{/*<Dropdown*/}
-									{/*	className="qubely-field"*/}
+									{/*	className="mrmTypography-field"*/}
 									{/*	renderToggle={({ isOpen, onToggle }) => (*/}
-									{/*		<div className="qubely-d-flex qubely-align-center">*/}
+									{/*		<div className="mrmTypography-d-flex mrmTypography-align-center">*/}
 									{/*			<label>{__('Advanced Typography')}</label>*/}
-									{/*			<div className="qubely-field-button-list qubely-ml-auto">*/}
-									{/*				<button className={(isOpen == 1 ? 'active' : '') + ' qubely-button qubely-button-rounded'} onClick={onToggle} aria-expanded={isOpen}>*/}
+									{/*			<div className="mrmTypography-field-button-list mrmTypography-ml-auto">*/}
+									{/*				<button className={(isOpen == 1 ? 'active' : '') + ' mrmTypography-button mrmTypography-button-rounded'} onClick={onToggle} aria-expanded={isOpen}>*/}
 									{/*					<i className="fas fa-cog" />*/}
 									{/*				</button>*/}
 									{/*			</div>*/}
@@ -357,16 +357,16 @@ class Typography extends Component {
 									{/*				device={device}*/}
 									{/*				onDeviceChange={value => onDeviceChange(value)}*/}
 									{/*			/>*/}
-									{/*			<div className="qubely-field qubely-d-flex qubely-align-center">*/}
+									{/*			<div className="mrmTypography-field mrmTypography-d-flex mrmTypography-align-center">*/}
 									{/*				<div>*/}
 									{/*					{__('Text Transform')}*/}
 									{/*				</div>*/}
-									{/*				<div className="qubely-field-button-list qubely-ml-auto">*/}
+									{/*				<div className="mrmTypography-field-button-list mrmTypography-ml-auto">*/}
 									{/*					{*/}
 									{/*						['none', 'capitalize', 'uppercase', 'lowercase'].map((data, index) => {*/}
 									{/*							return (*/}
 									{/*								<Tooltip text={data.charAt(0).toUpperCase() + data.slice(1)}>*/}
-									{/*									<button className={(value.transform == data ? 'active' : '') + ' qubely-button'} key={index} onClick={() => this.setSettings('transform', data)}>*/}
+									{/*									<button className={(value.transform == data ? 'active' : '') + ' mrmTypography-button'} key={index} onClick={() => this.setSettings('transform', data)}>*/}
 									{/*										{data == 'none' &&*/}
 									{/*										<i className="fas fa-ban" />*/}
 									{/*										}*/}

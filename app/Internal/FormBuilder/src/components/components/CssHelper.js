@@ -94,13 +94,13 @@ const globalTypography = (selectedTypo) => {
 
     let CSS = '{';
     if (selectedTypo !== 'none') {
-        CSS += `font-family:var(--qubely-typo${selectedTypo}-font-family);`;
-        CSS += `font-size:var(--qubely-typo${selectedTypo}-font-size);`;
-        CSS += `font-weight:var(--qubely-typo${selectedTypo}-font-weight) !important;`;
-        CSS += `font-style:var(--qubely-typo${selectedTypo}-font-style) !important;`;
-        CSS += `line-height:var(--qubely-typo${selectedTypo}-line-height) !important;`;
-        CSS += `letter-spacing:var(--qubely-typo${selectedTypo}-letter-spacing);`;
-        CSS += `text-transform:var(--qubely-typo${selectedTypo}-text-transform);`;
+        CSS += `font-family:var(--mrmTypography-typo${selectedTypo}-font-family);`;
+        CSS += `font-size:var(--mrmTypography-typo${selectedTypo}-font-size);`;
+        CSS += `font-weight:var(--mrmTypography-typo${selectedTypo}-font-weight) !important;`;
+        CSS += `font-style:var(--mrmTypography-typo${selectedTypo}-font-style) !important;`;
+        CSS += `line-height:var(--mrmTypography-typo${selectedTypo}-line-height) !important;`;
+        CSS += `letter-spacing:var(--mrmTypography-typo${selectedTypo}-letter-spacing);`;
+        CSS += `text-transform:var(--mrmTypography-typo${selectedTypo}-text-transform);`;
     }
     CSS += '}';
     return CSS;

@@ -10,12 +10,12 @@ class Toggle extends Component {
 	}
 
 	_filterValue() {
-		return this.props.value ? (this.props.responsive ? (this.props.value[window.qubelyDevice] || '') : this.props.value) : ''
+		return this.props.value ? (this.props.responsive ? (this.props.value[window.mrmTypographyDevice] || '') : this.props.value) : ''
 	}
 
 	setSettings(val) {
 		const { value, responsive, onChange } = this.props
-		let final = responsive ? Object.assign({}, value, { [window.qubelyDevice]: val }) : val
+		let final = responsive ? Object.assign({}, value, { [window.mrmTypographyDevice]: val }) : val
 		onChange(final)
 		this.setState({ current: val })
 	}
@@ -23,14 +23,14 @@ class Toggle extends Component {
 	render() {
 		const { label, customClassName, responsive, device, onDeviceChange } = this.props
 		return (
-			<div className={'qubely-field-toggle qubely-field' + (this.props.responsive ? ' qubely-responsive' : '') + (customClassName ? ` ${customClassName}` : '')}>
+			<div className={'mrmTypography-field-toggle mrmTypography-field' + (this.props.responsive ? ' mrmTypography-responsive' : '') + (customClassName ? ` ${customClassName}` : '')}>
 				<label>
 					{label && label}
 					{responsive &&
 					<Fragment>
 						{
 							device ?
-								<Device device={device} commonResponsiveDevice={device} className="qubely-ml-10" onChange={val => onDeviceChange(val)} />
+								<Device device={device} commonResponsiveDevice={device} className="mrmTypography-ml-10" onChange={val => onDeviceChange(val)} />
 								:
 								<Device onChange={val => this.setState({ current: val })} />
 						}
