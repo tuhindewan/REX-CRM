@@ -11176,7 +11176,7 @@ const attributes = {
   },
   buttonWidth: {
     type: 'number',
-    default: 20
+    default: ''
   },
   typography: {
     type: 'object',
