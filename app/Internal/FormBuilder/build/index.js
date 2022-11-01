@@ -3615,7 +3615,7 @@ function BlockEditor(_ref) {
     const _canUserCreateMedia = select('core').canUser('create', 'media');
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px">Email<span class="required-mark">*</span></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color: !important;border-radius:5px;padding-top:12px;padding-right:20px;padding-bottom:13px;padding-left:20px;border-style:none;border-width:1px;border-color:">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:20px 25px;line-height:0.2;letter-spacing:0;border-style:none;font-size:15px;text-align:center;border-width:0;border-color:;width:20%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -11136,7 +11136,7 @@ const attributes = {
   },
   buttonAlign: {
     type: 'string',
-    default: 'center'
+    default: 'left'
   },
   postAction: {
     type: 'string',
@@ -11176,7 +11176,7 @@ const attributes = {
   },
   buttonWidth: {
     type: 'number',
-    default: 25
+    default: ''
   },
   typography: {
     type: 'object',
@@ -11195,7 +11195,7 @@ const attributes = {
   },
   paddingTopBottom: {
     type: "number",
-    default: 25
+    default: 20
   },
   paddingLeftRight: {
     type: "number",
@@ -11203,7 +11203,7 @@ const attributes = {
   },
   lineHeight: {
     type: "number",
-    default: 1.2
+    default: 0.2
   },
   letterSpacing: {
     type: "number",
@@ -11282,7 +11282,8 @@ const mrmButton = _ref => {
   } = _ref;
   let layout = formLayout;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + 'px',
+    textAlign: buttonAlign
   };
   let buttonStyle = {
     // backgroundColor: buttonBgColor,
@@ -11296,7 +11297,7 @@ const mrmButton = _ref => {
     fontWeight: typography.weight,
     fontFamily: typography.family,
     fontSize: buttonFontSize,
-    textAlign: buttonAlign,
+    // textAlign: buttonAlign,
     // borderWidth:  buttonBorderWidth+'px',
     borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
     borderColor: buttonBorderColor,
@@ -11615,7 +11616,8 @@ class Editor extends Component {
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + 'px',
+      textAlign: buttonAlign
     };
     let buttonStyle = {
       // backgroundColor: buttonBgColor,
@@ -11629,7 +11631,7 @@ class Editor extends Component {
       fontWeight: typography.weight,
       fontFamily: typography.family,
       fontSize: buttonFontSize,
-      textAlign: buttonAlign,
+      // textAlign: buttonAlign,
       // borderWidth:  buttonBorderWidth+'px',
       borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
       borderColor: buttonBorderColor,
@@ -16921,9 +16923,9 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     title: __("MRM Button", "mrm"),
     category: "common",
     icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].Button,
-    supports: {
-      align: ["left", "right", "center"]
-    },
+    // supports: {
+    //   align: ["left", "right", "center"],
+    // },
     attributes: _components_mrm_button_block_attributes__WEBPACK_IMPORTED_MODULE_19__["default"],
     edit: _components_mrm_button_block_edit__WEBPACK_IMPORTED_MODULE_20__["default"],
     save: _components_mrm_button_block_block__WEBPACK_IMPORTED_MODULE_17__["default"]
