@@ -1,6 +1,6 @@
-.qubely-shape-picker-wrapper {
+.mrmTypography-shape-picker-wrapper {
     display: flex;
-    .qubely-shape-picker {
+    .mrmTypography-shape-picker {
         width: 100%;
     }
     .has-value {
@@ -8,17 +8,17 @@
     }
 }
 
-.qubely-shape-picker-options {
+.mrmTypography-shape-picker-options {
     width: 230px;
-    .qubely-shape-picker-option {
+    .mrmTypography-shape-picker-option {
         padding: 10px 10px 10px 10px;
     }
-    .qubely-shape-picker-option:hover {
+    .mrmTypography-shape-picker-option:hover {
         background-color: #e8eaeb;
         border-radius: 4px;
     }
 }
-.qubely-field-shape-placeholder {
+.mrmTypography-field-shape-placeholder {
     -webkit-box-align: center;
     align-items: center;
     background-color: rgb(255, 255, 255);
@@ -39,13 +39,13 @@
     height: 30px;
     vertical-align: middle;
     padding-left: 10px;
-    .qubely-icon {
+    .mrmTypography-icon {
         display: flex;
         padding-right: 5px;
     }
 }
 
-.qubely-field-shape-value:hover {
+.mrmTypography-field-shape-value:hover {
     cursor: pointer;
 }
 .shape-divider-options {

@@ -354,15 +354,15 @@ const attributes = {
     },
     paddingTopBottom: {
         type: "number",
-        default: 20,
+        default: 15,
     },
     paddingLeftRight: {
         type: "number",
-        default: 25,
+        default: 20,
     },
     lineHeight: {
         type: "number",
-        default: 0.2,
+        default: 1,
     },
     letterSpacing: {
         type: "number",

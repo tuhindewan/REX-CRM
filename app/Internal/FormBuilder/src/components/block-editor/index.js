@@ -42,8 +42,8 @@ function BlockEditor( { settings: _settings } ) {
 		'<!-- /wp:mrmformfield/email-field-block -->\n' +
 		'\n' +
 		'<!-- wp:mrmformfield/mrm-button-block -->\n' +
-		'<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:20px 25px;line-height:0.2;letter-spacing:0;border-style:none;font-size:15px;text-align:center;border-width:0;border-color:;width:20%">Submit</button></div>\n' +
-		'<!-- /wp:mrmformfield/mrm-button-block -->'
+		'<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' +
+		'<!-- /wp:mrmformfield/mrm-button-block -->';
 
 	const settings = useMemo(() => {
 		if ( ! canUserCreateMedia ) {
@@ -84,7 +84,6 @@ function BlockEditor( { settings: _settings } ) {
 				handleUpdateBlocks(() => parse(defaultData));
 				window.localStorage.setItem( 'getmrmblocks',defaultData )
 			}
-
 		};
 		getFormData();
 
@@ -115,6 +114,7 @@ function BlockEditor( { settings: _settings } ) {
 
 	function handlePersistBlocks( newBlocks ) {
 		updateBlocks( newBlocks );
+		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
 		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
 
 	}

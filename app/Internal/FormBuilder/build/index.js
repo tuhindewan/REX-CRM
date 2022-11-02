@@ -1,6 +1,3226 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./node_modules/@remix-run/router/dist/router.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@remix-run/router/dist/router.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbortedDeferredError": function() { return /* binding */ AbortedDeferredError; },
+/* harmony export */   "Action": function() { return /* binding */ Action; },
+/* harmony export */   "ErrorResponse": function() { return /* binding */ ErrorResponse; },
+/* harmony export */   "IDLE_FETCHER": function() { return /* binding */ IDLE_FETCHER; },
+/* harmony export */   "IDLE_NAVIGATION": function() { return /* binding */ IDLE_NAVIGATION; },
+/* harmony export */   "UNSAFE_convertRoutesToDataRoutes": function() { return /* binding */ convertRoutesToDataRoutes; },
+/* harmony export */   "createBrowserHistory": function() { return /* binding */ createBrowserHistory; },
+/* harmony export */   "createHashHistory": function() { return /* binding */ createHashHistory; },
+/* harmony export */   "createMemoryHistory": function() { return /* binding */ createMemoryHistory; },
+/* harmony export */   "createPath": function() { return /* binding */ createPath; },
+/* harmony export */   "createRouter": function() { return /* binding */ createRouter; },
+/* harmony export */   "defer": function() { return /* binding */ defer; },
+/* harmony export */   "generatePath": function() { return /* binding */ generatePath; },
+/* harmony export */   "getStaticContextFromError": function() { return /* binding */ getStaticContextFromError; },
+/* harmony export */   "getToPathname": function() { return /* binding */ getToPathname; },
+/* harmony export */   "invariant": function() { return /* binding */ invariant; },
+/* harmony export */   "isRouteErrorResponse": function() { return /* binding */ isRouteErrorResponse; },
+/* harmony export */   "joinPaths": function() { return /* binding */ joinPaths; },
+/* harmony export */   "json": function() { return /* binding */ json; },
+/* harmony export */   "matchPath": function() { return /* binding */ matchPath; },
+/* harmony export */   "matchRoutes": function() { return /* binding */ matchRoutes; },
+/* harmony export */   "normalizePathname": function() { return /* binding */ normalizePathname; },
+/* harmony export */   "parsePath": function() { return /* binding */ parsePath; },
+/* harmony export */   "redirect": function() { return /* binding */ redirect; },
+/* harmony export */   "resolvePath": function() { return /* binding */ resolvePath; },
+/* harmony export */   "resolveTo": function() { return /* binding */ resolveTo; },
+/* harmony export */   "stripBasename": function() { return /* binding */ stripBasename; },
+/* harmony export */   "unstable_createStaticHandler": function() { return /* binding */ unstable_createStaticHandler; },
+/* harmony export */   "warning": function() { return /* binding */ warning; }
+/* harmony export */ });
+/**
+ * @remix-run/router v1.0.2
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//#region Types and Constants
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Actions represent the type of change to a location value.
+ */
+var Action;
+
+(function (Action) {
+  /**
+   * A POP indicates a change to an arbitrary index in the history stack, such
+   * as a back or forward navigation. It does not describe the direction of the
+   * navigation, only that the current index changed.
+   *
+   * Note: This is the default action for newly created history objects.
+   */
+  Action["Pop"] = "POP";
+  /**
+   * A PUSH indicates a new entry being added to the history stack, such as when
+   * a link is clicked and a new page loads. When this happens, all subsequent
+   * entries in the stack are lost.
+   */
+
+  Action["Push"] = "PUSH";
+  /**
+   * A REPLACE indicates the entry at the current index in the history stack
+   * being replaced by a new one.
+   */
+
+  Action["Replace"] = "REPLACE";
+})(Action || (Action = {}));
+
+const PopStateEventType = "popstate";
+/**
+ * Memory history stores the current location in memory. It is designed for use
+ * in stateful non-browser environments like tests and React Native.
+ */
+
+function createMemoryHistory(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  let {
+    initialEntries = ["/"],
+    initialIndex,
+    v5Compat = false
+  } = options;
+  let entries; // Declare so we can access from createMemoryLocation
+
+  entries = initialEntries.map((entry, index) => createMemoryLocation(entry, typeof entry === "string" ? null : entry.state, index === 0 ? "default" : undefined));
+  let index = clampIndex(initialIndex == null ? entries.length - 1 : initialIndex);
+  let action = Action.Pop;
+  let listener = null;
+
+  function clampIndex(n) {
+    return Math.min(Math.max(n, 0), entries.length - 1);
+  }
+
+  function getCurrentLocation() {
+    return entries[index];
+  }
+
+  function createMemoryLocation(to, state, key) {
+    if (state === void 0) {
+      state = null;
+    }
+
+    let location = createLocation(entries ? getCurrentLocation().pathname : "/", to, state, key);
+    warning$1(location.pathname.charAt(0) === "/", "relative pathnames are not supported in memory history: " + JSON.stringify(to));
+    return location;
+  }
+
+  let history = {
+    get index() {
+      return index;
+    },
+
+    get action() {
+      return action;
+    },
+
+    get location() {
+      return getCurrentLocation();
+    },
+
+    createHref(to) {
+      return typeof to === "string" ? to : createPath(to);
+    },
+
+    push(to, state) {
+      action = Action.Push;
+      let nextLocation = createMemoryLocation(to, state);
+      index += 1;
+      entries.splice(index, entries.length, nextLocation);
+
+      if (v5Compat && listener) {
+        listener({
+          action,
+          location: nextLocation
+        });
+      }
+    },
+
+    replace(to, state) {
+      action = Action.Replace;
+      let nextLocation = createMemoryLocation(to, state);
+      entries[index] = nextLocation;
+
+      if (v5Compat && listener) {
+        listener({
+          action,
+          location: nextLocation
+        });
+      }
+    },
+
+    go(delta) {
+      action = Action.Pop;
+      index = clampIndex(index + delta);
+
+      if (listener) {
+        listener({
+          action,
+          location: getCurrentLocation()
+        });
+      }
+    },
+
+    listen(fn) {
+      listener = fn;
+      return () => {
+        listener = null;
+      };
+    }
+
+  };
+  return history;
+}
+/**
+ * Browser history stores the location in regular URLs. This is the standard for
+ * most web apps, but it requires some configuration on the server to ensure you
+ * serve the same app at multiple URLs.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createbrowserhistory
+ */
+
+function createBrowserHistory(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  function createBrowserLocation(window, globalHistory) {
+    let {
+      pathname,
+      search,
+      hash
+    } = window.location;
+    return createLocation("", {
+      pathname,
+      search,
+      hash
+    }, // state defaults to `null` because `window.history.state` does
+    globalHistory.state && globalHistory.state.usr || null, globalHistory.state && globalHistory.state.key || "default");
+  }
+
+  function createBrowserHref(window, to) {
+    return typeof to === "string" ? to : createPath(to);
+  }
+
+  return getUrlBasedHistory(createBrowserLocation, createBrowserHref, null, options);
+}
+/**
+ * Hash history stores the location in window.location.hash. This makes it ideal
+ * for situations where you don't want to send the location to the server for
+ * some reason, either because you do cannot configure it or the URL space is
+ * reserved for something else.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createhashhistory
+ */
+
+function createHashHistory(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  function createHashLocation(window, globalHistory) {
+    let {
+      pathname = "/",
+      search = "",
+      hash = ""
+    } = parsePath(window.location.hash.substr(1));
+    return createLocation("", {
+      pathname,
+      search,
+      hash
+    }, // state defaults to `null` because `window.history.state` does
+    globalHistory.state && globalHistory.state.usr || null, globalHistory.state && globalHistory.state.key || "default");
+  }
+
+  function createHashHref(window, to) {
+    let base = window.document.querySelector("base");
+    let href = "";
+
+    if (base && base.getAttribute("href")) {
+      let url = window.location.href;
+      let hashIndex = url.indexOf("#");
+      href = hashIndex === -1 ? url : url.slice(0, hashIndex);
+    }
+
+    return href + "#" + (typeof to === "string" ? to : createPath(to));
+  }
+
+  function validateHashLocation(location, to) {
+    warning$1(location.pathname.charAt(0) === "/", "relative pathnames are not supported in hash history.push(" + JSON.stringify(to) + ")");
+  }
+
+  return getUrlBasedHistory(createHashLocation, createHashHref, validateHashLocation, options);
+} //#endregion
+////////////////////////////////////////////////////////////////////////////////
+//#region UTILS
+////////////////////////////////////////////////////////////////////////////////
+
+function warning$1(cond, message) {
+  if (!cond) {
+    // eslint-disable-next-line no-console
+    if (typeof console !== "undefined") console.warn(message);
+
+    try {
+      // Welcome to debugging history!
+      //
+      // This error is thrown as a convenience so you can more easily
+      // find the source for a warning that appears in the console by
+      // enabling "pause on exceptions" in your JavaScript debugger.
+      throw new Error(message); // eslint-disable-next-line no-empty
+    } catch (e) {}
+  }
+}
+
+function createKey() {
+  return Math.random().toString(36).substr(2, 8);
+}
+/**
+ * For browser-based histories, we combine the state and key into an object
+ */
+
+
+function getHistoryState(location) {
+  return {
+    usr: location.state,
+    key: location.key
+  };
+}
+/**
+ * Creates a Location object with a unique key from the given Path
+ */
+
+
+function createLocation(current, to, state, key) {
+  if (state === void 0) {
+    state = null;
+  }
+
+  let location = _extends({
+    pathname: typeof current === "string" ? current : current.pathname,
+    search: "",
+    hash: ""
+  }, typeof to === "string" ? parsePath(to) : to, {
+    state,
+    // TODO: This could be cleaned up.  push/replace should probably just take
+    // full Locations now and avoid the need to run through this flow at all
+    // But that's a pretty big refactor to the current test suite so going to
+    // keep as is for the time being and just let any incoming keys take precedence
+    key: to && to.key || key || createKey()
+  });
+
+  return location;
+}
+/**
+ * Creates a string URL path from the given pathname, search, and hash components.
+ */
+
+function createPath(_ref) {
+  let {
+    pathname = "/",
+    search = "",
+    hash = ""
+  } = _ref;
+  if (search && search !== "?") pathname += search.charAt(0) === "?" ? search : "?" + search;
+  if (hash && hash !== "#") pathname += hash.charAt(0) === "#" ? hash : "#" + hash;
+  return pathname;
+}
+/**
+ * Parses a string URL path into its separate pathname, search, and hash components.
+ */
+
+function parsePath(path) {
+  let parsedPath = {};
+
+  if (path) {
+    let hashIndex = path.indexOf("#");
+
+    if (hashIndex >= 0) {
+      parsedPath.hash = path.substr(hashIndex);
+      path = path.substr(0, hashIndex);
+    }
+
+    let searchIndex = path.indexOf("?");
+
+    if (searchIndex >= 0) {
+      parsedPath.search = path.substr(searchIndex);
+      path = path.substr(0, searchIndex);
+    }
+
+    if (path) {
+      parsedPath.pathname = path;
+    }
+  }
+
+  return parsedPath;
+}
+
+function getUrlBasedHistory(getLocation, createHref, validateLocation, options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  let {
+    window = document.defaultView,
+    v5Compat = false
+  } = options;
+  let globalHistory = window.history;
+  let action = Action.Pop;
+  let listener = null;
+
+  function handlePop() {
+    action = Action.Pop;
+
+    if (listener) {
+      listener({
+        action,
+        location: history.location
+      });
+    }
+  }
+
+  function push(to, state) {
+    action = Action.Push;
+    let location = createLocation(history.location, to, state);
+    if (validateLocation) validateLocation(location, to);
+    let historyState = getHistoryState(location);
+    let url = history.createHref(location); // try...catch because iOS limits us to 100 pushState calls :/
+
+    try {
+      globalHistory.pushState(historyState, "", url);
+    } catch (error) {
+      // They are going to lose state here, but there is no real
+      // way to warn them about it since the page will refresh...
+      window.location.assign(url);
+    }
+
+    if (v5Compat && listener) {
+      listener({
+        action,
+        location
+      });
+    }
+  }
+
+  function replace(to, state) {
+    action = Action.Replace;
+    let location = createLocation(history.location, to, state);
+    if (validateLocation) validateLocation(location, to);
+    let historyState = getHistoryState(location);
+    let url = history.createHref(location);
+    globalHistory.replaceState(historyState, "", url);
+
+    if (v5Compat && listener) {
+      listener({
+        action,
+        location: location
+      });
+    }
+  }
+
+  let history = {
+    get action() {
+      return action;
+    },
+
+    get location() {
+      return getLocation(window, globalHistory);
+    },
+
+    listen(fn) {
+      if (listener) {
+        throw new Error("A history only accepts one active listener");
+      }
+
+      window.addEventListener(PopStateEventType, handlePop);
+      listener = fn;
+      return () => {
+        window.removeEventListener(PopStateEventType, handlePop);
+        listener = null;
+      };
+    },
+
+    createHref(to) {
+      return createHref(window, to);
+    },
+
+    push,
+    replace,
+
+    go(n) {
+      return globalHistory.go(n);
+    }
+
+  };
+  return history;
+} //#endregion
+
+var ResultType;
+
+(function (ResultType) {
+  ResultType["data"] = "data";
+  ResultType["deferred"] = "deferred";
+  ResultType["redirect"] = "redirect";
+  ResultType["error"] = "error";
+})(ResultType || (ResultType = {}));
+
+function isIndexRoute(route) {
+  return route.index === true;
+} // Walk the route tree generating unique IDs where necessary so we are working
+// solely with AgnosticDataRouteObject's within the Router
+
+
+function convertRoutesToDataRoutes(routes, parentPath, allIds) {
+  if (parentPath === void 0) {
+    parentPath = [];
+  }
+
+  if (allIds === void 0) {
+    allIds = new Set();
+  }
+
+  return routes.map((route, index) => {
+    let treePath = [...parentPath, index];
+    let id = typeof route.id === "string" ? route.id : treePath.join("-");
+    invariant(route.index !== true || !route.children, "Cannot specify children on an index route");
+    invariant(!allIds.has(id), "Found a route id collision on id \"" + id + "\".  Route " + "id's must be globally unique within Data Router usages");
+    allIds.add(id);
+
+    if (isIndexRoute(route)) {
+      let indexRoute = _extends({}, route, {
+        id
+      });
+
+      return indexRoute;
+    } else {
+      let pathOrLayoutRoute = _extends({}, route, {
+        id,
+        children: route.children ? convertRoutesToDataRoutes(route.children, treePath, allIds) : undefined
+      });
+
+      return pathOrLayoutRoute;
+    }
+  });
+}
+/**
+ * Matches the given routes to a location and returns the match data.
+ *
+ * @see https://reactrouter.com/docs/en/v6/utils/match-routes
+ */
+
+function matchRoutes(routes, locationArg, basename) {
+  if (basename === void 0) {
+    basename = "/";
+  }
+
+  let location = typeof locationArg === "string" ? parsePath(locationArg) : locationArg;
+  let pathname = stripBasename(location.pathname || "/", basename);
+
+  if (pathname == null) {
+    return null;
+  }
+
+  let branches = flattenRoutes(routes);
+  rankRouteBranches(branches);
+  let matches = null;
+
+  for (let i = 0; matches == null && i < branches.length; ++i) {
+    matches = matchRouteBranch(branches[i], pathname);
+  }
+
+  return matches;
+}
+
+function flattenRoutes(routes, branches, parentsMeta, parentPath) {
+  if (branches === void 0) {
+    branches = [];
+  }
+
+  if (parentsMeta === void 0) {
+    parentsMeta = [];
+  }
+
+  if (parentPath === void 0) {
+    parentPath = "";
+  }
+
+  routes.forEach((route, index) => {
+    let meta = {
+      relativePath: route.path || "",
+      caseSensitive: route.caseSensitive === true,
+      childrenIndex: index,
+      route
+    };
+
+    if (meta.relativePath.startsWith("/")) {
+      invariant(meta.relativePath.startsWith(parentPath), "Absolute route path \"" + meta.relativePath + "\" nested under path " + ("\"" + parentPath + "\" is not valid. An absolute child route path ") + "must start with the combined path of all its parent routes.");
+      meta.relativePath = meta.relativePath.slice(parentPath.length);
+    }
+
+    let path = joinPaths([parentPath, meta.relativePath]);
+    let routesMeta = parentsMeta.concat(meta); // Add the children before adding this route to the array so we traverse the
+    // route tree depth-first and child routes appear before their parents in
+    // the "flattened" version.
+
+    if (route.children && route.children.length > 0) {
+      invariant( // Our types know better, but runtime JS may not!
+      // @ts-expect-error
+      route.index !== true, "Index routes must not have child routes. Please remove " + ("all child routes from route path \"" + path + "\"."));
+      flattenRoutes(route.children, branches, routesMeta, path);
+    } // Routes without a path shouldn't ever match by themselves unless they are
+    // index routes, so don't add them to the list of possible branches.
+
+
+    if (route.path == null && !route.index) {
+      return;
+    }
+
+    branches.push({
+      path,
+      score: computeScore(path, route.index),
+      routesMeta
+    });
+  });
+  return branches;
+}
+
+function rankRouteBranches(branches) {
+  branches.sort((a, b) => a.score !== b.score ? b.score - a.score // Higher score first
+  : compareIndexes(a.routesMeta.map(meta => meta.childrenIndex), b.routesMeta.map(meta => meta.childrenIndex)));
+}
+
+const paramRe = /^:\w+$/;
+const dynamicSegmentValue = 3;
+const indexRouteValue = 2;
+const emptySegmentValue = 1;
+const staticSegmentValue = 10;
+const splatPenalty = -2;
+
+const isSplat = s => s === "*";
+
+function computeScore(path, index) {
+  let segments = path.split("/");
+  let initialScore = segments.length;
+
+  if (segments.some(isSplat)) {
+    initialScore += splatPenalty;
+  }
+
+  if (index) {
+    initialScore += indexRouteValue;
+  }
+
+  return segments.filter(s => !isSplat(s)).reduce((score, segment) => score + (paramRe.test(segment) ? dynamicSegmentValue : segment === "" ? emptySegmentValue : staticSegmentValue), initialScore);
+}
+
+function compareIndexes(a, b) {
+  let siblings = a.length === b.length && a.slice(0, -1).every((n, i) => n === b[i]);
+  return siblings ? // If two routes are siblings, we should try to match the earlier sibling
+  // first. This allows people to have fine-grained control over the matching
+  // behavior by simply putting routes with identical paths in the order they
+  // want them tried.
+  a[a.length - 1] - b[b.length - 1] : // Otherwise, it doesn't really make sense to rank non-siblings by index,
+  // so they sort equally.
+  0;
+}
+
+function matchRouteBranch(branch, pathname) {
+  let {
+    routesMeta
+  } = branch;
+  let matchedParams = {};
+  let matchedPathname = "/";
+  let matches = [];
+
+  for (let i = 0; i < routesMeta.length; ++i) {
+    let meta = routesMeta[i];
+    let end = i === routesMeta.length - 1;
+    let remainingPathname = matchedPathname === "/" ? pathname : pathname.slice(matchedPathname.length) || "/";
+    let match = matchPath({
+      path: meta.relativePath,
+      caseSensitive: meta.caseSensitive,
+      end
+    }, remainingPathname);
+    if (!match) return null;
+    Object.assign(matchedParams, match.params);
+    let route = meta.route;
+    matches.push({
+      // TODO: Can this as be avoided?
+      params: matchedParams,
+      pathname: joinPaths([matchedPathname, match.pathname]),
+      pathnameBase: normalizePathname(joinPaths([matchedPathname, match.pathnameBase])),
+      route
+    });
+
+    if (match.pathnameBase !== "/") {
+      matchedPathname = joinPaths([matchedPathname, match.pathnameBase]);
+    }
+  }
+
+  return matches;
+}
+/**
+ * Returns a path with params interpolated.
+ *
+ * @see https://reactrouter.com/docs/en/v6/utils/generate-path
+ */
+
+
+function generatePath(path, params) {
+  if (params === void 0) {
+    params = {};
+  }
+
+  return path.replace(/:(\w+)/g, (_, key) => {
+    invariant(params[key] != null, "Missing \":" + key + "\" param");
+    return params[key];
+  }).replace(/(\/?)\*/, (_, prefix, __, str) => {
+    const star = "*";
+
+    if (params[star] == null) {
+      // If no splat was provided, trim the trailing slash _unless_ it's
+      // the entire path
+      return str === "/*" ? "/" : "";
+    } // Apply the splat
+
+
+    return "" + prefix + params[star];
+  });
+}
+/**
+ * Performs pattern matching on a URL pathname and returns information about
+ * the match.
+ *
+ * @see https://reactrouter.com/docs/en/v6/utils/match-path
+ */
+
+function matchPath(pattern, pathname) {
+  if (typeof pattern === "string") {
+    pattern = {
+      path: pattern,
+      caseSensitive: false,
+      end: true
+    };
+  }
+
+  let [matcher, paramNames] = compilePath(pattern.path, pattern.caseSensitive, pattern.end);
+  let match = pathname.match(matcher);
+  if (!match) return null;
+  let matchedPathname = match[0];
+  let pathnameBase = matchedPathname.replace(/(.)\/+$/, "$1");
+  let captureGroups = match.slice(1);
+  let params = paramNames.reduce((memo, paramName, index) => {
+    // We need to compute the pathnameBase here using the raw splat value
+    // instead of using params["*"] later because it will be decoded then
+    if (paramName === "*") {
+      let splatValue = captureGroups[index] || "";
+      pathnameBase = matchedPathname.slice(0, matchedPathname.length - splatValue.length).replace(/(.)\/+$/, "$1");
+    }
+
+    memo[paramName] = safelyDecodeURIComponent(captureGroups[index] || "", paramName);
+    return memo;
+  }, {});
+  return {
+    params,
+    pathname: matchedPathname,
+    pathnameBase,
+    pattern
+  };
+}
+
+function compilePath(path, caseSensitive, end) {
+  if (caseSensitive === void 0) {
+    caseSensitive = false;
+  }
+
+  if (end === void 0) {
+    end = true;
+  }
+
+  warning(path === "*" || !path.endsWith("*") || path.endsWith("/*"), "Route path \"" + path + "\" will be treated as if it were " + ("\"" + path.replace(/\*$/, "/*") + "\" because the `*` character must ") + "always follow a `/` in the pattern. To get rid of this warning, " + ("please change the route path to \"" + path.replace(/\*$/, "/*") + "\"."));
+  let paramNames = [];
+  let regexpSource = "^" + path.replace(/\/*\*?$/, "") // Ignore trailing / and /*, we'll handle it below
+  .replace(/^\/*/, "/") // Make sure it has a leading /
+  .replace(/[\\.*+^$?{}|()[\]]/g, "\\$&") // Escape special regex chars
+  .replace(/:(\w+)/g, (_, paramName) => {
+    paramNames.push(paramName);
+    return "([^\\/]+)";
+  });
+
+  if (path.endsWith("*")) {
+    paramNames.push("*");
+    regexpSource += path === "*" || path === "/*" ? "(.*)$" // Already matched the initial /, just match the rest
+    : "(?:\\/(.+)|\\/*)$"; // Don't include the / in params["*"]
+  } else if (end) {
+    // When matching to the end, ignore trailing slashes
+    regexpSource += "\\/*$";
+  } else if (path !== "" && path !== "/") {
+    // If our path is non-empty and contains anything beyond an initial slash,
+    // then we have _some_ form of path in our regex so we should expect to
+    // match only if we find the end of this path segment.  Look for an optional
+    // non-captured trailing slash (to match a portion of the URL) or the end
+    // of the path (if we've matched to the end).  We used to do this with a
+    // word boundary but that gives false positives on routes like
+    // /user-preferences since `-` counts as a word boundary.
+    regexpSource += "(?:(?=\\/|$))";
+  } else ;
+
+  let matcher = new RegExp(regexpSource, caseSensitive ? undefined : "i");
+  return [matcher, paramNames];
+}
+
+function safelyDecodeURIComponent(value, paramName) {
+  try {
+    return decodeURIComponent(value);
+  } catch (error) {
+    warning(false, "The value for the URL param \"" + paramName + "\" will not be decoded because" + (" the string \"" + value + "\" is a malformed URL segment. This is probably") + (" due to a bad percent encoding (" + error + ")."));
+    return value;
+  }
+}
+/**
+ * @private
+ */
+
+
+function stripBasename(pathname, basename) {
+  if (basename === "/") return pathname;
+
+  if (!pathname.toLowerCase().startsWith(basename.toLowerCase())) {
+    return null;
+  } // We want to leave trailing slash behavior in the user's control, so if they
+  // specify a basename with a trailing slash, we should support it
+
+
+  let startIndex = basename.endsWith("/") ? basename.length - 1 : basename.length;
+  let nextChar = pathname.charAt(startIndex);
+
+  if (nextChar && nextChar !== "/") {
+    // pathname does not start with basename/
+    return null;
+  }
+
+  return pathname.slice(startIndex) || "/";
+}
+function invariant(value, message) {
+  if (value === false || value === null || typeof value === "undefined") {
+    throw new Error(message);
+  }
+}
+/**
+ * @private
+ */
+
+function warning(cond, message) {
+  if (!cond) {
+    // eslint-disable-next-line no-console
+    if (typeof console !== "undefined") console.warn(message);
+
+    try {
+      // Welcome to debugging React Router!
+      //
+      // This error is thrown as a convenience so you can more easily
+      // find the source for a warning that appears in the console by
+      // enabling "pause on exceptions" in your JavaScript debugger.
+      throw new Error(message); // eslint-disable-next-line no-empty
+    } catch (e) {}
+  }
+}
+/**
+ * Returns a resolved path object relative to the given pathname.
+ *
+ * @see https://reactrouter.com/docs/en/v6/utils/resolve-path
+ */
+
+function resolvePath(to, fromPathname) {
+  if (fromPathname === void 0) {
+    fromPathname = "/";
+  }
+
+  let {
+    pathname: toPathname,
+    search = "",
+    hash = ""
+  } = typeof to === "string" ? parsePath(to) : to;
+  let pathname = toPathname ? toPathname.startsWith("/") ? toPathname : resolvePathname(toPathname, fromPathname) : fromPathname;
+  return {
+    pathname,
+    search: normalizeSearch(search),
+    hash: normalizeHash(hash)
+  };
+}
+
+function resolvePathname(relativePath, fromPathname) {
+  let segments = fromPathname.replace(/\/+$/, "").split("/");
+  let relativeSegments = relativePath.split("/");
+  relativeSegments.forEach(segment => {
+    if (segment === "..") {
+      // Keep the root "" segment so the pathname starts at /
+      if (segments.length > 1) segments.pop();
+    } else if (segment !== ".") {
+      segments.push(segment);
+    }
+  });
+  return segments.length > 1 ? segments.join("/") : "/";
+}
+
+function getInvalidPathError(char, field, dest, path) {
+  return "Cannot include a '" + char + "' character in a manually specified " + ("`to." + field + "` field [" + JSON.stringify(path) + "].  Please separate it out to the ") + ("`to." + dest + "` field. Alternatively you may provide the full path as ") + "a string in <Link to=\"...\"> and the router will parse it for you.";
+}
+/**
+ * @private
+ */
+
+
+function resolveTo(toArg, routePathnames, locationPathname, isPathRelative) {
+  if (isPathRelative === void 0) {
+    isPathRelative = false;
+  }
+
+  let to;
+
+  if (typeof toArg === "string") {
+    to = parsePath(toArg);
+  } else {
+    to = _extends({}, toArg);
+    invariant(!to.pathname || !to.pathname.includes("?"), getInvalidPathError("?", "pathname", "search", to));
+    invariant(!to.pathname || !to.pathname.includes("#"), getInvalidPathError("#", "pathname", "hash", to));
+    invariant(!to.search || !to.search.includes("#"), getInvalidPathError("#", "search", "hash", to));
+  }
+
+  let isEmptyPath = toArg === "" || to.pathname === "";
+  let toPathname = isEmptyPath ? "/" : to.pathname;
+  let from; // Routing is relative to the current pathname if explicitly requested.
+  //
+  // If a pathname is explicitly provided in `to`, it should be relative to the
+  // route context. This is explained in `Note on `<Link to>` values` in our
+  // migration guide from v5 as a means of disambiguation between `to` values
+  // that begin with `/` and those that do not. However, this is problematic for
+  // `to` values that do not provide a pathname. `to` can simply be a search or
+  // hash string, in which case we should assume that the navigation is relative
+  // to the current location's pathname and *not* the route pathname.
+
+  if (isPathRelative || toPathname == null) {
+    from = locationPathname;
+  } else {
+    let routePathnameIndex = routePathnames.length - 1;
+
+    if (toPathname.startsWith("..")) {
+      let toSegments = toPathname.split("/"); // Each leading .. segment means "go up one route" instead of "go up one
+      // URL segment".  This is a key difference from how <a href> works and a
+      // major reason we call this a "to" value instead of a "href".
+
+      while (toSegments[0] === "..") {
+        toSegments.shift();
+        routePathnameIndex -= 1;
+      }
+
+      to.pathname = toSegments.join("/");
+    } // If there are more ".." segments than parent routes, resolve relative to
+    // the root / URL.
+
+
+    from = routePathnameIndex >= 0 ? routePathnames[routePathnameIndex] : "/";
+  }
+
+  let path = resolvePath(to, from); // Ensure the pathname has a trailing slash if the original "to" had one
+
+  let hasExplicitTrailingSlash = toPathname && toPathname !== "/" && toPathname.endsWith("/"); // Or if this was a link to the current path which has a trailing slash
+
+  let hasCurrentTrailingSlash = (isEmptyPath || toPathname === ".") && locationPathname.endsWith("/");
+
+  if (!path.pathname.endsWith("/") && (hasExplicitTrailingSlash || hasCurrentTrailingSlash)) {
+    path.pathname += "/";
+  }
+
+  return path;
+}
+/**
+ * @private
+ */
+
+function getToPathname(to) {
+  // Empty strings should be treated the same as / paths
+  return to === "" || to.pathname === "" ? "/" : typeof to === "string" ? parsePath(to).pathname : to.pathname;
+}
+/**
+ * @private
+ */
+
+const joinPaths = paths => paths.join("/").replace(/\/\/+/g, "/");
+/**
+ * @private
+ */
+
+const normalizePathname = pathname => pathname.replace(/\/+$/, "").replace(/^\/*/, "/");
+/**
+ * @private
+ */
+
+const normalizeSearch = search => !search || search === "?" ? "" : search.startsWith("?") ? search : "?" + search;
+/**
+ * @private
+ */
+
+const normalizeHash = hash => !hash || hash === "#" ? "" : hash.startsWith("#") ? hash : "#" + hash;
+/**
+ * This is a shortcut for creating `application/json` responses. Converts `data`
+ * to JSON and sets the `Content-Type` header.
+ */
+
+const json = function json(data, init) {
+  if (init === void 0) {
+    init = {};
+  }
+
+  let responseInit = typeof init === "number" ? {
+    status: init
+  } : init;
+  let headers = new Headers(responseInit.headers);
+
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json; charset=utf-8");
+  }
+
+  return new Response(JSON.stringify(data), _extends({}, responseInit, {
+    headers
+  }));
+};
+class AbortedDeferredError extends Error {}
+class DeferredData {
+  constructor(data) {
+    this.pendingKeys = new Set();
+    this.subscriber = undefined;
+    invariant(data && typeof data === "object" && !Array.isArray(data), "defer() only accepts plain objects"); // Set up an AbortController + Promise we can race against to exit early
+    // cancellation
+
+    let reject;
+    this.abortPromise = new Promise((_, r) => reject = r);
+    this.controller = new AbortController();
+
+    let onAbort = () => reject(new AbortedDeferredError("Deferred data aborted"));
+
+    this.unlistenAbortSignal = () => this.controller.signal.removeEventListener("abort", onAbort);
+
+    this.controller.signal.addEventListener("abort", onAbort);
+    this.data = Object.entries(data).reduce((acc, _ref) => {
+      let [key, value] = _ref;
+      return Object.assign(acc, {
+        [key]: this.trackPromise(key, value)
+      });
+    }, {});
+  }
+
+  trackPromise(key, value) {
+    if (!(value instanceof Promise)) {
+      return value;
+    }
+
+    this.pendingKeys.add(key); // We store a little wrapper promise that will be extended with
+    // _data/_error props upon resolve/reject
+
+    let promise = Promise.race([value, this.abortPromise]).then(data => this.onSettle(promise, key, null, data), error => this.onSettle(promise, key, error)); // Register rejection listeners to avoid uncaught promise rejections on
+    // errors or aborted deferred values
+
+    promise.catch(() => {});
+    Object.defineProperty(promise, "_tracked", {
+      get: () => true
+    });
+    return promise;
+  }
+
+  onSettle(promise, key, error, data) {
+    if (this.controller.signal.aborted && error instanceof AbortedDeferredError) {
+      this.unlistenAbortSignal();
+      Object.defineProperty(promise, "_error", {
+        get: () => error
+      });
+      return Promise.reject(error);
+    }
+
+    this.pendingKeys.delete(key);
+
+    if (this.done) {
+      // Nothing left to abort!
+      this.unlistenAbortSignal();
+    }
+
+    const subscriber = this.subscriber;
+
+    if (error) {
+      Object.defineProperty(promise, "_error", {
+        get: () => error
+      });
+      subscriber && subscriber(false);
+      return Promise.reject(error);
+    }
+
+    Object.defineProperty(promise, "_data", {
+      get: () => data
+    });
+    subscriber && subscriber(false);
+    return data;
+  }
+
+  subscribe(fn) {
+    this.subscriber = fn;
+  }
+
+  cancel() {
+    this.controller.abort();
+    this.pendingKeys.forEach((v, k) => this.pendingKeys.delete(k));
+    let subscriber = this.subscriber;
+    subscriber && subscriber(true);
+  }
+
+  async resolveData(signal) {
+    let aborted = false;
+
+    if (!this.done) {
+      let onAbort = () => this.cancel();
+
+      signal.addEventListener("abort", onAbort);
+      aborted = await new Promise(resolve => {
+        this.subscribe(aborted => {
+          signal.removeEventListener("abort", onAbort);
+
+          if (aborted || this.done) {
+            resolve(aborted);
+          }
+        });
+      });
+    }
+
+    return aborted;
+  }
+
+  get done() {
+    return this.pendingKeys.size === 0;
+  }
+
+  get unwrappedData() {
+    invariant(this.data !== null && this.done, "Can only unwrap data on initialized and settled deferreds");
+    return Object.entries(this.data).reduce((acc, _ref2) => {
+      let [key, value] = _ref2;
+      return Object.assign(acc, {
+        [key]: unwrapTrackedPromise(value)
+      });
+    }, {});
+  }
+
+}
+
+function isTrackedPromise(value) {
+  return value instanceof Promise && value._tracked === true;
+}
+
+function unwrapTrackedPromise(value) {
+  if (!isTrackedPromise(value)) {
+    return value;
+  }
+
+  if (value._error) {
+    throw value._error;
+  }
+
+  return value._data;
+}
+
+function defer(data) {
+  return new DeferredData(data);
+}
+/**
+ * A redirect response. Sets the status code and the `Location` header.
+ * Defaults to "302 Found".
+ */
+
+const redirect = function redirect(url, init) {
+  if (init === void 0) {
+    init = 302;
+  }
+
+  let responseInit = init;
+
+  if (typeof responseInit === "number") {
+    responseInit = {
+      status: responseInit
+    };
+  } else if (typeof responseInit.status === "undefined") {
+    responseInit.status = 302;
+  }
+
+  let headers = new Headers(responseInit.headers);
+  headers.set("Location", url);
+  return new Response(null, _extends({}, responseInit, {
+    headers
+  }));
+};
+/**
+ * @private
+ * Utility class we use to hold auto-unwrapped 4xx/5xx Response bodies
+ */
+
+class ErrorResponse {
+  constructor(status, statusText, data) {
+    this.status = status;
+    this.statusText = statusText || "";
+    this.data = data;
+  }
+
+}
+/**
+ * Check if the given error is an ErrorResponse generated from a 4xx/5xx
+ * Response throw from an action/loader
+ */
+
+function isRouteErrorResponse(e) {
+  return e instanceof ErrorResponse;
+}
+
+const IDLE_NAVIGATION = {
+  state: "idle",
+  location: undefined,
+  formMethod: undefined,
+  formAction: undefined,
+  formEncType: undefined,
+  formData: undefined
+};
+const IDLE_FETCHER = {
+  state: "idle",
+  data: undefined,
+  formMethod: undefined,
+  formAction: undefined,
+  formEncType: undefined,
+  formData: undefined
+}; //#endregion
+////////////////////////////////////////////////////////////////////////////////
+//#region createRouter
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Create a router and listen to history POP navigations
+ */
+
+function createRouter(init) {
+  invariant(init.routes.length > 0, "You must provide a non-empty routes array to createRouter");
+  let dataRoutes = convertRoutesToDataRoutes(init.routes); // Cleanup function for history
+
+  let unlistenHistory = null; // Externally-provided functions to call on all state changes
+
+  let subscribers = new Set(); // Externally-provided object to hold scroll restoration locations during routing
+
+  let savedScrollPositions = null; // Externally-provided function to get scroll restoration keys
+
+  let getScrollRestorationKey = null; // Externally-provided function to get current scroll position
+
+  let getScrollPosition = null; // One-time flag to control the initial hydration scroll restoration.  Because
+  // we don't get the saved positions from <ScrollRestoration /> until _after_
+  // the initial render, we need to manually trigger a separate updateState to
+  // send along the restoreScrollPosition
+
+  let initialScrollRestored = false;
+  let initialMatches = matchRoutes(dataRoutes, init.history.location, init.basename);
+  let initialErrors = null;
+
+  if (initialMatches == null) {
+    // If we do not match a user-provided-route, fall back to the root
+    // to allow the error boundary to take over
+    let {
+      matches,
+      route,
+      error
+    } = getNotFoundMatches(dataRoutes);
+    initialMatches = matches;
+    initialErrors = {
+      [route.id]: error
+    };
+  }
+
+  let initialized = !initialMatches.some(m => m.route.loader) || init.hydrationData != null;
+  let router;
+  let state = {
+    historyAction: init.history.action,
+    location: init.history.location,
+    matches: initialMatches,
+    initialized,
+    navigation: IDLE_NAVIGATION,
+    restoreScrollPosition: null,
+    preventScrollReset: false,
+    revalidation: "idle",
+    loaderData: init.hydrationData && init.hydrationData.loaderData || {},
+    actionData: init.hydrationData && init.hydrationData.actionData || null,
+    errors: init.hydrationData && init.hydrationData.errors || initialErrors,
+    fetchers: new Map()
+  }; // -- Stateful internal variables to manage navigations --
+  // Current navigation in progress (to be committed in completeNavigation)
+
+  let pendingAction = Action.Pop; // Should the current navigation prevent the scroll reset if scroll cannot
+  // be restored?
+
+  let pendingPreventScrollReset = false; // AbortController for the active navigation
+
+  let pendingNavigationController; // We use this to avoid touching history in completeNavigation if a
+  // revalidation is entirely uninterrupted
+
+  let isUninterruptedRevalidation = false; // Use this internal flag to force revalidation of all loaders:
+  //  - submissions (completed or interrupted)
+  //  - useRevalidate()
+  //  - X-Remix-Revalidate (from redirect)
+
+  let isRevalidationRequired = false; // Use this internal array to capture routes that require revalidation due
+  // to a cancelled deferred on action submission
+
+  let cancelledDeferredRoutes = []; // Use this internal array to capture fetcher loads that were cancelled by an
+  // action navigation and require revalidation
+
+  let cancelledFetcherLoads = []; // AbortControllers for any in-flight fetchers
+
+  let fetchControllers = new Map(); // Track loads based on the order in which they started
+
+  let incrementingLoadId = 0; // Track the outstanding pending navigation data load to be compared against
+  // the globally incrementing load when a fetcher load lands after a completed
+  // navigation
+
+  let pendingNavigationLoadId = -1; // Fetchers that triggered data reloads as a result of their actions
+
+  let fetchReloadIds = new Map(); // Fetchers that triggered redirect navigations from their actions
+
+  let fetchRedirectIds = new Set(); // Most recent href/match for fetcher.load calls for fetchers
+
+  let fetchLoadMatches = new Map(); // Store DeferredData instances for active route matches.  When a
+  // route loader returns defer() we stick one in here.  Then, when a nested
+  // promise resolves we update loaderData.  If a new navigation starts we
+  // cancel active deferreds for eliminated routes.
+
+  let activeDeferreds = new Map(); // Initialize the router, all side effects should be kicked off from here.
+  // Implemented as a Fluent API for ease of:
+  //   let router = createRouter(init).initialize();
+
+  function initialize() {
+    // If history informs us of a POP navigation, start the navigation but do not update
+    // state.  We'll update our own state once the navigation completes
+    unlistenHistory = init.history.listen(_ref => {
+      let {
+        action: historyAction,
+        location
+      } = _ref;
+      return startNavigation(historyAction, location);
+    }); // Kick off initial data load if needed.  Use Pop to avoid modifying history
+
+    if (!state.initialized) {
+      startNavigation(Action.Pop, state.location);
+    }
+
+    return router;
+  } // Clean up a router and it's side effects
+
+
+  function dispose() {
+    if (unlistenHistory) {
+      unlistenHistory();
+    }
+
+    subscribers.clear();
+    pendingNavigationController && pendingNavigationController.abort();
+    state.fetchers.forEach((_, key) => deleteFetcher(key));
+  } // Subscribe to state updates for the router
+
+
+  function subscribe(fn) {
+    subscribers.add(fn);
+    return () => subscribers.delete(fn);
+  } // Update our state and notify the calling context of the change
+
+
+  function updateState(newState) {
+    state = _extends({}, state, newState);
+    subscribers.forEach(subscriber => subscriber(state));
+  } // Complete a navigation returning the state.navigation back to the IDLE_NAVIGATION
+  // and setting state.[historyAction/location/matches] to the new route.
+  // - Location is a required param
+  // - Navigation will always be set to IDLE_NAVIGATION
+  // - Can pass any other state in newState
+
+
+  function completeNavigation(location, newState) {
+    var _state$navigation$for;
+
+    // Deduce if we're in a loading/actionReload state:
+    // - We have committed actionData in the store
+    // - The current navigation was a submission
+    // - We're past the submitting state and into the loading state
+    // - The location we've finished loading is different from the submission
+    //   location, indicating we redirected from the action (avoids false
+    //   positives for loading/submissionRedirect when actionData returned
+    //   on a prior submission)
+    let isActionReload = state.actionData != null && state.navigation.formMethod != null && state.navigation.state === "loading" && ((_state$navigation$for = state.navigation.formAction) == null ? void 0 : _state$navigation$for.split("?")[0]) === location.pathname; // Always preserve any existing loaderData from re-used routes
+
+    let newLoaderData = newState.loaderData ? {
+      loaderData: mergeLoaderData(state.loaderData, newState.loaderData, newState.matches || [])
+    } : {};
+    updateState(_extends({}, isActionReload ? {} : {
+      actionData: null
+    }, newState, newLoaderData, {
+      historyAction: pendingAction,
+      location,
+      initialized: true,
+      navigation: IDLE_NAVIGATION,
+      revalidation: "idle",
+      // Don't restore on submission navigations
+      restoreScrollPosition: state.navigation.formData ? false : getSavedScrollPosition(location, newState.matches || state.matches),
+      preventScrollReset: pendingPreventScrollReset
+    }));
+
+    if (isUninterruptedRevalidation) ; else if (pendingAction === Action.Pop) ; else if (pendingAction === Action.Push) {
+      init.history.push(location, location.state);
+    } else if (pendingAction === Action.Replace) {
+      init.history.replace(location, location.state);
+    } // Reset stateful navigation vars
+
+
+    pendingAction = Action.Pop;
+    pendingPreventScrollReset = false;
+    isUninterruptedRevalidation = false;
+    isRevalidationRequired = false;
+    cancelledDeferredRoutes = [];
+    cancelledFetcherLoads = [];
+  } // Trigger a navigation event, which can either be a numerical POP or a PUSH
+  // replace with an optional submission
+
+
+  async function navigate(to, opts) {
+    if (typeof to === "number") {
+      init.history.go(to);
+      return;
+    }
+
+    let {
+      path,
+      submission,
+      error
+    } = normalizeNavigateOptions(to, opts);
+    let location = createLocation(state.location, path, opts && opts.state);
+    let historyAction = (opts && opts.replace) === true || submission != null ? Action.Replace : Action.Push;
+    let preventScrollReset = opts && "preventScrollReset" in opts ? opts.preventScrollReset === true : undefined;
+    return await startNavigation(historyAction, location, {
+      submission,
+      // Send through the formData serialization error if we have one so we can
+      // render at the right error boundary after we match routes
+      pendingError: error,
+      preventScrollReset,
+      replace: opts && opts.replace
+    });
+  } // Revalidate all current loaders.  If a navigation is in progress or if this
+  // is interrupted by a navigation, allow this to "succeed" by calling all
+  // loaders during the next loader round
+
+
+  function revalidate() {
+    interruptActiveLoads();
+    updateState({
+      revalidation: "loading"
+    }); // If we're currently submitting an action, we don't need to start a new
+    // navigation, we'll just let the follow up loader execution call all loaders
+
+    if (state.navigation.state === "submitting") {
+      return;
+    } // If we're currently in an idle state, start a new navigation for the current
+    // action/location and mark it as uninterrupted, which will skip the history
+    // update in completeNavigation
+
+
+    if (state.navigation.state === "idle") {
+      startNavigation(state.historyAction, state.location, {
+        startUninterruptedRevalidation: true
+      });
+      return;
+    } // Otherwise, if we're currently in a loading state, just start a new
+    // navigation to the navigation.location but do not trigger an uninterrupted
+    // revalidation so that history correctly updates once the navigation completes
+
+
+    startNavigation(pendingAction || state.historyAction, state.navigation.location, {
+      overrideNavigation: state.navigation
+    });
+  } // Start a navigation to the given action/location.  Can optionally provide a
+  // overrideNavigation which will override the normalLoad in the case of a redirect
+  // navigation
+
+
+  async function startNavigation(historyAction, location, opts) {
+    // Abort any in-progress navigations and start a new one. Unset any ongoing
+    // uninterrupted revalidations unless told otherwise, since we want this
+    // new navigation to update history normally
+    pendingNavigationController && pendingNavigationController.abort();
+    pendingNavigationController = null;
+    pendingAction = historyAction;
+    isUninterruptedRevalidation = (opts && opts.startUninterruptedRevalidation) === true; // Save the current scroll position every time we start a new navigation,
+    // and track whether we should reset scroll on completion
+
+    saveScrollPosition(state.location, state.matches);
+    pendingPreventScrollReset = (opts && opts.preventScrollReset) === true;
+    let loadingNavigation = opts && opts.overrideNavigation;
+    let matches = matchRoutes(dataRoutes, location, init.basename); // Short circuit with a 404 on the root error boundary if we match nothing
+
+    if (!matches) {
+      let {
+        matches: notFoundMatches,
+        route,
+        error
+      } = getNotFoundMatches(dataRoutes); // Cancel all pending deferred on 404s since we don't keep any routes
+
+      cancelActiveDeferreds();
+      completeNavigation(location, {
+        matches: notFoundMatches,
+        loaderData: {},
+        errors: {
+          [route.id]: error
+        }
+      });
+      return;
+    } // Short circuit if it's only a hash change
+
+
+    if (isHashChangeOnly(state.location, location)) {
+      completeNavigation(location, {
+        matches
+      });
+      return;
+    } // Create a controller/Request for this navigation
+
+
+    pendingNavigationController = new AbortController();
+    let request = createRequest(location, pendingNavigationController.signal, opts && opts.submission);
+    let pendingActionData;
+    let pendingError;
+
+    if (opts && opts.pendingError) {
+      // If we have a pendingError, it means the user attempted a GET submission
+      // with binary FormData so assign here and skip to handleLoaders.  That
+      // way we handle calling loaders above the boundary etc.  It's not really
+      // different from an actionError in that sense.
+      pendingError = {
+        [findNearestBoundary(matches).route.id]: opts.pendingError
+      };
+    } else if (opts && opts.submission) {
+      // Call action if we received an action submission
+      let actionOutput = await handleAction(request, location, opts.submission, matches, {
+        replace: opts.replace
+      });
+
+      if (actionOutput.shortCircuited) {
+        return;
+      }
+
+      pendingActionData = actionOutput.pendingActionData;
+      pendingError = actionOutput.pendingActionError;
+
+      let navigation = _extends({
+        state: "loading",
+        location
+      }, opts.submission);
+
+      loadingNavigation = navigation;
+    } // Call loaders
+
+
+    let {
+      shortCircuited,
+      loaderData,
+      errors
+    } = await handleLoaders(request, location, matches, loadingNavigation, opts && opts.submission, opts && opts.replace, pendingActionData, pendingError);
+
+    if (shortCircuited) {
+      return;
+    } // Clean up now that the action/loaders have completed.  Don't clean up if
+    // we short circuited because pendingNavigationController will have already
+    // been assigned to a new controller for the next navigation
+
+
+    pendingNavigationController = null;
+    completeNavigation(location, {
+      matches,
+      loaderData,
+      errors
+    });
+  } // Call the action matched by the leaf route for this navigation and handle
+  // redirects/errors
+
+
+  async function handleAction(request, location, submission, matches, opts) {
+    interruptActiveLoads(); // Put us in a submitting state
+
+    let navigation = _extends({
+      state: "submitting",
+      location
+    }, submission);
+
+    updateState({
+      navigation
+    }); // Call our action and get the result
+
+    let result;
+    let actionMatch = getTargetMatch(matches, location);
+
+    if (!actionMatch.route.action) {
+      result = getMethodNotAllowedResult(location);
+    } else {
+      result = await callLoaderOrAction("action", request, actionMatch);
+
+      if (request.signal.aborted) {
+        return {
+          shortCircuited: true
+        };
+      }
+    }
+
+    if (isRedirectResult(result)) {
+      let redirectNavigation = _extends({
+        state: "loading",
+        location: createLocation(state.location, result.location)
+      }, submission);
+
+      await startRedirectNavigation(result, redirectNavigation, opts && opts.replace);
+      return {
+        shortCircuited: true
+      };
+    }
+
+    if (isErrorResult(result)) {
+      // Store off the pending error - we use it to determine which loaders
+      // to call and will commit it when we complete the navigation
+      let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id); // By default, all submissions are REPLACE navigations, but if the
+      // action threw an error that'll be rendered in an errorElement, we fall
+      // back to PUSH so that the user can use the back button to get back to
+      // the pre-submission form location to try again
+
+      if ((opts && opts.replace) !== true) {
+        pendingAction = Action.Push;
+      }
+
+      return {
+        pendingActionError: {
+          [boundaryMatch.route.id]: result.error
+        }
+      };
+    }
+
+    if (isDeferredResult(result)) {
+      throw new Error("defer() is not supported in actions");
+    }
+
+    return {
+      pendingActionData: {
+        [actionMatch.route.id]: result.data
+      }
+    };
+  } // Call all applicable loaders for the given matches, handling redirects,
+  // errors, etc.
+
+
+  async function handleLoaders(request, location, matches, overrideNavigation, submission, replace, pendingActionData, pendingError) {
+    // Figure out the right navigation we want to use for data loading
+    let loadingNavigation = overrideNavigation;
+
+    if (!loadingNavigation) {
+      let navigation = {
+        state: "loading",
+        location,
+        formMethod: undefined,
+        formAction: undefined,
+        formEncType: undefined,
+        formData: undefined
+      };
+      loadingNavigation = navigation;
+    }
+
+    let [matchesToLoad, revalidatingFetchers] = getMatchesToLoad(state, matches, submission, location, isRevalidationRequired, cancelledDeferredRoutes, cancelledFetcherLoads, pendingActionData, pendingError, fetchLoadMatches); // Cancel pending deferreds for no-longer-matched routes or routes we're
+    // about to reload.  Note that if this is an action reload we would have
+    // already cancelled all pending deferreds so this would be a no-op
+
+    cancelActiveDeferreds(routeId => !(matches && matches.some(m => m.route.id === routeId)) || matchesToLoad && matchesToLoad.some(m => m.route.id === routeId)); // Short circuit if we have no loaders to run
+
+    if (matchesToLoad.length === 0 && revalidatingFetchers.length === 0) {
+      completeNavigation(location, {
+        matches,
+        loaderData: mergeLoaderData(state.loaderData, {}, matches),
+        // Commit pending error if we're short circuiting
+        errors: pendingError || null,
+        actionData: pendingActionData || null
+      });
+      return {
+        shortCircuited: true
+      };
+    } // If this is an uninterrupted revalidation, we remain in our current idle
+    // state.  If not, we need to switch to our loading state and load data,
+    // preserving any new action data or existing action data (in the case of
+    // a revalidation interrupting an actionReload)
+
+
+    if (!isUninterruptedRevalidation) {
+      revalidatingFetchers.forEach(_ref2 => {
+        let [key] = _ref2;
+        const fetcher = state.fetchers.get(key);
+        let revalidatingFetcher = {
+          state: "loading",
+          data: fetcher && fetcher.data,
+          formMethod: undefined,
+          formAction: undefined,
+          formEncType: undefined,
+          formData: undefined
+        };
+        state.fetchers.set(key, revalidatingFetcher);
+      });
+      updateState(_extends({
+        navigation: loadingNavigation,
+        actionData: pendingActionData || state.actionData || null
+      }, revalidatingFetchers.length > 0 ? {
+        fetchers: new Map(state.fetchers)
+      } : {}));
+    }
+
+    pendingNavigationLoadId = ++incrementingLoadId;
+    revalidatingFetchers.forEach(_ref3 => {
+      let [key] = _ref3;
+      return fetchControllers.set(key, pendingNavigationController);
+    });
+    let {
+      results,
+      loaderResults,
+      fetcherResults
+    } = await callLoadersAndMaybeResolveData(state.matches, matchesToLoad, revalidatingFetchers, request);
+
+    if (request.signal.aborted) {
+      return {
+        shortCircuited: true
+      };
+    } // Clean up _after_ loaders have completed.  Don't clean up if we short
+    // circuited because fetchControllers would have been aborted and
+    // reassigned to new controllers for the next navigation
+
+
+    revalidatingFetchers.forEach(_ref4 => {
+      let [key] = _ref4;
+      return fetchControllers.delete(key);
+    }); // If any loaders returned a redirect Response, start a new REPLACE navigation
+
+    let redirect = findRedirect(results);
+
+    if (redirect) {
+      let redirectNavigation = getLoaderRedirect(state, redirect);
+      await startRedirectNavigation(redirect, redirectNavigation, replace);
+      return {
+        shortCircuited: true
+      };
+    } // Process and commit output from loaders
+
+
+    let {
+      loaderData,
+      errors
+    } = processLoaderData(state, matches, matchesToLoad, loaderResults, pendingError, revalidatingFetchers, fetcherResults, activeDeferreds); // Wire up subscribers to update loaderData as promises settle
+
+    activeDeferreds.forEach((deferredData, routeId) => {
+      deferredData.subscribe(aborted => {
+        // Note: No need to updateState here since the TrackedPromise on
+        // loaderData is stable across resolve/reject
+        // Remove this instance if we were aborted or if promises have settled
+        if (aborted || deferredData.done) {
+          activeDeferreds.delete(routeId);
+        }
+      });
+    });
+    markFetchRedirectsDone();
+    let didAbortFetchLoads = abortStaleFetchLoads(pendingNavigationLoadId);
+    return _extends({
+      loaderData,
+      errors
+    }, didAbortFetchLoads || revalidatingFetchers.length > 0 ? {
+      fetchers: new Map(state.fetchers)
+    } : {});
+  }
+
+  function getFetcher(key) {
+    return state.fetchers.get(key) || IDLE_FETCHER;
+  } // Trigger a fetcher load/submit for the given fetcher key
+
+
+  function fetch(key, routeId, href, opts) {
+    if (typeof AbortController === "undefined") {
+      throw new Error("router.fetch() was called during the server render, but it shouldn't be. " + "You are likely calling a useFetcher() method in the body of your component. " + "Try moving it to a useEffect or a callback.");
+    }
+
+    if (fetchControllers.has(key)) abortFetcher(key);
+    let matches = matchRoutes(dataRoutes, href, init.basename);
+
+    if (!matches) {
+      setFetcherError(key, routeId, new ErrorResponse(404, "Not Found", null));
+      return;
+    }
+
+    let {
+      path,
+      submission
+    } = normalizeNavigateOptions(href, opts, true);
+    let match = getTargetMatch(matches, path);
+
+    if (submission) {
+      handleFetcherAction(key, routeId, path, match, submission);
+      return;
+    } // Store off the match so we can call it's shouldRevalidate on subsequent
+    // revalidations
+
+
+    fetchLoadMatches.set(key, [path, match]);
+    handleFetcherLoader(key, routeId, path, match);
+  } // Call the action for the matched fetcher.submit(), and then handle redirects,
+  // errors, and revalidation
+
+
+  async function handleFetcherAction(key, routeId, path, match, submission) {
+    interruptActiveLoads();
+    fetchLoadMatches.delete(key);
+
+    if (!match.route.action) {
+      let {
+        error
+      } = getMethodNotAllowedResult(path);
+      setFetcherError(key, routeId, error);
+      return;
+    } // Put this fetcher into it's submitting state
+
+
+    let existingFetcher = state.fetchers.get(key);
+
+    let fetcher = _extends({
+      state: "submitting"
+    }, submission, {
+      data: existingFetcher && existingFetcher.data
+    });
+
+    state.fetchers.set(key, fetcher);
+    updateState({
+      fetchers: new Map(state.fetchers)
+    }); // Call the action for the fetcher
+
+    let abortController = new AbortController();
+    let fetchRequest = createRequest(path, abortController.signal, submission);
+    fetchControllers.set(key, abortController);
+    let actionResult = await callLoaderOrAction("action", fetchRequest, match);
+
+    if (fetchRequest.signal.aborted) {
+      // We can delete this so long as we weren't aborted by ou our own fetcher
+      // re-submit which would have put _new_ controller is in fetchControllers
+      if (fetchControllers.get(key) === abortController) {
+        fetchControllers.delete(key);
+      }
+
+      return;
+    }
+
+    if (isRedirectResult(actionResult)) {
+      fetchControllers.delete(key);
+      fetchRedirectIds.add(key);
+
+      let loadingFetcher = _extends({
+        state: "loading"
+      }, submission, {
+        data: undefined
+      });
+
+      state.fetchers.set(key, loadingFetcher);
+      updateState({
+        fetchers: new Map(state.fetchers)
+      });
+
+      let redirectNavigation = _extends({
+        state: "loading",
+        location: createLocation(state.location, actionResult.location)
+      }, submission);
+
+      await startRedirectNavigation(actionResult, redirectNavigation);
+      return;
+    } // Process any non-redirect errors thrown
+
+
+    if (isErrorResult(actionResult)) {
+      setFetcherError(key, routeId, actionResult.error);
+      return;
+    }
+
+    if (isDeferredResult(actionResult)) {
+      invariant(false, "defer() is not supported in actions");
+    } // Start the data load for current matches, or the next location if we're
+    // in the middle of a navigation
+
+
+    let nextLocation = state.navigation.location || state.location;
+    let revalidationRequest = createRequest(nextLocation, abortController.signal);
+    let matches = state.navigation.state !== "idle" ? matchRoutes(dataRoutes, state.navigation.location, init.basename) : state.matches;
+    invariant(matches, "Didn't find any matches after fetcher action");
+    let loadId = ++incrementingLoadId;
+    fetchReloadIds.set(key, loadId);
+
+    let loadFetcher = _extends({
+      state: "loading",
+      data: actionResult.data
+    }, submission);
+
+    state.fetchers.set(key, loadFetcher);
+    let [matchesToLoad, revalidatingFetchers] = getMatchesToLoad(state, matches, submission, nextLocation, isRevalidationRequired, cancelledDeferredRoutes, cancelledFetcherLoads, {
+      [match.route.id]: actionResult.data
+    }, undefined, // No need to send through errors since we short circuit above
+    fetchLoadMatches); // Put all revalidating fetchers into the loading state, except for the
+    // current fetcher which we want to keep in it's current loading state which
+    // contains it's action submission info + action data
+
+    revalidatingFetchers.filter(_ref5 => {
+      let [staleKey] = _ref5;
+      return staleKey !== key;
+    }).forEach(_ref6 => {
+      let [staleKey] = _ref6;
+      let existingFetcher = state.fetchers.get(staleKey);
+      let revalidatingFetcher = {
+        state: "loading",
+        data: existingFetcher && existingFetcher.data,
+        formMethod: undefined,
+        formAction: undefined,
+        formEncType: undefined,
+        formData: undefined
+      };
+      state.fetchers.set(staleKey, revalidatingFetcher);
+      fetchControllers.set(staleKey, abortController);
+    });
+    updateState({
+      fetchers: new Map(state.fetchers)
+    });
+    let {
+      results,
+      loaderResults,
+      fetcherResults
+    } = await callLoadersAndMaybeResolveData(state.matches, matchesToLoad, revalidatingFetchers, revalidationRequest);
+
+    if (abortController.signal.aborted) {
+      return;
+    }
+
+    fetchReloadIds.delete(key);
+    fetchControllers.delete(key);
+    revalidatingFetchers.forEach(_ref7 => {
+      let [staleKey] = _ref7;
+      return fetchControllers.delete(staleKey);
+    });
+    let redirect = findRedirect(results);
+
+    if (redirect) {
+      let redirectNavigation = getLoaderRedirect(state, redirect);
+      await startRedirectNavigation(redirect, redirectNavigation);
+      return;
+    } // Process and commit output from loaders
+
+
+    let {
+      loaderData,
+      errors
+    } = processLoaderData(state, state.matches, matchesToLoad, loaderResults, undefined, revalidatingFetchers, fetcherResults, activeDeferreds);
+    let doneFetcher = {
+      state: "idle",
+      data: actionResult.data,
+      formMethod: undefined,
+      formAction: undefined,
+      formEncType: undefined,
+      formData: undefined
+    };
+    state.fetchers.set(key, doneFetcher);
+    let didAbortFetchLoads = abortStaleFetchLoads(loadId); // If we are currently in a navigation loading state and this fetcher is
+    // more recent than the navigation, we want the newer data so abort the
+    // navigation and complete it with the fetcher data
+
+    if (state.navigation.state === "loading" && loadId > pendingNavigationLoadId) {
+      invariant(pendingAction, "Expected pending action");
+      pendingNavigationController && pendingNavigationController.abort();
+      completeNavigation(state.navigation.location, {
+        matches,
+        loaderData,
+        errors,
+        fetchers: new Map(state.fetchers)
+      });
+    } else {
+      // otherwise just update with the fetcher data, preserving any existing
+      // loaderData for loaders that did not need to reload.  We have to
+      // manually merge here since we aren't going through completeNavigation
+      updateState(_extends({
+        errors,
+        loaderData: mergeLoaderData(state.loaderData, loaderData, matches)
+      }, didAbortFetchLoads ? {
+        fetchers: new Map(state.fetchers)
+      } : {}));
+      isRevalidationRequired = false;
+    }
+  } // Call the matched loader for fetcher.load(), handling redirects, errors, etc.
+
+
+  async function handleFetcherLoader(key, routeId, path, match) {
+    let existingFetcher = state.fetchers.get(key); // Put this fetcher into it's loading state
+
+    let loadingFetcher = {
+      state: "loading",
+      formMethod: undefined,
+      formAction: undefined,
+      formEncType: undefined,
+      formData: undefined,
+      data: existingFetcher && existingFetcher.data
+    };
+    state.fetchers.set(key, loadingFetcher);
+    updateState({
+      fetchers: new Map(state.fetchers)
+    }); // Call the loader for this fetcher route match
+
+    let abortController = new AbortController();
+    let fetchRequest = createRequest(path, abortController.signal);
+    fetchControllers.set(key, abortController);
+    let result = await callLoaderOrAction("loader", fetchRequest, match); // Deferred isn't supported or fetcher loads, await everything and treat it
+    // as a normal load.  resolveDeferredData will return undefined if this
+    // fetcher gets aborted, so we just leave result untouched and short circuit
+    // below if that happens
+
+    if (isDeferredResult(result)) {
+      result = (await resolveDeferredData(result, fetchRequest.signal, true)) || result;
+    } // We can delete this so long as we weren't aborted by ou our own fetcher
+    // re-load which would have put _new_ controller is in fetchControllers
+
+
+    if (fetchControllers.get(key) === abortController) {
+      fetchControllers.delete(key);
+    }
+
+    if (fetchRequest.signal.aborted) {
+      return;
+    } // If the loader threw a redirect Response, start a new REPLACE navigation
+
+
+    if (isRedirectResult(result)) {
+      let redirectNavigation = getLoaderRedirect(state, result);
+      await startRedirectNavigation(result, redirectNavigation);
+      return;
+    } // Process any non-redirect errors thrown
+
+
+    if (isErrorResult(result)) {
+      let boundaryMatch = findNearestBoundary(state.matches, routeId);
+      state.fetchers.delete(key); // TODO: In remix, this would reset to IDLE_NAVIGATION if it was a catch -
+      // do we need to behave any differently with our non-redirect errors?
+      // What if it was a non-redirect Response?
+
+      updateState({
+        fetchers: new Map(state.fetchers),
+        errors: {
+          [boundaryMatch.route.id]: result.error
+        }
+      });
+      return;
+    }
+
+    invariant(!isDeferredResult(result), "Unhandled fetcher deferred data"); // Put the fetcher back into an idle state
+
+    let doneFetcher = {
+      state: "idle",
+      data: result.data,
+      formMethod: undefined,
+      formAction: undefined,
+      formEncType: undefined,
+      formData: undefined
+    };
+    state.fetchers.set(key, doneFetcher);
+    updateState({
+      fetchers: new Map(state.fetchers)
+    });
+  }
+  /**
+   * Utility function to handle redirects returned from an action or loader.
+   * Normally, a redirect "replaces" the navigation that triggered it.  So, for
+   * example:
+   *
+   *  - user is on /a
+   *  - user clicks a link to /b
+   *  - loader for /b redirects to /c
+   *
+   * In a non-JS app the browser would track the in-flight navigation to /b and
+   * then replace it with /c when it encountered the redirect response.  In
+   * the end it would only ever update the URL bar with /c.
+   *
+   * In client-side routing using pushState/replaceState, we aim to emulate
+   * this behavior and we also do not update history until the end of the
+   * navigation (including processed redirects).  This means that we never
+   * actually touch history until we've processed redirects, so we just use
+   * the history action from the original navigation (PUSH or REPLACE).
+   */
+
+
+  async function startRedirectNavigation(redirect, navigation, replace) {
+    if (redirect.revalidate) {
+      isRevalidationRequired = true;
+    }
+
+    invariant(navigation.location, "Expected a location on the redirect navigation"); // There's no need to abort on redirects, since we don't detect the
+    // redirect until the action/loaders have settled
+
+    pendingNavigationController = null;
+    let redirectHistoryAction = replace === true ? Action.Replace : Action.Push;
+    await startNavigation(redirectHistoryAction, navigation.location, {
+      overrideNavigation: navigation
+    });
+  }
+
+  async function callLoadersAndMaybeResolveData(currentMatches, matchesToLoad, fetchersToLoad, request) {
+    // Call all navigation loaders and revalidating fetcher loaders in parallel,
+    // then slice off the results into separate arrays so we can handle them
+    // accordingly
+    let results = await Promise.all([...matchesToLoad.map(m => callLoaderOrAction("loader", request, m)), ...fetchersToLoad.map(_ref8 => {
+      let [, href, match] = _ref8;
+      return callLoaderOrAction("loader", createRequest(href, request.signal), match);
+    })]);
+    let loaderResults = results.slice(0, matchesToLoad.length);
+    let fetcherResults = results.slice(matchesToLoad.length);
+    await Promise.all([resolveDeferredResults(currentMatches, matchesToLoad, loaderResults, request.signal, false, state.loaderData), resolveDeferredResults(currentMatches, fetchersToLoad.map(_ref9 => {
+      let [,, match] = _ref9;
+      return match;
+    }), fetcherResults, request.signal, true)]);
+    return {
+      results,
+      loaderResults,
+      fetcherResults
+    };
+  }
+
+  function interruptActiveLoads() {
+    // Every interruption triggers a revalidation
+    isRevalidationRequired = true; // Cancel pending route-level deferreds and mark cancelled routes for
+    // revalidation
+
+    cancelledDeferredRoutes.push(...cancelActiveDeferreds()); // Abort in-flight fetcher loads
+
+    fetchLoadMatches.forEach((_, key) => {
+      if (fetchControllers.has(key)) {
+        cancelledFetcherLoads.push(key);
+        abortFetcher(key);
+      }
+    });
+  }
+
+  function setFetcherError(key, routeId, error) {
+    let boundaryMatch = findNearestBoundary(state.matches, routeId);
+    deleteFetcher(key);
+    updateState({
+      errors: {
+        [boundaryMatch.route.id]: error
+      },
+      fetchers: new Map(state.fetchers)
+    });
+  }
+
+  function deleteFetcher(key) {
+    if (fetchControllers.has(key)) abortFetcher(key);
+    fetchLoadMatches.delete(key);
+    fetchReloadIds.delete(key);
+    fetchRedirectIds.delete(key);
+    state.fetchers.delete(key);
+  }
+
+  function abortFetcher(key) {
+    let controller = fetchControllers.get(key);
+    invariant(controller, "Expected fetch controller: " + key);
+    controller.abort();
+    fetchControllers.delete(key);
+  }
+
+  function markFetchersDone(keys) {
+    for (let key of keys) {
+      let fetcher = getFetcher(key);
+      let doneFetcher = {
+        state: "idle",
+        data: fetcher.data,
+        formMethod: undefined,
+        formAction: undefined,
+        formEncType: undefined,
+        formData: undefined
+      };
+      state.fetchers.set(key, doneFetcher);
+    }
+  }
+
+  function markFetchRedirectsDone() {
+    let doneKeys = [];
+
+    for (let key of fetchRedirectIds) {
+      let fetcher = state.fetchers.get(key);
+      invariant(fetcher, "Expected fetcher: " + key);
+
+      if (fetcher.state === "loading") {
+        fetchRedirectIds.delete(key);
+        doneKeys.push(key);
+      }
+    }
+
+    markFetchersDone(doneKeys);
+  }
+
+  function abortStaleFetchLoads(landedId) {
+    let yeetedKeys = [];
+
+    for (let [key, id] of fetchReloadIds) {
+      if (id < landedId) {
+        let fetcher = state.fetchers.get(key);
+        invariant(fetcher, "Expected fetcher: " + key);
+
+        if (fetcher.state === "loading") {
+          abortFetcher(key);
+          fetchReloadIds.delete(key);
+          yeetedKeys.push(key);
+        }
+      }
+    }
+
+    markFetchersDone(yeetedKeys);
+    return yeetedKeys.length > 0;
+  }
+
+  function cancelActiveDeferreds(predicate) {
+    let cancelledRouteIds = [];
+    activeDeferreds.forEach((dfd, routeId) => {
+      if (!predicate || predicate(routeId)) {
+        // Cancel the deferred - but do not remove from activeDeferreds here -
+        // we rely on the subscribers to do that so our tests can assert proper
+        // cleanup via _internalActiveDeferreds
+        dfd.cancel();
+        cancelledRouteIds.push(routeId);
+        activeDeferreds.delete(routeId);
+      }
+    });
+    return cancelledRouteIds;
+  } // Opt in to capturing and reporting scroll positions during navigations,
+  // used by the <ScrollRestoration> component
+
+
+  function enableScrollRestoration(positions, getPosition, getKey) {
+    savedScrollPositions = positions;
+    getScrollPosition = getPosition;
+
+    getScrollRestorationKey = getKey || (location => location.key); // Perform initial hydration scroll restoration, since we miss the boat on
+    // the initial updateState() because we've not yet rendered <ScrollRestoration/>
+    // and therefore have no savedScrollPositions available
+
+
+    if (!initialScrollRestored && state.navigation === IDLE_NAVIGATION) {
+      initialScrollRestored = true;
+      let y = getSavedScrollPosition(state.location, state.matches);
+
+      if (y != null) {
+        updateState({
+          restoreScrollPosition: y
+        });
+      }
+    }
+
+    return () => {
+      savedScrollPositions = null;
+      getScrollPosition = null;
+      getScrollRestorationKey = null;
+    };
+  }
+
+  function saveScrollPosition(location, matches) {
+    if (savedScrollPositions && getScrollRestorationKey && getScrollPosition) {
+      let userMatches = matches.map(m => createUseMatchesMatch(m, state.loaderData));
+      let key = getScrollRestorationKey(location, userMatches) || location.key;
+      savedScrollPositions[key] = getScrollPosition();
+    }
+  }
+
+  function getSavedScrollPosition(location, matches) {
+    if (savedScrollPositions && getScrollRestorationKey && getScrollPosition) {
+      let userMatches = matches.map(m => createUseMatchesMatch(m, state.loaderData));
+      let key = getScrollRestorationKey(location, userMatches) || location.key;
+      let y = savedScrollPositions[key];
+
+      if (typeof y === "number") {
+        return y;
+      }
+    }
+
+    return null;
+  }
+
+  router = {
+    get basename() {
+      return init.basename;
+    },
+
+    get state() {
+      return state;
+    },
+
+    get routes() {
+      return dataRoutes;
+    },
+
+    initialize,
+    subscribe,
+    enableScrollRestoration,
+    navigate,
+    fetch,
+    revalidate,
+    createHref,
+    getFetcher,
+    deleteFetcher,
+    dispose,
+    _internalFetchControllers: fetchControllers,
+    _internalActiveDeferreds: activeDeferreds
+  };
+  return router;
+} //#endregion
+////////////////////////////////////////////////////////////////////////////////
+//#region createStaticHandler
+////////////////////////////////////////////////////////////////////////////////
+
+function unstable_createStaticHandler(routes) {
+  invariant(routes.length > 0, "You must provide a non-empty routes array to unstable_createStaticHandler");
+  let dataRoutes = convertRoutesToDataRoutes(routes);
+
+  async function query(request) {
+    let {
+      location,
+      result
+    } = await queryImpl(request);
+
+    if (result instanceof Response) {
+      return result;
+    } // When returning StaticHandlerContext, we patch back in the location here
+    // since we need it for React Context.  But this helps keep our submit and
+    // loadRouteData operating on a Request instead of a Location
+
+
+    return _extends({
+      location
+    }, result);
+  }
+
+  async function queryRoute(request, routeId) {
+    let {
+      result
+    } = await queryImpl(request, routeId);
+
+    if (result instanceof Response) {
+      return result;
+    }
+
+    let error = result.errors ? Object.values(result.errors)[0] : undefined;
+
+    if (error !== undefined) {
+      // While we always re-throw Responses returned from loaders/actions
+      // directly for route requests and prevent the unwrapping into an
+      // ErrorResponse, we still need this for error cases _prior_ the
+      // execution of the loader/action, such as a 404/405 error.
+      if (isRouteErrorResponse(error)) {
+        return new Response(error.data, {
+          status: error.status,
+          statusText: error.statusText
+        });
+      } // If we got back result.errors, that means the loader/action threw
+      // _something_ that wasn't a Response, but it's not guaranteed/required
+      // to be an `instanceof Error` either, so we have to use throw here to
+      // preserve the "error" state outside of queryImpl.
+
+
+      throw error;
+    } // Pick off the right state value to return
+
+
+    let routeData = [result.actionData, result.loaderData].find(v => v);
+    let value = Object.values(routeData || {})[0];
+
+    if (isRouteErrorResponse(value)) {
+      return new Response(value.data, {
+        status: value.status,
+        statusText: value.statusText
+      });
+    }
+
+    return value;
+  }
+
+  async function queryImpl(request, routeId) {
+    invariant(request.method !== "HEAD", "query()/queryRoute() do not support HEAD requests");
+    invariant(request.signal, "query()/queryRoute() requests must contain an AbortController signal");
+    let {
+      location,
+      matches,
+      shortCircuitState
+    } = matchRequest(request, routeId);
+
+    try {
+      if (shortCircuitState) {
+        return {
+          location,
+          result: shortCircuitState
+        };
+      }
+
+      if (request.method !== "GET") {
+        let result = await submit(request, matches, getTargetMatch(matches, location), routeId != null);
+        return {
+          location,
+          result
+        };
+      }
+
+      let result = await loadRouteData(request, matches, routeId != null);
+      return {
+        location,
+        result: _extends({}, result, {
+          actionData: null,
+          actionHeaders: {}
+        })
+      };
+    } catch (e) {
+      if (e instanceof Response) {
+        return {
+          location,
+          result: e
+        };
+      }
+
+      throw e;
+    }
+  }
+
+  async function submit(request, matches, actionMatch, isRouteRequest) {
+    let result;
+
+    if (!actionMatch.route.action) {
+      let href = createHref(new URL(request.url));
+      result = getMethodNotAllowedResult(href);
+    } else {
+      result = await callLoaderOrAction("action", request, actionMatch, true, isRouteRequest);
+
+      if (request.signal.aborted) {
+        let method = isRouteRequest ? "queryRoute" : "query";
+        throw new Error(method + "() call aborted");
+      }
+    }
+
+    if (isRedirectResult(result)) {
+      // Uhhhh - this should never happen, we should always throw these from
+      // calLoaderOrAction, but the type narrowing here keeps TS happy and we
+      // can get back on the "throw all redirect responses" train here should
+      // this ever happen :/
+      throw new Response(null, {
+        status: result.status,
+        headers: {
+          Location: result.location
+        }
+      });
+    }
+
+    if (isDeferredResult(result)) {
+      throw new Error("defer() is not supported in actions");
+    }
+
+    if (isRouteRequest) {
+      if (isErrorResult(result)) {
+        let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id);
+        return {
+          matches: [actionMatch],
+          loaderData: {},
+          actionData: null,
+          errors: {
+            [boundaryMatch.route.id]: result.error
+          },
+          // Note: statusCode + headers are unused here since queryRoute will
+          // return the raw Response or value
+          statusCode: 500,
+          loaderHeaders: {},
+          actionHeaders: {}
+        };
+      }
+
+      return {
+        matches: [actionMatch],
+        loaderData: {},
+        actionData: {
+          [actionMatch.route.id]: result.data
+        },
+        errors: null,
+        // Note: statusCode + headers are unused here since queryRoute will
+        // return the raw Response or value
+        statusCode: 200,
+        loaderHeaders: {},
+        actionHeaders: {}
+      };
+    }
+
+    if (isErrorResult(result)) {
+      // Store off the pending error - we use it to determine which loaders
+      // to call and will commit it when we complete the navigation
+      let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id);
+      let context = await loadRouteData(request, matches, isRouteRequest, {
+        [boundaryMatch.route.id]: result.error
+      }); // action status codes take precedence over loader status codes
+
+      return _extends({}, context, {
+        statusCode: isRouteErrorResponse(result.error) ? result.error.status : 500,
+        actionData: null,
+        actionHeaders: _extends({}, result.headers ? {
+          [actionMatch.route.id]: result.headers
+        } : {})
+      });
+    }
+
+    let context = await loadRouteData(request, matches, isRouteRequest);
+    return _extends({}, context, result.statusCode ? {
+      statusCode: result.statusCode
+    } : {}, {
+      actionData: {
+        [actionMatch.route.id]: result.data
+      },
+      actionHeaders: _extends({}, result.headers ? {
+        [actionMatch.route.id]: result.headers
+      } : {})
+    });
+  }
+
+  async function loadRouteData(request, matches, isRouteRequest, pendingActionError) {
+    let matchesToLoad = getLoaderMatchesUntilBoundary(matches, Object.keys(pendingActionError || {})[0]).filter(m => m.route.loader); // Short circuit if we have no loaders to run
+
+    if (matchesToLoad.length === 0) {
+      return {
+        matches,
+        loaderData: {},
+        errors: pendingActionError || null,
+        statusCode: 200,
+        loaderHeaders: {}
+      };
+    }
+
+    let results = await Promise.all([...matchesToLoad.map(m => callLoaderOrAction("loader", request, m, true, isRouteRequest))]);
+
+    if (request.signal.aborted) {
+      let method = isRouteRequest ? "queryRoute" : "query";
+      throw new Error(method + "() call aborted");
+    } // Can't do anything with these without the Remix side of things, so just
+    // cancel them for now
+
+
+    results.forEach(result => {
+      if (isDeferredResult(result)) {
+        result.deferredData.cancel();
+      }
+    }); // Process and commit output from loaders
+
+    let context = processRouteLoaderData(matches, matchesToLoad, results, pendingActionError);
+    return _extends({}, context, {
+      matches
+    });
+  }
+
+  function matchRequest(req, routeId) {
+    let url = new URL(req.url);
+    let location = createLocation("", createPath(url), null, "default");
+    let matches = matchRoutes(dataRoutes, location);
+
+    if (matches && routeId) {
+      matches = matches.filter(m => m.route.id === routeId);
+    } // Short circuit with a 404 if we match nothing
+
+
+    if (!matches) {
+      let {
+        matches: notFoundMatches,
+        route,
+        error
+      } = getNotFoundMatches(dataRoutes);
+      return {
+        location,
+        matches: notFoundMatches,
+        shortCircuitState: {
+          matches: notFoundMatches,
+          loaderData: {},
+          actionData: null,
+          errors: {
+            [route.id]: error
+          },
+          statusCode: 404,
+          loaderHeaders: {},
+          actionHeaders: {}
+        }
+      };
+    }
+
+    return {
+      location,
+      matches
+    };
+  }
+
+  return {
+    dataRoutes,
+    query,
+    queryRoute
+  };
+} //#endregion
+////////////////////////////////////////////////////////////////////////////////
+//#region Helpers
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Given an existing StaticHandlerContext and an error thrown at render time,
+ * provide an updated StaticHandlerContext suitable for a second SSR render
+ */
+
+function getStaticContextFromError(routes, context, error) {
+  let newContext = _extends({}, context, {
+    statusCode: 500,
+    errors: {
+      [context._deepestRenderedBoundaryId || routes[0].id]: error
+    }
+  });
+
+  return newContext;
+} // Normalize navigation options by converting formMethod=GET formData objects to
+// URLSearchParams so they behave identically to links with query params
+
+function normalizeNavigateOptions(to, opts, isFetcher) {
+  if (isFetcher === void 0) {
+    isFetcher = false;
+  }
+
+  let path = typeof to === "string" ? to : createPath(to); // Return location verbatim on non-submission navigations
+
+  if (!opts || !("formMethod" in opts) && !("formData" in opts)) {
+    return {
+      path
+    };
+  } // Create a Submission on non-GET navigations
+
+
+  if (opts.formMethod != null && opts.formMethod !== "get") {
+    return {
+      path,
+      submission: {
+        formMethod: opts.formMethod,
+        formAction: createHref(parsePath(path)),
+        formEncType: opts && opts.formEncType || "application/x-www-form-urlencoded",
+        formData: opts.formData
+      }
+    };
+  } // No formData to flatten for GET submission
+
+
+  if (!opts.formData) {
+    return {
+      path
+    };
+  } // Flatten submission onto URLSearchParams for GET submissions
+
+
+  let parsedPath = parsePath(path);
+
+  try {
+    let searchParams = convertFormDataToSearchParams(opts.formData); // Since fetcher GET submissions only run a single loader (as opposed to
+    // navigation GET submissions which run all loaders), we need to preserve
+    // any incoming ?index params
+
+    if (isFetcher && parsedPath.search && hasNakedIndexQuery(parsedPath.search)) {
+      searchParams.append("index", "");
+    }
+
+    parsedPath.search = "?" + searchParams;
+  } catch (e) {
+    return {
+      path,
+      error: new ErrorResponse(400, "Bad Request", "Cannot submit binary form data using GET")
+    };
+  }
+
+  return {
+    path: createPath(parsedPath)
+  };
+}
+
+function getLoaderRedirect(state, redirect) {
+  let {
+    formMethod,
+    formAction,
+    formEncType,
+    formData
+  } = state.navigation;
+  let navigation = {
+    state: "loading",
+    location: createLocation(state.location, redirect.location),
+    formMethod: formMethod || undefined,
+    formAction: formAction || undefined,
+    formEncType: formEncType || undefined,
+    formData: formData || undefined
+  };
+  return navigation;
+} // Filter out all routes below any caught error as they aren't going to
+// render so we don't need to load them
+
+
+function getLoaderMatchesUntilBoundary(matches, boundaryId) {
+  let boundaryMatches = matches;
+
+  if (boundaryId) {
+    let index = matches.findIndex(m => m.route.id === boundaryId);
+
+    if (index >= 0) {
+      boundaryMatches = matches.slice(0, index);
+    }
+  }
+
+  return boundaryMatches;
+}
+
+function getMatchesToLoad(state, matches, submission, location, isRevalidationRequired, cancelledDeferredRoutes, cancelledFetcherLoads, pendingActionData, pendingError, fetchLoadMatches) {
+  let actionResult = pendingError ? Object.values(pendingError)[0] : pendingActionData ? Object.values(pendingActionData)[0] : null; // Pick navigation matches that are net-new or qualify for revalidation
+
+  let boundaryId = pendingError ? Object.keys(pendingError)[0] : undefined;
+  let boundaryMatches = getLoaderMatchesUntilBoundary(matches, boundaryId);
+  let navigationMatches = boundaryMatches.filter((match, index) => match.route.loader != null && (isNewLoader(state.loaderData, state.matches[index], match) || // If this route had a pending deferred cancelled it must be revalidated
+  cancelledDeferredRoutes.some(id => id === match.route.id) || shouldRevalidateLoader(state.location, state.matches[index], submission, location, match, isRevalidationRequired, actionResult))); // Pick fetcher.loads that need to be revalidated
+
+  let revalidatingFetchers = [];
+  fetchLoadMatches && fetchLoadMatches.forEach((_ref10, key) => {
+    let [href, match] = _ref10;
+
+    // This fetcher was cancelled from a prior action submission - force reload
+    if (cancelledFetcherLoads.includes(key)) {
+      revalidatingFetchers.push([key, href, match]);
+    } else if (isRevalidationRequired) {
+      let shouldRevalidate = shouldRevalidateLoader(href, match, submission, href, match, isRevalidationRequired, actionResult);
+
+      if (shouldRevalidate) {
+        revalidatingFetchers.push([key, href, match]);
+      }
+    }
+  });
+  return [navigationMatches, revalidatingFetchers];
+}
+
+function isNewLoader(currentLoaderData, currentMatch, match) {
+  let isNew = // [a] -> [a, b]
+  !currentMatch || // [a, b] -> [a, c]
+  match.route.id !== currentMatch.route.id; // Handle the case that we don't have data for a re-used route, potentially
+  // from a prior error or from a cancelled pending deferred
+
+  let isMissingData = currentLoaderData[match.route.id] === undefined; // Always load if this is a net-new route or we don't yet have data
+
+  return isNew || isMissingData;
+}
+
+function isNewRouteInstance(currentMatch, match) {
+  let currentPath = currentMatch.route.path;
+  return (// param change for this match, /users/123 -> /users/456
+    currentMatch.pathname !== match.pathname || // splat param changed, which is not present in match.path
+    // e.g. /files/images/avatar.jpg -> files/finances.xls
+    currentPath && currentPath.endsWith("*") && currentMatch.params["*"] !== match.params["*"]
+  );
+}
+
+function shouldRevalidateLoader(currentLocation, currentMatch, submission, location, match, isRevalidationRequired, actionResult) {
+  let currentUrl = createURL(currentLocation);
+  let currentParams = currentMatch.params;
+  let nextUrl = createURL(location);
+  let nextParams = match.params; // This is the default implementation as to when we revalidate.  If the route
+  // provides it's own implementation, then we give them full control but
+  // provide this value so they can leverage it if needed after they check
+  // their own specific use cases
+  // Note that fetchers always provide the same current/next locations so the
+  // URL-based checks here don't apply to fetcher shouldRevalidate calls
+
+  let defaultShouldRevalidate = isNewRouteInstance(currentMatch, match) || // Clicked the same link, resubmitted a GET form
+  currentUrl.toString() === nextUrl.toString() || // Search params affect all loaders
+  currentUrl.search !== nextUrl.search || // Forced revalidation due to submission, useRevalidate, or X-Remix-Revalidate
+  isRevalidationRequired;
+
+  if (match.route.shouldRevalidate) {
+    let routeChoice = match.route.shouldRevalidate(_extends({
+      currentUrl,
+      currentParams,
+      nextUrl,
+      nextParams
+    }, submission, {
+      actionResult,
+      defaultShouldRevalidate
+    }));
+
+    if (typeof routeChoice === "boolean") {
+      return routeChoice;
+    }
+  }
+
+  return defaultShouldRevalidate;
+}
+
+async function callLoaderOrAction(type, request, match, skipRedirects, isRouteRequest) {
+  if (skipRedirects === void 0) {
+    skipRedirects = false;
+  }
+
+  if (isRouteRequest === void 0) {
+    isRouteRequest = false;
+  }
+
+  let resultType;
+  let result; // Setup a promise we can race against so that abort signals short circuit
+
+  let reject;
+  let abortPromise = new Promise((_, r) => reject = r);
+
+  let onReject = () => reject();
+
+  request.signal.addEventListener("abort", onReject);
+
+  try {
+    let handler = match.route[type];
+    invariant(handler, "Could not find the " + type + " to run on the \"" + match.route.id + "\" route");
+    result = await Promise.race([handler({
+      request,
+      params: match.params
+    }), abortPromise]);
+  } catch (e) {
+    resultType = ResultType.error;
+    result = e;
+  } finally {
+    request.signal.removeEventListener("abort", onReject);
+  }
+
+  if (result instanceof Response) {
+    // Process redirects
+    let status = result.status;
+    let location = result.headers.get("Location"); // For SSR single-route requests, we want to hand Responses back directly
+    // without unwrapping
+
+    if (isRouteRequest) {
+      throw result;
+    }
+
+    if (status >= 300 && status <= 399 && location != null) {
+      // Don't process redirects in the router during SSR document requests.
+      // Instead, throw the Response and let the server handle it with an HTTP
+      // redirect
+      if (skipRedirects) {
+        throw result;
+      }
+
+      return {
+        type: ResultType.redirect,
+        status,
+        location,
+        revalidate: result.headers.get("X-Remix-Revalidate") !== null
+      };
+    }
+
+    let data;
+    let contentType = result.headers.get("Content-Type");
+
+    if (contentType && contentType.startsWith("application/json")) {
+      data = await result.json();
+    } else {
+      data = await result.text();
+    }
+
+    if (resultType === ResultType.error) {
+      return {
+        type: resultType,
+        error: new ErrorResponse(status, result.statusText, data),
+        headers: result.headers
+      };
+    }
+
+    return {
+      type: ResultType.data,
+      data,
+      statusCode: result.status,
+      headers: result.headers
+    };
+  }
+
+  if (resultType === ResultType.error) {
+    return {
+      type: resultType,
+      error: result
+    };
+  }
+
+  if (result instanceof DeferredData) {
+    return {
+      type: ResultType.deferred,
+      deferredData: result
+    };
+  }
+
+  return {
+    type: ResultType.data,
+    data: result
+  };
+}
+
+function createRequest(location, signal, submission) {
+  let url = createURL(location).toString();
+  let init = {
+    signal
+  };
+
+  if (submission) {
+    let {
+      formMethod,
+      formEncType,
+      formData
+    } = submission;
+    init.method = formMethod.toUpperCase();
+    init.body = formEncType === "application/x-www-form-urlencoded" ? convertFormDataToSearchParams(formData) : formData;
+  } // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
+
+
+  return new Request(url, init);
+}
+
+function convertFormDataToSearchParams(formData) {
+  let searchParams = new URLSearchParams();
+
+  for (let [key, value] of formData.entries()) {
+    invariant(typeof value === "string", 'File inputs are not supported with encType "application/x-www-form-urlencoded", ' + 'please use "multipart/form-data" instead.');
+    searchParams.append(key, value);
+  }
+
+  return searchParams;
+}
+
+function processRouteLoaderData(matches, matchesToLoad, results, pendingError, activeDeferreds) {
+  // Fill in loaderData/errors from our loaders
+  let loaderData = {};
+  let errors = null;
+  let statusCode;
+  let foundError = false;
+  let loaderHeaders = {}; // Process loader results into state.loaderData/state.errors
+
+  results.forEach((result, index) => {
+    let id = matchesToLoad[index].route.id;
+    invariant(!isRedirectResult(result), "Cannot handle redirect results in processLoaderData");
+
+    if (isErrorResult(result)) {
+      // Look upwards from the matched route for the closest ancestor
+      // error boundary, defaulting to the root match
+      let boundaryMatch = findNearestBoundary(matches, id);
+      let error = result.error; // If we have a pending action error, we report it at the highest-route
+      // that throws a loader error, and then clear it out to indicate that
+      // it was consumed
+
+      if (pendingError) {
+        error = Object.values(pendingError)[0];
+        pendingError = undefined;
+      }
+
+      errors = Object.assign(errors || {}, {
+        [boundaryMatch.route.id]: error
+      }); // Once we find our first (highest) error, we set the status code and
+      // prevent deeper status codes from overriding
+
+      if (!foundError) {
+        foundError = true;
+        statusCode = isRouteErrorResponse(result.error) ? result.error.status : 500;
+      }
+
+      if (result.headers) {
+        loaderHeaders[id] = result.headers;
+      }
+    } else if (isDeferredResult(result)) {
+      activeDeferreds && activeDeferreds.set(id, result.deferredData);
+      loaderData[id] = result.deferredData.data; // TODO: Add statusCode/headers once we wire up streaming in Remix
+    } else {
+      loaderData[id] = result.data; // Error status codes always override success status codes, but if all
+      // loaders are successful we take the deepest status code.
+
+      if (result.statusCode != null && result.statusCode !== 200 && !foundError) {
+        statusCode = result.statusCode;
+      }
+
+      if (result.headers) {
+        loaderHeaders[id] = result.headers;
+      }
+    }
+  }); // If we didn't consume the pending action error (i.e., all loaders
+  // resolved), then consume it here
+
+  if (pendingError) {
+    errors = pendingError;
+  }
+
+  return {
+    loaderData,
+    errors,
+    statusCode: statusCode || 200,
+    loaderHeaders
+  };
+}
+
+function processLoaderData(state, matches, matchesToLoad, results, pendingError, revalidatingFetchers, fetcherResults, activeDeferreds) {
+  let {
+    loaderData,
+    errors
+  } = processRouteLoaderData(matches, matchesToLoad, results, pendingError, activeDeferreds); // Process results from our revalidating fetchers
+
+  for (let index = 0; index < revalidatingFetchers.length; index++) {
+    let [key,, match] = revalidatingFetchers[index];
+    invariant(fetcherResults !== undefined && fetcherResults[index] !== undefined, "Did not find corresponding fetcher result");
+    let result = fetcherResults[index]; // Process fetcher non-redirect errors
+
+    if (isErrorResult(result)) {
+      let boundaryMatch = findNearestBoundary(state.matches, match.route.id);
+
+      if (!(errors && errors[boundaryMatch.route.id])) {
+        errors = _extends({}, errors, {
+          [boundaryMatch.route.id]: result.error
+        });
+      }
+
+      state.fetchers.delete(key);
+    } else if (isRedirectResult(result)) {
+      // Should never get here, redirects should get processed above, but we
+      // keep this to type narrow to a success result in the else
+      throw new Error("Unhandled fetcher revalidation redirect");
+    } else if (isDeferredResult(result)) {
+      // Should never get here, deferred data should be awaited for fetchers
+      // in resolveDeferredResults
+      throw new Error("Unhandled fetcher deferred data");
+    } else {
+      let doneFetcher = {
+        state: "idle",
+        data: result.data,
+        formMethod: undefined,
+        formAction: undefined,
+        formEncType: undefined,
+        formData: undefined
+      };
+      state.fetchers.set(key, doneFetcher);
+    }
+  }
+
+  return {
+    loaderData,
+    errors
+  };
+}
+
+function mergeLoaderData(loaderData, newLoaderData, matches) {
+  let mergedLoaderData = _extends({}, newLoaderData);
+
+  matches.forEach(match => {
+    let id = match.route.id;
+
+    if (newLoaderData[id] === undefined && loaderData[id] !== undefined) {
+      mergedLoaderData[id] = loaderData[id];
+    }
+  });
+  return mergedLoaderData;
+} // Find the nearest error boundary, looking upwards from the leaf route (or the
+// route specified by routeId) for the closest ancestor error boundary,
+// defaulting to the root match
+
+
+function findNearestBoundary(matches, routeId) {
+  let eligibleMatches = routeId ? matches.slice(0, matches.findIndex(m => m.route.id === routeId) + 1) : [...matches];
+  return eligibleMatches.reverse().find(m => m.route.hasErrorBoundary === true) || matches[0];
+}
+
+function getNotFoundMatches(routes) {
+  // Prefer a root layout route if present, otherwise shim in a route object
+  let route = routes.find(r => r.index || r.path === "" || r.path === "/") || {
+    id: "__shim-404-route__"
+  };
+  return {
+    matches: [{
+      params: {},
+      pathname: "",
+      pathnameBase: "",
+      route
+    }],
+    route,
+    error: new ErrorResponse(404, "Not Found", null)
+  };
+}
+
+function getMethodNotAllowedResult(path) {
+  let href = typeof path === "string" ? path : createHref(path);
+  console.warn("You're trying to submit to a route that does not have an action.  To " + "fix this, please add an `action` function to the route for " + ("[" + href + "]"));
+  return {
+    type: ResultType.error,
+    error: new ErrorResponse(405, "Method Not Allowed", "No action found for [" + href + "]")
+  };
+} // Find any returned redirect errors, starting from the lowest match
+
+
+function findRedirect(results) {
+  for (let i = results.length - 1; i >= 0; i--) {
+    let result = results[i];
+
+    if (isRedirectResult(result)) {
+      return result;
+    }
+  }
+} // Create an href to represent a "server" URL without the hash
+
+
+function createHref(location) {
+  return (location.pathname || "") + (location.search || "");
+}
+
+function isHashChangeOnly(a, b) {
+  return a.pathname === b.pathname && a.search === b.search && a.hash !== b.hash;
+}
+
+function isDeferredResult(result) {
+  return result.type === ResultType.deferred;
+}
+
+function isErrorResult(result) {
+  return result.type === ResultType.error;
+}
+
+function isRedirectResult(result) {
+  return (result && result.type) === ResultType.redirect;
+}
+
+async function resolveDeferredResults(currentMatches, matchesToLoad, results, signal, isFetcher, currentLoaderData) {
+  for (let index = 0; index < results.length; index++) {
+    let result = results[index];
+    let match = matchesToLoad[index];
+    let currentMatch = currentMatches.find(m => m.route.id === match.route.id);
+    let isRevalidatingLoader = currentMatch != null && !isNewRouteInstance(currentMatch, match) && (currentLoaderData && currentLoaderData[match.route.id]) !== undefined;
+
+    if (isDeferredResult(result) && (isFetcher || isRevalidatingLoader)) {
+      // Note: we do not have to touch activeDeferreds here since we race them
+      // against the signal in resolveDeferredData and they'll get aborted
+      // there if needed
+      await resolveDeferredData(result, signal, isFetcher).then(result => {
+        if (result) {
+          results[index] = result || results[index];
+        }
+      });
+    }
+  }
+}
+
+async function resolveDeferredData(result, signal, unwrap) {
+  if (unwrap === void 0) {
+    unwrap = false;
+  }
+
+  let aborted = await result.deferredData.resolveData(signal);
+
+  if (aborted) {
+    return;
+  }
+
+  if (unwrap) {
+    try {
+      return {
+        type: ResultType.data,
+        data: result.deferredData.unwrappedData
+      };
+    } catch (e) {
+      // Handle any TrackedPromise._error values encountered while unwrapping
+      return {
+        type: ResultType.error,
+        error: e
+      };
+    }
+  }
+
+  return {
+    type: ResultType.data,
+    data: result.deferredData.data
+  };
+}
+
+function hasNakedIndexQuery(search) {
+  return new URLSearchParams(search).getAll("index").some(v => v === "");
+} // Note: This should match the format exported by useMatches, so if you change
+// this please also change that :)  Eventually we'll DRY this up
+
+
+function createUseMatchesMatch(match, loaderData) {
+  let {
+    route,
+    pathname,
+    params
+  } = match;
+  return {
+    id: route.id,
+    pathname,
+    params,
+    data: loaderData[route.id],
+    handle: route.handle
+  };
+}
+
+function getTargetMatch(matches, location) {
+  let search = typeof location === "string" ? parsePath(location).search : location.search;
+
+  if (matches[matches.length - 1].route.index && !hasNakedIndexQuery(search || "")) {
+    return matches.slice(-2)[0];
+  }
+
+  return matches.slice(-1)[0];
+}
+
+function createURL(location) {
+  let base = typeof window !== "undefined" && typeof window.location !== "undefined" ? window.location.origin : "unknown://unknown";
+  let href = typeof location === "string" ? location : createHref(location);
+  return new URL(href, base);
+} //#endregion
+
+
+//# sourceMappingURL=router.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js":
 /*!********************************************************************************************!*\
   !*** ./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js ***!
@@ -395,7 +3615,7 @@ function BlockEditor(_ref) {
     const _canUserCreateMedia = select('core').canUser('create', 'media');
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:20px 25px;line-height:0.2;letter-spacing:0;border-style:none;font-size:15px;text-align:center;border-width:0;border-color:;width:20%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -467,6 +3687,7 @@ function BlockEditor(_ref) {
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
+    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
@@ -522,7 +3743,7 @@ const {
     onDeviceChange
   } = _ref;
   const [device, setDevice] = useState('md');
-  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.qubelyDevice;
+  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.mrmTypographyDevice;
   const getValue = () => value ? responsive ? value[responsiveDevice] || '' : value : '';
   const onButtonClick = val => onChange(responsive ? Object.assign({}, value, {
     [responsiveDevice]: val
@@ -535,18 +3756,18 @@ const {
     setDevice(newDevice);
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: 'qubely-field-group-btn qubely-field ' + (responsive ? 'qubely-responsive' : 'qubely-d-flex')
+    className: 'mrmTypography-field-group-btn mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : 'mrmTypography-d-flex')
   }, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "qubely-d-flex qubely-align-center qubely-mb-10"
+    className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
   }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
     device: responsiveDevice,
     commonResponsiveDevice: device,
-    className: "qubely-ml-10",
+    className: "mrmTypography-ml-10",
     onChange: val => {
       device && onDeviceChange ? onDeviceChange(val) : updateDevice(val);
     }
   })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, {
-    className: "qubely-field-child qubely-d-flex"
+    className: "mrmTypography-field-child mrmTypography-d-flex"
   }, options.map(_ref2 => {
     let [title, option] = _ref2;
     const activeBtn = option === getValue() ? 'qubley-active-group-btn' : '';
@@ -588,11 +3809,11 @@ class Device extends Component {
   }
   componentDidMount() {
     if (typeof this.props.device !== 'undefined' && this.props.device !== '') {
-      window.qubelyDevice = this.props.device;
+      window.mrmTypographyDevice = this.props.device;
     }
   }
   setSettings(value) {
-    window.qubelyDevice = value;
+    window.mrmTypographyDevice = value;
     this.setState({
       current: value
     });
@@ -608,7 +3829,7 @@ class Device extends Component {
       commonResponsiveDevice
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `qubely-device ${className ? className : ''}`
+      className: `mrmTypography-device ${className ? className : ''}`
     });
   }
 }
@@ -652,7 +3873,7 @@ class Range extends Component {
     if (type == 'unit') {
       return value ? value.unit || 'px' : 'px';
     } else {
-      return value ? responsive ? value[window.qubelyDevice] || '' : value : '';
+      return value ? responsive ? value[window.mrmTypographyDevice] || '' : value : '';
     }
   }
   setSettings(val, type) {
@@ -675,7 +3896,7 @@ class Range extends Component {
       newValue.unit = val;
     } else {
       newValue = responsive ? Object.assign(newValue, value, {
-        [window.qubelyDevice]: val
+        [window.mrmTypographyDevice]: val
       }) : val;
       newValue = min ? newValue < min ? min : newValue : newValue < 0 ? 0 : newValue;
       newValue = max ? newValue > max ? max : newValue : newValue > 1000 ? 1000 : newValue;
@@ -718,22 +3939,22 @@ class Range extends Component {
       onDeviceChange,
       disabled = false
     } = this.props;
-    let responsiveDevice = responsive ? device ? device : this.state.device : window.qubelyDevice;
+    let responsiveDevice = responsive ? device ? device : this.state.device : window.mrmTypographyDevice;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: 'qubely-field-range qubely-field ' + (responsive ? 'qubely-responsive' : '')
+      className: 'mrmTypography-field-range mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : '')
     }, (label || unit || responsive) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-d-flex qubely-align-center qubely-mb-10"
+      className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
     }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
       htmlFor: 'input'
     }, label)), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_3__["default"], {
       device: responsiveDevice,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => {
         device && onDeviceChange ? onDeviceChange(val) : this.updateDevice(val);
       }
     }), unit && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-unit-btn-group qubely-ml-auto"
+      className: "mrmTypography-unit-btn-group mrmTypography-ml-auto"
     }, (typeof unit == 'object' ? unit : ['px', 'em', '%']).map(value => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("button", {
       className: this.props.value && value == this.props.value.unit ? 'active' : '',
       onClick: () => {
@@ -742,9 +3963,9 @@ class Range extends Component {
         // this.setSettings(this._filterValue(), 'range');
       }
     }, value)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-child"
+      className: "mrmTypography-field-child"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-input-range"
+      className: "mrmTypography-input-range"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "range",
       min: this._minMax('min'),
@@ -798,7 +4019,7 @@ class Toggle extends Component {
     };
   }
   _filterValue() {
-    return this.props.value ? this.props.responsive ? this.props.value[window.qubelyDevice] || '' : this.props.value : '';
+    return this.props.value ? this.props.responsive ? this.props.value[window.mrmTypographyDevice] || '' : this.props.value : '';
   }
   setSettings(val) {
     const {
@@ -807,7 +4028,7 @@ class Toggle extends Component {
       onChange
     } = this.props;
     let final = responsive ? Object.assign({}, value, {
-      [window.qubelyDevice]: val
+      [window.mrmTypographyDevice]: val
     }) : val;
     onChange(final);
     this.setState({
@@ -823,11 +4044,11 @@ class Toggle extends Component {
       onDeviceChange
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: 'qubely-field-toggle qubely-field' + (this.props.responsive ? ' qubely-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
+      className: 'mrmTypography-field-toggle mrmTypography-field' + (this.props.responsive ? ' mrmTypography-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, label && label, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, device ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       device: device,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => onDeviceChange(val)
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       onChange: val => this.setState({
@@ -910,18 +4131,18 @@ class Typography extends Component {
       showFontWeights
     } = this.state;
     if (showFontFamiles) {
-      const qubelyFontFamilyWrapper = this.refs.qubelyFontFamilyWrapper;
-      const qubelySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
-      if (qubelyFontFamilyWrapper && !qubelyFontFamilyWrapper.contains(event.target)) {
-        qubelySelectedFontFamily && !qubelySelectedFontFamily.contains(event.target) && this.setState({
+      const mrmTypographyFontFamilyWrapper = this.refs.mrmTypographyFontFamilyWrapper;
+      const mrmTypographySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
+      if (mrmTypographyFontFamilyWrapper && !mrmTypographyFontFamilyWrapper.contains(event.target)) {
+        mrmTypographySelectedFontFamily && !mrmTypographySelectedFontFamily.contains(event.target) && this.setState({
           showFontFamiles: false
         });
       }
     } else if (showFontWeights) {
-      const qubelyFontWeightWrapper = this.refs.qubelyFontWeightWrapper;
-      const qubelySelectedFontWeight = this.refs.qubelySelectedFontWeight;
-      if (qubelyFontWeightWrapper && !qubelyFontWeightWrapper.contains(event.target)) {
-        qubelySelectedFontWeight && !qubelySelectedFontWeight.contains(event.target) && this.setState({
+      const mrmTypographyFontWeightWrapper = this.refs.mrmTypographyFontWeightWrapper;
+      const mrmTypographySelectedFontWeight = this.refs.mrmTypographySelectedFontWeight;
+      if (mrmTypographyFontWeightWrapper && !mrmTypographyFontWeightWrapper.contains(event.target)) {
+        mrmTypographySelectedFontWeight && !mrmTypographySelectedFontWeight.contains(event.target) && this.setState({
           showFontWeights: false
         });
       }
@@ -970,9 +4191,9 @@ class Typography extends Component {
   }
   findArrayIndex = font => {
     let index = 0;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     while (index < 10) {
-      if (qubelyFonts[index].n == font) {
+      if (mrmTypographyFonts[index].n == font) {
         break;
       }
       index++;
@@ -981,22 +4202,22 @@ class Typography extends Component {
   };
   handleTypographyChange(val) {
     this.setSettings('family', val);
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let selectedFont = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => font.n == val);
-    if (qubelyFonts) {
-      let oldFont = qubelyFonts.filter(font => font.n == val).length > 0;
+    if (mrmTypographyFonts) {
+      let oldFont = mrmTypographyFonts.filter(font => font.n == val).length > 0;
       if (oldFont) {
         let index = this.findArrayIndex(val);
-        qubelyFonts.splice(index, 1);
-        qubelyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.splice(index, 1);
+        mrmTypographyFonts.unshift(...selectedFont);
       } else {
-        qubelyFonts.unshift(...selectedFont);
-        qubelyFonts.length > 10 && qubelyFonts.pop();
+        mrmTypographyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.length > 10 && mrmTypographyFonts.pop();
       }
     } else {
-      qubelyFonts = [...selectedFont];
+      mrmTypographyFonts = [...selectedFont];
     }
-    localStorage.setItem('qubelyFonts', JSON.stringify(qubelyFonts));
+    localStorage.setItem('mrmTypographyFonts', JSON.stringify(mrmTypographyFonts));
   }
   render() {
     const {
@@ -1014,22 +4235,22 @@ class Typography extends Component {
       showFontFamiles,
       showFontWeights
     } = this.state;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let filteredFontList = [],
       newFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"];
-    if (qubelyFonts) {
-      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !qubelyFonts.filter(qubelyFont => qubelyFont.n == font.n || font.n == 'Default').length > 0);
+    if (mrmTypographyFonts) {
+      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !mrmTypographyFonts.filter(mrmTypographyFont => mrmTypographyFont.n == font.n || font.n == 'Default').length > 0);
       newFontList = [{
         n: 'Default',
         f: 'default',
         v: []
-      }, ...qubelyFonts, ...filteredFontList];
+      }, ...mrmTypographyFonts, ...filteredFontList];
     }
     if (filterText.length >= 2) {
       newFontList = newFontList.filter(item => item.n.toLowerCase().search(filterText.toLowerCase()) !== -1);
     }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-typography"
+      className: "mrmTypography-field mrmTypography-field-typography"
     }, !globalSettings && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Toggle__WEBPACK_IMPORTED_MODULE_4__["default"], {
       value: value.openTypography,
       label: label || __('Typography'),
@@ -1097,11 +4318,11 @@ class Typography extends Component {
         }
       }
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-group qubely-65-35"
+      className: "mrmTypography-field-group mrmTypography-65-35"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-family"
+      className: "mrmTypography-field mrmTypography-field-font-family"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Font Family')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-picker",
+      className: "mrmTypography-font-family-picker",
       ref: "wpfnlSelectedFontFamily",
       onClick: () => {
         this.setState({
@@ -1109,35 +4330,35 @@ class Typography extends Component {
         });
       }
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-family-search-wrapper"
+      className: "mrmTypography-font-family-search-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "text",
-      className: `qubely-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
+      className: `mrmTypography-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
       placeholder: __(showFontFamiles ? 'Search' : value && value.family || 'Select'),
       value: filterText,
       onChange: e => this.setState({
         filterText: e.target.value
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontFamiles ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  ")))), showFontFamiles && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-option-wrapper",
-      ref: "qubelyFontFamilyWrapper"
+      className: "mrmTypography-font-family-option-wrapper",
+      ref: "mrmTypographyFontFamilyWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-options"
+      className: "mrmTypography-font-family-options"
     }, newFontList.length > 0 ? newFontList.map((font, index) => {
       let isActiveFont = false;
       if (value && font.n == value.family) {
         isActiveFont = true;
       }
       let fontClasses = classnames__WEBPACK_IMPORTED_MODULE_5___default()({
-        ['qubely-font-family-option']: !isActiveFont
+        ['mrmTypography-font-family-option']: !isActiveFont
       }, {
-        ['qubely-active-font-family']: isActiveFont
+        ['mrmTypography-active-font-family']: isActiveFont
       });
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
         className: fontClasses,
-        id: `qubely-font-family-${index}`,
+        key: `mrmTypography-font-family-${index}`,
         onClick: () => {
           this.setState({
             showFontFamiles: false,
@@ -1147,31 +4368,32 @@ class Typography extends Component {
         }
       }, font.n);
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: `qubely-font-family-option no-match`,
+      className: `mrmTypography-font-family-option no-match`,
       onClick: () => this.setState({
         showFontFamiles: false,
         filterText: ''
       })
     }, "  No matched font  "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-weight"
+      className: "mrmTypography-field mrmTypography-field-font-weight"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Weight')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker-wrapper",
-      ref: "qubelySelectedFontWeight",
+      className: "mrmTypography-font-weight-picker-wrapper",
+      ref: "mrmTypographySelectedFontWeight",
       onClick: () => this.setState({
         showFontWeights: !showFontWeights
       })
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker"
+      className: "mrmTypography-font-weight-picker"
     }, "  ", value && value.weight || 'Select', "   "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontWeights ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  "))), showFontWeights && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-wrapper",
-      ref: "qubelyFontWeightWrapper"
+      className: "mrmTypography-font-weight-wrapper",
+      ref: "mrmTypographyFontWeightWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-weights"
-    }, ['Default', ...this._getWeight()].map(font => {
+      className: "mrmTypography-font-family-weights"
+    }, ['Default', ...this._getWeight()].map((font, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-        className: `${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`,
+        className: `${font == value.weight ? 'mrmTypography-active-font-weight' : 'mrmTypography-font-weight-option'}`,
+        key: `mrmTypography-font-weights-${index}`,
         onClick: () => {
           this.setState({
             showFontWeights: false
@@ -1216,4026 +4438,5966 @@ __webpack_require__.r(__webpack_exports__);
   v: [],
   f: "default"
 }, {
-  n: 'Arial',
-  f: 'sans-serif',
+  n: "Cursive",
+  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+  f: "cursive"
+}, {
+  n: "Fantasy",
+  v: [],
+  f: "fantasy"
+}, {
+  n: "Monospace",
+  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+  f: "monospace"
+}, {
+  n: "Arial",
+  f: "sans-serif",
   v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Tahoma',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Verdana',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Helvetica',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Times New Roman',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Trebuchet MS',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Georgia',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: "ABeeZee",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Abel",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Abhaya Libre",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "Abril Fatface",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aclonica",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Acme",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Actor",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Adamina",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Advent Pro",
-  v: [100, 200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Aguafina Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Akronim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aladin",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Alata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Alatsi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Aldrich",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Alef",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Alegreya",
-  v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Alegreya SC",
-  v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Alegreya Sans",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Alegreya Sans SC",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Aleo",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Alex Brush",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Alfa Slab One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Alice",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Alike",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Alike Angular",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Allan",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Allerta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Allerta Stencil",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Allura",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Almarai",
-  v: [300, 400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Almendra",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Almendra Display",
-  v: [400],
-  f: "display"
-}, {
-  n: "Almendra SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Amarante",
-  v: [400],
-  f: "display"
-}, {
-  n: "Amaranth",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Amatic SC",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Amethysta",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Amiko",
-  v: [400, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Amiri",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Amita",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Anaheim",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Andada",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Andika",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Angkor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Annie Use Your Telescope",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Anonymous Pro",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Antic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Antic Didone",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Antic Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Anton",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Arapey",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Arbutus",
-  v: [400],
-  f: "display"
-}, {
-  n: "Arbutus Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Architects Daughter",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Archivo",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Archivo Black",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Archivo Narrow",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Aref Ruqaa",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Arima Madurai",
-  v: [100, 200, 300, 400, 500, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Arimo",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Arizonia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Armata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Arsenal",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Artifika",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Arvo",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Arya",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Asap",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Asap Condensed",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Asar",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Asset",
-  v: [400],
-  f: "display"
-}, {
-  n: "Assistant",
-  v: [200, 300, 400, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Astloch",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Asul",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Athiti",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Atma",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Atomic Age",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aubrey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Audiowide",
-  v: [400],
-  f: "display"
-}, {
-  n: "Autour One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Average",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Average Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Averia Gruesa Libre",
-  v: [400],
-  f: "display"
-}, {
-  n: "Averia Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Averia Sans Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Averia Serif Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "B612",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "B612 Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Bad Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bahiana",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bahianita",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bai Jamjuree",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Baloo 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Bhai 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Bhaina 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Chettan 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Da 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Paaji 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Tamma 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Tammudu 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Thambi 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Balsamiq Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Balthazar",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bangers",
-  v: [400],
-  f: "display"
-}, {
-  n: "Barlow",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barlow Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barlow Semi Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barriecito",
-  v: [400],
-  f: "display"
-}, {
-  n: "Barrio",
-  v: [400],
-  f: "display"
-}, {
-  n: "Basic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Baskervville",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Battambang",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Baumans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bayon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Be Vietnam",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Bebas Neue",
-  v: [400],
-  f: "display"
-}, {
-  n: "Belgrano",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bellefair",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Belleza",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Bellota",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Bellota Text",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "BenchNine",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Bentham",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Berkshire Swash",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Beth Ellen",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bevan",
-  v: [400],
-  f: "display"
-}, {
-  n: "Big Shoulders Display",
-  v: [100, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Big Shoulders Text",
-  v: [100, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Bigelow Rules",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bigshot One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bilbo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bilbo Swash Caps",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "BioRhyme",
-  v: [200, 300, 400, 700, 800],
-  f: "serif"
-}, {
-  n: "BioRhyme Expanded",
-  v: [200, 300, 400, 700, 800],
-  f: "serif"
-}, {
-  n: "Biryani",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Bitter",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Black And White Picture",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Black Han Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Black Ops One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Blinker",
-  v: [100, 200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Bokor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bonbon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Boogaloo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bowlby One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bowlby One SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Brawler",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bree Serif",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bubblegum Sans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bubbler One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Buda",
-  v: [300],
-  f: "display"
-}, {
-  n: "Buenard",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Bungee",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Hairline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Inline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Shade",
-  v: [400],
-  f: "display"
-}, {
-  n: "Butcherman",
-  v: [400],
-  f: "display"
-}, {
-  n: "Butterfly Kids",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cabin",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cabin Condensed",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Cabin Sketch",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Caesar Dressing",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cagliostro",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cairo",
-  v: [200, 300, 400, 600, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Caladea",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Calistoga",
-  v: [400],
-  f: "display"
-}, {
-  n: "Calligraffitti",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cambay",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cambo",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Candal",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cantarell",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cantata One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Cantora One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Capriola",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cardo",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Carme",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carrois Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carrois Gothic SC",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carter One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Catamaran",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Caudex",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Caveat",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Caveat Brush",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cedarville Cursive",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ceviche One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chakra Petch",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Changa",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Changa One",
-  v: [400, "400i"],
-  f: "display"
-}, {
-  n: "Chango",
-  v: [400],
-  f: "display"
-}, {
-  n: "Charm",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Charmonman",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Chathura",
-  v: [100, 300, 400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Chau Philomene One",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Chela One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chelsea Market",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chenla",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cherry Cream Soda",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cherry Swash",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Chewy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chicle",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chilanka",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Chivo",
-  v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Chonburi",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cinzel",
-  v: [400, 700, 900],
-  f: "serif"
-}, {
-  n: "Cinzel Decorative",
-  v: [400, 700, 900],
-  f: "display"
-}, {
-  n: "Clicker Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Coda",
-  v: [400, 800],
-  f: "display"
-}, {
-  n: "Coda Caption",
-  v: [800],
-  f: "sans-serif"
-}, {
-  n: "Codystar",
-  v: [300, 400],
-  f: "display"
-}, {
-  n: "Coiny",
-  v: [400],
-  f: "display"
-}, {
-  n: "Combo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Comfortaa",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Comic Neue",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "handwriting"
-}, {
-  n: "Coming Soon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Concert One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Condiment",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Content",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Contrail One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Convergence",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cookie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Copse",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Corben",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Cormorant",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant Garamond",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant Infant",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant SC",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Cormorant Unicase",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Cormorant Upright",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Courgette",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Courier Prime",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Cousine",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Coustard",
-  v: [400, 900],
-  f: "serif"
-}, {
-  n: "Covered By Your Grace",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Crafty Girls",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Creepster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Crete Round",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Crimson Pro",
-  v: [200, 300, 400, 500, 600, 700, 800, 900, "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Crimson Text",
-  v: [400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Croissant One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Crushed",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cuprum",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cute Font",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cutive",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Cutive Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "DM Mono",
-  v: [300, "300i", 400, "400i", 500, "500i"],
-  f: "monospace"
-}, {
-  n: "DM Sans",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "DM Serif Display",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "DM Serif Text",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Damion",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Dancing Script",
-  v: [400, 500, 600, 700],
-  f: "handwriting"
-}, {
-  n: "Dangrek",
-  v: [400],
-  f: "display"
-}, {
-  n: "Darker Grotesque",
-  v: [300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "David Libre",
-  v: [400, 500, 700],
-  f: "serif"
-}, {
-  n: "Dawning of a New Day",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Days One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dekko",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius Swash Caps",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius Unicase",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Della Respira",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Denk One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Devonshire",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Dhurjati",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Didact Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Diplomata",
-  v: [400],
-  f: "display"
-}, {
-  n: "Diplomata SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Do Hyeon",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dokdo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Domine",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Donegal One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Doppio One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dorsa",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dosis",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Dr Sugiyama",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Duru Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dynalight",
-  v: [400],
-  f: "display"
-}, {
-  n: "EB Garamond",
-  v: [400, 500, 600, 700, 800, "400i", "500i", "600i", "700i", "800i"],
-  f: "serif"
-}, {
-  n: "Eagle Lake",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "East Sea Dokdo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Eater",
-  v: [400],
-  f: "display"
-}, {
-  n: "Economica",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Eczar",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "El Messiri",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Electrolize",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Elsie",
-  v: [400, 900],
-  f: "display"
-}, {
-  n: "Elsie Swash Caps",
-  v: [400, 900],
-  f: "display"
-}, {
-  n: "Emblema One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Emilys Candy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Encode Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Expanded",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Semi Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Semi Expanded",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Engagement",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Englebert",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Enriqueta",
-  v: [400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Epilogue",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Erica One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Esteban",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Euphoria Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ewert",
-  v: [400],
-  f: "display"
-}, {
-  n: "Exo",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Exo 2",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Expletus Sans",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Fahkwang",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Fanwood Text",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Farro",
-  v: [300, 400, 500, 700],
-  f: "sans-serif"
-}, {
-  n: "Farsan",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fascinate",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fascinate Inline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Faster One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fasthand",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Fauna One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Faustina",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Federant",
-  v: [400],
-  f: "display"
-}, {
-  n: "Federo",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Felipa",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Fenix",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Finger Paint",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fira Code",
-  v: [300, 400, 500, 600, 700],
-  f: "monospace"
-}, {
-  n: "Fira Mono",
-  v: [400, 500, 700],
-  f: "monospace"
-}, {
-  n: "Fira Sans",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fira Sans Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fira Sans Extra Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fjalla One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Fjord One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Flamenco",
-  v: [300, 400],
-  f: "display"
-}, {
-  n: "Flavors",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fondamento",
-  v: [400, "400i"],
-  f: "handwriting"
-}, {
-  n: "Fontdiner Swanky",
-  v: [400],
-  f: "display"
-}, {
-  n: "Forum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Francois One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Frank Ruhl Libre",
-  v: [300, 400, 500, 700, 900],
-  f: "serif"
-}, {
-  n: "Freckle Face",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fredericka the Great",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fredoka One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Freehand",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fresca",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Frijole",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fruktur",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fugaz One",
-  v: [400],
-  f: "display"
-}, {
-  n: "GFS Didot",
-  v: [400],
-  f: "serif"
-}, {
-  n: "GFS Neohellenic",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Gabriela",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Gaegu",
-  v: [300, 400, 700],
-  f: "handwriting"
-}, {
-  n: "Gafata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Galada",
-  v: [400],
-  f: "display"
-}, {
-  n: "Galdeano",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Galindo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gamja Flower",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gayathri",
-  v: [100, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Gelasio",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Gentium Basic",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Gentium Book Basic",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Geo",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Geostar",
-  v: [400],
-  f: "display"
-}, {
-  n: "Geostar Fill",
-  v: [400],
-  f: "display"
-}, {
-  n: "Germania One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gidugu",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Gilda Display",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Girassol",
-  v: [400],
-  f: "display"
-}, {
-  n: "Give You Glory",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Glass Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Glegoo",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Gloria Hallelujah",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Goblin One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gochi Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gorditas",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Gothic A1",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Gotu",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Goudy Bookletter 1911",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Graduate",
-  v: [400],
-  f: "display"
-}, {
-  n: "Grand Hotel",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gravitas One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Great Vibes",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Grenze",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Grenze Gotisch",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Griffy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gruppo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gudea",
-  v: [400, "400i", 700],
-  f: "sans-serif"
-}, {
-  n: "Gugi",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gupter",
-  v: [400, 500, 700],
-  f: "serif"
-}, {
-  n: "Gurajada",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Habibi",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Halant",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Hammersmith One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Hanalei",
-  v: [400],
-  f: "display"
-}, {
-  n: "Hanalei Fill",
-  v: [400],
-  f: "display"
-}, {
-  n: "Handlee",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hanuman",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Happy Monkey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Harmattan",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Headland One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Heebo",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Henny Penny",
-  v: [400],
-  f: "display"
-}, {
-  n: "Hepta Slab",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Herr Von Muellerhoff",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hi Melody",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hind",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Guntur",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Madurai",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Siliguri",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Vadodara",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Holtwood One SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Homemade Apple",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Homenaje",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Mono",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "IBM Plex Sans",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Sans Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Serif",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "IM Fell DW Pica",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell DW Pica SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell Double Pica",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell Double Pica SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell English",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell English SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell French Canon",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell French Canon SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell Great Primer",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell Great Primer SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Ibarra Real Nova",
-  v: [400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Iceberg",
-  v: [400],
-  f: "display"
-}, {
-  n: "Iceland",
-  v: [400],
-  f: "display"
-}, {
-  n: "Imprima",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Inconsolata",
-  v: [200, 300, 400, 500, 600, 700, 800, 900],
-  f: "monospace"
-}, {
-  n: "Inder",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Indie Flower",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Inika",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Inknut Antiqua",
-  v: [300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Inria Sans",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Inria Serif",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Inter",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Irish Grover",
-  v: [400],
-  f: "display"
-}, {
-  n: "Istok Web",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Italiana",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Italianno",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Itim",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Jacques Francois",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Jacques Francois Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jaldi",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Jim Nightshade",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Jockey One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Jolly Lodger",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jomhuria",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jomolhari",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Josefin Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, "100i", "200i", "300i", "400i", "500i", "600i", "700i"],
-  f: "sans-serif"
-}, {
-  n: "Josefin Slab",
-  v: [100, "100i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Jost",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Joti One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jua",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Judson",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Julee",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Julius Sans One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Junge",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Jura",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Just Another Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Just Me Again Down Here",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "K2D",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Kadwa",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Kalam",
-  v: [300, 400, 700],
-  f: "handwriting"
-}, {
-  n: "Kameron",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Kanit",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Kantumruy",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Karla",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Karma",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Katibeh",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kaushan Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Kavivanar",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Kavoon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kdam Thmor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Keania One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kelly Slab",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kenia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Khand",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Khmer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Khula",
-  v: [300, 400, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Kirang Haerang",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kite One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Knewave",
-  v: [400],
-  f: "display"
-}, {
-  n: "KoHo",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kodchasan",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kosugi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Kosugi Maru",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Kotta One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Koulen",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kranky",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kreon",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Kristi",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Krona One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Krub",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kulim Park",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kumar One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kumar One Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kurale",
-  v: [400],
-  f: "serif"
-}, {
-  n: "La Belle Aurore",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lacquer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Laila",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Lakki Reddy",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lalezar",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lancelot",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lateef",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lato",
-  v: [100, "100i", 300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "League Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Leckerli One",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ledger",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Lekton",
-  v: [400, "400i", 700],
-  f: "sans-serif"
-}, {
-  n: "Lemon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lemonada",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Lexend Deca",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Exa",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Giga",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Mega",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Peta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Tera",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Zetta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Libre Barcode 128",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 128 Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Extended",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Extended Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Baskerville",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Libre Caslon Display",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Libre Caslon Text",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Libre Franklin",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Life Savers",
-  v: [400, 700, 800],
-  f: "display"
-}, {
-  n: "Lilita One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lily Script One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Limelight",
-  v: [400],
-  f: "display"
-}, {
-  n: "Linden Hill",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Literata",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Liu Jian Mao Cao",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Livvic",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Lobster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lobster Two",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Londrina Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Sketch",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Solid",
-  v: [100, 300, 400, 900],
-  f: "display"
-}, {
-  n: "Long Cang",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lora",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Love Ya Like A Sister",
-  v: [400],
-  f: "display"
-}, {
-  n: "Loved by the King",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lovers Quarrel",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Luckiest Guy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lusitana",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Lustria",
-  v: [400],
-  f: "serif"
-}, {
-  n: "M PLUS 1p",
-  v: [100, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "M PLUS Rounded 1c",
-  v: [100, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Ma Shan Zheng",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Macondo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Macondo Swash Caps",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mada",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Magra",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Maiden Orange",
-  v: [400],
-  f: "display"
-}, {
-  n: "Maitree",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Major Mono Display",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Mako",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mali",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "handwriting"
-}, {
-  n: "Mallanna",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mandali",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Manjari",
-  v: [100, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Manrope",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mansalva",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Manuale",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Marcellus",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marcellus SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marck Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Margarine",
-  v: [400],
-  f: "display"
-}, {
-  n: "Markazi Text",
-  v: [400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Marko One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marmelad",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Martel",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Martel Sans",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Marvel",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Mate",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Mate SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Maven Pro",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "McLaren",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meddon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "MedievalSharp",
-  v: [400],
-  f: "display"
-}, {
-  n: "Medula One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meera Inimai",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Megrim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meie Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Merienda",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Merienda One",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Merriweather",
-  v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Merriweather Sans",
-  v: [300, "300i", 400, "400i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Metal",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metal Mania",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metamorphous",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metrophobic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Michroma",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Milonga",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miltonian",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miltonian Tattoo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mina",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Miniver",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miriam Libre",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Mirza",
-  v: [400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Miss Fajardose",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mitr",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Modak",
-  v: [400],
-  f: "display"
-}, {
-  n: "Modern Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mogra",
-  v: [400],
-  f: "display"
-}, {
-  n: "Molengo",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Molle",
-  v: ["400i"],
-  f: "handwriting"
-}, {
-  n: "Monda",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Monofett",
-  v: [400],
-  f: "display"
-}, {
-  n: "Monoton",
-  v: [400],
-  f: "display"
-}, {
-  n: "Monsieur La Doulaise",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Montaga",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Montez",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Montserrat",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Montserrat Alternates",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Montserrat Subrayada",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Moul",
-  v: [400],
-  f: "display"
-}, {
-  n: "Moulpali",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mountains of Christmas",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Mouse Memoirs",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mr Bedfort",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mr Dafoe",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mr De Haviland",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mrs Saint Delafield",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mrs Sheppards",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mukta",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Mahee",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Malar",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Vaani",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mulish",
-  v: [200, 300, 400, 500, 600, 700, 800, 900, "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "MuseoModerno",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Mystery Quest",
-  v: [400],
-  f: "display"
-}, {
-  n: "NTR",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nanum Brush Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Nanum Gothic",
-  v: [400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Nanum Gothic Coding",
-  v: [400, 700],
-  f: "monospace"
-}, {
-  n: "Nanum Myeongjo",
-  v: [400, 700, 800],
-  f: "serif"
-}, {
-  n: "Nanum Pen Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Neucha",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Neuton",
-  v: [200, 300, 400, "400i", 700, 800],
-  f: "serif"
-}, {
-  n: "New Rocker",
-  v: [400],
-  f: "display"
-}, {
-  n: "News Cycle",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Niconne",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Niramit",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Nixie One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nobile",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Nokora",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Norican",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Nosifer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Notable",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nothing You Could Do",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Noticia Text",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Noto Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans HK",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans JP",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans KR",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans SC",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans TC",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Serif",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Noto Serif JP",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif KR",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif SC",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif TC",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Nova Cut",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Flat",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Nova Oval",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Round",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Script",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Slim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Square",
-  v: [400],
-  f: "display"
-}, {
-  n: "Numans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nunito",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Nunito Sans",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Odibee Sans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Odor Mean Chey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Offside",
-  v: [400],
-  f: "display"
-}, {
-  n: "Old Standard TT",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Oldenburg",
-  v: [400],
-  f: "display"
-}, {
-  n: "Oleo Script",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Oleo Script Swash Caps",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Open Sans",
-  v: [300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Open Sans Condensed",
-  v: [300, "300i", 700],
-  f: "sans-serif"
-}, {
-  n: "Oranienbaum",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Orbitron",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Oregano",
-  v: [400, "400i"],
-  f: "display"
-}, {
-  n: "Orienta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Original Surfer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Oswald",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Over the Rainbow",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Overlock",
-  v: [400, "400i", 700, "700i", 900, "900i"],
-  f: "display"
-}, {
-  n: "Overlock SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Overpass",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Overpass Mono",
-  v: [300, 400, 600, 700],
-  f: "monospace"
-}, {
-  n: "Ovo",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Oxanium",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Oxygen",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Oxygen Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "PT Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "PT Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "PT Sans Caption",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "PT Sans Narrow",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "PT Serif",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "PT Serif Caption",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Pacifico",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Padauk",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Palanquin",
-  v: [100, 200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Palanquin Dark",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Pangolin",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Paprika",
-  v: [400],
-  f: "display"
-}, {
-  n: "Parisienne",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Passero One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Passion One",
-  v: [400, 700, 900],
-  f: "display"
-}, {
-  n: "Pathway Gothic One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Patrick Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Patrick Hand SC",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Pattaya",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Patua One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pavanam",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Paytone One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Peddana",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Peralta",
-  v: [400],
-  f: "display"
-}, {
-  n: "Permanent Marker",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Petit Formal Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Petrona",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Philosopher",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Piedra",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pinyon Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Pirata One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Plaster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Play",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Playball",
-  v: [400],
-  f: "display"
-}, {
-  n: "Playfair Display",
-  v: [400, 500, 600, 700, 800, 900, "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Playfair Display SC",
-  v: [400, "400i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Podkova",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "Poiret One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poller One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poly",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Pompiere",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pontano Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Poor Story",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poppins",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Port Lligat Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Port Lligat Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Pragati Narrow",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Prata",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Preahvihear",
-  v: [400],
-  f: "display"
-}, {
-  n: "Press Start 2P",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pridi",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Princess Sofia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Prociono",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Prompt",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Prosto One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Proza Libre",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Public Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Puritan",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Purple Purse",
-  v: [400],
-  f: "display"
-}, {
-  n: "Quando",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Quantico",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Quattrocento",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Quattrocento Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Questrial",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Quicksand",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Quintessential",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Qwigley",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Racing Sans One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Radley",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Rajdhani",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Rakkas",
-  v: [400],
-  f: "display"
-}, {
-  n: "Raleway",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Raleway Dots",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ramabhadra",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ramaraja",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Rambla",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Rammetto One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ranchers",
-  v: [400],
-  f: "display"
-}, {
-  n: "Rancho",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ranga",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Rasa",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Rationale",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ravi Prakash",
-  v: [400],
-  f: "display"
-}, {
-  n: "Red Hat Display",
-  v: [400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Red Hat Text",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Red Rose",
-  v: [300, 400, 700],
-  f: "display"
-}, {
-  n: "Redressed",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Reem Kufi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Reenie Beanie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Revalia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Rhodium Libre",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Ribeye",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ribeye Marrow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Righteous",
-  v: [400],
-  f: "display"
-}, {
-  n: "Risque",
-  v: [400],
-  f: "display"
-}, {
-  n: "Roboto",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Roboto Condensed",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Roboto Mono",
-  v: [100, 200, 300, 400, 500, 600, 700, "100i", "200i", "300i", "400i", "500i", "600i", "700i"],
-  f: "monospace"
-}, {
-  n: "Roboto Slab",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Rochester",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rock Salt",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rokkitt",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Romanesco",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ropa Sans",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Rosario",
-  v: [300, 400, 500, 600, 700, "300i", "400i", "500i", "600i", "700i"],
-  f: "sans-serif"
-}, {
-  n: "Rosarivo",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Rouge Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rowdies",
-  v: [300, 400, 700],
-  f: "display"
-}, {
-  n: "Rozha One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Rubik",
-  v: [300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Rubik Mono One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruda",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Rufina",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Ruge Boogie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ruluko",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Rum Raisin",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruslan Display",
-  v: [400],
-  f: "display"
-}, {
-  n: "Russo One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruthie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rye",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sacramento",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sahitya",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Sail",
-  v: [400],
-  f: "display"
-}, {
-  n: "Saira",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Extra Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Semi Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Stencil One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Salsa",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sanchez",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Sancreek",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sansita",
-  v: [400, "400i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Sarabun",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Sarala",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sarina",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sarpanch",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Satisfy",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sawarabi Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sawarabi Mincho",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Scada",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Scheherazade",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Schoolbell",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Scope One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Seaweed Script",
-  v: [400],
-  f: "display"
-}, {
-  n: "Secular One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sedgwick Ave",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sedgwick Ave Display",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sen",
-  v: [400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Sevillana",
-  v: [400],
-  f: "display"
-}, {
-  n: "Seymour One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Shadows Into Light",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shadows Into Light Two",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shanti",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Share",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Share Tech",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Share Tech Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Shojumaru",
-  v: [400],
-  f: "display"
-}, {
-  n: "Short Stack",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shrikhand",
-  v: [400],
-  f: "display"
-}, {
-  n: "Siemreap",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sigmar One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Signika",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Signika Negative",
-  v: [300, 400, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Simonetta",
-  v: [400, "400i", 900, "900i"],
-  f: "display"
-}, {
-  n: "Single Day",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sintony",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sirin Stencil",
-  v: [400],
-  f: "display"
-}, {
-  n: "Six Caps",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Skranji",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Slabo 13px",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Slabo 27px",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Slackey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Smokum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Smythe",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sniglet",
-  v: [400, 800],
-  f: "display"
-}, {
-  n: "Snippet",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Snowburst One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sofadi One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sofia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Solway",
-  v: [300, 400, 500, 700, 800],
-  f: "serif"
-}, {
-  n: "Song Myung",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sonsie One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sora",
-  v: [100, 200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Sorts Mill Goudy",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Source Code Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "monospace"
-}, {
-  n: "Source Sans Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Source Serif Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Space Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Spartan",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Special Elite",
-  v: [400],
-  f: "display"
-}, {
-  n: "Spectral",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "serif"
-}, {
-  n: "Spectral SC",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "serif"
-}, {
-  n: "Spicy Rice",
-  v: [400],
-  f: "display"
-}, {
-  n: "Spinnaker",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Spirax",
-  v: [400],
-  f: "display"
-}, {
-  n: "Squada One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sree Krushnadevaraya",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sriracha",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Srisakdi",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Staatliches",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stalemate",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Stalinist One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stardos Stencil",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Stint Ultra Condensed",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stint Ultra Expanded",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stoke",
-  v: [300, 400],
-  f: "serif"
-}, {
-  n: "Strait",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Stylish",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sue Ellen Francisco",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Suez One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sulphur Point",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sumana",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Sunflower",
-  v: [300, 500, 700],
-  f: "sans-serif"
-}, {
-  n: "Sunshiney",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Supermercado One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sura",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Suranna",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Suravaram",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Suwannaphum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Swanky and Moo Moo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Syncopate",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Tajawal",
-  v: [200, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Tangerine",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Taprom",
-  v: [400],
-  f: "display"
-}, {
-  n: "Tauri",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Taviraj",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Teko",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Telex",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tenali Ramakrishna",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tenor Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Text Me One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Thasadith",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "The Girl Next Door",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Tienne",
-  v: [400, 700, 900],
-  f: "serif"
-}, {
-  n: "Tillana",
-  v: [400, 500, 600, 700, 800],
-  f: "handwriting"
-}, {
-  n: "Timmana",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tinos",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Titan One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Titillium Web",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900],
-  f: "sans-serif"
-}, {
-  n: "Tomorrow",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Trade Winds",
-  v: [400],
-  f: "display"
-}, {
-  n: "Trirong",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Trocchi",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Trochut",
-  v: [400, "400i", 700],
-  f: "display"
-}, {
-  n: "Trykker",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Tulpen One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Turret Road",
-  v: [200, 300, 400, 500, 700, 800],
-  f: "display"
-}, {
-  n: "Ubuntu",
-  v: [300, "300i", 400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Ubuntu Condensed",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ubuntu Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Ultra",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Uncial Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Underdog",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unica One",
-  v: [400],
-  f: "display"
-}, {
-  n: "UnifrakturCook",
-  v: [700],
-  f: "display"
-}, {
-  n: "UnifrakturMaguntia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unkempt",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Unlock",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unna",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "VT323",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Vampiro One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Varela",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Varela Round",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Varta",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Vast Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vesper Libre",
-  v: [400, 500, 700, 900],
-  f: "serif"
-}, {
-  n: "Viaoda Libre",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vibes",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vibur",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Vidaloka",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Viga",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Voces",
-  v: [400],
-  f: "display"
-}, {
-  n: "Volkhov",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Vollkorn",
-  v: [400, 500, 600, 700, 800, 900, "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Vollkorn SC",
-  v: [400, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Voltaire",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Waiting for the Sunrise",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Wallpoet",
-  v: [400],
-  f: "display"
-}, {
-  n: "Walter Turncoat",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Warnes",
-  v: [400],
-  f: "display"
-}, {
-  n: "Wellfleet",
-  v: [400],
-  f: "display"
-}, {
-  n: "Wendy One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Wire One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Work Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Yanone Kaffeesatz",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Yantramanav",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Yatra One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yellowtail",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Yeon Sung",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yeseva One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yesteryear",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Yrsa",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "ZCOOL KuaiLe",
-  v: [400],
-  f: "display"
-}, {
-  n: "ZCOOL QingKe HuangYou",
-  v: [400],
-  f: "display"
-}, {
-  n: "ZCOOL XiaoWei",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Zeyada",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Zhi Mang Xing",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Zilla Slab",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Zilla Slab Highlight",
-  v: [400, 700],
-  f: "display"
 }]);
+
+// export default [
+//   {
+//     n: "Default",
+//     v: [],
+//     f: "default",
+//   },
+//   {
+//     n: "Arial",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Tahoma",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Verdana",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Helvetica",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Times New Roman",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Trebuchet MS",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Georgia",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+
+//   {
+//     n: "ABeeZee",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Abel",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Abhaya Libre",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Abril Fatface",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aclonica",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Acme",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Actor",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Adamina",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Advent Pro",
+//     v: [100, 200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aguafina Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Akronim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aladin",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Alata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alatsi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aldrich",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alef",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alegreya",
+//     v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alegreya SC",
+//     v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alegreya Sans",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alegreya Sans SC",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aleo",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alex Brush",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Alfa Slab One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Alice",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alike",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alike Angular",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Allan",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Allerta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Allerta Stencil",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Allura",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Almarai",
+//     v: [300, 400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Almendra",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Almendra Display",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Almendra SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amarante",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Amaranth",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Amatic SC",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Amethysta",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amiko",
+//     v: [400, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Amiri",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amita",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Anaheim",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Andada",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Andika",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Angkor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Annie Use Your Telescope",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Anonymous Pro",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Antic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Antic Didone",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Antic Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Anton",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arapey",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arbutus",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Arbutus Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Architects Daughter",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Archivo",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Archivo Black",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Archivo Narrow",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aref Ruqaa",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arima Madurai",
+//     v: [100, 200, 300, 400, 500, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Arimo",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arizonia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Armata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arsenal",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Artifika",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arvo",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arya",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asap",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asap Condensed",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asar",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Asset",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Assistant",
+//     v: [200, 300, 400, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Astloch",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Asul",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Athiti",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Atma",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Atomic Age",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aubrey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Audiowide",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Autour One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Average",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Average Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Averia Gruesa Libre",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Sans Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Serif Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "B612",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "B612 Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Bad Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bahiana",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bahianita",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bai Jamjuree",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Baloo 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Bhai 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Bhaina 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Chettan 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Da 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Paaji 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Tamma 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Tammudu 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Thambi 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Balsamiq Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Balthazar",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bangers",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Barlow",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barlow Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barlow Semi Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barriecito",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Barrio",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Basic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Baskervville",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Battambang",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Baumans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bayon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Be Vietnam",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bebas Neue",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Belgrano",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bellefair",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Belleza",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bellota",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Bellota Text",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "BenchNine",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bentham",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Berkshire Swash",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Beth Ellen",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bevan",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Big Shoulders Display",
+//     v: [100, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Big Shoulders Text",
+//     v: [100, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Bigelow Rules",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bigshot One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bilbo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bilbo Swash Caps",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "BioRhyme",
+//     v: [200, 300, 400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "BioRhyme Expanded",
+//     v: [200, 300, 400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Biryani",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bitter",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Black And White Picture",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Black Han Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Black Ops One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Blinker",
+//     v: [100, 200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bokor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bonbon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Boogaloo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bowlby One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bowlby One SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Brawler",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bree Serif",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bubblegum Sans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bubbler One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Buda",
+//     v: [300],
+//     f: "display",
+//   },
+//   {
+//     n: "Buenard",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bungee",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Hairline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Inline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Shade",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Butcherman",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Butterfly Kids",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cabin",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cabin Condensed",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cabin Sketch",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Caesar Dressing",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cagliostro",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cairo",
+//     v: [200, 300, 400, 600, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Caladea",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Calistoga",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Calligraffitti",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cambay",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cambo",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Candal",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cantarell",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cantata One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cantora One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Capriola",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cardo",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Carme",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carrois Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carrois Gothic SC",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carter One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Catamaran",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Caudex",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Caveat",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Caveat Brush",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cedarville Cursive",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ceviche One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chakra Petch",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Changa",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Changa One",
+//     v: [400, "400i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Chango",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Charm",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Charmonman",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Chathura",
+//     v: [100, 300, 400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chau Philomene One",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chela One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chelsea Market",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chenla",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cherry Cream Soda",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cherry Swash",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Chewy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chicle",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chilanka",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Chivo",
+//     v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chonburi",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cinzel",
+//     v: [400, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cinzel Decorative",
+//     v: [400, 700, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Clicker Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Coda",
+//     v: [400, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Coda Caption",
+//     v: [800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Codystar",
+//     v: [300, 400],
+//     f: "display",
+//   },
+//   {
+//     n: "Coiny",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Combo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Comfortaa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Comic Neue",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Coming Soon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Concert One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Condiment",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Content",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Contrail One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Convergence",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cookie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Copse",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Corben",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Cormorant",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Garamond",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Infant",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant SC",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Unicase",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Upright",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Courgette",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Courier Prime",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Cousine",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Coustard",
+//     v: [400, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Covered By Your Grace",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Crafty Girls",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Creepster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Crete Round",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Crimson Pro",
+//     v: [
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Crimson Text",
+//     v: [400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Croissant One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Crushed",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cuprum",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cute Font",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cutive",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cutive Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "DM Mono",
+//     v: [300, "300i", 400, "400i", 500, "500i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "DM Sans",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "DM Serif Display",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "DM Serif Text",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Damion",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dancing Script",
+//     v: [400, 500, 600, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dangrek",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Darker Grotesque",
+//     v: [300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "David Libre",
+//     v: [400, 500, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Dawning of a New Day",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Days One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dekko",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius Swash Caps",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius Unicase",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Della Respira",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Denk One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Devonshire",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dhurjati",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Didact Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Diplomata",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Diplomata SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Do Hyeon",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dokdo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Domine",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Donegal One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Doppio One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dorsa",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dosis",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dr Sugiyama",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Duru Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dynalight",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "EB Garamond",
+//     v: [400, 500, 600, 700, 800, "400i", "500i", "600i", "700i", "800i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Eagle Lake",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "East Sea Dokdo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Eater",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Economica",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Eczar",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "El Messiri",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Electrolize",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Elsie",
+//     v: [400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Elsie Swash Caps",
+//     v: [400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Emblema One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Emilys Candy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Encode Sans",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Expanded",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Semi Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Semi Expanded",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Engagement",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Englebert",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Enriqueta",
+//     v: [400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Epilogue",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Erica One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Esteban",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Euphoria Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ewert",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Exo",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Exo 2",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Expletus Sans",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Fahkwang",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fanwood Text",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Farro",
+//     v: [300, 400, 500, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Farsan",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fascinate",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fascinate Inline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Faster One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fasthand",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Fauna One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Faustina",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Federant",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Federo",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Felipa",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Fenix",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Finger Paint",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fira Code",
+//     v: [300, 400, 500, 600, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Fira Mono",
+//     v: [400, 500, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Fira Sans",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fira Sans Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fira Sans Extra Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fjalla One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fjord One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Flamenco",
+//     v: [300, 400],
+//     f: "display",
+//   },
+//   {
+//     n: "Flavors",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fondamento",
+//     v: [400, "400i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Fontdiner Swanky",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Forum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Francois One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Frank Ruhl Libre",
+//     v: [300, 400, 500, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Freckle Face",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fredericka the Great",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fredoka One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Freehand",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fresca",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Frijole",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fruktur",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fugaz One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "GFS Didot",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "GFS Neohellenic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gabriela",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gaegu",
+//     v: [300, 400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gafata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Galada",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Galdeano",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Galindo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gamja Flower",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gayathri",
+//     v: [100, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gelasio",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gentium Basic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gentium Book Basic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Geo",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Geostar",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Geostar Fill",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Germania One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gidugu",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gilda Display",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Girassol",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Give You Glory",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Glass Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Glegoo",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gloria Hallelujah",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Goblin One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gochi Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gorditas",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Gothic A1",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gotu",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Goudy Bookletter 1911",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Graduate",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Grand Hotel",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gravitas One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Great Vibes",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Grenze",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Grenze Gotisch",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Griffy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gruppo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gudea",
+//     v: [400, "400i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gugi",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gupter",
+//     v: [400, 500, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gurajada",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Habibi",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Halant",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Hammersmith One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hanalei",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Hanalei Fill",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Handlee",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hanuman",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Happy Monkey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Harmattan",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Headland One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Heebo",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Henny Penny",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Hepta Slab",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Herr Von Muellerhoff",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hi Melody",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hind",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Guntur",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Madurai",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Siliguri",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Vadodara",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Holtwood One SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Homemade Apple",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Homenaje",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Mono",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "IBM Plex Sans",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Sans Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Serif",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell DW Pica",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell DW Pica SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Double Pica",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Double Pica SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell English",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell English SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell French Canon",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell French Canon SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Great Primer",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Great Primer SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ibarra Real Nova",
+//     v: [400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Iceberg",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Iceland",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Imprima",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Inconsolata",
+//     v: [200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Inder",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Indie Flower",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Inika",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inknut Antiqua",
+//     v: [300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inria Sans",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Inria Serif",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inter",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Irish Grover",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Istok Web",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Italiana",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Italianno",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Itim",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Jacques Francois",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jacques Francois Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jaldi",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Jim Nightshade",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Jockey One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Jolly Lodger",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jomhuria",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jomolhari",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Josefin Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Josefin Slab",
+//     v: [100, "100i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jost",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Joti One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jua",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Judson",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Julee",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Julius Sans One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Junge",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jura",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Just Another Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Just Me Again Down Here",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "K2D",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kadwa",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kalam",
+//     v: [300, 400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kameron",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kanit",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kantumruy",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Karla",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Karma",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Katibeh",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kaushan Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kavivanar",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kavoon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kdam Thmor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Keania One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kelly Slab",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kenia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Khand",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Khmer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Khula",
+//     v: [300, 400, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kirang Haerang",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kite One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Knewave",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "KoHo",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kodchasan",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kosugi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kosugi Maru",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kotta One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Koulen",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kranky",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kreon",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kristi",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Krona One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Krub",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kulim Park",
+//     v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kumar One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kumar One Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kurale",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "La Belle Aurore",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lacquer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Laila",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lakki Reddy",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lalezar",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lancelot",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lateef",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lato",
+//     v: [100, "100i", 300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "League Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Leckerli One",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ledger",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lekton",
+//     v: [400, "400i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lemon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lemonada",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Lexend Deca",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Exa",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Giga",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Mega",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Peta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Tera",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Zetta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Libre Barcode 128",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 128 Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Extended",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Extended Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Baskerville",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Caslon Display",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Caslon Text",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Franklin",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Life Savers",
+//     v: [400, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Lilita One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lily Script One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Limelight",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Linden Hill",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Literata",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Liu Jian Mao Cao",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Livvic",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lobster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lobster Two",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Sketch",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Solid",
+//     v: [100, 300, 400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Long Cang",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lora",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Love Ya Like A Sister",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Loved by the King",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lovers Quarrel",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Luckiest Guy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lusitana",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lustria",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "M PLUS 1p",
+//     v: [100, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "M PLUS Rounded 1c",
+//     v: [100, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ma Shan Zheng",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Macondo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Macondo Swash Caps",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mada",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Magra",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Maiden Orange",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Maitree",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Major Mono Display",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Mako",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mali",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mallanna",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mandali",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Manjari",
+//     v: [100, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Manrope",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mansalva",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Manuale",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marcellus",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marcellus SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marck Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Margarine",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Markazi Text",
+//     v: [400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marko One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marmelad",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Martel",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Martel Sans",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Marvel",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mate",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Mate SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Maven Pro",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "McLaren",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meddon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "MedievalSharp",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Medula One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meera Inimai",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Megrim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meie Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merienda",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merienda One",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merriweather",
+//     v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Merriweather Sans",
+//     v: [300, "300i", 400, "400i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Metal",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metal Mania",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metamorphous",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metrophobic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Michroma",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Milonga",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miltonian",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miltonian Tattoo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mina",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Miniver",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miriam Libre",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mirza",
+//     v: [400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Miss Fajardose",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mitr",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Modak",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Modern Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mogra",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Molengo",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Molle",
+//     v: ["400i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Monda",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Monofett",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Monoton",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Monsieur La Doulaise",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Montaga",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Montez",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Montserrat",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Montserrat Alternates",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Montserrat Subrayada",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Moul",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Moulpali",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mountains of Christmas",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Mouse Memoirs",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mr Bedfort",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mr Dafoe",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mr De Haviland",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mrs Saint Delafield",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mrs Sheppards",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mukta",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Mahee",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Malar",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Vaani",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mulish",
+//     v: [
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "MuseoModerno",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Mystery Quest",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "NTR",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nanum Brush Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Nanum Gothic",
+//     v: [400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nanum Gothic Coding",
+//     v: [400, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Nanum Myeongjo",
+//     v: [400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Nanum Pen Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Neucha",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Neuton",
+//     v: [200, 300, 400, "400i", 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "New Rocker",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "News Cycle",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Niconne",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Niramit",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nixie One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nobile",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nokora",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Norican",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Nosifer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Notable",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nothing You Could Do",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Noticia Text",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans HK",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans JP",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans KR",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans SC",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans TC",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Serif",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif JP",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif KR",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif SC",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif TC",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Nova Cut",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Flat",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Nova Oval",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Round",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Script",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Slim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Square",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Numans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nunito",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nunito Sans",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Odibee Sans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Odor Mean Chey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Offside",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Old Standard TT",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Oldenburg",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Oleo Script",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Oleo Script Swash Caps",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Open Sans",
+//     v: [300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Open Sans Condensed",
+//     v: [300, "300i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oranienbaum",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Orbitron",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oregano",
+//     v: [400, "400i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Orienta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Original Surfer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Oswald",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Over the Rainbow",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Overlock",
+//     v: [400, "400i", 700, "700i", 900, "900i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Overlock SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Overpass",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Overpass Mono",
+//     v: [300, 400, 600, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Ovo",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Oxanium",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Oxygen",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oxygen Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "PT Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "PT Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Sans Caption",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Sans Narrow",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Serif",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "PT Serif Caption",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pacifico",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Padauk",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Palanquin",
+//     v: [100, 200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Palanquin Dark",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Pangolin",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Paprika",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Parisienne",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Passero One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Passion One",
+//     v: [400, 700, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Pathway Gothic One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Patrick Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Patrick Hand SC",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Pattaya",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Patua One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pavanam",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Paytone One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Peddana",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Peralta",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Permanent Marker",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Petit Formal Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Petrona",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Philosopher",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Piedra",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pinyon Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Pirata One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Plaster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Play",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Playball",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Playfair Display",
+//     v: [
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Playfair Display SC",
+//     v: [400, "400i", 700, "700i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Podkova",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Poiret One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poller One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poly",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pompiere",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pontano Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Poor Story",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poppins",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Port Lligat Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Port Lligat Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pragati Narrow",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Prata",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Preahvihear",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Press Start 2P",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pridi",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Princess Sofia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Prociono",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Prompt",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Prosto One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Proza Libre",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Public Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Puritan",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Purple Purse",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Quando",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Quantico",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quattrocento",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Quattrocento Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Questrial",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quicksand",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quintessential",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Qwigley",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Racing Sans One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Radley",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rajdhani",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rakkas",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Raleway",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Raleway Dots",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ramabhadra",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ramaraja",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rambla",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rammetto One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ranchers",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Rancho",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ranga",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Rasa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rationale",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ravi Prakash",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Red Hat Display",
+//     v: [400, "400i", 500, "500i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Red Hat Text",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Red Rose",
+//     v: [300, 400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Redressed",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Reem Kufi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Reenie Beanie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Revalia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Rhodium Libre",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ribeye",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ribeye Marrow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Righteous",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Risque",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Roboto",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Roboto Condensed",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Roboto Mono",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Roboto Slab",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rochester",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rock Salt",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rokkitt",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Romanesco",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ropa Sans",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rosario",
+//     v: [300, 400, 500, 600, 700, "300i", "400i", "500i", "600i", "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rosarivo",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rouge Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rowdies",
+//     v: [300, 400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Rozha One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rubik",
+//     v: [300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rubik Mono One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruda",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rufina",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ruge Boogie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ruluko",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rum Raisin",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruslan Display",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Russo One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruthie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rye",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sacramento",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sahitya",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sail",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Saira",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Extra Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Semi Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Stencil One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Salsa",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sanchez",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sancreek",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sansita",
+//     v: [400, "400i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarabun",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarala",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarina",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sarpanch",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Satisfy",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sawarabi Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sawarabi Mincho",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Scada",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Scheherazade",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Schoolbell",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Scope One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Seaweed Script",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Secular One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sedgwick Ave",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sedgwick Ave Display",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sen",
+//     v: [400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sevillana",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Seymour One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Shadows Into Light",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shadows Into Light Two",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shanti",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Share",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Share Tech",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Share Tech Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Shojumaru",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Short Stack",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shrikhand",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Siemreap",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sigmar One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Signika",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Signika Negative",
+//     v: [300, 400, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Simonetta",
+//     v: [400, "400i", 900, "900i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Single Day",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sintony",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sirin Stencil",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Six Caps",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Skranji",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Slabo 13px",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Slabo 27px",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Slackey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Smokum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Smythe",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sniglet",
+//     v: [400, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Snippet",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Snowburst One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sofadi One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sofia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Solway",
+//     v: [300, 400, 500, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Song Myung",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sonsie One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sora",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sorts Mill Goudy",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Source Code Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Source Sans Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Source Serif Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Space Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Spartan",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Special Elite",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Spectral",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Spectral SC",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Spicy Rice",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Spinnaker",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Spirax",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Squada One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sree Krushnadevaraya",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sriracha",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Srisakdi",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Staatliches",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stalemate",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Stalinist One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stardos Stencil",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Stint Ultra Condensed",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stint Ultra Expanded",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stoke",
+//     v: [300, 400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Strait",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Stylish",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sue Ellen Francisco",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Suez One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sulphur Point",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sumana",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sunflower",
+//     v: [300, 500, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sunshiney",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Supermercado One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sura",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suranna",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suravaram",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suwannaphum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Swanky and Moo Moo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Syncopate",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tajawal",
+//     v: [200, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tangerine",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Taprom",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Tauri",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Taviraj",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Teko",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Telex",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tenali Ramakrishna",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tenor Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Text Me One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Thasadith",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "The Girl Next Door",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Tienne",
+//     v: [400, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Tillana",
+//     v: [400, 500, 600, 700, 800],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Timmana",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tinos",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Titan One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Titillium Web",
+//     v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tomorrow",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Trade Winds",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Trirong",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Trocchi",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Trochut",
+//     v: [400, "400i", 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Trykker",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Tulpen One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Turret Road",
+//     v: [200, 300, 400, 500, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Ubuntu",
+//     v: [300, "300i", 400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ubuntu Condensed",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ubuntu Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Ultra",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Uncial Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Underdog",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unica One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "UnifrakturCook",
+//     v: [700],
+//     f: "display",
+//   },
+//   {
+//     n: "UnifrakturMaguntia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unkempt",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Unlock",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unna",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "VT323",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Vampiro One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Varela",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Varela Round",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Varta",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Vast Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vesper Libre",
+//     v: [400, 500, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Viaoda Libre",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vibes",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vibur",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Vidaloka",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Viga",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Voces",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Volkhov",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Vollkorn",
+//     v: [
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Vollkorn SC",
+//     v: [400, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Voltaire",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Waiting for the Sunrise",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Wallpoet",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Walter Turncoat",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Warnes",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Wellfleet",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Wendy One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Wire One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Work Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yanone Kaffeesatz",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yantramanav",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yatra One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yellowtail",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Yeon Sung",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yeseva One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yesteryear",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Yrsa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "ZCOOL KuaiLe",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "ZCOOL QingKe HuangYou",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "ZCOOL XiaoWei",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Zeyada",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Zhi Mang Xing",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Zilla Slab",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Zilla Slab Highlight",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Fantasy",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "fantasy",
+//   },
+// ];
 
 /***/ }),
 
@@ -5247,18 +10409,18 @@ __webpack_require__.r(__webpack_exports__);
 
 // const { __ } = wp.i18n;
 // const icons = {};
-// const img_path = qubely_admin.plugin + 'assets/img/blocks';
+// const img_path = mrmTypography_admin.plugin + 'assets/img/blocks';
 //
-// icons.qubely = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
+// icons.mrmTypography = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
 //
 // icons.solid = <svg xmlns="http://www.w3.org/2000/svg" width="19" height="2"><switch><g><path d="M0 0h19v2H0z" /></g></switch></svg>;
 // icons.dot = <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><g><g transform="translate(-1378 -121)"><g transform="translate(1229 110)"><g transform="translate(149 11)"><circle class="st0" cx="1" cy="1" r="1" /><circle class="st0" cx="17" cy="1" r="1" /><circle class="st0" cx="5" cy="1" r="1" /><circle class="st0" cx="13" cy="1" r="1" /><circle class="st0" cx="9" cy="1" r="1" /></g></g></g></g></g></switch></svg>;
 // icons.dash = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><path d="M18 2h-2V0h2v2zm-4 0h-2V0h2v2zm-4 0H8V0h2v2zM6 2H4V0h2v2zM2 2H0V0h2v2z" /></g></switch></svg>;
 // icons.wave = <svg xmlns="http://www.w3.org/2000/svg" width="21" height="4"><switch><g><path d="M8 3.5c-.8 0-1.7-.3-2.5-.9C4 1.5 2.4 1.5.7 2.6c-.2.1-.5.1-.7-.2-.1-.2-.1-.5.2-.7 2-1.3 4-1.3 5.8 0 1.5 1 2.8 1 4.2-.2 1.6-1.4 3.4-1.4 5.3 0 1.5 1.1 3.1 1.2 4.7.1.2-.1.5-.1.7.1.1.2.1.5-.1.7-2 1.3-3.9 1.3-5.8-.1-1.5-1.1-2.9-1.1-4.1 0C9.9 3.1 9 3.5 8 3.5z" /></g></switch></svg>;
 //
-// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="qubely-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="qubely-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="mrmTypography-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="mrmTypography-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
 //
 // icons.icon_classic = <img src={`${img_path}/icon/classic.svg`} alt={__('Classic')} />;
 // icons.icon_fill = <img src={`${img_path}/icon/fill.svg`} alt={__('Fill')} />;
@@ -5271,9 +10433,9 @@ __webpack_require__.r(__webpack_exports__);
 // icons.pie_outline = <img src={`${img_path}/pieprogress/outline.svg`} alt={__('Outline')} />;
 // icons.pie_outline_fill = <img src={`${img_path}/pieprogress/outline-fill.svg`} alt={__('Outline Fill')} />;
 //
-// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
+// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
 //
 // icons.tab_tabs = <img src={`${img_path}/tab/tabs.svg`} alt={__('Tabs')} />;
 // icons.tab_pills = <img src={`${img_path}/tab/pills.svg`} alt={__('Pills')} />;
@@ -5328,12 +10490,12 @@ __webpack_require__.r(__webpack_exports__);
 // icons.postgrid_design_6 = <img src={`${img_path}/postgrid/16.svg`} alt={__('Design 6')} />;
 //
 //
-// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
-// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
-// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
-// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
-// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
-// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
+// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
+// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
+// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
+// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
+// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
+// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
 // icons.p = <svg width="20px" height="20px" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1534 189v73q0 29-18.5 61t-42.5 32q-50 0-54 1-26 6-32 31-3 11-3 64v1152q0 25-18 43t-43 18h-108q-25 0-43-18t-18-43v-1218h-143v1218q0 25-17.5 43t-43.5 18h-108q-26 0-43.5-18t-17.5-43v-496q-147-12-245-59-126-58-192-179-64-117-64-259 0-166 88-286 88-118 209-159 111-37 417-37h479q25 0 43 18t18 43z" /></svg>
 // icons.span = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
 // icons.div = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
@@ -5474,6 +10636,13 @@ const attributes = {
   isRequiredLastName: {
     type: "boolean",
     default: false
+  },
+  typography: {
+    type: "object",
+    default: {},
+    style: [{
+      selector: "mrm-form-group.submit .mrm-submit-button"
+    }]
   },
   emailLabel: {
     type: "string",
@@ -5819,7 +10988,10 @@ const mrmEmailField = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      inputTypography,
+      labelTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -5828,7 +11000,9 @@ const mrmEmailField = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -5843,7 +11017,9 @@ const mrmEmailField = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group email",
@@ -5886,10 +11062,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -5941,10 +11119,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -6004,7 +11182,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -6031,6 +11209,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -6099,6 +11291,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -6127,7 +11333,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        typography,
+        inputTypography,
+        labelTypography
       }
     } = this.props;
     let fieldSpacing = {
@@ -6135,7 +11344,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -6150,7 +11361,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
@@ -6393,7 +11606,10 @@ const mrmFirstName = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      labelTypography,
+      inputTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -6402,7 +11618,9 @@ const mrmFirstName = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -6417,7 +11635,9 @@ const mrmFirstName = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group first-name",
@@ -6459,10 +11679,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -6514,10 +11736,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -6573,7 +11795,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -6600,6 +11822,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -6668,6 +11904,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -6699,7 +11949,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        inputTypography,
+        labelTypography,
+        Typography
       }
     } = this.props;
     let fieldSpacing = {
@@ -6707,7 +11960,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -6722,7 +11977,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-form-group first-name",
@@ -7213,7 +12470,10 @@ const mrmLastName = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      labelTypography,
+      inputTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -7222,7 +12482,9 @@ const mrmLastName = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -7237,7 +12499,9 @@ const mrmLastName = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group last-name",
@@ -7279,10 +12543,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -7334,10 +12600,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -7408,13 +12674,13 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -7424,36 +12690,50 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -7461,7 +12741,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -7470,28 +12750,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -7499,8 +12779,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -7530,15 +12822,20 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        labelTypography,
+        inputTypography,
+        Typography
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + "px"
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + 'px'
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -7546,14 +12843,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: inputBgColor,
       color: inputTextColor,
-      borderRadius: inputBorderRadius + 'px',
-      paddingTop: inputPaddingTop + 'px',
-      paddingRight: inputPaddingRight + 'px',
-      paddingBottom: inputPaddingBottom + 'px',
-      paddingLeft: inputPaddingLeft + 'px',
+      borderRadius: inputBorderRadius + "px",
+      paddingTop: inputPaddingTop + "px",
+      paddingRight: inputPaddingRight + "px",
+      paddingBottom: inputPaddingBottom + "px",
+      paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
-      borderWidth: inputBorderWidth + 'px',
-      borderColor: inputBorderColor
+      borderWidth: inputBorderWidth + "px",
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
@@ -7975,15 +13274,15 @@ const attributes = {
   },
   paddingTopBottom: {
     type: "number",
-    default: 20
+    default: 15
   },
   paddingLeftRight: {
     type: "number",
-    default: 25
+    default: 20
   },
   lineHeight: {
     type: "number",
-    default: 0.2
+    default: 1
   },
   letterSpacing: {
     type: "number",
@@ -8734,15 +14033,19 @@ const mrmCustomField = _ref => {
       inputPaddingLeft,
       inputBorderStyle,
       inputBorderWidth,
-      inputBorderColor
+      inputBorderColor,
+      inputTypography,
+      labelTypography
     }
   } = _ref;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let radioLabelColor = {
     color: labelColor
@@ -8753,22 +14056,24 @@ const mrmCustomField = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
-    borderColor: inputBorderColor
+    borderWidth: inputBorderWidth + "px",
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group text",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8779,13 +14084,13 @@ const mrmCustomField = _ref => {
     placeholder: custom_text_placeholder,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group textarea",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8797,13 +14102,13 @@ const mrmCustomField = _ref => {
     rows: "4",
     cols: "50",
     style: inputStyle
-  }))), field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group date",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8814,7 +14119,7 @@ const mrmCustomField = _ref => {
     placeholder: field_name,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group radio"
   }, radioOption.map((option, index) => {
@@ -8822,6 +14127,7 @@ const mrmCustomField = _ref => {
       className: "mrm-radio-group mintmrm-radiobtn",
       style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      key: index,
       type: "radio",
       id: option.label,
       name: field_slug,
@@ -8829,10 +14135,10 @@ const mrmCustomField = _ref => {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
       style: radioLabelColor
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
-  })), field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
@@ -8847,16 +14153,16 @@ const mrmCustomField = _ref => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: checkboxLabelColor
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
-  }, "*")))), field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "*")))), field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group select",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8866,6 +14172,7 @@ const mrmCustomField = _ref => {
     style: inputStyle
   }, selectOption.map((option, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      key: index,
       value: makeSlug(option.value)
     }, option.label);
   })))));
@@ -8891,10 +14198,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -8946,10 +14255,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -8974,9 +14283,9 @@ class Editor extends Component {
     });
     let defaultOption = {
       value: slug_name,
-      label: 'Label' + '-' + attributes.radio_option_count
+      label: "Label" + "-" + attributes.radio_option_count
     };
-    if ('radio' === attributes.field_type) {
+    if ("radio" === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
       setAttributes(attributes.radioOption);
     }
@@ -8993,25 +14302,25 @@ class Editor extends Component {
       className: "mrm-inline-label",
       label: "Field Type",
       value: attributes.field_type,
-      onChange: select_type => this.onChangeAttribute('field_type', select_type),
+      onChange: select_type => this.onChangeAttribute("field_type", select_type),
       options: [{
-        value: 'text',
-        label: 'Text'
+        value: "text",
+        label: "Text"
       }, {
-        value: 'textarea',
-        label: 'Text Area'
+        value: "textarea",
+        label: "Text Area"
       }, {
-        value: 'radio',
-        label: 'Radio Button'
+        value: "radio",
+        label: "Radio Button"
       }, {
-        value: 'checkbox',
-        label: 'Checkbox'
+        value: "checkbox",
+        label: "Checkbox"
       }, {
-        value: 'select',
-        label: 'Select'
+        value: "select",
+        label: "Select"
       }, {
-        value: 'date',
-        label: 'Date'
+        value: "date",
+        label: "Date"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
@@ -9020,28 +14329,28 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_name: state
       })
-    }), attributes.field_type != 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type != "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Field Label",
       value: attributes.field_label,
       onChange: state => setAttributes({
         field_label: state
       })
-    }), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_textarea_placeholder,
       onChange: state => setAttributes({
         custom_textarea_placeholder: state
       })
-    }), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_text_placeholder,
       onChange: state => setAttributes({
         custom_text_placeholder: state
       })
-    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "select-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -9098,7 +14407,7 @@ class Editor extends Component {
         fill: "#fff",
         d: "M0 0h22v22H0z"
       }))))));
-    })), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "radio-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -9261,27 +14570,29 @@ class Editor extends Component {
       select_option_count: attributes.select_option_count + 1
     });
     let defaultOption = {
-      value: 'option' + '-' + attributes.select_option_count,
-      label: 'Option' + '-' + attributes.select_option_count
+      value: "option" + "-" + attributes.select_option_count,
+      label: "Option" + "-" + attributes.select_option_count
     };
-    if ('select' === attributes.field_type) {
+    if ("select" === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
       setAttributes(attributes.selectOption);
     }
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9291,18 +14602,30 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
-    }), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
-    })));
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    }));
   };
   inputFieldStyle = () => {
     let {
@@ -9317,12 +14640,12 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -9330,7 +14653,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -9339,28 +14662,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -9368,8 +14691,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -9382,7 +14717,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: "mrm-block-inspected-inspector-control-wrapper",
       className: "mrm-block-control-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && this.inputFieldStyle())));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && this.inputFieldStyle())));
   };
 
   /**
@@ -9396,11 +14731,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9408,14 +14745,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9424,7 +14763,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9449,11 +14788,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9461,14 +14802,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9477,7 +14820,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9503,11 +14846,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9515,14 +14860,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9531,7 +14878,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9555,11 +14902,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9567,14 +14916,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9583,7 +14934,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9623,7 +14974,7 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
 
     // let labelStyle = {
@@ -9632,7 +14983,9 @@ class Editor extends Component {
     // }
 
     let checkboxLabelColor = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
 
     // let inputStyle = {
@@ -9659,7 +15012,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: checkboxLabelColor
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*"))));
   };
@@ -9670,10 +15023,12 @@ class Editor extends Component {
     } = this.props;
     let fieldSpacing = {
       //color:  attributes.labelColor,
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
       //marginBottom:  attributes.labelSpacing+'px',
     };
 
@@ -9698,9 +15053,10 @@ class Editor extends Component {
       name: field_slug,
       required: attributes.field_require
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      key: index,
       htmlFor: option.label,
       style: labelStyle
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
   };
@@ -9730,7 +15086,7 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
   }
 }
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
@@ -9825,7 +15181,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "../../../node_modules/react-router/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/index.js");
 /* harmony import */ var _Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Icons/CrossIcon */ "./src/components/Icons/CrossIcon.jsx");
 /* harmony import */ var _Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Icons/QuestionIcon */ "./src/components/Icons/QuestionIcon.jsx");
 /* harmony import */ var _Icons_SettingsIcon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Icons/SettingsIcon */ "./src/components/Icons/SettingsIcon.jsx");
@@ -9855,7 +15211,8 @@ const {
   Radio,
   DateTimePicker,
   DatePicker,
-  TabPanel
+  TabPanel,
+  ColorPicker
 } = wp.components;
 const {
   Component,
@@ -9899,7 +15256,9 @@ function Sidebar() {
       },
       form_layout: {
         form_placement: "",
-        form_animation: ""
+        form_animation: "",
+        close_button_color: "",
+        close_background_color: ""
       },
       schedule: {
         form_scheduling: false,
@@ -9933,6 +15292,8 @@ function Sidebar() {
   // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+  const [closeButtonColor, setCloseButtonColor] = useState("#000");
+  const [closeBackgroundColor, setCloseBackgroundColor] = useState("#fff");
 
   // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
@@ -10004,7 +15365,7 @@ function Sidebar() {
     return !!pattern.test(str);
   }
   useEffect(() => {
-    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51;
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51, _prevSetting$settings54, _prevSetting$settings55, _prevSetting$settings58, _prevSetting$settings59;
     // set selected confiramation type
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
       var _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6;
@@ -10078,6 +15439,22 @@ function Sidebar() {
     } else {
       setFormAnimation("none");
     }
+
+    //set form close button color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings54 = prevSetting.settings) !== null && _prevSetting$settings54 !== void 0 && (_prevSetting$settings55 = _prevSetting$settings54.form_layout) !== null && _prevSetting$settings55 !== void 0 && _prevSetting$settings55.close_button_color) {
+      var _prevSetting$settings56, _prevSetting$settings57;
+      setCloseButtonColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings56 = prevSetting.settings) === null || _prevSetting$settings56 === void 0 ? void 0 : (_prevSetting$settings57 = _prevSetting$settings56.form_layout) === null || _prevSetting$settings57 === void 0 ? void 0 : _prevSetting$settings57.close_button_color);
+    } else {
+      setCloseButtonColor("#000");
+    }
+
+    //set form close button background color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings58 = prevSetting.settings) !== null && _prevSetting$settings58 !== void 0 && (_prevSetting$settings59 = _prevSetting$settings58.form_layout) !== null && _prevSetting$settings59 !== void 0 && _prevSetting$settings59.close_background_color) {
+      var _prevSetting$settings60, _prevSetting$settings61;
+      setCloseBackgroundColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings60 = prevSetting.settings) === null || _prevSetting$settings60 === void 0 ? void 0 : (_prevSetting$settings61 = _prevSetting$settings60.form_layout) === null || _prevSetting$settings61 === void 0 ? void 0 : _prevSetting$settings61.close_background_color);
+    } else {
+      setCloseBackgroundColor("#fff");
+    }
   }, [prevSetting]);
   useEffect(async () => {
     if ("same-page" === currentTab) {
@@ -10092,7 +15469,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -10120,7 +15499,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -10148,7 +15529,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -10165,7 +15548,7 @@ function Sidebar() {
         }
       });
     }
-  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
+  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, closeButtonColor, closeBackgroundColor, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
@@ -10258,10 +15641,10 @@ function Sidebar() {
   }, "Same Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "page" ? "tab-nav-item active" : "tab-nav-item",
     onClick: () => handleConfirmationType("page")
-  }, "To a page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, "To A Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "custom-url" ? "tab-nav-item active" : "tab-nav-item",
     onClick: () => handleConfirmationType("custom-url")
-  }, "To a custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "To A Custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pannel-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "same-page" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -10365,7 +15748,43 @@ function Sidebar() {
       value: "flyins"
     }],
     onChange: state => setFormPosition(state)
-  })))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Close Button Color",
+    className: "form-layout-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Close Icon", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon for form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Background", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon Background"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }))))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Animation",
     className: "form-animation-settings",
     initialOpen: false
@@ -11690,866 +17109,72 @@ if (false) {} else {
 
 /***/ }),
 
-/***/ "../../../node_modules/history/index.js":
-/*!**********************************************!*\
-  !*** ../../../node_modules/history/index.js ***!
-  \**********************************************/
+/***/ "./node_modules/react-router/dist/index.js":
+/*!*************************************************!*\
+  !*** ./node_modules/react-router/dist/index.js ***!
+  \*************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Action": function() { return /* binding */ Action; },
-/* harmony export */   "createBrowserHistory": function() { return /* binding */ createBrowserHistory; },
-/* harmony export */   "createHashHistory": function() { return /* binding */ createHashHistory; },
-/* harmony export */   "createMemoryHistory": function() { return /* binding */ createMemoryHistory; },
-/* harmony export */   "createPath": function() { return /* binding */ createPath; },
-/* harmony export */   "parsePath": function() { return /* binding */ parsePath; }
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "../../../node_modules/@babel/runtime/helpers/esm/extends.js");
-
-
-/**
- * Actions represent the type of change to a location value.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#action
- */
-var Action;
-
-(function (Action) {
-  /**
-   * A POP indicates a change to an arbitrary index in the history stack, such
-   * as a back or forward navigation. It does not describe the direction of the
-   * navigation, only that the current index changed.
-   *
-   * Note: This is the default action for newly created history objects.
-   */
-  Action["Pop"] = "POP";
-  /**
-   * A PUSH indicates a new entry being added to the history stack, such as when
-   * a link is clicked and a new page loads. When this happens, all subsequent
-   * entries in the stack are lost.
-   */
-
-  Action["Push"] = "PUSH";
-  /**
-   * A REPLACE indicates the entry at the current index in the history stack
-   * being replaced by a new one.
-   */
-
-  Action["Replace"] = "REPLACE";
-})(Action || (Action = {}));
-
-var readOnly =  true ? function (obj) {
-  return Object.freeze(obj);
-} : 0;
-
-function warning(cond, message) {
-  if (!cond) {
-    // eslint-disable-next-line no-console
-    if (typeof console !== 'undefined') console.warn(message);
-
-    try {
-      // Welcome to debugging history!
-      //
-      // This error is thrown as a convenience so you can more easily
-      // find the source for a warning that appears in the console by
-      // enabling "pause on exceptions" in your JavaScript debugger.
-      throw new Error(message); // eslint-disable-next-line no-empty
-    } catch (e) {}
-  }
-}
-
-var BeforeUnloadEventType = 'beforeunload';
-var HashChangeEventType = 'hashchange';
-var PopStateEventType = 'popstate';
-/**
- * Browser history stores the location in regular URLs. This is the standard for
- * most web apps, but it requires some configuration on the server to ensure you
- * serve the same app at multiple URLs.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createbrowserhistory
- */
-
-function createBrowserHistory(options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  var _options = options,
-      _options$window = _options.window,
-      window = _options$window === void 0 ? document.defaultView : _options$window;
-  var globalHistory = window.history;
-
-  function getIndexAndLocation() {
-    var _window$location = window.location,
-        pathname = _window$location.pathname,
-        search = _window$location.search,
-        hash = _window$location.hash;
-    var state = globalHistory.state || {};
-    return [state.idx, readOnly({
-      pathname: pathname,
-      search: search,
-      hash: hash,
-      state: state.usr || null,
-      key: state.key || 'default'
-    })];
-  }
-
-  var blockedPopTx = null;
-
-  function handlePop() {
-    if (blockedPopTx) {
-      blockers.call(blockedPopTx);
-      blockedPopTx = null;
-    } else {
-      var nextAction = Action.Pop;
-
-      var _getIndexAndLocation = getIndexAndLocation(),
-          nextIndex = _getIndexAndLocation[0],
-          nextLocation = _getIndexAndLocation[1];
-
-      if (blockers.length) {
-        if (nextIndex != null) {
-          var delta = index - nextIndex;
-
-          if (delta) {
-            // Revert the POP
-            blockedPopTx = {
-              action: nextAction,
-              location: nextLocation,
-              retry: function retry() {
-                go(delta * -1);
-              }
-            };
-            go(delta);
-          }
-        } else {
-          // Trying to POP to a location with no index. We did not create
-          // this location, so we can't effectively block the navigation.
-           true ? warning(false, // TODO: Write up a doc that explains our blocking strategy in
-          // detail and link to it here so people can understand better what
-          // is going on and how to avoid it.
-          "You are trying to block a POP navigation to a location that was not " + "created by the history library. The block will fail silently in " + "production, but in general you should do all navigation with the " + "history library (instead of using window.history.pushState directly) " + "to avoid this situation.") : 0;
-        }
-      } else {
-        applyTx(nextAction);
-      }
-    }
-  }
-
-  window.addEventListener(PopStateEventType, handlePop);
-  var action = Action.Pop;
-
-  var _getIndexAndLocation2 = getIndexAndLocation(),
-      index = _getIndexAndLocation2[0],
-      location = _getIndexAndLocation2[1];
-
-  var listeners = createEvents();
-  var blockers = createEvents();
-
-  if (index == null) {
-    index = 0;
-    globalHistory.replaceState((0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, globalHistory.state, {
-      idx: index
-    }), '');
-  }
-
-  function createHref(to) {
-    return typeof to === 'string' ? to : createPath(to);
-  } // state defaults to `null` because `window.history.state` does
-
-
-  function getNextLocation(to, state) {
-    if (state === void 0) {
-      state = null;
-    }
-
-    return readOnly((0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-      pathname: location.pathname,
-      hash: '',
-      search: ''
-    }, typeof to === 'string' ? parsePath(to) : to, {
-      state: state,
-      key: createKey()
-    }));
-  }
-
-  function getHistoryStateAndUrl(nextLocation, index) {
-    return [{
-      usr: nextLocation.state,
-      key: nextLocation.key,
-      idx: index
-    }, createHref(nextLocation)];
-  }
-
-  function allowTx(action, location, retry) {
-    return !blockers.length || (blockers.call({
-      action: action,
-      location: location,
-      retry: retry
-    }), false);
-  }
-
-  function applyTx(nextAction) {
-    action = nextAction;
-
-    var _getIndexAndLocation3 = getIndexAndLocation();
-
-    index = _getIndexAndLocation3[0];
-    location = _getIndexAndLocation3[1];
-    listeners.call({
-      action: action,
-      location: location
-    });
-  }
-
-  function push(to, state) {
-    var nextAction = Action.Push;
-    var nextLocation = getNextLocation(to, state);
-
-    function retry() {
-      push(to, state);
-    }
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      var _getHistoryStateAndUr = getHistoryStateAndUrl(nextLocation, index + 1),
-          historyState = _getHistoryStateAndUr[0],
-          url = _getHistoryStateAndUr[1]; // TODO: Support forced reloading
-      // try...catch because iOS limits us to 100 pushState calls :/
-
-
-      try {
-        globalHistory.pushState(historyState, '', url);
-      } catch (error) {
-        // They are going to lose state here, but there is no real
-        // way to warn them about it since the page will refresh...
-        window.location.assign(url);
-      }
-
-      applyTx(nextAction);
-    }
-  }
-
-  function replace(to, state) {
-    var nextAction = Action.Replace;
-    var nextLocation = getNextLocation(to, state);
-
-    function retry() {
-      replace(to, state);
-    }
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      var _getHistoryStateAndUr2 = getHistoryStateAndUrl(nextLocation, index),
-          historyState = _getHistoryStateAndUr2[0],
-          url = _getHistoryStateAndUr2[1]; // TODO: Support forced reloading
-
-
-      globalHistory.replaceState(historyState, '', url);
-      applyTx(nextAction);
-    }
-  }
-
-  function go(delta) {
-    globalHistory.go(delta);
-  }
-
-  var history = {
-    get action() {
-      return action;
-    },
-
-    get location() {
-      return location;
-    },
-
-    createHref: createHref,
-    push: push,
-    replace: replace,
-    go: go,
-    back: function back() {
-      go(-1);
-    },
-    forward: function forward() {
-      go(1);
-    },
-    listen: function listen(listener) {
-      return listeners.push(listener);
-    },
-    block: function block(blocker) {
-      var unblock = blockers.push(blocker);
-
-      if (blockers.length === 1) {
-        window.addEventListener(BeforeUnloadEventType, promptBeforeUnload);
-      }
-
-      return function () {
-        unblock(); // Remove the beforeunload listener so the document may
-        // still be salvageable in the pagehide event.
-        // See https://html.spec.whatwg.org/#unloading-documents
-
-        if (!blockers.length) {
-          window.removeEventListener(BeforeUnloadEventType, promptBeforeUnload);
-        }
-      };
-    }
-  };
-  return history;
-}
-/**
- * Hash history stores the location in window.location.hash. This makes it ideal
- * for situations where you don't want to send the location to the server for
- * some reason, either because you do cannot configure it or the URL space is
- * reserved for something else.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createhashhistory
- */
-
-function createHashHistory(options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  var _options2 = options,
-      _options2$window = _options2.window,
-      window = _options2$window === void 0 ? document.defaultView : _options2$window;
-  var globalHistory = window.history;
-
-  function getIndexAndLocation() {
-    var _parsePath = parsePath(window.location.hash.substr(1)),
-        _parsePath$pathname = _parsePath.pathname,
-        pathname = _parsePath$pathname === void 0 ? '/' : _parsePath$pathname,
-        _parsePath$search = _parsePath.search,
-        search = _parsePath$search === void 0 ? '' : _parsePath$search,
-        _parsePath$hash = _parsePath.hash,
-        hash = _parsePath$hash === void 0 ? '' : _parsePath$hash;
-
-    var state = globalHistory.state || {};
-    return [state.idx, readOnly({
-      pathname: pathname,
-      search: search,
-      hash: hash,
-      state: state.usr || null,
-      key: state.key || 'default'
-    })];
-  }
-
-  var blockedPopTx = null;
-
-  function handlePop() {
-    if (blockedPopTx) {
-      blockers.call(blockedPopTx);
-      blockedPopTx = null;
-    } else {
-      var nextAction = Action.Pop;
-
-      var _getIndexAndLocation4 = getIndexAndLocation(),
-          nextIndex = _getIndexAndLocation4[0],
-          nextLocation = _getIndexAndLocation4[1];
-
-      if (blockers.length) {
-        if (nextIndex != null) {
-          var delta = index - nextIndex;
-
-          if (delta) {
-            // Revert the POP
-            blockedPopTx = {
-              action: nextAction,
-              location: nextLocation,
-              retry: function retry() {
-                go(delta * -1);
-              }
-            };
-            go(delta);
-          }
-        } else {
-          // Trying to POP to a location with no index. We did not create
-          // this location, so we can't effectively block the navigation.
-           true ? warning(false, // TODO: Write up a doc that explains our blocking strategy in
-          // detail and link to it here so people can understand better
-          // what is going on and how to avoid it.
-          "You are trying to block a POP navigation to a location that was not " + "created by the history library. The block will fail silently in " + "production, but in general you should do all navigation with the " + "history library (instead of using window.history.pushState directly) " + "to avoid this situation.") : 0;
-        }
-      } else {
-        applyTx(nextAction);
-      }
-    }
-  }
-
-  window.addEventListener(PopStateEventType, handlePop); // popstate does not fire on hashchange in IE 11 and old (trident) Edge
-  // https://developer.mozilla.org/de/docs/Web/API/Window/popstate_event
-
-  window.addEventListener(HashChangeEventType, function () {
-    var _getIndexAndLocation5 = getIndexAndLocation(),
-        nextLocation = _getIndexAndLocation5[1]; // Ignore extraneous hashchange events.
-
-
-    if (createPath(nextLocation) !== createPath(location)) {
-      handlePop();
-    }
-  });
-  var action = Action.Pop;
-
-  var _getIndexAndLocation6 = getIndexAndLocation(),
-      index = _getIndexAndLocation6[0],
-      location = _getIndexAndLocation6[1];
-
-  var listeners = createEvents();
-  var blockers = createEvents();
-
-  if (index == null) {
-    index = 0;
-    globalHistory.replaceState((0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, globalHistory.state, {
-      idx: index
-    }), '');
-  }
-
-  function getBaseHref() {
-    var base = document.querySelector('base');
-    var href = '';
-
-    if (base && base.getAttribute('href')) {
-      var url = window.location.href;
-      var hashIndex = url.indexOf('#');
-      href = hashIndex === -1 ? url : url.slice(0, hashIndex);
-    }
-
-    return href;
-  }
-
-  function createHref(to) {
-    return getBaseHref() + '#' + (typeof to === 'string' ? to : createPath(to));
-  }
-
-  function getNextLocation(to, state) {
-    if (state === void 0) {
-      state = null;
-    }
-
-    return readOnly((0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-      pathname: location.pathname,
-      hash: '',
-      search: ''
-    }, typeof to === 'string' ? parsePath(to) : to, {
-      state: state,
-      key: createKey()
-    }));
-  }
-
-  function getHistoryStateAndUrl(nextLocation, index) {
-    return [{
-      usr: nextLocation.state,
-      key: nextLocation.key,
-      idx: index
-    }, createHref(nextLocation)];
-  }
-
-  function allowTx(action, location, retry) {
-    return !blockers.length || (blockers.call({
-      action: action,
-      location: location,
-      retry: retry
-    }), false);
-  }
-
-  function applyTx(nextAction) {
-    action = nextAction;
-
-    var _getIndexAndLocation7 = getIndexAndLocation();
-
-    index = _getIndexAndLocation7[0];
-    location = _getIndexAndLocation7[1];
-    listeners.call({
-      action: action,
-      location: location
-    });
-  }
-
-  function push(to, state) {
-    var nextAction = Action.Push;
-    var nextLocation = getNextLocation(to, state);
-
-    function retry() {
-      push(to, state);
-    }
-
-     true ? warning(nextLocation.pathname.charAt(0) === '/', "Relative pathnames are not supported in hash history.push(" + JSON.stringify(to) + ")") : 0;
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      var _getHistoryStateAndUr3 = getHistoryStateAndUrl(nextLocation, index + 1),
-          historyState = _getHistoryStateAndUr3[0],
-          url = _getHistoryStateAndUr3[1]; // TODO: Support forced reloading
-      // try...catch because iOS limits us to 100 pushState calls :/
-
-
-      try {
-        globalHistory.pushState(historyState, '', url);
-      } catch (error) {
-        // They are going to lose state here, but there is no real
-        // way to warn them about it since the page will refresh...
-        window.location.assign(url);
-      }
-
-      applyTx(nextAction);
-    }
-  }
-
-  function replace(to, state) {
-    var nextAction = Action.Replace;
-    var nextLocation = getNextLocation(to, state);
-
-    function retry() {
-      replace(to, state);
-    }
-
-     true ? warning(nextLocation.pathname.charAt(0) === '/', "Relative pathnames are not supported in hash history.replace(" + JSON.stringify(to) + ")") : 0;
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      var _getHistoryStateAndUr4 = getHistoryStateAndUrl(nextLocation, index),
-          historyState = _getHistoryStateAndUr4[0],
-          url = _getHistoryStateAndUr4[1]; // TODO: Support forced reloading
-
-
-      globalHistory.replaceState(historyState, '', url);
-      applyTx(nextAction);
-    }
-  }
-
-  function go(delta) {
-    globalHistory.go(delta);
-  }
-
-  var history = {
-    get action() {
-      return action;
-    },
-
-    get location() {
-      return location;
-    },
-
-    createHref: createHref,
-    push: push,
-    replace: replace,
-    go: go,
-    back: function back() {
-      go(-1);
-    },
-    forward: function forward() {
-      go(1);
-    },
-    listen: function listen(listener) {
-      return listeners.push(listener);
-    },
-    block: function block(blocker) {
-      var unblock = blockers.push(blocker);
-
-      if (blockers.length === 1) {
-        window.addEventListener(BeforeUnloadEventType, promptBeforeUnload);
-      }
-
-      return function () {
-        unblock(); // Remove the beforeunload listener so the document may
-        // still be salvageable in the pagehide event.
-        // See https://html.spec.whatwg.org/#unloading-documents
-
-        if (!blockers.length) {
-          window.removeEventListener(BeforeUnloadEventType, promptBeforeUnload);
-        }
-      };
-    }
-  };
-  return history;
-}
-/**
- * Memory history stores the current location in memory. It is designed for use
- * in stateful non-browser environments like tests and React Native.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#creatememoryhistory
- */
-
-function createMemoryHistory(options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  var _options3 = options,
-      _options3$initialEntr = _options3.initialEntries,
-      initialEntries = _options3$initialEntr === void 0 ? ['/'] : _options3$initialEntr,
-      initialIndex = _options3.initialIndex;
-  var entries = initialEntries.map(function (entry) {
-    var location = readOnly((0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-      pathname: '/',
-      search: '',
-      hash: '',
-      state: null,
-      key: createKey()
-    }, typeof entry === 'string' ? parsePath(entry) : entry));
-     true ? warning(location.pathname.charAt(0) === '/', "Relative pathnames are not supported in createMemoryHistory({ initialEntries }) (invalid entry: " + JSON.stringify(entry) + ")") : 0;
-    return location;
-  });
-  var index = clamp(initialIndex == null ? entries.length - 1 : initialIndex, 0, entries.length - 1);
-  var action = Action.Pop;
-  var location = entries[index];
-  var listeners = createEvents();
-  var blockers = createEvents();
-
-  function createHref(to) {
-    return typeof to === 'string' ? to : createPath(to);
-  }
-
-  function getNextLocation(to, state) {
-    if (state === void 0) {
-      state = null;
-    }
-
-    return readOnly((0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-      pathname: location.pathname,
-      search: '',
-      hash: ''
-    }, typeof to === 'string' ? parsePath(to) : to, {
-      state: state,
-      key: createKey()
-    }));
-  }
-
-  function allowTx(action, location, retry) {
-    return !blockers.length || (blockers.call({
-      action: action,
-      location: location,
-      retry: retry
-    }), false);
-  }
-
-  function applyTx(nextAction, nextLocation) {
-    action = nextAction;
-    location = nextLocation;
-    listeners.call({
-      action: action,
-      location: location
-    });
-  }
-
-  function push(to, state) {
-    var nextAction = Action.Push;
-    var nextLocation = getNextLocation(to, state);
-
-    function retry() {
-      push(to, state);
-    }
-
-     true ? warning(location.pathname.charAt(0) === '/', "Relative pathnames are not supported in memory history.push(" + JSON.stringify(to) + ")") : 0;
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      index += 1;
-      entries.splice(index, entries.length, nextLocation);
-      applyTx(nextAction, nextLocation);
-    }
-  }
-
-  function replace(to, state) {
-    var nextAction = Action.Replace;
-    var nextLocation = getNextLocation(to, state);
-
-    function retry() {
-      replace(to, state);
-    }
-
-     true ? warning(location.pathname.charAt(0) === '/', "Relative pathnames are not supported in memory history.replace(" + JSON.stringify(to) + ")") : 0;
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      entries[index] = nextLocation;
-      applyTx(nextAction, nextLocation);
-    }
-  }
-
-  function go(delta) {
-    var nextIndex = clamp(index + delta, 0, entries.length - 1);
-    var nextAction = Action.Pop;
-    var nextLocation = entries[nextIndex];
-
-    function retry() {
-      go(delta);
-    }
-
-    if (allowTx(nextAction, nextLocation, retry)) {
-      index = nextIndex;
-      applyTx(nextAction, nextLocation);
-    }
-  }
-
-  var history = {
-    get index() {
-      return index;
-    },
-
-    get action() {
-      return action;
-    },
-
-    get location() {
-      return location;
-    },
-
-    createHref: createHref,
-    push: push,
-    replace: replace,
-    go: go,
-    back: function back() {
-      go(-1);
-    },
-    forward: function forward() {
-      go(1);
-    },
-    listen: function listen(listener) {
-      return listeners.push(listener);
-    },
-    block: function block(blocker) {
-      return blockers.push(blocker);
-    }
-  };
-  return history;
-} ////////////////////////////////////////////////////////////////////////////////
-// UTILS
-////////////////////////////////////////////////////////////////////////////////
-
-function clamp(n, lowerBound, upperBound) {
-  return Math.min(Math.max(n, lowerBound), upperBound);
-}
-
-function promptBeforeUnload(event) {
-  // Cancel the event.
-  event.preventDefault(); // Chrome (and legacy IE) requires returnValue to be set.
-
-  event.returnValue = '';
-}
-
-function createEvents() {
-  var handlers = [];
-  return {
-    get length() {
-      return handlers.length;
-    },
-
-    push: function push(fn) {
-      handlers.push(fn);
-      return function () {
-        handlers = handlers.filter(function (handler) {
-          return handler !== fn;
-        });
-      };
-    },
-    call: function call(arg) {
-      handlers.forEach(function (fn) {
-        return fn && fn(arg);
-      });
-    }
-  };
-}
-
-function createKey() {
-  return Math.random().toString(36).substr(2, 8);
-}
-/**
- * Creates a string URL path from the given pathname, search, and hash components.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createpath
- */
-
-
-function createPath(_ref) {
-  var _ref$pathname = _ref.pathname,
-      pathname = _ref$pathname === void 0 ? '/' : _ref$pathname,
-      _ref$search = _ref.search,
-      search = _ref$search === void 0 ? '' : _ref$search,
-      _ref$hash = _ref.hash,
-      hash = _ref$hash === void 0 ? '' : _ref$hash;
-  if (search && search !== '?') pathname += search.charAt(0) === '?' ? search : '?' + search;
-  if (hash && hash !== '#') pathname += hash.charAt(0) === '#' ? hash : '#' + hash;
-  return pathname;
-}
-/**
- * Parses a string URL path into its separate pathname, search, and hash components.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#parsepath
- */
-
-function parsePath(path) {
-  var parsedPath = {};
-
-  if (path) {
-    var hashIndex = path.indexOf('#');
-
-    if (hashIndex >= 0) {
-      parsedPath.hash = path.substr(hashIndex);
-      path = path.substr(0, hashIndex);
-    }
-
-    var searchIndex = path.indexOf('?');
-
-    if (searchIndex >= 0) {
-      parsedPath.search = path.substr(searchIndex);
-      path = path.substr(0, searchIndex);
-    }
-
-    if (path) {
-      parsedPath.pathname = path;
-    }
-  }
-
-  return parsedPath;
-}
-
-
-//# sourceMappingURL=index.js.map
-
-
-/***/ }),
-
-/***/ "../../../node_modules/react-router/index.js":
-/*!***************************************************!*\
-  !*** ../../../node_modules/react-router/index.js ***!
-  \***************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbortedDeferredError": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.AbortedDeferredError; },
+/* harmony export */   "Await": function() { return /* binding */ Await; },
 /* harmony export */   "MemoryRouter": function() { return /* binding */ MemoryRouter; },
 /* harmony export */   "Navigate": function() { return /* binding */ Navigate; },
-/* harmony export */   "NavigationType": function() { return /* reexport safe */ history__WEBPACK_IMPORTED_MODULE_0__.Action; },
+/* harmony export */   "NavigationType": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.Action; },
 /* harmony export */   "Outlet": function() { return /* binding */ Outlet; },
 /* harmony export */   "Route": function() { return /* binding */ Route; },
 /* harmony export */   "Router": function() { return /* binding */ Router; },
+/* harmony export */   "RouterProvider": function() { return /* binding */ RouterProvider; },
 /* harmony export */   "Routes": function() { return /* binding */ Routes; },
+/* harmony export */   "UNSAFE_DataRouterContext": function() { return /* binding */ DataRouterContext; },
+/* harmony export */   "UNSAFE_DataRouterStateContext": function() { return /* binding */ DataRouterStateContext; },
+/* harmony export */   "UNSAFE_DataStaticRouterContext": function() { return /* binding */ DataStaticRouterContext; },
 /* harmony export */   "UNSAFE_LocationContext": function() { return /* binding */ LocationContext; },
 /* harmony export */   "UNSAFE_NavigationContext": function() { return /* binding */ NavigationContext; },
 /* harmony export */   "UNSAFE_RouteContext": function() { return /* binding */ RouteContext; },
-/* harmony export */   "createPath": function() { return /* reexport safe */ history__WEBPACK_IMPORTED_MODULE_0__.createPath; },
+/* harmony export */   "UNSAFE_enhanceManualRouteObjects": function() { return /* binding */ enhanceManualRouteObjects; },
+/* harmony export */   "createMemoryRouter": function() { return /* binding */ createMemoryRouter; },
+/* harmony export */   "createPath": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.createPath; },
 /* harmony export */   "createRoutesFromChildren": function() { return /* binding */ createRoutesFromChildren; },
-/* harmony export */   "generatePath": function() { return /* binding */ generatePath; },
-/* harmony export */   "matchPath": function() { return /* binding */ matchPath; },
-/* harmony export */   "matchRoutes": function() { return /* binding */ matchRoutes; },
-/* harmony export */   "parsePath": function() { return /* reexport safe */ history__WEBPACK_IMPORTED_MODULE_0__.parsePath; },
+/* harmony export */   "createRoutesFromElements": function() { return /* binding */ createRoutesFromChildren; },
+/* harmony export */   "defer": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.defer; },
+/* harmony export */   "generatePath": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.generatePath; },
+/* harmony export */   "isRouteErrorResponse": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.isRouteErrorResponse; },
+/* harmony export */   "json": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.json; },
+/* harmony export */   "matchPath": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.matchPath; },
+/* harmony export */   "matchRoutes": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.matchRoutes; },
+/* harmony export */   "parsePath": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.parsePath; },
+/* harmony export */   "redirect": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.redirect; },
 /* harmony export */   "renderMatches": function() { return /* binding */ renderMatches; },
-/* harmony export */   "resolvePath": function() { return /* binding */ resolvePath; },
+/* harmony export */   "resolvePath": function() { return /* reexport safe */ _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.resolvePath; },
+/* harmony export */   "useActionData": function() { return /* binding */ useActionData; },
+/* harmony export */   "useAsyncError": function() { return /* binding */ useAsyncError; },
+/* harmony export */   "useAsyncValue": function() { return /* binding */ useAsyncValue; },
 /* harmony export */   "useHref": function() { return /* binding */ useHref; },
 /* harmony export */   "useInRouterContext": function() { return /* binding */ useInRouterContext; },
+/* harmony export */   "useLoaderData": function() { return /* binding */ useLoaderData; },
 /* harmony export */   "useLocation": function() { return /* binding */ useLocation; },
 /* harmony export */   "useMatch": function() { return /* binding */ useMatch; },
+/* harmony export */   "useMatches": function() { return /* binding */ useMatches; },
 /* harmony export */   "useNavigate": function() { return /* binding */ useNavigate; },
+/* harmony export */   "useNavigation": function() { return /* binding */ useNavigation; },
 /* harmony export */   "useNavigationType": function() { return /* binding */ useNavigationType; },
 /* harmony export */   "useOutlet": function() { return /* binding */ useOutlet; },
 /* harmony export */   "useOutletContext": function() { return /* binding */ useOutletContext; },
 /* harmony export */   "useParams": function() { return /* binding */ useParams; },
 /* harmony export */   "useResolvedPath": function() { return /* binding */ useResolvedPath; },
+/* harmony export */   "useRevalidator": function() { return /* binding */ useRevalidator; },
+/* harmony export */   "useRouteError": function() { return /* binding */ useRouteError; },
+/* harmony export */   "useRouteLoaderData": function() { return /* binding */ useRouteLoaderData; },
 /* harmony export */   "useRoutes": function() { return /* binding */ useRoutes; }
 /* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "../../../node_modules/history/index.js");
+/* harmony import */ var _remix_run_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @remix-run/router */ "./node_modules/@remix-run/router/dist/router.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /**
- * React Router v6.3.0
+ * React Router v6.4.2
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -12562,19 +17187,239 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const NavigationContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createContext)(null);
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+/**
+ * inlined Object.is polyfill to avoid requiring consumers ship their own
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+ */
+
+function isPolyfill(x, y) {
+  return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y // eslint-disable-line no-self-compare
+  ;
+}
+
+const is = typeof Object.is === "function" ? Object.is : isPolyfill; // Intentionally not using named imports because Rollup uses dynamic
+// dispatch for CommonJS interop named imports.
+
+const {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useDebugValue
+} = react__WEBPACK_IMPORTED_MODULE_1__;
+let didWarnOld18Alpha = false;
+let didWarnUncachedGetSnapshot = false; // Disclaimer: This shim breaks many of the rules of React, and only works
+// because of a very particular set of implementation details and assumptions
+// -- change any one of them and it will break. The most important assumption
+// is that updates are always synchronous, because concurrent rendering is
+// only available in versions of React that also have a built-in
+// useSyncExternalStore API. And we only use this shim when the built-in API
+// does not exist.
+//
+// Do not assume that the clever hacks used by this hook also work in general.
+// The point of this shim is to replace the need for hacks by other libraries.
+
+function useSyncExternalStore$2(subscribe, getSnapshot, // Note: The shim does not use getServerSnapshot, because pre-18 versions of
+// React do not expose a way to check if we're hydrating. So users of the shim
+// will need to track that themselves and return the correct value
+// from `getSnapshot`.
+getServerSnapshot) {
+  if (true) {
+    if (!didWarnOld18Alpha) {
+      if ("startTransition" in react__WEBPACK_IMPORTED_MODULE_1__) {
+        didWarnOld18Alpha = true;
+        console.error("You are using an outdated, pre-release alpha of React 18 that " + "does not support useSyncExternalStore. The " + "use-sync-external-store shim will not work correctly. Upgrade " + "to a newer pre-release.");
+      }
+    }
+  } // Read the current snapshot from the store on every render. Again, this
+  // breaks the rules of React, and only works here because of specific
+  // implementation details, most importantly that updates are
+  // always synchronous.
+
+
+  const value = getSnapshot();
+
+  if (true) {
+    if (!didWarnUncachedGetSnapshot) {
+      const cachedValue = getSnapshot();
+
+      if (!is(value, cachedValue)) {
+        console.error("The result of getSnapshot should be cached to avoid an infinite loop");
+        didWarnUncachedGetSnapshot = true;
+      }
+    }
+  } // Because updates are synchronous, we don't queue them. Instead we force a
+  // re-render whenever the subscribed state changes by updating an some
+  // arbitrary useState hook. Then, during render, we call getSnapshot to read
+  // the current value.
+  //
+  // Because we don't actually use the state returned by the useState hook, we
+  // can save a bit of memory by storing other stuff in that slot.
+  //
+  // To implement the early bailout, we need to track some things on a mutable
+  // object. Usually, we would put that in a useRef hook, but we can stash it in
+  // our useState hook instead.
+  //
+  // To force a re-render, we call forceUpdate({inst}). That works because the
+  // new object always fails an equality check.
+
+
+  const [{
+    inst
+  }, forceUpdate] = useState({
+    inst: {
+      value,
+      getSnapshot
+    }
+  }); // Track the latest getSnapshot function with a ref. This needs to be updated
+  // in the layout phase so we can access it during the tearing check that
+  // happens on subscribe.
+
+  useLayoutEffect(() => {
+    inst.value = value;
+    inst.getSnapshot = getSnapshot; // Whenever getSnapshot or subscribe changes, we need to check in the
+    // commit phase if there was an interleaved mutation. In concurrent mode
+    // this can happen all the time, but even in synchronous mode, an earlier
+    // effect may have mutated the store.
+
+    if (checkIfSnapshotChanged(inst)) {
+      // Force a re-render.
+      forceUpdate({
+        inst
+      });
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  }, [subscribe, value, getSnapshot]);
+  useEffect(() => {
+    // Check for changes right before subscribing. Subsequent changes will be
+    // detected in the subscription handler.
+    if (checkIfSnapshotChanged(inst)) {
+      // Force a re-render.
+      forceUpdate({
+        inst
+      });
+    }
+
+    const handleStoreChange = () => {
+      // TODO: Because there is no cross-renderer API for batching updates, it's
+      // up to the consumer of this library to wrap their subscription event
+      // with unstable_batchedUpdates. Should we try to detect when this isn't
+      // the case and print a warning in development?
+      // The store changed. Check if the snapshot changed since the last time we
+      // read from the store.
+      if (checkIfSnapshotChanged(inst)) {
+        // Force a re-render.
+        forceUpdate({
+          inst
+        });
+      }
+    }; // Subscribe to the store and return a clean-up function.
+
+
+    return subscribe(handleStoreChange); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscribe]);
+  useDebugValue(value);
+  return value;
+}
+
+function checkIfSnapshotChanged(inst) {
+  const latestGetSnapshot = inst.getSnapshot;
+  const prevValue = inst.value;
+
+  try {
+    const nextValue = latestGetSnapshot();
+    return !is(prevValue, nextValue);
+  } catch (error) {
+    return true;
+  }
+}
+
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+function useSyncExternalStore$1(subscribe, getSnapshot, getServerSnapshot) {
+  // Note: The shim does not use getServerSnapshot, because pre-18 versions of
+  // React do not expose a way to check if we're hydrating. So users of the shim
+  // will need to track that themselves and return the correct value
+  // from `getSnapshot`.
+  return getSnapshot();
+}
+
+/**
+ * Inlined into the react-router repo since use-sync-external-store does not
+ * provide a UMD-compatible package, so we need this to be able to distribute
+ * UMD react-router bundles
+ */
+const canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
+const isServerEnvironment = !canUseDOM;
+const shim = isServerEnvironment ? useSyncExternalStore$1 : useSyncExternalStore$2;
+const useSyncExternalStore = "useSyncExternalStore" in react__WEBPACK_IMPORTED_MODULE_1__ ? (module => module.useSyncExternalStore)(react__WEBPACK_IMPORTED_MODULE_1__) : shim;
+
+// Contexts for data routers
+const DataStaticRouterContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
+
+if (true) {
+  DataStaticRouterContext.displayName = "DataStaticRouterContext";
+}
+
+const DataRouterContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
+
+if (true) {
+  DataRouterContext.displayName = "DataRouter";
+}
+
+const DataRouterStateContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
+
+if (true) {
+  DataRouterStateContext.displayName = "DataRouterState";
+}
+
+const AwaitContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
+
+if (true) {
+  AwaitContext.displayName = "Await";
+}
+
+const NavigationContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
 
 if (true) {
   NavigationContext.displayName = "Navigation";
 }
 
-const LocationContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createContext)(null);
+const LocationContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
 
 if (true) {
   LocationContext.displayName = "Location";
 }
 
-const RouteContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createContext)({
+const RouteContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext({
   outlet: null,
   matches: []
 });
@@ -12583,430 +17428,44 @@ if (true) {
   RouteContext.displayName = "Route";
 }
 
-function invariant(cond, message) {
-  if (!cond) throw new Error(message);
+const RouteErrorContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
+
+if (true) {
+  RouteErrorContext.displayName = "RouteError";
 }
-function warning(cond, message) {
-  if (!cond) {
-    // eslint-disable-next-line no-console
-    if (typeof console !== "undefined") console.warn(message);
-
-    try {
-      // Welcome to debugging React Router!
-      //
-      // This error is thrown as a convenience so you can more easily
-      // find the source for a warning that appears in the console by
-      // enabling "pause on exceptions" in your JavaScript debugger.
-      throw new Error(message); // eslint-disable-next-line no-empty
-    } catch (e) {}
-  }
-}
-const alreadyWarned = {};
-function warningOnce(key, cond, message) {
-  if (!cond && !alreadyWarned[key]) {
-    alreadyWarned[key] = true;
-     true ? warning(false, message) : 0;
-  }
-}
-
-/**
- * Returns a path with params interpolated.
- *
- * @see https://reactrouter.com/docs/en/v6/api#generatepath
- */
-function generatePath(path, params) {
-  if (params === void 0) {
-    params = {};
-  }
-
-  return path.replace(/:(\w+)/g, (_, key) => {
-    !(params[key] != null) ?  true ? invariant(false, "Missing \":" + key + "\" param") : 0 : void 0;
-    return params[key];
-  }).replace(/\/*\*$/, _ => params["*"] == null ? "" : params["*"].replace(/^\/*/, "/"));
-}
-/**
- * A RouteMatch contains info about how a route matched a URL.
- */
-
-/**
- * Matches the given routes to a location and returns the match data.
- *
- * @see https://reactrouter.com/docs/en/v6/api#matchroutes
- */
-function matchRoutes(routes, locationArg, basename) {
-  if (basename === void 0) {
-    basename = "/";
-  }
-
-  let location = typeof locationArg === "string" ? (0,history__WEBPACK_IMPORTED_MODULE_0__.parsePath)(locationArg) : locationArg;
-  let pathname = stripBasename(location.pathname || "/", basename);
-
-  if (pathname == null) {
-    return null;
-  }
-
-  let branches = flattenRoutes(routes);
-  rankRouteBranches(branches);
-  let matches = null;
-
-  for (let i = 0; matches == null && i < branches.length; ++i) {
-    matches = matchRouteBranch(branches[i], pathname);
-  }
-
-  return matches;
-}
-
-function flattenRoutes(routes, branches, parentsMeta, parentPath) {
-  if (branches === void 0) {
-    branches = [];
-  }
-
-  if (parentsMeta === void 0) {
-    parentsMeta = [];
-  }
-
-  if (parentPath === void 0) {
-    parentPath = "";
-  }
-
-  routes.forEach((route, index) => {
-    let meta = {
-      relativePath: route.path || "",
-      caseSensitive: route.caseSensitive === true,
-      childrenIndex: index,
-      route
-    };
-
-    if (meta.relativePath.startsWith("/")) {
-      !meta.relativePath.startsWith(parentPath) ?  true ? invariant(false, "Absolute route path \"" + meta.relativePath + "\" nested under path " + ("\"" + parentPath + "\" is not valid. An absolute child route path ") + "must start with the combined path of all its parent routes.") : 0 : void 0;
-      meta.relativePath = meta.relativePath.slice(parentPath.length);
-    }
-
-    let path = joinPaths([parentPath, meta.relativePath]);
-    let routesMeta = parentsMeta.concat(meta); // Add the children before adding this route to the array so we traverse the
-    // route tree depth-first and child routes appear before their parents in
-    // the "flattened" version.
-
-    if (route.children && route.children.length > 0) {
-      !(route.index !== true) ?  true ? invariant(false, "Index routes must not have child routes. Please remove " + ("all child routes from route path \"" + path + "\".")) : 0 : void 0;
-      flattenRoutes(route.children, branches, routesMeta, path);
-    } // Routes without a path shouldn't ever match by themselves unless they are
-    // index routes, so don't add them to the list of possible branches.
-
-
-    if (route.path == null && !route.index) {
-      return;
-    }
-
-    branches.push({
-      path,
-      score: computeScore(path, route.index),
-      routesMeta
-    });
-  });
-  return branches;
-}
-
-function rankRouteBranches(branches) {
-  branches.sort((a, b) => a.score !== b.score ? b.score - a.score // Higher score first
-  : compareIndexes(a.routesMeta.map(meta => meta.childrenIndex), b.routesMeta.map(meta => meta.childrenIndex)));
-}
-
-const paramRe = /^:\w+$/;
-const dynamicSegmentValue = 3;
-const indexRouteValue = 2;
-const emptySegmentValue = 1;
-const staticSegmentValue = 10;
-const splatPenalty = -2;
-
-const isSplat = s => s === "*";
-
-function computeScore(path, index) {
-  let segments = path.split("/");
-  let initialScore = segments.length;
-
-  if (segments.some(isSplat)) {
-    initialScore += splatPenalty;
-  }
-
-  if (index) {
-    initialScore += indexRouteValue;
-  }
-
-  return segments.filter(s => !isSplat(s)).reduce((score, segment) => score + (paramRe.test(segment) ? dynamicSegmentValue : segment === "" ? emptySegmentValue : staticSegmentValue), initialScore);
-}
-
-function compareIndexes(a, b) {
-  let siblings = a.length === b.length && a.slice(0, -1).every((n, i) => n === b[i]);
-  return siblings ? // If two routes are siblings, we should try to match the earlier sibling
-  // first. This allows people to have fine-grained control over the matching
-  // behavior by simply putting routes with identical paths in the order they
-  // want them tried.
-  a[a.length - 1] - b[b.length - 1] : // Otherwise, it doesn't really make sense to rank non-siblings by index,
-  // so they sort equally.
-  0;
-}
-
-function matchRouteBranch(branch, pathname) {
-  let {
-    routesMeta
-  } = branch;
-  let matchedParams = {};
-  let matchedPathname = "/";
-  let matches = [];
-
-  for (let i = 0; i < routesMeta.length; ++i) {
-    let meta = routesMeta[i];
-    let end = i === routesMeta.length - 1;
-    let remainingPathname = matchedPathname === "/" ? pathname : pathname.slice(matchedPathname.length) || "/";
-    let match = matchPath({
-      path: meta.relativePath,
-      caseSensitive: meta.caseSensitive,
-      end
-    }, remainingPathname);
-    if (!match) return null;
-    Object.assign(matchedParams, match.params);
-    let route = meta.route;
-    matches.push({
-      params: matchedParams,
-      pathname: joinPaths([matchedPathname, match.pathname]),
-      pathnameBase: normalizePathname(joinPaths([matchedPathname, match.pathnameBase])),
-      route
-    });
-
-    if (match.pathnameBase !== "/") {
-      matchedPathname = joinPaths([matchedPathname, match.pathnameBase]);
-    }
-  }
-
-  return matches;
-}
-/**
- * A PathPattern is used to match on some portion of a URL pathname.
- */
-
-
-/**
- * Performs pattern matching on a URL pathname and returns information about
- * the match.
- *
- * @see https://reactrouter.com/docs/en/v6/api#matchpath
- */
-function matchPath(pattern, pathname) {
-  if (typeof pattern === "string") {
-    pattern = {
-      path: pattern,
-      caseSensitive: false,
-      end: true
-    };
-  }
-
-  let [matcher, paramNames] = compilePath(pattern.path, pattern.caseSensitive, pattern.end);
-  let match = pathname.match(matcher);
-  if (!match) return null;
-  let matchedPathname = match[0];
-  let pathnameBase = matchedPathname.replace(/(.)\/+$/, "$1");
-  let captureGroups = match.slice(1);
-  let params = paramNames.reduce((memo, paramName, index) => {
-    // We need to compute the pathnameBase here using the raw splat value
-    // instead of using params["*"] later because it will be decoded then
-    if (paramName === "*") {
-      let splatValue = captureGroups[index] || "";
-      pathnameBase = matchedPathname.slice(0, matchedPathname.length - splatValue.length).replace(/(.)\/+$/, "$1");
-    }
-
-    memo[paramName] = safelyDecodeURIComponent(captureGroups[index] || "", paramName);
-    return memo;
-  }, {});
-  return {
-    params,
-    pathname: matchedPathname,
-    pathnameBase,
-    pattern
-  };
-}
-
-function compilePath(path, caseSensitive, end) {
-  if (caseSensitive === void 0) {
-    caseSensitive = false;
-  }
-
-  if (end === void 0) {
-    end = true;
-  }
-
-   true ? warning(path === "*" || !path.endsWith("*") || path.endsWith("/*"), "Route path \"" + path + "\" will be treated as if it were " + ("\"" + path.replace(/\*$/, "/*") + "\" because the `*` character must ") + "always follow a `/` in the pattern. To get rid of this warning, " + ("please change the route path to \"" + path.replace(/\*$/, "/*") + "\".")) : 0;
-  let paramNames = [];
-  let regexpSource = "^" + path.replace(/\/*\*?$/, "") // Ignore trailing / and /*, we'll handle it below
-  .replace(/^\/*/, "/") // Make sure it has a leading /
-  .replace(/[\\.*+^$?{}|()[\]]/g, "\\$&") // Escape special regex chars
-  .replace(/:(\w+)/g, (_, paramName) => {
-    paramNames.push(paramName);
-    return "([^\\/]+)";
-  });
-
-  if (path.endsWith("*")) {
-    paramNames.push("*");
-    regexpSource += path === "*" || path === "/*" ? "(.*)$" // Already matched the initial /, just match the rest
-    : "(?:\\/(.+)|\\/*)$"; // Don't include the / in params["*"]
-  } else {
-    regexpSource += end ? "\\/*$" // When matching to the end, ignore trailing slashes
-    : // Otherwise, match a word boundary or a proceeding /. The word boundary restricts
-    // parent routes to matching only their own words and nothing more, e.g. parent
-    // route "/home" should not match "/home2".
-    // Additionally, allow paths starting with `.`, `-`, `~`, and url-encoded entities,
-    // but do not consume the character in the matched path so they can match against
-    // nested paths.
-    "(?:(?=[.~-]|%[0-9A-F]{2})|\\b|\\/|$)";
-  }
-
-  let matcher = new RegExp(regexpSource, caseSensitive ? undefined : "i");
-  return [matcher, paramNames];
-}
-
-function safelyDecodeURIComponent(value, paramName) {
-  try {
-    return decodeURIComponent(value);
-  } catch (error) {
-     true ? warning(false, "The value for the URL param \"" + paramName + "\" will not be decoded because" + (" the string \"" + value + "\" is a malformed URL segment. This is probably") + (" due to a bad percent encoding (" + error + ").")) : 0;
-    return value;
-  }
-}
-/**
- * Returns a resolved path object relative to the given pathname.
- *
- * @see https://reactrouter.com/docs/en/v6/api#resolvepath
- */
-
-
-function resolvePath(to, fromPathname) {
-  if (fromPathname === void 0) {
-    fromPathname = "/";
-  }
-
-  let {
-    pathname: toPathname,
-    search = "",
-    hash = ""
-  } = typeof to === "string" ? (0,history__WEBPACK_IMPORTED_MODULE_0__.parsePath)(to) : to;
-  let pathname = toPathname ? toPathname.startsWith("/") ? toPathname : resolvePathname(toPathname, fromPathname) : fromPathname;
-  return {
-    pathname,
-    search: normalizeSearch(search),
-    hash: normalizeHash(hash)
-  };
-}
-
-function resolvePathname(relativePath, fromPathname) {
-  let segments = fromPathname.replace(/\/+$/, "").split("/");
-  let relativeSegments = relativePath.split("/");
-  relativeSegments.forEach(segment => {
-    if (segment === "..") {
-      // Keep the root "" segment so the pathname starts at /
-      if (segments.length > 1) segments.pop();
-    } else if (segment !== ".") {
-      segments.push(segment);
-    }
-  });
-  return segments.length > 1 ? segments.join("/") : "/";
-}
-
-function resolveTo(toArg, routePathnames, locationPathname) {
-  let to = typeof toArg === "string" ? (0,history__WEBPACK_IMPORTED_MODULE_0__.parsePath)(toArg) : toArg;
-  let toPathname = toArg === "" || to.pathname === "" ? "/" : to.pathname; // If a pathname is explicitly provided in `to`, it should be relative to the
-  // route context. This is explained in `Note on `<Link to>` values` in our
-  // migration guide from v5 as a means of disambiguation between `to` values
-  // that begin with `/` and those that do not. However, this is problematic for
-  // `to` values that do not provide a pathname. `to` can simply be a search or
-  // hash string, in which case we should assume that the navigation is relative
-  // to the current location's pathname and *not* the route pathname.
-
-  let from;
-
-  if (toPathname == null) {
-    from = locationPathname;
-  } else {
-    let routePathnameIndex = routePathnames.length - 1;
-
-    if (toPathname.startsWith("..")) {
-      let toSegments = toPathname.split("/"); // Each leading .. segment means "go up one route" instead of "go up one
-      // URL segment".  This is a key difference from how <a href> works and a
-      // major reason we call this a "to" value instead of a "href".
-
-      while (toSegments[0] === "..") {
-        toSegments.shift();
-        routePathnameIndex -= 1;
-      }
-
-      to.pathname = toSegments.join("/");
-    } // If there are more ".." segments than parent routes, resolve relative to
-    // the root / URL.
-
-
-    from = routePathnameIndex >= 0 ? routePathnames[routePathnameIndex] : "/";
-  }
-
-  let path = resolvePath(to, from); // Ensure the pathname has a trailing slash if the original to value had one.
-
-  if (toPathname && toPathname !== "/" && toPathname.endsWith("/") && !path.pathname.endsWith("/")) {
-    path.pathname += "/";
-  }
-
-  return path;
-}
-function getToPathname(to) {
-  // Empty strings should be treated the same as / paths
-  return to === "" || to.pathname === "" ? "/" : typeof to === "string" ? (0,history__WEBPACK_IMPORTED_MODULE_0__.parsePath)(to).pathname : to.pathname;
-}
-function stripBasename(pathname, basename) {
-  if (basename === "/") return pathname;
-
-  if (!pathname.toLowerCase().startsWith(basename.toLowerCase())) {
-    return null;
-  }
-
-  let nextChar = pathname.charAt(basename.length);
-
-  if (nextChar && nextChar !== "/") {
-    // pathname does not start with basename/
-    return null;
-  }
-
-  return pathname.slice(basename.length) || "/";
-}
-const joinPaths = paths => paths.join("/").replace(/\/\/+/g, "/");
-const normalizePathname = pathname => pathname.replace(/\/+$/, "").replace(/^\/*/, "/");
-
-const normalizeSearch = search => !search || search === "?" ? "" : search.startsWith("?") ? search : "?" + search;
-
-const normalizeHash = hash => !hash || hash === "#" ? "" : hash.startsWith("#") ? hash : "#" + hash;
 
 /**
  * Returns the full href for the given "to" value. This is useful for building
  * custom links that are also accessible and preserve right-click behavior.
  *
- * @see https://reactrouter.com/docs/en/v6/api#usehref
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-href
  */
 
-function useHref(to) {
-  !useInRouterContext() ?  true ? invariant(false, // TODO: This error is probably because they somehow have 2 versions of the
+function useHref(to, _temp) {
+  let {
+    relative
+  } = _temp === void 0 ? {} : _temp;
+  !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of the
   // router loaded. We can help them understand how to avoid that.
   "useHref() may be used only in the context of a <Router> component.") : 0 : void 0;
   let {
     basename,
     navigator
-  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(NavigationContext);
+  } = react__WEBPACK_IMPORTED_MODULE_1__.useContext(NavigationContext);
   let {
     hash,
     pathname,
     search
-  } = useResolvedPath(to);
-  let joinedPathname = pathname;
+  } = useResolvedPath(to, {
+    relative
+  });
+  let joinedPathname = pathname; // If we're operating within a basename, prepend it to the pathname prior
+  // to creating the href.  If this is a root navigation, then just use the raw
+  // basename which allows the basename to have full control over the presence
+  // of a trailing slash on root links
 
   if (basename !== "/") {
-    let toPathname = getToPathname(to);
-    let endsWithSlash = toPathname != null && toPathname.endsWith("/");
-    joinedPathname = pathname === "/" ? basename + (endsWithSlash ? "/" : "") : joinPaths([basename, pathname]);
+    joinedPathname = pathname === "/" ? basename : (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.joinPaths)([basename, pathname]);
   }
 
   return navigator.createHref({
@@ -13018,11 +17477,11 @@ function useHref(to) {
 /**
  * Returns true if this component is a descendant of a <Router>.
  *
- * @see https://reactrouter.com/docs/en/v6/api#useinroutercontext
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-in-router-context
  */
 
 function useInRouterContext() {
-  return (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(LocationContext) != null;
+  return react__WEBPACK_IMPORTED_MODULE_1__.useContext(LocationContext) != null;
 }
 /**
  * Returns the current location object, which represents the current URL in web
@@ -13032,77 +17491,103 @@ function useInRouterContext() {
  * "routing" in your app, and we'd like to know what your use case is. We may
  * be able to provide something higher-level to better suit your needs.
  *
- * @see https://reactrouter.com/docs/en/v6/api#uselocation
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-location
  */
 
 function useLocation() {
-  !useInRouterContext() ?  true ? invariant(false, // TODO: This error is probably because they somehow have 2 versions of the
+  !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of the
   // router loaded. We can help them understand how to avoid that.
   "useLocation() may be used only in the context of a <Router> component.") : 0 : void 0;
-  return (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(LocationContext).location;
+  return react__WEBPACK_IMPORTED_MODULE_1__.useContext(LocationContext).location;
 }
 /**
  * Returns the current navigation action which describes how the router came to
  * the current location, either by a pop, push, or replace on the history stack.
  *
- * @see https://reactrouter.com/docs/en/v6/api#usenavigationtype
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-navigation-type
  */
 
 function useNavigationType() {
-  return (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(LocationContext).navigationType;
+  return react__WEBPACK_IMPORTED_MODULE_1__.useContext(LocationContext).navigationType;
 }
 /**
  * Returns true if the URL for the given "to" value matches the current URL.
  * This is useful for components that need to know "active" state, e.g.
  * <NavLink>.
  *
- * @see https://reactrouter.com/docs/en/v6/api#usematch
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-match
  */
 
 function useMatch(pattern) {
-  !useInRouterContext() ?  true ? invariant(false, // TODO: This error is probably because they somehow have 2 versions of the
+  !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of the
   // router loaded. We can help them understand how to avoid that.
   "useMatch() may be used only in the context of a <Router> component.") : 0 : void 0;
   let {
     pathname
   } = useLocation();
-  return (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => matchPath(pattern, pathname), [pathname, pattern]);
+  return react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.matchPath)(pattern, pathname), [pathname, pattern]);
 }
 /**
  * The interface for the navigate() function returned from useNavigate().
  */
 
 /**
+ * When processing relative navigation we want to ignore ancestor routes that
+ * do not contribute to the path, such that index/pathless layout routes don't
+ * interfere.
+ *
+ * For example, when moving a route element into an index route and/or a
+ * pathless layout route, relative link behavior contained within should stay
+ * the same.  Both of the following examples should link back to the root:
+ *
+ *   <Route path="/">
+ *     <Route path="accounts" element={<Link to=".."}>
+ *   </Route>
+ *
+ *   <Route path="/">
+ *     <Route path="accounts">
+ *       <Route element={<AccountsLayout />}>       // <-- Does not contribute
+ *         <Route index element={<Link to=".."} />  // <-- Does not contribute
+ *       </Route
+ *     </Route>
+ *   </Route>
+ */
+function getPathContributingMatches(matches) {
+  return matches.filter((match, index) => index === 0 || !match.route.index && match.pathnameBase !== matches[index - 1].pathnameBase);
+}
+/**
  * Returns an imperative method for changing the location. Used by <Link>s, but
  * may also be used by other elements to change the location.
  *
- * @see https://reactrouter.com/docs/en/v6/api#usenavigate
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-navigate
  */
+
+
 function useNavigate() {
-  !useInRouterContext() ?  true ? invariant(false, // TODO: This error is probably because they somehow have 2 versions of the
+  !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of the
   // router loaded. We can help them understand how to avoid that.
   "useNavigate() may be used only in the context of a <Router> component.") : 0 : void 0;
   let {
     basename,
     navigator
-  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(NavigationContext);
+  } = react__WEBPACK_IMPORTED_MODULE_1__.useContext(NavigationContext);
   let {
     matches
-  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(RouteContext);
+  } = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
   let {
     pathname: locationPathname
   } = useLocation();
-  let routePathnamesJson = JSON.stringify(matches.map(match => match.pathnameBase));
-  let activeRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+  let routePathnamesJson = JSON.stringify(getPathContributingMatches(matches).map(match => match.pathnameBase));
+  let activeRef = react__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
+  react__WEBPACK_IMPORTED_MODULE_1__.useEffect(() => {
     activeRef.current = true;
   });
-  let navigate = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(function (to, options) {
+  let navigate = react__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (to, options) {
     if (options === void 0) {
       options = {};
     }
 
-     true ? warning(activeRef.current, "You should call navigate() in a React.useEffect(), not when " + "your component is first rendered.") : 0;
+     true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.warning)(activeRef.current, "You should call navigate() in a React.useEffect(), not when " + "your component is first rendered.") : 0;
     if (!activeRef.current) return;
 
     if (typeof to === "number") {
@@ -13110,38 +17595,41 @@ function useNavigate() {
       return;
     }
 
-    let path = resolveTo(to, JSON.parse(routePathnamesJson), locationPathname);
+    let path = (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.resolveTo)(to, JSON.parse(routePathnamesJson), locationPathname, options.relative === "path"); // If we're operating within a basename, prepend it to the pathname prior
+    // to handing off to history.  If this is a root navigation, then we
+    // navigate to the raw basename which allows the basename to have full
+    // control over the presence of a trailing slash on root links
 
     if (basename !== "/") {
-      path.pathname = joinPaths([basename, path.pathname]);
+      path.pathname = path.pathname === "/" ? basename : (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.joinPaths)([basename, path.pathname]);
     }
 
-    (!!options.replace ? navigator.replace : navigator.push)(path, options.state);
+    (!!options.replace ? navigator.replace : navigator.push)(path, options.state, options);
   }, [basename, navigator, routePathnamesJson, locationPathname]);
   return navigate;
 }
-const OutletContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createContext)(null);
+const OutletContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createContext(null);
 /**
  * Returns the context (if provided) for the child route at this level of the route
  * hierarchy.
- * @see https://reactrouter.com/docs/en/v6/api#useoutletcontext
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-outlet-context
  */
 
 function useOutletContext() {
-  return (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(OutletContext);
+  return react__WEBPACK_IMPORTED_MODULE_1__.useContext(OutletContext);
 }
 /**
  * Returns the element for the child route at this level of the route
  * hierarchy. Used internally by <Outlet> to render child routes.
  *
- * @see https://reactrouter.com/docs/en/v6/api#useoutlet
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-outlet
  */
 
 function useOutlet(context) {
-  let outlet = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(RouteContext).outlet;
+  let outlet = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext).outlet;
 
   if (outlet) {
-    return /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createElement)(OutletContext.Provider, {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(OutletContext.Provider, {
       value: context
     }, outlet);
   }
@@ -13152,31 +17640,34 @@ function useOutlet(context) {
  * Returns an object of key/value pairs of the dynamic params from the current
  * URL that were matched by the route path.
  *
- * @see https://reactrouter.com/docs/en/v6/api#useparams
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-params
  */
 
 function useParams() {
   let {
     matches
-  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(RouteContext);
+  } = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
   let routeMatch = matches[matches.length - 1];
   return routeMatch ? routeMatch.params : {};
 }
 /**
  * Resolves the pathname of the given `to` value against the current location.
  *
- * @see https://reactrouter.com/docs/en/v6/api#useresolvedpath
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-resolved-path
  */
 
-function useResolvedPath(to) {
+function useResolvedPath(to, _temp2) {
+  let {
+    relative
+  } = _temp2 === void 0 ? {} : _temp2;
   let {
     matches
-  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(RouteContext);
+  } = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
   let {
     pathname: locationPathname
   } = useLocation();
-  let routePathnamesJson = JSON.stringify(matches.map(match => match.pathnameBase));
-  return (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => resolveTo(to, JSON.parse(routePathnamesJson), locationPathname), [to, routePathnamesJson, locationPathname]);
+  let routePathnamesJson = JSON.stringify(getPathContributingMatches(matches).map(match => match.pathnameBase));
+  return react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.resolveTo)(to, JSON.parse(routePathnamesJson), locationPathname, relative === "path"), [to, routePathnamesJson, locationPathname, relative]);
 }
 /**
  * Returns the element of the route that matched the current location, prepared
@@ -13184,16 +17675,17 @@ function useResolvedPath(to) {
  * elements in the tree must render an <Outlet> to render their child route's
  * element.
  *
- * @see https://reactrouter.com/docs/en/v6/api#useroutes
+ * @see https://reactrouter.com/docs/en/v6/hooks/use-routes
  */
 
 function useRoutes(routes, locationArg) {
-  !useInRouterContext() ?  true ? invariant(false, // TODO: This error is probably because they somehow have 2 versions of the
+  !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of the
   // router loaded. We can help them understand how to avoid that.
   "useRoutes() may be used only in the context of a <Router> component.") : 0 : void 0;
+  let dataRouterStateContext = react__WEBPACK_IMPORTED_MODULE_1__.useContext(DataRouterStateContext);
   let {
     matches: parentMatches
-  } = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(RouteContext);
+  } = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
   let routeMatch = parentMatches[parentMatches.length - 1];
   let parentParams = routeMatch ? routeMatch.params : {};
   let parentPathname = routeMatch ? routeMatch.pathname : "/";
@@ -13231,8 +17723,8 @@ function useRoutes(routes, locationArg) {
   if (locationArg) {
     var _parsedLocationArg$pa;
 
-    let parsedLocationArg = typeof locationArg === "string" ? (0,history__WEBPACK_IMPORTED_MODULE_0__.parsePath)(locationArg) : locationArg;
-    !(parentPathnameBase === "/" || ((_parsedLocationArg$pa = parsedLocationArg.pathname) == null ? void 0 : _parsedLocationArg$pa.startsWith(parentPathnameBase))) ?  true ? invariant(false, "When overriding the location using `<Routes location>` or `useRoutes(routes, location)`, " + "the location pathname must begin with the portion of the URL pathname that was " + ("matched by all parent routes. The current pathname base is \"" + parentPathnameBase + "\" ") + ("but pathname \"" + parsedLocationArg.pathname + "\" was given in the `location` prop.")) : 0 : void 0;
+    let parsedLocationArg = typeof locationArg === "string" ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.parsePath)(locationArg) : locationArg;
+    !(parentPathnameBase === "/" || ((_parsedLocationArg$pa = parsedLocationArg.pathname) == null ? void 0 : _parsedLocationArg$pa.startsWith(parentPathnameBase))) ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "When overriding the location using `<Routes location>` or `useRoutes(routes, location)`, " + "the location pathname must begin with the portion of the URL pathname that was " + ("matched by all parent routes. The current pathname base is \"" + parentPathnameBase + "\" ") + ("but pathname \"" + parsedLocationArg.pathname + "\" was given in the `location` prop.")) : 0 : void 0;
     location = parsedLocationArg;
   } else {
     location = locationFromContext;
@@ -13240,66 +17732,427 @@ function useRoutes(routes, locationArg) {
 
   let pathname = location.pathname || "/";
   let remainingPathname = parentPathnameBase === "/" ? pathname : pathname.slice(parentPathnameBase.length) || "/";
-  let matches = matchRoutes(routes, {
+  let matches = (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.matchRoutes)(routes, {
     pathname: remainingPathname
   });
 
   if (true) {
-     true ? warning(parentRoute || matches != null, "No routes matched location \"" + location.pathname + location.search + location.hash + "\" ") : 0;
-     true ? warning(matches == null || matches[matches.length - 1].route.element !== undefined, "Matched leaf route at location \"" + location.pathname + location.search + location.hash + "\" does not have an element. " + "This means it will render an <Outlet /> with a null value by default resulting in an \"empty\" page.") : 0;
+     true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.warning)(parentRoute || matches != null, "No routes matched location \"" + location.pathname + location.search + location.hash + "\" ") : 0;
+     true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.warning)(matches == null || matches[matches.length - 1].route.element !== undefined, "Matched leaf route at location \"" + location.pathname + location.search + location.hash + "\" does not have an element. " + "This means it will render an <Outlet /> with a null value by default resulting in an \"empty\" page.") : 0;
   }
 
-  return _renderMatches(matches && matches.map(match => Object.assign({}, match, {
+  let renderedMatches = _renderMatches(matches && matches.map(match => Object.assign({}, match, {
     params: Object.assign({}, parentParams, match.params),
-    pathname: joinPaths([parentPathnameBase, match.pathname]),
-    pathnameBase: match.pathnameBase === "/" ? parentPathnameBase : joinPaths([parentPathnameBase, match.pathnameBase])
-  })), parentMatches);
+    pathname: (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.joinPaths)([parentPathnameBase, match.pathname]),
+    pathnameBase: match.pathnameBase === "/" ? parentPathnameBase : (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.joinPaths)([parentPathnameBase, match.pathnameBase])
+  })), parentMatches, dataRouterStateContext || undefined); // When a user passes in a `locationArg`, the associated routes need to
+  // be wrapped in a new `LocationContext.Provider` in order for `useLocation`
+  // to use the scoped location instead of the global location.
+
+
+  if (locationArg) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(LocationContext.Provider, {
+      value: {
+        location: _extends({
+          pathname: "/",
+          search: "",
+          hash: "",
+          state: null,
+          key: "default"
+        }, location),
+        navigationType: _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.Action.Pop
+      }
+    }, renderedMatches);
+  }
+
+  return renderedMatches;
 }
-function _renderMatches(matches, parentMatches) {
+
+function DefaultErrorElement() {
+  let error = useRouteError();
+  let message = (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.isRouteErrorResponse)(error) ? error.status + " " + error.statusText : error instanceof Error ? error.message : JSON.stringify(error);
+  let stack = error instanceof Error ? error.stack : null;
+  let lightgrey = "rgba(200,200,200, 0.5)";
+  let preStyles = {
+    padding: "0.5rem",
+    backgroundColor: lightgrey
+  };
+  let codeStyles = {
+    padding: "2px 4px",
+    backgroundColor: lightgrey
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("h2", null, "Unhandled Thrown Error!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("h3", {
+    style: {
+      fontStyle: "italic"
+    }
+  }, message), stack ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("pre", {
+    style: preStyles
+  }, stack) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("p", null, "\uD83D\uDCBF Hey developer \uD83D\uDC4B"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("p", null, "You can provide a way better UX than this when your app throws errors by providing your own\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("code", {
+    style: codeStyles
+  }, "errorElement"), " props on\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("code", {
+    style: codeStyles
+  }, "<Route>")));
+}
+
+class RenderErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_1__.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: props.location,
+      error: props.error
+    };
+  }
+
+  static getDerivedStateFromError(error) {
+    return {
+      error: error
+    };
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    // When we get into an error state, the user will likely click "back" to the
+    // previous page that didn't have an error. Because this wraps the entire
+    // application, that will have no effect--the error page continues to display.
+    // This gives us a mechanism to recover from the error when the location changes.
+    //
+    // Whether we're in an error state or not, we update the location in state
+    // so that when we are in an error state, it gets reset when a new location
+    // comes in and the user recovers from the error.
+    if (state.location !== props.location) {
+      return {
+        error: props.error,
+        location: props.location
+      };
+    } // If we're not changing locations, preserve the location but still surface
+    // any new errors that may come through. We retain the existing error, we do
+    // this because the error provided from the app state may be cleared without
+    // the location changing.
+
+
+    return {
+      error: props.error || state.error,
+      location: state.location
+    };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("React Router caught the following error during render", error, errorInfo);
+  }
+
+  render() {
+    return this.state.error ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(RouteErrorContext.Provider, {
+      value: this.state.error,
+      children: this.props.component
+    }) : this.props.children;
+  }
+
+}
+
+function RenderedRoute(_ref) {
+  let {
+    routeContext,
+    match,
+    children
+  } = _ref;
+  let dataStaticRouterContext = react__WEBPACK_IMPORTED_MODULE_1__.useContext(DataStaticRouterContext); // Track how deep we got in our render pass to emulate SSR componentDidCatch
+  // in a DataStaticRouter
+
+  if (dataStaticRouterContext && match.route.errorElement) {
+    dataStaticRouterContext._deepestRenderedBoundaryId = match.route.id;
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(RouteContext.Provider, {
+    value: routeContext
+  }, children);
+}
+
+function _renderMatches(matches, parentMatches, dataRouterState) {
   if (parentMatches === void 0) {
     parentMatches = [];
   }
 
-  if (matches == null) return null;
-  return matches.reduceRight((outlet, match, index) => {
-    return /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createElement)(RouteContext.Provider, {
-      children: match.route.element !== undefined ? match.route.element : outlet,
-      value: {
+  if (matches == null) {
+    if (dataRouterState != null && dataRouterState.errors) {
+      // Don't bail if we have data router errors so we can render them in the
+      // boundary.  Use the pre-matched (or shimmed) matches
+      matches = dataRouterState.matches;
+    } else {
+      return null;
+    }
+  }
+
+  let renderedMatches = matches; // If we have data errors, trim matches to the highest error boundary
+
+  let errors = dataRouterState == null ? void 0 : dataRouterState.errors;
+
+  if (errors != null) {
+    let errorIndex = renderedMatches.findIndex(m => m.route.id && (errors == null ? void 0 : errors[m.route.id]));
+    !(errorIndex >= 0) ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "Could not find a matching route for the current errors: " + errors) : 0 : void 0;
+    renderedMatches = renderedMatches.slice(0, Math.min(renderedMatches.length, errorIndex + 1));
+  }
+
+  return renderedMatches.reduceRight((outlet, match, index) => {
+    let error = match.route.id ? errors == null ? void 0 : errors[match.route.id] : null; // Only data routers handle errors
+
+    let errorElement = dataRouterState ? match.route.errorElement || /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(DefaultErrorElement, null) : null;
+
+    let getChildren = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(RenderedRoute, {
+      match: match,
+      routeContext: {
         outlet,
-        matches: parentMatches.concat(matches.slice(0, index + 1))
+        matches: parentMatches.concat(renderedMatches.slice(0, index + 1))
       }
-    });
+    }, error ? errorElement : match.route.element !== undefined ? match.route.element : outlet); // Only wrap in an error boundary within data router usages when we have an
+    // errorElement on this route.  Otherwise let it bubble up to an ancestor
+    // errorElement
+
+
+    return dataRouterState && (match.route.errorElement || index === 0) ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(RenderErrorBoundary, {
+      location: dataRouterState.location,
+      component: errorElement,
+      error: error,
+      children: getChildren()
+    }) : getChildren();
   }, null);
+}
+var DataRouterHook;
+
+(function (DataRouterHook) {
+  DataRouterHook["UseRevalidator"] = "useRevalidator";
+})(DataRouterHook || (DataRouterHook = {}));
+
+var DataRouterStateHook;
+
+(function (DataRouterStateHook) {
+  DataRouterStateHook["UseLoaderData"] = "useLoaderData";
+  DataRouterStateHook["UseActionData"] = "useActionData";
+  DataRouterStateHook["UseRouteError"] = "useRouteError";
+  DataRouterStateHook["UseNavigation"] = "useNavigation";
+  DataRouterStateHook["UseRouteLoaderData"] = "useRouteLoaderData";
+  DataRouterStateHook["UseMatches"] = "useMatches";
+  DataRouterStateHook["UseRevalidator"] = "useRevalidator";
+})(DataRouterStateHook || (DataRouterStateHook = {}));
+
+function getDataRouterConsoleError(hookName) {
+  return hookName + " must be used within a data router.  See https://reactrouter.com/en/main/routers/picking-a-router.";
+}
+
+function useDataRouterContext(hookName) {
+  let ctx = react__WEBPACK_IMPORTED_MODULE_1__.useContext(DataRouterContext);
+  !ctx ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, getDataRouterConsoleError(hookName)) : 0 : void 0;
+  return ctx;
+}
+
+function useDataRouterState(hookName) {
+  let state = react__WEBPACK_IMPORTED_MODULE_1__.useContext(DataRouterStateContext);
+  !state ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, getDataRouterConsoleError(hookName)) : 0 : void 0;
+  return state;
+}
+/**
+ * Returns the current navigation, defaulting to an "idle" navigation when
+ * no navigation is in progress
+ */
+
+
+function useNavigation() {
+  let state = useDataRouterState(DataRouterStateHook.UseNavigation);
+  return state.navigation;
+}
+/**
+ * Returns a revalidate function for manually triggering revalidation, as well
+ * as the current state of any manual revalidations
+ */
+
+function useRevalidator() {
+  let dataRouterContext = useDataRouterContext(DataRouterHook.UseRevalidator);
+  let state = useDataRouterState(DataRouterStateHook.UseRevalidator);
+  return {
+    revalidate: dataRouterContext.router.revalidate,
+    state: state.revalidation
+  };
+}
+/**
+ * Returns the active route matches, useful for accessing loaderData for
+ * parent/child routes or the route "handle" property
+ */
+
+function useMatches() {
+  let {
+    matches,
+    loaderData
+  } = useDataRouterState(DataRouterStateHook.UseMatches);
+  return react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => matches.map(match => {
+    let {
+      pathname,
+      params
+    } = match; // Note: This structure matches that created by createUseMatchesMatch
+    // in the @remix-run/router , so if you change this please also change
+    // that :)  Eventually we'll DRY this up
+
+    return {
+      id: match.route.id,
+      pathname,
+      params,
+      data: loaderData[match.route.id],
+      handle: match.route.handle
+    };
+  }), [matches, loaderData]);
+}
+/**
+ * Returns the loader data for the nearest ancestor Route loader
+ */
+
+function useLoaderData() {
+  let state = useDataRouterState(DataRouterStateHook.UseLoaderData);
+  let route = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
+  !route ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "useLoaderData must be used inside a RouteContext") : 0 : void 0;
+  let thisRoute = route.matches[route.matches.length - 1];
+  !thisRoute.route.id ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "useLoaderData can only be used on routes that contain a unique \"id\"") : 0 : void 0;
+  return state.loaderData[thisRoute.route.id];
+}
+/**
+ * Returns the loaderData for the given routeId
+ */
+
+function useRouteLoaderData(routeId) {
+  let state = useDataRouterState(DataRouterStateHook.UseRouteLoaderData);
+  return state.loaderData[routeId];
+}
+/**
+ * Returns the action data for the nearest ancestor Route action
+ */
+
+function useActionData() {
+  let state = useDataRouterState(DataRouterStateHook.UseActionData);
+  let route = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
+  !route ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "useActionData must be used inside a RouteContext") : 0 : void 0;
+  return Object.values((state == null ? void 0 : state.actionData) || {})[0];
+}
+/**
+ * Returns the nearest ancestor Route error, which could be a loader/action
+ * error or a render error.  This is intended to be called from your
+ * errorElement to display a proper error message.
+ */
+
+function useRouteError() {
+  var _state$errors;
+
+  let error = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteErrorContext);
+  let state = useDataRouterState(DataRouterStateHook.UseRouteError);
+  let route = react__WEBPACK_IMPORTED_MODULE_1__.useContext(RouteContext);
+  let thisRoute = route.matches[route.matches.length - 1]; // If this was a render error, we put it in a RouteError context inside
+  // of RenderErrorBoundary
+
+  if (error) {
+    return error;
+  }
+
+  !route ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "useRouteError must be used inside a RouteContext") : 0 : void 0;
+  !thisRoute.route.id ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "useRouteError can only be used on routes that contain a unique \"id\"") : 0 : void 0; // Otherwise look for errors from our data router state
+
+  return (_state$errors = state.errors) == null ? void 0 : _state$errors[thisRoute.route.id];
+}
+/**
+ * Returns the happy-path data from the nearest ancestor <Await /> value
+ */
+
+function useAsyncValue() {
+  let value = react__WEBPACK_IMPORTED_MODULE_1__.useContext(AwaitContext);
+  return value == null ? void 0 : value._data;
+}
+/**
+ * Returns the error from the nearest ancestor <Await /> value
+ */
+
+function useAsyncError() {
+  let value = react__WEBPACK_IMPORTED_MODULE_1__.useContext(AwaitContext);
+  return value == null ? void 0 : value._error;
+}
+const alreadyWarned = {};
+
+function warningOnce(key, cond, message) {
+  if (!cond && !alreadyWarned[key]) {
+    alreadyWarned[key] = true;
+     true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.warning)(false, message) : 0;
+  }
+}
+
+/**
+ * Given a Remix Router instance, render the appropriate UI
+ */
+function RouterProvider(_ref) {
+  let {
+    fallbackElement,
+    router
+  } = _ref;
+  // Sync router state to our component state to force re-renders
+  let state = useSyncExternalStore(router.subscribe, () => router.state, // We have to provide this so React@18 doesn't complain during hydration,
+  // but we pass our serialized hydration data into the router so state here
+  // is already synced with what the server saw
+  () => router.state);
+  let navigator = react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => {
+    return {
+      createHref: router.createHref,
+      go: n => router.navigate(n),
+      push: (to, state, opts) => router.navigate(to, {
+        state,
+        preventScrollReset: opts == null ? void 0 : opts.preventScrollReset
+      }),
+      replace: (to, state, opts) => router.navigate(to, {
+        replace: true,
+        state,
+        preventScrollReset: opts == null ? void 0 : opts.preventScrollReset
+      })
+    };
+  }, [router]);
+  let basename = router.basename || "/";
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(DataRouterContext.Provider, {
+    value: {
+      router,
+      navigator,
+      static: false,
+      // Do we need this?
+      basename
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(DataRouterStateContext.Provider, {
+    value: state
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(Router, {
+    basename: router.basename,
+    location: router.state.location,
+    navigationType: router.state.historyAction,
+    navigator: navigator
+  }, router.state.initialized ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(Routes, null) : fallbackElement)));
 }
 
 /**
  * A <Router> that stores all entries in memory.
  *
- * @see https://reactrouter.com/docs/en/v6/api#memoryrouter
+ * @see https://reactrouter.com/docs/en/v6/routers/memory-router
  */
-function MemoryRouter(_ref) {
+function MemoryRouter(_ref2) {
   let {
     basename,
     children,
     initialEntries,
     initialIndex
-  } = _ref;
-  let historyRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)();
+  } = _ref2;
+  let historyRef = react__WEBPACK_IMPORTED_MODULE_1__.useRef();
 
   if (historyRef.current == null) {
-    historyRef.current = (0,history__WEBPACK_IMPORTED_MODULE_0__.createMemoryHistory)({
+    historyRef.current = (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.createMemoryHistory)({
       initialEntries,
-      initialIndex
+      initialIndex,
+      v5Compat: true
     });
   }
 
   let history = historyRef.current;
-  let [state, setState] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
+  let [state, setState] = react__WEBPACK_IMPORTED_MODULE_1__.useState({
     action: history.action,
     location: history.location
   });
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect)(() => history.listen(setState), [history]);
-  return /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createElement)(Router, {
+  react__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect(() => history.listen(setState), [history]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(Router, {
     basename: basename,
     children: children,
     location: state.location,
@@ -13315,23 +18168,33 @@ function MemoryRouter(_ref) {
  * able to use hooks. In functional components, we recommend you use the
  * `useNavigate` hook instead.
  *
- * @see https://reactrouter.com/docs/en/v6/api#navigate
+ * @see https://reactrouter.com/docs/en/v6/components/navigate
  */
-function Navigate(_ref2) {
+function Navigate(_ref3) {
   let {
     to,
     replace,
-    state
-  } = _ref2;
-  !useInRouterContext() ?  true ? invariant(false, // TODO: This error is probably because they somehow have 2 versions of
+    state,
+    relative
+  } = _ref3;
+  !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of
   // the router loaded. We can help them understand how to avoid that.
   "<Navigate> may be used only in the context of a <Router> component.") : 0 : void 0;
-   true ? warning(!(0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(NavigationContext).static, "<Navigate> must not be used on the initial render in a <StaticRouter>. " + "This is a no-op, but you should modify your code so the <Navigate> is " + "only ever rendered in response to some user interaction or state change.") : 0;
+   true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.warning)(!react__WEBPACK_IMPORTED_MODULE_1__.useContext(NavigationContext).static, "<Navigate> must not be used on the initial render in a <StaticRouter>. " + "This is a no-op, but you should modify your code so the <Navigate> is " + "only ever rendered in response to some user interaction or state change.") : 0;
+  let dataRouterState = react__WEBPACK_IMPORTED_MODULE_1__.useContext(DataRouterStateContext);
   let navigate = useNavigate();
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+  react__WEBPACK_IMPORTED_MODULE_1__.useEffect(() => {
+    // Avoid kicking off multiple navigations if we're in the middle of a
+    // data-router navigation, since components get re-rendered when we enter
+    // a submitting/loading state
+    if (dataRouterState && dataRouterState.navigation.state !== "idle") {
+      return;
+    }
+
     navigate(to, {
       replace,
-      state
+      state,
+      relative
     });
   });
   return null;
@@ -13340,7 +18203,7 @@ function Navigate(_ref2) {
 /**
  * Renders the child route's element, if there is one.
  *
- * @see https://reactrouter.com/docs/en/v6/api#outlet
+ * @see https://reactrouter.com/docs/en/v6/components/outlet
  */
 function Outlet(props) {
   return useOutlet(props.context);
@@ -13349,10 +18212,10 @@ function Outlet(props) {
 /**
  * Declares an element that should be rendered at a certain URL path.
  *
- * @see https://reactrouter.com/docs/en/v6/api#route
+ * @see https://reactrouter.com/docs/en/v6/components/route
  */
 function Route(_props) {
-    true ? invariant(false, "A <Route> is only ever to be used as the child of <Routes> element, " + "never rendered directly. Please wrap your <Route> in a <Routes>.") : 0 ;
+   true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "A <Route> is only ever to be used as the child of <Routes> element, " + "never rendered directly. Please wrap your <Route> in a <Routes>.") : 0 ;
 }
 
 /**
@@ -13362,27 +18225,29 @@ function Route(_props) {
  * router that is more specific to your environment such as a <BrowserRouter>
  * in web browsers or a <StaticRouter> for server rendering.
  *
- * @see https://reactrouter.com/docs/en/v6/api#router
+ * @see https://reactrouter.com/docs/en/v6/routers/router
  */
-function Router(_ref3) {
+function Router(_ref4) {
   let {
     basename: basenameProp = "/",
     children = null,
     location: locationProp,
-    navigationType = history__WEBPACK_IMPORTED_MODULE_0__.Action.Pop,
+    navigationType = _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.Action.Pop,
     navigator,
     static: staticProp = false
-  } = _ref3;
-  !!useInRouterContext() ?  true ? invariant(false, "You cannot render a <Router> inside another <Router>." + " You should never have more than one in your app.") : 0 : void 0;
-  let basename = normalizePathname(basenameProp);
-  let navigationContext = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => ({
+  } = _ref4;
+  !!useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "You cannot render a <Router> inside another <Router>." + " You should never have more than one in your app.") : 0 : void 0; // Preserve trailing slashes on basename, so we can let the user control
+  // the enforcement of trailing slashes throughout the app
+
+  let basename = basenameProp.replace(/^\/*/, "/");
+  let navigationContext = react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => ({
     basename,
     navigator,
     static: staticProp
   }), [basename, navigator, staticProp]);
 
   if (typeof locationProp === "string") {
-    locationProp = (0,history__WEBPACK_IMPORTED_MODULE_0__.parsePath)(locationProp);
+    locationProp = (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.parsePath)(locationProp);
   }
 
   let {
@@ -13392,8 +18257,8 @@ function Router(_ref3) {
     state = null,
     key = "default"
   } = locationProp;
-  let location = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
-    let trailingPathname = stripBasename(pathname, basename);
+  let location = react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => {
+    let trailingPathname = (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.stripBasename)(pathname, basename);
 
     if (trailingPathname == null) {
       return null;
@@ -13407,15 +18272,15 @@ function Router(_ref3) {
       key
     };
   }, [basename, pathname, search, hash, state, key]);
-   true ? warning(location != null, "<Router basename=\"" + basename + "\"> is not able to match the URL " + ("\"" + pathname + search + hash + "\" because it does not start with the ") + "basename, so the <Router> won't render anything.") : 0;
+   true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.warning)(location != null, "<Router basename=\"" + basename + "\"> is not able to match the URL " + ("\"" + pathname + search + hash + "\" because it does not start with the ") + "basename, so the <Router> won't render anything.") : 0;
 
   if (location == null) {
     return null;
   }
 
-  return /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createElement)(NavigationContext.Provider, {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(NavigationContext.Provider, {
     value: navigationContext
-  }, /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.createElement)(LocationContext.Provider, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(LocationContext.Provider, {
     children: children,
     value: {
       location,
@@ -13428,14 +18293,160 @@ function Router(_ref3) {
  * A container for a nested tree of <Route> elements that renders the branch
  * that best matches the current location.
  *
- * @see https://reactrouter.com/docs/en/v6/api#routes
+ * @see https://reactrouter.com/docs/en/v6/components/routes
  */
-function Routes(_ref4) {
+function Routes(_ref5) {
   let {
     children,
     location
-  } = _ref4;
-  return useRoutes(createRoutesFromChildren(children), location);
+  } = _ref5;
+  let dataRouterContext = react__WEBPACK_IMPORTED_MODULE_1__.useContext(DataRouterContext); // When in a DataRouterContext _without_ children, we use the router routes
+  // directly.  If we have children, then we're in a descendant tree and we
+  // need to use child routes.
+
+  let routes = dataRouterContext && !children ? dataRouterContext.router.routes : createRoutesFromChildren(children);
+  return useRoutes(routes, location);
+}
+
+/**
+ * Component to use for rendering lazily loaded data from returning defer()
+ * in a loader function
+ */
+function Await(_ref6) {
+  let {
+    children,
+    errorElement,
+    resolve
+  } = _ref6;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(AwaitErrorBoundary, {
+    resolve: resolve,
+    errorElement: errorElement
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(ResolveAwait, null, children));
+}
+var AwaitRenderStatus;
+
+(function (AwaitRenderStatus) {
+  AwaitRenderStatus[AwaitRenderStatus["pending"] = 0] = "pending";
+  AwaitRenderStatus[AwaitRenderStatus["success"] = 1] = "success";
+  AwaitRenderStatus[AwaitRenderStatus["error"] = 2] = "error";
+})(AwaitRenderStatus || (AwaitRenderStatus = {}));
+
+const neverSettledPromise = new Promise(() => {});
+
+class AwaitErrorBoundary extends react__WEBPACK_IMPORTED_MODULE_1__.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null
+    };
+  }
+
+  static getDerivedStateFromError(error) {
+    return {
+      error
+    };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("<Await> caught the following error during render", error, errorInfo);
+  }
+
+  render() {
+    let {
+      children,
+      errorElement,
+      resolve
+    } = this.props;
+    let promise = null;
+    let status = AwaitRenderStatus.pending;
+
+    if (!(resolve instanceof Promise)) {
+      // Didn't get a promise - provide as a resolved promise
+      status = AwaitRenderStatus.success;
+      promise = Promise.resolve();
+      Object.defineProperty(promise, "_tracked", {
+        get: () => true
+      });
+      Object.defineProperty(promise, "_data", {
+        get: () => resolve
+      });
+    } else if (this.state.error) {
+      // Caught a render error, provide it as a rejected promise
+      status = AwaitRenderStatus.error;
+      let renderError = this.state.error;
+      promise = Promise.reject().catch(() => {}); // Avoid unhandled rejection warnings
+
+      Object.defineProperty(promise, "_tracked", {
+        get: () => true
+      });
+      Object.defineProperty(promise, "_error", {
+        get: () => renderError
+      });
+    } else if (resolve._tracked) {
+      // Already tracked promise - check contents
+      promise = resolve;
+      status = promise._error !== undefined ? AwaitRenderStatus.error : promise._data !== undefined ? AwaitRenderStatus.success : AwaitRenderStatus.pending;
+    } else {
+      // Raw (untracked) promise - track it
+      status = AwaitRenderStatus.pending;
+      Object.defineProperty(resolve, "_tracked", {
+        get: () => true
+      });
+      promise = resolve.then(data => Object.defineProperty(resolve, "_data", {
+        get: () => data
+      }), error => Object.defineProperty(resolve, "_error", {
+        get: () => error
+      }));
+    }
+
+    if (status === AwaitRenderStatus.error && promise._error instanceof _remix_run_router__WEBPACK_IMPORTED_MODULE_0__.AbortedDeferredError) {
+      // Freeze the UI by throwing a never resolved promise
+      throw neverSettledPromise;
+    }
+
+    if (status === AwaitRenderStatus.error && !errorElement) {
+      // No errorElement, throw to the nearest route-level error boundary
+      throw promise._error;
+    }
+
+    if (status === AwaitRenderStatus.error) {
+      // Render via our errorElement
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(AwaitContext.Provider, {
+        value: promise,
+        children: errorElement
+      });
+    }
+
+    if (status === AwaitRenderStatus.success) {
+      // Render children with resolved value
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(AwaitContext.Provider, {
+        value: promise,
+        children: children
+      });
+    } // Throw to the suspense boundary
+
+
+    throw promise;
+  }
+
+}
+/**
+ * @private
+ * Indirection to leverage useAsyncValue for a render-prop API on <Await>
+ */
+
+
+function ResolveAwait(_ref7) {
+  let {
+    children
+  } = _ref7;
+  let data = useAsyncValue();
+
+  if (typeof children === "function") {
+    return children(data);
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, children);
 } ///////////////////////////////////////////////////////////////////////////////
 // UTILS
 ///////////////////////////////////////////////////////////////////////////////
@@ -13445,13 +18456,18 @@ function Routes(_ref4) {
  * either a `<Route>` element or an array of them. Used internally by
  * `<Routes>` to create a route config from its children.
  *
- * @see https://reactrouter.com/docs/en/v6/api#createroutesfromchildren
+ * @see https://reactrouter.com/docs/en/v6/utils/create-routes-from-children
  */
 
-function createRoutesFromChildren(children) {
+
+function createRoutesFromChildren(children, parentPath) {
+  if (parentPath === void 0) {
+    parentPath = [];
+  }
+
   let routes = [];
-  react__WEBPACK_IMPORTED_MODULE_1__.Children.forEach(children, element => {
-    if (! /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_1__.isValidElement)(element)) {
+  react__WEBPACK_IMPORTED_MODULE_1__.Children.forEach(children, (element, index) => {
+    if (! /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.isValidElement(element)) {
       // Ignore non-elements. This allows people to more easily inline
       // conditionals in their route config.
       return;
@@ -13459,20 +18475,29 @@ function createRoutesFromChildren(children) {
 
     if (element.type === react__WEBPACK_IMPORTED_MODULE_1__.Fragment) {
       // Transparently support React.Fragment and its children.
-      routes.push.apply(routes, createRoutesFromChildren(element.props.children));
+      routes.push.apply(routes, createRoutesFromChildren(element.props.children, parentPath));
       return;
     }
 
-    !(element.type === Route) ?  true ? invariant(false, "[" + (typeof element.type === "string" ? element.type : element.type.name) + "] is not a <Route> component. All component children of <Routes> must be a <Route> or <React.Fragment>") : 0 : void 0;
+    !(element.type === Route) ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "[" + (typeof element.type === "string" ? element.type : element.type.name) + "] is not a <Route> component. All component children of <Routes> must be a <Route> or <React.Fragment>") : 0 : void 0;
+    !(!element.props.index || !element.props.children) ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, "An index route cannot have child routes.") : 0 : void 0;
+    let treePath = [...parentPath, index];
     let route = {
+      id: element.props.id || treePath.join("-"),
       caseSensitive: element.props.caseSensitive,
       element: element.props.element,
       index: element.props.index,
-      path: element.props.path
+      path: element.props.path,
+      loader: element.props.loader,
+      action: element.props.action,
+      errorElement: element.props.errorElement,
+      hasErrorBoundary: element.props.errorElement != null,
+      shouldRevalidate: element.props.shouldRevalidate,
+      handle: element.props.handle
     };
 
     if (element.props.children) {
-      route.children = createRoutesFromChildren(element.props.children);
+      route.children = createRoutesFromChildren(element.props.children, treePath);
     }
 
     routes.push(route);
@@ -13486,6 +18511,39 @@ function createRoutesFromChildren(children) {
 function renderMatches(matches) {
   return _renderMatches(matches);
 }
+/**
+ * @private
+ * Walk the route tree and add hasErrorBoundary if it's not provided, so that
+ * users providing manual route arrays can just specify errorElement
+ */
+
+function enhanceManualRouteObjects(routes) {
+  return routes.map(route => {
+    let routeClone = _extends({}, route);
+
+    if (routeClone.hasErrorBoundary == null) {
+      routeClone.hasErrorBoundary = routeClone.errorElement != null;
+    }
+
+    if (routeClone.children) {
+      routeClone.children = enhanceManualRouteObjects(routeClone.children);
+    }
+
+    return routeClone;
+  });
+}
+
+function createMemoryRouter(routes, opts) {
+  return (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.createRouter)({
+    basename: opts == null ? void 0 : opts.basename,
+    history: (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.createMemoryHistory)({
+      initialEntries: opts == null ? void 0 : opts.initialEntries,
+      initialIndex: opts == null ? void 0 : opts.initialIndex
+    }),
+    hydrationData: opts == null ? void 0 : opts.hydrationData,
+    routes: enhanceManualRouteObjects(routes)
+  }).initialize();
+} ///////////////////////////////////////////////////////////////////////////////
 
 
 //# sourceMappingURL=index.js.map
@@ -13879,36 +18937,6 @@ function _typeof(obj) {
   } : function (obj) {
     return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
   }, _typeof(obj);
-}
-
-/***/ }),
-
-/***/ "../../../node_modules/@babel/runtime/helpers/esm/extends.js":
-/*!*******************************************************************!*\
-  !*** ../../../node_modules/@babel/runtime/helpers/esm/extends.js ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _extends; }
-/* harmony export */ });
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-  return _extends.apply(this, arguments);
 }
 
 /***/ })
