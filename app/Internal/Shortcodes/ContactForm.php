@@ -80,7 +80,6 @@ class ContactForm {
         }elseif(!$form_status){
             return __('This form is not active. Please check','mrm');
         }
-
         $get_setting        = FormModel::get_meta($form_id);
         $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  (object)[];
         $form_setting       = json_decode($form_setting);

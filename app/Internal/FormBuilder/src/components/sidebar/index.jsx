@@ -545,7 +545,7 @@ function Sidebar() {
                       }
                       onClick={() => handleConfirmationType("page")}
                     >
-                      To a page
+                      To A Page
                     </span>
 
                     <span
@@ -556,7 +556,7 @@ function Sidebar() {
                       }
                       onClick={() => handleConfirmationType("custom-url")}
                     >
-                      To a custom URL
+                      To A Custom URL
                     </span>
                   </div>
 
