@@ -39,10 +39,10 @@ html.wp-toolbar {
   }
   // We need the styles scoped to "body" to be added to the
   // div.editor-styles wrapper
-  font-family: $editor-font;
-  font-size: $editor-font-size;
-  line-height: $editor-line-height;
-  color: $gray-900;
+  //font-family: $editor-font;
+  //font-size: $editor-font-size;
+  //line-height: $editor-line-height;
+  //color: $gray-900;
 
   // Important all other selectors scoped underneath
   // `div.editor-styles-wrapper`

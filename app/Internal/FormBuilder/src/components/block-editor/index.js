@@ -7,6 +7,7 @@ import { useSelect, useDispatch} from '@wordpress/data';
 import { useEffect, useState, useMemo } from '@wordpress/element';
 import { serialize, parse } from '@wordpress/blocks';
 import { uploadMedia } from '@wordpress/media-utils';
+import { SlotFillProvider, Popover } from "@wordpress/components";
 
 import {
 	BlockEditorKeyboardShortcuts,
@@ -15,6 +16,7 @@ import {
 	BlockInspector,
 	WritingFlow,
 	ObserveTyping,
+	BlockTools
 } from '@wordpress/block-editor';
 
 /**
@@ -122,21 +124,24 @@ function BlockEditor( { settings: _settings } ) {
 		<div className="get-mrm-block-editor">
 			<ShortcutProvider>
 				<BlockEditorProvider
-					value={ blocks }
-					onInput={ handleUpdateBlocksByOnInput }
-					onChange={ handlePersistBlocks }
-					settings={ settings }
+					value={blocks}
+					onInput={handleUpdateBlocksByOnInput}
+					onChange={handlePersistBlocks}
+					settings={settings}
 				>
 					<Sidebar.InspectorFill>
 						<BlockInspector />
 					</Sidebar.InspectorFill>
 					<div className="editor-styles-wrapper">
 						<BlockEditorKeyboardShortcuts />
-						<WritingFlow>
-							<ObserveTyping>
-								<BlockList className="get-mrm-block-editor__block-list" />
-							</ObserveTyping>
-						</WritingFlow>
+						<BlockTools>
+							<WritingFlow>
+								<ObserveTyping>
+									<BlockList className="get-mrm-block-editor__block-list" />
+								</ObserveTyping>
+							</WritingFlow>
+						</BlockTools>
+						<Popover.Slot />
 					</div>
 				</BlockEditorProvider>
 			</ShortcutProvider>
