@@ -1,25 +1,27 @@
 import { default as React, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { getLists } from "../../services/List";
-import { getTags } from "../../services/Tag";
+import {
+  Link,
+  matchPath,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import AlertPopup from "../AlertPopup";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
-import InputItem from "../InputItem";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import EditIcon from "../Icons/EditIcon";
 import MobileIcon from "../Icons/MobileIcon";
-import SettingIcon from "../Icons/SettingIcon";
 import TabIcon from "../Icons/TabIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
+import InputItem from "../InputItem";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
-import DesktopView from "./DesktopView";
-import MobileView from "./MobileView";
 import LoadingIndicator from "../LoadingIndicator";
-import { matchPath } from "react-router-dom";
-import AlertPopup from "../AlertPopup";
 import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
+import DesktopView from "./DesktopView";
+import MobileView from "./MobileView";
 const FormEditor = (props) => {
   // Hide WordPress admin notices
   const location = useLocation();
@@ -454,8 +456,7 @@ const FormEditor = (props) => {
                       <span className="lists">
                         {recipientLists?.length} Lists.
                       </span>
-                      <span className="recipients">
-                      </span>
+                      <span className="recipients"></span>
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
                   )}

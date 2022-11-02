@@ -35,7 +35,7 @@ export default function SingleCampaign(props) {
             />
             <label for={props.campaign.id}></label>
           </span>
-          {props.campaign.status == "draft" ? (
+          {props.campaign.type == "sequence" ? (
             <DraftCampaignIcon />
           ) : (
             <CompletedCampaignIcon />
@@ -56,7 +56,15 @@ export default function SingleCampaign(props) {
       <div className="table-data unsubscribers">-</div>
       <div className="table-data status">
         <span
-          className={props.campaign.status == "draft" ? "draft" : "completed"}
+          className={
+            props.campaign.status == "draft"
+              ? "draft"
+              : props.campaign.status == "active"
+              ? "active"
+              : props.campaign.status == "suspended"
+              ? "suspended"
+              : "archived"
+          }
         >
           {props.campaign.status}
         </span>
@@ -88,14 +96,22 @@ export default function SingleCampaign(props) {
                   : "mintmrm-dropdown"
               }
             >
-              <li
-                onClick={() => {
-                  props.editField(props.campaign);
-                }}
-              >
-                {" "}
-                Edit
-              </li>
+              {"active" == props.campaign.status ? (
+                <li onClick={() => props.handleStatusUpdate(props.campaign.id)}>
+                  {" "}
+                  Pause
+                </li>
+              ) : (
+                <li
+                  onClick={() => {
+                    props.editField(props.campaign);
+                  }}
+                >
+                  {" "}
+                  Edit
+                </li>
+              )}
+
               <li
                 className="delete"
                 onClick={() => props.deleteCampaign(props.campaign.id)}

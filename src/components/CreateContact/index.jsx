@@ -215,7 +215,7 @@ const CreateContact = (props) => {
           <div className="add-contact-form">
             <div className="contact-form-body">
               <InputItem
-                label="Emailss"
+                label="Email"
                 name="email"
                 error={errors?.email}
                 values={contactData.email}

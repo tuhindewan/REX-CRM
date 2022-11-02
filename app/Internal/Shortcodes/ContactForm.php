@@ -107,11 +107,27 @@ class ContactForm {
                 $show = false;
             }
         }
+        $html = '';
+        $class = '';
+        foreach( $blocks as $block ) {
+            if($block['blockName'] == 'core/columns'){
+                if(!isset($block['attrs']['style']['color']['background'])){
+                    $class = 'custom-background';
+                }
+            }
+            if($block['blockName'] == 'core/group'){
+                if(!isset($block['attrs']['style']['color']['background'])){
+                    $class = 'custom-background';
+                }
+            }
+
+            $html .= render_block( $block );
+        }
         if($show){
             ob_start();?>
             <div class="mintmrm" >
                 <div id="mrm-<?php echo $form_placement ?>" class="mrm-form-wrapper mrm-<?php echo $form_animation ?> <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_placement?>">
-                    <div class="mrm-form-wrapper-inner">
+                    <div class="mrm-form-wrapper-inner <?php echo $class ?>">
 
                     <?php if('default' != $form_placement){ ?>
                         <span style="background:<?php echo $form_close_background_color;?>" class="mrm-form-close">
@@ -122,9 +138,10 @@ class ContactForm {
                         <div class="mrm-form-overflow">
                             <form method="post" id="mrm-form">
                                 <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
-                                <?php foreach( $blocks as $block ) {
-                                    echo render_block( $block );
-                                } ?>
+                                <?php
+
+                               echo  $html;
+                                ?>
                             </form>
 
                             <div class="response"></div>

@@ -17,6 +17,7 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import PublishAlert from "../PublishAlert";
 import SuccessfulNotification from "../SuccessfulNotification";
+import ToolTip from "../ToolTip";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
@@ -141,15 +142,19 @@ export default function EditCampaign(props) {
       setCampaignStatus(campaign.status);
       satRecipientsCount(campaign.total_recipients);
       setShowLoader(false);
-      if ("ongoing" == campaign.status || "completed" == campaign.status) {
+      if ("active" == campaign.status || "archived" == campaign.status) {
         setIsReadonly(true);
       }
 
-      // toggleRefresh();
+      const isPublishValid = validateCampaignPublish(
+        emails,
+        campaign.title,
+        campaign.meta.recipients?.lists,
+        campaign.meta.recipients?.tags
+      );
+      setIsPublishValid(isPublishValid);
     });
 
-    const isPublishValid = validatePublish();
-    setIsPublishValid(isPublishValid);
     if ("campaign-created" == location.state?.status) {
       setShowNotification("block");
       setMessage(location.state?.message);
@@ -224,7 +229,7 @@ export default function EditCampaign(props) {
         }),
       },
       type: emailData.length > 1 ? "sequence" : "regular",
-      status: status == "ongoing" ? "ongoing" : status,
+      status: status == "active" ? "active" : status,
       emails: emailData.map((email) => {
         return {
           id: email?.id,
@@ -277,24 +282,49 @@ export default function EditCampaign(props) {
     }
   };
 
-  const validatePublish = () => {
+  const validatePublish = (email) => {
     if (
       campaignTitle.length > 0 &&
       recipientLists?.length != 0 &&
       recipientTags?.length != 0 &&
-      emailData[selectedEmailIndex]["email_subject"]?.length != 0 &&
-      emailData[selectedEmailIndex]["email_preview_text"]?.length != 0 &&
-      emailData[selectedEmailIndex]["sender_name"]?.length != 0 &&
-      emailData[selectedEmailIndex]["sender_email"]?.length != 0 &&
-      emailData[selectedEmailIndex].email_body?.length != 0
+      email.email_subject?.length != 0 &&
+      email.email_preview_text?.length != 0 &&
+      email.sender_name?.length != 0 &&
+      email.sender_email?.length != 0 &&
+      email.email_body?.length != 0
     ) {
       return true;
     }
   };
 
+  const validateCampaignPublish = (
+    emails,
+    campaignTitle,
+    recipientLists,
+    recipientTags
+  ) => {
+    emails.map((email) => {
+      if (
+        campaignTitle.length < 0 ||
+        recipientLists?.length == 0 ||
+        recipientTags?.length == 0 ||
+        email.email_subject?.length == 0 ||
+        email.email_preview_text?.length == 0 ||
+        email.sender_name?.length == 0 ||
+        email.sender_email?.length == 0 ||
+        email.email_body?.length == 0
+      ) {
+        setIsPublishValid(false);
+      }
+    });
+  };
+
   useEffect(() => {
-    const isPublishValid = validatePublish();
-    setIsPublishValid(isPublishValid);
+    emailData.map((email) => {
+      const isPublishValid = validatePublish(email);
+      setIsPublishValid(isPublishValid);
+    });
+
     const isValid = validate();
     setIsValid(isValid);
   }, [
@@ -310,7 +340,7 @@ export default function EditCampaign(props) {
 
   // function for adding new email in the sequence
   const addNextEmail = () => {
-    if ("ongoing" != campaignStatus && "completed" != campaignStatus) {
+    if ("active" != campaignStatus && "archived" != campaignStatus) {
       setEmailData((prevEmailData) => {
         setSelectedEmailIndex(prevEmailData.length);
         setActiveEmailData(defaultEmailData);
@@ -321,11 +351,22 @@ export default function EditCampaign(props) {
 
   // function for removing an email from the sequence
   const deleteEmail = (index, email_id) => {
-    setIsEmailDelete("block");
-    setDeleteTitle("Delete Sequence Email");
-    setDeleteMessage("Are you sure you want to delete the email?");
-    setEmailIndex(index);
-    setEmailID(email_id);
+    if (email_id) {
+      setIsEmailDelete("block");
+      setDeleteTitle("Delete Sequence Email");
+      setDeleteMessage("Are you sure you want to delete the email?");
+      setEmailIndex(index);
+      setEmailID(email_id);
+    } else {
+      setEmailData((prevEmailData) => {
+        const copy = [...prevEmailData];
+        copy.splice(index, 1);
+        setSelectedEmailIndex(
+          index < copy.length ? index : Math.max(0, index - 1)
+        );
+        return copy;
+      });
+    }
   };
 
   const onDeleteShow = async (status) => {
@@ -355,7 +396,7 @@ export default function EditCampaign(props) {
           }),
         },
         type: emailData.length > 1 ? "sequence" : "regular",
-        status: "ongoing",
+        status: "active",
         emails: emailData.map((email) => {
           return {
             id: email?.id,
@@ -516,8 +557,10 @@ export default function EditCampaign(props) {
           <div className="mintmrm-container">
             <div className="left-section">
               <div className="back-button">
-                <DoubleAngleLeftIcon />
-                <Link to="/campaigns">Campaigns</Link>
+                <Link to="/campaigns">
+                  <DoubleAngleLeftIcon />
+                  Campaigns
+                </Link>
               </div>
               <h2 className="campaign-title">Edit Campaign</h2>
             </div>
@@ -776,39 +819,51 @@ export default function EditCampaign(props) {
                   </div>
                 </div>
                 <div className="content-save-section">
-                  {"ongoing" == campaignStatus ? (
+                  {"active" == campaignStatus ? (
                     <button
                       className="campaign-save mintmrm-btn"
                       disabled={true}
                     >
-                      On Going
+                      Active
                     </button>
-                  ) : "completed" == campaignStatus ? (
+                  ) : "archived" == campaignStatus ? (
                     <button
                       className="campaign-save mintmrm-btn completed"
                       disabled={true}
                     >
-                      Completed
+                      Archived
                     </button>
                   ) : (
                     <>
-                      {/* <button
-                      className="campaign-schedule mintmrm-btn outline"
-                      disabled={!isPublishValid}
-                      onClick={() => updateCampaign("ongoing")}
-                    >
-                      Publish
-                    </button> */}
                       {isPublishValid ? (
                         <button
-                          className="campaign-schedule mintmrm-btn outline"
-                          // disabled={!isPublishValid}
+                          className={
+                            isPublishValid
+                              ? "campaign-schedule mintmrm-btn outline"
+                              : "campaign-schedule mintmrm-btn outline disable"
+                          }
+                          disabled={!isPublishValid}
                           onClick={publishCampaignNow}
                         >
-                          Publish
+                          Schedule
                         </button>
                       ) : (
-                        ""
+                        <ToolTip
+                          title="Please complete all required steps to schedule the email."
+                          containerClass="tooltipStyleChange"
+                        >
+                          <button
+                            className={
+                              isPublishValid
+                                ? "campaign-schedule mintmrm-btn outline"
+                                : "campaign-schedule mintmrm-btn outline disable"
+                            }
+                            disabled={!isPublishValid}
+                            onClick={publishCampaignNow}
+                          >
+                            Schedule
+                          </button>
+                        </ToolTip>
                       )}
                       <button
                         type="submit"
@@ -834,6 +889,7 @@ export default function EditCampaign(props) {
           message="Are you sure to run this campaign? It can not be edited after launch."
           onNotPublish={onNotPublish}
           onPublishStatus={onPublishStatus}
+          buttonText={"Publish"}
         />
       </div>
       <div className="mintmrm-container" style={{ display: isEmailDelete }}>
@@ -858,6 +914,8 @@ export default function EditCampaign(props) {
           emailData={emailData[selectedEmailIndex]}
           setEmailBody={setEmailBody}
           setIsTemplate={setIsTemplate}
+          setIsReadonly={setIsReadonly}
+          isReadonly={isReadonly}
           campaignData={{
             title: campaignTitle,
             recipients: {
