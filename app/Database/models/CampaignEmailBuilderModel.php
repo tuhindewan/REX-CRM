@@ -86,11 +86,15 @@ class CampaignEmailBuilderModel {
         $email_builder_table    = $wpdb->prefix . CampaignEmailBuilderSchema::$table_name;
         $select_query           = $wpdb->prepare("SELECT * FROM $email_builder_table WHERE email_id=%s", $id );
         $email                  = $wpdb->get_row( $select_query, ARRAY_A );
-        $email_body             = isset($email['email_body']) ? $email['email_body'] : "";
-        $email_json_data        = isset($email['json_data'])  ? $email['json_data']  : "";  
-        $email['email_body']    = maybe_unserialize($email_body);
-        $email['json_data']     = maybe_unserialize($email_json_data);
-        return $email;
+        
+        if($email){
+            $email_body             = isset($email['email_body']) ? $email['email_body'] : "";
+            $email_json_data        = isset($email['json_data'])  ? $email['json_data']  : "";  
+            $email['email_body']    = maybe_unserialize($email_body);
+            $email['json_data']     = maybe_unserialize($email_json_data);
+            return $email;
+        }
+        return null;
     }
 
 }

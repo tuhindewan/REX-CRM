@@ -10,6 +10,7 @@ import SettingIcon from "../Icons/SettingIcon";
 import TemplateIcon from "../Icons/TemplateIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
+import ToolTip from "../ToolTip";
 import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
@@ -338,24 +339,12 @@ export default function AddCampaign(props) {
   return (
     <>
       <div className="mintmrm-add-campaign">
-        {/* <div className="add-campaign-breadcrumb">
-          <div className="mintmrm-container">
-            <ul className="mintmrm-breadcrumb">
-              <li>
-                <Link to="/campaigns">Campaigns</Link>
-              </li>
-              <li className="active">Add Campaign</li>
-            </ul>
-          </div>
-        </div> */}
-
         <div className="single-campaign-header">
           <div className="mintmrm-container">
             <div className="left-section">
               <div className="back-button">
                 <Link to="/campaigns">
-                  <DoubleAngleLeftIcon />
-                  Campaigns
+                  <DoubleAngleLeftIcon /> Campaigns
                 </Link>
               </div>
               <h2 className="campaign-title">Add Campaign</h2>
@@ -644,17 +633,23 @@ export default function AddCampaign(props) {
                 </div>
               </div>
               <div className="content-save-section">
-                {isPublishValid ? (
+                <ToolTip
+                  title="Please complete all required steps to schedule the email."
+                  containerClass="tooltipStyleChange"
+                >
                   <button
-                    className="campaign-schedule mintmrm-btn outline"
-                    // disabled={!isPublishValid}
-                    onClick={handlePublish}
+                    className={
+                      isPublishValid
+                        ? "campaign-schedule mintmrm-btn outline"
+                        : "campaign-schedule mintmrm-btn outline disable"
+                    }
+                    disabled={!isPublishValid}
+                    data-tip="By adding this class you can provide almost any element with a tool tip."
                   >
-                    Publish
+                    Schedule
                   </button>
-                ) : (
-                  ""
-                )}
+                </ToolTip>
+
                 {/* <ScheduleAlert /> */}
                 <button
                   type="submit"

@@ -89,6 +89,21 @@ class CampaignEmailRoute {
             ),
         ]);
 
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<campaign_id>[\d]+)/email/', [
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'create_new_campaign_email'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
         /**
          * Campaign send test email
          * 

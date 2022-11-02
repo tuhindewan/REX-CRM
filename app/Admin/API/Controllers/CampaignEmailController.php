@@ -44,7 +44,6 @@ class CampaignEmailController extends BaseController {
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
 
-        error_log(print_r($params, 1));
         $response   = array(
             'success'   => true,
             'message'   => ''
@@ -102,6 +101,34 @@ class CampaignEmailController extends BaseController {
     public function delete_all(WP_REST_Request $request)
     {
         // TODO: Implement delete_all() method.
+    }
+
+
+    /**
+     * Create a new email for existing campaign
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function create_new_campaign_email( WP_REST_Request $request ) 
+    {
+        // Receive params from POST API request and prepare email data
+        $params         = MRM_Common::get_api_params_values( $request );
+        $email_data     = isset( $params['email_data'] ) ? $params['email_data'] : [];
+        $campaign_id    = isset( $params['campaign_id'] ) ? $params['campaign_id'] : [];
+        // Insert email data on campaign emails and email builder table
+        $email_id = CampaignModel::insert_campaign_emails( $email_data, $campaign_id, null );
+        CampaignEmailBuilderModel::insert(array(
+            'email_id'      => $email_id,
+            'status'        => 'published',
+            'email_body' => $params['email_body'],
+            'json_data'  => serialize($params['json_data']),
+        ));
+        
+        $response['campaign_id']  = $campaign_id;
+        return rest_ensure_response($response);
     }
 
 
@@ -260,9 +287,12 @@ class CampaignEmailController extends BaseController {
      */
     public function get_email_builder_data( WP_REST_Request $request )
     {
-        $params     = MRM_Common::get_api_params_values( $request );
+        // Receive params from POST API request and prepare email data
+        $params         = MRM_Common::get_api_params_values( $request );
+        $email_id       = isset( $params['email_id'] ) ? $params['email_id'] : [];
+        $campaign_id    = isset( $params['campaign_id'] ) ? $params['campaign_id'] : [];
         
-        $email      = CampaignModel::get_campaign_email_to_builder( $params['campaign_id'], $params['email_id'] );
+        $email      = CampaignModel::get_campaign_email_to_builder( $campaign_id, $email_id );
         $response   = array(
             'success'   => true,
             'message'   => ''
