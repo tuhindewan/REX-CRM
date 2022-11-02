@@ -5,6 +5,7 @@ namespace Mint\MRM\DataBase\Models;
 use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\MRM\DataStores\Campaign;
 use Mint\Mrm\Internal\Traits\Singleton;
+use wpdb;
 
 /**
  * @author [MRM Team]
@@ -530,5 +531,63 @@ class CampaignModel {
         $email_table    = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
         $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND id=%s", $campaign_id, $email_id );
         return $wpdb->get_row( $select_query );
+    }
+
+
+    /**
+     * Return campaign's emaild meta value
+     * 
+     * @param mixed $email_id
+     * @param mixed $key
+     * 
+     * @return bool|int
+     * @since 1.0.0
+     */
+    public static function get_campaign_email_meta( $email_id, $key )
+    {
+        global $wpdb;
+        $email_meta_table = $wpdb->prefix . CampaignSchema::$campaign_emails_meta_table;
+        $select_query   = $wpdb->prepare("SELECT meta_value FROM {$email_meta_table} WHERE campaign_emails_id=%d AND meta_key=%s", $email_id, $key );
+        $meta_data = $wpdb->get_col( $select_query );
+        return isset( $meta_data[0] ) ? $meta_data[0] : false;
+    }
+
+
+    /**
+     * Update campaign's email meta fields
+     * 
+     * @param mixed $email_id
+     * @param mixed $key
+     * @param mixed $value
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public static function update_campaign_email_meta( $email_id, $key, $value )
+    {
+        global $wpdb;
+        $email_meta_table = $wpdb->prefix . CampaignSchema::$campaign_emails_meta_table;
+        $isMeta = self::get_campaign_email_meta( $email_id, $key );
+        
+        if(!$isMeta){
+            $wpdb->insert(
+                $email_meta_table,
+                [
+                    "campaign_emails_id" => $email_id,
+                    "meta_key"           => $key,
+                    "meta_value"         => $value
+                ]
+            );
+        }
+        else {
+            $wpdb->update( $email_meta_table, 
+                [
+                    "meta_value"=> $value
+                ], 
+                [
+                    'campaign_emails_id' => $email_id, "meta_key" => $key
+                ] 
+            );
+        }
     }
 }

@@ -89,13 +89,14 @@ class CampaignsBackgroundProcess
 			$campaigns = CampaignController::get_instance()->get_publish_campaign_id();
 			$campaign_ids = array_column( $campaigns, 'id' );
             $campaign_scheduled_emails_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
+			$last_recipient_id = 0;
 
 			foreach ( $campaign_ids as $campaign_id ) {
 				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
                 if ( is_array( $campaign_emails ) && !empty( $campaign_emails ) ) {
                     foreach ( $campaign_emails as $campaign_email ) {
                         $campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
-
+						
                         $offset = get_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
                         $per_batch = 10;
                         $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
@@ -122,11 +123,14 @@ class CampaignsBackgroundProcess
                                         ]
                                     );
 									update_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, ++$offset );
+
+									$last_recipient_id = $email['id'];
                                 }
                                 if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                                     break;
                                 }
                             }
+							CampaignModel::update_campaign_email_meta( $campaign_email_id, '_last_recipient_id', $last_recipient_id );
                         }
                         else {
                             //delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
@@ -135,7 +139,10 @@ class CampaignsBackgroundProcess
                             break;
                         }
                     }
-                }
+                }else{
+					CampaignModel::update_campaign_status( $campaign_id, 'archived' );
+				}
+
 				if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
 					break;
 				}
@@ -165,6 +172,7 @@ class CampaignsBackgroundProcess
                     $email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int)$recipient[ 'id' ] : '';
                     $scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int)$recipient[ 'email_id' ] : '';
                     $campaign_id = isset( $recipient[ 'campaign_id' ] ) ? (int)$recipient[ 'campaign_id' ] : '';
+					$contact_id = isset( $recipient[ 'contact_id' ] ) ? (int)$recipient[ 'contact_id' ] : '';
 
                     $headers = [
                         'MIME-Version: 1.0',
@@ -189,7 +197,10 @@ class CampaignsBackgroundProcess
                     else {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'failed' );
                     }
-
+					$meta_value = CampaignModel::get_campaign_email_meta( $scheduled_email_id, '_last_recipient_id' );
+					if( $contact_id == $meta_value ){
+						CampaignModel::update_campaign_email_status( $campaign_id, $scheduled_email_id, 'sent' );
+					}
                     if( $this->time_exceeded( $sending_emails_status ) || $this->memory_exceeded() ) {
                         break;
                     }
