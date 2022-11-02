@@ -199,6 +199,8 @@ export default function ContactDetails() {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
         setShowLoader(false);
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
@@ -609,10 +611,6 @@ export default function ContactDetails() {
     // }));
   };
 
-  // useEffect(() =>{
-
-  // }, [gender]);
-
   return (
     <>
       <div className="mintmrm-contact-details">
@@ -655,9 +653,9 @@ export default function ContactDetails() {
                     </div>
 
                     <p>
-                      Added via {contactData.added_by_login} on{" "}
-                      {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
-                      at {contactData.created_time}
+                      Added via {contactData.added_by_login} on {createMonth}{" "}
+                      {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                      {contactData.created_time}
                     </p>
                     {contactData.status == "pending" && (
                       <div
@@ -692,7 +690,7 @@ export default function ContactDetails() {
                   <button className="create-note" onClick={noteForm}>
                     <CreateNoteIcon />
                   </button>
-                  
+
                   <button className="create-mail" onClick={emailForm}>
                     <EmailIcon />
                   </button>
@@ -1459,7 +1457,6 @@ export default function ContactDetails() {
               refresh={refresh}
               setRefresh={setRefresh}
             />
-
           </div>
         )}
       </div>

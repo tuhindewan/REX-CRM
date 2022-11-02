@@ -173,7 +173,6 @@ class CampaignsBackgroundProcess
 
                     $email_builder 	= CampaignEmailBuilderModel::get( $scheduled_email_id );
 					$email 			= CampaignModel::get_campaign_email_by_id( $campaign_id, $scheduled_email_id);
-					error_log(print_r($email, 1));
                     $email_body 	= isset( $email_builder[ 'email_body' ] ) 	? $email_builder[ 'email_body' ] : '';
                     $sender_email 	= $email->sender_email;
                     $sender_name 	= $email->sender_name;
@@ -184,7 +183,6 @@ class CampaignsBackgroundProcess
                     $headers[] = 'Reply-To: ' . $sender_email;
 
                     $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
-					error_log(print_r($email_sent, 1));
                     if( $email_sent ) {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
                     }
