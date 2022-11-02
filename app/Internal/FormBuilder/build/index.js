@@ -17653,6 +17653,12 @@ function Sidebar() {
     }, {
       label: "Fly Ins",
       value: "flyins"
+    }, {
+      label: "Fixed on top",
+      value: "fixed-on-top"
+    }, {
+      label: "Fixed on bottom",
+      value: "fixed-on-bottom"
     }],
     onChange: state => setFormPosition(state)
   })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
