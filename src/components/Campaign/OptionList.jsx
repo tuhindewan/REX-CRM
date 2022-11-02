@@ -1,18 +1,6 @@
 export default function OptionList(props) {
   const {selected, setSelected, allowMultiple = true } = props;
-  
 
-  // const handleChange = (e) => {
-  //   let updatedList = [...checkItem];
-  //   if (e.target.checked) {
-  //     updatedList = [...checkItem, e.target.value];
-  //     // setCheckItem([...checkItem, e.target.value]);
-  //   } else {
-  //     updatedList.splice(checkItem.indexOf(e.target.value), 1);
-  //   }
-  //   setCheckItem(updatedList);
-  //   // console.log(updatedList);
-  // };
 
   const handleSelectOne = (e) => {
     e.stopPropagation();

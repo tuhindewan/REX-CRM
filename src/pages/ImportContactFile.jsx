@@ -33,7 +33,6 @@ export default function ImportContactFile() {
         return () => clearTimeout(timer);
       }
     } catch (e) {
-      console.log(e);
     }
   }
 

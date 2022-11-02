@@ -451,50 +451,6 @@ export default function AddCampaign(props) {
                         />
                         <div></div>
                       </div>
-                      {/* <div
-                        className={
-                          recipientLists.length == 0 &&
-                          recipientTags.length == 0
-                            ? "selected-result inactive"
-                            : "selected-result"
-                        }
-                      >
-                        {recipientLists.map((item) => {
-                          return (
-                            <span
-                              key={item.id}
-                              className="mrm-custom-selected-items"
-                            >
-                              {item.title}
-                              <div
-                                className="cross-icon"
-                                onClick={(e) => deleteSelectedlist(e, item.id)}
-                              >
-                                <CrossIcon />
-                              </div>
-                            </span>
-                          );
-                        })}
-                        {recipientTags.map((item) => {
-                          return (
-                            <span
-                              key={item.id}
-                              className="mrm-custom-selected-items"
-                            >
-                              {item.title}
-                              <div
-                                className="cross-icon"
-                                onClick={(e) => deleteSelectedtag(e, item.id)}
-                              >
-                                <CrossIcon />
-                              </div>
-                            </span>
-                          );
-                        })}
-                        <div className="clear-all" onClick={deleteAll}>
-                          <span>Clear All</span>
-                        </div>
-                      </div> */}
                     </div>
                   </>
                 )}

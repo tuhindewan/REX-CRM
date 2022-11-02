@@ -11,8 +11,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
 import ContactNavbar from "../ContactNavbar/index";
 
-import "./style.css";
-
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
   const [countData, setCountData] = useState([]);

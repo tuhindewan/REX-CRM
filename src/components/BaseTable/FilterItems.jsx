@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Search from "../Icons/Search";
 import ColumnList from "./ColumnList";
 
