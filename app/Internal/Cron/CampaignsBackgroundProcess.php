@@ -219,7 +219,7 @@ class CampaignsBackgroundProcess
         $campaign_email_scheduled_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
         $wpdb->update(
             $campaign_email_scheduled_table,
-            [ 'status' => $status, 'updated_at' => current_time( 'mysql' ) ],
+            [ 'status' => $status, 'updated_at' => current_time( 'mysql', true ) ],
             [ 'id' => $email_scheduled_id ]
         );
     }
@@ -238,7 +238,7 @@ class CampaignsBackgroundProcess
         $sql_query                      .= "WHERE `status` = %s ";
         $sql_query                      .= "AND `scheduled_at` <= %s ";
         $sql_query                      .= "LIMIT %d, %d";
-        $sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql' ), $offset, $per_batch );
+        $sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql', true ), $offset, $per_batch );
         return $wpdb->get_results( $sql_query, ARRAY_A );
     }
 
