@@ -142,6 +142,13 @@ class ContactController extends BaseController {
             $contact    = ListController::get_lists_to_contact( $contact );
             $contact    = NoteController::get_notes_to_contact( $contact );
             $contact[ 'messages' ] = MessageModel::get_messages( $contact_id );
+            $contact[ 'activities' ] = isset( $contact[ 'notes' ], $contact[ 'messages' ] ) && is_array( $contact[ 'notes' ] ) && is_array( $contact[ 'messages' ] )
+                ? array_merge( $contact[ 'notes' ], $contact[ 'messages' ] ) : [];
+
+            if( !empty( $contact[ 'activities' ] ) ) {
+                $created_time_column = array_column( $contact[ 'activities' ], 'created_time' );
+                array_multisort( $created_time_column, SORT_DESC, $contact[ 'activities' ] );
+            }
         }
 
         if($contact && isset($contact['email'])) {

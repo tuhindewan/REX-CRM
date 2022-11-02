@@ -1271,6 +1271,8 @@ export default function ContactDetails() {
                         ) : (
                           <SingleActivityFeed
                             notes={contactData?.notes}
+                            messages={contactData?.messages}
+                            activities={contactData?.activities}
                             contactId={contactData?.id}
                             refresh={refresh}
                             setRefresh={setRefresh}
