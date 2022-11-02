@@ -11,6 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -46,6 +47,9 @@ const toOrdinalSuffix = (num) => {
 };
 
 export default function ContactDetails() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
+
   const [isActive, setActive] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tabState, setTabState] = useState(1);
@@ -199,6 +203,8 @@ export default function ContactDetails() {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
         setShowLoader(false);
         // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
@@ -609,10 +615,6 @@ export default function ContactDetails() {
     // }));
   };
 
-  // useEffect(() =>{
-
-  // }, [gender]);
-
   return (
     <>
       <div className="mintmrm-contact-details">
@@ -655,9 +657,9 @@ export default function ContactDetails() {
                     </div>
 
                     <p>
-                      Added via {contactData.added_by_login} on{" "}
-                      {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
-                      at {contactData.created_time}
+                      Added via {contactData.added_by_login} on {createMonth}{" "}
+                      {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                      {contactData.created_time}
                     </p>
                     {contactData.status == "pending" && (
                       <div
@@ -692,7 +694,7 @@ export default function ContactDetails() {
                   <button className="create-note" onClick={noteForm}>
                     <CreateNoteIcon />
                   </button>
-                  
+
                   <button className="create-mail" onClick={emailForm}>
                     <EmailIcon />
                   </button>
@@ -1459,7 +1461,6 @@ export default function ContactDetails() {
               refresh={refresh}
               setRefresh={setRefresh}
             />
-
           </div>
         )}
       </div>

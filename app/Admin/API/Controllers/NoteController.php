@@ -36,24 +36,14 @@ class NoteController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
         $contact_id = isset($params['contact_id']) ? $params['contact_id'] : "";
         $note_id    = isset($params['note_id']) ? $params['note_id'] : "";
-        // Note Title validation
-        $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
-        if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
-		}
-
-        // Note type validation
-        $type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : '';
-        if ( empty( $type ) ) {
-			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  200);
-		}
-
+        
         // Note description validation
         $description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
         if ( empty( $description ) ) {
 			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  200);
 		}
 
+        error_log(print_r(strlen( $description ) , 1));
         if ( 2000 < strlen( $description ) ){
 			return $this->get_error_response( __( 'Description character limit exceeded', 'mrm' ),  200);
 		}
@@ -148,7 +138,6 @@ class NoteController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
     
         $note = NoteModel::get( $params['note_id'] );
-
         if(isset($note)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $note);
         }

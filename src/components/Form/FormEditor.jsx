@@ -1,13 +1,11 @@
 import { default as React, useEffect, useRef, useState } from "react";
-import {
-  Link,
-  matchPath,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import AlertPopup from "../AlertPopup";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
+import InputItem from "../InputItem";
+
+import { matchPath } from "react-router-dom";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import AlertPopup from "../AlertPopup";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
 import EditIcon from "../Icons/EditIcon";
@@ -15,7 +13,6 @@ import MobileIcon from "../Icons/MobileIcon";
 import TabIcon from "../Icons/TabIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
 import UpArrowIcon from "../Icons/UpArrowIcon";
-import InputItem from "../InputItem";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
@@ -23,6 +20,8 @@ import WarningNotification from "../WarningNotification";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
 const FormEditor = (props) => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "forms");
   // Hide WordPress admin notices
   const location = useLocation();
   const match = matchPath({ path: "form-builder" }, location.pathname);

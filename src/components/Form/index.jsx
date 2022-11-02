@@ -1,24 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import AlertPopup from "../AlertPopup";
 import DeletePopup from "../DeletePopup";
 import CopyIcon from "../Icons/CopyIcon";
+import Delete from "../Icons/Delete";
+import EditIcon from "../Icons/EditIcon";
 import FormIconSM from "../Icons/FormIconSM";
 import FormIconXL from "../Icons/FormIconXL";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
-import Pagination from "../Pagination";
-import EyeIcon from "../Icons/EyeIcon";
-import EditIcon from "../Icons/EditIcon";
-import Delete from "../Icons/Delete";
 import LoadingIndicator from "../LoadingIndicator";
+import Pagination from "../Pagination";
 import SuccessfulNotification from "../SuccessfulNotification";
 import FormTemplate from "./FormTemplate";
 
 export default function FormIndex(props) {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "forms");
 
   const [formData, setFormData] = useState({});
