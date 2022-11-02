@@ -28,12 +28,12 @@ export default function ({ label, options, value, onChange, additionalClass, res
 
 			{!responsive && label && <label> {label} </label>}
 
-			<ButtonGroup className="mrmTypography-field-child mrmTypography-d-flex">
+			{/* <ButtonGroup className="mrmTypography-field-child mrmTypography-d-flex">
 				{options.map(([title, option]) => {
-					const activeBtn = option === getValue() ? 'qubley-active-group-btn' : ''
-					return (<Button className={`qubley-group-button ${activeBtn}${additionalClass ? ` ${additionalClass}` : ''}`} onClick={() => onButtonClick(option)}>{title}</Button>)
+					const activeBtn = option === getValue() ? 'mrmTypography-active-group-btn' : ''
+					return (<Button className={`mrmTypography-group-button ${activeBtn}${additionalClass ? ` ${additionalClass}` : ''}`} onClick={() => onButtonClick(option)}>{title}</Button>)
 				})}
-			</ButtonGroup>
+			</ButtonGroup> */}
 		</div>
 	)
 }

@@ -5511,7 +5511,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 /**
  * Internal dependencies
  */
@@ -5523,18 +5522,18 @@ function BlockEditor(_ref) {
     settings: _settings
   } = _ref;
   const location = window.location.hash;
-  var locationArray = location.split('/');
+  var locationArray = location.split("/");
   const lastIndex = locationArray.at(-1);
-  const id = lastIndex.replace("#", '');
+  const id = lastIndex.replace("#", "");
   const [blocks, updateBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const {
     createInfoNotice
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/notices');
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)("core/notices");
   const canUserCreateMedia = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const _canUserCreateMedia = select('core').canUser('create', 'media');
+    const _canUserCreateMedia = select("core").canUser("create", "media");
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = "<!-- wp:mrmformfield/email-field-block -->\n" + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + "<!-- /wp:mrmformfield/email-field-block -->\n" + "\n" + "<!-- wp:mrmformfield/mrm-button-block -->\n" + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + "<!-- /wp:mrmformfield/mrm-button-block -->";
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -5566,18 +5565,18 @@ function BlockEditor(_ref) {
         const resJson = await res.json();
         if (200 === resJson.code) {
           var _resJson$data$;
-          window.localStorage.setItem('getmrmblocks', resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
-          const storedBlocks = window.localStorage.getItem('getmrmblocks');
+          window.localStorage.setItem("getmrmblocks", resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
+          const storedBlocks = window.localStorage.getItem("getmrmblocks");
           if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
             handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
           }
         } else {
           handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
-          window.localStorage.setItem('getmrmblocks', defaultData);
+          window.localStorage.setItem("getmrmblocks", defaultData);
         }
       } else {
         handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
-        window.localStorage.setItem('getmrmblocks', defaultData);
+        window.localStorage.setItem("getmrmblocks", defaultData);
       }
     };
     getFormData();
@@ -5601,12 +5600,11 @@ function BlockEditor(_ref) {
   }
   function handleUpdateBlocksByOnInput(blocks) {
     updateBlocks(blocks);
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
+    window.localStorage.setItem("getmrmblocks", (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
   }
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
+    window.localStorage.setItem("getmrmblocks", (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
@@ -5685,16 +5683,7 @@ const {
     onChange: val => {
       device && onDeviceChange ? onDeviceChange(val) : updateDevice(val);
     }
-  })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, {
-    className: "mrmTypography-field-child mrmTypography-d-flex"
-  }, options.map(_ref2 => {
-    let [title, option] = _ref2;
-    const activeBtn = option === getValue() ? 'qubley-active-group-btn' : '';
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
-      className: `qubley-group-button ${activeBtn}${additionalClass ? ` ${additionalClass}` : ''}`,
-      onClick: () => onButtonClick(option)
-    }, title);
-  })));
+  })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "));
 }
 
 /***/ }),
@@ -17667,7 +17656,7 @@ function Sidebar() {
       value: "flyins"
     }],
     onChange: state => setFormPosition(state)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Close Button Color",
     className: "form-layout-settings",
     initialOpen: false
@@ -17703,7 +17692,7 @@ function Sidebar() {
     onChange: setCloseBackgroundColor,
     enableAlpha: true,
     defaultValue: closeBackgroundColor
-  }))))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  }))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Animation",
     className: "form-animation-settings",
     initialOpen: false
@@ -17778,13 +17767,13 @@ function Editor(_ref) {
     className: "mrm-editor-builder"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_2__.FullscreenMode, {
     isActive: false
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SlotFillProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropZoneProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FocusReturnProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_2__.InterfaceSkeleton, {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SlotFillProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_2__.InterfaceSkeleton, {
     header: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_header__WEBPACK_IMPORTED_MODULE_4__["default"], null),
     sidebar: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_sidebar__WEBPACK_IMPORTED_MODULE_5__["default"], null),
     content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_notices__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_block_editor__WEBPACK_IMPORTED_MODULE_6__["default"], {
       settings: settings
     }))
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)))));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Editor);
 

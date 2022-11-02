@@ -285,7 +285,9 @@ function Sidebar() {
 
     //set form close button color
     if (prevSetting?.settings?.form_layout?.close_button_color) {
-      setCloseButtonColor(prevSetting?.settings?.form_layout?.close_button_color);
+      setCloseButtonColor(
+        prevSetting?.settings?.form_layout?.close_button_color
+      );
     } else {
       setCloseButtonColor("#000");
     }
@@ -720,62 +722,62 @@ function Sidebar() {
                     onChange={(state) => setFormPosition(state)}
                   />
                 </div>
+              </div>
+            </PanelBody>
 
-                <PanelBody
-                  title="Close Button Color"
-                  className="form-layout-settings"
-                  initialOpen={false}
-                >
-                  <div className="single-settings">
-                    <label className="settings-label">
-                      Close Icon
-                      <span className="mintmrm-tooltip">
-                        <QuestionIcon />
-                        <p>
-                          Choose a color for the <CrossIcon /> icon for form
-                        </p>
-                      </span>
-                    </label>
+            <PanelBody
+              title="Close Button Color"
+              className="form-layout-settings"
+              initialOpen={false}
+            >
+              <div className="single-settings">
+                <label className="settings-label">
+                  Close Icon
+                  <span className="mintmrm-tooltip">
+                    <QuestionIcon />
+                    <p>
+                      Choose a color for the <CrossIcon /> icon for form
+                    </p>
+                  </span>
+                </label>
 
-                    <ColorPicker
-                      color={closeButtonColor}
-                      onChange={setCloseButtonColor}
-                      enableAlpha
-                      defaultValue={closeButtonColor}
-                    />
-                    <ColorPalette
-                      color={closeButtonColor}
-                      onChange={setCloseButtonColor}
-                      enableAlpha
-                      defaultValue={closeButtonColor}
-                    />
-                  </div>
+                <ColorPicker
+                  color={closeButtonColor}
+                  onChange={setCloseButtonColor}
+                  enableAlpha
+                  defaultValue={closeButtonColor}
+                />
+                <ColorPalette
+                  color={closeButtonColor}
+                  onChange={setCloseButtonColor}
+                  enableAlpha
+                  defaultValue={closeButtonColor}
+                />
+              </div>
 
-                  <div className="single-settings">
-                    <label className="settings-label">
-                      Background
-                      <span className="mintmrm-tooltip">
-                        <QuestionIcon />
-                        <p>
-                          Choose a color for the <CrossIcon /> icon Background
-                        </p>
-                      </span>
-                    </label>
+              <div className="single-settings">
+                <label className="settings-label">
+                  Background
+                  <span className="mintmrm-tooltip">
+                    <QuestionIcon />
+                    <p>
+                      Choose a color for the <CrossIcon /> icon Background
+                    </p>
+                  </span>
+                </label>
 
-                    <ColorPicker
-                      color={closeBackgroundColor}
-                      onChange={setCloseBackgroundColor}
-                      enableAlpha
-                      defaultValue={closeBackgroundColor}
-                    />
-                    <ColorPalette
-                      color={closeBackgroundColor}
-                      onChange={setCloseBackgroundColor}
-                      enableAlpha
-                      defaultValue={closeBackgroundColor}
-                    />
-                  </div>
-                </PanelBody>
+                <ColorPicker
+                  color={closeBackgroundColor}
+                  onChange={setCloseBackgroundColor}
+                  enableAlpha
+                  defaultValue={closeBackgroundColor}
+                />
+                <ColorPalette
+                  color={closeBackgroundColor}
+                  onChange={setCloseBackgroundColor}
+                  enableAlpha
+                  defaultValue={closeBackgroundColor}
+                />
               </div>
             </PanelBody>
 
