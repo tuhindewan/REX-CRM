@@ -79,6 +79,7 @@ class MRM_Subscribe_form
         if($form_placement != 'default' ){
             $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
         }
+        $blocks = parse_blocks( $attributes['render_block'] );
         if( 0 == $form_id ){
             $html = '<div class="mintmrm">
                         <p>No form added</p>
@@ -96,9 +97,11 @@ class MRM_Subscribe_form
             $html .= '
                     <div class="mrm-form-overflow">
                         <form method="post" id="mrm-form">
-                            <input hidden name="form_id" value="'.$attributes['form_id'].'" />
-                            '.$attributes['render_block'].'
-                        </form>
+                            <input hidden name="form_id" value="'.$attributes['form_id'].'" />';
+                                foreach( $blocks as $block ) {
+                                    $html .= render_block( $block );
+                                }
+             $html .=   '</form>
                         <div class="response"></div>
                     </div>
                 </div>

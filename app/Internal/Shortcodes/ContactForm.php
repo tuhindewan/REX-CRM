@@ -78,7 +78,7 @@ class ContactForm {
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
         }elseif(!$form_status){
-            return __('This form is not active. Please check');
+            return __('This form is not active. Please check','mrm');
         }
 
         $get_setting        = FormModel::get_meta($form_id);
@@ -89,6 +89,7 @@ class ContactForm {
         if($form_placement != 'default' ){
             $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
         }
+        $blocks = parse_blocks( $form_data['form_body'] );
         $output = '';
         ob_start();?>
         <div class="mintmrm" >
@@ -104,7 +105,9 @@ class ContactForm {
                     <div class="mrm-form-overflow">
                         <form method="post" id="mrm-form">
                             <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
-                            <?php echo  $form_data['form_body'] ?>
+                            <?php foreach( $blocks as $block ) {
+                                echo render_block( $block );
+                            } ?>
                         </form>
                         
                         <div class="response"></div>

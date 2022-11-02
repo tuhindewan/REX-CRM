@@ -306,6 +306,7 @@ class Editor extends Component {
 
         let fieldSpacing = {
             marginBottom:  rowSpacing+'px',
+            textAlign : buttonAlign
         }
         let buttonStyle = {
             // backgroundColor: buttonBgColor,
@@ -319,7 +320,7 @@ class Editor extends Component {
             fontWeight: typography.weight,
             fontFamily: typography.family,
             fontSize : buttonFontSize,
-            textAlign: buttonAlign,
+            // textAlign: buttonAlign,
             // borderWidth:  buttonBorderWidth+'px',
             borderWidth: outline === 'fill' ? '0' : buttonBorderWidth+'px',
             borderColor:  buttonBorderColor,

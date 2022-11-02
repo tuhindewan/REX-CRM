@@ -12,6 +12,7 @@ export default function InputItem(props) {
         name={props.name}
         onChange={props.handleChange}
         defaultValue={props.value}
+        placeholder={props.placeholder}
       />
       <p className={props?.error ? "error-message show" : "error-message"}>
         {props?.error}
