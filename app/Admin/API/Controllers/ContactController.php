@@ -13,6 +13,7 @@ use Mint\MRM\Constants;
 use MailchimpMarketing;
 use Mint\MRM\DataBase\Models\CustomFieldModel;
 use Mint\MRM\Internal\Constants as InternalConstants;
+use Mint\MRM\DataBase\Models\MessageModel;
 
 /**
  * @author [MRM Team]
@@ -140,8 +141,9 @@ class ContactController extends BaseController {
             $contact    = TagController::get_tags_to_contact( $contact );
             $contact    = ListController::get_lists_to_contact( $contact );
             $contact    = NoteController::get_notes_to_contact( $contact );
+            $contact[ 'messages' ] = MessageModel::get_messages( $contact_id );
         }
-        
+
         if($contact && isset($contact['email'])) {
             if (isset($contact['created_at'])){
                 $time = new \DateTimeImmutable($contact['created_at'], wp_timezone());

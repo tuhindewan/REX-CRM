@@ -94,4 +94,17 @@ class MessageModel {
             return NULL;
         }
     }
+
+    public static function get_messages( $contact_id ) {
+        global $wpdb;
+        $message_table_name = $wpdb->prefix . MessageSchema::$table_name;
+        $sql = $wpdb->prepare( "SELECT * FROM {$message_table_name} WHERE `id` = %d", $contact_id );
+
+        try {
+            return $wpdb->get_results( $sql, ARRAY_A );
+        }
+        catch( \Exception $e ) {
+            return [];
+        }
+    }
 }
