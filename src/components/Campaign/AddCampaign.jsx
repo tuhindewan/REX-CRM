@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { submitCampaign } from "../../services/Campaign";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import Delete from "../Icons/Delete";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../Icons/DownArrowIcon";
@@ -31,6 +32,8 @@ const defaultCampaignData = {
 };
 
 export default function AddCampaign(props) {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "campaigns");
   const navigate = useNavigate();
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{ ...defaultCampaignData }]);

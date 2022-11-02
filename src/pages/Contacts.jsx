@@ -15,6 +15,7 @@ import { AdminNavMenuClassChange } from "../utils/admin-settings";
 // );
 
 const Contacts = () => {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "contacts");
 
   useGlobalStore.setState({
@@ -37,7 +38,7 @@ const Contacts = () => {
     hideGlobalNav: false,
   });
 
-  return <BaseTable endpoint="contacts" ></BaseTable>;
+  return <BaseTable endpoint="contacts"></BaseTable>;
 };
 
 export default Contacts;

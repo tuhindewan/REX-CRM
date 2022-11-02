@@ -4,6 +4,7 @@ import {
   deleteCampaignEmail,
   updateCampaignRequest,
 } from "../../services/Campaign";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import Delete from "../Icons/Delete";
 import DoubleAngleLeftIcon from "../Icons/DoubleAngleLeftIcon";
@@ -38,6 +39,8 @@ const defaultEmailData = {
 };
 
 export default function EditCampaign(props) {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "campaigns");
   // state variable for holding each email sequence[s] data in an array
   const [emailData, setEmailData] = useState([{ ...defaultEmailData }]);
   const [activeEmailData, setActiveEmailData] = useState(defaultEmailData);

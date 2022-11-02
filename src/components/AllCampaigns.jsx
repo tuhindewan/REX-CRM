@@ -20,6 +20,7 @@ import PublishAlert from "./PublishAlert";
 import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function AllCampaigns() {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "campaigns");
   useGlobalStore.setState({
     hideGlobalNav: true,

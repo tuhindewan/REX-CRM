@@ -11,6 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -46,6 +47,9 @@ const toOrdinalSuffix = (num) => {
 };
 
 export default function ContactDetails() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
+
   const [isActive, setActive] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tabState, setTabState] = useState(1);
