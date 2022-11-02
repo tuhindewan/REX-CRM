@@ -150,7 +150,7 @@ class CampaignsBackgroundProcess
 	 * @since 1.0.0
 	 */
 	public function send_recipient_emails()
-	{
+	{		
         $sending_emails_status = 'mrm_sending_emails_process_status';
         if ( !$this->process_locked( $sending_emails_status ) ) {
             $this->email_sending_process_creation_time = microtime( true );
@@ -165,31 +165,26 @@ class CampaignsBackgroundProcess
                     $email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int)$recipient[ 'id' ] : '';
                     $scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int)$recipient[ 'email_id' ] : '';
                     $campaign_id = isset( $recipient[ 'campaign_id' ] ) ? (int)$recipient[ 'campaign_id' ] : '';
-                    $campaign_emails = $campaign_id ? CampaignModel::get_campaign_email( $campaign_id ) : [];
-                    $campaign_email = [];
 
-                    foreach( $campaign_emails as $email ) {
-                        if( isset( $email[ 'id' ] ) && $scheduled_email_id == isset( $email[ 'id' ] ) ) {
-                            $campaign_email = $email;
-                        }
-                    }
-
-                    $headers            = [
+                    $headers = [
                         'MIME-Version: 1.0',
                         'Content-type: text/html;charset=UTF-8'
                     ];
-                    $email_builder = CampaignEmailBuilderModel::get( $scheduled_email_id );
-                    $email_body = isset( $email_builder[ 'email_body' ] ) ? $email_builder[ 'email_body' ] : '';
-                    $sender_email = isset( $campaign_email[ 'sender_email' ] ) ? $campaign_email[ 'sender_email' ] : '';
-                    $sender_name = isset( $campaign_email[ 'sender_name' ] ) ? $campaign_email[ 'sender_name' ] : '';
-                    $email_subject = isset( $campaign_email[ 'email_subject' ] ) ? $campaign_email[ 'email_subject' ] : '';
+
+                    $email_builder 	= CampaignEmailBuilderModel::get( $scheduled_email_id );
+					$email 			= CampaignModel::get_campaign_email_by_id( $campaign_id, $scheduled_email_id);
+					error_log(print_r($email, 1));
+                    $email_body 	= isset( $email_builder[ 'email_body' ] ) 	? $email_builder[ 'email_body' ] : '';
+                    $sender_email 	= $email->sender_email;
+                    $sender_name 	= $email->sender_name;
+                    $email_subject 	= $email->email_subject;
 
                     $from = 'From: '. $sender_name;
                     $headers[] = $from . ' <' . $sender_email . '>';
                     $headers[] = 'Reply-To: ' . $sender_email;
 
                     $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
-
+					error_log(print_r($email_sent, 1));
                     if( $email_sent ) {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
                     }
