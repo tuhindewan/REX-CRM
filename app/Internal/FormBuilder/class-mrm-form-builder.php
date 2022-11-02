@@ -144,57 +144,57 @@ Class FormBuilderHelper {
             if (empty($color_palette) || !is_array($color_palette) || count($color_palette) < 2) {
                 $color_palette = [
                     [
-                        "name"  => __("Black", "fluent-crm"),
+                        "name"  => __("Black", "mrm"),
                         "slug"  => "black",
                         "color" => "#000000"
                     ],
                     [
-                        "name"  => __("Cyan bluish gray", "fluent-crm"),
+                        "name"  => __("Cyan bluish gray", "mrm"),
                         "slug"  => "cyan-bluish-gray",
                         "color" => "#abb8c3"
                     ],
                     [
-                        "name"  => __("White", "fluent-crm"),
+                        "name"  => __("White", "mrm"),
                         "slug"  => "white",
                         "color" => "#ffffff"
                     ],
                     [
-                        "name"  => __("Pale pink", "fluent-crm"),
+                        "name"  => __("Pale pink", "mrm"),
                         "slug"  => "pale-pink",
                         "color" => "#f78da7"
                     ],
                     [
-                        "name"  => __("Luminous vivid orange", "fluent-crm"),
+                        "name"  => __("Luminous vivid orange", "mrm"),
                         "slug"  => "luminous-vivid-orange",
                         "color" => "#ff6900"
                     ],
                     [
-                        "name"  => __("Luminous vivid amber", "fluent-crm"),
+                        "name"  => __("Luminous vivid amber", "mrm"),
                         "slug"  => "luminous-vivid-amber",
                         "color" => "#fcb900"
                     ],
                     [
-                        "name"  => __("Light green cyan", "fluent-crm"),
+                        "name"  => __("Light green cyan", "mrm"),
                         "slug"  => "light-green-cyan",
                         "color" => "#7bdcb5"
                     ],
                     [
-                        "name"  => __("Vivid green cyan", "fluent-crm"),
+                        "name"  => __("Vivid green cyan", "mrm"),
                         "slug"  => "vivid-green-cyan",
                         "color" => "#00d084"
                     ],
                     [
-                        "name"  => __("Pale cyan blue", "fluent-crm"),
+                        "name"  => __("Pale cyan blue", "mrm"),
                         "slug"  => "pale-cyan-blue",
                         "color" => "#8ed1fc"
                     ],
                     [
-                        "name"  => __("Vivid cyan blue", "fluent-crm"),
+                        "name"  => __("Vivid cyan blue", "mrm"),
                         "slug"  => "vivid-cyan-blue",
                         "color" => "#0693e3"
                     ],
                     [
-                        "name"  => __("Vivid purple", "fluent-crm"),
+                        "name"  => __("Vivid purple", "mrm"),
                         "slug"  => "vivid-purple",
                         "color" => "#9b51e0"
                     ]
@@ -206,25 +206,25 @@ Class FormBuilderHelper {
             if (empty($font_sizes)) {
                 $font_sizes = [
                     [
-                        'name'      => __('Small', 'fluent-crm'),
+                        'name'      => __('Small', 'mrm'),
                         'shortName' => 'S',
                         'size'      => 14,
                         'slug'      => 'small'
                     ],
                     [
-                        'name'      => __('Medium', 'fluent-crm'),
+                        'name'      => __('Medium', 'mrm'),
                         'shortName' => 'M',
                         'size'      => 18,
                         'slug'      => 'medium'
                     ],
                     [
-                        'name'      => __('Large', 'fluent-crm'),
+                        'name'      => __('Large', 'mrm'),
                         'shortName' => 'L',
                         'size'      => 24,
                         'slug'      => 'large'
                     ],
                     [
-                        'name'      => __('Larger', 'fluent-crm'),
+                        'name'      => __('Larger', 'mrm'),
                         'shortName' => 'XL',
                         'size'      => 32,
                         'slug'      => 'larger'

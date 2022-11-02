@@ -1040,18 +1040,18 @@ body.is-fullscreen-mode .get-mrm-header {
   text-align: right;
 }
 
-.qubely-field-group-btn {
+.mrmTypography-field-group-btn {
   align-items: center;
 }
-.qubely-field-group-btn label {
+.mrmTypography-field-group-btn label {
   margin-bottom: 0;
 }
-.qubely-field-group-btn .qubely-field-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child {
   display: flex;
   justify-content: end;
   align-items: center;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button {
   display: inline-block;
   white-space: nowrap;
   padding: 0px 9px;
@@ -1066,39 +1066,39 @@ body.is-fullscreen-mode .get-mrm-header {
   line-height: 26px;
   height: 26px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.extra-padding {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.extra-padding {
   padding: 0px 10px;
   font-weight: bold;
   font-size: 15px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button:last-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:last-child {
   border-bottom-right-radius: 3px;
   border-top-right-radius: 3px;
   border-right: 1px solid #d6d9dd;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button:first-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:first-child {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.qubley-active-group-btn {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn {
   color: #2184f9;
   background: #d2e7ff;
   border-color: #a9d0ff;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
   border-left-color: #a9d0ff;
 }
 
-.qubely-input-range {
+.mrmTypography-input-range {
   display: flex;
 }
-.qubely-input-range > *:not(:last-child) {
+.mrmTypography-input-range > *:not(:last-child) {
   margin-right: 8px;
 }
-.qubely-input-range input[type=number] {
+.mrmTypography-input-range input[type=number] {
   width: 55px !important;
 }
-.qubely-input-range input[type=range] {
+.mrmTypography-input-range input[type=range] {
   -webkit-appearance: none;
   margin-top: 7px;
   margin-bottom: 7px;
@@ -1107,7 +1107,7 @@ body.is-fullscreen-mode .get-mrm-header {
   padding-right: 0;
   background: transparent;
 }
-.qubely-input-range input[type=range]::-webkit-slider-runnable-track {
+.mrmTypography-input-range input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -1116,7 +1116,7 @@ body.is-fullscreen-mode .get-mrm-header {
   border-radius: 5px;
   border: 0px solid black;
 }
-.qubely-input-range input[type=range]::-webkit-slider-thumb {
+.mrmTypography-input-range input[type=range]::-webkit-slider-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -1126,10 +1126,10 @@ body.is-fullscreen-mode .get-mrm-header {
   -webkit-appearance: none;
   margin-top: -5px;
 }
-.qubely-input-range input[type=range]:focus::-webkit-slider-runnable-track {
+.mrmTypography-input-range input[type=range]:focus::-webkit-slider-runnable-track {
   background: #f3f4f5;
 }
-.qubely-input-range input[type=range]::-moz-range-track {
+.mrmTypography-input-range input[type=range]::-moz-range-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -1138,7 +1138,7 @@ body.is-fullscreen-mode .get-mrm-header {
   border-radius: 5px;
   border: 0px solid black;
 }
-.qubely-input-range input[type=range]::-moz-range-thumb {
+.mrmTypography-input-range input[type=range]::-moz-range-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -1146,7 +1146,7 @@ body.is-fullscreen-mode .get-mrm-header {
   background: #606871;
   cursor: pointer;
 }
-.qubely-input-range input[type=range]::-ms-track {
+.mrmTypography-input-range input[type=range]::-ms-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -1156,17 +1156,17 @@ body.is-fullscreen-mode .get-mrm-header {
   border-width: 14px 0;
   color: transparent;
 }
-.qubely-input-range input[type=range]::-ms-fill-lower {
+.mrmTypography-input-range input[type=range]::-ms-fill-lower {
   background: #d7dadf;
   border: 0px solid black;
   border-radius: 10px;
 }
-.qubely-input-range input[type=range]::-ms-fill-upper {
+.mrmTypography-input-range input[type=range]::-ms-fill-upper {
   background: #E5E7EA;
   border: 0px solid black;
   border-radius: 10px;
 }
-.qubely-input-range input[type=range]::-ms-thumb {
+.mrmTypography-input-range input[type=range]::-ms-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -1174,48 +1174,48 @@ body.is-fullscreen-mode .get-mrm-header {
   background: #606871;
   cursor: pointer;
 }
-.qubely-input-range input[type=range]:focus::-ms-fill-lower {
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-lower {
   background: #E5E7EA;
 }
-.qubely-input-range input[type=range]:focus::-ms-fill-upper {
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-upper {
   background: #f3f4f5;
 }
 
-.qubely-field-range > label {
+.mrmTypography-field-range > label {
   width: 100%;
   margin-bottom: 2px;
 }
 
-.qubely-field.qubely-field-toggle {
+.mrmTypography-field.mrmTypography-field-toggle {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 }
-.qubely-field.qubely-field-toggle > label {
+.mrmTypography-field.mrmTypography-field-toggle > label {
   width: auto;
   margin-bottom: 0;
 }
-.qubely-field.qubely-field-toggle .components-toggle-control,
-.qubely-field.qubely-field-toggle .components-toggle-control .components-base-control__field {
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control,
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field {
   margin-bottom: 0 !important;
 }
-.qubely-field.qubely-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
   margin-right: 0;
 }
-.qubely-field.qubely-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
+.mrmTypography-field.mrmTypography-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
   background-color: #2184F9;
 }
 
-.qubely-field-font-family {
+.mrmTypography-field-font-family {
   min-width: calc(65% - 15px);
 }
 
-.qubely-field-font-weight {
+.mrmTypography-field-font-weight {
   min-width: 35%;
 }
 
-.qubely-font-family-picker, .qubely-font-weight-picker-wrapper {
+.mrmTypography-font-family-picker, .mrmTypography-font-weight-picker-wrapper {
   align-items: center;
   background-color: rgb(255, 255, 255);
   cursor: default;
@@ -1235,14 +1235,14 @@ body.is-fullscreen-mode .get-mrm-header {
   vertical-align: middle;
   padding-left: 5px;
 }
-.qubely-font-family-picker .editor-rich-text, .qubely-font-weight-picker-wrapper .editor-rich-text {
+.mrmTypography-font-family-picker .editor-rich-text, .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
   width: 100%;
 }
-.qubely-font-family-picker .selected-font-family, .qubely-font-weight-picker-wrapper .selected-font-family {
+.mrmTypography-font-family-picker .selected-font-family, .mrmTypography-font-weight-picker-wrapper .selected-font-family {
   color: black;
 }
 
-.qubely-font-family-option-wrapper {
+.mrmTypography-font-family-option-wrapper {
   top: 100%;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
@@ -1255,7 +1255,7 @@ body.is-fullscreen-mode .get-mrm-header {
   z-index: 100;
 }
 
-.qubely-font-weight-wrapper {
+.mrmTypography-font-weight-wrapper {
   top: 100%;
   left: 62%;
   background-color: rgb(255, 255, 255);
@@ -1269,7 +1269,7 @@ body.is-fullscreen-mode .get-mrm-header {
   z-index: 100;
 }
 
-.qubely-font-family-options, .qubely-font-family-weights {
+.mrmTypography-font-family-options, .mrmTypography-font-family-weights {
   max-height: 270px;
   overflow-y: auto;
   padding-bottom: 4px;
@@ -1278,7 +1278,7 @@ body.is-fullscreen-mode .get-mrm-header {
   box-sizing: border-box;
 }
 
-.qubely-active-font-family, .qubely-active-font-weight {
+.mrmTypography-active-font-family, .mrmTypography-active-font-weight {
   background-color: rgb(38, 132, 255);
   color: rgb(255, 255, 255);
   cursor: default;
@@ -1293,7 +1293,7 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 8px 12px;
 }
 
-.qubely-font-family-option, .qubely-font-weight-option {
+.mrmTypography-font-family-option, .mrmTypography-font-weight-option {
   background-color: transparent;
   color: inherit;
   cursor: default;
@@ -1308,37 +1308,37 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 8px 12px;
 }
 
-.qubely-font-family-option:hover, .qubely-font-weight-option:hover {
+.mrmTypography-font-family-option:hover, .mrmTypography-font-weight-option:hover {
   background-color: #e8eaeb;
 }
 
-.qubely-font-family-search-wrapper {
+.mrmTypography-font-family-search-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
-.qubely-font-family-search-wrapper input.qubely-font-family-search {
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
   border: none !important;
   background-color: transparent !important;
 }
-.qubely-font-family-search-wrapper input.qubely-font-family-search:focus, .qubely-font-family-search-wrapper input.qubely-font-family-search:active, .qubely-font-family-search-wrapper input.qubely-font-family-search:hover {
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
   outline: 0;
   box-shadow: none;
 }
 
-.qubely-font-weight-picker-wrapper {
+.mrmTypography-font-weight-picker-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.qubely-font-select-icon {
+.mrmTypography-font-select-icon {
   display: flex;
   align-items: center;
   padding-right: 3px;
 }
 
-.qubely-field.qubely-field-typography .components-dropdown.qubely-field {
+.mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
   width: 100%;
 }
 
@@ -1346,55 +1346,55 @@ button.components-button.qubley-group-button.qubley-active-group-btn {
   display: none;
 }
 
-.qubely-row {
+.mrmTypography-row {
   position: relative;
 }
 
-.qubely-column-layout {
+.mrmTypography-column-layout {
   display: flex;
   flex-wrap: nowrap;
 }
 
-.qubely-column-1 {
+.mrmTypography-column-1 {
   flex: 1;
 }
 
-.qubely-column-2 {
+.mrmTypography-column-2 {
   flex: 2;
 }
 
-.qubely-column-3 {
+.mrmTypography-column-3 {
   flex: 3;
 }
 
-.qubely-column-4 {
+.mrmTypography-column-4 {
   flex: 4;
 }
 
-.wp-block-qubely-row {
+.wp-block-mrmTypography-row {
   display: block;
 }
 
-.wp-block-qubely-row {
+.wp-block-mrmTypography-row {
   flex-wrap: wrap;
 }
 
-.wp-block-qubely-row > .block-editor-inner-blocks > .block-editor-block-list__layout {
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout {
   flex-wrap: wrap;
   display: flex;
 }
 
-.wp-block-qubely-row .block-editor-block-list__layout {
+.wp-block-mrmTypography-row .block-editor-block-list__layout {
   margin-left: 0;
   margin-right: 0;
 }
 
-.qubely-row > .block-editor-inner-blocks > .block-editor-block-list__layout {
+.mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout {
   display: flex;
   flex-wrap: wrap;
 }
 
-.wp-block-qubely-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="qubely/column"] {
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] {
   display: flex;
   flex-direction: column;
   padding-left: 0;
@@ -1404,54 +1404,54 @@ button.components-button.qubley-group-button.qubley-active-group-btn {
   width: 100%;
 }
 
-.wp-block-qubely-row .block-editor-block-list__layout .editor-block-list__block {
+.wp-block-mrmTypography-row .block-editor-block-list__layout .editor-block-list__block {
   max-width: none;
 }
 
-.wp-block-qubely-row [data-type="qubely/column"] {
+.wp-block-mrmTypography-row [data-type="mrmTypography/column"] {
   pointer-events: none;
 }
 
-.wp-block-qubely-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="qubely/column"] > .editor-block-list__block-edit {
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] > .editor-block-list__block-edit {
   margin-top: 0;
   margin-bottom: 0;
   margin-left: 0;
   margin-right: 0;
 }
 
-:not(.components-disabled) > .wp-block-qubely-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="qubely/column"] > .editor-block-list__block-edit > * {
+:not(.components-disabled) > .wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] > .editor-block-list__block-edit > * {
   pointer-events: all;
 }
 
-.wp-block-qubely-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="qubely/column"] > .editor-block-list__block-edit > div > .block-editor-inner-blocks {
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] > .editor-block-list__block-edit > div > .block-editor-inner-blocks {
   margin-top: -28px;
   margin-bottom: -28px;
 }
 
-.wp-block-qubely-row .block-editor-block-list__layout {
+.wp-block-mrmTypography-row .block-editor-block-list__layout {
   margin-left: 0;
   margin-right: 0;
 }
 
-.wp-block-qubely-row .block-editor-block-list__layout .editor-block-list__block {
+.wp-block-mrmTypography-row .block-editor-block-list__layout .editor-block-list__block {
   max-width: none;
 }
 
-div[data-type="qubely/row"].is-selected div[data-type="qubely/column"]:last-child > div > div > .components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle,
-div[data-type="qubely/row"].is-selected div[data-type="qubely/column"]:last-child > div > div > .components-resizable-box__container.qubely-column-resizer::after,
-div[data-type="qubely/row"].is-resizing div[data-type="qubely/column"]:last-child > div > div > .components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle,
-div[data-type="qubely/row"].is-resizing div[data-type="qubely/column"]:last-child > div > div > .components-resizable-box__container.qubely-column-resizer::after {
+div[data-type="mrmTypography/row"].is-selected div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-selected div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer::after,
+div[data-type="mrmTypography/row"].is-resizing div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-resizing div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer::after {
   display: none;
 }
 
-.wp-block-qubely-row [data-type="qubely/column"] .components-resizable-box__container:hover .components-resizable-box__handle {
+.wp-block-mrmTypography-row [data-type="mrmTypography/column"] .components-resizable-box__container:hover .components-resizable-box__handle {
   display: block;
   z-index: 9;
 }
 
-.components-resizable-box__container.qubely-column-resizer.is-selected-column > span > .components-resizable-box__handle,
-div[data-type="qubely/row"].is-selected .components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle,
-div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle {
+.components-resizable-box__container.mrmTypography-column-resizer.is-selected-column > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-selected .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-resizing .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle {
   right: -15px;
   top: 0;
   background: transparent;
@@ -1463,9 +1463,9 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   transform: translateX(50%);
   background: transparent;
 }
-.components-resizable-box__container.qubely-column-resizer.is-selected-column > span > .components-resizable-box__handle::before,
-div[data-type="qubely/row"].is-selected .components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle::before,
-div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle::before {
+.components-resizable-box__container.mrmTypography-column-resizer.is-selected-column > span > .components-resizable-box__handle::before,
+div[data-type="mrmTypography/row"].is-selected .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle::before,
+div[data-type="mrmTypography/row"].is-resizing .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle::before {
   background: #e3e4e7;
   border: none;
   opacity: 1;
@@ -1474,31 +1474,31 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   right: calc(50% - 2px);
 }
 
-.components-resizable-box__container.qubely-column-resizer > span > .components-resizable-box__handle {
+.components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle {
   width: 8px;
 }
 
-.qubely-flex-box {
+.mrmTypography-flex-box {
   display: flex;
 }
 
-.qubely-flex-column {
+.mrmTypography-flex-column {
   flex-direction: column;
 }
 
-.qubely-flex-1 {
+.mrmTypography-flex-1 {
   flex: 1;
 }
 
-.qubely-flex-2 {
+.mrmTypography-flex-2 {
   flex: 2;
 }
 
-.qubely-flex-3 {
+.mrmTypography-flex-3 {
   flex: 3;
 }
 
-.qubely-flex-4 {
+.mrmTypography-flex-4 {
   flex: 4;
 }
 
@@ -1526,21 +1526,21 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   justify-content: flex-end;
 }
 
-.qubely-palette-fields .qubely-palette-unit {
+.mrmTypography-palette-fields .mrmTypography-palette-unit {
   padding-bottom: 12px;
   padding-left: 3px;
 }
 
-[data-type="qubely/columns"] .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit {
+[data-type="mrmTypography/columns"] .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit {
   margin-top: 14px;
   margin-bottom: 14px;
 }
 
-#wpwrap [data-type="qubely/columns"] .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit p:last-child {
+#wpwrap [data-type="mrmTypography/columns"] .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit p:last-child {
   margin-bottom: 0;
 }
 
-#wpwrap [data-type="qubely/columns"] .is-selected .qubely-column[data-gwidth]::before {
+#wpwrap [data-type="mrmTypography/columns"] .is-selected .mrmTypography-column[data-gwidth]::before {
   content: attr(data-gwidth);
   position: absolute;
   font-size: 10px;
@@ -1552,53 +1552,53 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   color: #fff;
 }
 
-.qubely-field-group {
+.mrmTypography-field-group {
   position: relative;
   display: flex;
 }
-.qubely-field-group:not(:last-child) {
+.mrmTypography-field-group:not(:last-child) {
   margin-bottom: 20px;
 }
-.qubely-field-group.qubely-65-35 .qubely-field:first-child {
+.mrmTypography-field-group.mrmTypography-65-35 .mrmTypography-field:first-child {
   max-width: calc(65% - 15px);
 }
-.qubely-field-group.qubely-65-35 .qubely-field:last-child {
+.mrmTypography-field-group.mrmTypography-65-35 .mrmTypography-field:last-child {
   max-width: 35%;
 }
-.qubely-field-group .qubely-field {
+.mrmTypography-field-group .mrmTypography-field {
   flex-grow: 1;
 }
-.qubely-field-group .qubely-field label {
+.mrmTypography-field-group .mrmTypography-field label {
   font-size: 13px;
   color: #87888A;
   display: block;
 }
-.qubely-field-group.qubely-wide {
+.mrmTypography-field-group.mrmTypography-wide {
   display: block;
 }
-.qubely-field-group.qubely-wide .qubely-field {
+.mrmTypography-field-group.mrmTypography-wide .mrmTypography-field {
   width: 100%;
 }
-.qubely-field-group.qubely-wide .qubely-field:not(:last-child) {
+.mrmTypography-field-group.mrmTypography-wide .mrmTypography-field:not(:last-child) {
   margin-bottom: 15px;
 }
-.qubely-field-group:not(.qubely-wide) .qubely-field:not(:last-child) {
+.mrmTypography-field-group:not(.mrmTypography-wide) .mrmTypography-field:not(:last-child) {
   margin-right: 15px;
   margin-bottom: 0;
 }
 
-.qubely-field {
+.mrmTypography-field {
   position: relative;
   margin-bottom: 20px;
 }
-.qubely-field:last-child {
+.mrmTypography-field:last-child {
   margin-bottom: 0;
 }
-.qubely-field .qubely-field-child button:focus {
+.mrmTypography-field .mrmTypography-field-child button:focus {
   outline: 1px dotted rgba(0, 0, 0, 0.2);
 }
-.qubely-field input[type=text],
-.qubely-field input[type=number]:not(.components-range-control__number) {
+.mrmTypography-field input[type=text],
+.mrmTypography-field input[type=number]:not(.components-range-control__number) {
   width: 100%;
   padding: 0 2px 0 0 !important;
   height: 26px;
@@ -1606,26 +1606,26 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   margin: 0;
   text-indent: 6px;
 }
-.qubely-field > label {
+.mrmTypography-field > label {
   width: 100%;
   display: block;
   line-height: 18px;
   margin-bottom: 10px;
 }
-.qubely-field > label::after {
+.mrmTypography-field > label::after {
   content: "";
   display: block;
   clear: both;
 }
-.qubely-field > label .qubely-device {
+.mrmTypography-field > label .mrmTypography-device {
   margin-left: 5px;
   display: inline-block;
 }
-.qubely-field > label .qubely-device > span {
+.mrmTypography-field > label .mrmTypography-device > span {
   padding: 0 2.5px;
 }
 
-.qubely-field-group .qubely-device {
+.mrmTypography-field-group .mrmTypography-device {
   position: absolute;
   top: 0;
   left: 15px;
@@ -1636,12 +1636,12 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   font-size: 0;
   overflow: hidden;
 }
-.qubely-field-group .qubely-device > button {
+.mrmTypography-field-group .mrmTypography-device > button {
   border: none;
   padding: 4px 2.5px;
 }
 
-.qubely-device > button {
+.mrmTypography-device > button {
   padding: 0px;
   cursor: pointer;
   font-weight: 900;
@@ -1661,34 +1661,34 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   border-radius: 50%;
   border: none;
 }
-.qubely-device > button:not(:last-child) {
+.mrmTypography-device > button:not(:last-child) {
   margin-right: 4px;
 }
-.qubely-device > button.qubely-device-desktop::before {
+.mrmTypography-device > button.mrmTypography-device-desktop::before {
   content: "\f108";
 }
-.qubely-device > button.qubely-device-tablet::before {
+.mrmTypography-device > button.mrmTypography-device-tablet::before {
   content: "\f3fa";
 }
-.qubely-device > button.qubely-device-mobile::before {
+.mrmTypography-device > button.mrmTypography-device-mobile::before {
   content: "\f3cd";
 }
-.qubely-device > button:focus {
+.mrmTypography-device > button:focus {
   outline: 0;
   box-shadow: 0;
 }
-.qubely-device > button.active {
+.mrmTypography-device > button.active {
   background: #D2E7FF;
   color: #2184F9;
 }
 
-.qubely-group-color-palatte {
+.mrmTypography-group-color-palatte {
   margin: 0;
 }
-.qubely-group-color-palatte:not(:last-child) {
+.mrmTypography-group-color-palatte:not(:last-child) {
   margin-bottom: 20px;
 }
-.qubely-group-color-palatte > button {
+.mrmTypography-group-color-palatte > button {
   position: relative;
   float: left !important;
   margin-right: 10px !important;
@@ -1699,7 +1699,7 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   border: none;
   box-shadow: none !important;
 }
-.qubely-group-color-palatte > button::after {
+.mrmTypography-group-color-palatte > button::after {
   content: "\f05e";
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -1716,22 +1716,22 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   position: absolute;
   transform: translate(-50%, -50%);
 }
-.qubely-group-color-palatte .components-color-palette__item-wrapper {
+.mrmTypography-group-color-palatte .components-color-palette__item-wrapper {
   margin-bottom: 0;
   margin-right: 10px;
 }
-.qubely-group-color-palatte::after {
+.mrmTypography-group-color-palatte::after {
   content: "";
   display: block;
   clear: both;
 }
 
-.qubely-unit-btn-group {
+.mrmTypography-unit-btn-group {
   overflow: hidden;
   display: inline-block;
   font-size: 0;
 }
-.qubely-unit-btn-group button {
+.mrmTypography-unit-btn-group button {
   line-height: 1;
   display: inline-block;
   border: none;
@@ -1743,94 +1743,94 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   background: transparent;
   cursor: pointer;
 }
-.qubely-unit-btn-group button:focus {
+.mrmTypography-unit-btn-group button:focus {
   outline: 0;
   box-shadow: none;
 }
-.qubely-unit-btn-group button.active {
+.mrmTypography-unit-btn-group button.active {
   color: #2184F9;
 }
-.qubely-unit-btn-group button:not(:last-child) {
+.mrmTypography-unit-btn-group button:not(:last-child) {
   margin-right: 5px;
 }
 
-.qubely-d-flex {
+.mrmTypography-d-flex {
   display: flex;
 }
 
-.qubely-align-center {
+.mrmTypography-align-center {
   align-items: center;
 }
 
-.qubely-align-justified {
+.mrmTypography-align-justified {
   justify-content: space-evenly;
 }
-.qubely-align-justified > div {
+.mrmTypography-align-justified > div {
   padding: 0 5px;
   display: inline-block !important;
   margin-bottom: 0 !important;
 }
-.qubely-align-justified > div label {
+.mrmTypography-align-justified > div label {
   display: block;
   margin-bottom: 8px !important;
   text-align: center;
 }
-.qubely-align-justified > div:first-child {
+.mrmTypography-align-justified > div:first-child {
   padding-left: 0;
 }
-.qubely-align-justified > div:last-child {
+.mrmTypography-align-justified > div:last-child {
   padding-right: 0;
 }
 
-.qubely-ml-auto {
+.mrmTypography-ml-auto {
   margin-left: auto;
 }
 
-.qubely-ml-10 {
+.mrmTypography-ml-10 {
   margin-left: 10px;
 }
 
-.qubely-ml-15 {
+.mrmTypography-ml-15 {
   margin-left: 15px;
 }
 
-.qubely-mr-auto {
+.mrmTypography-mr-auto {
   margin-right: auto;
 }
 
-.qubely-mr-15 {
+.mrmTypography-mr-15 {
   margin-right: 15px;
 }
 
-.qubely-mb-15 {
+.mrmTypography-mb-15 {
   margin-bottom: 15px;
 }
 
-.qubely-mb-20 {
+.mrmTypography-mb-20 {
   margin-bottom: 20px;
 }
 
-.qubely-mb-10 {
+.mrmTypography-mb-10 {
   margin-bottom: 10px;
 }
 
-.qubely-mb-0 {
+.mrmTypography-mb-0 {
   margin-bottom: 0 !important;
 }
 
-.qubely-w-100 {
+.mrmTypography-w-100 {
   width: 100%;
 }
 
-.qubely-text-right {
+.mrmTypography-text-right {
   text-align: right;
 }
 
-.qubely-d-block {
+.mrmTypography-d-block {
   display: block;
 }
 
-.qubely-button {
+.mrmTypography-button {
   background: #FFF;
   border: 1px solid #E5E7EA;
   min-height: 26px;
@@ -1843,43 +1843,43 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   border-radius: 3px;
   cursor: pointer;
 }
-.qubely-button:focus {
+.mrmTypography-button:focus {
   box-shadow: none;
   outline: 0;
 }
-.qubely-button.active {
+.mrmTypography-button.active {
   background: #D2E7FF;
   color: #2184F9;
   border-color: #A9D0FF;
 }
-.qubely-button.active + .qubely-button {
+.mrmTypography-button.active + .mrmTypography-button {
   border-left-color: #A9D0FF;
 }
-.qubely-button.qubely-button-rounded {
+.mrmTypography-button.mrmTypography-button-rounded {
   border-radius: 3px !important;
 }
 
-.qubely-field-button-list {
+.mrmTypography-field-button-list {
   display: inline-flex;
   vertical-align: middle;
 }
-.qubely-field-button-list .qubely-button {
+.mrmTypography-field-button-list .mrmTypography-button {
   position: relative;
   flex: 1 1 auto;
 }
-.qubely-field-button-list .qubely-button:not(:last-child) {
+.mrmTypography-field-button-list .mrmTypography-button:not(:last-child) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
-.qubely-field-button-list .qubely-button:not(:first-child) {
+.mrmTypography-field-button-list .mrmTypography-button:not(:first-child) {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-.qubely-field-button-list .qubely-button:not(:first-child) {
+.mrmTypography-field-button-list .mrmTypography-button:not(:first-child) {
   margin-left: -1px;
 }
 
-.qubely-common-button, .qubely-button-group .qubely-button {
+.mrmTypography-common-button, .mrmTypography-button-group .mrmTypography-button {
   border: 1px solid #6c7781;
   text-align: center;
   flex-grow: 1;
@@ -1892,50 +1892,50 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   box-shadow: inset 0 -1px 0 #ccc;
   vertical-align: top;
 }
-.qubely-common-button:first-child, .qubely-button-group .qubely-button:first-child {
+.mrmTypography-common-button:first-child, .mrmTypography-button-group .mrmTypography-button:first-child {
   border-radius: 4px 0 0 4px;
 }
-.qubely-common-button:last-child, .qubely-button-group .qubely-button:last-child {
+.mrmTypography-common-button:last-child, .mrmTypography-button-group .mrmTypography-button:last-child {
   border-radius: 0 4px 4px 0;
 }
-.qubely-common-button:not(:last-child), .qubely-button-group .qubely-button:not(:last-child) {
+.mrmTypography-common-button:not(:last-child), .mrmTypography-button-group .mrmTypography-button:not(:last-child) {
   border-right: none;
 }
-.qubely-common-button:hover, .qubely-button-group .qubely-button:hover {
+.mrmTypography-common-button:hover, .mrmTypography-button-group .mrmTypography-button:hover {
   background: #fafafa;
   border-color: #999;
   box-shadow: inset 0 -1px 0 #999;
   color: #23282d;
   text-decoration: none;
 }
-.qubely-common-button.active, .qubely-button-group .active.qubely-button {
+.mrmTypography-common-button.active, .mrmTypography-button-group .active.mrmTypography-button {
   background: #0085ba;
   border-color: #00648c;
   color: #ffffff;
   box-shadow: inset 0 -1px 0 #00648c;
 }
-.qubely-common-button.active:hover, .qubely-button-group .active.qubely-button:hover {
+.mrmTypography-common-button.active:hover, .mrmTypography-button-group .active.mrmTypography-button:hover {
   background: #007eb1;
   border-color: #00435d;
   color: #fff;
   box-shadow: inset 0 -1px 0 #00435d;
 }
 
-.qubely-button-group {
+.mrmTypography-button-group {
   display: flex;
   border-radius: 5px;
   width: 100%;
   margin: 0;
 }
-.qubely-button-group.qubely-popup-button-group button {
+.mrmTypography-button-group.mrmTypography-popup-button-group button {
   padding: 5px 9px;
 }
 
-.qubely-background-tab-wrap .qubely-gradient {
+.mrmTypography-background-tab-wrap .mrmTypography-gradient {
   margin-bottom: 0;
 }
 
-.components-resizable-box__container .qubely-column {
+.components-resizable-box__container .mrmTypography-column {
   max-width: 100%;
 }
 
@@ -1951,38 +1951,38 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   margin: 0;
 }
 
-.qubely-row .qubely-column .block-editor-inner-blocks .block-editor-block-list__layout {
+.mrmTypography-row .mrmTypography-column .block-editor-inner-blocks .block-editor-block-list__layout {
   margin-left: 0;
   margin-right: 0;
 }
 
-.qubely-row .block-editor-block-list__layout .editor-block-list__block {
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block {
   padding-left: 0;
   padding-right: 0;
 }
 
-.edit-post-visual-editor .qubely-row .editor-block-list__block .editor-block-list__block-edit {
+.edit-post-visual-editor .mrmTypography-row .editor-block-list__block .editor-block-list__block-edit {
   margin-left: 0;
   margin-right: 0;
 }
 
-.qubely-row .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > .editor-block-contextual-toolbar + [data-block] .components-resizable-box__container {
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > .editor-block-contextual-toolbar + [data-block] .components-resizable-box__container {
   position: relative;
 }
 
-.qubely-row .block-editor-block-list__layout .editor-block-list__block.is_hovered[data-type="qubely/columns"] > .editor-block-list__block-edit::before {
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block.is_hovered[data-type="mrmTypography/columns"] > .editor-block-list__block-edit::before {
   outline: 1px solid green;
 }
 
-.qubely-row .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > .editor-block-contextual-toolbar + [data-block] .components-resizable-box__container {
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > .editor-block-contextual-toolbar + [data-block] .components-resizable-box__container {
   position: relative;
 }
 
-.qubely-row .block-editor-block-list__layout .editor-block-list__block.is_hovered .components-resizable-box__container {
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block.is_hovered .components-resizable-box__container {
   position: relative;
 }
 
-.qubely-row .block-editor-block-list__layout .editor-block-list__block.is_hovered .components-resizable-box__container::before {
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block.is_hovered .components-resizable-box__container::before {
   z-index: 9999;
   content: "";
   position: absolute;
@@ -1995,22 +1995,22 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   bottom: -14px;
 }
 
-.qubely-row-preset {
+.mrmTypography-row-preset {
   background: #F7F8FC;
   padding: 25px 15px;
 }
-.qubely-row-preset .qubely-row-preset-title {
+.mrmTypography-row-preset .mrmTypography-row-preset-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
   font-size: 16px;
   margin-bottom: 18px;
   color: #191E23;
 }
-.qubely-row-preset .qubely-row-preset-group {
+.mrmTypography-row-preset .mrmTypography-row-preset-group {
   max-width: 700px;
   margin: 0 auto;
 }
-.qubely-row-preset .qubely-row-preset-group button {
+.mrmTypography-row-preset .mrmTypography-row-preset-group button {
   cursor: pointer;
   width: calc(16.66% - 14px);
   background: transparent;
@@ -2023,7 +2023,7 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   transition: 300ms;
   opacity: 1;
 }
-.qubely-row-preset .qubely-row-preset-group button i {
+.mrmTypography-row-preset .mrmTypography-row-preset-group button i {
   height: 50px;
   background: #E2E6EC;
   border: 1px solid #E2E6EC;
@@ -2033,20 +2033,20 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   transition: 300ms;
   font-style: normal;
 }
-.qubely-row-preset .qubely-row-preset-group button i:not(:last-of-type) {
+.mrmTypography-row-preset .mrmTypography-row-preset-group button i:not(:last-of-type) {
   margin-right: 2px;
 }
-.qubely-row-preset .qubely-row-preset-group button:hover {
+.mrmTypography-row-preset .mrmTypography-row-preset-group button:hover {
   border: none;
   opacity: 1;
 }
-.qubely-row-preset .qubely-row-preset-group button:hover i {
+.mrmTypography-row-preset .mrmTypography-row-preset-group button:hover i {
   font-style: normal;
   background: #FFFFFF;
   border: 1px solid #2184F9;
   box-shadow: 0 0 0 1px rgba(33, 132, 249, 0.2);
 }
-.qubely-row-preset .import-layout-btn-container .is-button.is-primary {
+.mrmTypography-row-preset .import-layout-btn-container .is-button.is-primary {
   text-shadow: none;
   background: #2184F9;
   box-shadow: none;
@@ -2056,11 +2056,11 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   height: auto;
   transition: color 300ms, background-color 300ms;
 }
-.qubely-row-preset .import-layout-btn-container .is-button.is-primary:hover {
+.mrmTypography-row-preset .import-layout-btn-container .is-button.is-primary:hover {
   background: rgb(29, 116, 223);
 }
 
-.qubely-component-remove-button {
+.mrmTypography-component-remove-button {
   position: absolute;
   align-items: center;
   justify-content: center;
@@ -2071,18 +2071,18 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   font-size: 17px;
   color: #CCCFD5;
 }
-.qubely-component-remove-button:hover {
+.mrmTypography-component-remove-button:hover {
   color: #B4B7BC;
 }
 
-.qubely-inspect-tabs {
+.mrmTypography-inspect-tabs {
   border: 1px solid #e2e4e7;
   padding: 10px;
   border-radius: 4px;
   margin-top: 30px;
   position: relative;
 }
-.qubely-inspect-tabs .components-tab-panel__tabs {
+.mrmTypography-inspect-tabs .components-tab-panel__tabs {
   position: absolute;
   top: -15px;
   border: 2px solid #e2e4e7;
@@ -2090,7 +2090,7 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   border-radius: 4px;
   overflow: hidden;
 }
-.qubely-inspect-tabs .components-tab-panel__tabs button {
+.mrmTypography-inspect-tabs .components-tab-panel__tabs button {
   padding: 7px 15px;
   box-shadow: none;
   cursor: pointer;
@@ -2098,21 +2098,21 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   cursor: pointer;
   transition: 400ms;
 }
-.qubely-inspect-tabs .components-tab-panel__tabs button.active-tab {
+.mrmTypography-inspect-tabs .components-tab-panel__tabs button.active-tab {
   background: #0085ba;
   color: #fff;
 }
-.qubely-inspect-tabs .components-tab-panel__tab-content {
+.mrmTypography-inspect-tabs .components-tab-panel__tab-content {
   margin-top: 10px;
 }
-.qubely-inspect-tabs .components-tab-panel__tab-content .components-panel__body-title {
+.mrmTypography-inspect-tabs .components-tab-panel__tab-content .components-panel__body-title {
   display: none;
 }
-.qubely-inspect-tabs .components-tab-panel__tab-content .components-panel__body {
+.mrmTypography-inspect-tabs .components-tab-panel__tab-content .components-panel__body {
   border-top: none;
 }
 
-#qubelyImportLayoutBtn {
+#mrmTypographyImportLayoutBtn {
   vertical-align: middle;
   display: inline-flex;
   align-items: center;
@@ -2131,18 +2131,18 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   -webkit-appearance: none;
   transition: 400ms;
 }
-#qubelyImportLayoutBtn:hover, #qubelyImportLayoutBtn:focus, #qubelyImportLayoutBtn:active {
+#mrmTypographyImportLayoutBtn:hover, #mrmTypographyImportLayoutBtn:focus, #mrmTypographyImportLayoutBtn:active {
   color: #fff;
   text-decoration: none;
   background: rgb(29, 116, 223);
 }
-#qubelyImportLayoutBtn img {
+#mrmTypographyImportLayoutBtn img {
   height: 16px;
   width: 16px;
   margin-right: 10px;
 }
 
-.qubely-editor-btn {
+.mrmTypography-editor-btn {
   background: none;
   border: 0;
   color: inherit;
@@ -2155,51 +2155,51 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   -moz-user-select: none;
   -ms-user-select: none;
 }
-.qubely-editor-btn::-moz-focus-inner {
+.mrmTypography-editor-btn::-moz-focus-inner {
   border: 0;
   padding: 0;
 }
 
-.qubely-field-type-switch .qubely-field-switch-button button {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button {
   border: 1px solid #D8D8D8;
   padding: 8px 13px;
   font-size: 13px;
   color: #333;
   cursor: pointer;
 }
-.qubely-field-type-switch .qubely-field-switch-button button .qubely-gradient {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button .mrmTypography-gradient {
   position: relative;
   border: 2px solid #333;
   background-image: linear-gradient(45deg, #333 50%, #ffffff 50%);
 }
-.qubely-field-type-switch .qubely-field-switch-button button .qubely-gradient i {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button .mrmTypography-gradient i {
   font-style: normal;
   width: 22px;
   visibility: hidden;
 }
-.qubely-field-type-switch .qubely-field-switch-button button:not(:last-child) {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button:not(:last-child) {
   border-right: none;
 }
-.qubely-field-type-switch .qubely-field-switch-button button:first-child {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button:first-child {
   border-radius: 4px 0 0 4px;
 }
-.qubely-field-type-switch .qubely-field-switch-button button:last-child {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button:last-child {
   border-radius: 0 4px 4px 0;
 }
-.qubely-field-type-switch .qubely-field-switch-button button.active {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button.active {
   background: #0085ba;
   border-color: #006a95;
   color: #fff;
 }
-.qubely-field-type-switch .qubely-field-switch-button button.active .qubely-gradient {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button.active .mrmTypography-gradient {
   border-color: #fff;
   background-image: linear-gradient(45deg, #0085ba 50%, #ffffff 50%);
 }
-.qubely-field-type-switch .qubely-field-switch-button button.active + button {
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button.active + button {
   border-left-color: #006a95;
 }
 
-.qubely-label-inline-group {
+.mrmTypography-label-inline-group {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2209,14 +2209,14 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
 .qubley-padding-indicator {
   opacity: 0;
 }
-.qubley-margin-indicator .qubely-indicator-bottom,
-.qubley-margin-indicator .qubely-indicator-top,
-.qubley-margin-indicator .qubely-indicator-left,
-.qubley-margin-indicator .qubely-indicator-right,
-.qubley-padding-indicator .qubely-indicator-bottom,
-.qubley-padding-indicator .qubely-indicator-top,
-.qubley-padding-indicator .qubely-indicator-left,
-.qubley-padding-indicator .qubely-indicator-right {
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-margin-indicator .mrmTypography-indicator-top,
+.qubley-margin-indicator .mrmTypography-indicator-left,
+.qubley-margin-indicator .mrmTypography-indicator-right,
+.qubley-padding-indicator .mrmTypography-indicator-bottom,
+.qubley-padding-indicator .mrmTypography-indicator-top,
+.qubley-padding-indicator .mrmTypography-indicator-left,
+.qubley-padding-indicator .mrmTypography-indicator-right {
   position: absolute;
   opacity: 0.4;
   background-color: rgba(3, 225, 109, 0.3);
@@ -2227,39 +2227,39 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   color: #222;
   z-index: 1;
 }
-.qubley-margin-indicator .qubely-indicator-bottom,
-.qubley-margin-indicator .qubely-indicator-top,
-.qubley-padding-indicator .qubely-indicator-bottom,
-.qubley-padding-indicator .qubely-indicator-top {
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-margin-indicator .mrmTypography-indicator-top,
+.qubley-padding-indicator .mrmTypography-indicator-bottom,
+.qubley-padding-indicator .mrmTypography-indicator-top {
   height: 0px;
   top: 0;
   left: 0;
   right: 0;
 }
-.qubley-margin-indicator .qubely-indicator-bottom,
-.qubley-padding-indicator .qubely-indicator-bottom {
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-padding-indicator .mrmTypography-indicator-bottom {
   top: auto;
   bottom: 0;
 }
-.qubley-margin-indicator .qubely-indicator-left,
-.qubley-margin-indicator .qubely-indicator-right,
-.qubley-padding-indicator .qubely-indicator-left,
-.qubley-padding-indicator .qubely-indicator-right {
+.qubley-margin-indicator .mrmTypography-indicator-left,
+.qubley-margin-indicator .mrmTypography-indicator-right,
+.qubley-padding-indicator .mrmTypography-indicator-left,
+.qubley-padding-indicator .mrmTypography-indicator-right {
   width: 0px;
   top: 0;
   bottom: 0;
   left: 0;
 }
-.qubley-margin-indicator .qubely-indicator-right,
-.qubley-padding-indicator .qubely-indicator-right {
+.qubley-margin-indicator .mrmTypography-indicator-right,
+.qubley-padding-indicator .mrmTypography-indicator-right {
   left: auto;
   right: 0;
 }
 
-.qubely-section:hover .qubley-margin-indicator,
-.qubely-section:hover .qubley-padding-indicator,
-.qubely-section.active .qubley-margin-indicator,
-.qubely-section.active .qubley-padding-indicator,
+.mrmTypography-section:hover .qubley-margin-indicator,
+.mrmTypography-section:hover .qubley-padding-indicator,
+.mrmTypography-section.active .qubley-margin-indicator,
+.mrmTypography-section.active .qubley-padding-indicator,
 .padding-input-dragging .qubley-margin-indicator,
 .padding-input-dragging .qubley-padding-indicator,
 .margin-input-dragging .qubley-margin-indicator,
@@ -2271,39 +2271,39 @@ div[data-type="qubely/row"].is-resizing .components-resizable-box__container.qub
   opacity: 1;
 }
 
-.qubley-margin-indicator .qubely-indicator-bottom,
-.qubley-margin-indicator .qubely-indicator-top,
-.qubley-margin-indicator .qubely-indicator-left,
-.qubley-margin-indicator .qubely-indicator-right {
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-margin-indicator .mrmTypography-indicator-top,
+.qubley-margin-indicator .mrmTypography-indicator-left,
+.qubley-margin-indicator .mrmTypography-indicator-right {
   background: rgba(0, 123, 243, 0.3);
 }
-.qubley-margin-indicator .qubely-indicator-bottom {
+.qubley-margin-indicator .mrmTypography-indicator-bottom {
   transform: translateY(100%);
 }
-.qubley-margin-indicator .qubely-indicator-top {
+.qubley-margin-indicator .mrmTypography-indicator-top {
   transform: translateY(-100%);
 }
-.qubley-margin-indicator .qubely-indicator-left {
+.qubley-margin-indicator .mrmTypography-indicator-left {
   transform: translateX(-100%);
 }
-.qubley-margin-indicator .qubely-indicator-right {
+.qubley-margin-indicator .mrmTypography-indicator-right {
   transform: translateX(100%);
 }
 
-.not-clickable, .disable-slide .qubely-field-child {
+.not-clickable, .disable-slide .mrmTypography-field-child {
   filter: opacity(0.3);
   pointer-events: none;
 }
 
-.block-editor-block-list__block .qubely-row * > [data-type="qubely/column"] .block-list-appender {
+.block-editor-block-list__block .mrmTypography-row * > [data-type="mrmTypography/column"] .block-list-appender {
   margin: 0;
 }
 
-.qubely-row * > [data-type="qubely/column"].has-child-selected {
+.mrmTypography-row * > [data-type="mrmTypography/column"].has-child-selected {
   z-index: 1;
 }
 
-.block-editor-block-list__layout .block-editor-block-list__block[data-type="qubely/row"].is-selected {
+.block-editor-block-list__layout .block-editor-block-list__block[data-type="mrmTypography/row"].is-selected {
   z-index: inherit;
 }
 
@@ -2311,7 +2311,7 @@ span.block-editor-block-icon img {
   max-width: 24px;
 }
 
-.qubely-import-button-wrapper {
+.mrmTypography-import-button-wrapper {
   display: inline-flex;
   align-items: center;
 }
@@ -2357,15 +2357,15 @@ html.wp-toolbar {
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/typography.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-field-font-family {
+.mrmTypography-field-font-family {
   min-width: calc(65% - 15px);
 }
 
-.qubely-field-font-weight {
+.mrmTypography-field-font-weight {
   min-width: 35%;
 }
 
-.qubely-font-family-picker, .qubely-font-weight-picker-wrapper {
+.mrmTypography-font-family-picker, .mrmTypography-font-weight-picker-wrapper {
   align-items: center;
   background-color: rgb(255, 255, 255);
   cursor: default;
@@ -2385,14 +2385,14 @@ html.wp-toolbar {
   vertical-align: middle;
   padding-left: 5px;
 }
-.qubely-font-family-picker .editor-rich-text, .qubely-font-weight-picker-wrapper .editor-rich-text {
+.mrmTypography-font-family-picker .editor-rich-text, .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
   width: 100%;
 }
-.qubely-font-family-picker .selected-font-family, .qubely-font-weight-picker-wrapper .selected-font-family {
+.mrmTypography-font-family-picker .selected-font-family, .mrmTypography-font-weight-picker-wrapper .selected-font-family {
   color: black;
 }
 
-.qubely-font-family-option-wrapper {
+.mrmTypography-font-family-option-wrapper {
   top: 100%;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
@@ -2405,7 +2405,7 @@ html.wp-toolbar {
   z-index: 100;
 }
 
-.qubely-font-weight-wrapper {
+.mrmTypography-font-weight-wrapper {
   top: 100%;
   left: 62%;
   background-color: rgb(255, 255, 255);
@@ -2419,7 +2419,7 @@ html.wp-toolbar {
   z-index: 100;
 }
 
-.qubely-font-family-options, .qubely-font-family-weights {
+.mrmTypography-font-family-options, .mrmTypography-font-family-weights {
   max-height: 270px;
   overflow-y: auto;
   padding-bottom: 4px;
@@ -2428,7 +2428,7 @@ html.wp-toolbar {
   box-sizing: border-box;
 }
 
-.qubely-active-font-family, .qubely-active-font-weight {
+.mrmTypography-active-font-family, .mrmTypography-active-font-weight {
   background-color: rgb(38, 132, 255);
   color: rgb(255, 255, 255);
   cursor: default;
@@ -2443,7 +2443,7 @@ html.wp-toolbar {
   padding: 8px 12px;
 }
 
-.qubely-font-family-option, .qubely-font-weight-option {
+.mrmTypography-font-family-option, .mrmTypography-font-weight-option {
   background-color: transparent;
   color: inherit;
   cursor: default;
@@ -2458,52 +2458,52 @@ html.wp-toolbar {
   padding: 8px 12px;
 }
 
-.qubely-font-family-option:hover, .qubely-font-weight-option:hover {
+.mrmTypography-font-family-option:hover, .mrmTypography-font-weight-option:hover {
   background-color: #e8eaeb;
 }
 
-.qubely-font-family-search-wrapper {
+.mrmTypography-font-family-search-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
-.qubely-font-family-search-wrapper input.qubely-font-family-search {
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
   border: none !important;
   background-color: transparent !important;
 }
-.qubely-font-family-search-wrapper input.qubely-font-family-search:focus, .qubely-font-family-search-wrapper input.qubely-font-family-search:active, .qubely-font-family-search-wrapper input.qubely-font-family-search:hover {
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
   outline: 0;
   box-shadow: none;
 }
 
-.qubely-font-weight-picker-wrapper {
+.mrmTypography-font-weight-picker-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.qubely-font-select-icon {
+.mrmTypography-font-select-icon {
   display: flex;
   align-items: center;
   padding-right: 3px;
 }
 
-.qubely-field.qubely-field-typography .components-dropdown.qubely-field {
+.mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
   width: 100%;
 }
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/range.scss ***!
   \****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-input-range {
+.mrmTypography-input-range {
   display: flex;
 }
-.qubely-input-range > *:not(:last-child) {
+.mrmTypography-input-range > *:not(:last-child) {
   margin-right: 8px;
 }
-.qubely-input-range input[type=number] {
+.mrmTypography-input-range input[type=number] {
   width: 55px !important;
 }
-.qubely-input-range input[type=range] {
+.mrmTypography-input-range input[type=range] {
   -webkit-appearance: none;
   margin-top: 7px;
   margin-bottom: 7px;
@@ -2512,7 +2512,7 @@ html.wp-toolbar {
   padding-right: 0;
   background: transparent;
 }
-.qubely-input-range input[type=range]::-webkit-slider-runnable-track {
+.mrmTypography-input-range input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -2521,7 +2521,7 @@ html.wp-toolbar {
   border-radius: 5px;
   border: 0px solid black;
 }
-.qubely-input-range input[type=range]::-webkit-slider-thumb {
+.mrmTypography-input-range input[type=range]::-webkit-slider-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -2531,10 +2531,10 @@ html.wp-toolbar {
   -webkit-appearance: none;
   margin-top: -5px;
 }
-.qubely-input-range input[type=range]:focus::-webkit-slider-runnable-track {
+.mrmTypography-input-range input[type=range]:focus::-webkit-slider-runnable-track {
   background: #f3f4f5;
 }
-.qubely-input-range input[type=range]::-moz-range-track {
+.mrmTypography-input-range input[type=range]::-moz-range-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -2543,7 +2543,7 @@ html.wp-toolbar {
   border-radius: 5px;
   border: 0px solid black;
 }
-.qubely-input-range input[type=range]::-moz-range-thumb {
+.mrmTypography-input-range input[type=range]::-moz-range-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -2551,7 +2551,7 @@ html.wp-toolbar {
   background: #606871;
   cursor: pointer;
 }
-.qubely-input-range input[type=range]::-ms-track {
+.mrmTypography-input-range input[type=range]::-ms-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -2561,17 +2561,17 @@ html.wp-toolbar {
   border-width: 14px 0;
   color: transparent;
 }
-.qubely-input-range input[type=range]::-ms-fill-lower {
+.mrmTypography-input-range input[type=range]::-ms-fill-lower {
   background: #d7dadf;
   border: 0px solid black;
   border-radius: 10px;
 }
-.qubely-input-range input[type=range]::-ms-fill-upper {
+.mrmTypography-input-range input[type=range]::-ms-fill-upper {
   background: #E5E7EA;
   border: 0px solid black;
   border-radius: 10px;
 }
-.qubely-input-range input[type=range]::-ms-thumb {
+.mrmTypography-input-range input[type=range]::-ms-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -2579,55 +2579,55 @@ html.wp-toolbar {
   background: #606871;
   cursor: pointer;
 }
-.qubely-input-range input[type=range]:focus::-ms-fill-lower {
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-lower {
   background: #E5E7EA;
 }
-.qubely-input-range input[type=range]:focus::-ms-fill-upper {
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-upper {
   background: #f3f4f5;
 }
 
-.qubely-field-range > label {
+.mrmTypography-field-range > label {
   width: 100%;
   margin-bottom: 2px;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/toggle.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-field.qubely-field-toggle {
+.mrmTypography-field.mrmTypography-field-toggle {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 }
-.qubely-field.qubely-field-toggle > label {
+.mrmTypography-field.mrmTypography-field-toggle > label {
   width: auto;
   margin-bottom: 0;
 }
-.qubely-field.qubely-field-toggle .components-toggle-control,
-.qubely-field.qubely-field-toggle .components-toggle-control .components-base-control__field {
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control,
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field {
   margin-bottom: 0 !important;
 }
-.qubely-field.qubely-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
   margin-right: 0;
 }
-.qubely-field.qubely-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
+.mrmTypography-field.mrmTypography-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
   background-color: #2184F9;
 }
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/buttonGroup.scss ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-field-group-btn {
+.mrmTypography-field-group-btn {
   align-items: center;
 }
-.qubely-field-group-btn label {
+.mrmTypography-field-group-btn label {
   margin-bottom: 0;
 }
-.qubely-field-group-btn .qubely-field-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child {
   display: flex;
   justify-content: end;
   align-items: center;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button {
   display: inline-block;
   white-space: nowrap;
   padding: 0px 9px;
@@ -2642,26 +2642,26 @@ html.wp-toolbar {
   line-height: 26px;
   height: 26px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.extra-padding {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.extra-padding {
   padding: 0px 10px;
   font-weight: bold;
   font-size: 15px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button:last-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:last-child {
   border-bottom-right-radius: 3px;
   border-top-right-radius: 3px;
   border-right: 1px solid #d6d9dd;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button:first-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:first-child {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.qubley-active-group-btn {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn {
   color: #2184f9;
   background: #d2e7ff;
   border-color: #a9d0ff;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
   border-left-color: #a9d0ff;
 }
 

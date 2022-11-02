@@ -5,6 +5,7 @@ import {
   deleleMultipleCampaigns,
   deleteSingleCampaign,
   getAllCampaigns,
+  updateCampaignStatus,
 } from "../services/Campaign";
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
 import AlertPopup from "./AlertPopup";
@@ -15,6 +16,7 @@ import DeletePopup from "./DeletePopup";
 import Search from "./Icons/Search";
 import LoadingIndicator from "./LoadingIndicator";
 import Pagination from "./Pagination";
+import PublishAlert from "./PublishAlert";
 import SuccessfulNotification from "./SuccessfulNotification";
 import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import Delete from "./Icons/Delete";
@@ -52,6 +54,7 @@ export default function AllCampaigns() {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
   const [showAlert, setShowAlert] = useState("none");
+  const [isUpdate, setIsUpdate] = useState("none");
 
   useEffect(() => {
     getAllCampaigns(page, perPage, query).then((results) => {
@@ -167,6 +170,45 @@ export default function AllCampaigns() {
       setSelected(campaigns.map((campaign) => campaign.id));
     }
     setAllSelected(!allSelected);
+  };
+
+  // Handle single campaign status update
+  const handleStatusUpdate = (campaign_id) => {
+    setIsUpdate("block");
+    setCampaignID(campaign_id);
+  };
+
+  const onNotPublish = async (status) => {
+    setIsUpdate(status);
+  };
+
+  const onPublishStatus = async (status) => {
+    if (status) {
+      const campaign = {
+        status: "suspended",
+        campaign_id: camaignID,
+      };
+
+      updateCampaignStatus(campaign).then((response) => {
+        if (201 === response.code) {
+          // Show success message
+          setShowNotification("block");
+          setMessage(response?.message);
+          toggleRefresh();
+          setCampaignID();
+        } else {
+          setShowWarning("block");
+          setMessage(response?.message);
+        }
+      });
+      setIsUpdate("none");
+      const isValid = validate();
+      setIsValid(isValid);
+      const timer = setTimeout(() => {
+        setShowNotification("none");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   };
 
   return (
@@ -300,6 +342,7 @@ export default function AllCampaigns() {
                                 deleteCampaign={deleteCampaign}
                                 handleSelectOne={handleSelectOne}
                                 selected={selected}
+                                handleStatusUpdate={handleStatusUpdate}
                               />
                             );
                           })}
@@ -338,6 +381,15 @@ export default function AllCampaigns() {
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />
+      <div className="mintmrm-container" style={{ display: isUpdate }}>
+        <PublishAlert
+          title="Campaign Update"
+          message="Are you sure to pause this campaign?"
+          buttonText={"Yes"}
+          onNotPublish={onNotPublish}
+          onPublishStatus={onPublishStatus}
+        />
+      </div>
     </>
   );
 }

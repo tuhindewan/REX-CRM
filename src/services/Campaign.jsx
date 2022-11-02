@@ -95,3 +95,21 @@ export async function updateCampaignRequest(campaign) {
     }
   });
 }
+
+// Update campaign status
+export async function updateCampaignStatus(campaign) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/campaigns/${campaign.campaign_id}/status-update`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(campaign),
+    }
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

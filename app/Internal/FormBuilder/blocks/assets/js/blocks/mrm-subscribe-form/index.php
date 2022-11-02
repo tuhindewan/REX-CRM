@@ -79,35 +79,62 @@ class MRM_Subscribe_form
         if($form_placement != 'default' ){
             $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
         }
+        $form_close_button_color     = !empty($form_setting->settings->form_layout->close_button_color) ? $form_setting->settings->form_layout->close_button_color: '#fff';
+        $form_close_background_color = !empty($form_setting->settings->form_layout->close_background_color) ? $form_setting->settings->form_layout->close_background_color: '#000';
+
+        $form_data = FormModel::get($form_id);
+        $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
+
+        if (empty($form_data)){
+            return __('Form ID is not valid','mrm');
+        }elseif(!$form_status){
+            return __('This form is not active. Please check','mrm');
+        }
+        $cookies = isset($_COOKIE['mrm_form_dismissed']) ? $_COOKIE['mrm_form_dismissed'] : '';
+        $cookies = json_decode(stripslashes($cookies));
+
+        $show = true;
+        if(!empty($cookies->expire)){
+            $expire  = $cookies->expire;
+
+            $today = strtotime('today UTC');
+
+            if ($expire > $today ) {
+                $show = false;
+            }
+        }
         $blocks = parse_blocks( $attributes['render_block'] );
         if( 0 == $form_id ){
             $html = '<div class="mintmrm">
                         <p>No form added</p>
                     </div>';
         }else{
-            $html .= '<div class="mintmrm">
+            if($show){
+                $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_animation.' mrm-'.$form_placement.'">
                 <div class="mrm-form-wrapper-inner">';
-            if('default' != $form_placement){
-                $html .= '<span class="mrm-form-close">
-                        <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                if('default' != $form_placement){
+                    $html .= '<span style="background:'.$form_close_background_color.'" class="mrm-form-close" >
+                        <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="'.$form_close_button_color.'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                     </span>';
-            }
+                }
 
-            $html .= '
+                $html .= '
                     <div class="mrm-form-overflow">
                         <form method="post" id="mrm-form">
                             <input hidden name="form_id" value="'.$attributes['form_id'].'" />';
-                                foreach( $blocks as $block ) {
-                                    $html .= render_block( $block );
-                                }
-             $html .=   '</form>
-                        <div class="response"></div>
+                foreach( $blocks as $block ) {
+                    $html .= render_block( $block );
+                }
+                $html .=   '</form>
+                             <div class="response"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+    
+            </div>';
+            }
 
-        </div>';
         }
 
 

@@ -395,7 +395,7 @@ function BlockEditor(_ref) {
     const _canUserCreateMedia = select('core').canUser('create', 'media');
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:20px 25px;line-height:0.2;letter-spacing:0;border-style:none;font-size:15px;text-align:center;border-width:0;border-color:;width:20%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -467,6 +467,7 @@ function BlockEditor(_ref) {
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
     window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
+    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
@@ -522,7 +523,7 @@ const {
     onDeviceChange
   } = _ref;
   const [device, setDevice] = useState('md');
-  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.qubelyDevice;
+  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.mrmTypographyDevice;
   const getValue = () => value ? responsive ? value[responsiveDevice] || '' : value : '';
   const onButtonClick = val => onChange(responsive ? Object.assign({}, value, {
     [responsiveDevice]: val
@@ -535,18 +536,18 @@ const {
     setDevice(newDevice);
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: 'qubely-field-group-btn qubely-field ' + (responsive ? 'qubely-responsive' : 'qubely-d-flex')
+    className: 'mrmTypography-field-group-btn mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : 'mrmTypography-d-flex')
   }, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "qubely-d-flex qubely-align-center qubely-mb-10"
+    className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
   }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
     device: responsiveDevice,
     commonResponsiveDevice: device,
-    className: "qubely-ml-10",
+    className: "mrmTypography-ml-10",
     onChange: val => {
       device && onDeviceChange ? onDeviceChange(val) : updateDevice(val);
     }
   })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, {
-    className: "qubely-field-child qubely-d-flex"
+    className: "mrmTypography-field-child mrmTypography-d-flex"
   }, options.map(_ref2 => {
     let [title, option] = _ref2;
     const activeBtn = option === getValue() ? 'qubley-active-group-btn' : '';
@@ -588,11 +589,11 @@ class Device extends Component {
   }
   componentDidMount() {
     if (typeof this.props.device !== 'undefined' && this.props.device !== '') {
-      window.qubelyDevice = this.props.device;
+      window.mrmTypographyDevice = this.props.device;
     }
   }
   setSettings(value) {
-    window.qubelyDevice = value;
+    window.mrmTypographyDevice = value;
     this.setState({
       current: value
     });
@@ -608,7 +609,7 @@ class Device extends Component {
       commonResponsiveDevice
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `qubely-device ${className ? className : ''}`
+      className: `mrmTypography-device ${className ? className : ''}`
     });
   }
 }
@@ -652,7 +653,7 @@ class Range extends Component {
     if (type == 'unit') {
       return value ? value.unit || 'px' : 'px';
     } else {
-      return value ? responsive ? value[window.qubelyDevice] || '' : value : '';
+      return value ? responsive ? value[window.mrmTypographyDevice] || '' : value : '';
     }
   }
   setSettings(val, type) {
@@ -675,7 +676,7 @@ class Range extends Component {
       newValue.unit = val;
     } else {
       newValue = responsive ? Object.assign(newValue, value, {
-        [window.qubelyDevice]: val
+        [window.mrmTypographyDevice]: val
       }) : val;
       newValue = min ? newValue < min ? min : newValue : newValue < 0 ? 0 : newValue;
       newValue = max ? newValue > max ? max : newValue : newValue > 1000 ? 1000 : newValue;
@@ -718,22 +719,22 @@ class Range extends Component {
       onDeviceChange,
       disabled = false
     } = this.props;
-    let responsiveDevice = responsive ? device ? device : this.state.device : window.qubelyDevice;
+    let responsiveDevice = responsive ? device ? device : this.state.device : window.mrmTypographyDevice;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: 'qubely-field-range qubely-field ' + (responsive ? 'qubely-responsive' : '')
+      className: 'mrmTypography-field-range mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : '')
     }, (label || unit || responsive) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-d-flex qubely-align-center qubely-mb-10"
+      className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
     }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
       htmlFor: 'input'
     }, label)), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_3__["default"], {
       device: responsiveDevice,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => {
         device && onDeviceChange ? onDeviceChange(val) : this.updateDevice(val);
       }
     }), unit && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-unit-btn-group qubely-ml-auto"
+      className: "mrmTypography-unit-btn-group mrmTypography-ml-auto"
     }, (typeof unit == 'object' ? unit : ['px', 'em', '%']).map(value => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("button", {
       className: this.props.value && value == this.props.value.unit ? 'active' : '',
       onClick: () => {
@@ -742,9 +743,9 @@ class Range extends Component {
         // this.setSettings(this._filterValue(), 'range');
       }
     }, value)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-child"
+      className: "mrmTypography-field-child"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-input-range"
+      className: "mrmTypography-input-range"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "range",
       min: this._minMax('min'),
@@ -798,7 +799,7 @@ class Toggle extends Component {
     };
   }
   _filterValue() {
-    return this.props.value ? this.props.responsive ? this.props.value[window.qubelyDevice] || '' : this.props.value : '';
+    return this.props.value ? this.props.responsive ? this.props.value[window.mrmTypographyDevice] || '' : this.props.value : '';
   }
   setSettings(val) {
     const {
@@ -807,7 +808,7 @@ class Toggle extends Component {
       onChange
     } = this.props;
     let final = responsive ? Object.assign({}, value, {
-      [window.qubelyDevice]: val
+      [window.mrmTypographyDevice]: val
     }) : val;
     onChange(final);
     this.setState({
@@ -823,11 +824,11 @@ class Toggle extends Component {
       onDeviceChange
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: 'qubely-field-toggle qubely-field' + (this.props.responsive ? ' qubely-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
+      className: 'mrmTypography-field-toggle mrmTypography-field' + (this.props.responsive ? ' mrmTypography-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, label && label, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, device ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       device: device,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => onDeviceChange(val)
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       onChange: val => this.setState({
@@ -910,18 +911,18 @@ class Typography extends Component {
       showFontWeights
     } = this.state;
     if (showFontFamiles) {
-      const qubelyFontFamilyWrapper = this.refs.qubelyFontFamilyWrapper;
-      const qubelySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
-      if (qubelyFontFamilyWrapper && !qubelyFontFamilyWrapper.contains(event.target)) {
-        qubelySelectedFontFamily && !qubelySelectedFontFamily.contains(event.target) && this.setState({
+      const mrmTypographyFontFamilyWrapper = this.refs.mrmTypographyFontFamilyWrapper;
+      const mrmTypographySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
+      if (mrmTypographyFontFamilyWrapper && !mrmTypographyFontFamilyWrapper.contains(event.target)) {
+        mrmTypographySelectedFontFamily && !mrmTypographySelectedFontFamily.contains(event.target) && this.setState({
           showFontFamiles: false
         });
       }
     } else if (showFontWeights) {
-      const qubelyFontWeightWrapper = this.refs.qubelyFontWeightWrapper;
-      const qubelySelectedFontWeight = this.refs.qubelySelectedFontWeight;
-      if (qubelyFontWeightWrapper && !qubelyFontWeightWrapper.contains(event.target)) {
-        qubelySelectedFontWeight && !qubelySelectedFontWeight.contains(event.target) && this.setState({
+      const mrmTypographyFontWeightWrapper = this.refs.mrmTypographyFontWeightWrapper;
+      const mrmTypographySelectedFontWeight = this.refs.mrmTypographySelectedFontWeight;
+      if (mrmTypographyFontWeightWrapper && !mrmTypographyFontWeightWrapper.contains(event.target)) {
+        mrmTypographySelectedFontWeight && !mrmTypographySelectedFontWeight.contains(event.target) && this.setState({
           showFontWeights: false
         });
       }
@@ -970,9 +971,9 @@ class Typography extends Component {
   }
   findArrayIndex = font => {
     let index = 0;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     while (index < 10) {
-      if (qubelyFonts[index].n == font) {
+      if (mrmTypographyFonts[index].n == font) {
         break;
       }
       index++;
@@ -981,22 +982,22 @@ class Typography extends Component {
   };
   handleTypographyChange(val) {
     this.setSettings('family', val);
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let selectedFont = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => font.n == val);
-    if (qubelyFonts) {
-      let oldFont = qubelyFonts.filter(font => font.n == val).length > 0;
+    if (mrmTypographyFonts) {
+      let oldFont = mrmTypographyFonts.filter(font => font.n == val).length > 0;
       if (oldFont) {
         let index = this.findArrayIndex(val);
-        qubelyFonts.splice(index, 1);
-        qubelyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.splice(index, 1);
+        mrmTypographyFonts.unshift(...selectedFont);
       } else {
-        qubelyFonts.unshift(...selectedFont);
-        qubelyFonts.length > 10 && qubelyFonts.pop();
+        mrmTypographyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.length > 10 && mrmTypographyFonts.pop();
       }
     } else {
-      qubelyFonts = [...selectedFont];
+      mrmTypographyFonts = [...selectedFont];
     }
-    localStorage.setItem('qubelyFonts', JSON.stringify(qubelyFonts));
+    localStorage.setItem('mrmTypographyFonts', JSON.stringify(mrmTypographyFonts));
   }
   render() {
     const {
@@ -1014,22 +1015,22 @@ class Typography extends Component {
       showFontFamiles,
       showFontWeights
     } = this.state;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let filteredFontList = [],
       newFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"];
-    if (qubelyFonts) {
-      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !qubelyFonts.filter(qubelyFont => qubelyFont.n == font.n || font.n == 'Default').length > 0);
+    if (mrmTypographyFonts) {
+      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !mrmTypographyFonts.filter(mrmTypographyFont => mrmTypographyFont.n == font.n || font.n == 'Default').length > 0);
       newFontList = [{
         n: 'Default',
         f: 'default',
         v: []
-      }, ...qubelyFonts, ...filteredFontList];
+      }, ...mrmTypographyFonts, ...filteredFontList];
     }
     if (filterText.length >= 2) {
       newFontList = newFontList.filter(item => item.n.toLowerCase().search(filterText.toLowerCase()) !== -1);
     }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-typography"
+      className: "mrmTypography-field mrmTypography-field-typography"
     }, !globalSettings && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Toggle__WEBPACK_IMPORTED_MODULE_4__["default"], {
       value: value.openTypography,
       label: label || __('Typography'),
@@ -1097,11 +1098,11 @@ class Typography extends Component {
         }
       }
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-group qubely-65-35"
+      className: "mrmTypography-field-group mrmTypography-65-35"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-family"
+      className: "mrmTypography-field mrmTypography-field-font-family"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Font Family')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-picker",
+      className: "mrmTypography-font-family-picker",
       ref: "wpfnlSelectedFontFamily",
       onClick: () => {
         this.setState({
@@ -1109,35 +1110,35 @@ class Typography extends Component {
         });
       }
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-family-search-wrapper"
+      className: "mrmTypography-font-family-search-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "text",
-      className: `qubely-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
+      className: `mrmTypography-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
       placeholder: __(showFontFamiles ? 'Search' : value && value.family || 'Select'),
       value: filterText,
       onChange: e => this.setState({
         filterText: e.target.value
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontFamiles ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  ")))), showFontFamiles && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-option-wrapper",
-      ref: "qubelyFontFamilyWrapper"
+      className: "mrmTypography-font-family-option-wrapper",
+      ref: "mrmTypographyFontFamilyWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-options"
+      className: "mrmTypography-font-family-options"
     }, newFontList.length > 0 ? newFontList.map((font, index) => {
       let isActiveFont = false;
       if (value && font.n == value.family) {
         isActiveFont = true;
       }
       let fontClasses = classnames__WEBPACK_IMPORTED_MODULE_5___default()({
-        ['qubely-font-family-option']: !isActiveFont
+        ['mrmTypography-font-family-option']: !isActiveFont
       }, {
-        ['qubely-active-font-family']: isActiveFont
+        ['mrmTypography-active-font-family']: isActiveFont
       });
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
         className: fontClasses,
-        id: `qubely-font-family-${index}`,
+        key: `mrmTypography-font-family-${index}`,
         onClick: () => {
           this.setState({
             showFontFamiles: false,
@@ -1147,31 +1148,32 @@ class Typography extends Component {
         }
       }, font.n);
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: `qubely-font-family-option no-match`,
+      className: `mrmTypography-font-family-option no-match`,
       onClick: () => this.setState({
         showFontFamiles: false,
         filterText: ''
       })
     }, "  No matched font  "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-weight"
+      className: "mrmTypography-field mrmTypography-field-font-weight"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Weight')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker-wrapper",
-      ref: "qubelySelectedFontWeight",
+      className: "mrmTypography-font-weight-picker-wrapper",
+      ref: "mrmTypographySelectedFontWeight",
       onClick: () => this.setState({
         showFontWeights: !showFontWeights
       })
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker"
+      className: "mrmTypography-font-weight-picker"
     }, "  ", value && value.weight || 'Select', "   "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontWeights ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  "))), showFontWeights && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-wrapper",
-      ref: "qubelyFontWeightWrapper"
+      className: "mrmTypography-font-weight-wrapper",
+      ref: "mrmTypographyFontWeightWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-weights"
-    }, ['Default', ...this._getWeight()].map(font => {
+      className: "mrmTypography-font-family-weights"
+    }, ['Default', ...this._getWeight()].map((font, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-        className: `${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`,
+        className: `${font == value.weight ? 'mrmTypography-active-font-weight' : 'mrmTypography-font-weight-option'}`,
+        key: `mrmTypography-font-weights-${index}`,
         onClick: () => {
           this.setState({
             showFontWeights: false
@@ -1216,4026 +1218,5966 @@ __webpack_require__.r(__webpack_exports__);
   v: [],
   f: "default"
 }, {
-  n: 'Arial',
-  f: 'sans-serif',
+  n: "Cursive",
+  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+  f: "cursive"
+}, {
+  n: "Fantasy",
+  v: [],
+  f: "fantasy"
+}, {
+  n: "Monospace",
+  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+  f: "monospace"
+}, {
+  n: "Arial",
+  f: "sans-serif",
   v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Tahoma',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Verdana',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Helvetica',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Times New Roman',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Trebuchet MS',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Georgia',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: "ABeeZee",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Abel",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Abhaya Libre",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "Abril Fatface",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aclonica",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Acme",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Actor",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Adamina",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Advent Pro",
-  v: [100, 200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Aguafina Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Akronim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aladin",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Alata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Alatsi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Aldrich",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Alef",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Alegreya",
-  v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Alegreya SC",
-  v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Alegreya Sans",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Alegreya Sans SC",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Aleo",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Alex Brush",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Alfa Slab One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Alice",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Alike",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Alike Angular",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Allan",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Allerta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Allerta Stencil",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Allura",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Almarai",
-  v: [300, 400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Almendra",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Almendra Display",
-  v: [400],
-  f: "display"
-}, {
-  n: "Almendra SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Amarante",
-  v: [400],
-  f: "display"
-}, {
-  n: "Amaranth",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Amatic SC",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Amethysta",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Amiko",
-  v: [400, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Amiri",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Amita",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Anaheim",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Andada",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Andika",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Angkor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Annie Use Your Telescope",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Anonymous Pro",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Antic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Antic Didone",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Antic Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Anton",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Arapey",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Arbutus",
-  v: [400],
-  f: "display"
-}, {
-  n: "Arbutus Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Architects Daughter",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Archivo",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Archivo Black",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Archivo Narrow",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Aref Ruqaa",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Arima Madurai",
-  v: [100, 200, 300, 400, 500, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Arimo",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Arizonia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Armata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Arsenal",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Artifika",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Arvo",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Arya",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Asap",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Asap Condensed",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Asar",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Asset",
-  v: [400],
-  f: "display"
-}, {
-  n: "Assistant",
-  v: [200, 300, 400, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Astloch",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Asul",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Athiti",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Atma",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Atomic Age",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aubrey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Audiowide",
-  v: [400],
-  f: "display"
-}, {
-  n: "Autour One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Average",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Average Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Averia Gruesa Libre",
-  v: [400],
-  f: "display"
-}, {
-  n: "Averia Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Averia Sans Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Averia Serif Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "B612",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "B612 Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Bad Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bahiana",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bahianita",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bai Jamjuree",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Baloo 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Bhai 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Bhaina 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Chettan 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Da 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Paaji 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Tamma 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Tammudu 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Thambi 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Balsamiq Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Balthazar",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bangers",
-  v: [400],
-  f: "display"
-}, {
-  n: "Barlow",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barlow Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barlow Semi Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barriecito",
-  v: [400],
-  f: "display"
-}, {
-  n: "Barrio",
-  v: [400],
-  f: "display"
-}, {
-  n: "Basic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Baskervville",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Battambang",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Baumans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bayon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Be Vietnam",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Bebas Neue",
-  v: [400],
-  f: "display"
-}, {
-  n: "Belgrano",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bellefair",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Belleza",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Bellota",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Bellota Text",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "BenchNine",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Bentham",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Berkshire Swash",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Beth Ellen",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bevan",
-  v: [400],
-  f: "display"
-}, {
-  n: "Big Shoulders Display",
-  v: [100, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Big Shoulders Text",
-  v: [100, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Bigelow Rules",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bigshot One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bilbo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bilbo Swash Caps",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "BioRhyme",
-  v: [200, 300, 400, 700, 800],
-  f: "serif"
-}, {
-  n: "BioRhyme Expanded",
-  v: [200, 300, 400, 700, 800],
-  f: "serif"
-}, {
-  n: "Biryani",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Bitter",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Black And White Picture",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Black Han Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Black Ops One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Blinker",
-  v: [100, 200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Bokor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bonbon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Boogaloo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bowlby One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bowlby One SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Brawler",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bree Serif",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bubblegum Sans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bubbler One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Buda",
-  v: [300],
-  f: "display"
-}, {
-  n: "Buenard",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Bungee",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Hairline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Inline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Shade",
-  v: [400],
-  f: "display"
-}, {
-  n: "Butcherman",
-  v: [400],
-  f: "display"
-}, {
-  n: "Butterfly Kids",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cabin",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cabin Condensed",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Cabin Sketch",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Caesar Dressing",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cagliostro",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cairo",
-  v: [200, 300, 400, 600, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Caladea",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Calistoga",
-  v: [400],
-  f: "display"
-}, {
-  n: "Calligraffitti",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cambay",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cambo",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Candal",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cantarell",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cantata One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Cantora One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Capriola",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cardo",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Carme",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carrois Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carrois Gothic SC",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carter One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Catamaran",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Caudex",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Caveat",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Caveat Brush",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cedarville Cursive",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ceviche One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chakra Petch",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Changa",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Changa One",
-  v: [400, "400i"],
-  f: "display"
-}, {
-  n: "Chango",
-  v: [400],
-  f: "display"
-}, {
-  n: "Charm",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Charmonman",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Chathura",
-  v: [100, 300, 400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Chau Philomene One",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Chela One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chelsea Market",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chenla",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cherry Cream Soda",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cherry Swash",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Chewy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chicle",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chilanka",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Chivo",
-  v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Chonburi",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cinzel",
-  v: [400, 700, 900],
-  f: "serif"
-}, {
-  n: "Cinzel Decorative",
-  v: [400, 700, 900],
-  f: "display"
-}, {
-  n: "Clicker Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Coda",
-  v: [400, 800],
-  f: "display"
-}, {
-  n: "Coda Caption",
-  v: [800],
-  f: "sans-serif"
-}, {
-  n: "Codystar",
-  v: [300, 400],
-  f: "display"
-}, {
-  n: "Coiny",
-  v: [400],
-  f: "display"
-}, {
-  n: "Combo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Comfortaa",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Comic Neue",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "handwriting"
-}, {
-  n: "Coming Soon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Concert One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Condiment",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Content",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Contrail One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Convergence",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cookie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Copse",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Corben",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Cormorant",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant Garamond",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant Infant",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant SC",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Cormorant Unicase",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Cormorant Upright",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Courgette",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Courier Prime",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Cousine",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Coustard",
-  v: [400, 900],
-  f: "serif"
-}, {
-  n: "Covered By Your Grace",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Crafty Girls",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Creepster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Crete Round",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Crimson Pro",
-  v: [200, 300, 400, 500, 600, 700, 800, 900, "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Crimson Text",
-  v: [400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Croissant One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Crushed",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cuprum",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cute Font",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cutive",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Cutive Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "DM Mono",
-  v: [300, "300i", 400, "400i", 500, "500i"],
-  f: "monospace"
-}, {
-  n: "DM Sans",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "DM Serif Display",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "DM Serif Text",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Damion",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Dancing Script",
-  v: [400, 500, 600, 700],
-  f: "handwriting"
-}, {
-  n: "Dangrek",
-  v: [400],
-  f: "display"
-}, {
-  n: "Darker Grotesque",
-  v: [300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "David Libre",
-  v: [400, 500, 700],
-  f: "serif"
-}, {
-  n: "Dawning of a New Day",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Days One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dekko",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius Swash Caps",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius Unicase",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Della Respira",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Denk One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Devonshire",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Dhurjati",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Didact Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Diplomata",
-  v: [400],
-  f: "display"
-}, {
-  n: "Diplomata SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Do Hyeon",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dokdo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Domine",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Donegal One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Doppio One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dorsa",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dosis",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Dr Sugiyama",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Duru Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dynalight",
-  v: [400],
-  f: "display"
-}, {
-  n: "EB Garamond",
-  v: [400, 500, 600, 700, 800, "400i", "500i", "600i", "700i", "800i"],
-  f: "serif"
-}, {
-  n: "Eagle Lake",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "East Sea Dokdo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Eater",
-  v: [400],
-  f: "display"
-}, {
-  n: "Economica",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Eczar",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "El Messiri",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Electrolize",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Elsie",
-  v: [400, 900],
-  f: "display"
-}, {
-  n: "Elsie Swash Caps",
-  v: [400, 900],
-  f: "display"
-}, {
-  n: "Emblema One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Emilys Candy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Encode Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Expanded",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Semi Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Semi Expanded",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Engagement",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Englebert",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Enriqueta",
-  v: [400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Epilogue",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Erica One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Esteban",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Euphoria Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ewert",
-  v: [400],
-  f: "display"
-}, {
-  n: "Exo",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Exo 2",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Expletus Sans",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Fahkwang",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Fanwood Text",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Farro",
-  v: [300, 400, 500, 700],
-  f: "sans-serif"
-}, {
-  n: "Farsan",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fascinate",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fascinate Inline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Faster One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fasthand",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Fauna One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Faustina",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Federant",
-  v: [400],
-  f: "display"
-}, {
-  n: "Federo",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Felipa",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Fenix",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Finger Paint",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fira Code",
-  v: [300, 400, 500, 600, 700],
-  f: "monospace"
-}, {
-  n: "Fira Mono",
-  v: [400, 500, 700],
-  f: "monospace"
-}, {
-  n: "Fira Sans",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fira Sans Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fira Sans Extra Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fjalla One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Fjord One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Flamenco",
-  v: [300, 400],
-  f: "display"
-}, {
-  n: "Flavors",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fondamento",
-  v: [400, "400i"],
-  f: "handwriting"
-}, {
-  n: "Fontdiner Swanky",
-  v: [400],
-  f: "display"
-}, {
-  n: "Forum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Francois One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Frank Ruhl Libre",
-  v: [300, 400, 500, 700, 900],
-  f: "serif"
-}, {
-  n: "Freckle Face",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fredericka the Great",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fredoka One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Freehand",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fresca",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Frijole",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fruktur",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fugaz One",
-  v: [400],
-  f: "display"
-}, {
-  n: "GFS Didot",
-  v: [400],
-  f: "serif"
-}, {
-  n: "GFS Neohellenic",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Gabriela",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Gaegu",
-  v: [300, 400, 700],
-  f: "handwriting"
-}, {
-  n: "Gafata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Galada",
-  v: [400],
-  f: "display"
-}, {
-  n: "Galdeano",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Galindo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gamja Flower",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gayathri",
-  v: [100, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Gelasio",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Gentium Basic",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Gentium Book Basic",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Geo",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Geostar",
-  v: [400],
-  f: "display"
-}, {
-  n: "Geostar Fill",
-  v: [400],
-  f: "display"
-}, {
-  n: "Germania One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gidugu",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Gilda Display",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Girassol",
-  v: [400],
-  f: "display"
-}, {
-  n: "Give You Glory",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Glass Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Glegoo",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Gloria Hallelujah",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Goblin One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gochi Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gorditas",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Gothic A1",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Gotu",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Goudy Bookletter 1911",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Graduate",
-  v: [400],
-  f: "display"
-}, {
-  n: "Grand Hotel",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gravitas One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Great Vibes",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Grenze",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Grenze Gotisch",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Griffy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gruppo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gudea",
-  v: [400, "400i", 700],
-  f: "sans-serif"
-}, {
-  n: "Gugi",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gupter",
-  v: [400, 500, 700],
-  f: "serif"
-}, {
-  n: "Gurajada",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Habibi",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Halant",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Hammersmith One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Hanalei",
-  v: [400],
-  f: "display"
-}, {
-  n: "Hanalei Fill",
-  v: [400],
-  f: "display"
-}, {
-  n: "Handlee",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hanuman",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Happy Monkey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Harmattan",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Headland One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Heebo",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Henny Penny",
-  v: [400],
-  f: "display"
-}, {
-  n: "Hepta Slab",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Herr Von Muellerhoff",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hi Melody",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hind",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Guntur",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Madurai",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Siliguri",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Vadodara",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Holtwood One SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Homemade Apple",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Homenaje",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Mono",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "IBM Plex Sans",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Sans Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Serif",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "IM Fell DW Pica",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell DW Pica SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell Double Pica",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell Double Pica SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell English",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell English SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell French Canon",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell French Canon SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell Great Primer",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell Great Primer SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Ibarra Real Nova",
-  v: [400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Iceberg",
-  v: [400],
-  f: "display"
-}, {
-  n: "Iceland",
-  v: [400],
-  f: "display"
-}, {
-  n: "Imprima",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Inconsolata",
-  v: [200, 300, 400, 500, 600, 700, 800, 900],
-  f: "monospace"
-}, {
-  n: "Inder",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Indie Flower",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Inika",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Inknut Antiqua",
-  v: [300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Inria Sans",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Inria Serif",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Inter",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Irish Grover",
-  v: [400],
-  f: "display"
-}, {
-  n: "Istok Web",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Italiana",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Italianno",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Itim",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Jacques Francois",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Jacques Francois Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jaldi",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Jim Nightshade",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Jockey One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Jolly Lodger",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jomhuria",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jomolhari",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Josefin Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, "100i", "200i", "300i", "400i", "500i", "600i", "700i"],
-  f: "sans-serif"
-}, {
-  n: "Josefin Slab",
-  v: [100, "100i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Jost",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Joti One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jua",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Judson",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Julee",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Julius Sans One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Junge",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Jura",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Just Another Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Just Me Again Down Here",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "K2D",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Kadwa",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Kalam",
-  v: [300, 400, 700],
-  f: "handwriting"
-}, {
-  n: "Kameron",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Kanit",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Kantumruy",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Karla",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Karma",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Katibeh",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kaushan Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Kavivanar",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Kavoon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kdam Thmor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Keania One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kelly Slab",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kenia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Khand",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Khmer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Khula",
-  v: [300, 400, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Kirang Haerang",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kite One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Knewave",
-  v: [400],
-  f: "display"
-}, {
-  n: "KoHo",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kodchasan",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kosugi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Kosugi Maru",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Kotta One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Koulen",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kranky",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kreon",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Kristi",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Krona One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Krub",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kulim Park",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kumar One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kumar One Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kurale",
-  v: [400],
-  f: "serif"
-}, {
-  n: "La Belle Aurore",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lacquer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Laila",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Lakki Reddy",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lalezar",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lancelot",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lateef",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lato",
-  v: [100, "100i", 300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "League Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Leckerli One",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ledger",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Lekton",
-  v: [400, "400i", 700],
-  f: "sans-serif"
-}, {
-  n: "Lemon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lemonada",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Lexend Deca",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Exa",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Giga",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Mega",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Peta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Tera",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Zetta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Libre Barcode 128",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 128 Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Extended",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Extended Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Baskerville",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Libre Caslon Display",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Libre Caslon Text",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Libre Franklin",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Life Savers",
-  v: [400, 700, 800],
-  f: "display"
-}, {
-  n: "Lilita One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lily Script One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Limelight",
-  v: [400],
-  f: "display"
-}, {
-  n: "Linden Hill",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Literata",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Liu Jian Mao Cao",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Livvic",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Lobster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lobster Two",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Londrina Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Sketch",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Solid",
-  v: [100, 300, 400, 900],
-  f: "display"
-}, {
-  n: "Long Cang",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lora",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Love Ya Like A Sister",
-  v: [400],
-  f: "display"
-}, {
-  n: "Loved by the King",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lovers Quarrel",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Luckiest Guy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lusitana",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Lustria",
-  v: [400],
-  f: "serif"
-}, {
-  n: "M PLUS 1p",
-  v: [100, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "M PLUS Rounded 1c",
-  v: [100, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Ma Shan Zheng",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Macondo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Macondo Swash Caps",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mada",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Magra",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Maiden Orange",
-  v: [400],
-  f: "display"
-}, {
-  n: "Maitree",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Major Mono Display",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Mako",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mali",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "handwriting"
-}, {
-  n: "Mallanna",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mandali",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Manjari",
-  v: [100, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Manrope",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mansalva",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Manuale",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Marcellus",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marcellus SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marck Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Margarine",
-  v: [400],
-  f: "display"
-}, {
-  n: "Markazi Text",
-  v: [400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Marko One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marmelad",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Martel",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Martel Sans",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Marvel",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Mate",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Mate SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Maven Pro",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "McLaren",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meddon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "MedievalSharp",
-  v: [400],
-  f: "display"
-}, {
-  n: "Medula One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meera Inimai",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Megrim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meie Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Merienda",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Merienda One",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Merriweather",
-  v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Merriweather Sans",
-  v: [300, "300i", 400, "400i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Metal",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metal Mania",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metamorphous",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metrophobic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Michroma",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Milonga",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miltonian",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miltonian Tattoo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mina",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Miniver",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miriam Libre",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Mirza",
-  v: [400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Miss Fajardose",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mitr",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Modak",
-  v: [400],
-  f: "display"
-}, {
-  n: "Modern Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mogra",
-  v: [400],
-  f: "display"
-}, {
-  n: "Molengo",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Molle",
-  v: ["400i"],
-  f: "handwriting"
-}, {
-  n: "Monda",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Monofett",
-  v: [400],
-  f: "display"
-}, {
-  n: "Monoton",
-  v: [400],
-  f: "display"
-}, {
-  n: "Monsieur La Doulaise",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Montaga",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Montez",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Montserrat",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Montserrat Alternates",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Montserrat Subrayada",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Moul",
-  v: [400],
-  f: "display"
-}, {
-  n: "Moulpali",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mountains of Christmas",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Mouse Memoirs",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mr Bedfort",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mr Dafoe",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mr De Haviland",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mrs Saint Delafield",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mrs Sheppards",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mukta",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Mahee",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Malar",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Vaani",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mulish",
-  v: [200, 300, 400, 500, 600, 700, 800, 900, "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "MuseoModerno",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Mystery Quest",
-  v: [400],
-  f: "display"
-}, {
-  n: "NTR",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nanum Brush Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Nanum Gothic",
-  v: [400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Nanum Gothic Coding",
-  v: [400, 700],
-  f: "monospace"
-}, {
-  n: "Nanum Myeongjo",
-  v: [400, 700, 800],
-  f: "serif"
-}, {
-  n: "Nanum Pen Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Neucha",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Neuton",
-  v: [200, 300, 400, "400i", 700, 800],
-  f: "serif"
-}, {
-  n: "New Rocker",
-  v: [400],
-  f: "display"
-}, {
-  n: "News Cycle",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Niconne",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Niramit",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Nixie One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nobile",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Nokora",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Norican",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Nosifer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Notable",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nothing You Could Do",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Noticia Text",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Noto Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans HK",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans JP",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans KR",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans SC",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans TC",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Serif",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Noto Serif JP",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif KR",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif SC",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif TC",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Nova Cut",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Flat",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Nova Oval",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Round",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Script",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Slim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Square",
-  v: [400],
-  f: "display"
-}, {
-  n: "Numans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nunito",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Nunito Sans",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Odibee Sans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Odor Mean Chey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Offside",
-  v: [400],
-  f: "display"
-}, {
-  n: "Old Standard TT",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Oldenburg",
-  v: [400],
-  f: "display"
-}, {
-  n: "Oleo Script",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Oleo Script Swash Caps",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Open Sans",
-  v: [300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Open Sans Condensed",
-  v: [300, "300i", 700],
-  f: "sans-serif"
-}, {
-  n: "Oranienbaum",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Orbitron",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Oregano",
-  v: [400, "400i"],
-  f: "display"
-}, {
-  n: "Orienta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Original Surfer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Oswald",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Over the Rainbow",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Overlock",
-  v: [400, "400i", 700, "700i", 900, "900i"],
-  f: "display"
-}, {
-  n: "Overlock SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Overpass",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Overpass Mono",
-  v: [300, 400, 600, 700],
-  f: "monospace"
-}, {
-  n: "Ovo",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Oxanium",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Oxygen",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Oxygen Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "PT Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "PT Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "PT Sans Caption",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "PT Sans Narrow",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "PT Serif",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "PT Serif Caption",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Pacifico",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Padauk",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Palanquin",
-  v: [100, 200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Palanquin Dark",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Pangolin",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Paprika",
-  v: [400],
-  f: "display"
-}, {
-  n: "Parisienne",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Passero One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Passion One",
-  v: [400, 700, 900],
-  f: "display"
-}, {
-  n: "Pathway Gothic One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Patrick Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Patrick Hand SC",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Pattaya",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Patua One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pavanam",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Paytone One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Peddana",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Peralta",
-  v: [400],
-  f: "display"
-}, {
-  n: "Permanent Marker",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Petit Formal Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Petrona",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Philosopher",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Piedra",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pinyon Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Pirata One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Plaster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Play",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Playball",
-  v: [400],
-  f: "display"
-}, {
-  n: "Playfair Display",
-  v: [400, 500, 600, 700, 800, 900, "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Playfair Display SC",
-  v: [400, "400i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Podkova",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "Poiret One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poller One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poly",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Pompiere",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pontano Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Poor Story",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poppins",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Port Lligat Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Port Lligat Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Pragati Narrow",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Prata",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Preahvihear",
-  v: [400],
-  f: "display"
-}, {
-  n: "Press Start 2P",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pridi",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Princess Sofia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Prociono",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Prompt",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Prosto One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Proza Libre",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Public Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Puritan",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Purple Purse",
-  v: [400],
-  f: "display"
-}, {
-  n: "Quando",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Quantico",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Quattrocento",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Quattrocento Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Questrial",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Quicksand",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Quintessential",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Qwigley",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Racing Sans One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Radley",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Rajdhani",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Rakkas",
-  v: [400],
-  f: "display"
-}, {
-  n: "Raleway",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Raleway Dots",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ramabhadra",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ramaraja",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Rambla",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Rammetto One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ranchers",
-  v: [400],
-  f: "display"
-}, {
-  n: "Rancho",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ranga",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Rasa",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Rationale",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ravi Prakash",
-  v: [400],
-  f: "display"
-}, {
-  n: "Red Hat Display",
-  v: [400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Red Hat Text",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Red Rose",
-  v: [300, 400, 700],
-  f: "display"
-}, {
-  n: "Redressed",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Reem Kufi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Reenie Beanie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Revalia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Rhodium Libre",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Ribeye",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ribeye Marrow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Righteous",
-  v: [400],
-  f: "display"
-}, {
-  n: "Risque",
-  v: [400],
-  f: "display"
-}, {
-  n: "Roboto",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Roboto Condensed",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Roboto Mono",
-  v: [100, 200, 300, 400, 500, 600, 700, "100i", "200i", "300i", "400i", "500i", "600i", "700i"],
-  f: "monospace"
-}, {
-  n: "Roboto Slab",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Rochester",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rock Salt",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rokkitt",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Romanesco",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ropa Sans",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Rosario",
-  v: [300, 400, 500, 600, 700, "300i", "400i", "500i", "600i", "700i"],
-  f: "sans-serif"
-}, {
-  n: "Rosarivo",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Rouge Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rowdies",
-  v: [300, 400, 700],
-  f: "display"
-}, {
-  n: "Rozha One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Rubik",
-  v: [300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Rubik Mono One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruda",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Rufina",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Ruge Boogie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ruluko",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Rum Raisin",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruslan Display",
-  v: [400],
-  f: "display"
-}, {
-  n: "Russo One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruthie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rye",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sacramento",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sahitya",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Sail",
-  v: [400],
-  f: "display"
-}, {
-  n: "Saira",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Extra Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Semi Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Stencil One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Salsa",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sanchez",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Sancreek",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sansita",
-  v: [400, "400i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Sarabun",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Sarala",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sarina",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sarpanch",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Satisfy",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sawarabi Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sawarabi Mincho",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Scada",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Scheherazade",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Schoolbell",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Scope One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Seaweed Script",
-  v: [400],
-  f: "display"
-}, {
-  n: "Secular One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sedgwick Ave",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sedgwick Ave Display",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sen",
-  v: [400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Sevillana",
-  v: [400],
-  f: "display"
-}, {
-  n: "Seymour One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Shadows Into Light",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shadows Into Light Two",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shanti",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Share",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Share Tech",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Share Tech Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Shojumaru",
-  v: [400],
-  f: "display"
-}, {
-  n: "Short Stack",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shrikhand",
-  v: [400],
-  f: "display"
-}, {
-  n: "Siemreap",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sigmar One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Signika",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Signika Negative",
-  v: [300, 400, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Simonetta",
-  v: [400, "400i", 900, "900i"],
-  f: "display"
-}, {
-  n: "Single Day",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sintony",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sirin Stencil",
-  v: [400],
-  f: "display"
-}, {
-  n: "Six Caps",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Skranji",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Slabo 13px",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Slabo 27px",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Slackey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Smokum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Smythe",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sniglet",
-  v: [400, 800],
-  f: "display"
-}, {
-  n: "Snippet",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Snowburst One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sofadi One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sofia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Solway",
-  v: [300, 400, 500, 700, 800],
-  f: "serif"
-}, {
-  n: "Song Myung",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sonsie One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sora",
-  v: [100, 200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Sorts Mill Goudy",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Source Code Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "monospace"
-}, {
-  n: "Source Sans Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Source Serif Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Space Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Spartan",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Special Elite",
-  v: [400],
-  f: "display"
-}, {
-  n: "Spectral",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "serif"
-}, {
-  n: "Spectral SC",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "serif"
-}, {
-  n: "Spicy Rice",
-  v: [400],
-  f: "display"
-}, {
-  n: "Spinnaker",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Spirax",
-  v: [400],
-  f: "display"
-}, {
-  n: "Squada One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sree Krushnadevaraya",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sriracha",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Srisakdi",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Staatliches",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stalemate",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Stalinist One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stardos Stencil",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Stint Ultra Condensed",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stint Ultra Expanded",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stoke",
-  v: [300, 400],
-  f: "serif"
-}, {
-  n: "Strait",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Stylish",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sue Ellen Francisco",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Suez One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sulphur Point",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sumana",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Sunflower",
-  v: [300, 500, 700],
-  f: "sans-serif"
-}, {
-  n: "Sunshiney",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Supermercado One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sura",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Suranna",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Suravaram",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Suwannaphum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Swanky and Moo Moo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Syncopate",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Tajawal",
-  v: [200, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Tangerine",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Taprom",
-  v: [400],
-  f: "display"
-}, {
-  n: "Tauri",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Taviraj",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Teko",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Telex",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tenali Ramakrishna",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tenor Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Text Me One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Thasadith",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "The Girl Next Door",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Tienne",
-  v: [400, 700, 900],
-  f: "serif"
-}, {
-  n: "Tillana",
-  v: [400, 500, 600, 700, 800],
-  f: "handwriting"
-}, {
-  n: "Timmana",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tinos",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Titan One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Titillium Web",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900],
-  f: "sans-serif"
-}, {
-  n: "Tomorrow",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Trade Winds",
-  v: [400],
-  f: "display"
-}, {
-  n: "Trirong",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Trocchi",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Trochut",
-  v: [400, "400i", 700],
-  f: "display"
-}, {
-  n: "Trykker",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Tulpen One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Turret Road",
-  v: [200, 300, 400, 500, 700, 800],
-  f: "display"
-}, {
-  n: "Ubuntu",
-  v: [300, "300i", 400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Ubuntu Condensed",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ubuntu Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Ultra",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Uncial Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Underdog",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unica One",
-  v: [400],
-  f: "display"
-}, {
-  n: "UnifrakturCook",
-  v: [700],
-  f: "display"
-}, {
-  n: "UnifrakturMaguntia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unkempt",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Unlock",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unna",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "VT323",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Vampiro One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Varela",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Varela Round",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Varta",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Vast Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vesper Libre",
-  v: [400, 500, 700, 900],
-  f: "serif"
-}, {
-  n: "Viaoda Libre",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vibes",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vibur",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Vidaloka",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Viga",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Voces",
-  v: [400],
-  f: "display"
-}, {
-  n: "Volkhov",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Vollkorn",
-  v: [400, 500, 600, 700, 800, 900, "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Vollkorn SC",
-  v: [400, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Voltaire",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Waiting for the Sunrise",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Wallpoet",
-  v: [400],
-  f: "display"
-}, {
-  n: "Walter Turncoat",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Warnes",
-  v: [400],
-  f: "display"
-}, {
-  n: "Wellfleet",
-  v: [400],
-  f: "display"
-}, {
-  n: "Wendy One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Wire One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Work Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Yanone Kaffeesatz",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Yantramanav",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Yatra One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yellowtail",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Yeon Sung",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yeseva One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yesteryear",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Yrsa",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "ZCOOL KuaiLe",
-  v: [400],
-  f: "display"
-}, {
-  n: "ZCOOL QingKe HuangYou",
-  v: [400],
-  f: "display"
-}, {
-  n: "ZCOOL XiaoWei",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Zeyada",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Zhi Mang Xing",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Zilla Slab",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Zilla Slab Highlight",
-  v: [400, 700],
-  f: "display"
 }]);
+
+// export default [
+//   {
+//     n: "Default",
+//     v: [],
+//     f: "default",
+//   },
+//   {
+//     n: "Arial",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Tahoma",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Verdana",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Helvetica",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Times New Roman",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Trebuchet MS",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Georgia",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+
+//   {
+//     n: "ABeeZee",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Abel",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Abhaya Libre",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Abril Fatface",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aclonica",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Acme",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Actor",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Adamina",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Advent Pro",
+//     v: [100, 200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aguafina Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Akronim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aladin",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Alata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alatsi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aldrich",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alef",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alegreya",
+//     v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alegreya SC",
+//     v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alegreya Sans",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alegreya Sans SC",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aleo",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alex Brush",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Alfa Slab One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Alice",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alike",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alike Angular",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Allan",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Allerta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Allerta Stencil",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Allura",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Almarai",
+//     v: [300, 400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Almendra",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Almendra Display",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Almendra SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amarante",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Amaranth",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Amatic SC",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Amethysta",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amiko",
+//     v: [400, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Amiri",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amita",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Anaheim",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Andada",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Andika",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Angkor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Annie Use Your Telescope",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Anonymous Pro",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Antic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Antic Didone",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Antic Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Anton",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arapey",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arbutus",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Arbutus Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Architects Daughter",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Archivo",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Archivo Black",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Archivo Narrow",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aref Ruqaa",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arima Madurai",
+//     v: [100, 200, 300, 400, 500, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Arimo",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arizonia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Armata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arsenal",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Artifika",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arvo",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arya",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asap",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asap Condensed",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asar",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Asset",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Assistant",
+//     v: [200, 300, 400, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Astloch",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Asul",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Athiti",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Atma",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Atomic Age",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aubrey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Audiowide",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Autour One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Average",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Average Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Averia Gruesa Libre",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Sans Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Serif Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "B612",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "B612 Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Bad Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bahiana",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bahianita",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bai Jamjuree",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Baloo 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Bhai 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Bhaina 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Chettan 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Da 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Paaji 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Tamma 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Tammudu 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Thambi 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Balsamiq Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Balthazar",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bangers",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Barlow",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barlow Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barlow Semi Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barriecito",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Barrio",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Basic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Baskervville",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Battambang",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Baumans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bayon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Be Vietnam",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bebas Neue",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Belgrano",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bellefair",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Belleza",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bellota",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Bellota Text",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "BenchNine",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bentham",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Berkshire Swash",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Beth Ellen",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bevan",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Big Shoulders Display",
+//     v: [100, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Big Shoulders Text",
+//     v: [100, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Bigelow Rules",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bigshot One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bilbo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bilbo Swash Caps",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "BioRhyme",
+//     v: [200, 300, 400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "BioRhyme Expanded",
+//     v: [200, 300, 400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Biryani",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bitter",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Black And White Picture",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Black Han Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Black Ops One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Blinker",
+//     v: [100, 200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bokor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bonbon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Boogaloo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bowlby One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bowlby One SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Brawler",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bree Serif",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bubblegum Sans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bubbler One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Buda",
+//     v: [300],
+//     f: "display",
+//   },
+//   {
+//     n: "Buenard",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bungee",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Hairline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Inline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Shade",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Butcherman",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Butterfly Kids",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cabin",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cabin Condensed",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cabin Sketch",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Caesar Dressing",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cagliostro",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cairo",
+//     v: [200, 300, 400, 600, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Caladea",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Calistoga",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Calligraffitti",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cambay",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cambo",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Candal",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cantarell",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cantata One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cantora One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Capriola",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cardo",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Carme",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carrois Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carrois Gothic SC",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carter One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Catamaran",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Caudex",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Caveat",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Caveat Brush",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cedarville Cursive",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ceviche One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chakra Petch",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Changa",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Changa One",
+//     v: [400, "400i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Chango",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Charm",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Charmonman",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Chathura",
+//     v: [100, 300, 400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chau Philomene One",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chela One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chelsea Market",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chenla",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cherry Cream Soda",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cherry Swash",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Chewy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chicle",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chilanka",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Chivo",
+//     v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chonburi",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cinzel",
+//     v: [400, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cinzel Decorative",
+//     v: [400, 700, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Clicker Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Coda",
+//     v: [400, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Coda Caption",
+//     v: [800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Codystar",
+//     v: [300, 400],
+//     f: "display",
+//   },
+//   {
+//     n: "Coiny",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Combo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Comfortaa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Comic Neue",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Coming Soon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Concert One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Condiment",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Content",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Contrail One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Convergence",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cookie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Copse",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Corben",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Cormorant",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Garamond",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Infant",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant SC",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Unicase",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Upright",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Courgette",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Courier Prime",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Cousine",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Coustard",
+//     v: [400, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Covered By Your Grace",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Crafty Girls",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Creepster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Crete Round",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Crimson Pro",
+//     v: [
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Crimson Text",
+//     v: [400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Croissant One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Crushed",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cuprum",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cute Font",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cutive",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cutive Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "DM Mono",
+//     v: [300, "300i", 400, "400i", 500, "500i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "DM Sans",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "DM Serif Display",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "DM Serif Text",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Damion",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dancing Script",
+//     v: [400, 500, 600, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dangrek",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Darker Grotesque",
+//     v: [300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "David Libre",
+//     v: [400, 500, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Dawning of a New Day",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Days One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dekko",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius Swash Caps",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius Unicase",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Della Respira",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Denk One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Devonshire",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dhurjati",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Didact Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Diplomata",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Diplomata SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Do Hyeon",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dokdo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Domine",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Donegal One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Doppio One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dorsa",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dosis",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dr Sugiyama",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Duru Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dynalight",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "EB Garamond",
+//     v: [400, 500, 600, 700, 800, "400i", "500i", "600i", "700i", "800i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Eagle Lake",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "East Sea Dokdo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Eater",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Economica",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Eczar",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "El Messiri",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Electrolize",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Elsie",
+//     v: [400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Elsie Swash Caps",
+//     v: [400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Emblema One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Emilys Candy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Encode Sans",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Expanded",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Semi Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Semi Expanded",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Engagement",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Englebert",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Enriqueta",
+//     v: [400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Epilogue",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Erica One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Esteban",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Euphoria Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ewert",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Exo",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Exo 2",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Expletus Sans",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Fahkwang",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fanwood Text",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Farro",
+//     v: [300, 400, 500, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Farsan",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fascinate",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fascinate Inline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Faster One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fasthand",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Fauna One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Faustina",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Federant",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Federo",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Felipa",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Fenix",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Finger Paint",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fira Code",
+//     v: [300, 400, 500, 600, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Fira Mono",
+//     v: [400, 500, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Fira Sans",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fira Sans Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fira Sans Extra Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fjalla One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fjord One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Flamenco",
+//     v: [300, 400],
+//     f: "display",
+//   },
+//   {
+//     n: "Flavors",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fondamento",
+//     v: [400, "400i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Fontdiner Swanky",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Forum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Francois One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Frank Ruhl Libre",
+//     v: [300, 400, 500, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Freckle Face",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fredericka the Great",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fredoka One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Freehand",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fresca",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Frijole",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fruktur",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fugaz One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "GFS Didot",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "GFS Neohellenic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gabriela",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gaegu",
+//     v: [300, 400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gafata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Galada",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Galdeano",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Galindo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gamja Flower",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gayathri",
+//     v: [100, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gelasio",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gentium Basic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gentium Book Basic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Geo",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Geostar",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Geostar Fill",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Germania One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gidugu",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gilda Display",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Girassol",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Give You Glory",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Glass Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Glegoo",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gloria Hallelujah",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Goblin One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gochi Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gorditas",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Gothic A1",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gotu",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Goudy Bookletter 1911",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Graduate",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Grand Hotel",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gravitas One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Great Vibes",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Grenze",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Grenze Gotisch",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Griffy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gruppo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gudea",
+//     v: [400, "400i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gugi",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gupter",
+//     v: [400, 500, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gurajada",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Habibi",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Halant",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Hammersmith One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hanalei",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Hanalei Fill",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Handlee",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hanuman",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Happy Monkey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Harmattan",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Headland One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Heebo",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Henny Penny",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Hepta Slab",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Herr Von Muellerhoff",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hi Melody",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hind",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Guntur",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Madurai",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Siliguri",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Vadodara",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Holtwood One SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Homemade Apple",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Homenaje",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Mono",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "IBM Plex Sans",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Sans Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Serif",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell DW Pica",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell DW Pica SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Double Pica",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Double Pica SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell English",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell English SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell French Canon",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell French Canon SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Great Primer",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Great Primer SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ibarra Real Nova",
+//     v: [400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Iceberg",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Iceland",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Imprima",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Inconsolata",
+//     v: [200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Inder",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Indie Flower",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Inika",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inknut Antiqua",
+//     v: [300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inria Sans",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Inria Serif",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inter",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Irish Grover",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Istok Web",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Italiana",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Italianno",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Itim",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Jacques Francois",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jacques Francois Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jaldi",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Jim Nightshade",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Jockey One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Jolly Lodger",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jomhuria",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jomolhari",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Josefin Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Josefin Slab",
+//     v: [100, "100i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jost",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Joti One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jua",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Judson",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Julee",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Julius Sans One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Junge",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jura",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Just Another Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Just Me Again Down Here",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "K2D",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kadwa",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kalam",
+//     v: [300, 400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kameron",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kanit",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kantumruy",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Karla",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Karma",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Katibeh",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kaushan Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kavivanar",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kavoon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kdam Thmor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Keania One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kelly Slab",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kenia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Khand",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Khmer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Khula",
+//     v: [300, 400, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kirang Haerang",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kite One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Knewave",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "KoHo",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kodchasan",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kosugi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kosugi Maru",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kotta One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Koulen",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kranky",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kreon",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kristi",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Krona One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Krub",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kulim Park",
+//     v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kumar One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kumar One Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kurale",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "La Belle Aurore",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lacquer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Laila",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lakki Reddy",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lalezar",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lancelot",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lateef",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lato",
+//     v: [100, "100i", 300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "League Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Leckerli One",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ledger",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lekton",
+//     v: [400, "400i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lemon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lemonada",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Lexend Deca",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Exa",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Giga",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Mega",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Peta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Tera",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Zetta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Libre Barcode 128",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 128 Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Extended",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Extended Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Baskerville",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Caslon Display",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Caslon Text",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Franklin",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Life Savers",
+//     v: [400, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Lilita One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lily Script One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Limelight",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Linden Hill",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Literata",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Liu Jian Mao Cao",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Livvic",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lobster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lobster Two",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Sketch",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Solid",
+//     v: [100, 300, 400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Long Cang",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lora",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Love Ya Like A Sister",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Loved by the King",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lovers Quarrel",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Luckiest Guy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lusitana",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lustria",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "M PLUS 1p",
+//     v: [100, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "M PLUS Rounded 1c",
+//     v: [100, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ma Shan Zheng",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Macondo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Macondo Swash Caps",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mada",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Magra",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Maiden Orange",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Maitree",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Major Mono Display",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Mako",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mali",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mallanna",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mandali",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Manjari",
+//     v: [100, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Manrope",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mansalva",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Manuale",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marcellus",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marcellus SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marck Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Margarine",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Markazi Text",
+//     v: [400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marko One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marmelad",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Martel",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Martel Sans",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Marvel",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mate",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Mate SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Maven Pro",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "McLaren",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meddon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "MedievalSharp",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Medula One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meera Inimai",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Megrim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meie Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merienda",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merienda One",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merriweather",
+//     v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Merriweather Sans",
+//     v: [300, "300i", 400, "400i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Metal",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metal Mania",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metamorphous",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metrophobic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Michroma",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Milonga",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miltonian",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miltonian Tattoo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mina",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Miniver",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miriam Libre",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mirza",
+//     v: [400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Miss Fajardose",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mitr",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Modak",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Modern Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mogra",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Molengo",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Molle",
+//     v: ["400i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Monda",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Monofett",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Monoton",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Monsieur La Doulaise",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Montaga",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Montez",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Montserrat",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Montserrat Alternates",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Montserrat Subrayada",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Moul",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Moulpali",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mountains of Christmas",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Mouse Memoirs",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mr Bedfort",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mr Dafoe",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mr De Haviland",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mrs Saint Delafield",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mrs Sheppards",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mukta",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Mahee",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Malar",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Vaani",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mulish",
+//     v: [
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "MuseoModerno",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Mystery Quest",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "NTR",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nanum Brush Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Nanum Gothic",
+//     v: [400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nanum Gothic Coding",
+//     v: [400, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Nanum Myeongjo",
+//     v: [400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Nanum Pen Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Neucha",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Neuton",
+//     v: [200, 300, 400, "400i", 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "New Rocker",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "News Cycle",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Niconne",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Niramit",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nixie One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nobile",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nokora",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Norican",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Nosifer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Notable",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nothing You Could Do",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Noticia Text",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans HK",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans JP",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans KR",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans SC",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans TC",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Serif",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif JP",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif KR",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif SC",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif TC",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Nova Cut",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Flat",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Nova Oval",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Round",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Script",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Slim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Square",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Numans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nunito",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nunito Sans",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Odibee Sans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Odor Mean Chey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Offside",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Old Standard TT",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Oldenburg",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Oleo Script",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Oleo Script Swash Caps",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Open Sans",
+//     v: [300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Open Sans Condensed",
+//     v: [300, "300i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oranienbaum",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Orbitron",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oregano",
+//     v: [400, "400i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Orienta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Original Surfer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Oswald",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Over the Rainbow",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Overlock",
+//     v: [400, "400i", 700, "700i", 900, "900i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Overlock SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Overpass",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Overpass Mono",
+//     v: [300, 400, 600, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Ovo",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Oxanium",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Oxygen",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oxygen Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "PT Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "PT Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Sans Caption",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Sans Narrow",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Serif",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "PT Serif Caption",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pacifico",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Padauk",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Palanquin",
+//     v: [100, 200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Palanquin Dark",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Pangolin",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Paprika",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Parisienne",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Passero One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Passion One",
+//     v: [400, 700, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Pathway Gothic One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Patrick Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Patrick Hand SC",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Pattaya",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Patua One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pavanam",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Paytone One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Peddana",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Peralta",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Permanent Marker",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Petit Formal Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Petrona",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Philosopher",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Piedra",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pinyon Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Pirata One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Plaster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Play",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Playball",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Playfair Display",
+//     v: [
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Playfair Display SC",
+//     v: [400, "400i", 700, "700i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Podkova",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Poiret One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poller One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poly",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pompiere",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pontano Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Poor Story",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poppins",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Port Lligat Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Port Lligat Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pragati Narrow",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Prata",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Preahvihear",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Press Start 2P",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pridi",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Princess Sofia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Prociono",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Prompt",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Prosto One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Proza Libre",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Public Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Puritan",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Purple Purse",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Quando",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Quantico",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quattrocento",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Quattrocento Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Questrial",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quicksand",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quintessential",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Qwigley",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Racing Sans One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Radley",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rajdhani",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rakkas",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Raleway",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Raleway Dots",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ramabhadra",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ramaraja",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rambla",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rammetto One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ranchers",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Rancho",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ranga",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Rasa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rationale",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ravi Prakash",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Red Hat Display",
+//     v: [400, "400i", 500, "500i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Red Hat Text",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Red Rose",
+//     v: [300, 400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Redressed",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Reem Kufi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Reenie Beanie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Revalia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Rhodium Libre",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ribeye",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ribeye Marrow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Righteous",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Risque",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Roboto",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Roboto Condensed",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Roboto Mono",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Roboto Slab",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rochester",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rock Salt",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rokkitt",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Romanesco",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ropa Sans",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rosario",
+//     v: [300, 400, 500, 600, 700, "300i", "400i", "500i", "600i", "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rosarivo",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rouge Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rowdies",
+//     v: [300, 400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Rozha One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rubik",
+//     v: [300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rubik Mono One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruda",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rufina",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ruge Boogie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ruluko",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rum Raisin",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruslan Display",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Russo One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruthie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rye",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sacramento",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sahitya",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sail",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Saira",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Extra Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Semi Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Stencil One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Salsa",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sanchez",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sancreek",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sansita",
+//     v: [400, "400i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarabun",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarala",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarina",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sarpanch",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Satisfy",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sawarabi Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sawarabi Mincho",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Scada",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Scheherazade",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Schoolbell",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Scope One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Seaweed Script",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Secular One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sedgwick Ave",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sedgwick Ave Display",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sen",
+//     v: [400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sevillana",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Seymour One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Shadows Into Light",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shadows Into Light Two",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shanti",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Share",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Share Tech",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Share Tech Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Shojumaru",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Short Stack",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shrikhand",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Siemreap",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sigmar One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Signika",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Signika Negative",
+//     v: [300, 400, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Simonetta",
+//     v: [400, "400i", 900, "900i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Single Day",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sintony",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sirin Stencil",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Six Caps",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Skranji",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Slabo 13px",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Slabo 27px",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Slackey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Smokum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Smythe",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sniglet",
+//     v: [400, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Snippet",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Snowburst One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sofadi One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sofia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Solway",
+//     v: [300, 400, 500, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Song Myung",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sonsie One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sora",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sorts Mill Goudy",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Source Code Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Source Sans Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Source Serif Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Space Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Spartan",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Special Elite",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Spectral",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Spectral SC",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Spicy Rice",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Spinnaker",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Spirax",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Squada One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sree Krushnadevaraya",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sriracha",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Srisakdi",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Staatliches",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stalemate",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Stalinist One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stardos Stencil",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Stint Ultra Condensed",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stint Ultra Expanded",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stoke",
+//     v: [300, 400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Strait",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Stylish",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sue Ellen Francisco",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Suez One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sulphur Point",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sumana",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sunflower",
+//     v: [300, 500, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sunshiney",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Supermercado One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sura",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suranna",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suravaram",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suwannaphum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Swanky and Moo Moo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Syncopate",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tajawal",
+//     v: [200, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tangerine",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Taprom",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Tauri",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Taviraj",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Teko",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Telex",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tenali Ramakrishna",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tenor Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Text Me One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Thasadith",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "The Girl Next Door",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Tienne",
+//     v: [400, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Tillana",
+//     v: [400, 500, 600, 700, 800],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Timmana",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tinos",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Titan One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Titillium Web",
+//     v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tomorrow",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Trade Winds",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Trirong",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Trocchi",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Trochut",
+//     v: [400, "400i", 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Trykker",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Tulpen One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Turret Road",
+//     v: [200, 300, 400, 500, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Ubuntu",
+//     v: [300, "300i", 400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ubuntu Condensed",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ubuntu Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Ultra",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Uncial Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Underdog",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unica One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "UnifrakturCook",
+//     v: [700],
+//     f: "display",
+//   },
+//   {
+//     n: "UnifrakturMaguntia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unkempt",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Unlock",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unna",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "VT323",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Vampiro One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Varela",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Varela Round",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Varta",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Vast Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vesper Libre",
+//     v: [400, 500, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Viaoda Libre",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vibes",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vibur",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Vidaloka",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Viga",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Voces",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Volkhov",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Vollkorn",
+//     v: [
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Vollkorn SC",
+//     v: [400, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Voltaire",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Waiting for the Sunrise",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Wallpoet",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Walter Turncoat",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Warnes",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Wellfleet",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Wendy One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Wire One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Work Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yanone Kaffeesatz",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yantramanav",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yatra One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yellowtail",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Yeon Sung",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yeseva One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yesteryear",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Yrsa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "ZCOOL KuaiLe",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "ZCOOL QingKe HuangYou",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "ZCOOL XiaoWei",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Zeyada",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Zhi Mang Xing",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Zilla Slab",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Zilla Slab Highlight",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Fantasy",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "fantasy",
+//   },
+// ];
 
 /***/ }),
 
@@ -5247,18 +7189,18 @@ __webpack_require__.r(__webpack_exports__);
 
 // const { __ } = wp.i18n;
 // const icons = {};
-// const img_path = qubely_admin.plugin + 'assets/img/blocks';
+// const img_path = mrmTypography_admin.plugin + 'assets/img/blocks';
 //
-// icons.qubely = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
+// icons.mrmTypography = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
 //
 // icons.solid = <svg xmlns="http://www.w3.org/2000/svg" width="19" height="2"><switch><g><path d="M0 0h19v2H0z" /></g></switch></svg>;
 // icons.dot = <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><g><g transform="translate(-1378 -121)"><g transform="translate(1229 110)"><g transform="translate(149 11)"><circle class="st0" cx="1" cy="1" r="1" /><circle class="st0" cx="17" cy="1" r="1" /><circle class="st0" cx="5" cy="1" r="1" /><circle class="st0" cx="13" cy="1" r="1" /><circle class="st0" cx="9" cy="1" r="1" /></g></g></g></g></g></switch></svg>;
 // icons.dash = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><path d="M18 2h-2V0h2v2zm-4 0h-2V0h2v2zm-4 0H8V0h2v2zM6 2H4V0h2v2zM2 2H0V0h2v2z" /></g></switch></svg>;
 // icons.wave = <svg xmlns="http://www.w3.org/2000/svg" width="21" height="4"><switch><g><path d="M8 3.5c-.8 0-1.7-.3-2.5-.9C4 1.5 2.4 1.5.7 2.6c-.2.1-.5.1-.7-.2-.1-.2-.1-.5.2-.7 2-1.3 4-1.3 5.8 0 1.5 1 2.8 1 4.2-.2 1.6-1.4 3.4-1.4 5.3 0 1.5 1.1 3.1 1.2 4.7.1.2-.1.5-.1.7.1.1.2.1.5-.1.7-2 1.3-3.9 1.3-5.8-.1-1.5-1.1-2.9-1.1-4.1 0C9.9 3.1 9 3.5 8 3.5z" /></g></switch></svg>;
 //
-// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="qubely-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="qubely-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="mrmTypography-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="mrmTypography-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
 //
 // icons.icon_classic = <img src={`${img_path}/icon/classic.svg`} alt={__('Classic')} />;
 // icons.icon_fill = <img src={`${img_path}/icon/fill.svg`} alt={__('Fill')} />;
@@ -5271,9 +7213,9 @@ __webpack_require__.r(__webpack_exports__);
 // icons.pie_outline = <img src={`${img_path}/pieprogress/outline.svg`} alt={__('Outline')} />;
 // icons.pie_outline_fill = <img src={`${img_path}/pieprogress/outline-fill.svg`} alt={__('Outline Fill')} />;
 //
-// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
+// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
 //
 // icons.tab_tabs = <img src={`${img_path}/tab/tabs.svg`} alt={__('Tabs')} />;
 // icons.tab_pills = <img src={`${img_path}/tab/pills.svg`} alt={__('Pills')} />;
@@ -5328,12 +7270,12 @@ __webpack_require__.r(__webpack_exports__);
 // icons.postgrid_design_6 = <img src={`${img_path}/postgrid/16.svg`} alt={__('Design 6')} />;
 //
 //
-// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
-// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
-// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
-// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
-// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
-// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
+// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
+// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
+// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
+// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
+// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
+// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
 // icons.p = <svg width="20px" height="20px" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1534 189v73q0 29-18.5 61t-42.5 32q-50 0-54 1-26 6-32 31-3 11-3 64v1152q0 25-18 43t-43 18h-108q-25 0-43-18t-18-43v-1218h-143v1218q0 25-17.5 43t-43.5 18h-108q-26 0-43.5-18t-17.5-43v-496q-147-12-245-59-126-58-192-179-64-117-64-259 0-166 88-286 88-118 209-159 111-37 417-37h479q25 0 43 18t18 43z" /></svg>
 // icons.span = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
 // icons.div = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
@@ -5474,6 +7416,13 @@ const attributes = {
   isRequiredLastName: {
     type: "boolean",
     default: false
+  },
+  typography: {
+    type: "object",
+    default: {},
+    style: [{
+      selector: "mrm-form-group.submit .mrm-submit-button"
+    }]
   },
   emailLabel: {
     type: "string",
@@ -5819,7 +7768,10 @@ const mrmEmailField = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      inputTypography,
+      labelTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -5828,7 +7780,9 @@ const mrmEmailField = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -5843,7 +7797,9 @@ const mrmEmailField = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group email",
@@ -5886,10 +7842,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -5941,10 +7899,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -6004,7 +7962,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -6031,6 +7989,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -6099,6 +8071,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -6127,7 +8113,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        typography,
+        inputTypography,
+        labelTypography
       }
     } = this.props;
     let fieldSpacing = {
@@ -6135,7 +8124,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -6150,7 +8141,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
@@ -6393,7 +8386,10 @@ const mrmFirstName = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      labelTypography,
+      inputTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -6402,7 +8398,9 @@ const mrmFirstName = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -6417,7 +8415,9 @@ const mrmFirstName = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group first-name",
@@ -6459,10 +8459,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -6514,10 +8516,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -6573,7 +8575,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -6600,6 +8602,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -6668,6 +8684,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -6699,7 +8729,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        inputTypography,
+        labelTypography,
+        Typography
       }
     } = this.props;
     let fieldSpacing = {
@@ -6707,7 +8740,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -6722,7 +8757,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-form-group first-name",
@@ -7213,7 +9250,10 @@ const mrmLastName = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      labelTypography,
+      inputTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -7222,7 +9262,9 @@ const mrmLastName = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -7237,7 +9279,9 @@ const mrmLastName = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group last-name",
@@ -7279,10 +9323,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -7334,10 +9380,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -7408,13 +9454,13 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -7424,36 +9470,50 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -7461,7 +9521,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -7470,28 +9530,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -7499,8 +9559,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -7530,15 +9602,20 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        labelTypography,
+        inputTypography,
+        Typography
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + "px"
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + 'px'
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -7546,14 +9623,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: inputBgColor,
       color: inputTextColor,
-      borderRadius: inputBorderRadius + 'px',
-      paddingTop: inputPaddingTop + 'px',
-      paddingRight: inputPaddingRight + 'px',
-      paddingBottom: inputPaddingBottom + 'px',
-      paddingLeft: inputPaddingLeft + 'px',
+      borderRadius: inputBorderRadius + "px",
+      paddingTop: inputPaddingTop + "px",
+      paddingRight: inputPaddingRight + "px",
+      paddingBottom: inputPaddingBottom + "px",
+      paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
-      borderWidth: inputBorderWidth + 'px',
-      borderColor: inputBorderColor
+      borderWidth: inputBorderWidth + "px",
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
@@ -7975,15 +10054,15 @@ const attributes = {
   },
   paddingTopBottom: {
     type: "number",
-    default: 20
+    default: 15
   },
   paddingLeftRight: {
     type: "number",
-    default: 25
+    default: 20
   },
   lineHeight: {
     type: "number",
-    default: 0.2
+    default: 1
   },
   letterSpacing: {
     type: "number",
@@ -8734,15 +10813,19 @@ const mrmCustomField = _ref => {
       inputPaddingLeft,
       inputBorderStyle,
       inputBorderWidth,
-      inputBorderColor
+      inputBorderColor,
+      inputTypography,
+      labelTypography
     }
   } = _ref;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let radioLabelColor = {
     color: labelColor
@@ -8753,22 +10836,24 @@ const mrmCustomField = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
-    borderColor: inputBorderColor
+    borderWidth: inputBorderWidth + "px",
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group text",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8779,13 +10864,13 @@ const mrmCustomField = _ref => {
     placeholder: custom_text_placeholder,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group textarea",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8797,13 +10882,13 @@ const mrmCustomField = _ref => {
     rows: "4",
     cols: "50",
     style: inputStyle
-  }))), field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group date",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8814,7 +10899,7 @@ const mrmCustomField = _ref => {
     placeholder: field_name,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group radio"
   }, radioOption.map((option, index) => {
@@ -8822,6 +10907,7 @@ const mrmCustomField = _ref => {
       className: "mrm-radio-group mintmrm-radiobtn",
       style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      key: index,
       type: "radio",
       id: option.label,
       name: field_slug,
@@ -8829,10 +10915,10 @@ const mrmCustomField = _ref => {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
       style: radioLabelColor
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
-  })), field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
@@ -8847,16 +10933,16 @@ const mrmCustomField = _ref => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: checkboxLabelColor
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
-  }, "*")))), field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "*")))), field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group select",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -8866,6 +10952,7 @@ const mrmCustomField = _ref => {
     style: inputStyle
   }, selectOption.map((option, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      key: index,
       value: makeSlug(option.value)
     }, option.label);
   })))));
@@ -8891,10 +10978,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -8946,10 +11035,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -8974,9 +11063,9 @@ class Editor extends Component {
     });
     let defaultOption = {
       value: slug_name,
-      label: 'Label' + '-' + attributes.radio_option_count
+      label: "Label" + "-" + attributes.radio_option_count
     };
-    if ('radio' === attributes.field_type) {
+    if ("radio" === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
       setAttributes(attributes.radioOption);
     }
@@ -8993,25 +11082,25 @@ class Editor extends Component {
       className: "mrm-inline-label",
       label: "Field Type",
       value: attributes.field_type,
-      onChange: select_type => this.onChangeAttribute('field_type', select_type),
+      onChange: select_type => this.onChangeAttribute("field_type", select_type),
       options: [{
-        value: 'text',
-        label: 'Text'
+        value: "text",
+        label: "Text"
       }, {
-        value: 'textarea',
-        label: 'Text Area'
+        value: "textarea",
+        label: "Text Area"
       }, {
-        value: 'radio',
-        label: 'Radio Button'
+        value: "radio",
+        label: "Radio Button"
       }, {
-        value: 'checkbox',
-        label: 'Checkbox'
+        value: "checkbox",
+        label: "Checkbox"
       }, {
-        value: 'select',
-        label: 'Select'
+        value: "select",
+        label: "Select"
       }, {
-        value: 'date',
-        label: 'Date'
+        value: "date",
+        label: "Date"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
@@ -9020,28 +11109,28 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_name: state
       })
-    }), attributes.field_type != 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type != "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Field Label",
       value: attributes.field_label,
       onChange: state => setAttributes({
         field_label: state
       })
-    }), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_textarea_placeholder,
       onChange: state => setAttributes({
         custom_textarea_placeholder: state
       })
-    }), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_text_placeholder,
       onChange: state => setAttributes({
         custom_text_placeholder: state
       })
-    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "select-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -9098,7 +11187,7 @@ class Editor extends Component {
         fill: "#fff",
         d: "M0 0h22v22H0z"
       }))))));
-    })), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "radio-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -9261,27 +11350,29 @@ class Editor extends Component {
       select_option_count: attributes.select_option_count + 1
     });
     let defaultOption = {
-      value: 'option' + '-' + attributes.select_option_count,
-      label: 'Option' + '-' + attributes.select_option_count
+      value: "option" + "-" + attributes.select_option_count,
+      label: "Option" + "-" + attributes.select_option_count
     };
-    if ('select' === attributes.field_type) {
+    if ("select" === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
       setAttributes(attributes.selectOption);
     }
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -9291,18 +11382,30 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
-    }), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
-    })));
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    }));
   };
   inputFieldStyle = () => {
     let {
@@ -9317,12 +11420,12 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -9330,7 +11433,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -9339,28 +11442,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -9368,8 +11471,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -9382,7 +11497,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: "mrm-block-inspected-inspector-control-wrapper",
       className: "mrm-block-control-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && this.inputFieldStyle())));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && this.inputFieldStyle())));
   };
 
   /**
@@ -9396,11 +11511,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9408,14 +11525,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9424,7 +11543,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9449,11 +11568,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9461,14 +11582,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9477,7 +11600,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9503,11 +11626,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9515,14 +11640,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9531,7 +11658,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9555,11 +11682,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -9567,14 +11696,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -9583,7 +11714,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -9623,7 +11754,7 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
 
     // let labelStyle = {
@@ -9632,7 +11763,9 @@ class Editor extends Component {
     // }
 
     let checkboxLabelColor = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
 
     // let inputStyle = {
@@ -9659,7 +11792,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: checkboxLabelColor
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*"))));
   };
@@ -9670,10 +11803,12 @@ class Editor extends Component {
     } = this.props;
     let fieldSpacing = {
       //color:  attributes.labelColor,
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
       //marginBottom:  attributes.labelSpacing+'px',
     };
 
@@ -9698,9 +11833,10 @@ class Editor extends Component {
       name: field_slug,
       required: attributes.field_require
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      key: index,
       htmlFor: option.label,
       style: labelStyle
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
   };
@@ -9730,7 +11866,7 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
   }
 }
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
@@ -9855,7 +11991,8 @@ const {
   Radio,
   DateTimePicker,
   DatePicker,
-  TabPanel
+  TabPanel,
+  ColorPicker
 } = wp.components;
 const {
   Component,
@@ -9899,7 +12036,9 @@ function Sidebar() {
       },
       form_layout: {
         form_placement: "",
-        form_animation: ""
+        form_animation: "",
+        close_button_color: "",
+        close_background_color: ""
       },
       schedule: {
         form_scheduling: false,
@@ -9933,6 +12072,8 @@ function Sidebar() {
   // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+  const [closeButtonColor, setCloseButtonColor] = useState("#000");
+  const [closeBackgroundColor, setCloseBackgroundColor] = useState("#fff");
 
   // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
@@ -10004,7 +12145,7 @@ function Sidebar() {
     return !!pattern.test(str);
   }
   useEffect(() => {
-    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51;
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51, _prevSetting$settings54, _prevSetting$settings55, _prevSetting$settings58, _prevSetting$settings59;
     // set selected confiramation type
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
       var _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6;
@@ -10078,6 +12219,22 @@ function Sidebar() {
     } else {
       setFormAnimation("none");
     }
+
+    //set form close button color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings54 = prevSetting.settings) !== null && _prevSetting$settings54 !== void 0 && (_prevSetting$settings55 = _prevSetting$settings54.form_layout) !== null && _prevSetting$settings55 !== void 0 && _prevSetting$settings55.close_button_color) {
+      var _prevSetting$settings56, _prevSetting$settings57;
+      setCloseButtonColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings56 = prevSetting.settings) === null || _prevSetting$settings56 === void 0 ? void 0 : (_prevSetting$settings57 = _prevSetting$settings56.form_layout) === null || _prevSetting$settings57 === void 0 ? void 0 : _prevSetting$settings57.close_button_color);
+    } else {
+      setCloseButtonColor("#000");
+    }
+
+    //set form close button background color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings58 = prevSetting.settings) !== null && _prevSetting$settings58 !== void 0 && (_prevSetting$settings59 = _prevSetting$settings58.form_layout) !== null && _prevSetting$settings59 !== void 0 && _prevSetting$settings59.close_background_color) {
+      var _prevSetting$settings60, _prevSetting$settings61;
+      setCloseBackgroundColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings60 = prevSetting.settings) === null || _prevSetting$settings60 === void 0 ? void 0 : (_prevSetting$settings61 = _prevSetting$settings60.form_layout) === null || _prevSetting$settings61 === void 0 ? void 0 : _prevSetting$settings61.close_background_color);
+    } else {
+      setCloseBackgroundColor("#fff");
+    }
   }, [prevSetting]);
   useEffect(async () => {
     if ("same-page" === currentTab) {
@@ -10092,7 +12249,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -10120,7 +12279,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -10148,7 +12309,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -10165,7 +12328,7 @@ function Sidebar() {
         }
       });
     }
-  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
+  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, closeButtonColor, closeBackgroundColor, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
@@ -10258,10 +12421,10 @@ function Sidebar() {
   }, "Same Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "page" ? "tab-nav-item active" : "tab-nav-item",
     onClick: () => handleConfirmationType("page")
-  }, "To a page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, "To A Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "custom-url" ? "tab-nav-item active" : "tab-nav-item",
     onClick: () => handleConfirmationType("custom-url")
-  }, "To a custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "To A Custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pannel-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "same-page" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -10371,7 +12534,43 @@ function Sidebar() {
       value: "fixed-on-bottom"
     }],
     onChange: state => setFormPosition(state)
-  })))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Close Button Color",
+    className: "form-layout-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Close Icon", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon for form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Background", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon Background"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }))))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Animation",
     className: "form-animation-settings",
     initialOpen: false

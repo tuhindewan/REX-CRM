@@ -50,7 +50,7 @@ const {
 
 
 
-const PATH = '/qubely/v1/global_settings';
+const PATH = '/mrmTypography/v1/global_settings';
 
 async function fetchFromApi() {
     return await wp.apiFetch({ path: PATH });
@@ -74,7 +74,7 @@ class GlobalSettings extends Component {
                 md: 720,
                 lg: 960,
                 xl: 1140,
-                ...(typeof qubely_container_width !== undefined && qubely_container_width)
+                ...(typeof mrmTypography_container_width !== undefined && mrmTypography_container_width)
             }
         }
         this.ref = createRef();
@@ -85,9 +85,9 @@ class GlobalSettings extends Component {
     async componentDidMount() {
         const postId = wp.data.select("core/editor").getCurrentPostId();
         let savedMeta;
-        if (qubely_admin.is_core_active) {
+        if (mrmTypography_admin.is_core_active) {
             await wp.apiFetch({
-                path: 'qubely/v1/get_saved_preset',
+                path: 'mrmTypography/v1/get_saved_preset',
                 method: 'POST',
                 data: { postId: postId }
             }).then(response => {
@@ -102,7 +102,7 @@ class GlobalSettings extends Component {
         let hasExistingValues = true;
         fetchFromApi().then(data => {
             if (data.success) {
-                if (qubely_admin.is_core_active && savedMeta && (
+                if (mrmTypography_admin.is_core_active && savedMeta && (
                     savedMeta.key !== data.settings.activePreset ||
                     Object.keys(diff({ 'colors': data.settings.presets[data.settings.activePreset].colors }, { 'colors': savedMeta.colors })).length > 0 ||
                     Object.keys(diff({ 'typography': data.settings.presets[data.settings.activePreset].typography }, { 'typography': savedMeta.typography })).length > 0 ||
@@ -133,7 +133,7 @@ class GlobalSettings extends Component {
                         };
                     });
                     updateGlobalVaribales({ key, name, colors, typography }, breakingPoints);
-                    localStorage.setItem('qubely-global-settings', JSON.stringify({
+                    localStorage.setItem('mrmTypography-global-settings', JSON.stringify({
                         ...DEFAULTPRESETS.presets[DEFAULTPRESETS.activePreset],
                         key,
                         name,
@@ -141,7 +141,7 @@ class GlobalSettings extends Component {
                         typography,
                         breakingPoints: {
                             ...this.state.breakingPoints,
-                            ...(typeof qubely_container_width !== undefined && qubely_container_width),
+                            ...(typeof mrmTypography_container_width !== undefined && mrmTypography_container_width),
                             ...((typeof breakingPoints !== 'undefined') & breakingPoints)
                         },
                     }));
@@ -175,11 +175,11 @@ class GlobalSettings extends Component {
                         this.saveGlobalCSS();
                     }
                     this.setState({ ...data.settings });
-                    localStorage.setItem('qubely-global-settings', JSON.stringify({
+                    localStorage.setItem('mrmTypography-global-settings', JSON.stringify({
                         ...DEFAULTPRESETS.presets[DEFAULTPRESETS.activePreset],
                         breakingPoints: {
                             ...this.state.breakingPoints,
-                            ...(typeof qubely_container_width !== undefined && qubely_container_width),
+                            ...(typeof mrmTypography_container_width !== undefined && mrmTypography_container_width),
                             ...((hasExistingValues && typeof data.settings.breakingPoints !== 'undefined') & data.settings.breakingPoints)
                         },
                         ...((hasExistingValues && typeof data.settings.presets !== 'undefined' && typeof data.settings.activePreset !== 'undefined') && data.settings.presets[data.settings.activePreset]),
@@ -195,7 +195,7 @@ class GlobalSettings extends Component {
 
     async saveGlobalCSS() {
         let _CSS = await getGlobalCSS();
-        await injectGlobalCSS(_CSS, 'qubely-global-styles');
+        await injectGlobalCSS(_CSS, 'mrmTypography-global-styles');
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -242,7 +242,7 @@ class GlobalSettings extends Component {
     // getGlobalSettings = () => {
     //     let hasExistingValues = true;
     //     return fetchFromApi().then(data => {
-    //         if (qubely_admin.is_core_active && this.state.savedMeta && (
+    //         if (mrmTypography_admin.is_core_active && this.state.savedMeta && (
     //             this.state.savedMeta.key !== data.settings.activePreset ||
     //             Object.keys(diff({ 'colors': data.settings.presets[data.settings.activePreset].colors }, { 'colors': this.state.savedMeta.colors })).length > 0 ||
     //             Object.keys(diff({ 'typography': data.settings.presets[data.settings.activePreset].typography }, { 'typography': this.state.savedMeta.typography })).length > 0 ||
@@ -263,11 +263,11 @@ class GlobalSettings extends Component {
     //                 this.saveGlobalCSS();
     //             }
     //             this.setState({ ...data.settings });
-    //             localStorage.setItem('qubely-global-settings', JSON.stringify({
+    //             localStorage.setItem('mrmTypography-global-settings', JSON.stringify({
     //                 ...DEFAULTPRESETS.presets[DEFAULTPRESETS.activePreset],
     //                 breakingPoints: {
     //                     ...this.state.breakingPoints,
-    //                     ...(typeof qubely_container_width !== undefined && qubely_container_width),
+    //                     ...(typeof mrmTypography_container_width !== undefined && mrmTypography_container_width),
     //                     ...((hasExistingValues && typeof data.settings.breakingPoints !== 'undefined') & data.settings.breakingPoints)
     //                 },
     //                 ...((hasExistingValues && typeof data.settings.presets !== 'undefined' && typeof data.settings.activePreset !== 'undefined') & data.settings.presets[data.settings.activePreset]),
@@ -475,7 +475,7 @@ class GlobalSettings extends Component {
             const deletePreset = (selectedPreset) => {
                 this.setState(prevState => {
                     delete prevState.presets[selectedPreset];
-                    localStorage.setItem('qubely-global-settings', JSON.stringify(presets[selectedPreset === prevState.activePreset ? 'preset1' : activePreset]));
+                    localStorage.setItem('mrmTypography-global-settings', JSON.stringify(presets[selectedPreset === prevState.activePreset ? 'preset1' : activePreset]));
                     return ({
                         presets: prevState.presets,
                         ...((selectedPreset === prevState.activePreset) && { activePreset: 'preset1' })
@@ -551,7 +551,7 @@ class GlobalSettings extends Component {
                 }
             }
             return (
-                <div className="qubely-global-settings" >
+                <div className="mrmTypography-global-settings" >
                     {
                         Object.keys(presets).map((presetKey, index) => {
                             const {
@@ -689,7 +689,7 @@ class GlobalSettings extends Component {
                                         <Fragment>
 
                                             <PanelBody title={__(presetKey === 'theme' ? 'Theme Colors' : 'Global Colors')} initialOpen={true}>
-                                                <div className="qubely-global-color-pallete">
+                                                <div className="mrmTypography-global-color-pallete">
                                                     {
                                                         colors.map((value, index) => (
                                                             <Color
@@ -740,7 +740,7 @@ class GlobalSettings extends Component {
                                                                     Tag = 'button'
                                                                 }
                                                                 let wrapperClasses = classnames(
-                                                                    'qubely-global',
+                                                                    'mrmTypography-global',
                                                                     'typography',
                                                                     { ['removable']: removable }
                                                                 )
@@ -858,8 +858,8 @@ class GlobalSettings extends Component {
         const updateBreakingPoints = (key, newValue) => {
             this.setState(({ presets, activePreset, breakingPoints }) => {
                 let defaultValue = 540;
-                if (typeof qubely_container_width !== undefined) {
-                    defaultValue = qubely_container_width[key]
+                if (typeof mrmTypography_container_width !== undefined) {
+                    defaultValue = mrmTypography_container_width[key]
                 } else {
                     if (key === 'sm') {
                         defaultValue = 720;
@@ -896,17 +896,17 @@ class GlobalSettings extends Component {
             const detailedPreset = Object.keys(presets)[showPresetSettings];
             typeof presets[detailedPreset] !== 'undefined' && setTypoTitleStyle(presets[detailedPreset].typography);
         }
-        localStorage.setItem('qubely-global-settings', JSON.stringify({ ...presets[activePreset], breakingPoints }));
+        localStorage.setItem('mrmTypography-global-settings', JSON.stringify({ ...presets[activePreset], breakingPoints }));
 
-        // if (qubely_admin.is_core_active && isPresetChanged && showModal) {
+        // if (mrmTypography_admin.is_core_active && isPresetChanged && showModal) {
         //     return (
         //         <Modal
         //             title={__('Global Settings')}
-        //             className="qubely-restore-global_preset"
+        //             className="mrmTypography-restore-global_preset"
         //             onRequestClose={() => this.setState({ showModal: false })}>
-        //             <div className="qubely-import-settings">
+        //             <div className="mrmTypography-import-settings">
         //                 <div className="label">{__("Restore previously saved preset ?")} </div>
-        //                 <div className="qubely-restore-settings-footer">
+        //                 <div className="mrmTypography-restore-settings-footer">
         //                     <div className="action-buttons">
         //                         <div className="action-button no" onClick={() => { restoreSavedpreset('no') }}>{__('No')}</div>
         //                         <div className="action-button yes" onClick={() => { restoreSavedpreset('yes') }}>{__('Yes')}</div>
@@ -923,9 +923,9 @@ class GlobalSettings extends Component {
         return (
             <Fragment>
                 <PluginSidebar
-                    icon={icons.qubely}
+                    icon={icons.mrmTypography}
                     name="global-settings-sidebar"
-                    title={__('Qubely Global Settings')}
+                    title={__('mrmTypography Global Settings')}
                 >
                     {renderPresets()}
                     <PanelBody title={__('Global Container Width')} initialOpen={false}>
@@ -962,13 +962,13 @@ class GlobalSettings extends Component {
                             value={breakingPoints.xl}
                             onChange={newValue => updateBreakingPoints('xl', newValue)}
                         />
-                        <div className="qubely-row-device" style={{ margin: '0 -15px' }}>
+                        <div className="mrmTypography-row-device" style={{ margin: '0 -15px' }}>
                             <Notice status="default" isDismissible={false}>
-                                <div className="qubely-device-description title">{__('Device definations in terms of ')}<strong>{__('min-width')}</strong></div>
-                                <div className="qubely-device-description">{__('Landscape Mobile : 576px')}</div>
-                                <div className="qubely-device-description">  {__('Tablet : 768px')}</div>
-                                <div className="qubely-device-description">  {__('Desktop : 992px')}</div>
-                                <div className="qubely-device-description">{__('Large Desktop : 1200px')}</div>
+                                <div className="mrmTypography-device-description title">{__('Device definations in terms of ')}<strong>{__('min-width')}</strong></div>
+                                <div className="mrmTypography-device-description">{__('Landscape Mobile : 576px')}</div>
+                                <div className="mrmTypography-device-description">  {__('Tablet : 768px')}</div>
+                                <div className="mrmTypography-device-description">  {__('Desktop : 992px')}</div>
+                                <div className="mrmTypography-device-description">{__('Large Desktop : 1200px')}</div>
                             </Notice>
                         </div>
 
@@ -976,10 +976,10 @@ class GlobalSettings extends Component {
                 </PluginSidebar>
 
                 <PluginSidebarMoreMenuItem
-                    icon={icons.qubely}
+                    icon={icons.mrmTypography}
                     target="global-settings-sidebar"
                 >
-                    {__('Qubely Global Settings')}
+                    {__('mrmTypography Global Settings')}
                 </PluginSidebarMoreMenuItem>
             </Fragment>
         );
