@@ -84,7 +84,6 @@ function BlockEditor( { settings: _settings } ) {
 				handleUpdateBlocks(() => parse(defaultData));
 				window.localStorage.setItem( 'getmrmblocks',defaultData )
 			}
-
 		};
 		getFormData();
 
@@ -115,6 +114,7 @@ function BlockEditor( { settings: _settings } ) {
 
 	function handlePersistBlocks( newBlocks ) {
 		updateBlocks( newBlocks );
+		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
 		window.localStorage.setItem( 'getmrmblocks', serialize( newBlocks ) );
 
 	}
