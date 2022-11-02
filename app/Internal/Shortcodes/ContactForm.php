@@ -107,8 +107,8 @@ class ContactForm {
                 $show = false;
             }
         }
-        $html = '';
-        $class = '';
+	    $block_html = '';
+        $class      = '';
         foreach( $blocks as $block ) {
             if($block['blockName'] == 'core/columns'){
                 if(!isset($block['attrs']['style']['color']['background'])){
@@ -121,7 +121,7 @@ class ContactForm {
                 }
             }
 
-            $html .= render_block( $block );
+            $block_html .= render_block( $block );
         }
         if($show){
             ob_start();?>
@@ -140,7 +140,7 @@ class ContactForm {
                                 <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
                                 <?php
 
-                               echo  $html;
+                               echo  $block_html;
                                 ?>
                             </form>
 

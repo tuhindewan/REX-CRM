@@ -23,7 +23,6 @@ import {
  */
 import Sidebar from "../sidebar";
 import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
-import { useParams } from "react-router-dom";
 
 function BlockEditor({ settings: _settings }) {
   const location = window.location.hash;

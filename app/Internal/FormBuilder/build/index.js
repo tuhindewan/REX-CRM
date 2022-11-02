@@ -5516,7 +5516,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 function BlockEditor(_ref) {
   let {
     settings: _settings
