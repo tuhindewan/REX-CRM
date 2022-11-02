@@ -433,6 +433,7 @@ const FormEditor = (props) => {
                 name="title"
                 handleChange={handleChange}
                 value={formData?.title}
+                placeholder="Type your title here..."
               />
 
               <div className="form-group list">
