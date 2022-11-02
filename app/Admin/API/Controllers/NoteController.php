@@ -43,6 +43,7 @@ class NoteController extends BaseController {
 			return $this->get_error_response( __( 'Description is mandatory', 'mrm' ),  200);
 		}
 
+        error_log(print_r(strlen( $description ) , 1));
         if ( 2000 < strlen( $description ) ){
 			return $this->get_error_response( __( 'Description character limit exceeded', 'mrm' ),  200);
 		}
