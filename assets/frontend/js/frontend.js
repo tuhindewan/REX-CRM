@@ -58,20 +58,24 @@ jQuery(document).ready(function($){
      * @param value
      * @param daysToLive
      */
-    function setCookie(name, value, days) {
-        var cookie = name + "=" + encodeURIComponent(value);
+    function setCookie(cName, cValue, expDays) {
+        let date = new Date();
+        date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
 
-        if(typeof days === "number") {
-            cookie += "; max-age=" + (60);
-            document.cookie = cookie;
-        }
+        var value = {show: cValue, expire: date.getTime()};
+
+        document.cookie = cName + "=" + JSON.stringify(value) + "; " + expires + "; path=/";
     }
     /**
      * Form Close button Function
      */
 
     $(".mrm-form-close").on("click",function(){
-        setCookie('mrm_form_dismissed',true, 7);
+        var cookies_time = MRM_Frontend_Vars.form_cookies_time;
+        console.log(cookies_time)
+        console.log('kjhkjh')
+        setCookie('mrm_form_dismissed',true, cookies_time);
         $(this).parent().parent().hide()
 
     })

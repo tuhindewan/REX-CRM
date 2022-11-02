@@ -1058,15 +1058,15 @@ html.wp-toolbar {
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/typography.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-field-font-family {
+.mrmTypography-field-font-family {
   min-width: calc(65% - 15px);
 }
 
-.qubely-field-font-weight {
+.mrmTypography-field-font-weight {
   min-width: 35%;
 }
 
-.qubely-font-family-picker, .qubely-font-weight-picker-wrapper {
+.mrmTypography-font-family-picker, .mrmTypography-font-weight-picker-wrapper {
   align-items: center;
   background-color: rgb(255, 255, 255);
   cursor: default;
@@ -1086,14 +1086,14 @@ html.wp-toolbar {
   vertical-align: middle;
   padding-left: 5px;
 }
-.qubely-font-family-picker .editor-rich-text, .qubely-font-weight-picker-wrapper .editor-rich-text {
+.mrmTypography-font-family-picker .editor-rich-text, .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
   width: 100%;
 }
-.qubely-font-family-picker .selected-font-family, .qubely-font-weight-picker-wrapper .selected-font-family {
+.mrmTypography-font-family-picker .selected-font-family, .mrmTypography-font-weight-picker-wrapper .selected-font-family {
   color: black;
 }
 
-.qubely-font-family-option-wrapper {
+.mrmTypography-font-family-option-wrapper {
   top: 100%;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
@@ -1106,7 +1106,7 @@ html.wp-toolbar {
   z-index: 100;
 }
 
-.qubely-font-weight-wrapper {
+.mrmTypography-font-weight-wrapper {
   top: 100%;
   left: 62%;
   background-color: rgb(255, 255, 255);
@@ -1120,7 +1120,7 @@ html.wp-toolbar {
   z-index: 100;
 }
 
-.qubely-font-family-options, .qubely-font-family-weights {
+.mrmTypography-font-family-options, .mrmTypography-font-family-weights {
   max-height: 270px;
   overflow-y: auto;
   padding-bottom: 4px;
@@ -1129,7 +1129,7 @@ html.wp-toolbar {
   box-sizing: border-box;
 }
 
-.qubely-active-font-family, .qubely-active-font-weight {
+.mrmTypography-active-font-family, .mrmTypography-active-font-weight {
   background-color: rgb(38, 132, 255);
   color: rgb(255, 255, 255);
   cursor: default;
@@ -1144,7 +1144,7 @@ html.wp-toolbar {
   padding: 8px 12px;
 }
 
-.qubely-font-family-option, .qubely-font-weight-option {
+.mrmTypography-font-family-option, .mrmTypography-font-weight-option {
   background-color: transparent;
   color: inherit;
   cursor: default;
@@ -1159,52 +1159,52 @@ html.wp-toolbar {
   padding: 8px 12px;
 }
 
-.qubely-font-family-option:hover, .qubely-font-weight-option:hover {
+.mrmTypography-font-family-option:hover, .mrmTypography-font-weight-option:hover {
   background-color: #e8eaeb;
 }
 
-.qubely-font-family-search-wrapper {
+.mrmTypography-font-family-search-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
-.qubely-font-family-search-wrapper input.qubely-font-family-search {
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
   border: none !important;
   background-color: transparent !important;
 }
-.qubely-font-family-search-wrapper input.qubely-font-family-search:focus, .qubely-font-family-search-wrapper input.qubely-font-family-search:active, .qubely-font-family-search-wrapper input.qubely-font-family-search:hover {
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
   outline: 0;
   box-shadow: none;
 }
 
-.qubely-font-weight-picker-wrapper {
+.mrmTypography-font-weight-picker-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.qubely-font-select-icon {
+.mrmTypography-font-select-icon {
   display: flex;
   align-items: center;
   padding-right: 3px;
 }
 
-.qubely-field.qubely-field-typography .components-dropdown.qubely-field {
+.mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
   width: 100%;
 }
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/range.scss ***!
   \****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-input-range {
+.mrmTypography-input-range {
   display: flex;
 }
-.qubely-input-range > *:not(:last-child) {
+.mrmTypography-input-range > *:not(:last-child) {
   margin-right: 8px;
 }
-.qubely-input-range input[type=number] {
+.mrmTypography-input-range input[type=number] {
   width: 55px !important;
 }
-.qubely-input-range input[type=range] {
+.mrmTypography-input-range input[type=range] {
   -webkit-appearance: none;
   margin-top: 7px;
   margin-bottom: 7px;
@@ -1213,7 +1213,7 @@ html.wp-toolbar {
   padding-right: 0;
   background: transparent;
 }
-.qubely-input-range input[type=range]::-webkit-slider-runnable-track {
+.mrmTypography-input-range input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -1222,7 +1222,7 @@ html.wp-toolbar {
   border-radius: 5px;
   border: 0px solid black;
 }
-.qubely-input-range input[type=range]::-webkit-slider-thumb {
+.mrmTypography-input-range input[type=range]::-webkit-slider-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -1232,10 +1232,10 @@ html.wp-toolbar {
   -webkit-appearance: none;
   margin-top: -5px;
 }
-.qubely-input-range input[type=range]:focus::-webkit-slider-runnable-track {
+.mrmTypography-input-range input[type=range]:focus::-webkit-slider-runnable-track {
   background: #f3f4f5;
 }
-.qubely-input-range input[type=range]::-moz-range-track {
+.mrmTypography-input-range input[type=range]::-moz-range-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -1244,7 +1244,7 @@ html.wp-toolbar {
   border-radius: 5px;
   border: 0px solid black;
 }
-.qubely-input-range input[type=range]::-moz-range-thumb {
+.mrmTypography-input-range input[type=range]::-moz-range-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -1252,7 +1252,7 @@ html.wp-toolbar {
   background: #606871;
   cursor: pointer;
 }
-.qubely-input-range input[type=range]::-ms-track {
+.mrmTypography-input-range input[type=range]::-ms-track {
   width: 100%;
   height: 4px;
   cursor: pointer;
@@ -1262,17 +1262,17 @@ html.wp-toolbar {
   border-width: 14px 0;
   color: transparent;
 }
-.qubely-input-range input[type=range]::-ms-fill-lower {
+.mrmTypography-input-range input[type=range]::-ms-fill-lower {
   background: #d7dadf;
   border: 0px solid black;
   border-radius: 10px;
 }
-.qubely-input-range input[type=range]::-ms-fill-upper {
+.mrmTypography-input-range input[type=range]::-ms-fill-upper {
   background: #E5E7EA;
   border: 0px solid black;
   border-radius: 10px;
 }
-.qubely-input-range input[type=range]::-ms-thumb {
+.mrmTypography-input-range input[type=range]::-ms-thumb {
   border: 1px solid white;
   height: 14px;
   width: 14px;
@@ -1280,55 +1280,55 @@ html.wp-toolbar {
   background: #606871;
   cursor: pointer;
 }
-.qubely-input-range input[type=range]:focus::-ms-fill-lower {
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-lower {
   background: #E5E7EA;
 }
-.qubely-input-range input[type=range]:focus::-ms-fill-upper {
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-upper {
   background: #f3f4f5;
 }
 
-.qubely-field-range > label {
+.mrmTypography-field-range > label {
   width: 100%;
   margin-bottom: 2px;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/toggle.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-field.qubely-field-toggle {
+.mrmTypography-field.mrmTypography-field-toggle {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 }
-.qubely-field.qubely-field-toggle > label {
+.mrmTypography-field.mrmTypography-field-toggle > label {
   width: auto;
   margin-bottom: 0;
 }
-.qubely-field.qubely-field-toggle .components-toggle-control,
-.qubely-field.qubely-field-toggle .components-toggle-control .components-base-control__field {
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control,
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field {
   margin-bottom: 0 !important;
 }
-.qubely-field.qubely-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
   margin-right: 0;
 }
-.qubely-field.qubely-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
+.mrmTypography-field.mrmTypography-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
   background-color: #2184F9;
 }
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/buttonGroup.scss ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.qubely-field-group-btn {
+.mrmTypography-field-group-btn {
   align-items: center;
 }
-.qubely-field-group-btn label {
+.mrmTypography-field-group-btn label {
   margin-bottom: 0;
 }
-.qubely-field-group-btn .qubely-field-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child {
   display: flex;
   justify-content: end;
   align-items: center;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button {
   display: inline-block;
   white-space: nowrap;
   padding: 0px 9px;
@@ -1343,26 +1343,26 @@ html.wp-toolbar {
   line-height: 26px;
   height: 26px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.extra-padding {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.extra-padding {
   padding: 0px 10px;
   font-weight: bold;
   font-size: 15px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button:last-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:last-child {
   border-bottom-right-radius: 3px;
   border-top-right-radius: 3px;
   border-right: 1px solid #d6d9dd;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button:first-child {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:first-child {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.qubley-active-group-btn {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn {
   color: #2184f9;
   background: #d2e7ff;
   border-color: #a9d0ff;
 }
-.qubely-field-group-btn .qubely-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
   border-left-color: #a9d0ff;
 }
 

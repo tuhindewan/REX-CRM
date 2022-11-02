@@ -79,7 +79,7 @@ export default function withCSSGenerator() {
                     });
                 }
 
-                _CSS = _CSS.replace(new RegExp('{{QUBELY}}', "g"), '.qubely-block-' + uniqueId)
+                _CSS = _CSS.replace(new RegExp('{{mrmTypography}}', "g"), '.mrmTypography-block-' + uniqueId)
                 let googleFonts = _CSS.match(new RegExp('@import([^;]*);', "g"));
                 if (googleFonts) {
                     _CSS = _CSS.replace(new RegExp('@import([^;]*);', "g"), "");
@@ -157,9 +157,9 @@ export default function withCSSGenerator() {
                     }
                     if (!isLayoutChanged) {
                         if (changedAttributes.indexOf('uniqueId') !== -1) {
-                            let currentStyleElement = window.document.getElementById('qubely-block-' + prevProps.attributes.uniqueId);
+                            let currentStyleElement = window.document.getElementById('mrmTypography-block-' + prevProps.attributes.uniqueId);
                             if (currentStyleElement && !isDuplicatingBlock(getBlocks())) {
-                                currentStyleElement.id = 'qubely-block-' + attributes.uniqueId;
+                                currentStyleElement.id = 'mrmTypography-block-' + attributes.uniqueId;
                                 let newStyle = currentStyleElement.innerHTML.replace(new RegExp(`${prevProps.attributes.uniqueId}`, "g"), `${attributes.uniqueId}`);
                                 currentStyleElement.innerHTML = newStyle;
                             } else {
@@ -231,12 +231,12 @@ export default function withCSSGenerator() {
                 const {
                     attributes,
                     attributes: {
-                        qubelyStyleAttributes
+                        mrmTypographyStyleAttributes
                     }
                 } = this.props;
-                const { copyToClipboard } = wp.qubelyComponents.HelperFunction;
+                const { copyToClipboard } = wp.mrmTypographyComponents.HelperFunction;
                 let template = {}
-                qubelyStyleAttributes.forEach(key => {
+                mrmTypographyStyleAttributes.forEach(key => {
                     template[key] = attributes[key]
                 })
 

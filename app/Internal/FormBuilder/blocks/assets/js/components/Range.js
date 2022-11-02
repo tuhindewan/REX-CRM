@@ -16,7 +16,7 @@ class Range extends Component {
 		if (type == 'unit') {
 			return value ? (value.unit || 'px') : 'px'
 		} else {
-			return value ? (responsive ? (value[window.qubelyDevice] || '') : value) : ''
+			return value ? (responsive ? (value[window.mrmTypographyDevice] || '') : value) : ''
 		}
 	}
 
@@ -44,7 +44,7 @@ class Range extends Component {
 		if (type === 'unit' && responsive) {
 			newValue.unit = val;
 		} else {
-			newValue = responsive ? Object.assign(newValue, value, { [window.qubelyDevice]: val }) : val;
+			newValue = responsive ? Object.assign(newValue, value, { [window.mrmTypographyDevice]: val }) : val;
 			newValue = min ? (newValue < min ? min : newValue) : (newValue < 0 ? 0 : newValue);
 			newValue = max ? (newValue > max ? max : newValue) : (newValue > 1000 ? 1000 : newValue);
 		}
@@ -72,11 +72,11 @@ class Range extends Component {
 
 	render() {
 		const { unit, label, responsive, device, onDeviceChange, disabled = false } = this.props
-		let responsiveDevice = responsive ? device ? device : this.state.device : window.qubelyDevice
+		let responsiveDevice = responsive ? device ? device : this.state.device : window.mrmTypographyDevice
 		return (
-			<div className={'qubely-field-range qubely-field ' + (responsive ? 'qubely-responsive' : '')}>
+			<div className={'mrmTypography-field-range mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : '')}>
 				{(label || unit || responsive) &&
-				<div className="qubely-d-flex qubely-align-center qubely-mb-10">
+				<div className="mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10">
 					{label &&
 					<div>
 						<label htmlFor={'input'}>
@@ -85,10 +85,10 @@ class Range extends Component {
 					</div>
 					}
 
-					{responsive && <Device device={responsiveDevice} commonResponsiveDevice={device} className="qubely-ml-10" onChange={(val) => { device && onDeviceChange ? onDeviceChange(val) : this.updateDevice(val) }} />}
+					{responsive && <Device device={responsiveDevice} commonResponsiveDevice={device} className="mrmTypography-ml-10" onChange={(val) => { device && onDeviceChange ? onDeviceChange(val) : this.updateDevice(val) }} />}
 
 					{unit &&
-					<div className="qubely-unit-btn-group qubely-ml-auto">
+					<div className="mrmTypography-unit-btn-group mrmTypography-ml-auto">
 						{(typeof unit == 'object' ? unit : ['px', 'em', '%']).map((value) => (
 							<button className={(this.props.value && value == this.props.value.unit) ? 'active' : ''}
 									onClick={() => {
@@ -105,8 +105,8 @@ class Range extends Component {
 				</div>
 				}
 
-				<div className="qubely-field-child">
-					<div className="qubely-input-range">
+				<div className="mrmTypography-field-child">
+					<div className="mrmTypography-input-range">
 						<input
 							type="range"
 							min={this._minMax('min')}

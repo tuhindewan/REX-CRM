@@ -1,9 +1,9 @@
-.qubely-toolber-field{
+.mrmTypography-toolber-field{
     button:focus{
         outline: none;
     }
 }
-.qubely-selector-popup-toolbar{
+.mrmTypography-selector-popup-toolbar{
     & .components-popover__content{
         display: flex;
         align-items: center;
@@ -14,21 +14,21 @@
         border-radius: 5px;
     }
 }
-.qubely-selector-toolber-popup{
+.mrmTypography-selector-toolber-popup{
     width: 100%;
 }
-.qubely-field-selector{
-    .qubely-field-child{
+.mrmTypography-field-selector{
+    .mrmTypography-field-child{
         display: flex;
         flex-wrap: wrap;
         flex-basis: auto;
-        .qubely-selector-button-group{
+        .mrmTypography-selector-button-group{
             display: flex;
             flex-direction: column;
             width: 100%;
             padding-left: 2%;
             padding-right: 2%;
-            .qubely-button{
+            .mrmTypography-button{
                 display: flex;
                 padding: 5px 0px 5px 0px;
                 margin: 0px 0px 2px 0px;
@@ -36,7 +36,7 @@
                 background: transparent;
                 border: none;
             }
-            .qubely-button.active{
+            .mrmTypography-button.active{
                 background: #007eb1;
                 border-color: #00435d;
                 border-radius: 3px;
@@ -44,7 +44,7 @@
                 box-shadow: inset 0 -1px 0 #00435d;
                 border: none;
             }
-            .qubely-button:focus{
+            .mrmTypography-button:focus{
                 outline:none
             }
         }

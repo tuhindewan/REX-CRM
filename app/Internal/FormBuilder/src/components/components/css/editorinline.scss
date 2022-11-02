@@ -2,7 +2,7 @@
   div {
     button {
       width: auto;
-      .qubely-color-picker-icon-wraper {
+      .mrmTypography-color-picker-icon-wraper {
         border-radius: 3px;
         border: none;
         outline: none;
@@ -14,7 +14,7 @@
 .components-toolbar {
   button {
     img {
-      &.qubely-block-icon {
+      &.mrmTypography-block-icon {
         &.small {
           width: 50%;
         }
@@ -23,8 +23,8 @@
   }
 }
 
-.qubely-toolber-popup {
-  .qubely-field-alignment {
+.mrmTypography-toolber-popup {
+  .mrmTypography-field-alignment {
     margin-bottom: 15px;
   }
 }

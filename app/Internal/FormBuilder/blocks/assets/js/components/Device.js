@@ -9,11 +9,11 @@ class Device extends Component {
 	}
 	componentDidMount() {
 		if (typeof this.props.device !== 'undefined' && this.props.device !== '') {
-			window.qubelyDevice = this.props.device
+			window.mrmTypographyDevice = this.props.device
 		}
 	}
 	setSettings(value) {
-		window.qubelyDevice = value
+		window.mrmTypographyDevice = value
 		this.setState({ current: value })
 		this.props.onChange(value)
 	}
@@ -22,15 +22,15 @@ class Device extends Component {
 		const { device, className, commonResponsiveDevice } = this.props
 
 		return (
-			<div className={`qubely-device ${className ? className : ''}`}>
+			<div className={`mrmTypography-device ${className ? className : ''}`}>
 				<Tooltip text={__('Desktop')}>
-					<button onClick={() => this.setSettings('md')} title={__('Desktop')} className={"qubely-device-desktop" + ((commonResponsiveDevice && device == 'md' || !commonResponsiveDevice && current == 'md') ? ' active' : '')} />
+					<button onClick={() => this.setSettings('md')} title={__('Desktop')} className={"mrmTypography-device-desktop" + ((commonResponsiveDevice && device == 'md' || !commonResponsiveDevice && current == 'md') ? ' active' : '')} />
 				</Tooltip>
 				<Tooltip text={__('Tablet')}>
-					<button onClick={() => this.setSettings('sm')} title={__('Tablet')} className={"qubely-device-tablet" + ((commonResponsiveDevice && device == 'sm' || !commonResponsiveDevice && current == 'sm') ? ' active' : '')} />
+					<button onClick={() => this.setSettings('sm')} title={__('Tablet')} className={"mrmTypography-device-tablet" + ((commonResponsiveDevice && device == 'sm' || !commonResponsiveDevice && current == 'sm') ? ' active' : '')} />
 				</Tooltip>
 				<Tooltip text={__('Mobile')}>
-					<button onClick={() => this.setSettings('xs')} title={__('Phone')} className={"qubely-device-mobile" + ((commonResponsiveDevice && device == 'xs' || !commonResponsiveDevice && current == 'xs') ? ' active' : '')} />
+					<button onClick={() => this.setSettings('xs')} title={__('Phone')} className={"mrmTypography-device-mobile" + ((commonResponsiveDevice && device == 'xs' || !commonResponsiveDevice && current == 'xs') ? ' active' : '')} />
 				</Tooltip>
 
 			</div>

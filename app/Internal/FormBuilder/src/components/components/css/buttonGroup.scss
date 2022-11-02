@@ -1,13 +1,13 @@
-.qubely-field-group-btn {
+.mrmTypography-field-group-btn {
   align-items: center;
   label {
     margin-bottom: 0;
   }
-  .qubely-field-child {
+  .mrmTypography-field-child {
     display: flex;
     justify-content: end;
     align-items: center;
-    .qubley-group-button {
+    .mrmTypography-group-button {
       display: inline-block;
       white-space: nowrap;
       padding: 0px 9px;
@@ -35,11 +35,11 @@
         border-top-left-radius: 3px;
         border-bottom-left-radius: 3px;
       }
-      &.qubley-active-group-btn {
+      &.mrmTypography-active-group-btn {
         color: #2184f9;
         background: #d2e7ff;
         border-color: #a9d0ff;
-        & + .qubley-group-button{
+        & + .mrmTypography-group-button{
           border-left-color: #a9d0ff;
         }
       }

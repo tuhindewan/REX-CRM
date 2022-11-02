@@ -1,4 +1,4 @@
-.qubely-global-settings {
+.mrmTypography-global-settings {
     padding: 15px 18px;
     .preset {
         margin-bottom: 15px;
@@ -19,7 +19,7 @@
             //    padding-left: 16px;
             //    padding-right: 16px;
             //}
-            .qubely-d-flex.qubely-align-justified {
+            .mrmTypography-d-flex.mrmTypography-align-justified {
                 display: block;
                 > div {
                     display: inline-block !important;
@@ -48,15 +48,15 @@
         .components-panel__body > .components-panel__body-title {
             margin: 0;
         }
-        .qubely-global-color-pallete {
+        .mrmTypography-global-color-pallete {
             display: flex;
             margin: 0 -2.5px;
             flex-wrap: wrap;
             margin-bottom: 15px;
-            .qubely-field {
+            .mrmTypography-field {
                 margin: 0 2.5px 7px;
             }
-            .qubely-color-picker-container .qubely-color-picker {
+            .mrmTypography-color-picker-container .mrmTypography-color-picker {
                 border: none;
             }
         }
@@ -133,7 +133,7 @@
                 align-items: center;
             }
         }
-        .qubely-global {
+        .mrmTypography-global {
             display: flex;
             flex-direction: column;
             &.add-new-color {
@@ -259,29 +259,29 @@
             &.typography {
                 margin: 0;
             }
-            .qubely-field-typography {
+            .mrmTypography-field-typography {
                 padding: 12px;
                 border-top-left-radius: 0px;
                 border-top-right-radius: 0px;
                 border-top: none;
-                .components-dropdown.qubely-field {
+                .components-dropdown.mrmTypography-field {
                     min-width: 70%;
                     width: 95%;
                 }
-                .qubely-field.qubely-field-font-family {
+                .mrmTypography-field.mrmTypography-field-font-family {
                     > label {
                         text-align: left;
                     }
                 }
-                .qubely-field-range.qubely-field {
-                    > .qubely-align-center {
+                .mrmTypography-field-range.mrmTypography-field {
+                    > .mrmTypography-align-center {
                         align-items: flex-start;
                     }
                 }
             }
         }
-        .qubely-global.qubely-color-picker-container,
-        .qubely-global.qubely-color-picker-container > span {
+        .mrmTypography-global.mrmTypography-color-picker-container,
+        .mrmTypography-global.mrmTypography-color-picker-container > span {
             display: -webkit-box;
             display: -ms-flexbox;
             display: flex;
@@ -291,7 +291,7 @@
             justify-content: center;
             background: transparent;
         }
-        .qubely-color-picker-container.added-color {
+        .mrmTypography-color-picker-container.added-color {
             position: relative;
             .delete {
                 position: absolute;
@@ -423,21 +423,21 @@
     background-color: #ffffff;
     border-top: none;
 }
-.qubely-global-color-pallete,
-.qubely-global.typography {
+.mrmTypography-global-color-pallete,
+.mrmTypography-global.typography {
     .components-notice {
         margin-left: 0px;
         margin-right: 0px;
         width: 100%;
     }
 }
-.qubely-row-device{
+.mrmTypography-row-device{
     .components-notice.is-warning{
         margin-left: 0px;
     }
     .components-notice__content{
         margin-right: 0px;
-        .qubely-device-description {
+        .mrmTypography-device-description {
             padding: 2px 0px;
             &.title{
                 margin-bottom: 2px;

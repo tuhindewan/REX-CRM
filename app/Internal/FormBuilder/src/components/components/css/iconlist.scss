@@ -1,9 +1,9 @@
-.qubely-field-icon-list {
-    .qubely-icon-list-warp{
+.mrmTypography-field-icon-list {
+    .mrmTypography-icon-list-warp{
         width: 100%;
         display: block;
     }
-    .qubely-icon-list-wrapper {
+    .mrmTypography-icon-list-wrapper {
         input{
             background: #fff;
             width: 100%;
@@ -20,7 +20,7 @@
             }
         }
 
-        .qubely-font-list{
+        .mrmTypography-font-list{
             span{
                 border-bottom: .5px solid #E5E7EA;
                 &.active{
@@ -31,7 +31,7 @@
         }
     }
 
-    &.qubely-toggle-enabled {
+    &.mrmTypography-toggle-enabled {
         label {
             font-size: 16px;
             line-height: 1;
@@ -41,7 +41,7 @@
         }
     }
     
-    .qubely-icon-list-icons {
+    .mrmTypography-icon-list-icons {
         max-height: 177px;
         margin: 0;
         border: 1px solid #E5E7EA;
@@ -75,7 +75,7 @@
                     border-color: #2184F9;
                 }
             }
-            &.qubely-active {
+            &.mrmTypography-active {
                 span {
                     color: #fff;
                     background: #2184F9;
@@ -85,7 +85,7 @@
         }
 
     }
-    .qubely-icon-list-inner{
+    .mrmTypography-icon-list-inner{
         width: 100%;
         padding: 4px 9px;
         display: block;
