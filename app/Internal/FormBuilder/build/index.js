@@ -9441,6 +9441,17 @@ class Editor extends Component {
       onChange: state => setAttributes({
         isRequiredLastName: state
       })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
     }));
   };
   formStyle = () => {
@@ -9453,16 +9464,20 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Label Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
-      allowReset: true,
-      min: 0,
-      max: 50,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -9478,18 +9493,6 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: labelTypography,
-      onChange: value => setAttributes({
-        labelTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   inputFieldStyle = () => {
@@ -9502,7 +9505,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
@@ -9558,18 +9576,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: inputTypography,
-      onChange: value => setAttributes({
-        inputTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -10300,7 +10306,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Button Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: typography,
+      onChange: value => setAttributes({
+        typography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: buttonTextColor => this.onChangeAttribute('buttonTextColor', buttonTextColor),
@@ -10310,6 +10331,34 @@ class Editor extends Component {
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: buttonBgColor => this.onChangeAttribute('buttonBgColor', buttonBgColor),
       value: attributes.buttonBgColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Font size', 'mrm'),
+      value: attributes.buttonFontSize,
+      onChange: btnBorder => this.onChangeAttribute('buttonFontSize', btnBorder),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Line Height', 'mrm'),
+      value: attributes.lineHeight,
+      onChange: btn_lineHeight => setAttributes({
+        lineHeight: btn_lineHeight
+      }),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Letter Spacing', 'mrm'),
+      value: attributes.letterSpacing,
+      onChange: btn_letterSpacing => setAttributes({
+        letterSpacing: btn_letterSpacing
+      }),
+      allowReset: true,
+      min: 0,
+      max: 20,
+      step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -10396,49 +10445,6 @@ class Editor extends Component {
       min: 0,
       max: 100,
       step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Line Height', 'mrm'),
-      value: attributes.lineHeight,
-      onChange: btn_lineHeight => setAttributes({
-        lineHeight: btn_lineHeight
-      }),
-      allowReset: true,
-      min: 0,
-      max: 100,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Letter Spacing', 'mrm'),
-      value: attributes.letterSpacing,
-      onChange: btn_letterSpacing => setAttributes({
-        letterSpacing: btn_letterSpacing
-      }),
-      allowReset: true,
-      min: 0,
-      max: 20,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Font size"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.buttonFontSize,
-      onChange: btnBorder => this.onChangeAttribute('buttonFontSize', btnBorder),
-      allowReset: true,
-      min: 0,
-      max: 100,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: typography,
-      onChange: value => setAttributes({
-        typography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -11248,6 +11254,17 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_require: state
       })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
     }));
   };
   onChangeRadioValueField = (option, val, index) => {
@@ -11365,16 +11382,20 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Label Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
-      allowReset: true,
-      min: 0,
-      max: 50,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -11390,19 +11411,7 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: labelTypography,
-      onChange: value => setAttributes({
-        labelTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
-    }));
+    })));
   };
   inputFieldStyle = () => {
     let {
@@ -11414,7 +11423,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
@@ -11470,18 +11494,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: inputTypography,
-      onChange: value => setAttributes({
-        inputTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {

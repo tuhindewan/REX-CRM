@@ -878,6 +878,7 @@ body.is-fullscreen-mode .get-mrm-header {
   color: #A7A8B3;
   display: block;
   margin-bottom: 8px;
+  text-transform: none;
 }
 .mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input,
 .mrm-block-control-wrapper .components-panel__body .components-base-control .components-select-control__input,
