@@ -63,6 +63,7 @@ class CampaignModel {
             $campaign_table,
             $args
         );
+
         return $result ? self::get( $wpdb->insert_id ) : false;
     }
 
@@ -207,8 +208,11 @@ class CampaignModel {
         $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
         $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table as CT LEFT JOIN $campaign_meta_table as CMT on CT.id = CMT.campaign_id WHERE CT.id = %d", $id );
+
         $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
+        $campaign['id']     = $id;
         $campaign['emails']    = self::get_campaign_email( $id );
+        error_log(print_r($campaign, 1));
         return $campaign;
     }
 
