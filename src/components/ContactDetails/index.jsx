@@ -230,6 +230,7 @@ export default function ContactDetails() {
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`
       );
       const resJson = await res.json();
+
       if (resJson.code == 200) {
         setContactData(resJson.data);
         setAssignLists(resJson.data?.lists);
@@ -1284,7 +1285,7 @@ export default function ContactDetails() {
                       </div>
 
                       <div className="activities-feed-wrapper">
-                        {contactData?.notes.length == 0 ? (
+                        {contactData?.activities.length == 0 ? (
                           <div className="no-activity">
                             <NoActivityIcon />
                             No Activity Found
