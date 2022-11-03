@@ -17,16 +17,16 @@ const {
 function Color({ preset, value, onChange, className, deleteOption, onDelete, addNew = undefined, addNewColor = false }) {
 
     const classes = classNames(
-        'qubely-field',
-        'qubely-field-color',
-        'qubely-d-flex',
-        'qubely-align-center'
+        'mrmTypography-field',
+        'mrmTypography-field-color',
+        'mrmTypography-d-flex',
+        'mrmTypography-align-center'
     );
 
     let containerClasses = classNames(
         className,
-        'qubely-color-picker-container',
-        { ['qubely-global']: addNewColor },
+        'mrmTypography-color-picker-container',
+        { ['mrmTypography-global']: addNewColor },
         { ['add-new-color']: addNewColor },
     )
     return (
@@ -34,13 +34,13 @@ function Color({ preset, value, onChange, className, deleteOption, onDelete, add
 
             <Dropdown
                 position="top center"
-                className="qubely-ml-auto"
+                className="mrmTypography-ml-auto"
                 renderToggle={({ isOpen, onToggle }) => (
                     <div className={containerClasses}>
                         <button
                             isPrimary
                             aria-expanded={isOpen}
-                            className="qubely-color-picker"
+                            className="mrmTypography-color-picker"
                             style={{ backgroundColor: (!addNewColor && value) ? value : 'transparent' }}
                             onClick={() => {
                                 if (addNewColor) {

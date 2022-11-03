@@ -1,31 +1,4 @@
 jQuery(document).ready(function($){
-    $('form.ajax').on('submit', function(e){
-        e.preventDefault();
-        var that = $(this),
-            url = that.attr('action'),
-            type = that.attr('method');
-        var first_name = $('.first_name').val();
-        var email = $('.email').val();
-        var last_name = $('.last_name').val();
-        $.ajax({
-            url: cpm_object.ajax_url,
-            type:"POST",
-            dataType:'type',
-            data: {
-                action:'set_form',
-                first_name:first_name,
-                email:email,
-                last_name:last_name,
-            },   success: function(response){
-                $(".error_msg").css("display","block");
-
-            }, error: function(data){
-                $(".success_msg").css("display","block");
-                $("form.ajax").css("display","none");      }
-        });
-        $('.ajax')[0].reset();
-    });
-
     /**
      * Shortcode form submission ajax
      */
@@ -80,10 +53,30 @@ jQuery(document).ready(function($){
     })
 
     /**
+     * Set cokokie
+     * @param name
+     * @param value
+     * @param daysToLive
+     */
+    function setCookie(cName, cValue, expDays) {
+        let date = new Date();
+        date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+
+        var value = {show: cValue, expire: date.getTime()};
+
+        document.cookie = cName + "=" + JSON.stringify(value) + "; " + expires + "; path=/";
+    }
+    /**
      * Form Close button Function
      */
 
     $(".mrm-form-close").on("click",function(){
+        var cookies_time = MRM_Frontend_Vars.form_cookies_time;
+        console.log(cookies_time)
+        console.log('kjhkjh')
+        setCookie('mrm_form_dismissed',true, cookies_time);
         $(this).parent().parent().hide()
+
     })
 });

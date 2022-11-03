@@ -13,16 +13,10 @@ export default function AddItems(props) {
     options = null,
     name = "list", // used inside the new button of
     listTitle = "CHOOSE LIST",
-    listTitleOnNotFound = "No Data Found",
-    searchPlaceHolder = "Search...",
     allowMultiple = true,
-    showSearchBar = true,
-    showListTitle = true,
-    showSelectedInside = true,
     allowNewCreate = true,
     contactId,
   } = props;
-
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -69,6 +63,7 @@ export default function AddItems(props) {
         setSelected([...selected, { id: resJson.data, title: body.title }]);
         props.setShowNotification("block");
         props.setMessage(resJson?.message);
+        props.setIsAssignTo(true);
       } else {
         setShowWarning("block");
         setMessage(resJson.message);

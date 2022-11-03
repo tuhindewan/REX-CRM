@@ -216,6 +216,7 @@
             &:disabled {
               box-shadow: none;
               cursor: not-allowed;
+              background-color: #f4f4f4;
             }
           }
           input::placeholder {
@@ -367,6 +368,12 @@
               display: none;
               &.show {
                 display: flex;
+              }
+              &:disabled {
+                background-color: #f4f4f4;
+                padding: 10px;
+                border-radius: 5px;
+                cursor: not-allowed;
               }
               .tags,
               .from,
@@ -594,7 +601,7 @@
         .campaign-save {
           font-weight: 600;
           font-size: 15px;
-          line-height: 18px;
+          line-height: 16px;
 
           &.disable {
             color: #fff;
@@ -605,15 +612,19 @@
 
         .campaign-schedule {
           margin-right: 15px;
+          background-color: #573bff;
+          color: #fafafa;
+          font-size: 15px;
 
           &.disable {
             color: #b6b6b7;
             border: 1px solid #dee1e8;
+            opacity: 0.3;
+            cursor: not-allowed;
           }
           &.disable:hover {
             color: #b6b6b7;
             border: 1px solid #dee1e8;
-            background-color: transparent;
           }
         }
       }

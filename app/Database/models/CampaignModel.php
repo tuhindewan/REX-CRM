@@ -5,6 +5,7 @@ namespace Mint\MRM\DataBase\Models;
 use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\MRM\DataStores\Campaign;
 use Mint\Mrm\Internal\Traits\Singleton;
+use wpdb;
 
 /**
  * @author [MRM Team]
@@ -78,7 +79,6 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
-
         $inserted = $wpdb->insert( $campaign_meta_table, [
             'meta_key'      => 'recipients',
             'meta_value'    => $recipients,
@@ -105,7 +105,8 @@ class CampaignModel {
     {
         global $wpdb;
         $fields_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
-
+        unset($email['toError']);
+        unset($email['senderEmailError']);
         $email['campaign_id']   = $campaign_id;
         $email['created_at']    = current_time('mysql');
         $email['email_index']   = $index;
@@ -320,16 +321,18 @@ class CampaignModel {
                                      FROM $campaign_emails_table  
                                      WHERE campaign_id = %d", $id);
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
-        $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
-        $email_builder = CampaignEmailBuilderModel::get( $first_email_id );
+        // $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
+        
         if (!empty($emails)) {
-            $emails = array_map(function ($email) use($email_builder) {
+            $emails = array_map(function ($email) {
+                $email_id  = isset( $email['id'] ) ? $email['id'] : "";
+                $email_builder = CampaignEmailBuilderModel::get( $email_id );
                 $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
-                $email['email_body'] = $email_builder['email_body'];        //phpcs:ignore
+                $email['email_body'] = isset( $email_builder['email_body'] ) ? $email_builder['email_body'] : "";        //phpcs:ignore
                 return $email;
             }, $emails);
         }
-
+    
         return $emails;
     }
 
@@ -451,12 +454,19 @@ class CampaignModel {
         $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND id=%s", $campaign_id, $email_index );
         return $wpdb->get_row( $select_query );
     }
+    
 
+    /**
+     * Returns all publish campaigns
+     * 
+     * @return array
+     * @since 1.0.0
+     */
     public static function get_publish_campaign_id() {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
 
-        $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'ongoing');
+        $select_query   = $wpdb->prepare("SELECT * FROM {$campaign_table} WHERE `status` = %s", 'active');
         return $wpdb->get_results( $select_query, ARRAY_A );
     }
 
@@ -512,7 +522,7 @@ class CampaignModel {
      * @param mixed $campaign_id
      * @param mixed $email_id
      * 
-     * @return array
+     * @return object
      * @since 1.0.0
      */
     public static function get_campaign_email_to_builder( $campaign_id, $email_id )
@@ -521,5 +531,63 @@ class CampaignModel {
         $email_table    = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
         $select_query   = $wpdb->prepare("SELECT * FROM {$email_table} WHERE campaign_id=%s AND id=%s", $campaign_id, $email_id );
         return $wpdb->get_row( $select_query );
+    }
+
+
+    /**
+     * Return campaign's emaild meta value
+     * 
+     * @param mixed $email_id
+     * @param mixed $key
+     * 
+     * @return bool|int
+     * @since 1.0.0
+     */
+    public static function get_campaign_email_meta( $email_id, $key )
+    {
+        global $wpdb;
+        $email_meta_table = $wpdb->prefix . CampaignSchema::$campaign_emails_meta_table;
+        $select_query   = $wpdb->prepare("SELECT meta_value FROM {$email_meta_table} WHERE campaign_emails_id=%d AND meta_key=%s", $email_id, $key );
+        $meta_data = $wpdb->get_col( $select_query );
+        return isset( $meta_data[0] ) ? $meta_data[0] : false;
+    }
+
+
+    /**
+     * Update campaign's email meta fields
+     * 
+     * @param mixed $email_id
+     * @param mixed $key
+     * @param mixed $value
+     * 
+     * @return void
+     * @since 1.0.0
+     */
+    public static function update_campaign_email_meta( $email_id, $key, $value )
+    {
+        global $wpdb;
+        $email_meta_table = $wpdb->prefix . CampaignSchema::$campaign_emails_meta_table;
+        $isMeta = self::get_campaign_email_meta( $email_id, $key );
+        
+        if(!$isMeta){
+            $wpdb->insert(
+                $email_meta_table,
+                [
+                    "campaign_emails_id" => $email_id,
+                    "meta_key"           => $key,
+                    "meta_value"         => $value
+                ]
+            );
+        }
+        else {
+            $wpdb->update( $email_meta_table, 
+                [
+                    "meta_value"=> $value
+                ], 
+                [
+                    'campaign_emails_id' => $email_id, "meta_key" => $key
+                ] 
+            );
+        }
     }
 }

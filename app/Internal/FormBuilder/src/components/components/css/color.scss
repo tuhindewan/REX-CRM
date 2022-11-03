@@ -1,4 +1,4 @@
-.qubely-field-color.qubely-field {
+.mrmTypography-field-color.mrmTypography-field {
   display: flex;
   &.qubley-half {
     display: inline-flex;
@@ -14,8 +14,8 @@
     }
   }
 
-  .qubely-field-child {
-    .qubely-panel {
+  .mrmTypography-field-child {
+    .mrmTypography-panel {
       height: 32px;
       width: 32px;
       border-radius: 0 3px 3px 0;
@@ -24,7 +24,7 @@
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
       transition: 300ms;
       cursor: pointer;
-      &.qubely-color-preview {
+      &.mrmTypography-color-preview {
         width: 100%;
         height: 60px;
         border-radius: 3px;
@@ -35,24 +35,24 @@
       &:hover {
         transform: scale(1.1);
       }
-      .qubely-gradient {
+      .mrmTypography-gradient {
         padding: 15px;
       }
     }
   }
 
-  &.qubely-has-preview {
+  &.mrmTypography-has-preview {
     display: block;
     > label {
       width: 100%;
     }
-    .qubely-field-child {
+    .mrmTypography-field-child {
       width: 100%;
     }
   }
 
-  &.qubely-no-preview {
-    .qubely-field-child {
+  &.mrmTypography-no-preview {
+    .mrmTypography-field-child {
       flex-grow: 1;
       width: 32px;
     }
@@ -69,7 +69,7 @@
   }
 }
 
-.qubely-rgba-palette {
+.mrmTypography-rgba-palette {
   padding: 0px 0px 15px 15px;
   margin-top: -10px;
   &::after {
@@ -151,8 +151,8 @@
 }
 
 // Color Picker
-.qubely-color-picker-container,
-.qubely-color-picker {
+.mrmTypography-color-picker-container,
+.mrmTypography-color-picker {
   width: 30px;
   height: 30px;
   display: block;
@@ -161,7 +161,7 @@
   border: 1px solid rgba(0, 0, 0, 0.2);
   outline: none;
 }
-.qubely-color-picker-container {
+.mrmTypography-color-picker-container {
   width: 32px;
   height: 32px;
   background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0),

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -11,6 +12,8 @@ import InputItem from "../InputItem/index";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 const CreateContact = (props) => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   let navigate = useNavigate();
 
   // global counter update real time
@@ -143,8 +146,7 @@ const CreateContact = (props) => {
           });
         }
       });
-
-    }else{
+    } else {
       setContactSaveLoader(false);
     }
   };
@@ -215,7 +217,7 @@ const CreateContact = (props) => {
           <div className="add-contact-form">
             <div className="contact-form-body">
               <InputItem
-                label="Emailss"
+                label="Email"
                 name="email"
                 error={errors?.email}
                 values={contactData.email}
@@ -357,9 +359,7 @@ const CreateContact = (props) => {
                 className="contact-save mintmrm-btn "
               >
                 Save
-                {contactSaveLoader &&
-                  <span className="mintmrm-loader"></span>
-                }
+                {contactSaveLoader && <span className="mintmrm-loader"></span>}
               </button>
             </div>
           </div>

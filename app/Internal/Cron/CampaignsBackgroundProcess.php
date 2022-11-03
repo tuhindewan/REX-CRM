@@ -4,6 +4,7 @@ namespace Mint\MRM\Internal\Cron;
 
 use Mint\MRM\DataBase\Models\CampaignEmailBuilderModel;
 use Mint\MRM\DataBase\Models\CampaignModel;
+use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
@@ -89,22 +90,21 @@ class CampaignsBackgroundProcess
 			$campaigns = CampaignController::get_instance()->get_publish_campaign_id();
 			$campaign_ids = array_column( $campaigns, 'id' );
             $campaign_scheduled_emails_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
+			$last_recipient_id = 0;
 
 			foreach ( $campaign_ids as $campaign_id ) {
 				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
                 if ( is_array( $campaign_emails ) && !empty( $campaign_emails ) ) {
                     foreach ( $campaign_emails as $campaign_email ) {
                         $campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
-
+						
                         $offset = get_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
                         $per_batch = 10;
                         $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
                         $delay_count = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
                         $delay_val = isset( $campaign_email[ 'delay_value' ] ) ? $campaign_email[ 'delay_value' ] : '';
                         $delay_val = str_replace( 's', '', $delay_val );
-
                         if ( is_array( $recipients_emails ) && !empty( $recipients_emails ) ) {
-
                             foreach( $recipients_emails as $email ) {
                                 if( isset( $email[ 'id' ], $email[ 'email' ] ) && $email[ 'id' ] && $email[ 'email' ] ) {
                                     $mysql_format = 'Y-m-d H:i:s';
@@ -123,20 +123,27 @@ class CampaignsBackgroundProcess
                                             //'updated_at' => $updated_at
                                         ]
                                     );
+									update_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, ++$offset );
+
+									$last_recipient_id = $email['id'];
                                 }
                                 if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                                     break;
                                 }
                             }
+							CampaignModel::update_campaign_email_meta( $campaign_email_id, '_last_recipient_id', $last_recipient_id );
                         }
                         else {
-                            delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
+                            //delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
                         }
                         if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                             break;
                         }
                     }
-                }
+                }else{
+					CampaignModel::update_campaign_status( $campaign_id, 'archived' );
+				}
+
 				if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
 					break;
 				}
@@ -151,12 +158,12 @@ class CampaignsBackgroundProcess
 	 * @since 1.0.0
 	 */
 	public function send_recipient_emails()
-	{
+	{		
         $sending_emails_status = 'mrm_sending_emails_process_status';
         if ( !$this->process_locked( $sending_emails_status ) ) {
             $this->email_sending_process_creation_time = microtime( true );
             $this->lock_process( $sending_emails_status );
-            $per_batch = 5;
+            $per_batch = 10;
             $offset = 0;
             $recipient_emails = $this->get_recipient_emails( $offset, $per_batch );
 
@@ -166,26 +173,19 @@ class CampaignsBackgroundProcess
                     $email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int)$recipient[ 'id' ] : '';
                     $scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int)$recipient[ 'email_id' ] : '';
                     $campaign_id = isset( $recipient[ 'campaign_id' ] ) ? (int)$recipient[ 'campaign_id' ] : '';
-                    $contact_id  = isset( $recipient[ 'contact_id' ] ) ? (int)$recipient[ 'contact_id' ] : '';
-                    $campaign_emails = $campaign_id ? CampaignModel::get_campaign_email( $campaign_id ) : [];
-                    $campaign_email = [];
+					$contact_id = isset( $recipient[ 'contact_id' ] ) ? (int)$recipient[ 'contact_id' ] : '';
 
-                    foreach( $campaign_emails as $email ) {
-                        if( isset( $email[ 'id' ] ) && $scheduled_email_id == isset( $email[ 'id' ] ) ) {
-                            $campaign_email = $email;
-                        }
-                    }
-
-                    $headers            = [
+                    $headers = [
                         'MIME-Version: 1.0',
                         'Content-type: text/html;charset=UTF-8'
                     ];
-                    $email_builder = CampaignEmailBuilderModel::get( $scheduled_email_id );
-                    $email_body = isset( $email_builder[ 'email_body' ] ) ? $email_builder[ 'email_body' ] : '';
-                    $sender_email = isset( $campaign_email[ 'sender_email' ] ) ? $campaign_email[ 'sender_email' ] : '';
-                    $sender_name = isset( $campaign_email[ 'sender_name' ] ) ? $campaign_email[ 'sender_name' ] : '';
-                    $email_subject = isset( $campaign_email[ 'email_subject' ] ) ? $campaign_email[ 'email_subject' ] : '';
-                    $email_subject = self::update_subject_placeholders( $email_subject, $contact_id );
+
+                    $email_builder 	= CampaignEmailBuilderModel::get( $scheduled_email_id );
+					$email 			= CampaignModel::get_campaign_email_by_id( $campaign_id, $scheduled_email_id);
+                    $email_body 	= isset( $email_builder[ 'email_body' ] ) 	? $email_builder[ 'email_body' ] : '';
+                    $sender_email 	= $email->sender_email;
+                    $sender_name 	= $email->sender_name;
+                    $email_subject 	= $email->email_subject;
 
                     $from = 'From: '. $sender_name;
                     $headers[] = $from . ' <' . $sender_email . '>';
@@ -199,7 +199,10 @@ class CampaignsBackgroundProcess
                     else {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'failed' );
                     }
-
+					$meta_value = CampaignModel::get_campaign_email_meta( $scheduled_email_id, '_last_recipient_id' );
+					if( $contact_id == $meta_value ){
+						CampaignModel::update_campaign_email_status( $campaign_id, $scheduled_email_id, 'sent' );
+					}
                     if( $this->time_exceeded( $sending_emails_status ) || $this->memory_exceeded() ) {
                         break;
                     }
@@ -222,7 +225,7 @@ class CampaignsBackgroundProcess
         $campaign_email_scheduled_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
         $wpdb->update(
             $campaign_email_scheduled_table,
-            [ 'status' => $status, 'updated_at' => current_time( 'mysql' ) ],
+            [ 'status' => $status, 'updated_at' => current_time( 'mysql', true ) ],
             [ 'id' => $email_scheduled_id ]
         );
     }
@@ -241,7 +244,7 @@ class CampaignsBackgroundProcess
         $sql_query                      .= "WHERE `status` = %s ";
         $sql_query                      .= "AND `scheduled_at` <= %s ";
         $sql_query                      .= "LIMIT %d, %d";
-        $sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql' ), $offset, $per_batch );
+        $sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql', true ), $offset, $per_batch );
         return $wpdb->get_results( $sql_query, ARRAY_A );
     }
 

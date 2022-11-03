@@ -5,7 +5,7 @@ const { Spinner, Modal } = wp.components;
 const { parse } = wp.blocks
 const { apiFetch } = wp;
 const { __ } = wp.i18n
-import { Modal as QubelyModal, ModalManager } from './ModalManager'
+import { Modal as mrmTypographyModal, ModalManager } from './ModalManager'
 import SingleItem from './components/SingleItem'
 import MultipleItem from './components/MultipleItem'
 import ReusableBlockItem from './components/ReusableBlockItem'
@@ -48,7 +48,7 @@ class PageListModal extends Component {
 
         const options = {
             method: 'POST',
-            url: qubely_admin.ajax + '?action=qubely_get_sections',
+            url: mrmTypography_admin.ajax + '?action=mrmTypography_get_sections',
             headers: { 'Content-Type': 'application/json' }
         }
         apiFetch(options).then(response => {
@@ -219,7 +219,7 @@ class PageListModal extends Component {
         let requestFailedMsg = [];
         const options = {
             method: 'POST',
-            url: qubely_admin.ajax + '?action=qubely_delete_saved_block&block_id=' + blockID,
+            url: mrmTypography_admin.ajax + '?action=mrmTypography_delete_saved_block&block_id=' + blockID,
             headers: { 'Content-Type': 'application/json' }
         }
         apiFetch(options).then(response => {
@@ -245,7 +245,7 @@ class PageListModal extends Component {
             importWithGlobal = true;
         }
 
-        if (!qubely_admin.pro_enable && isPro == true) {
+        if (!mrmTypography_admin.pro_enable && isPro == true) {
             //
         } else {
             this.setState({ spinner: itemData.ID });
@@ -256,7 +256,7 @@ class PageListModal extends Component {
             let requestFailedMsg = [];
             const options = {
                 method: 'POST',
-                url: qubely_admin.ajax + '?action=qubely_get_single_' + itemType + '&' + itemType + '_id=' + itemData.ID,
+                url: mrmTypography_admin.ajax + '?action=mrmTypography_get_single_' + itemType + '&' + itemType + '_id=' + itemData.ID,
                 headers: { 'Content-Type': 'application/json' }
             }
             apiFetch(options).then(response => {
@@ -268,7 +268,7 @@ class PageListModal extends Component {
                         let temp = JSON.stringify(pageData);
                         if (typeof globalSettings.colors !== 'undefined' && globalSettings.colors.length > 0) {
                             globalSettings.colors.forEach((color, index) => {
-                                temp = temp.replace(new RegExp(`var.--qubely-color-${index + 1}.`, "g"), color)
+                                temp = temp.replace(new RegExp(`var.--mrmTypography-color-${index + 1}.`, "g"), color)
                             })
                         }
                         if (typeof globalSettings.typography !== 'undefined' && globalSettings.typography.length > 0) {
@@ -277,15 +277,15 @@ class PageListModal extends Component {
                                 temp = temp.replace(new RegExp(`\"globalSource\":\"${index + 1}\"`, "g"), tempValue.slice(1, -1))
                             })
                         }
-                        if (qubely_admin.import_with_global_settings === 'always') {
+                        if (mrmTypography_admin.import_with_global_settings === 'always') {
                             this.props.insertBlocks(pageData)
                             ModalManager.close();
-                        } else if (qubely_admin.import_with_global_settings === 'never') {
+                        } else if (mrmTypography_admin.import_with_global_settings === 'never') {
                             this.props.insertBlocks(JSON.parse(temp))
                             ModalManager.close();
-                        } else if (qubely_admin.import_with_global_settings === 'manually' ||
-                            !qubely_admin.import_with_global_settings ||
-                            typeof qubely_admin.import_with_global_settings === 'undefined') {
+                        } else if (mrmTypography_admin.import_with_global_settings === 'manually' ||
+                            !mrmTypography_admin.import_with_global_settings ||
+                            typeof mrmTypography_admin.import_with_global_settings === 'undefined') {
                             localStorage.setItem('changed', temp);
                             localStorage.setItem('original', JSON.stringify(pageData));
                             this.setState({ isOpen: true });
@@ -338,7 +338,7 @@ class PageListModal extends Component {
 
             const options = {
                 method: 'POST',
-                url: qubely_admin.ajax + '?action=qubely_get_layouts',
+                url: mrmTypography_admin.ajax + '?action=mrmTypography_get_layouts',
                 headers: { 'Content-Type': 'application/json' }
             }
             apiFetch(options).then(response => {
@@ -424,7 +424,7 @@ class PageListModal extends Component {
             this.setState({ loading: true });
             const options = {
                 method: 'POST',
-                url: qubely_admin.ajax + '?action=qubely_get_saved_block',
+                url: mrmTypography_admin.ajax + '?action=mrmTypography_get_saved_block',
                 headers: { 'Content-Type': 'application/json' }
             }
             apiFetch(options).then(response => {
@@ -547,7 +547,7 @@ class PageListModal extends Component {
 
     _backgroundImage(url) {
         if (!url) {
-            return qubely_admin.plugin + 'assets/img/qubely-medium.jpg';
+            return mrmTypography_admin.plugin + 'assets/img/mrmTypography-medium.jpg';
         }
         return url;
     }
@@ -605,7 +605,7 @@ class PageListModal extends Component {
 
     render() {
         let { pageCategories, currentPageData } = this.getCurrentPageData();
-        let types = qubely_admin.pro_enable ? 'active' : 'inactive';
+        let types = mrmTypography_admin.pro_enable ? 'active' : 'inactive';
         let {
             itemType,
             blockData,
@@ -625,20 +625,20 @@ class PageListModal extends Component {
             }
             this.props.insertBlocks(JSON.parse(localStorage.getItem(type)));
             ModalManager.close();
-            if ((qubely_admin.import_with_global_settings === "manually" ||
-                !qubely_admin.import_with_global_settings ||
-                typeof qubely_admin.import_with_global_settings === 'undefined') && rememberChoice) {
+            if ((mrmTypography_admin.import_with_global_settings === "manually" ||
+                !mrmTypography_admin.import_with_global_settings ||
+                typeof mrmTypography_admin.import_with_global_settings === 'undefined') && rememberChoice) {
                 $.post({
-                    url: qubely_urls.ajax,
+                    url: mrmTypography_urls.ajax,
                     data: {
-                        action: 'update_qubely_options',
-                        _wpnonce: qubely_urls.nonce,
+                        action: 'update_mrmTypography_options',
+                        _wpnonce: mrmTypography_urls.nonce,
                         options: {
                             'import_with_global_settings': actionType === 'yes' ? 'always' : 'never',
                         }
                     }
                 }).success(function (response) {
-                    qubely_admin['import_with_global_settings'] = actionType === 'yes' ? 'always' : 'never'
+                    mrmTypography_admin['import_with_global_settings'] = actionType === 'yes' ? 'always' : 'never'
                 }).fail(function (error) {
                     console.log("error : ", error);
                 });
@@ -646,34 +646,34 @@ class PageListModal extends Component {
         }
         return (
             <Fragment>
-                <QubelyModal className="qubely-builder-modal-pages-list" customClass="qubely-builder-modal-template-list" onRequestClose={this.props.onRequestClose} openTimeoutMS={0} closeTimeoutMS={0}>
+                <mrmTypographyModal className="mrmTypography-builder-modal-pages-list" customClass="mrmTypography-builder-modal-template-list" onRequestClose={this.props.onRequestClose} openTimeoutMS={0} closeTimeoutMS={0}>
 
-                    <div className="qubely-builder-modal-header">
+                    <div className="mrmTypography-builder-modal-header">
                         <div className="template-search-box">
                             <i className="fas fa-search" />
                             <input type="search" onChange={this._OnSearchTemplate.bind(this)} value={this.state.searchContext} placeholder={__('Type to search')} className="form-control" />
                         </div>
 
-                        <div className="qubely-template-list-header">
+                        <div className="mrmTypography-template-list-header">
                             <button className={this.state.itemType == 'block' ? 'active' : ''} onClick={e => this._onlickBlocksTab()}> {__('Sections')} </button>
                             <button className={this.state.itemType == 'layout' ? 'active' : ''} onClick={e => this._onlickLayoutsTab()}> {__('Starter Packs')} </button>
                             <button className={this.state.itemType == 'saved_blocks' ? 'active' : ''} onClick={e => this._onlickSavedBlocksTab()}> {__('Saved')} </button>
-                            <button className="qubely-builder-close-modal" onClick={e => { ModalManager.close() }} >
+                            <button className="mrmTypography-builder-close-modal" onClick={e => { ModalManager.close() }} >
                                 <i className={"fas fa-times"} />
                             </button>
                         </div>
                     </div>
 
-                    <div className="qubely-layout-modal-sidebar">
+                    <div className="mrmTypography-layout-modal-sidebar">
 
-                        <div className="qubely-modal-sidebar-content">
+                        <div className="mrmTypography-modal-sidebar-content">
                             {
                                 (!(itemType == 'layout' && layer == 'single') && !(itemType == 'saved_blocks') ||
                                     (this.state.parent_id && layer === 'single')) && <h3>Categories</h3>
                             }
                             {
                                 ((!this.state.parent_id && layer != 'block') || (this.state.parent_id && layer === 'single')) &&
-                                <ul className="qubely-template-categories">
+                                <ul className="mrmTypography-template-categories">
                                     <li
                                         className={itemType == 'block' ? '' == selectedBlockCategory ? 'active' : '' : '' == selectedLayoutCategory ? 'active' : ''}
                                         onClick={() => this._OnChangeCategory('')}>
@@ -700,44 +700,44 @@ class PageListModal extends Component {
                             }
                         </div>
                     </div>
-                    <div className="qubely-layout-modal-content-area">
+                    <div className="mrmTypography-layout-modal-content-area">
 
-                        {itemType != 'saved_blocks' && <div className="qubely-template-list-sub-header">
+                        {itemType != 'saved_blocks' && <div className="mrmTypography-template-list-sub-header">
                             <h4>
                                 {(this.state.itemType == 'layout' && this.state.layer == 'single') &&
-                                    <span className={"qubely-template-back"} onClick={() => this.setState({ layer: 'multiple', parent_id: '' })}><span className="dashicons dashicons-arrow-left-alt" />&nbsp;</span>
+                                    <span className={"mrmTypography-template-back"} onClick={() => this.setState({ layer: 'multiple', parent_id: '' })}><span className="dashicons dashicons-arrow-left-alt" />&nbsp;</span>
                                 }
                                 {this._getDataLength(itemType === 'layout' && selectedLayoutCategory === '' && layer !== 'single' ? 'category' : 'heading', currentPageData.length)}&nbsp;
                             {itemType == 'block' ? __('Sections') : this.state.layer == 'single' ? __('Layouts') : __('Starter Packs')}
                             </h4>
-                            <div className="qubely-template-filter-button-group">
+                            <div className="mrmTypography-template-filter-button-group">
                                 <button onClick={() => this._changePriceFilter()} className={'' == this.state.priceFilter ? 'active' : ''}>{__('All')}</button>
                                 <button onClick={() => this._changePriceFilter('free')} className={'free' == this.state.priceFilter ? 'active' : ''}>{__('Free')}</button>
                                 <button onClick={() => this._changePriceFilter('pro')} className={'pro' == this.state.priceFilter ? 'active' : ''}>
-                                    <img src={qubely_admin.plugin + 'assets/img/icon-premium.svg'} alt="" />
+                                    <img src={mrmTypography_admin.plugin + 'assets/img/icon-premium.svg'} alt="" />
                                     {__('Premium')}
                                 </button>
                             </div>
                         </div>}
 
                         {!this.state.loading ?
-                            <div id="modalContainer" className="qubely-template-list-modal">
-                                <div className="qubely-builder-template-list-container">
-                                    {/*<div className="qubely-template-option-header">
+                            <div id="modalContainer" className="mrmTypography-template-list-modal">
+                                <div className="mrmTypography-builder-template-list-container">
+                                    {/*<div className="mrmTypography-template-option-header">
                                         ( this.state.itemType == 'layout' ) &&
                                         <div className="template-options">
                                             <ul>
-                                                <li className={ this.state.layer === 'multiple' ? 'active' : '' }> <i className="qubely-folder-view" onClick={ e => this.setState( { layer: 'multiple', parent_id: '' } ) } /></li>
-                                                <li className={ this.state.layer === 'single' ? 'active' : '' }> <i className="qubely-grid-view" onClick={ e => this.setState( { layer: 'single' } ) } /> </li>
+                                                <li className={ this.state.layer === 'multiple' ? 'active' : '' }> <i className="mrmTypography-folder-view" onClick={ e => this.setState( { layer: 'multiple', parent_id: '' } ) } /></li>
+                                                <li className={ this.state.layer === 'single' ? 'active' : '' }> <i className="mrmTypography-grid-view" onClick={ e => this.setState( { layer: 'single' } ) } /> </li>
                                             </ul>
                                         </div>
 
                                 </div>*/}
 
-                                    <div id="layouts-blocks-list" className={"qubely-builder-page-templates " + (this.state.itemType == "saved_blocks" ? 'qubely-frontendd-block-list' : '')}>
+                                    <div id="layouts-blocks-list" className={"mrmTypography-builder-page-templates " + (this.state.itemType == "saved_blocks" ? 'mrmTypography-frontendd-block-list' : '')}>
                                         {
                                             this.state.layer == 'single' && this._sliceCurrentData(currentPageData).map(item => (
-                                                <div className="qubely-pagelist-column">
+                                                <div className="mrmTypography-pagelist-column">
                                                     {
                                                         item.map((data, index) =>
                                                             <SingleItem
@@ -770,12 +770,12 @@ class PageListModal extends Component {
                                             )}
 
                                         {(this.state.layer == 'block' && currentPageData.length != 0) &&
-                                            <div className="qubely-reusable-list-title">
-                                                <div className="qubely-reusable-list-content">
-                                                    <span className="qubely-tmpl-title" > {__('Title')}</span>
+                                            <div className="mrmTypography-reusable-list-title">
+                                                <div className="mrmTypography-reusable-list-content">
+                                                    <span className="mrmTypography-tmpl-title" > {__('Title')}</span>
                                                 </div>
-                                                <div className="qubely-reusable-list-info">
-                                                    <div className="qubely-reusable-list-info-date">{__('Publish')} </div>
+                                                <div className="mrmTypography-reusable-list-info">
+                                                    <div className="mrmTypography-reusable-list-info-date">{__('Publish')} </div>
                                                 </div>
                                             </div>
                                         }
@@ -793,8 +793,8 @@ class PageListModal extends Component {
                                             )}
 
                                         {(currentPageData.length === 0) &&
-                                            <div className="qubely-builder-template-found-empty">
-                                                <h3 className="qubely-builder-empty-title"> {this.state.notFoundMessage} </h3>
+                                            <div className="mrmTypography-builder-template-found-empty">
+                                                <h3 className="mrmTypography-builder-empty-title"> {this.state.notFoundMessage} </h3>
                                             </div>
                                         }
 
@@ -807,12 +807,12 @@ class PageListModal extends Component {
                                     {this.state.requestFailedMsg ?
                                         this.state.requestFailedMsg.map((error, index) => <p key={index}>{error}</p>)
                                         :
-                                        <div className="qubely-modal-loader">
+                                        <div className="mrmTypography-modal-loader">
                                             <Spinner />
                                         </div>
                                     }
                                     {/*<button
-                                    className="qubely-builder-close-modal"
+                                    className="mrmTypography-builder-close-modal"
                                     onClick={ () => { ModalManager.close() } }
                                 >
                                     <i className={"fas fa-times"} />
@@ -821,19 +821,19 @@ class PageListModal extends Component {
                             </div>
                         }
                     </div>
-                </QubelyModal>
+                </mrmTypographyModal>
                 {
-                    (isOpen && (qubely_admin.import_with_global_settings === "manually" ||
-                        !qubely_admin.import_with_global_settings ||
-                        typeof qubely_admin.import_with_global_settings === 'undefined')) && (
+                    (isOpen && (mrmTypography_admin.import_with_global_settings === "manually" ||
+                        !mrmTypography_admin.import_with_global_settings ||
+                        typeof mrmTypography_admin.import_with_global_settings === 'undefined')) && (
                         <Modal
                             title={__('Import Type Settings')}
-                            className="qubely-import-global"
+                            className="mrmTypography-import-global"
                             onRequestClose={closeModal}
                         >
-                            <div className="qubely-import-settings">
+                            <div className="mrmTypography-import-settings">
                                 <div className="label">{__("Apply global styling while importing this?")} </div>
-                                <div className="qubely-import-settings-footer">
+                                <div className="mrmTypography-import-settings-footer">
                                     <div className="remember-choice-box">
                                         <input
                                             id="isGoing"
