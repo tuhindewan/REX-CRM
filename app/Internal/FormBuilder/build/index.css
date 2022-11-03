@@ -754,7 +754,7 @@ body.is-fullscreen-mode .get-mrm-header {
   margin-right: auto;
 }
 .get-mrm-block-editor__block-list .wp-block {
-  max-width: 840px;
+  max-width: 540px;
 }
 
 .pannel-toggle-btn-style, .mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button {
