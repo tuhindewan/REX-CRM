@@ -275,4 +275,22 @@ class ListController extends BaseController {
         return $contact;
     }
 
+
+    /**
+     * Function used to return all list to custom select dropdown
+     *
+     * @param void
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_all_to_custom_select(){
+
+        $groups = ContactGroupModel::get_all_to_custom_select( 'lists' );
+
+        if(isset($groups)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+    }
+
 }

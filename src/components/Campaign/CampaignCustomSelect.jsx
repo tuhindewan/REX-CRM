@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { getLists } from "../../services/List";
-import { getTags } from "../../services/Tag";
+import { getListsToDropDown } from "../../services/List";
+import { getTagsToDropDown } from "../../services/Tag";
 import CrossIcon from "../Icons/CrossIcon";
 import Search from "../Icons/Search";
 import OptionList from "./OptionList";
@@ -82,11 +82,11 @@ export default function CampaignCustomSelect(props) {
   };
   useEffect(() => {
     // Get lists
-    getLists().then((results) => {
+    getListsToDropDown().then((results) => {
       setLists(results.data);
     });
     // Get tags
-    getTags().then((results) => {
+    getTagsToDropDown().then((results) => {
       setTags(results.data);
     });
   }, []);
