@@ -327,18 +327,17 @@ export default function EditCampaign(props) {
       const isPublishValid = validatePublish(email);
       setIsPublishValid(isPublishValid);
     });
-
     const isValid = validate();
     setIsValid(isValid);
   }, [
     campaignTitle,
     recipientLists,
     recipientTags,
-    emailData[selectedEmailIndex]["email_subject"],
-    emailData[selectedEmailIndex]["email_preview_text"],
-    emailData[selectedEmailIndex]["sender_name"],
-    emailData[selectedEmailIndex]["sender_email"],
-    emailData[selectedEmailIndex].email_body,
+    emailData[selectedEmailIndex]?.email_subject,
+    emailData[selectedEmailIndex]?.email_preview_text,
+    emailData[selectedEmailIndex]?.sender_name,
+    emailData[selectedEmailIndex]?.sender_email,
+    emailData[selectedEmailIndex]?.email_body,
   ]);
 
   // function for adding new email in the sequence
@@ -656,8 +655,7 @@ export default function EditCampaign(props) {
                                 {recipientLists?.length} Lists.
                               </span>
                               <span className="recipients">
-                                {recipientLists?.length + recipientTags?.length}{" "}
-                                Recipients
+                                {recipientsCount} Recipients
                               </span>
                               {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                             </button>
@@ -683,7 +681,7 @@ export default function EditCampaign(props) {
                           <input
                             type="number"
                             name="delay_count"
-                            value={emailData[selectedEmailIndex]["delay_count"]}
+                            value={emailData[selectedEmailIndex]?.delay_count}
                             disabled={isReadonly}
                             onChange={(e) =>
                               handleEmailFieldsChange(
@@ -715,7 +713,7 @@ export default function EditCampaign(props) {
                             )
                           }
                           name="delay_value"
-                          value={emailData[selectedEmailIndex]["delay_value"]}
+                          value={emailData[selectedEmailIndex]?.delay_value}
                           disabled={isReadonly}
                         >
                           <option disabled={true} value="">
@@ -733,7 +731,7 @@ export default function EditCampaign(props) {
                     <input
                       type="text"
                       name="subject"
-                      value={emailData[selectedEmailIndex]["email_subject"]}
+                      value={emailData[selectedEmailIndex]?.email_subject}
                       onChange={(e) =>
                         handleEmailFieldsChange(e.target.value, "email_subject")
                       }
@@ -752,9 +750,7 @@ export default function EditCampaign(props) {
                     <input
                       type="text"
                       name="email_preview_text"
-                      value={
-                        emailData[selectedEmailIndex]["email_preview_text"]
-                      }
+                      value={emailData[selectedEmailIndex]?.email_preview_text}
                       onChange={(e) =>
                         handleEmailFieldsChange(
                           e.target.value,
@@ -780,7 +776,7 @@ export default function EditCampaign(props) {
                     <input
                       type="text"
                       name="senderName"
-                      value={emailData[selectedEmailIndex]["sender_name"]}
+                      value={emailData[selectedEmailIndex]?.sender_name}
                       onChange={(e) =>
                         handleEmailFieldsChange(e.target.value, "sender_name")
                       }
@@ -791,7 +787,7 @@ export default function EditCampaign(props) {
                       <input
                         type="email"
                         name="senderEmail"
-                        value={emailData[selectedEmailIndex]["sender_email"]}
+                        value={emailData[selectedEmailIndex]?.sender_email}
                         onChange={(e) =>
                           handleEmailFieldsChange(
                             e.target.value,

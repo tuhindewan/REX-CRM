@@ -104,6 +104,22 @@ class MRM_Subscribe_form
             }
         }
         $blocks = parse_blocks( $attributes['render_block'] );
+	    $block_html = '';
+	    $class      = '';
+	    foreach( $blocks as $block ) {
+		    if($block['blockName'] == 'core/columns'){
+			    if(!isset($block['attrs']['style']['color']['background'])){
+				    $class = 'custom-background';
+			    }
+		    }
+		    if($block['blockName'] == 'core/group'){
+			    if(!isset($block['attrs']['style']['color']['background'])){
+				    $class = 'custom-background';
+			    }
+		    }
+
+		    $block_html .= render_block( $block );
+	    }
         if( 0 == $form_id ){
             $html = '<div class="mintmrm">
                         <p>No form added</p>
@@ -112,7 +128,7 @@ class MRM_Subscribe_form
             if($show){
                 $html .= '<div class="mintmrm">
             <div id="mrm-'.$form_placement.'" class="mrm-form-wrapper mrm-'.$form_animation.' mrm-'.$form_placement.'">
-                <div class="mrm-form-wrapper-inner">';
+                <div class="mrm-form-wrapper-inner '.$class.'">';
                 if('default' != $form_placement){
                     $html .= '<span style="background:'.$form_close_background_color.'" class="mrm-form-close" >
                         <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="'.$form_close_button_color.'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
@@ -123,9 +139,7 @@ class MRM_Subscribe_form
                     <div class="mrm-form-overflow">
                         <form method="post" id="mrm-form">
                             <input hidden name="form_id" value="'.$attributes['form_id'].'" />';
-                foreach( $blocks as $block ) {
-                    $html .= render_block( $block );
-                }
+                $html .= $block_html;
                 $html .=   '</form>
                              <div class="response"></div>
                         </div>

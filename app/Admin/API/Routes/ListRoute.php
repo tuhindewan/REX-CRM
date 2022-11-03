@@ -136,6 +136,21 @@ class ListRoute{
                 ] ,
             ],
         ]);
+
+        register_rest_route($this->namespace, '/' . 'select-lists' . '/', [
+            
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_all_to_custom_select'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
     }
 
 }

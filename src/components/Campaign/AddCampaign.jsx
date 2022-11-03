@@ -437,10 +437,10 @@ export default function AddCampaign(props) {
                             <span className="lists">
                               {recipientLists.length} Lists.
                             </span>
-                            <span className="recipients">
+                            {/* <span className="recipients">
                               {recipientLists.length + recipientTags.length}{" "}
                               Recipients
-                            </span>
+                            </span> */}
                             {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                           </button>
                         )}

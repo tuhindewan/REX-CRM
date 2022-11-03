@@ -60,7 +60,8 @@ class CampaignEmailBuilderSchema {
             `email_body` longtext,
             `json_data` longtext,
             `created_at` TIMESTAMP NULL,
-            `updated_at` TIMESTAMP NULL
+            `updated_at` TIMESTAMP NULL,
+            INDEX `email_id_index` (`email_id` DESC)
          ) $charsetCollate;";
         dbDelta($sql);
     }

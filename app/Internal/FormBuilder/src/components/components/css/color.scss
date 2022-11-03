@@ -1,15 +1,15 @@
 .mrmTypography-field-color.mrmTypography-field {
   display: flex;
-  &.qubley-half {
+  &.mrmTypography-half {
     display: inline-flex;
     width: 50%;
     align-items: center;
 
-    &.qubley-half-first {
+    &.mrmTypography-half-first {
       padding-right: 7.5px;
     }
 
-    &.qubley-half-last {
+    &.mrmTypography-half-last {
       padding-left: 7.5px;
     }
   }

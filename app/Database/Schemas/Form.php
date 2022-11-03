@@ -47,6 +47,8 @@ class FormSchema implements Schema{
             `created_by` BIGINT(20),
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
+    		INDEX `form_id_index` (`id` DESC),
+    		INDEX `form_title_index` (`title` ASC),
             PRIMARY KEY (`id`)
          ) ";
     }

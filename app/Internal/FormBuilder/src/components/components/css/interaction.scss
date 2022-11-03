@@ -1,7 +1,7 @@
 .mrmTypography-interaction-view {
     // box-shadow: 0 0 10px 0 rgba(109,120,131,0.10);
 }
-.qubley-interaction-panel {
+.mrmTypography-interaction-panel {
         hr {
             margin: 1.5em -16px;
         }
@@ -123,7 +123,7 @@
             .mrmTypography-parent-item-container {
                 position: relative;
                 width: 100%;
-                &.qubley-action-mouse-on-item {
+                &.mrmTypography-action-mouse-on-item {
                     border-radius: 3px;
                     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1), 0 0 3px 1px #027af2c7, 0 0 0 0.5px rgba(255, 255, 255, 0.5);
                 }
@@ -550,21 +550,21 @@
         opacity: 0;
     }
 }
-.qubley-interaction-transform-origin {
+.mrmTypography-interaction-transform-origin {
     margin-bottom: 15px;
-    .qubley-interaction-transform-origin-label {
+    .mrmTypography-interaction-transform-origin-label {
         flex: 1;
         margin-bottom: 15px;
     }
 }
-  .qubley-tranform-origin-wrapper {
+  .mrmTypography-tranform-origin-wrapper {
       position: relative;
       display: flex;
       align-items: center;
         label {
             flex: 1;
         }
-        .qubley-transform-origin-controller {
+        .mrmTypography-transform-origin-controller {
             width: 100px;
             height: 100px;
             border: 1px solid #dfdfdf;
@@ -572,14 +572,14 @@
             justify-content: center;
             align-items: center;
             position: relative;
-                .qubley-transform-origin-inner-controller {
+                .mrmTypography-transform-origin-inner-controller {
                     display: inline-block;
                     justify-content: center;
                     align-items: center;
                     position: relative;
                     height: 80px;
                     width: 80px;
-                        .qubley-pointer {
+                        .mrmTypography-pointer {
                             position: absolute;
                             height: 12px;
                             width: 12px;
@@ -611,52 +611,52 @@
                                 }
                             }
                             
-                            .qubley-pointer-inner {
+                            .mrmTypography-pointer-inner {
                                 display: inline-block;
                                 background: #a5a5a5;
                                 border-radius: 50%;
                                 height: 4px;
                                 width: 4px;
                             }
-                            &.qubley-active-pointer {
+                            &.mrmTypography-active-pointer {
                                 background: rgba(218, 218, 218, 0.5);
-                                .qubley-pointer-inner {
+                                .mrmTypography-pointer-inner {
                                     background: #ff6060;
                                 }
                             }
-                            &.qubley-top-left {
+                            &.mrmTypography-top-left {
                                 left: 0;
                                 top: 0;
                             }
-                            &.qubley-top-center {
+                            &.mrmTypography-top-center {
                                 left: 46%;
                                 top: 0;
                             }
-                            &.qubley-top-right {
+                            &.mrmTypography-top-right {
                                 left: 86%;
                                 top: 0;
                             }
-                            &.qubley-right-center {
+                            &.mrmTypography-right-center {
                                 left: 86%;
                                 top: 46%;
                             }
-                            &.qubley-bottom-right {
+                            &.mrmTypography-bottom-right {
                                 left: 86%;
                                 top: 86%;
                             }
-                            &.qubley-bottom-left {
+                            &.mrmTypography-bottom-left {
                                 left: 0;
                                 top: 86%;
                             }
-                            &.qubley-bottom-center {
+                            &.mrmTypography-bottom-center {
                                 left: 46%;
                                 top: 86%;
                             }
-                            &.qubley-left-center {
+                            &.mrmTypography-left-center {
                                 left: 0;
                                 top: 46%;
                             }
-                            &.qubley-center-center {
+                            &.mrmTypography-center-center {
                                 left: 46%;
                                 top: 46%;
                             }

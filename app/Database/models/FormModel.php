@@ -213,7 +213,6 @@ class FormModel {
                 $results[] = !empty($entries) ? array_merge($query_result, $entries) : $query_result;
             }
 
-
             return array(
                 'data'        => $results,
                 'total_pages' => $total_pages,
