@@ -102,7 +102,9 @@ class CampaignSchema {
             `scheduled_at` TIMESTAMP NULL,
             `created_by` bigint(20) unsigned NULL,
             `created_at` TIMESTAMP NULL,
-            `updated_at` TIMESTAMP NULL
+            `updated_at` TIMESTAMP NULL,
+            INDEX `cid_index` (`id` DESC),
+            INDEX `ctitle_index` (`title` DESC)
          ) $charsetCollate;";
 
         dbDelta($sql);
@@ -126,7 +128,8 @@ class CampaignSchema {
             `meta_key` VARCHAR(50) NOT NULL,
             `meta_value` longtext,
             `created_at` TIMESTAMP NULL,
-            `updated_at` TIMESTAMP NULL
+            `updated_at` TIMESTAMP NULL,
+            INDEX `campaign_id_index` (`campaign_id` DESC),
          ) $charsetCollate;";
         dbDelta($sql);
     }
@@ -161,7 +164,8 @@ class CampaignSchema {
             `status` ENUM('draft', 'scheduled', 'sent') DEFAULT 'draft',
             `scheduled_at` TIMESTAMP NULL,
             `created_at` TIMESTAMP NULL,
-            `updated_at` TIMESTAMP NULL
+            `updated_at` TIMESTAMP NULL,
+            INDEX `campaign_id_index` (`campaign_id` DESC),
          ) $charsetCollate;";
 
         dbDelta($sql);

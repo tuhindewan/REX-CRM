@@ -94,4 +94,27 @@ class MessageModel {
             return NULL;
         }
     }
+
+    public static function get_messages( $contact_id ) {
+        global $wpdb;
+        $message_table_name = $wpdb->prefix . MessageSchema::$table_name;
+        $sql = $wpdb->prepare( "SELECT * FROM {$message_table_name} WHERE `contact_id` = %d", $contact_id );
+
+        try {
+            $messages = $wpdb->get_results( $sql, ARRAY_A );
+            $index = 0;
+
+            foreach( $messages as $message ) {
+                if( isset( $message['created_at'] ) ) {
+                    $messages[ $index ][ 'created_time' ] = $message['created_at'];
+                    $messages[ $index ][ 'created_at' ]   = human_time_diff( strtotime( $message[ 'created_at' ] ), current_time( 'timestamp' ) );
+                    $index++;
+                }
+            }
+            return $messages;
+        }
+        catch( \Exception $e ) {
+            return [];
+        }
+    }
 }
