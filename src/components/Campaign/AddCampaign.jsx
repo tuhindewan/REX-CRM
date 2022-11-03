@@ -54,8 +54,6 @@ export default function AddCampaign(props) {
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
-  const [previewTextPlaceholder, setPreviewTextPlaceholder] = useState("");
-  let previewRef = useRef(null );
 
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -64,6 +62,7 @@ export default function AddCampaign(props) {
   );
 
   const [previewPersonalization, setPreviewPersonalization] = useState(false);
+  const [subjectPersonalization, setSubjectPersonalization] = useState(false);
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -209,9 +208,7 @@ export default function AddCampaign(props) {
 
   // handler function for each text field change in each email sequence
   const handleEmailFieldsChange = async (e) => {
-    console.log('triggered-0');
     setEmailData((prevEmailData) => {
-      console.log('triggered');
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
@@ -339,24 +336,36 @@ export default function AddCampaign(props) {
     });
   };
 
+  // Set email subject text custom tag/placeholder
+  const handleSubjectPlaceholder = async ( placeholder ) => {
+    const prevData = emailData[selectedEmailIndex]?.subject;
+    const newData = prevData + ' ' + placeholder;
+
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      if (newData.length > 200) {
+        return copy;
+      }
+      copy[selectedEmailIndex]['subject'] = newData;
+      return copy;
+    });
+    validatePublish();
+  }
+
   // Set email preview text custom tag/placeholder
-  const handlePreviewPlaceholder = ( placeholder ) => {
+  const handlePreviewPlaceholder = async ( placeholder ) => {
     const prevData = emailData[selectedEmailIndex]?.preview;
     const newData = prevData + ' ' + placeholder;
-    const event = new Event( 'change', { bubbles: true, isTrusted: true } );
-    //setPreviewTextPlaceholder( newData );
-    /*console.log('prevData');
-    console.log(prevData);
-    console.log(newData);
-    console.log('event');
-    console.log(previewRef);
-    console.log('here-0');*/
-    previewRef.removeAttribute( 'value' );
-    console.log('here-1');
-    previewRef.setAttribute( 'value', newData );
-    console.log('here-2');
-    previewRef.dispatchEvent( event );
-    console.log('here-3');
+
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      if (newData.length > 200) {
+        return copy;
+      }
+      copy[selectedEmailIndex]['preview'] = newData;
+      return copy;
+    });
+    validatePublish();
   }
 
   return (
@@ -590,9 +599,28 @@ export default function AddCampaign(props) {
                     {emailData[selectedEmailIndex]?.subject.length}/200
                   </span>
                   <div className="setting-section">
-                    <div>
+                    <div
+                        onClick={() => {
+                          setSubjectPersonalization((prev) => !prev);
+                        }}
+                    >
                       <SettingIcon />
                     </div>
+                    <ul
+                        className={
+                          subjectPersonalization
+                              ? "mintmrm-dropdown show"
+                              : "mintmrm-dropdown"
+                        }
+                    >
+                      <div className="title">Personalization</div>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{first_name}}' )}>First name</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{last_name}}' )}>Last Name</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{email}}' )}>Email</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{city}}' )}>City</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{state}}' )}>State / Province</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{country}}' )}>Country</li>
+                    </ul>
                   </div>
                 </div>
                 <div className="email-preview input-item">
@@ -603,7 +631,6 @@ export default function AddCampaign(props) {
                     value={emailData[selectedEmailIndex]?.preview}
                     onChange={handleEmailFieldsChange}
                     placeholder="Write a summary of your email to display after the subject line"
-                    ref={ref => (previewRef = ref)}
                   />
                   <span>
                     {emailData[selectedEmailIndex]?.preview.length}/200
