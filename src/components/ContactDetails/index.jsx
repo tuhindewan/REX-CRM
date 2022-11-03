@@ -1351,7 +1351,7 @@ export default function ContactDetails() {
                     </div>
                     <div ref={selectListRef}>
                       <div className="list-wrapper">
-                        {contactData?.lists?.map((list, idx) => {
+                        {contactData?.lists?.map((list) => {
                           return (
                             <span className="single-list" key={list.id}>
                               {list.title}
@@ -1411,7 +1411,7 @@ export default function ContactDetails() {
                     </div>
                     <div ref={selectTagRef}>
                       <div className="tag-wrapper">
-                        {contactData?.tags?.map((tag, idx) => {
+                        {contactData?.tags?.map((tag) => {
                           return (
                             <span className="single-list" key={tag.id}>
                               {tag.title}
