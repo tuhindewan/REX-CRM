@@ -1,20 +1,23 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
+import ContactNavbar from "../components/ContactNavbar";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
 import TagIcon from "../components/Icons/TagIcon";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
+import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import LoadingIndicator from "../components/LoadingIndicator";
 import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
-import ContactNavbar from "../components/ContactNavbar";
-import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 const Tags = () => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
@@ -358,7 +361,13 @@ const Tags = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
-                    <p className={errors ? "error-message show" : "error-message"}>{errors?.tag}</p>
+                    <p
+                      className={
+                        errors ? "error-message show" : "error-message"
+                      }
+                    >
+                      {errors?.tag}
+                    </p>
                   </div>
                   <div className="contact-button-field">
                     <button

@@ -22,6 +22,7 @@ import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import Delete from "./Icons/Delete";
 
 export default function AllCampaigns() {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "campaigns");
   useGlobalStore.setState({
     hideGlobalNav: true,
