@@ -340,17 +340,17 @@ export default function AddCampaign(props) {
   };
 
   // Set email preview text custom tag/placeholder
-  const setPreviewPlaceholder = ( placeholder ) => {
+  const handlePreviewPlaceholder = ( placeholder ) => {
     const prevData = emailData[selectedEmailIndex]?.preview;
     const newData = prevData + ' ' + placeholder;
     const event = new Event( 'change', { bubbles: true, isTrusted: true } );
     //setPreviewTextPlaceholder( newData );
-    console.log('prevData');
+    /*console.log('prevData');
     console.log(prevData);
     console.log(newData);
     console.log('event');
     console.log(previewRef);
-    console.log('here-0');
+    console.log('here-0');*/
     previewRef.removeAttribute( 'value' );
     console.log('here-1');
     previewRef.setAttribute( 'value', newData );
@@ -624,12 +624,12 @@ export default function AddCampaign(props) {
                       }
                     >
                       <div className="title">Personalization</div>
-                      <li onClick={setPreviewPlaceholder.bind( this, '{first_name}' )}>First name</li>
-                      <li onClick={setPreviewPlaceholder.bind( this, '{last_name}' )}>Last Name</li>
-                      <li onClick={setPreviewPlaceholder.bind( this, '{email}' )}>Email</li>
-                      <li onClick={setPreviewPlaceholder.bind( this, '{city}' )}>City</li>
-                      <li onClick={setPreviewPlaceholder.bind( this, '{state}' )}>State / Province</li>
-                      <li onClick={setPreviewPlaceholder.bind( this, '{country}' )}>Country</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{first_name}}' )}>First name</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{last_name}}' )}>Last Name</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{email}}' )}>Email</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{city}}' )}>City</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{state}}' )}>State / Province</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{country}}' )}>Country</li>
                     </ul>
                   </div>
                 </div>
