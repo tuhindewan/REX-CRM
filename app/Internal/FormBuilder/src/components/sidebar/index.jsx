@@ -763,7 +763,7 @@ function Sidebar() {
             >
               <div className="single-settings">
                 <label className="settings-label">
-                  Close Icon
+                  Icon Color
                   <span className="mintmrm-tooltip">
                     <QuestionIcon />
                     <p> Choose a color for the <CrossIcon /> icon for form </p>
@@ -776,6 +776,9 @@ function Sidebar() {
                   enableAlpha
                   defaultValue={closeButtonColor}
                 />
+
+                <hr className="mrm-hr" />
+                
                 <ColorPalette
                   color={closeButtonColor}
                   onChange={setCloseButtonColor}
@@ -786,7 +789,7 @@ function Sidebar() {
 
               <div className="single-settings">
                 <label className="settings-label">
-                  Background
+                  Background Color
                   <span className="mintmrm-tooltip">
                     <QuestionIcon />
                     <p>
