@@ -262,11 +262,9 @@ class CampaignModel {
         global $wpdb;
         $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
-        $meta_query         = $wpdb->prepare("SELECT meta_key, meta_value FROM $campaign_meta_table  WHERE campaign_id = %d",array( $id ));
-        $meta_results       = json_decode(json_encode($wpdb->get_results($meta_query)), true);
+        $meta_results       = $wpdb->get_results($wpdb->prepare("SELECT meta_key, meta_value FROM $campaign_meta_table  WHERE campaign_id = %d",array( $id )), ARRAY_A);
 
         $campaign_meta = [];
-
         foreach($meta_results as $result){
             $campaign_meta[$result['meta_key']] = maybe_unserialize($result['meta_value']);
         }
@@ -323,7 +321,6 @@ class CampaignModel {
                                      FROM $campaign_emails_table  
                                      WHERE campaign_id = %d", $id);
         $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
-        // $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
         
         if (!empty($emails)) {
             $emails = array_map(function ($email) {
