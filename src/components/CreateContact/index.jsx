@@ -209,6 +209,24 @@ const CreateContact = (props) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const deleteSelectedList = (e, id) => {
+    const index = assignLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setAssignLists(assignLists.filter((item) => item.id != id));
+    }
+  };
+
+  const deleteSelectedTag = (e, id) => {
+    const index = assignTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setAssignTags(assignTags.filter((item) => item.id != id));
+    }
+  };
+
   return (
     <>
       <div className="create-contact">
@@ -308,7 +326,11 @@ const CreateContact = (props) => {
                           <span className="single-list" key={list.id}>
                             {list.title}
 
-                            <button className="close-list" title="Delete">
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={(e) => deleteSelectedList(e, list.id)}
+                            >
                               <CrossIcon />
                             </button>
                           </span>
@@ -346,7 +368,11 @@ const CreateContact = (props) => {
                           <span className="single-list" key={tag.id}>
                             {tag.title}
 
-                            <button className="close-list" title="Delete">
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={(e) => deleteSelectedTag(e, tag.id)}
+                            >
                               <CrossIcon />
                             </button>
                           </span>
