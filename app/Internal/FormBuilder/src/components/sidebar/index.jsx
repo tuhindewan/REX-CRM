@@ -521,8 +521,7 @@ function Sidebar() {
                     <span className="mintmrm-tooltip">
                       <QuestionIcon />
                       <p>
-                        Where do you want to send the user after form
-                        confirmation?
+                        Where do you want to send the user after form confirmation?
                       </p>
                     </span>
                   </label>
@@ -727,6 +726,36 @@ function Sidebar() {
               </div>
             </PanelBody>
 
+            {"default" !== formPosition && (
+              <PanelBody
+                title="Form Animation"
+                className="form-animation-settings"
+                initialOpen={false}
+              >
+                <div className="pannelbody-wrapper">
+                  <div className="single-settings">
+                    <label className="settings-label">
+                      Animation Type
+                      <span className="mintmrm-tooltip">
+                        <QuestionIcon />
+                        <p>Type of animation to show your form</p>
+                      </span>
+                    </label>
+
+                    <SelectControl
+                      value={formAnimation}
+                      options={[
+                        { label: "None", value: "none" },
+                        { label: "Fade In", value: "fade-in" },
+                        { label: "Slide In Up", value: "slide-in-up" },
+                      ]}
+                      onChange={(state) => setFormAnimation(state)}
+                    />
+                  </div>
+                </div>
+              </PanelBody>
+            )}
+            
             <PanelBody
               title="Close Button Color"
               className="form-layout-settings"
@@ -737,9 +766,7 @@ function Sidebar() {
                   Close Icon
                   <span className="mintmrm-tooltip">
                     <QuestionIcon />
-                    <p>
-                      Choose a color for the <CrossIcon /> icon for form
-                    </p>
+                    <p> Choose a color for the <CrossIcon /> icon for form </p>
                   </span>
                 </label>
 
@@ -783,35 +810,6 @@ function Sidebar() {
               </div>
             </PanelBody>
 
-            {"default" !== formPosition && (
-              <PanelBody
-                title="Form Animation"
-                className="form-animation-settings"
-                initialOpen={false}
-              >
-                <div className="pannelbody-wrapper">
-                  <div className="single-settings">
-                    <label className="settings-label">
-                      Animation Type
-                      <span className="mintmrm-tooltip">
-                        <QuestionIcon />
-                        <p>Type of animation to show your form</p>
-                      </span>
-                    </label>
-
-                    <SelectControl
-                      value={formAnimation}
-                      options={[
-                        { label: "None", value: "none" },
-                        { label: "Fade In", value: "fade-in" },
-                        { label: "Slide In Up", value: "slide-in-up" },
-                      ]}
-                      onChange={(state) => setFormAnimation(state)}
-                    />
-                  </div>
-                </div>
-              </PanelBody>
-            )}
 
             {/* <PanelBody
             title="Schedule"

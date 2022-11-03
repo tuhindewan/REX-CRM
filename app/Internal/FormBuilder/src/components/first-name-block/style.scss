@@ -42,6 +42,17 @@
         overflow: auto;
         overflow-x: hidden;
 
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+        &::-webkit-scrollbar-track {
+            background: #f2f5f8;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #6f6af8;
+            border-radius: 20px;
+        }
+
         .block-editor-block-card {
             border-bottom: 1px solid #e0e0e0;
             align-items: center;
@@ -81,6 +92,7 @@
                 width: calc(100% - 190px);
                 margin-bottom: 0;
                 padding-right: 10px;
+                text-transform: none;
             }
 
             .components-text-control__input {
@@ -182,6 +194,7 @@
                 line-height: 1.5;
                 letter-spacing: -0.01em;
                 color: #A7A8B3;
+                text-transform: none;
             }
         }
 
@@ -219,7 +232,7 @@
         }
 
         .mrm-switcher-block {
-            .components-base-control__field {
+            .components-flex {
                 flex-flow: row-reverse;
                 justify-content: space-between;
             }
