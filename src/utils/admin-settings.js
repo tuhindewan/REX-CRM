@@ -49,3 +49,62 @@ export function AdminNavMenuClassChange(page, url) {
     const wpWrap = document.querySelector("#wpwrap");
     wpWrap.classList.remove("wp-responsive-open");
 }
+
+export function DateTime(create_time ,updated_time){
+    const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthIdx = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    const monthFullIdx = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+
+    const dateFormat = new Date(updated_time);
+    const createDate = new Date(create_time);
+
+    const day = weekDay[dateFormat.getDay()];
+    const month = monthIdx[dateFormat.getMonth()];
+    const date = dateFormat.getDate();
+    const year = dateFormat.getFullYear();
+    const hour = dateFormat.getHours();
+    const minute = dateFormat.getMinutes();
+
+    const createMonth = monthFullIdx[createDate.getMonth()];
+    const createDay = createDate.getDate();
+    const createYear = createDate.getFullYear();
+    const  DateFormat = {
+        day : day,
+        month : month,
+        date : date,
+        year : year,
+        hour : hour,
+        minute : minute,
+        createMonth : createMonth,
+        createDay : createDay,
+        createYear : createYear,
+    };
+
+    return DateFormat;
+}
