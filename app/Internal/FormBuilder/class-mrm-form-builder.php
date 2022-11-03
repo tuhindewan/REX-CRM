@@ -59,20 +59,16 @@ Class FormBuilderHelper {
 
    public function get_block_editor_settings() {
        $theme_color = $this->get_palette_theme_color();
-	   $allowedBlocks = array(
+	   $allowed_blocks_for_editor = array(
 		   'core/paragraph',
 		   'core/heading',
 		   'core/image',
 		   'core/columns',
-		   'core/list',
 		   'core/html',
 		   'core/spacer',
 		   'core/subhead',
-		   'core/table',
-		   'core/verse',
 		   'core/group',
 		   'core/column',
-		   'core/rss',
 		   'core/cover',
 		   'mrmformfield/email-field-block',
 		   'mrmformfield/first-name-block',
@@ -81,12 +77,12 @@ Class FormBuilderHelper {
 		   'mrmformfield/mrm-custom-field',
 	   );
 
-	   $allowedBlocks = apply_filters('mrm/add_form_builder_blocks_support',$allowedBlocks);
+	   $allowed_blocks = apply_filters('mrm/add_form_builder_blocks_support',$allowed_blocks_for_editor);
 
         $settings = array(
             'disableCustomColors'    => get_theme_support( 'disable-custom-colors' ),
             'disableCustomFontSizes' => get_theme_support( 'disable-custom-font-sizes' ),
-            'allowedBlockTypes'                 => $allowedBlocks,
+            'allowedBlockTypes'      => $allowedBlocks,
             'isRTL'                  => is_rtl(),
             '__experimentalBlockPatterns'       => [],
             '__experimentalFeatures'            => [
@@ -94,7 +90,7 @@ Class FormBuilderHelper {
                 'border'          => [
                     'color'  => false,
                     'radius' => true,
-                    'style'  => false,
+                    'style'  => true,
                     'width'  => false
                 ],
                 'color'           => [
@@ -123,18 +119,6 @@ Class FormBuilderHelper {
                     'textTransform'  => true,
                     'fontSize'       => true
                 ],
-                'blocks'          => [
-                    'core/button' => [
-                        'border'     => [
-                            'radius' => true,
-                            "style"  => true,
-                            "width"  => true
-                        ],
-                        'typography' => [
-                            'fontSizes' => []
-                        ]
-                    ]
-                ]
             ],
 //            '__experimentalSetIsInserterOpened' => true,
             'disableCustomGradients'            => true,
