@@ -59,9 +59,34 @@ Class FormBuilderHelper {
 
    public function get_block_editor_settings() {
        $theme_color = $this->get_palette_theme_color();
+	   $allowedBlocks = array(
+		   'core/paragraph',
+		   'core/heading',
+		   'core/image',
+		   'core/columns',
+		   'core/list',
+		   'core/html',
+		   'core/spacer',
+		   'core/subhead',
+		   'core/table',
+		   'core/verse',
+		   'core/group',
+		   'core/column',
+		   'core/rss',
+		   'core/cover',
+		   'mrmformfield/email-field-block',
+		   'mrmformfield/first-name-block',
+		   'mrmformfield/last-name-block',
+		   'mrmformfield/mrm-button-block',
+		   'mrmformfield/mrm-custom-field',
+	   );
+
+	   $allowedBlocks = apply_filters('mrm/add_form_builder_blocks_support',$allowedBlocks);
+
         $settings = array(
             'disableCustomColors'    => get_theme_support( 'disable-custom-colors' ),
             'disableCustomFontSizes' => get_theme_support( 'disable-custom-font-sizes' ),
+            'allowedBlockTypes'                 => $allowedBlocks,
             'isRTL'                  => is_rtl(),
             '__experimentalBlockPatterns'       => [],
             '__experimentalFeatures'            => [
