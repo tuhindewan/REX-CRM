@@ -4,6 +4,7 @@ import DragAndDrop from "../components/DragAndDrop";
 import ImportSVG from "../components/Icons/ImportSVG";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
+import {ClearWarning} from "../utils/admin-notification";
 export default function ImportContactFile() {
   const navigate = useNavigate();
   // stores the selected file reference
@@ -27,10 +28,7 @@ export default function ImportContactFile() {
       } else {
         setShowWarning("block");
         setMessage("File Format Not Supported.");
-        const timer = setTimeout(() => {
-          setShowWarning("none");
-        }, 3000);
-        return () => clearTimeout(timer);
+        ClearWarning('none',setShowWarning)
       }
     } catch (e) {
     }
@@ -63,10 +61,7 @@ export default function ImportContactFile() {
     } else {
       setShowWarning("block");
       setMessage(resJson.message);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearWarning('none',setShowWarning)
     }
   }
   const routeChange = () => {

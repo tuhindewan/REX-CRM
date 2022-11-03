@@ -13,6 +13,8 @@ import { deleteMultipleListsItems, deleteSingleList, submitList, updateList } fr
 import LoadingIndicator from "../components/LoadingIndicator";
 import ContactNavbar from "../components/ContactNavbar";
 import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
+import {ClearNotification} from "../utils/admin-notification";
+
 
 const Lists = () => {
   // showCreate shows the create form if true
@@ -240,10 +242,7 @@ const Lists = () => {
       }
     }
     getLists();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   // Get field id from child component

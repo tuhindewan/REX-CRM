@@ -4,6 +4,7 @@ import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
 import WarningNotification from "../WarningNotification";
+import {  ClearNotificationWithWarring } from "../../utils/admin-notification";
 export default function AddItems(props) {
   const {
     selected,
@@ -76,11 +77,7 @@ export default function AddItems(props) {
     } catch (e) {
     } finally {
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-        props.setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
     }
   };
 
@@ -163,11 +160,7 @@ export default function AddItems(props) {
     } catch (e) {
     } finally {
       setLoading(false);
-      const timer = setTimeout(() => {
-        props.setShowNotification("none");
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
     }
   };
 

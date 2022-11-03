@@ -15,6 +15,7 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
+import {  ClearNotification } from "../../utils/admin-notification";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -143,10 +144,7 @@ export default function AddCampaign(props) {
         setShowWarning("block");
         setMessage(response?.message);
       }
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     });
   };
 

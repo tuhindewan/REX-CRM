@@ -4,6 +4,8 @@ import DeletePopup from "../DeletePopup";
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
+import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
+
 
 export default function SingleActivityFeed(props) {
   const { refresh, setRefresh } = props;
@@ -30,10 +32,7 @@ export default function SingleActivityFeed(props) {
           setMessage(response?.message);
           setRefresh(!refresh);
         }
-        const timer = setTimeout(() => {
-          setShowNotification("none");
-        }, 3000);
-        return () => clearTimeout(timer);
+        ClearNotification('none',setShowNotification)
       });
     }
     setIsDelete("none");

@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
+import {ClearWarning} from "../utils/admin-notification";
 
 export default function ImportContactRaw() {
   const navigate = useNavigate();
@@ -44,10 +45,7 @@ export default function ImportContactRaw() {
     } else {
       setShowWarning("block");
       setMessage(resJson.message);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearWarning('none',setShowWarning)
     }
   }
 

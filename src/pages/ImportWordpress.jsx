@@ -4,6 +4,7 @@ import ColumnItems from "../components/ContactDetails/ColumnItems";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
 import { getWordPressRoles, submitWordPressRoles } from "../services/Import";
+import { ClearWarning } from "../utils/admin-notification";
 
 export default function ImportWordpress() {
   const navigate = useNavigate();
@@ -57,10 +58,7 @@ export default function ImportWordpress() {
       } else {
         setShowWarning("block");
         setMessage(response.message);
-        const timer = setTimeout(() => {
-          setShowWarning("none");
-        }, 3000);
-        return () => clearTimeout(timer);
+        ClearWarning('none',setShowWarning)
       }
     });
   };

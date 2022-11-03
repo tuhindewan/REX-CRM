@@ -7,7 +7,7 @@ import Select from "./Import/Select";
 import SelectDropdown from "./SelectDropdown";
 import WarningNotification from "./WarningNotification";
 import ListenForOutsideClicks from "./ListenForOutsideClicks";
-
+import { ClearNotification } from "../utils/admin-notification";
 export default function SelectFieldsMap() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -124,10 +124,7 @@ export default function SelectFieldsMap() {
         setMessage(resJson.message);
       }
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     } catch (e) {
       setLoading(false);
     }

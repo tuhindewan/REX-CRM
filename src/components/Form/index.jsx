@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import { AddSuccessNotification, ClearNotification,} from "../../utils/admin-notification";
 import AlertPopup from "../AlertPopup";
 import DeletePopup from "../DeletePopup";
 import CopyIcon from "../Icons/CopyIcon";
@@ -152,10 +153,7 @@ export default function FormIndex(props) {
       }
     }
     getForms();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh, sortBy]);
 
   // confirmation for delete and set form id to prepare deletation
@@ -287,10 +285,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     } else {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
@@ -315,10 +310,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 
@@ -328,12 +320,11 @@ export default function FormIndex(props) {
     copyText.select();
     //deprecated - can be changed with notification.clipboard (only for trusted sites)
     document.execCommand("copy");
-    setShowNotification("block");
-    setMessage("Shortcode copied ! ");
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+
+    AddSuccessNotification({
+      message : setMessage("Shortcode copied ! "),
+      event : setShowNotification
+    })
   };
 
   const redirectFormBuilder = () => {

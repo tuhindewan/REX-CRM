@@ -20,6 +20,8 @@ import PublishAlert from "./PublishAlert";
 import SuccessfulNotification from "./SuccessfulNotification";
 import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import Delete from "./Icons/Delete";
+import { ClearNotification } from "../utils/admin-notification";
+
 
 export default function AllCampaigns() {
   AdminNavMenuClassChange("mrm-admin", "campaigns");
@@ -63,10 +65,7 @@ export default function AllCampaigns() {
       setTotalPages(results.total_pages);
       setShowLoader(false);
     });
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh]);
 
   // Multiple selection confirmation
@@ -204,10 +203,7 @@ export default function AllCampaigns() {
       setIsUpdate("none");
       const isValid = validate();
       setIsValid(isValid);
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 

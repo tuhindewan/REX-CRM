@@ -34,6 +34,7 @@ import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 import { DateTime } from "../../utils/admin-settings";
+import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -337,10 +338,7 @@ export default function ContactDetails() {
       }
     }
 
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   //to open input field to add new tag to a contact
@@ -421,10 +419,7 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   // Send Double opt-in email
@@ -449,11 +444,7 @@ export default function ContactDetails() {
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-      setShowWarning("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
   };
 
   const handleDelete = () => {
@@ -501,10 +492,7 @@ export default function ContactDetails() {
       setMessage(resJson.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   const selectTags = () => {
