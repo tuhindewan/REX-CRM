@@ -57,6 +57,7 @@ export default function ContactDetails() {
   const [contactData, setContactData] = useState({});
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
+  const [refreshFeed, setRefreshFeed] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);
   const [isEmailForm, setIsEmailForm] = useState(true);
@@ -222,6 +223,24 @@ export default function ContactDetails() {
       setCustomFields(results.data);
     });
   }, []);
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
+        setShowLoader(false);
+        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
+      }
+    }
+
+    getData();
+  }, [refreshFeed]);
 
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
@@ -1273,9 +1292,11 @@ export default function ContactDetails() {
                         ) : (
                           <SingleActivityFeed
                             notes={contactData?.notes}
+                            messages={contactData?.messages}
+                            activities={contactData?.activities}
                             contactId={contactData?.id}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
+                            refresh={refreshFeed}
+                            setRefresh={setRefreshFeed}
                           />
                         )}
                       </div>
@@ -1458,8 +1479,8 @@ export default function ContactDetails() {
               isCloseNote={isCloseNote}
               setIsCloseNote={setIsCloseNote}
               contactID={id}
-              refresh={refresh}
-              setRefresh={setRefresh}
+              refresh={refreshFeed}
+              setRefresh={setRefreshFeed}
             />
           </div>
         )}

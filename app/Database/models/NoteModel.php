@@ -183,7 +183,7 @@ class NoteModel {
         global $wpdb;
         $table_name = $wpdb->prefix . ContactNoteSchema::$table_name;
 
-        return $wpdb->get_row( $wpdb->prepare( "SELECT id, description FROM {$table_name} WHERE id = %d", array($id) ), ARRAY_A );
+        return $wpdb->get_row( $wpdb->prepare( "SELECT id, description, type FROM {$table_name} WHERE id = %d", array($id) ), ARRAY_A );
     }
 
 

@@ -214,7 +214,7 @@ export default function ContactListTable(props) {
     } else {
       setIsFilter(false);
     }
-  }, [filterRequest, filterPage, filterCount, filterSearch]);
+  }, [filterRequest, filterPage, filterSearch]);
 
   useEffect(() => {
     async function getData() {
@@ -236,17 +236,19 @@ export default function ContactListTable(props) {
         });
     }
 
-    // Get lists
-    getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
+    if (false == isFilter) {
+      // Get lists
+      getLists().then((results) => {
+        results.data.map(function () {
+          setLists(results.data);
+        });
       });
-    });
 
-    // Get tags
-    getTags().then((results) => {
-      setTags(results.data);
-    });
+      // Get tags
+      getTags().then((results) => {
+        setTags(results.data);
+      });
+    }
 
     if (false == isFilter) getData();
 
@@ -855,27 +857,25 @@ export default function ContactListTable(props) {
               </table>
             </div>
           </div>
-          {totalPages > 1 && (
-            <div>
-              {false === isFilter ? (
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              ) : (
-                <Pagination
-                  currentPage={filterPage}
-                  pageSize={filterPerPage}
-                  onPageChange={setFilterPage}
-                  totalCount={filterCount}
-                  totalPages={filterTotalPages}
-                />
-              )}
-            </div>
-          )}
+          <div>
+            {false === isFilter ? (
+              <Pagination
+                currentPage={page}
+                pageSize={perPage}
+                onPageChange={setPage}
+                totalCount={count}
+                totalPages={totalPages}
+              />
+            ) : (
+              <Pagination
+                currentPage={filterPage}
+                pageSize={filterPerPage}
+                onPageChange={setFilterPage}
+                totalCount={filterCount}
+                totalPages={filterTotalPages}
+              />
+            )}
+          </div>
         </>
       )}
       <div className="mintmrm-container" style={{ display: showAlert }}>

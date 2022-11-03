@@ -66,6 +66,7 @@ export default function AddCampaign(props) {
   );
 
   const [previewPersonalization, setPreviewPersonalization] = useState(false);
+  const [subjectPersonalization, setSubjectPersonalization] = useState(false);
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -339,6 +340,38 @@ export default function AddCampaign(props) {
     });
   };
 
+  // Set email subject text custom tag/placeholder
+  const handleSubjectPlaceholder = async ( placeholder ) => {
+    const prevData = emailData[selectedEmailIndex]?.subject;
+    const newData = prevData + ' ' + placeholder;
+
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      if (newData.length > 200) {
+        return copy;
+      }
+      copy[selectedEmailIndex]['subject'] = newData;
+      return copy;
+    });
+    validatePublish();
+  }
+
+  // Set email preview text custom tag/placeholder
+  const handlePreviewPlaceholder = async ( placeholder ) => {
+    const prevData = emailData[selectedEmailIndex]?.preview;
+    const newData = prevData + ' ' + placeholder;
+
+    setEmailData((prevEmailData) => {
+      const copy = [...prevEmailData];
+      if (newData.length > 200) {
+        return copy;
+      }
+      copy[selectedEmailIndex]['preview'] = newData;
+      return copy;
+    });
+    validatePublish();
+  }
+
   return (
     <>
       <div className="mintmrm-add-campaign">
@@ -437,10 +470,10 @@ export default function AddCampaign(props) {
                             <span className="lists">
                               {recipientLists.length} Lists.
                             </span>
-                            <span className="recipients">
+                            {/* <span className="recipients">
                               {recipientLists.length + recipientTags.length}{" "}
                               Recipients
-                            </span>
+                            </span> */}
                             {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                           </button>
                         )}
@@ -558,9 +591,28 @@ export default function AddCampaign(props) {
                     {emailData[selectedEmailIndex]?.subject.length}/200
                   </span>
                   <div className="setting-section">
-                    <div>
+                    <div
+                        onClick={() => {
+                          setSubjectPersonalization((prev) => !prev);
+                        }}
+                    >
                       <SettingIcon />
                     </div>
+                    <ul
+                        className={
+                          subjectPersonalization
+                              ? "mintmrm-dropdown show"
+                              : "mintmrm-dropdown"
+                        }
+                    >
+                      <div className="title">Personalization</div>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{first_name}}' )}>First name</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{last_name}}' )}>Last Name</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{email}}' )}>Email</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{city}}' )}>City</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{state}}' )}>State / Province</li>
+                      <li onClick={handleSubjectPlaceholder.bind( this, '{{country}}' )}>Country</li>
+                    </ul>
                   </div>
                 </div>
                 <div className="email-preview input-item">
@@ -591,12 +643,12 @@ export default function AddCampaign(props) {
                       }
                     >
                       <div className="title">Personalization</div>
-                      <li>First name</li>
-                      <li>Last Name</li>
-                      <li>Email</li>
-                      <li>City</li>
-                      <li>State / Province</li>
-                      <li>Country</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{first_name}}' )}>First name</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{last_name}}' )}>Last Name</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{email}}' )}>Email</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{city}}' )}>City</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{state}}' )}>State / Province</li>
+                      <li onClick={handlePreviewPlaceholder.bind( this, '{{country}}' )}>Country</li>
                     </ul>
                   </div>
                 </div>

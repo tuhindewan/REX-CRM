@@ -8,6 +8,7 @@ use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
+use Mint\MRM\Utilites\Helper\ContactData;
 
 class CampaignsBackgroundProcess
 {
@@ -182,15 +183,17 @@ class CampaignsBackgroundProcess
                     $email_builder 	= CampaignEmailBuilderModel::get( $scheduled_email_id );
 					$email 			= CampaignModel::get_campaign_email_by_id( $campaign_id, $scheduled_email_id);
                     $email_body 	= isset( $email_builder[ 'email_body' ] ) 	? $email_builder[ 'email_body' ] : '';
-                    $sender_email 	= $email->sender_email;
-                    $sender_name 	= $email->sender_name;
-                    $email_subject 	= $email->email_subject;
+                    $sender_email 	= isset( $email->sender_email ) ? $email->sender_email : '';
+                    $sender_name 	= isset( $email->sender_name ) ? $email->sender_name : '';
+                    $email_subject 	= isset( $email->email_subject ) ? self::update_dynamic_placeholders( $email->email_subject, $contact_id ) : '';
+                    $email_preview 	= isset( $email->email_preview_text ) ? self::update_dynamic_placeholders( $email->email_preview_text, $contact_id ) : '';
 
                     $from = 'From: '. $sender_name;
                     $headers[] = $from . ' <' . $sender_email . '>';
                     $headers[] = 'Reply-To: ' . $sender_email;
 
                     $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
+
                     if( $email_sent ) {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
                     }
@@ -387,4 +390,19 @@ class CampaignsBackgroundProcess
 		// Deal with large (float) values which run into the maximum integer size.
 		return min( $bytes, PHP_INT_MAX );
 	}
+
+    /**
+     * @desc Replace custom placeholders from email subject
+     * @param string $email_subject
+     * @param int $contact_id
+     * @return array|string|string[]
+     * @since 1.0.0
+     */
+    private function update_dynamic_placeholders( string $data, int $contact_id ) {
+        $data = str_replace( '{{first_name}}', ContactData::get_info( $contact_id, 'first_name' ), $data );
+        $data = str_replace( '{{last_name}}', ContactData::get_info( $contact_id, 'last_name' ), $data );
+        $data = str_replace( '{{email}}', ContactData::get_info( $contact_id, 'email' ), $data );
+        $data = str_replace( '{{city}}', ContactData::get_meta( $contact_id, 'city' ), $data );
+        return $data;
+    }
 }

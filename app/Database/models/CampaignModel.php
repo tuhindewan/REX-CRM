@@ -2,6 +2,7 @@
 
 namespace Mint\MRM\DataBase\Models;
 
+use Mint\MRM\DataBase\Tables\CampaignEmailBuilderSchema;
 use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\MRM\DataStores\Campaign;
 use Mint\Mrm\Internal\Traits\Singleton;
@@ -203,13 +204,11 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
+        $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
-        $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table WHERE id = %d", $id );
+        $select_query       = $wpdb->prepare("SELECT * FROM $campaign_table as CT LEFT JOIN $campaign_meta_table as CMT on CT.id = CMT.campaign_id WHERE CT.id = %d", $id );
         $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
-        $campaign_meta      = self::get_campaign_meta( $id );
-        $campaign_email     = self::get_campaign_email( $id );
-        $campaign['meta']   = $campaign_meta;
-        $campaign['emails'] = $campaign_email;
+        $campaign['emails']    = self::get_campaign_email( $id );
         return $campaign;
     }
 
@@ -228,14 +227,16 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-        $search_terms = null;
 
-		if ( ! empty( $search ) ) {
+        // Prepare serach terms for query
+        $search_terms = null;
+		if ( !empty( $search ) ) {
             $search = $wpdb->esc_like($search);
             $search_terms = "WHERE (`title` LIKE '%%$search%%')";
 		}
+        
         // Prepare sql results for list view
-        $results     =  $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
+        $results     = $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
             
         $count       = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $campaign_table $search_terms" ) );
         $total_pages = ceil($count / $limit);
@@ -260,11 +261,9 @@ class CampaignModel {
         global $wpdb;
         $campaign_meta_table = $wpdb->prefix . CampaignSchema::$campaign_meta_table;
 
-        $meta_query         = $wpdb->prepare("SELECT meta_key, meta_value FROM $campaign_meta_table  WHERE campaign_id = %d",array( $id ));
-        $meta_results       = json_decode(json_encode($wpdb->get_results($meta_query)), true);
+        $meta_results       = $wpdb->get_results($wpdb->prepare("SELECT meta_key, meta_value FROM $campaign_meta_table  WHERE campaign_id = %d",array( $id )), ARRAY_A);
 
         $campaign_meta = [];
-
         foreach($meta_results as $result){
             $campaign_meta[$result['meta_key']] = maybe_unserialize($result['meta_value']);
         }
@@ -313,22 +312,26 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_emails_table = $wpdb->prefix . CampaignSchema::$campaign_emails_table;
+        $email_builder_table    = $wpdb->prefix . CampaignEmailBuilderSchema::$table_name;
 
-        $campaign_emails_query = $wpdb->prepare("SELECT 
-                                    id,delay_count,delay_value,sender_email,
-                                    sender_name,email_index,email_subject,email_preview_text,email_json,
-                                    template_id,email_body, created_at, updated_at
-                                     FROM $campaign_emails_table  
-                                     WHERE campaign_id = %d", $id);
-        $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
-        // $first_email_id = isset($emails[0]['id']) ? $emails[0]['id'] : "";
+        $campaign_emails_query = $wpdb->prepare("SELECT
+                                               CET.id, delay, delay_count, delay_value,
+                                               send_time, sender_email, sender_name,
+                                               email_index, email_subject, email_preview_text,
+                                               template_id, CET.status, CET.email_json, scheduled_at,
+                                               EBT.status as ebt_status, EBT.email_body as body_data, EBT.json_data
+                                               FROM $campaign_emails_table
+                                               as CET LEFT JOIN $email_builder_table
+                                               as EBT
+                                               on CET.id = EBT.email_id
+                                               WHERE CET.campaign_id = %d", $id);
+       $emails = $wpdb->get_results($campaign_emails_query, ARRAY_A);
         
         if (!empty($emails)) {
             $emails = array_map(function ($email) {
-                $email_id  = isset( $email['id'] ) ? $email['id'] : "";
-                $email_builder = CampaignEmailBuilderModel::get( $email_id );
+                $email_body    = isset($email['body_data']) ? $email['body_data'] : "";
                 $email['email_json'] = unserialize($email['email_json']);  //phpcs:ignore
-                $email['email_body'] = isset( $email_builder['email_body'] ) ? $email_builder['email_body'] : "";        //phpcs:ignore
+                $email['email_body'] = maybe_unserialize($email_body);     //phpcs:ignore
                 return $email;
             }, $emails);
         }
