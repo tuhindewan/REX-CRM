@@ -210,6 +210,8 @@ const CreateContact = (props) => {
 
   return (
     <>
+      {console.log(assignTags)}
+      {console.log(assignLists)}
       <div className="create-contact">
         <div className="contact-container">
           <h2 className="conatct-heading">Add Contact</h2>
