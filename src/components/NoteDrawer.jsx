@@ -19,7 +19,6 @@ export default function NoteDrawer(props) {
     type: "MRM Note",
     created_by: `${window.MRM_Vars.current_userID}`,
   });
-
   useEffect(() => {
     if (props?.noteId) {
       setShowLoader(true);
@@ -64,7 +63,6 @@ export default function NoteDrawer(props) {
     event.preventDefault();
     let result;
     if (isEdit) {
-      note.created_by = `${window.MRM_Vars.current_userID}`;
       result = updateNote(note, props.contactId);
     } else {
       result = submitNote(note, props.contactID);
@@ -77,17 +75,20 @@ export default function NoteDrawer(props) {
         setShowNotification("block");
         setMessage(response?.message);
         setIsCloseNote(!isCloseNote);
-        setNote({
-          description: "",
-          title: "MRM Note",
-          type: "MRM Note",
-        });
+        if (!isEdit) {
+          setNote({
+            description: "",
+            title: "MRM Note",
+            type: "MRM Note",
+          });
+        }
         setErrors({});
         setRefresh(!refresh);
         const timer = setTimeout(() => {
           setShowNotification("none");
         }, 3000);
         setAddNoteLoader(false);
+        setShowLoader(false);
 
         return () => clearTimeout(timer);
       } else {
@@ -159,12 +160,21 @@ export default function NoteDrawer(props) {
                       </p>
                       {/* <Smile />
               <Attachment /> */}
-                      <button type="submit" className="add-btn mintmrm-btn ">
-                        Add Note
-                        {addNoteLoader && (
-                          <span className="mintmrm-loader"></span>
-                        )}
-                      </button>
+                      {isEdit ? (
+                        <button type="submit" className="add-btn mintmrm-btn ">
+                          Update Note
+                          {addNoteLoader && (
+                            <span className="mintmrm-loader"></span>
+                          )}
+                        </button>
+                      ) : (
+                        <button type="submit" className="add-btn mintmrm-btn ">
+                          Add Note
+                          {addNoteLoader && (
+                            <span className="mintmrm-loader"></span>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </form>
