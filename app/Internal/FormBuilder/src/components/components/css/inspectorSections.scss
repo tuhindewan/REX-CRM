@@ -1,6 +1,6 @@
-.qubely-block-sections{
+.mrmTypography-block-sections{
   position: relative;
-  button.qubely-block-refresh{
+  button.mrmTypography-block-refresh{
     position: absolute;
     top: -41px;
     right: 20px;
@@ -16,10 +16,10 @@
     &:focus{
       outline: none;
     }
-    &.qubely-is-loading{
-      animation: qubelySync 1s linear infinite;
+    &.mrmTypography-is-loading{
+      animation: mrmTypographySync 1s linear infinite;
     }
-    &.qubely-done {
+    &.mrmTypography-done {
       color: #00cf00;
       span.fas::before{
         content: "\f00c";
@@ -28,7 +28,7 @@
   }
 }
 
-@keyframes qubelySync {
+@keyframes mrmTypographySync {
   from{
     transform: rotate(0deg);
   }
@@ -37,7 +37,7 @@
   }
 }
 
-.qubely-block-section{
+.mrmTypography-block-section{
   position: relative;
   margin-bottom: 10px;
   border-radius: 5px;
@@ -47,7 +47,7 @@
   img{
     display: block;
   }
-  .qubely-block-section-btns{
+  .mrmTypography-block-section-btns{
     position: absolute;
     width: 100%;
     height: 100%;
@@ -80,7 +80,7 @@
     }
   }
   &:hover{
-    .qubely-block-section-btns{
+    .mrmTypography-block-section-btns{
       opacity: 1;
       visibility: visible;
     }

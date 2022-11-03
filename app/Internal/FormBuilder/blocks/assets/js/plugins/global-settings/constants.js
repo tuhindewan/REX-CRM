@@ -9,7 +9,7 @@ export const ADDNEWDEFAULT = {
                 openTypography: 1,
             },
             style: [{
-                selector: '{{QUBELY}} h1'
+                selector: '{{mrmTypography}} h1'
             }]
         },
         {
@@ -18,7 +18,7 @@ export const ADDNEWDEFAULT = {
                 openTypography: 1,
             },
             style: [{
-                selector: '{{QUBELY}} h2'
+                selector: '{{mrmTypography}} h2'
             }]
         },
         {
@@ -27,7 +27,7 @@ export const ADDNEWDEFAULT = {
                 openTypography: 1,
             },
             style: [{
-                selector: '{{QUBELY}} h3'
+                selector: '{{mrmTypography}} h3'
             }]
         },
         {
@@ -36,7 +36,7 @@ export const ADDNEWDEFAULT = {
                 openTypography: 1,
             },
             style: [{
-                selector: '{{QUBELY}} h4'
+                selector: '{{mrmTypography}} h4'
             }]
         },
         {
@@ -45,7 +45,7 @@ export const ADDNEWDEFAULT = {
                 openTypography: 1,
             },
             style: [{
-                selector: '{{QUBELY}} h5'
+                selector: '{{mrmTypography}} h5'
             }]
         },
         {
@@ -54,7 +54,7 @@ export const ADDNEWDEFAULT = {
                 openTypography: 1,
             },
             style: [{
-                selector: '{{QUBELY}} h6'
+                selector: '{{mrmTypography}} h6'
             }]
         }
     ],

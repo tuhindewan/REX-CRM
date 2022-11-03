@@ -18,6 +18,8 @@ import LoadingIndicator from "./LoadingIndicator";
 import Pagination from "./Pagination";
 import PublishAlert from "./PublishAlert";
 import SuccessfulNotification from "./SuccessfulNotification";
+import ThreeDotIcon from "./Icons/ThreeDotIcon";
+import Delete from "./Icons/Delete";
 
 export default function AllCampaigns() {
   // Admin active menu selection
@@ -245,6 +247,27 @@ export default function AllCampaigns() {
                     />
                   </span>
 
+                  <div className="bulk-action">
+                    {/* show more options section */}
+                    <button
+                        className="more-option"
+                        onClick={() => setShowMoreOptions(!showMoreOptions)}
+                    >
+                      <ThreeDotIcon />
+
+                      <ul
+                          className={
+                            showMoreOptions
+                                ? "select-option mintmrm-dropdown show"
+                                : "select-option mintmrm-dropdown"
+                          }
+                      >
+                        <li onClick={deleleMultipleCampaign}>
+                          <Delete /> Delete Selected
+                        </li>
+                      </ul>
+                    </button>
+                  </div>
                   {/* <FilterBox
                     label="Status"
                     name="Status"

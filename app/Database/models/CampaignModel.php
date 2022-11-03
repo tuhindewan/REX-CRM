@@ -228,14 +228,16 @@ class CampaignModel {
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
-        $search_terms = null;
 
-		if ( ! empty( $search ) ) {
+        // Prepare serach terms for query
+        $search_terms = null;
+		if ( !empty( $search ) ) {
             $search = $wpdb->esc_like($search);
             $search_terms = "WHERE (`title` LIKE '%%$search%%')";
 		}
+        
         // Prepare sql results for list view
-        $results     =  $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
+        $results     = $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
             
         $count       = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $campaign_table $search_terms" ) );
         $total_pages = ceil($count / $limit);

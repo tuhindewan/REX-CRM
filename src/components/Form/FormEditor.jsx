@@ -433,6 +433,7 @@ const FormEditor = (props) => {
                 name="title"
                 handleChange={handleChange}
                 value={formData?.title}
+                placeholder="Enter Form title"
               />
 
               <div className="form-group list">
@@ -454,9 +455,7 @@ const FormEditor = (props) => {
                       <span className="lists">
                         {recipientLists?.length} Lists.
                       </span>
-                      <span className="recipients">
-                        {recipientLists?.length + recipientTags?.length} Groups
-                      </span>
+                      <span className="recipients"></span>
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
                   )}

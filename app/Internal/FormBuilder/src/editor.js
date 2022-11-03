@@ -27,22 +27,18 @@ function Editor({ settings }) {
     <div className="mrm-editor-builder">
         <FullscreenMode isActive={false} />
         <SlotFillProvider>
-          <DropZoneProvider>
-            <FocusReturnProvider>
-              <InterfaceSkeleton
-                header={<Header />}
-                sidebar={<Sidebar />}
-                content={
-                  <>
-                    <Notices />
-                    <BlockEditor settings={settings} />
-                  </>
-                }
-              />
+          <InterfaceSkeleton
+            header={<Header />}
+            sidebar={<Sidebar />}
+            content={
+              <>
+                <Notices />
+                <BlockEditor settings={settings} />
+              </>
+            }
+          />
 
-              <Popover.Slot />
-            </FocusReturnProvider>
-          </DropZoneProvider>
+          <Popover.Slot />
         </SlotFillProvider>
     </div>
   );

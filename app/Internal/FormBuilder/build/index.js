@@ -16,6 +16,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "IDLE_FETCHER": function() { return /* binding */ IDLE_FETCHER; },
 /* harmony export */   "IDLE_NAVIGATION": function() { return /* binding */ IDLE_NAVIGATION; },
 /* harmony export */   "UNSAFE_convertRoutesToDataRoutes": function() { return /* binding */ convertRoutesToDataRoutes; },
+/* harmony export */   "UNSAFE_getPathContributingMatches": function() { return /* binding */ getPathContributingMatches; },
 /* harmony export */   "createBrowserHistory": function() { return /* binding */ createBrowserHistory; },
 /* harmony export */   "createHashHistory": function() { return /* binding */ createHashHistory; },
 /* harmony export */   "createMemoryHistory": function() { return /* binding */ createMemoryHistory; },
@@ -41,7 +42,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "warning": function() { return /* binding */ warning; }
 /* harmony export */ });
 /**
- * @remix-run/router v1.0.2
+ * @remix-run/router v1.0.3
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -156,6 +157,10 @@ function createMemoryHistory(options) {
 
     createHref(to) {
       return typeof to === "string" ? to : createPath(to);
+    },
+
+    encodeLocation(location) {
+      return location;
     },
 
     push(to, state) {
@@ -389,6 +394,14 @@ function parsePath(path) {
 
   return parsedPath;
 }
+function createURL(location) {
+  // window.location.origin is "null" (the literal string value) in Firefox
+  // under certain conditions, notably when serving from a local HTML file
+  // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
+  let base = typeof window !== "undefined" && typeof window.location !== "undefined" && window.location.origin !== "null" ? window.location.origin : "unknown://unknown";
+  let href = typeof location === "string" ? location : createPath(location);
+  return new URL(href, base);
+}
 
 function getUrlBasedHistory(getLocation, createHref, validateLocation, options) {
   if (options === void 0) {
@@ -432,7 +445,7 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
     if (v5Compat && listener) {
       listener({
         action,
-        location
+        location: history.location
       });
     }
   }
@@ -448,7 +461,7 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
     if (v5Compat && listener) {
       listener({
         action,
-        location: location
+        location: history.location
       });
     }
   }
@@ -477,6 +490,16 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
 
     createHref(to) {
       return createHref(window, to);
+    },
+
+    encodeLocation(location) {
+      // Encode a Location the same way window.location would
+      let url = createURL(createPath(location));
+      return _extends({}, location, {
+        pathname: url.pathname,
+        search: url.search,
+        hash: url.hash
+      });
     },
 
     push,
@@ -560,7 +583,13 @@ function matchRoutes(routes, locationArg, basename) {
   let matches = null;
 
   for (let i = 0; matches == null && i < branches.length; ++i) {
-    matches = matchRouteBranch(branches[i], pathname);
+    matches = matchRouteBranch(branches[i], // Incoming pathnames are generally encoded from either window.location
+    // or from router.navigate, but we want to match against the unencoded
+    // paths in the route definitions.  Memory router locations won't be
+    // encoded here but there also shouldn't be anything to decode so this
+    // should be a safe operation.  This avoids needing matchRoutes to be
+    // history-aware.
+    safelyDecodeURI(pathname));
   }
 
   return matches;
@@ -804,6 +833,15 @@ function compilePath(path, caseSensitive, end) {
   return [matcher, paramNames];
 }
 
+function safelyDecodeURI(value) {
+  try {
+    return decodeURI(value);
+  } catch (error) {
+    warning(false, "The URL path \"" + value + "\" could not be decoded because it is is a " + "malformed URL segment. This is probably due to a bad percent " + ("encoding (" + error + ")."));
+    return value;
+  }
+}
+
 function safelyDecodeURIComponent(value, paramName) {
   try {
     return decodeURIComponent(value);
@@ -903,8 +941,35 @@ function getInvalidPathError(char, field, dest, path) {
 }
 /**
  * @private
+ *
+ * When processing relative navigation we want to ignore ancestor routes that
+ * do not contribute to the path, such that index/pathless layout routes don't
+ * interfere.
+ *
+ * For example, when moving a route element into an index route and/or a
+ * pathless layout route, relative link behavior contained within should stay
+ * the same.  Both of the following examples should link back to the root:
+ *
+ *   <Route path="/">
+ *     <Route path="accounts" element={<Link to=".."}>
+ *   </Route>
+ *
+ *   <Route path="/">
+ *     <Route path="accounts">
+ *       <Route element={<AccountsLayout />}>       // <-- Does not contribute
+ *         <Route index element={<Link to=".."} />  // <-- Does not contribute
+ *       </Route
+ *     </Route>
+ *   </Route>
  */
 
+
+function getPathContributingMatches(matches) {
+  return matches.filter((match, index) => index === 0 || match.route.path && match.route.path.length > 0);
+}
+/**
+ * @private
+ */
 
 function resolveTo(toArg, routePathnames, locationPathname, isPathRelative) {
   if (isPathRelative === void 0) {
@@ -1226,7 +1291,9 @@ const IDLE_FETCHER = {
   formAction: undefined,
   formEncType: undefined,
   formData: undefined
-}; //#endregion
+};
+const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined";
+const isServer = !isBrowser; //#endregion
 ////////////////////////////////////////////////////////////////////////////////
 //#region createRouter
 ////////////////////////////////////////////////////////////////////////////////
@@ -1433,7 +1500,13 @@ function createRouter(init) {
       submission,
       error
     } = normalizeNavigateOptions(to, opts);
-    let location = createLocation(state.location, path, opts && opts.state);
+    let location = createLocation(state.location, path, opts && opts.state); // When using navigate as a PUSH/REPLACE we aren't reading an already-encoded
+    // URL from window.location, so we need to encode it here so the behavior
+    // remains the same as POP and non-data-router usages.  new URL() does all
+    // the same encoding we'd get from a history.pushState/window.location read
+    // without having to touch history
+
+    location = init.history.encodeLocation(location);
     let historyAction = (opts && opts.replace) === true || submission != null ? Action.Replace : Action.Push;
     let preventScrollReset = opts && "preventScrollReset" in opts ? opts.preventScrollReset === true : undefined;
     return await startNavigation(historyAction, location, {
@@ -1599,7 +1672,7 @@ function createRouter(init) {
     if (!actionMatch.route.action) {
       result = getMethodNotAllowedResult(location);
     } else {
-      result = await callLoaderOrAction("action", request, actionMatch);
+      result = await callLoaderOrAction("action", request, actionMatch, matches, router.basename);
 
       if (request.signal.aborted) {
         return {
@@ -1694,7 +1767,7 @@ function createRouter(init) {
     if (!isUninterruptedRevalidation) {
       revalidatingFetchers.forEach(_ref2 => {
         let [key] = _ref2;
-        const fetcher = state.fetchers.get(key);
+        let fetcher = state.fetchers.get(key);
         let revalidatingFetcher = {
           state: "loading",
           data: fetcher && fetcher.data,
@@ -1722,7 +1795,7 @@ function createRouter(init) {
       results,
       loaderResults,
       fetcherResults
-    } = await callLoadersAndMaybeResolveData(state.matches, matchesToLoad, revalidatingFetchers, request);
+    } = await callLoadersAndMaybeResolveData(state.matches, matches, matchesToLoad, revalidatingFetchers, request);
 
     if (request.signal.aborted) {
       return {
@@ -1780,7 +1853,7 @@ function createRouter(init) {
 
 
   function fetch(key, routeId, href, opts) {
-    if (typeof AbortController === "undefined") {
+    if (isServer) {
       throw new Error("router.fetch() was called during the server render, but it shouldn't be. " + "You are likely calling a useFetcher() method in the body of your component. " + "Try moving it to a useEffect or a callback.");
     }
 
@@ -1799,19 +1872,19 @@ function createRouter(init) {
     let match = getTargetMatch(matches, path);
 
     if (submission) {
-      handleFetcherAction(key, routeId, path, match, submission);
+      handleFetcherAction(key, routeId, path, match, matches, submission);
       return;
     } // Store off the match so we can call it's shouldRevalidate on subsequent
     // revalidations
 
 
-    fetchLoadMatches.set(key, [path, match]);
-    handleFetcherLoader(key, routeId, path, match);
+    fetchLoadMatches.set(key, [path, match, matches]);
+    handleFetcherLoader(key, routeId, path, match, matches);
   } // Call the action for the matched fetcher.submit(), and then handle redirects,
   // errors, and revalidation
 
 
-  async function handleFetcherAction(key, routeId, path, match, submission) {
+  async function handleFetcherAction(key, routeId, path, match, requestMatches, submission) {
     interruptActiveLoads();
     fetchLoadMatches.delete(key);
 
@@ -1840,7 +1913,7 @@ function createRouter(init) {
     let abortController = new AbortController();
     let fetchRequest = createRequest(path, abortController.signal, submission);
     fetchControllers.set(key, abortController);
-    let actionResult = await callLoaderOrAction("action", fetchRequest, match);
+    let actionResult = await callLoaderOrAction("action", fetchRequest, match, requestMatches, router.basename);
 
     if (fetchRequest.signal.aborted) {
       // We can delete this so long as we weren't aborted by ou our own fetcher
@@ -1932,7 +2005,7 @@ function createRouter(init) {
       results,
       loaderResults,
       fetcherResults
-    } = await callLoadersAndMaybeResolveData(state.matches, matchesToLoad, revalidatingFetchers, revalidationRequest);
+    } = await callLoadersAndMaybeResolveData(state.matches, matches, matchesToLoad, revalidatingFetchers, revalidationRequest);
 
     if (abortController.signal.aborted) {
       return;
@@ -1994,7 +2067,7 @@ function createRouter(init) {
   } // Call the matched loader for fetcher.load(), handling redirects, errors, etc.
 
 
-  async function handleFetcherLoader(key, routeId, path, match) {
+  async function handleFetcherLoader(key, routeId, path, match, matches) {
     let existingFetcher = state.fetchers.get(key); // Put this fetcher into it's loading state
 
     let loadingFetcher = {
@@ -2013,7 +2086,7 @@ function createRouter(init) {
     let abortController = new AbortController();
     let fetchRequest = createRequest(path, abortController.signal);
     fetchControllers.set(key, abortController);
-    let result = await callLoaderOrAction("loader", fetchRequest, match); // Deferred isn't supported or fetcher loads, await everything and treat it
+    let result = await callLoaderOrAction("loader", fetchRequest, match, matches, router.basename); // Deferred isn't supported or fetcher loads, await everything and treat it
     // as a normal load.  resolveDeferredData will return undefined if this
     // fetcher gets aborted, so we just leave result untouched and short circuit
     // below if that happens
@@ -2106,13 +2179,13 @@ function createRouter(init) {
     });
   }
 
-  async function callLoadersAndMaybeResolveData(currentMatches, matchesToLoad, fetchersToLoad, request) {
+  async function callLoadersAndMaybeResolveData(currentMatches, matches, matchesToLoad, fetchersToLoad, request) {
     // Call all navigation loaders and revalidating fetcher loaders in parallel,
     // then slice off the results into separate arrays so we can handle them
     // accordingly
-    let results = await Promise.all([...matchesToLoad.map(m => callLoaderOrAction("loader", request, m)), ...fetchersToLoad.map(_ref8 => {
-      let [, href, match] = _ref8;
-      return callLoaderOrAction("loader", createRequest(href, request.signal), match);
+    let results = await Promise.all([...matchesToLoad.map(match => callLoaderOrAction("loader", request, match, matches, router.basename)), ...fetchersToLoad.map(_ref8 => {
+      let [, href, match, fetchMatches] = _ref8;
+      return callLoaderOrAction("loader", createRequest(href, request.signal), match, fetchMatches, router.basename);
     })]);
     let loaderResults = results.slice(0, matchesToLoad.length);
     let fetcherResults = results.slice(matchesToLoad.length);
@@ -2304,7 +2377,9 @@ function createRouter(init) {
     navigate,
     fetch,
     revalidate,
-    createHref,
+    // Passthrough to history-aware createHref used by useHref so we get proper
+    // hash-aware URLs in DOM paths
+    createHref: to => init.history.createHref(to),
     getFetcher,
     deleteFetcher,
     dispose,
@@ -2317,15 +2392,75 @@ function createRouter(init) {
 //#region createStaticHandler
 ////////////////////////////////////////////////////////////////////////////////
 
+const validActionMethods = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const validRequestMethods = new Set(["GET", "HEAD", ...validActionMethods]);
 function unstable_createStaticHandler(routes) {
   invariant(routes.length > 0, "You must provide a non-empty routes array to unstable_createStaticHandler");
   let dataRoutes = convertRoutesToDataRoutes(routes);
+  /**
+   * The query() method is intended for document requests, in which we want to
+   * call an optional action and potentially multiple loaders for all nested
+   * routes.  It returns a StaticHandlerContext object, which is very similar
+   * to the router state (location, loaderData, actionData, errors, etc.) and
+   * also adds SSR-specific information such as the statusCode and headers
+   * from action/loaders Responses.
+   *
+   * It _should_ never throw and should report all errors through the
+   * returned context.errors object, properly associating errors to their error
+   * boundary.  Additionally, it tracks _deepestRenderedBoundaryId which can be
+   * used to emulate React error boundaries during SSr by performing a second
+   * pass only down to the boundaryId.
+   *
+   * The one exception where we do not return a StaticHandlerContext is when a
+   * redirect response is returned or thrown from any action/loader.  We
+   * propagate that out and return the raw Response so the HTTP server can
+   * return it directly.
+   */
 
   async function query(request) {
-    let {
-      location,
-      result
-    } = await queryImpl(request);
+    let url = new URL(request.url);
+    let location = createLocation("", createPath(url), null, "default");
+    let matches = matchRoutes(dataRoutes, location);
+
+    if (!validRequestMethods.has(request.method)) {
+      let {
+        matches: methodNotAllowedMatches,
+        route,
+        error
+      } = getMethodNotAllowedMatches(dataRoutes);
+      return {
+        location,
+        matches: methodNotAllowedMatches,
+        loaderData: {},
+        actionData: null,
+        errors: {
+          [route.id]: error
+        },
+        statusCode: error.status,
+        loaderHeaders: {},
+        actionHeaders: {}
+      };
+    } else if (!matches) {
+      let {
+        matches: notFoundMatches,
+        route,
+        error
+      } = getNotFoundMatches(dataRoutes);
+      return {
+        location,
+        matches: notFoundMatches,
+        loaderData: {},
+        actionData: null,
+        errors: {
+          [route.id]: error
+        },
+        statusCode: error.status,
+        loaderHeaders: {},
+        actionHeaders: {}
+      };
+    }
+
+    let result = await queryImpl(request, location, matches);
 
     if (result instanceof Response) {
       return result;
@@ -2338,11 +2473,52 @@ function unstable_createStaticHandler(routes) {
       location
     }, result);
   }
+  /**
+   * The queryRoute() method is intended for targeted route requests, either
+   * for fetch ?_data requests or resource route requests.  In this case, we
+   * are only ever calling a single action or loader, and we are returning the
+   * returned value directly.  In most cases, this will be a Response returned
+   * from the action/loader, but it may be a primitive or other value as well -
+   * and in such cases the calling context should handle that accordingly.
+   *
+   * We do respect the throw/return differentiation, so if an action/loader
+   * throws, then this method will throw the value.  This is important so we
+   * can do proper boundary identification in Remix where a thrown Response
+   * must go to the Catch Boundary but a returned Response is happy-path.
+   *
+   * One thing to note is that any Router-initiated thrown Response (such as a
+   * 404 or 405) will have a custom X-Remix-Router-Error: "yes" header on it
+   * in order to differentiate from responses thrown from user actions/loaders.
+   */
+
 
   async function queryRoute(request, routeId) {
-    let {
-      result
-    } = await queryImpl(request, routeId);
+    let url = new URL(request.url);
+    let location = createLocation("", createPath(url), null, "default");
+    let matches = matchRoutes(dataRoutes, location);
+
+    if (!validRequestMethods.has(request.method)) {
+      throw createRouterErrorResponse(null, {
+        status: 405,
+        statusText: "Method Not Allowed"
+      });
+    } else if (!matches) {
+      throw createRouterErrorResponse(null, {
+        status: 404,
+        statusText: "Not Found"
+      });
+    }
+
+    let match = routeId ? matches.find(m => m.route.id === routeId) : getTargetMatch(matches, location);
+
+    if (!match) {
+      throw createRouterErrorResponse(null, {
+        status: 404,
+        statusText: "Not Found"
+      });
+    }
+
+    let result = await queryImpl(request, location, matches, match);
 
     if (result instanceof Response) {
       return result;
@@ -2351,77 +2527,48 @@ function unstable_createStaticHandler(routes) {
     let error = result.errors ? Object.values(result.errors)[0] : undefined;
 
     if (error !== undefined) {
-      // While we always re-throw Responses returned from loaders/actions
-      // directly for route requests and prevent the unwrapping into an
-      // ErrorResponse, we still need this for error cases _prior_ the
-      // execution of the loader/action, such as a 404/405 error.
-      if (isRouteErrorResponse(error)) {
-        return new Response(error.data, {
-          status: error.status,
-          statusText: error.statusText
-        });
-      } // If we got back result.errors, that means the loader/action threw
+      // If we got back result.errors, that means the loader/action threw
       // _something_ that wasn't a Response, but it's not guaranteed/required
       // to be an `instanceof Error` either, so we have to use throw here to
       // preserve the "error" state outside of queryImpl.
-
-
       throw error;
     } // Pick off the right state value to return
 
 
     let routeData = [result.actionData, result.loaderData].find(v => v);
-    let value = Object.values(routeData || {})[0];
-
-    if (isRouteErrorResponse(value)) {
-      return new Response(value.data, {
-        status: value.status,
-        statusText: value.statusText
-      });
-    }
-
-    return value;
+    return Object.values(routeData || {})[0];
   }
 
-  async function queryImpl(request, routeId) {
-    invariant(request.method !== "HEAD", "query()/queryRoute() do not support HEAD requests");
+  async function queryImpl(request, location, matches, routeMatch) {
     invariant(request.signal, "query()/queryRoute() requests must contain an AbortController signal");
-    let {
-      location,
-      matches,
-      shortCircuitState
-    } = matchRequest(request, routeId);
 
     try {
-      if (shortCircuitState) {
-        return {
-          location,
-          result: shortCircuitState
-        };
+      if (validActionMethods.has(request.method)) {
+        let result = await submit(request, matches, routeMatch || getTargetMatch(matches, location), routeMatch != null);
+        return result;
       }
 
-      if (request.method !== "GET") {
-        let result = await submit(request, matches, getTargetMatch(matches, location), routeId != null);
-        return {
-          location,
-          result
-        };
-      }
-
-      let result = await loadRouteData(request, matches, routeId != null);
-      return {
-        location,
-        result: _extends({}, result, {
-          actionData: null,
-          actionHeaders: {}
-        })
-      };
+      let result = await loadRouteData(request, matches, routeMatch);
+      return result instanceof Response ? result : _extends({}, result, {
+        actionData: null,
+        actionHeaders: {}
+      });
     } catch (e) {
-      if (e instanceof Response) {
-        return {
-          location,
-          result: e
-        };
+      // If the user threw/returned a Response in callLoaderOrAction, we throw
+      // it to bail out and then return or throw here based on whether the user
+      // returned or threw
+      if (isQueryRouteResponse(e)) {
+        if (e.type === ResultType.error && !isRedirectResponse(e.response)) {
+          throw e.response;
+        }
+
+        return e.response;
+      } // Redirects are always returned since they don't propagate to catch
+      // boundaries
+
+
+      if (isRedirectResponse(e)) {
+        return e;
       }
 
       throw e;
@@ -2432,10 +2579,17 @@ function unstable_createStaticHandler(routes) {
     let result;
 
     if (!actionMatch.route.action) {
-      let href = createHref(new URL(request.url));
-      result = getMethodNotAllowedResult(href);
+      if (isRouteRequest) {
+        throw createRouterErrorResponse(null, {
+          status: 405,
+          statusText: "Method Not Allowed"
+        });
+      }
+
+      result = getMethodNotAllowedResult(request.url);
     } else {
-      result = await callLoaderOrAction("action", request, actionMatch, true, isRouteRequest);
+      result = await callLoaderOrAction("action", request, actionMatch, matches, undefined, // Basename not currently supported in static handlers
+      true, isRouteRequest);
 
       if (request.signal.aborted) {
         let method = isRouteRequest ? "queryRoute" : "query";
@@ -2445,7 +2599,7 @@ function unstable_createStaticHandler(routes) {
 
     if (isRedirectResult(result)) {
       // Uhhhh - this should never happen, we should always throw these from
-      // calLoaderOrAction, but the type narrowing here keeps TS happy and we
+      // callLoaderOrAction, but the type narrowing here keeps TS happy and we
       // can get back on the "throw all redirect responses" train here should
       // this ever happen :/
       throw new Response(null, {
@@ -2461,6 +2615,8 @@ function unstable_createStaticHandler(routes) {
     }
 
     if (isRouteRequest) {
+      // Note: This should only be non-Response values if we get here, since
+      // isRouteRequest should throw any Response received in callLoaderOrAction
       if (isErrorResult(result)) {
         let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id);
         return {
@@ -2497,7 +2653,7 @@ function unstable_createStaticHandler(routes) {
       // Store off the pending error - we use it to determine which loaders
       // to call and will commit it when we complete the navigation
       let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id);
-      let context = await loadRouteData(request, matches, isRouteRequest, {
+      let context = await loadRouteData(request, matches, undefined, {
         [boundaryMatch.route.id]: result.error
       }); // action status codes take precedence over loader status codes
 
@@ -2510,7 +2666,7 @@ function unstable_createStaticHandler(routes) {
       });
     }
 
-    let context = await loadRouteData(request, matches, isRouteRequest);
+    let context = await loadRouteData(request, matches);
     return _extends({}, context, result.statusCode ? {
       statusCode: result.statusCode
     } : {}, {
@@ -2523,8 +2679,10 @@ function unstable_createStaticHandler(routes) {
     });
   }
 
-  async function loadRouteData(request, matches, isRouteRequest, pendingActionError) {
-    let matchesToLoad = getLoaderMatchesUntilBoundary(matches, Object.keys(pendingActionError || {})[0]).filter(m => m.route.loader); // Short circuit if we have no loaders to run
+  async function loadRouteData(request, matches, routeMatch, pendingActionError) {
+    let isRouteRequest = routeMatch != null;
+    let requestMatches = routeMatch ? [routeMatch] : getLoaderMatchesUntilBoundary(matches, Object.keys(pendingActionError || {})[0]);
+    let matchesToLoad = requestMatches.filter(m => m.route.loader); // Short circuit if we have no loaders to run
 
     if (matchesToLoad.length === 0) {
       return {
@@ -2536,7 +2694,8 @@ function unstable_createStaticHandler(routes) {
       };
     }
 
-    let results = await Promise.all([...matchesToLoad.map(m => callLoaderOrAction("loader", request, m, true, isRouteRequest))]);
+    let results = await Promise.all([...matchesToLoad.map(match => callLoaderOrAction("loader", request, match, matches, undefined, // Basename not currently supported in static handlers
+    true, isRouteRequest))]);
 
     if (request.signal.aborted) {
       let method = isRouteRequest ? "queryRoute" : "query";
@@ -2557,43 +2716,12 @@ function unstable_createStaticHandler(routes) {
     });
   }
 
-  function matchRequest(req, routeId) {
-    let url = new URL(req.url);
-    let location = createLocation("", createPath(url), null, "default");
-    let matches = matchRoutes(dataRoutes, location);
-
-    if (matches && routeId) {
-      matches = matches.filter(m => m.route.id === routeId);
-    } // Short circuit with a 404 if we match nothing
-
-
-    if (!matches) {
-      let {
-        matches: notFoundMatches,
-        route,
-        error
-      } = getNotFoundMatches(dataRoutes);
-      return {
-        location,
-        matches: notFoundMatches,
-        shortCircuitState: {
-          matches: notFoundMatches,
-          loaderData: {},
-          actionData: null,
-          errors: {
-            [route.id]: error
-          },
-          statusCode: 404,
-          loaderHeaders: {},
-          actionHeaders: {}
-        }
-      };
-    }
-
-    return {
-      location,
-      matches
-    };
+  function createRouterErrorResponse(body, init) {
+    return new Response(body, _extends({}, init, {
+      headers: _extends({}, init.headers, {
+        "X-Remix-Router-Error": "yes"
+      })
+    }));
   }
 
   return {
@@ -2642,7 +2770,7 @@ function normalizeNavigateOptions(to, opts, isFetcher) {
       path,
       submission: {
         formMethod: opts.formMethod,
-        formAction: createHref(parsePath(path)),
+        formAction: stripHashFromPath(path),
         formEncType: opts && opts.formEncType || "application/x-www-form-urlencoded",
         formData: opts.formData
       }
@@ -2725,16 +2853,16 @@ function getMatchesToLoad(state, matches, submission, location, isRevalidationRe
 
   let revalidatingFetchers = [];
   fetchLoadMatches && fetchLoadMatches.forEach((_ref10, key) => {
-    let [href, match] = _ref10;
+    let [href, match, fetchMatches] = _ref10;
 
     // This fetcher was cancelled from a prior action submission - force reload
     if (cancelledFetcherLoads.includes(key)) {
-      revalidatingFetchers.push([key, href, match]);
+      revalidatingFetchers.push([key, href, match, fetchMatches]);
     } else if (isRevalidationRequired) {
       let shouldRevalidate = shouldRevalidateLoader(href, match, submission, href, match, isRevalidationRequired, actionResult);
 
       if (shouldRevalidate) {
-        revalidatingFetchers.push([key, href, match]);
+        revalidatingFetchers.push([key, href, match, fetchMatches]);
       }
     }
   });
@@ -2796,9 +2924,9 @@ function shouldRevalidateLoader(currentLocation, currentMatch, submission, locat
   return defaultShouldRevalidate;
 }
 
-async function callLoaderOrAction(type, request, match, skipRedirects, isRouteRequest) {
-  if (skipRedirects === void 0) {
-    skipRedirects = false;
+async function callLoaderOrAction(type, request, match, matches, basename, isStaticRequest, isRouteRequest) {
+  if (isStaticRequest === void 0) {
+    isStaticRequest = false;
   }
 
   if (isRouteRequest === void 0) {
@@ -2830,20 +2958,30 @@ async function callLoaderOrAction(type, request, match, skipRedirects, isRouteRe
   }
 
   if (result instanceof Response) {
-    // Process redirects
-    let status = result.status;
-    let location = result.headers.get("Location"); // For SSR single-route requests, we want to hand Responses back directly
-    // without unwrapping
+    let status = result.status; // Process redirects
 
-    if (isRouteRequest) {
-      throw result;
-    }
+    if (status >= 300 && status <= 399) {
+      let location = result.headers.get("Location");
+      invariant(location, "Redirects returned/thrown from loaders/actions must have a Location header"); // Support relative routing in redirects
 
-    if (status >= 300 && status <= 399 && location != null) {
-      // Don't process redirects in the router during SSR document requests.
+      let activeMatches = matches.slice(0, matches.indexOf(match) + 1);
+      let routePathnames = getPathContributingMatches(activeMatches).map(match => match.pathnameBase);
+      let requestPath = createURL(request.url).pathname;
+      let resolvedLocation = resolveTo(location, routePathnames, requestPath);
+      invariant(createPath(resolvedLocation), "Unable to resolve redirect location: " + result.headers.get("Location")); // Prepend the basename to the redirect location if we have one
+
+      if (basename) {
+        let path = resolvedLocation.pathname;
+        resolvedLocation.pathname = path === "/" ? basename : joinPaths([basename, path]);
+      }
+
+      location = createPath(resolvedLocation); // Don't process redirects in the router during static requests requests.
       // Instead, throw the Response and let the server handle it with an HTTP
-      // redirect
-      if (skipRedirects) {
+      // redirect.  We also update the Location header in place in this flow so
+      // basename and relative routing is taken into account
+
+      if (isStaticRequest) {
+        result.headers.set("Location", location);
         throw result;
       }
 
@@ -2852,6 +2990,17 @@ async function callLoaderOrAction(type, request, match, skipRedirects, isRouteRe
         status,
         location,
         revalidate: result.headers.get("X-Remix-Revalidate") !== null
+      };
+    } // For SSR single-route requests, we want to hand Responses back directly
+    // without unwrapping.  We do this with the QueryRouteResponse wrapper
+    // interface so we can know whether it was returned or thrown
+
+
+    if (isRouteRequest) {
+      // eslint-disable-next-line no-throw-literal
+      throw {
+        type: resultType || ResultType.data,
+        response: result
       };
     }
 
@@ -2901,7 +3050,7 @@ async function callLoaderOrAction(type, request, match, skipRedirects, isRouteRe
 }
 
 function createRequest(location, signal, submission) {
-  let url = createURL(location).toString();
+  let url = createURL(stripHashFromPath(location)).toString();
   let init = {
     signal
   };
@@ -3068,10 +3217,10 @@ function findNearestBoundary(matches, routeId) {
   return eligibleMatches.reverse().find(m => m.route.hasErrorBoundary === true) || matches[0];
 }
 
-function getNotFoundMatches(routes) {
+function getShortCircuitMatches(routes, status, statusText) {
   // Prefer a root layout route if present, otherwise shim in a route object
-  let route = routes.find(r => r.index || r.path === "" || r.path === "/") || {
-    id: "__shim-404-route__"
+  let route = routes.find(r => r.index || !r.path || r.path === "/") || {
+    id: "__shim-" + status + "-route__"
   };
   return {
     matches: [{
@@ -3081,16 +3230,24 @@ function getNotFoundMatches(routes) {
       route
     }],
     route,
-    error: new ErrorResponse(404, "Not Found", null)
+    error: new ErrorResponse(status, statusText, null)
   };
 }
 
+function getNotFoundMatches(routes) {
+  return getShortCircuitMatches(routes, 404, "Not Found");
+}
+
+function getMethodNotAllowedMatches(routes) {
+  return getShortCircuitMatches(routes, 405, "Method Not Allowed");
+}
+
 function getMethodNotAllowedResult(path) {
-  let href = typeof path === "string" ? path : createHref(path);
+  let href = typeof path === "string" ? path : createPath(path);
   console.warn("You're trying to submit to a route that does not have an action.  To " + "fix this, please add an `action` function to the route for " + ("[" + href + "]"));
   return {
     type: ResultType.error,
-    error: new ErrorResponse(405, "Method Not Allowed", "No action found for [" + href + "]")
+    error: new ErrorResponse(405, "Method Not Allowed", "")
   };
 } // Find any returned redirect errors, starting from the lowest match
 
@@ -3103,11 +3260,13 @@ function findRedirect(results) {
       return result;
     }
   }
-} // Create an href to represent a "server" URL without the hash
+}
 
-
-function createHref(location) {
-  return (location.pathname || "") + (location.search || "");
+function stripHashFromPath(path) {
+  let parsedPath = typeof path === "string" ? parsePath(path) : path;
+  return createPath(_extends({}, parsedPath, {
+    hash: ""
+  }));
 }
 
 function isHashChangeOnly(a, b) {
@@ -3124,6 +3283,20 @@ function isErrorResult(result) {
 
 function isRedirectResult(result) {
   return (result && result.type) === ResultType.redirect;
+}
+
+function isRedirectResponse(result) {
+  if (!(result instanceof Response)) {
+    return false;
+  }
+
+  let status = result.status;
+  let location = result.headers.get("Location");
+  return status >= 300 && status <= 399 && location != null;
+}
+
+function isQueryRouteResponse(obj) {
+  return obj && obj.response instanceof Response && (obj.type === ResultType.data || ResultType.error);
 }
 
 async function resolveDeferredResults(currentMatches, matchesToLoad, results, signal, isFetcher, currentLoaderData) {
@@ -3202,17 +3375,15 @@ function createUseMatchesMatch(match, loaderData) {
 function getTargetMatch(matches, location) {
   let search = typeof location === "string" ? parsePath(location).search : location.search;
 
-  if (matches[matches.length - 1].route.index && !hasNakedIndexQuery(search || "")) {
-    return matches.slice(-2)[0];
-  }
+  if (matches[matches.length - 1].route.index && hasNakedIndexQuery(search || "")) {
+    // Return the leaf index route when index is present
+    return matches[matches.length - 1];
+  } // Otherwise grab the deepest "path contributing" match (ignoring index and
+  // pathless layout routes)
 
-  return matches.slice(-1)[0];
-}
 
-function createURL(location) {
-  let base = typeof window !== "undefined" && typeof window.location !== "undefined" ? window.location.origin : "unknown://unknown";
-  let href = typeof location === "string" ? location : createHref(location);
-  return new URL(href, base);
+  let pathMatches = getPathContributingMatches(matches);
+  return pathMatches[pathMatches.length - 1];
 } //#endregion
 
 
@@ -3221,125 +3392,604 @@ function createURL(location) {
 
 /***/ }),
 
-/***/ "./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js":
-/*!********************************************************************************************!*\
-  !*** ./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js ***!
-  \********************************************************************************************/
+/***/ "./node_modules/@wordpress/icons/build-module/icon/index.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/icon/index.js ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "FullscreenMode": function() { return /* binding */ FullscreenMode; }
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/esm/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/esm/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * WordPress dependencies
+ */
 
+/** @typedef {{icon: JSX.Element, size?: number} & import('@wordpress/primitives').SVGProps} IconProps */
 
+/**
+ * Return an SVG icon.
+ *
+ * @param {IconProps} props icon is the SVG component to render
+ *                          size is a number specifiying the icon size in pixels
+ *                          Other props will be passed to wrapped SVG component
+ *
+ * @return {JSX.Element}  Icon component
+ */
 
+function Icon(_ref) {
+  let {
+    icon,
+    size = 24,
+    ...props
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.cloneElement)(icon, {
+    width: size,
+    height: size,
+    ...props
+  });
+}
 
+/* harmony default export */ __webpack_exports__["default"] = (Icon);
+//# sourceMappingURL=index.js.map
 
+/***/ }),
 
-function _createSuper(Derived) { return function () { var Super = (0,_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(Derived), result; if (_isNativeReflectConstruct()) { var NewTarget = (0,_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__["default"])(this, result); }; }
+/***/ "./node_modules/@wordpress/icons/build-module/library/check.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/check.js ***!
+  \*********************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
 
 /**
  * WordPress dependencies
  */
 
-var FullscreenMode = /*#__PURE__*/function (_Component) {
-  (0,_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__["default"])(FullscreenMode, _Component);
+const check = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M16.7 7.1l-6.3 8.5-3.3-2.5-.9 1.2 4.5 3.4L17.9 8z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (check);
+//# sourceMappingURL=check.js.map
 
-  var _super = _createSuper(FullscreenMode);
+/***/ }),
 
-  function FullscreenMode() {
-    (0,_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, FullscreenMode);
+/***/ "./node_modules/@wordpress/icons/build-module/library/chevron-left.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/chevron-left.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-    return _super.apply(this, arguments);
-  }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
 
-  (0,_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(FullscreenMode, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.isSticky = false;
-      this.sync(); // `is-fullscreen-mode` is set in PHP as a body class by Gutenberg, and this causes
-      // `sticky-menu` to be applied by WordPress and prevents the admin menu being scrolled
-      // even if `is-fullscreen-mode` is then removed. Let's remove `sticky-menu` here as
-      // a consequence of the FullscreenMode setup
 
-      if (document.body.classList.contains('sticky-menu')) {
-        this.isSticky = true;
-        document.body.classList.remove('sticky-menu');
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      if (this.isSticky) {
-        document.body.classList.add('sticky-menu');
-      }
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      if (this.props.isActive !== prevProps.isActive) {
-        this.sync();
-      }
-    }
-  }, {
-    key: "sync",
-    value: function sync() {
-      var isActive = this.props.isActive;
+/**
+ * WordPress dependencies
+ */
 
-      if (isActive) {
-        document.body.classList.add('is-fullscreen-mode');
-      } else {
-        document.body.classList.remove('is-fullscreen-mode');
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
+const chevronLeft = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M14.6 7l-1.2-1L8 12l5.4 6 1.2-1-4.6-5z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (chevronLeft);
+//# sourceMappingURL=chevron-left.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/chevron-right.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/chevron-right.js ***!
+  \*****************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const chevronRight = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M10.6 6L9.4 7l4.6 5-4.6 5 1.2 1 5.4-6z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (chevronRight);
+//# sourceMappingURL=chevron-right.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/close-small.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/close-small.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const closeSmall = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (closeSmall);
+//# sourceMappingURL=close-small.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/more-vertical.js ***!
+  \*****************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const moreVertical = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (moreVertical);
+//# sourceMappingURL=more-vertical.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/star-empty.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/star-empty.js ***!
+  \**************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const starEmpty = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  fillRule: "evenodd",
+  d: "M9.706 8.646a.25.25 0 01-.188.137l-4.626.672a.25.25 0 00-.139.427l3.348 3.262a.25.25 0 01.072.222l-.79 4.607a.25.25 0 00.362.264l4.138-2.176a.25.25 0 01.233 0l4.137 2.175a.25.25 0 00.363-.263l-.79-4.607a.25.25 0 01.072-.222l3.347-3.262a.25.25 0 00-.139-.427l-4.626-.672a.25.25 0 01-.188-.137l-2.069-4.192a.25.25 0 00-.448 0L9.706 8.646zM12 7.39l-.948 1.921a1.75 1.75 0 01-1.317.957l-2.12.308 1.534 1.495c.412.402.6.982.503 1.55l-.362 2.11 1.896-.997a1.75 1.75 0 011.629 0l1.895.997-.362-2.11a1.75 1.75 0 01.504-1.55l1.533-1.495-2.12-.308a1.75 1.75 0 01-1.317-.957L12 7.39z",
+  clipRule: "evenodd"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (starEmpty);
+//# sourceMappingURL=star-empty.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/star-filled.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/star-filled.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const starFilled = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M11.776 4.454a.25.25 0 01.448 0l2.069 4.192a.25.25 0 00.188.137l4.626.672a.25.25 0 01.139.426l-3.348 3.263a.25.25 0 00-.072.222l.79 4.607a.25.25 0 01-.362.263l-4.138-2.175a.25.25 0 00-.232 0l-4.138 2.175a.25.25 0 01-.363-.263l.79-4.607a.25.25 0 00-.071-.222L4.754 9.881a.25.25 0 01.139-.426l4.626-.672a.25.25 0 00.188-.137l2.069-4.192z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (starFilled);
+//# sourceMappingURL=star-filled.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/action-item/index.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/action-item/index.js ***!
+  \****************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+const noop = () => {};
+
+function ActionItemSlot(_ref) {
+  let {
+    name,
+    as: Component = _wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ButtonGroup,
+    fillProps = {},
+    bubblesVirtually,
+    ...props
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Slot, {
+    name: name,
+    bubblesVirtually: bubblesVirtually,
+    fillProps: fillProps
+  }, fills => {
+    if (!_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Children.toArray(fills).length) {
       return null;
-    }
-  }]);
+    } // Special handling exists for backward compatibility.
+    // It ensures that menu items created by plugin authors aren't
+    // duplicated with automatically injected menu items coming
+    // from pinnable plugin sidebars.
+    // @see https://github.com/WordPress/gutenberg/issues/14457
 
-  return FullscreenMode;
-}(_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.Component);
-/* harmony default export */ __webpack_exports__["default"] = (FullscreenMode);
+
+    const initializedByPlugins = [];
+    _wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Children.forEach(fills, _ref2 => {
+      let {
+        props: {
+          __unstableExplicitMenuItem,
+          __unstableTarget
+        }
+      } = _ref2;
+
+      if (__unstableTarget && __unstableExplicitMenuItem) {
+        initializedByPlugins.push(__unstableTarget);
+      }
+    });
+    const children = _wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Children.map(fills, child => {
+      if (!child.props.__unstableExplicitMenuItem && initializedByPlugins.includes(child.props.__unstableTarget)) {
+        return null;
+      }
+
+      return child;
+    });
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Component, props, children);
+  });
+}
+
+function ActionItem(_ref3) {
+  let {
+    name,
+    as: Component = _wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button,
+    onClick,
+    ...props
+  } = _ref3;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Fill, {
+    name: name
+  }, _ref4 => {
+    let {
+      onClick: fpOnClick
+    } = _ref4;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Component, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+      onClick: onClick || fpOnClick ? function () {
+        (onClick || noop)(...arguments);
+        (fpOnClick || noop)(...arguments);
+      } : undefined
+    }, props));
+  });
+}
+
+ActionItem.Slot = ActionItemSlot;
+/* harmony default export */ __webpack_exports__["default"] = (ActionItem);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ "./node_modules/@wordpress/interface/build-module/components/interface-skeleton/index.js":
+/***/ "./node_modules/@wordpress/interface/build-module/components/complementary-area-context/index.js":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/complementary-area-context/index.js ***!
+  \*******************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/plugins */ "@wordpress/plugins");
+/* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * WordPress dependencies
+ */
+
+/* harmony default export */ __webpack_exports__["default"] = ((0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_0__.withPluginContext)((context, ownProps) => {
+  return {
+    icon: ownProps.icon || context.icon,
+    identifier: ownProps.identifier || `${context.name}/${ownProps.name}`
+  };
+}));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/complementary-area-header/index.js":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/complementary-area-header/index.js ***!
+  \******************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/close-small.js");
+/* harmony import */ var _complementary_area_toggle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../complementary-area-toggle */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-toggle/index.js");
+
+
+
+/**
+ * External dependencies
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+const ComplementaryAreaHeader = _ref => {
+  let {
+    smallScreenTitle,
+    children,
+    className,
+    toggleButtonProps
+  } = _ref;
+  const toggleButton = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_complementary_area_toggle__WEBPACK_IMPORTED_MODULE_3__["default"], (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"]
+  }, toggleButtonProps));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "components-panel__header interface-complementary-area-header__small"
+  }, smallScreenTitle && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
+    className: "interface-complementary-area-header__small-title"
+  }, smallScreenTitle), toggleButton), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()('components-panel__header', 'interface-complementary-area-header', className),
+    tabIndex: -1
+  }, children, toggleButton));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ComplementaryAreaHeader);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/complementary-area-more-menu-item/index.js":
+/*!**************************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/complementary-area-more-menu-item/index.js ***!
+  \**************************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ ComplementaryAreaMoreMenuItem; }
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/check.js");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _complementary_area_toggle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../complementary-area-toggle */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-toggle/index.js");
+/* harmony import */ var _action_item__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../action-item */ "./node_modules/@wordpress/interface/build-module/components/action-item/index.js");
+
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+const PluginsMenuItem = _ref => {
+  let {
+    // Menu item is marked with unstable prop for backward compatibility.
+    // They are removed so they don't leak to DOM elements.
+    // @see https://github.com/WordPress/gutenberg/issues/14457
+    __unstableExplicitMenuItem,
+    __unstableTarget,
+    ...restProps
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuItem, restProps);
+};
+
+function ComplementaryAreaMoreMenuItem(_ref2) {
+  let {
+    scope,
+    target,
+    __unstableExplicitMenuItem,
+    ...props
+  } = _ref2;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_complementary_area_toggle__WEBPACK_IMPORTED_MODULE_3__["default"], (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    as: toggleProps => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_action_item__WEBPACK_IMPORTED_MODULE_4__["default"], (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+        __unstableExplicitMenuItem: __unstableExplicitMenuItem,
+        __unstableTarget: `${scope}/${target}`,
+        as: PluginsMenuItem,
+        name: `${scope}/plugin-more-menu`
+      }, toggleProps));
+    },
+    role: "menuitemcheckbox",
+    selectedIcon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+    name: target,
+    scope: scope
+  }, props));
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/complementary-area-toggle/index.js":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/complementary-area-toggle/index.js ***!
+  \******************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../store */ "./node_modules/@wordpress/interface/build-module/store/index.js");
+/* harmony import */ var _complementary_area_context__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../complementary-area-context */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-context/index.js");
+
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+function ComplementaryAreaToggle(_ref) {
+  let {
+    as = _wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button,
+    scope,
+    identifier,
+    icon,
+    selectedIcon,
+    name,
+    ...props
+  } = _ref;
+  const ComponentToUse = as;
+  const isSelected = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => select(_store__WEBPACK_IMPORTED_MODULE_4__.store).getActiveComplementaryArea(scope) === identifier, [identifier]);
+  const {
+    enableComplementaryArea,
+    disableComplementaryArea
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)(_store__WEBPACK_IMPORTED_MODULE_4__.store);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(ComponentToUse, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    icon: selectedIcon && isSelected ? selectedIcon : icon,
+    onClick: () => {
+      if (isSelected) {
+        disableComplementaryArea(scope);
+      } else {
+        enableComplementaryArea(scope, identifier);
+      }
+    }
+  }, props));
+}
+
+/* harmony default export */ __webpack_exports__["default"] = ((0,_complementary_area_context__WEBPACK_IMPORTED_MODULE_5__["default"])(ComplementaryAreaToggle));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/complementary-area/index.js":
 /*!***********************************************************************************************!*\
-  !*** ./node_modules/@wordpress/interface/build-module/components/interface-skeleton/index.js ***!
+  !*** ./node_modules/@wordpress/interface/build-module/components/complementary-area/index.js ***!
   \***********************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/check.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/star-filled.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/star-empty.js");
+/* harmony import */ var _wordpress_viewport__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/viewport */ "@wordpress/viewport");
+/* harmony import */ var _wordpress_viewport__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_viewport__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _complementary_area_header__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../complementary-area-header */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-header/index.js");
+/* harmony import */ var _complementary_area_more_menu_item__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../complementary-area-more-menu-item */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-more-menu-item/index.js");
+/* harmony import */ var _complementary_area_toggle__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../complementary-area-toggle */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-toggle/index.js");
+/* harmony import */ var _complementary_area_context__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../complementary-area-context */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-context/index.js");
+/* harmony import */ var _pinned_items__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../pinned-items */ "./node_modules/@wordpress/interface/build-module/components/pinned-items/index.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../store */ "./node_modules/@wordpress/interface/build-module/store/index.js");
 
 
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /**
  * External dependencies
@@ -3353,40 +4003,363 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+
+
+
+function ComplementaryAreaSlot(_ref) {
+  let {
+    scope,
+    ...props
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Slot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    name: `ComplementaryArea/${scope}`
+  }, props));
+}
+
+function ComplementaryAreaFill(_ref2) {
+  let {
+    scope,
+    children,
+    className
+  } = _ref2;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Fill, {
+    name: `ComplementaryArea/${scope}`
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: className
+  }, children));
+}
+
+function useAdjustComplementaryListener(scope, identifier, activeArea, isActive, isSmall) {
+  const previousIsSmall = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+  const shouldOpenWhenNotSmall = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+  const {
+    enableComplementaryArea,
+    disableComplementaryArea
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useDispatch)(_store__WEBPACK_IMPORTED_MODULE_7__.store);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    // If the complementary area is active and the editor is switching from a big to a small window size.
+    if (isActive && isSmall && !previousIsSmall.current) {
+      // Disable the complementary area.
+      disableComplementaryArea(scope); // Flag the complementary area to be reopened when the window size goes from small to big.
+
+      shouldOpenWhenNotSmall.current = true;
+    } else if ( // If there is a flag indicating the complementary area should be enabled when we go from small to big window size
+    // and we are going from a small to big window size.
+    shouldOpenWhenNotSmall.current && !isSmall && previousIsSmall.current) {
+      // Remove the flag indicating the complementary area should be enabled.
+      shouldOpenWhenNotSmall.current = false; // Enable the complementary area.
+
+      enableComplementaryArea(scope, identifier);
+    } else if ( // If the flag is indicating the current complementary should be reopened but another complementary area becomes active,
+    // remove the flag.
+    shouldOpenWhenNotSmall.current && activeArea && activeArea !== identifier) {
+      shouldOpenWhenNotSmall.current = false;
+    }
+
+    if (isSmall !== previousIsSmall.current) {
+      previousIsSmall.current = isSmall;
+    }
+  }, [isActive, isSmall, scope, identifier, activeArea]);
+}
+
+function ComplementaryArea(_ref3) {
+  let {
+    children,
+    className,
+    closeLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Close plugin'),
+    identifier,
+    header,
+    headerClassName,
+    icon,
+    isPinnable = true,
+    panelClassName,
+    scope,
+    name,
+    smallScreenTitle,
+    title,
+    toggleShortcut,
+    isActiveByDefault,
+    showIconLabels = false
+  } = _ref3;
+  const {
+    isActive,
+    isPinned,
+    activeArea,
+    isSmall,
+    isLarge
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
+    const {
+      getActiveComplementaryArea,
+      isItemPinned
+    } = select(_store__WEBPACK_IMPORTED_MODULE_7__.store);
+
+    const _activeArea = getActiveComplementaryArea(scope);
+
+    return {
+      isActive: _activeArea === identifier,
+      isPinned: isItemPinned(scope, identifier),
+      activeArea: _activeArea,
+      isSmall: select(_wordpress_viewport__WEBPACK_IMPORTED_MODULE_6__.store).isViewportMatch('< medium'),
+      isLarge: select(_wordpress_viewport__WEBPACK_IMPORTED_MODULE_6__.store).isViewportMatch('large')
+    };
+  }, [identifier, scope]);
+  useAdjustComplementaryListener(scope, identifier, activeArea, isActive, isSmall);
+  const {
+    enableComplementaryArea,
+    disableComplementaryArea,
+    pinItem,
+    unpinItem
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useDispatch)(_store__WEBPACK_IMPORTED_MODULE_7__.store);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (isActiveByDefault && activeArea === undefined && !isSmall) {
+      enableComplementaryArea(scope, identifier);
+    }
+  }, [activeArea, isActiveByDefault, scope, identifier, isSmall]);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, isPinnable && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_pinned_items__WEBPACK_IMPORTED_MODULE_8__["default"], {
+    scope: scope
+  }, isPinned && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_complementary_area_toggle__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    scope: scope,
+    identifier: identifier,
+    isPressed: isActive && (!showIconLabels || isLarge),
+    "aria-expanded": isActive,
+    label: title,
+    icon: showIconLabels ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"] : icon,
+    showTooltip: !showIconLabels,
+    variant: showIconLabels ? 'tertiary' : undefined
+  })), name && isPinnable && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_complementary_area_more_menu_item__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    target: name,
+    scope: scope,
+    icon: icon
+  }, title), isActive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(ComplementaryAreaFill, {
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()('interface-complementary-area', className),
+    scope: scope
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_complementary_area_header__WEBPACK_IMPORTED_MODULE_12__["default"], {
+    className: headerClassName,
+    closeLabel: closeLabel,
+    onClose: () => disableComplementaryArea(scope),
+    smallScreenTitle: smallScreenTitle,
+    toggleButtonProps: {
+      label: closeLabel,
+      shortcut: toggleShortcut,
+      scope,
+      identifier
+    }
+  }, header || (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("strong", null, title), isPinnable && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+    className: "interface-complementary-area__pin-unpin-item",
+    icon: isPinned ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"],
+    label: isPinned ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Unpin from toolbar') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Pin to toolbar'),
+    onClick: () => (isPinned ? unpinItem : pinItem)(scope, identifier),
+    isPressed: isPinned,
+    "aria-expanded": isPinned
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Panel, {
+    className: panelClassName
+  }, children)));
+}
+
+const ComplementaryAreaWrapped = (0,_complementary_area_context__WEBPACK_IMPORTED_MODULE_15__["default"])(ComplementaryArea);
+ComplementaryAreaWrapped.Slot = ComplementaryAreaSlot;
+/* harmony default export */ __webpack_exports__["default"] = (ComplementaryAreaWrapped);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js ***!
+  \********************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * WordPress dependencies
+ */
+
+
+const FullscreenMode = _ref => {
+  let {
+    isActive
+  } = _ref;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    let isSticky = false; // `is-fullscreen-mode` is set in PHP as a body class by Gutenberg, and this causes
+    // `sticky-menu` to be applied by WordPress and prevents the admin menu being scrolled
+    // even if `is-fullscreen-mode` is then removed. Let's remove `sticky-menu` here as
+    // a consequence of the FullscreenMode setup.
+
+    if (document.body.classList.contains('sticky-menu')) {
+      isSticky = true;
+      document.body.classList.remove('sticky-menu');
+    }
+
+    return () => {
+      if (isSticky) {
+        document.body.classList.add('sticky-menu');
+      }
+    };
+  }, []);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (isActive) {
+      document.body.classList.add('is-fullscreen-mode');
+    } else {
+      document.body.classList.remove('is-fullscreen-mode');
+    }
+
+    return () => {
+      if (isActive) {
+        document.body.classList.remove('is-fullscreen-mode');
+      }
+    };
+  }, [isActive]);
+  return null;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (FullscreenMode);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/index.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/index.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ActionItem": function() { return /* reexport safe */ _action_item__WEBPACK_IMPORTED_MODULE_7__["default"]; },
+/* harmony export */   "ComplementaryArea": function() { return /* reexport safe */ _complementary_area__WEBPACK_IMPORTED_MODULE_0__["default"]; },
+/* harmony export */   "ComplementaryAreaMoreMenuItem": function() { return /* reexport safe */ _complementary_area_more_menu_item__WEBPACK_IMPORTED_MODULE_1__["default"]; },
+/* harmony export */   "FullscreenMode": function() { return /* reexport safe */ _fullscreen_mode__WEBPACK_IMPORTED_MODULE_2__["default"]; },
+/* harmony export */   "InterfaceSkeleton": function() { return /* reexport safe */ _interface_skeleton__WEBPACK_IMPORTED_MODULE_3__["default"]; },
+/* harmony export */   "MoreMenuDropdown": function() { return /* reexport safe */ _more_menu_dropdown__WEBPACK_IMPORTED_MODULE_5__["default"]; },
+/* harmony export */   "MoreMenuFeatureToggle": function() { return /* reexport safe */ _more_menu_feature_toggle__WEBPACK_IMPORTED_MODULE_6__["default"]; },
+/* harmony export */   "PinnedItems": function() { return /* reexport safe */ _pinned_items__WEBPACK_IMPORTED_MODULE_4__["default"]; },
+/* harmony export */   "PreferencesModal": function() { return /* reexport safe */ _preferences_modal__WEBPACK_IMPORTED_MODULE_8__["default"]; },
+/* harmony export */   "PreferencesModalSection": function() { return /* reexport safe */ _preferences_modal_section__WEBPACK_IMPORTED_MODULE_10__["default"]; },
+/* harmony export */   "PreferencesModalTabs": function() { return /* reexport safe */ _preferences_modal_tabs__WEBPACK_IMPORTED_MODULE_9__["default"]; },
+/* harmony export */   "___unstablePreferencesModalBaseOption": function() { return /* reexport safe */ _preferences_modal_base_option__WEBPACK_IMPORTED_MODULE_11__["default"]; }
+/* harmony export */ });
+/* harmony import */ var _complementary_area__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./complementary-area */ "./node_modules/@wordpress/interface/build-module/components/complementary-area/index.js");
+/* harmony import */ var _complementary_area_more_menu_item__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./complementary-area-more-menu-item */ "./node_modules/@wordpress/interface/build-module/components/complementary-area-more-menu-item/index.js");
+/* harmony import */ var _fullscreen_mode__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./fullscreen-mode */ "./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js");
+/* harmony import */ var _interface_skeleton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./interface-skeleton */ "./node_modules/@wordpress/interface/build-module/components/interface-skeleton/index.js");
+/* harmony import */ var _pinned_items__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pinned-items */ "./node_modules/@wordpress/interface/build-module/components/pinned-items/index.js");
+/* harmony import */ var _more_menu_dropdown__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./more-menu-dropdown */ "./node_modules/@wordpress/interface/build-module/components/more-menu-dropdown/index.js");
+/* harmony import */ var _more_menu_feature_toggle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./more-menu-feature-toggle */ "./node_modules/@wordpress/interface/build-module/components/more-menu-feature-toggle/index.js");
+/* harmony import */ var _action_item__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./action-item */ "./node_modules/@wordpress/interface/build-module/components/action-item/index.js");
+/* harmony import */ var _preferences_modal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./preferences-modal */ "./node_modules/@wordpress/interface/build-module/components/preferences-modal/index.js");
+/* harmony import */ var _preferences_modal_tabs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./preferences-modal-tabs */ "./node_modules/@wordpress/interface/build-module/components/preferences-modal-tabs/index.js");
+/* harmony import */ var _preferences_modal_section__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./preferences-modal-section */ "./node_modules/@wordpress/interface/build-module/components/preferences-modal-section/index.js");
+/* harmony import */ var _preferences_modal_base_option__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./preferences-modal-base-option */ "./node_modules/@wordpress/interface/build-module/components/preferences-modal-base-option/index.js");
+
+
+
+
+
+
+
+
+
+
+
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/interface-skeleton/index.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/interface-skeleton/index.js ***!
+  \***********************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_5__);
+
+
+
+/**
+ * External dependencies
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+
 function useHTMLClass(className) {
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
-    var element = document && document.querySelector("html:not(.".concat(className, ")"));
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    const element = document && document.querySelector(`html:not(.${className})`);
 
     if (!element) {
       return;
     }
 
     element.classList.toggle(className);
-    return function () {
+    return () => {
       element.classList.toggle(className);
     };
   }, [className]);
 }
 
-function InterfaceSkeleton(_ref) {
-  var footer = _ref.footer,
-      header = _ref.header,
-      sidebar = _ref.sidebar,
-      leftSidebar = _ref.leftSidebar,
-      content = _ref.content,
-      actions = _ref.actions,
-      labels = _ref.labels,
-      className = _ref.className;
+function InterfaceSkeleton(_ref, ref) {
+  let {
+    isDistractionFree,
+    footer,
+    header,
+    editorNotices,
+    sidebar,
+    secondarySidebar,
+    notices,
+    content,
+    drawer,
+    actions,
+    labels,
+    className,
+    shortcuts
+  } = _ref;
+  const navigateRegionsProps = (0,_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__unstableUseNavigateRegions)(shortcuts);
   useHTMLClass('interface-interface-skeleton__html-container');
-  var defaultLabels = {
+  const defaultLabels = {
+    /* translators: accessibility text for the nav bar landmark region. */
+    drawer: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Drawer'),
+
     /* translators: accessibility text for the top bar landmark region. */
     header: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Header'),
 
     /* translators: accessibility text for the content landmark region. */
     body: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Content'),
 
-    /* translators: accessibility text for the left sidebar landmark region. */
-    leftSidebar: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Left sidebar'),
+    /* translators: accessibility text for the secondary sidebar landmark region. */
+    secondarySidebar: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Block Library'),
 
     /* translators: accessibility text for the settings landmark region. */
     sidebar: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Settings'),
@@ -3397,24 +4370,63 @@ function InterfaceSkeleton(_ref) {
     /* translators: accessibility text for the footer landmark region. */
     footer: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Footer')
   };
-
-  var mergedLabels = _objectSpread({}, defaultLabels, {}, labels);
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()(className, 'interface-interface-skeleton')
-  }, !!header && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+  const mergedLabels = { ...defaultLabels,
+    ...labels
+  };
+  const headerVariants = {
+    hidden: isDistractionFree ? {
+      opacity: 0
+    } : {
+      opacity: 1
+    },
+    hover: {
+      opacity: 1,
+      transition: {
+        type: 'tween',
+        delay: 0.2,
+        delayChildren: 0.2
+      }
+    }
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, navigateRegionsProps, {
+    ref: (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_5__.useMergeRefs)([ref, navigateRegionsProps.ref]),
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()(className, 'interface-interface-skeleton', navigateRegionsProps.className, !!footer && 'has-footer')
+  }), !!drawer && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__drawer",
+    role: "region",
+    "aria-label": mergedLabels.drawer,
+    tabIndex: "-1"
+  }, drawer), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__editor"
+  }, !!header && isDistractionFree && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__unstableMotion.div, {
+    initial: isDistractionFree ? 'hidden' : 'hover',
+    whileHover: "hover",
+    variants: headerVariants,
+    transition: {
+      type: 'tween',
+      delay: 0.8
+    },
     className: "interface-interface-skeleton__header",
     role: "region",
     "aria-label": mergedLabels.header,
     tabIndex: "-1"
-  }, header), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "interface-interface-skeleton__body"
-  }, !!leftSidebar && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "interface-interface-skeleton__left-sidebar",
+  }, header), !!header && !isDistractionFree && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__header",
     role: "region",
-    "aria-label": mergedLabels.leftSidebar,
+    "aria-label": mergedLabels.header,
     tabIndex: "-1"
-  }, leftSidebar), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+  }, header), isDistractionFree && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__header"
+  }, editorNotices), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__body"
+  }, !!secondarySidebar && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__secondary-sidebar",
+    role: "region",
+    "aria-label": mergedLabels.secondarySidebar,
+    tabIndex: "-1"
+  }, secondarySidebar), !!notices && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: "interface-interface-skeleton__notices"
+  }, notices), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
     className: "interface-interface-skeleton__content",
     role: "region",
     "aria-label": mergedLabels.body,
@@ -3429,7 +4441,7 @@ function InterfaceSkeleton(_ref) {
     role: "region",
     "aria-label": mergedLabels.actions,
     tabIndex: "-1"
-  }, actions)), !!footer && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+  }, actions))), !!footer && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
     className: "interface-interface-skeleton__footer",
     role: "region",
     "aria-label": mergedLabels.footer,
@@ -3437,8 +4449,912 @@ function InterfaceSkeleton(_ref) {
   }, footer));
 }
 
-/* harmony default export */ __webpack_exports__["default"] = ((0,_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.navigateRegions)(InterfaceSkeleton));
+/* harmony default export */ __webpack_exports__["default"] = ((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(InterfaceSkeleton));
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/more-menu-dropdown/index.js":
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/more-menu-dropdown/index.js ***!
+  \***********************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ MoreMenuDropdown; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
+
+
+/**
+ * External dependencies
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+function MoreMenuDropdown(_ref) {
+  let {
+    as: DropdownComponent = _wordpress_components__WEBPACK_IMPORTED_MODULE_2__.DropdownMenu,
+    className,
+
+    /* translators: button label text should, if possible, be under 16 characters. */
+    label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Options'),
+    popoverProps,
+    toggleProps,
+    children
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(DropdownComponent, {
+    className: classnames__WEBPACK_IMPORTED_MODULE_1___default()('interface-more-menu-dropdown', className),
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+    label: label,
+    popoverProps: {
+      position: 'bottom left',
+      ...popoverProps,
+      className: classnames__WEBPACK_IMPORTED_MODULE_1___default()('interface-more-menu-dropdown__content', popoverProps === null || popoverProps === void 0 ? void 0 : popoverProps.className)
+    },
+    toggleProps: {
+      tooltipPosition: 'bottom',
+      ...toggleProps
+    }
+  }, onClose => children(onClose));
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/more-menu-feature-toggle/index.js":
+/*!*****************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/more-menu-feature-toggle/index.js ***!
+  \*****************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ MoreMenuFeatureToggle; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/check.js");
+/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/a11y */ "@wordpress/a11y");
+/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_a11y__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../store */ "./node_modules/@wordpress/interface/build-module/store/index.js");
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+function MoreMenuFeatureToggle(_ref) {
+  let {
+    scope,
+    label,
+    info,
+    messageActivated,
+    messageDeactivated,
+    shortcut,
+    feature
+  } = _ref;
+  const isActive = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useSelect)(select => select(_store__WEBPACK_IMPORTED_MODULE_5__.store).isFeatureActive(scope, feature), [feature]);
+  const {
+    toggleFeature
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_store__WEBPACK_IMPORTED_MODULE_5__.store);
+
+  const speakMessage = () => {
+    if (isActive) {
+      (0,_wordpress_a11y__WEBPACK_IMPORTED_MODULE_4__.speak)(messageDeactivated || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Feature deactivated'));
+    } else {
+      (0,_wordpress_a11y__WEBPACK_IMPORTED_MODULE_4__.speak)(messageActivated || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Feature activated'));
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuItem, {
+    icon: isActive && _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+    isSelected: isActive,
+    onClick: () => {
+      toggleFeature(scope, feature);
+      speakMessage();
+    },
+    role: "menuitemcheckbox",
+    info: info,
+    shortcut: shortcut
+  }, label);
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/pinned-items/index.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/pinned-items/index.js ***!
+  \*****************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+/**
+ * External dependencies
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+function PinnedItems(_ref) {
+  let {
+    scope,
+    ...props
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Fill, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    name: `PinnedItems/${scope}`
+  }, props));
+}
+
+function PinnedItemsSlot(_ref2) {
+  let {
+    scope,
+    className,
+    ...props
+  } = _ref2;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Slot, (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    name: `PinnedItems/${scope}`
+  }, props), fills => (fills === null || fills === void 0 ? void 0 : fills.length) > 0 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()(className, 'interface-pinned-items')
+  }, fills));
+}
+
+PinnedItems.Slot = PinnedItemsSlot;
+/* harmony default export */ __webpack_exports__["default"] = (PinnedItems);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/preferences-modal-base-option/index.js":
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/preferences-modal-base-option/index.js ***!
+  \**********************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+function BaseOption(_ref) {
+  let {
+    help,
+    label,
+    isChecked,
+    onChange,
+    children
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "interface-preferences-modal__option"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+    __nextHasNoMarginBottom: true,
+    help: help,
+    label: label,
+    checked: isChecked,
+    onChange: onChange
+  }), children);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (BaseOption);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/preferences-modal-section/index.js":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/preferences-modal-section/index.js ***!
+  \******************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+
+const Section = _ref => {
+  let {
+    description,
+    title,
+    children
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
+    className: "interface-preferences-modal__section"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", {
+    className: "interface-preferences-modal__section-legend"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "interface-preferences-modal__section-title"
+  }, title), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "interface-preferences-modal__section-description"
+  }, description)), children);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Section);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/preferences-modal-tabs/index.js":
+/*!***************************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/preferences-modal-tabs/index.js ***!
+  \***************************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ PreferencesModalTabs; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-left.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-right.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+const PREFERENCES_MENU = 'preferences-menu';
+function PreferencesModalTabs(_ref) {
+  let {
+    sections
+  } = _ref;
+  const isLargeViewport = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.useViewportMatch)('medium'); // This is also used to sync the two different rendered components
+  // between small and large viewports.
+
+  const [activeMenu, setActiveMenu] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(PREFERENCES_MENU);
+  /**
+   * Create helper objects from `sections` for easier data handling.
+   * `tabs` is used for creating the `TabPanel` and `sectionsContentMap`
+   * is used for easier access to active tab's content.
+   */
+
+  const {
+    tabs,
+    sectionsContentMap
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
+    let mappedTabs = {
+      tabs: [],
+      sectionsContentMap: {}
+    };
+
+    if (sections.length) {
+      mappedTabs = sections.reduce((accumulator, _ref2) => {
+        let {
+          name,
+          tabLabel: title,
+          content
+        } = _ref2;
+        accumulator.tabs.push({
+          name,
+          title
+        });
+        accumulator.sectionsContentMap[name] = content;
+        return accumulator;
+      }, {
+        tabs: [],
+        sectionsContentMap: {}
+      });
+    }
+
+    return mappedTabs;
+  }, [sections]);
+  const getCurrentTab = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(tab => sectionsContentMap[tab.name] || null, [sectionsContentMap]);
+  let modalContent; // We render different components based on the viewport size.
+
+  if (isLargeViewport) {
+    modalContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
+      className: "interface-preferences__tabs",
+      tabs: tabs,
+      initialTabName: activeMenu !== PREFERENCES_MENU ? activeMenu : undefined,
+      onSelect: setActiveMenu,
+      orientation: "vertical"
+    }, getCurrentTab);
+  } else {
+    modalContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNavigatorProvider, {
+      initialPath: "/",
+      className: "interface-preferences__provider"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNavigatorScreen, {
+      path: "/"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Card, {
+      isBorderless: true,
+      size: "small"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalItemGroup, null, tabs.map(tab => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNavigatorButton, {
+        key: tab.name,
+        path: tab.name,
+        as: _wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalItem,
+        isAction: true
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalHStack, {
+        justify: "space-between"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalTruncate, null, tab.title)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        icon: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.isRTL)() ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"]
+      }))));
+    }))))), sections.length && sections.map(section => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNavigatorScreen, {
+        key: `${section.name}-menu`,
+        path: section.name
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Card, {
+        isBorderless: true,
+        size: "large"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardHeader, {
+        isBorderless: false,
+        justify: "left",
+        size: "small",
+        gap: "6"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNavigatorBackButton, {
+        icon: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.isRTL)() ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+        "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Navigate to the previous view')
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalText, {
+        size: "16"
+      }, section.tabLabel)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardBody, null, section.content)));
+    }));
+  }
+
+  return modalContent;
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/components/preferences-modal/index.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/components/preferences-modal/index.js ***!
+  \**********************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ PreferencesModal; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+function PreferencesModal(_ref) {
+  let {
+    closeModal,
+    children
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+    className: "interface-preferences-modal",
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Preferences'),
+    closeLabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Close'),
+    onRequestClose: closeModal
+  }, children);
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/index.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/index.js ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ActionItem": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.ActionItem; },
+/* harmony export */   "ComplementaryArea": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.ComplementaryArea; },
+/* harmony export */   "ComplementaryAreaMoreMenuItem": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.ComplementaryAreaMoreMenuItem; },
+/* harmony export */   "FullscreenMode": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.FullscreenMode; },
+/* harmony export */   "InterfaceSkeleton": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.InterfaceSkeleton; },
+/* harmony export */   "MoreMenuDropdown": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.MoreMenuDropdown; },
+/* harmony export */   "MoreMenuFeatureToggle": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.MoreMenuFeatureToggle; },
+/* harmony export */   "PinnedItems": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.PinnedItems; },
+/* harmony export */   "PreferencesModal": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.PreferencesModal; },
+/* harmony export */   "PreferencesModalSection": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.PreferencesModalSection; },
+/* harmony export */   "PreferencesModalTabs": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.PreferencesModalTabs; },
+/* harmony export */   "___unstablePreferencesModalBaseOption": function() { return /* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.___unstablePreferencesModalBaseOption; },
+/* harmony export */   "store": function() { return /* reexport safe */ _store__WEBPACK_IMPORTED_MODULE_1__.store; }
+/* harmony export */ });
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components */ "./node_modules/@wordpress/interface/build-module/components/index.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store */ "./node_modules/@wordpress/interface/build-module/store/index.js");
+
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/store/actions.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/store/actions.js ***!
+  \*************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "disableComplementaryArea": function() { return /* binding */ disableComplementaryArea; },
+/* harmony export */   "enableComplementaryArea": function() { return /* binding */ enableComplementaryArea; },
+/* harmony export */   "pinItem": function() { return /* binding */ pinItem; },
+/* harmony export */   "setDefaultComplementaryArea": function() { return /* binding */ setDefaultComplementaryArea; },
+/* harmony export */   "setFeatureDefaults": function() { return /* binding */ setFeatureDefaults; },
+/* harmony export */   "setFeatureValue": function() { return /* binding */ setFeatureValue; },
+/* harmony export */   "toggleFeature": function() { return /* binding */ toggleFeature; },
+/* harmony export */   "unpinItem": function() { return /* binding */ unpinItem; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/deprecated */ "@wordpress/deprecated");
+/* harmony import */ var _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_deprecated__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/preferences */ "@wordpress/preferences");
+/* harmony import */ var _wordpress_preferences__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__);
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Set a default complementary area.
+ *
+ * @param {string} scope Complementary area scope.
+ * @param {string} area  Area identifier.
+ *
+ * @return {Object} Action object.
+ */
+
+const setDefaultComplementaryArea = (scope, area) => ({
+  type: 'SET_DEFAULT_COMPLEMENTARY_AREA',
+  scope,
+  area
+});
+/**
+ * Enable the complementary area.
+ *
+ * @param {string} scope Complementary area scope.
+ * @param {string} area  Area identifier.
+ */
+
+const enableComplementaryArea = (scope, area) => _ref => {
+  let {
+    registry,
+    dispatch
+  } = _ref;
+
+  // Return early if there's no area.
+  if (!area) {
+    return;
+  }
+
+  const isComplementaryAreaVisible = registry.select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).get(scope, 'isComplementaryAreaVisible');
+
+  if (!isComplementaryAreaVisible) {
+    registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).set(scope, 'isComplementaryAreaVisible', true);
+  }
+
+  dispatch({
+    type: 'ENABLE_COMPLEMENTARY_AREA',
+    scope,
+    area
+  });
+};
+/**
+ * Disable the complementary area.
+ *
+ * @param {string} scope Complementary area scope.
+ */
+
+const disableComplementaryArea = scope => _ref2 => {
+  let {
+    registry
+  } = _ref2;
+  const isComplementaryAreaVisible = registry.select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).get(scope, 'isComplementaryAreaVisible');
+
+  if (isComplementaryAreaVisible) {
+    registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).set(scope, 'isComplementaryAreaVisible', false);
+  }
+};
+/**
+ * Pins an item.
+ *
+ * @param {string} scope Item scope.
+ * @param {string} item  Item identifier.
+ *
+ * @return {Object} Action object.
+ */
+
+const pinItem = (scope, item) => _ref3 => {
+  let {
+    registry
+  } = _ref3;
+
+  // Return early if there's no item.
+  if (!item) {
+    return;
+  }
+
+  const pinnedItems = registry.select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).get(scope, 'pinnedItems'); // The item is already pinned, there's nothing to do.
+
+  if ((pinnedItems === null || pinnedItems === void 0 ? void 0 : pinnedItems[item]) === true) {
+    return;
+  }
+
+  registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).set(scope, 'pinnedItems', { ...pinnedItems,
+    [item]: true
+  });
+};
+/**
+ * Unpins an item.
+ *
+ * @param {string} scope Item scope.
+ * @param {string} item  Item identifier.
+ */
+
+const unpinItem = (scope, item) => _ref4 => {
+  let {
+    registry
+  } = _ref4;
+
+  // Return early if there's no item.
+  if (!item) {
+    return;
+  }
+
+  const pinnedItems = registry.select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).get(scope, 'pinnedItems');
+  registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).set(scope, 'pinnedItems', { ...pinnedItems,
+    [item]: false
+  });
+};
+/**
+ * Returns an action object used in signalling that a feature should be toggled.
+ *
+ * @param {string} scope       The feature scope (e.g. core/edit-post).
+ * @param {string} featureName The feature name.
+ */
+
+function toggleFeature(scope, featureName) {
+  return function (_ref5) {
+    let {
+      registry
+    } = _ref5;
+    _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_0___default()(`dispatch( 'core/interface' ).toggleFeature`, {
+      since: '6.0',
+      alternative: `dispatch( 'core/preferences' ).toggle`
+    });
+    registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).toggle(scope, featureName);
+  };
+}
+/**
+ * Returns an action object used in signalling that a feature should be set to
+ * a true or false value
+ *
+ * @param {string}  scope       The feature scope (e.g. core/edit-post).
+ * @param {string}  featureName The feature name.
+ * @param {boolean} value       The value to set.
+ *
+ * @return {Object} Action object.
+ */
+
+function setFeatureValue(scope, featureName, value) {
+  return function (_ref6) {
+    let {
+      registry
+    } = _ref6;
+    _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_0___default()(`dispatch( 'core/interface' ).setFeatureValue`, {
+      since: '6.0',
+      alternative: `dispatch( 'core/preferences' ).set`
+    });
+    registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).set(scope, featureName, !!value);
+  };
+}
+/**
+ * Returns an action object used in signalling that defaults should be set for features.
+ *
+ * @param {string}                  scope    The feature scope (e.g. core/edit-post).
+ * @param {Object<string, boolean>} defaults A key/value map of feature names to values.
+ *
+ * @return {Object} Action object.
+ */
+
+function setFeatureDefaults(scope, defaults) {
+  return function (_ref7) {
+    let {
+      registry
+    } = _ref7;
+    _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_0___default()(`dispatch( 'core/interface' ).setFeatureDefaults`, {
+      since: '6.0',
+      alternative: `dispatch( 'core/preferences' ).setDefaults`
+    });
+    registry.dispatch(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_1__.store).setDefaults(scope, defaults);
+  };
+}
+//# sourceMappingURL=actions.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/store/constants.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/store/constants.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "STORE_NAME": function() { return /* binding */ STORE_NAME; }
+/* harmony export */ });
+/**
+ * The identifier for the data store.
+ *
+ * @type {string}
+ */
+const STORE_NAME = 'core/interface';
+//# sourceMappingURL=constants.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/store/index.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/store/index.js ***!
+  \***********************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "store": function() { return /* binding */ store; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions */ "./node_modules/@wordpress/interface/build-module/store/actions.js");
+/* harmony import */ var _selectors__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./selectors */ "./node_modules/@wordpress/interface/build-module/store/selectors.js");
+/* harmony import */ var _reducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reducer */ "./node_modules/@wordpress/interface/build-module/store/reducer.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./node_modules/@wordpress/interface/build-module/store/constants.js");
+/**
+ * WordPress dependencies
+ */
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+/**
+ * Store definition for the interface namespace.
+ *
+ * @see https://github.com/WordPress/gutenberg/blob/HEAD/packages/data/README.md#createReduxStore
+ *
+ * @type {Object}
+ */
+
+const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(_constants__WEBPACK_IMPORTED_MODULE_1__.STORE_NAME, {
+  reducer: _reducer__WEBPACK_IMPORTED_MODULE_2__["default"],
+  actions: _actions__WEBPACK_IMPORTED_MODULE_3__,
+  selectors: _selectors__WEBPACK_IMPORTED_MODULE_4__
+}); // Once we build a more generic persistence plugin that works across types of stores
+// we'd be able to replace this with a register call.
+
+(0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.register)(store);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/store/reducer.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/store/reducer.js ***!
+  \*************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "complementaryAreas": function() { return /* binding */ complementaryAreas; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * WordPress dependencies
+ */
+
+function complementaryAreas() {
+  let state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  let action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case 'SET_DEFAULT_COMPLEMENTARY_AREA':
+      {
+        const {
+          scope,
+          area
+        } = action; // If there's already an area, don't overwrite it.
+
+        if (state[scope]) {
+          return state;
+        }
+
+        return { ...state,
+          [scope]: area
+        };
+      }
+
+    case 'ENABLE_COMPLEMENTARY_AREA':
+      {
+        const {
+          scope,
+          area
+        } = action;
+        return { ...state,
+          [scope]: area
+        };
+      }
+  }
+
+  return state;
+}
+/* harmony default export */ __webpack_exports__["default"] = ((0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.combineReducers)({
+  complementaryAreas
+}));
+//# sourceMappingURL=reducer.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/interface/build-module/store/selectors.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/interface/build-module/store/selectors.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getActiveComplementaryArea": function() { return /* binding */ getActiveComplementaryArea; },
+/* harmony export */   "isFeatureActive": function() { return /* binding */ isFeatureActive; },
+/* harmony export */   "isItemPinned": function() { return /* binding */ isItemPinned; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/deprecated */ "@wordpress/deprecated");
+/* harmony import */ var _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_deprecated__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_preferences__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/preferences */ "@wordpress/preferences");
+/* harmony import */ var _wordpress_preferences__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_2__);
+/**
+ * WordPress dependencies
+ */
+
+
+
+/**
+ * Returns the complementary area that is active in a given scope.
+ *
+ * @param {Object} state Global application state.
+ * @param {string} scope Item scope.
+ *
+ * @return {string | null | undefined} The complementary area that is active in the given scope.
+ */
+
+const getActiveComplementaryArea = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createRegistrySelector)(select => (state, scope) => {
+  var _state$complementaryA;
+
+  const isComplementaryAreaVisible = select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_2__.store).get(scope, 'isComplementaryAreaVisible'); // Return `undefined` to indicate that the user has never toggled
+  // visibility, this is the vanilla default. Other code relies on this
+  // nuance in the return value.
+
+  if (isComplementaryAreaVisible === undefined) {
+    return undefined;
+  } // Return `null` to indicate the user hid the complementary area.
+
+
+  if (!isComplementaryAreaVisible) {
+    return null;
+  }
+
+  return state === null || state === void 0 ? void 0 : (_state$complementaryA = state.complementaryAreas) === null || _state$complementaryA === void 0 ? void 0 : _state$complementaryA[scope];
+});
+/**
+ * Returns a boolean indicating if an item is pinned or not.
+ *
+ * @param {Object} state Global application state.
+ * @param {string} scope Scope.
+ * @param {string} item  Item to check.
+ *
+ * @return {boolean} True if the item is pinned and false otherwise.
+ */
+
+const isItemPinned = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createRegistrySelector)(select => (state, scope, item) => {
+  var _pinnedItems$item;
+
+  const pinnedItems = select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_2__.store).get(scope, 'pinnedItems');
+  return (_pinnedItems$item = pinnedItems === null || pinnedItems === void 0 ? void 0 : pinnedItems[item]) !== null && _pinnedItems$item !== void 0 ? _pinnedItems$item : true;
+});
+/**
+ * Returns a boolean indicating whether a feature is active for a particular
+ * scope.
+ *
+ * @param {Object} state       The store state.
+ * @param {string} scope       The scope of the feature (e.g. core/edit-post).
+ * @param {string} featureName The name of the feature.
+ *
+ * @return {boolean} Is the feature enabled?
+ */
+
+const isFeatureActive = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createRegistrySelector)(select => (state, scope, featureName) => {
+  _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_1___default()(`select( 'core/interface' ).isFeatureActive( scope, featureName )`, {
+    since: '6.0',
+    alternative: `select( 'core/preferences' ).get( scope, featureName )`
+  });
+  return !!select(_wordpress_preferences__WEBPACK_IMPORTED_MODULE_2__.store).get(scope, featureName);
+});
+//# sourceMappingURL=selectors.js.map
 
 /***/ }),
 
@@ -3576,11 +5492,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/media-utils */ "@wordpress/media-utils");
 /* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_media_utils__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../sidebar */ "./src/components/sidebar/index.jsx");
-/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/keyboard-shortcuts */ "@wordpress/keyboard-shortcuts");
-/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../sidebar */ "./src/components/sidebar/index.jsx");
+/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/keyboard-shortcuts */ "@wordpress/keyboard-shortcuts");
+/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9__);
 
 /**
  * WordPress dependencies
@@ -3598,24 +5516,23 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 function BlockEditor(_ref) {
   let {
     settings: _settings
   } = _ref;
   const location = window.location.hash;
-  var locationArray = location.split('/');
+  var locationArray = location.split("/");
   const lastIndex = locationArray.at(-1);
-  const id = lastIndex.replace("#", '');
+  const id = lastIndex.replace("#", "");
   const [blocks, updateBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const {
     createInfoNotice
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/notices');
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)("core/notices");
   const canUserCreateMedia = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const _canUserCreateMedia = select('core').canUser('create', 'media');
+    const _canUserCreateMedia = select("core").canUser("create", "media");
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px">Email<span class="required-mark">*</span></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color: !important;border-radius:5px;padding-top:12px;padding-right:20px;padding-bottom:13px;padding-left:20px;border-style:none;border-width:1px;border-color:">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = "<!-- wp:mrmformfield/email-field-block -->\n" + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + "<!-- /wp:mrmformfield/email-field-block -->\n" + "\n" + "<!-- wp:mrmformfield/mrm-button-block -->\n" + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + "<!-- /wp:mrmformfield/mrm-button-block -->";
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -3647,18 +5564,18 @@ function BlockEditor(_ref) {
         const resJson = await res.json();
         if (200 === resJson.code) {
           var _resJson$data$;
-          window.localStorage.setItem('getmrmblocks', resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
-          const storedBlocks = window.localStorage.getItem('getmrmblocks');
+          window.localStorage.setItem("getmrmblocks", resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
+          const storedBlocks = window.localStorage.getItem("getmrmblocks");
           if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
             handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
           }
         } else {
           handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
-          window.localStorage.setItem('getmrmblocks', defaultData);
+          window.localStorage.setItem("getmrmblocks", defaultData);
         }
       } else {
         handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
-        window.localStorage.setItem('getmrmblocks', defaultData);
+        window.localStorage.setItem("getmrmblocks", defaultData);
       }
     };
     getFormData();
@@ -3682,24 +5599,24 @@ function BlockEditor(_ref) {
   }
   function handleUpdateBlocksByOnInput(blocks) {
     updateBlocks(blocks);
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
+    window.localStorage.setItem("getmrmblocks", (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
   }
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
+    window.localStorage.setItem("getmrmblocks", (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockEditorProvider, {
     value: blocks,
     onInput: handleUpdateBlocksByOnInput,
     onChange: handlePersistBlocks,
     settings: settings
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_7__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_8__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "editor-styles-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorKeyboardShortcuts, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.WritingFlow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.ObserveTyping, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockList, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockEditorKeyboardShortcuts, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockTools, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.WritingFlow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.ObserveTyping, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockList, {
     className: "get-mrm-block-editor__block-list"
-  })))))));
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Popover.Slot, null)))));
 }
 /* harmony default export */ __webpack_exports__["default"] = (BlockEditor);
 
@@ -3742,7 +5659,7 @@ const {
     onDeviceChange
   } = _ref;
   const [device, setDevice] = useState('md');
-  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.qubelyDevice;
+  let responsiveDevice = responsive ? activeDevice ? activeDevice : device : window.mrmTypographyDevice;
   const getValue = () => value ? responsive ? value[responsiveDevice] || '' : value : '';
   const onButtonClick = val => onChange(responsive ? Object.assign({}, value, {
     [responsiveDevice]: val
@@ -3755,26 +5672,17 @@ const {
     setDevice(newDevice);
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: 'qubely-field-group-btn qubely-field ' + (responsive ? 'qubely-responsive' : 'qubely-d-flex')
+    className: 'mrmTypography-field-group-btn mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : 'mrmTypography-d-flex')
   }, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "qubely-d-flex qubely-align-center qubely-mb-10"
+    className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
   }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
     device: responsiveDevice,
     commonResponsiveDevice: device,
-    className: "qubely-ml-10",
+    className: "mrmTypography-ml-10",
     onChange: val => {
       device && onDeviceChange ? onDeviceChange(val) : updateDevice(val);
     }
-  })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, {
-    className: "qubely-field-child qubely-d-flex"
-  }, options.map(_ref2 => {
-    let [title, option] = _ref2;
-    const activeBtn = option === getValue() ? 'qubley-active-group-btn' : '';
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
-      className: `qubley-group-button ${activeBtn}${additionalClass ? ` ${additionalClass}` : ''}`,
-      onClick: () => onButtonClick(option)
-    }, title);
-  })));
+  })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "));
 }
 
 /***/ }),
@@ -3808,11 +5716,11 @@ class Device extends Component {
   }
   componentDidMount() {
     if (typeof this.props.device !== 'undefined' && this.props.device !== '') {
-      window.qubelyDevice = this.props.device;
+      window.mrmTypographyDevice = this.props.device;
     }
   }
   setSettings(value) {
-    window.qubelyDevice = value;
+    window.mrmTypographyDevice = value;
     this.setState({
       current: value
     });
@@ -3828,7 +5736,7 @@ class Device extends Component {
       commonResponsiveDevice
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `qubely-device ${className ? className : ''}`
+      className: `mrmTypography-device ${className ? className : ''}`
     });
   }
 }
@@ -3872,7 +5780,7 @@ class Range extends Component {
     if (type == 'unit') {
       return value ? value.unit || 'px' : 'px';
     } else {
-      return value ? responsive ? value[window.qubelyDevice] || '' : value : '';
+      return value ? responsive ? value[window.mrmTypographyDevice] || '' : value : '';
     }
   }
   setSettings(val, type) {
@@ -3895,7 +5803,7 @@ class Range extends Component {
       newValue.unit = val;
     } else {
       newValue = responsive ? Object.assign(newValue, value, {
-        [window.qubelyDevice]: val
+        [window.mrmTypographyDevice]: val
       }) : val;
       newValue = min ? newValue < min ? min : newValue : newValue < 0 ? 0 : newValue;
       newValue = max ? newValue > max ? max : newValue : newValue > 1000 ? 1000 : newValue;
@@ -3938,22 +5846,22 @@ class Range extends Component {
       onDeviceChange,
       disabled = false
     } = this.props;
-    let responsiveDevice = responsive ? device ? device : this.state.device : window.qubelyDevice;
+    let responsiveDevice = responsive ? device ? device : this.state.device : window.mrmTypographyDevice;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: 'qubely-field-range qubely-field ' + (responsive ? 'qubely-responsive' : '')
+      className: 'mrmTypography-field-range mrmTypography-field ' + (responsive ? 'mrmTypography-responsive' : '')
     }, (label || unit || responsive) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-d-flex qubely-align-center qubely-mb-10"
+      className: "mrmTypography-d-flex mrmTypography-align-center mrmTypography-mb-10"
     }, label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
       htmlFor: 'input'
     }, label)), responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_3__["default"], {
       device: responsiveDevice,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => {
         device && onDeviceChange ? onDeviceChange(val) : this.updateDevice(val);
       }
     }), unit && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-unit-btn-group qubely-ml-auto"
+      className: "mrmTypography-unit-btn-group mrmTypography-ml-auto"
     }, (typeof unit == 'object' ? unit : ['px', 'em', '%']).map(value => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("button", {
       className: this.props.value && value == this.props.value.unit ? 'active' : '',
       onClick: () => {
@@ -3962,9 +5870,9 @@ class Range extends Component {
         // this.setSettings(this._filterValue(), 'range');
       }
     }, value)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-child"
+      className: "mrmTypography-field-child"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-input-range"
+      className: "mrmTypography-input-range"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "range",
       min: this._minMax('min'),
@@ -4018,7 +5926,7 @@ class Toggle extends Component {
     };
   }
   _filterValue() {
-    return this.props.value ? this.props.responsive ? this.props.value[window.qubelyDevice] || '' : this.props.value : '';
+    return this.props.value ? this.props.responsive ? this.props.value[window.mrmTypographyDevice] || '' : this.props.value : '';
   }
   setSettings(val) {
     const {
@@ -4027,7 +5935,7 @@ class Toggle extends Component {
       onChange
     } = this.props;
     let final = responsive ? Object.assign({}, value, {
-      [window.qubelyDevice]: val
+      [window.mrmTypographyDevice]: val
     }) : val;
     onChange(final);
     this.setState({
@@ -4043,11 +5951,11 @@ class Toggle extends Component {
       onDeviceChange
     } = this.props;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: 'qubely-field-toggle qubely-field' + (this.props.responsive ? ' qubely-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
+      className: 'mrmTypography-field-toggle mrmTypography-field' + (this.props.responsive ? ' mrmTypography-responsive' : '') + (customClassName ? ` ${customClassName}` : '')
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, label && label, responsive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, device ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       device: device,
       commonResponsiveDevice: device,
-      className: "qubely-ml-10",
+      className: "mrmTypography-ml-10",
       onChange: val => onDeviceChange(val)
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Device__WEBPACK_IMPORTED_MODULE_2__["default"], {
       onChange: val => this.setState({
@@ -4130,18 +6038,18 @@ class Typography extends Component {
       showFontWeights
     } = this.state;
     if (showFontFamiles) {
-      const qubelyFontFamilyWrapper = this.refs.qubelyFontFamilyWrapper;
-      const qubelySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
-      if (qubelyFontFamilyWrapper && !qubelyFontFamilyWrapper.contains(event.target)) {
-        qubelySelectedFontFamily && !qubelySelectedFontFamily.contains(event.target) && this.setState({
+      const mrmTypographyFontFamilyWrapper = this.refs.mrmTypographyFontFamilyWrapper;
+      const mrmTypographySelectedFontFamily = this.refs.wpfnlSelectedFontFamily;
+      if (mrmTypographyFontFamilyWrapper && !mrmTypographyFontFamilyWrapper.contains(event.target)) {
+        mrmTypographySelectedFontFamily && !mrmTypographySelectedFontFamily.contains(event.target) && this.setState({
           showFontFamiles: false
         });
       }
     } else if (showFontWeights) {
-      const qubelyFontWeightWrapper = this.refs.qubelyFontWeightWrapper;
-      const qubelySelectedFontWeight = this.refs.qubelySelectedFontWeight;
-      if (qubelyFontWeightWrapper && !qubelyFontWeightWrapper.contains(event.target)) {
-        qubelySelectedFontWeight && !qubelySelectedFontWeight.contains(event.target) && this.setState({
+      const mrmTypographyFontWeightWrapper = this.refs.mrmTypographyFontWeightWrapper;
+      const mrmTypographySelectedFontWeight = this.refs.mrmTypographySelectedFontWeight;
+      if (mrmTypographyFontWeightWrapper && !mrmTypographyFontWeightWrapper.contains(event.target)) {
+        mrmTypographySelectedFontWeight && !mrmTypographySelectedFontWeight.contains(event.target) && this.setState({
           showFontWeights: false
         });
       }
@@ -4190,9 +6098,9 @@ class Typography extends Component {
   }
   findArrayIndex = font => {
     let index = 0;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     while (index < 10) {
-      if (qubelyFonts[index].n == font) {
+      if (mrmTypographyFonts[index].n == font) {
         break;
       }
       index++;
@@ -4201,22 +6109,22 @@ class Typography extends Component {
   };
   handleTypographyChange(val) {
     this.setSettings('family', val);
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let selectedFont = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => font.n == val);
-    if (qubelyFonts) {
-      let oldFont = qubelyFonts.filter(font => font.n == val).length > 0;
+    if (mrmTypographyFonts) {
+      let oldFont = mrmTypographyFonts.filter(font => font.n == val).length > 0;
       if (oldFont) {
         let index = this.findArrayIndex(val);
-        qubelyFonts.splice(index, 1);
-        qubelyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.splice(index, 1);
+        mrmTypographyFonts.unshift(...selectedFont);
       } else {
-        qubelyFonts.unshift(...selectedFont);
-        qubelyFonts.length > 10 && qubelyFonts.pop();
+        mrmTypographyFonts.unshift(...selectedFont);
+        mrmTypographyFonts.length > 10 && mrmTypographyFonts.pop();
       }
     } else {
-      qubelyFonts = [...selectedFont];
+      mrmTypographyFonts = [...selectedFont];
     }
-    localStorage.setItem('qubelyFonts', JSON.stringify(qubelyFonts));
+    localStorage.setItem('mrmTypographyFonts', JSON.stringify(mrmTypographyFonts));
   }
   render() {
     const {
@@ -4234,22 +6142,22 @@ class Typography extends Component {
       showFontFamiles,
       showFontWeights
     } = this.state;
-    let qubelyFonts = JSON.parse(localStorage.getItem('qubelyFonts'));
+    let mrmTypographyFonts = JSON.parse(localStorage.getItem('mrmTypographyFonts'));
     let filteredFontList = [],
       newFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"];
-    if (qubelyFonts) {
-      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !qubelyFonts.filter(qubelyFont => qubelyFont.n == font.n || font.n == 'Default').length > 0);
+    if (mrmTypographyFonts) {
+      filteredFontList = _assets_FontList__WEBPACK_IMPORTED_MODULE_8__["default"].filter(font => !mrmTypographyFonts.filter(mrmTypographyFont => mrmTypographyFont.n == font.n || font.n == 'Default').length > 0);
       newFontList = [{
         n: 'Default',
         f: 'default',
         v: []
-      }, ...qubelyFonts, ...filteredFontList];
+      }, ...mrmTypographyFonts, ...filteredFontList];
     }
     if (filterText.length >= 2) {
       newFontList = newFontList.filter(item => item.n.toLowerCase().search(filterText.toLowerCase()) !== -1);
     }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-typography"
+      className: "mrmTypography-field mrmTypography-field-typography"
     }, !globalSettings && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Toggle__WEBPACK_IMPORTED_MODULE_4__["default"], {
       value: value.openTypography,
       label: label || __('Typography'),
@@ -4317,11 +6225,11 @@ class Typography extends Component {
         }
       }
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field-group qubely-65-35"
+      className: "mrmTypography-field-group mrmTypography-65-35"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-family"
+      className: "mrmTypography-field mrmTypography-field-font-family"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Font Family')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-picker",
+      className: "mrmTypography-font-family-picker",
       ref: "wpfnlSelectedFontFamily",
       onClick: () => {
         this.setState({
@@ -4329,35 +6237,35 @@ class Typography extends Component {
         });
       }
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-family-search-wrapper"
+      className: "mrmTypography-font-family-search-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", {
       type: "text",
-      className: `qubely-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
+      className: `mrmTypography-font-family-search${!showFontFamiles ? ' selected-font-family' : ''}`,
       placeholder: __(showFontFamiles ? 'Search' : value && value.family || 'Select'),
       value: filterText,
       onChange: e => this.setState({
         filterText: e.target.value
       })
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontFamiles ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  ")))), showFontFamiles && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-option-wrapper",
-      ref: "qubelyFontFamilyWrapper"
+      className: "mrmTypography-font-family-option-wrapper",
+      ref: "mrmTypographyFontFamilyWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-options"
+      className: "mrmTypography-font-family-options"
     }, newFontList.length > 0 ? newFontList.map((font, index) => {
       let isActiveFont = false;
       if (value && font.n == value.family) {
         isActiveFont = true;
       }
       let fontClasses = classnames__WEBPACK_IMPORTED_MODULE_5___default()({
-        ['qubely-font-family-option']: !isActiveFont
+        ['mrmTypography-font-family-option']: !isActiveFont
       }, {
-        ['qubely-active-font-family']: isActiveFont
+        ['mrmTypography-active-font-family']: isActiveFont
       });
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
         className: fontClasses,
-        id: `qubely-font-family-${index}`,
+        key: `mrmTypography-font-family-${index}`,
         onClick: () => {
           this.setState({
             showFontFamiles: false,
@@ -4367,31 +6275,32 @@ class Typography extends Component {
         }
       }, font.n);
     }) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: `qubely-font-family-option no-match`,
+      className: `mrmTypography-font-family-option no-match`,
       onClick: () => this.setState({
         showFontFamiles: false,
         filterText: ''
       })
     }, "  No matched font  "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-field qubely-field-font-weight"
+      className: "mrmTypography-field mrmTypography-field-font-weight"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", null, __('Weight')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker-wrapper",
-      ref: "qubelySelectedFontWeight",
+      className: "mrmTypography-font-weight-picker-wrapper",
+      ref: "mrmTypographySelectedFontWeight",
       onClick: () => this.setState({
         showFontWeights: !showFontWeights
       })
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-picker"
+      className: "mrmTypography-font-weight-picker"
     }, "  ", value && value.weight || 'Select', "   "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
-      className: "qubely-font-select-icon"
+      className: "mrmTypography-font-select-icon"
     }, "   ", showFontWeights ? (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_up) : (_assets_icons__WEBPACK_IMPORTED_MODULE_6___default().arrow_down), "  "))), showFontWeights && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-weight-wrapper",
-      ref: "qubelyFontWeightWrapper"
+      className: "mrmTypography-font-weight-wrapper",
+      ref: "mrmTypographyFontWeightWrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-      className: "qubely-font-family-weights"
-    }, ['Default', ...this._getWeight()].map(font => {
+      className: "mrmTypography-font-family-weights"
+    }, ['Default', ...this._getWeight()].map((font, index) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-        className: `${font == value.weight ? 'qubely-active-font-weight' : 'qubely-font-weight-option'}`,
+        className: `${font == value.weight ? 'mrmTypography-active-font-weight' : 'mrmTypography-font-weight-option'}`,
+        key: `mrmTypography-font-weights-${index}`,
         onClick: () => {
           this.setState({
             showFontWeights: false
@@ -4436,4026 +6345,5966 @@ __webpack_require__.r(__webpack_exports__);
   v: [],
   f: "default"
 }, {
-  n: 'Arial',
-  f: 'sans-serif',
+  n: "Cursive",
+  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+  f: "cursive"
+}, {
+  n: "Fantasy",
+  v: [],
+  f: "fantasy"
+}, {
+  n: "Monospace",
+  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+  f: "monospace"
+}, {
+  n: "Arial",
+  f: "sans-serif",
   v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Tahoma',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Verdana',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Helvetica',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Times New Roman',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Trebuchet MS',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: 'Georgia',
-  f: 'sans-serif',
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900]
-}, {
-  n: "ABeeZee",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Abel",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Abhaya Libre",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "Abril Fatface",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aclonica",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Acme",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Actor",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Adamina",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Advent Pro",
-  v: [100, 200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Aguafina Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Akronim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aladin",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Alata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Alatsi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Aldrich",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Alef",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Alegreya",
-  v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Alegreya SC",
-  v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Alegreya Sans",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Alegreya Sans SC",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Aleo",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Alex Brush",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Alfa Slab One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Alice",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Alike",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Alike Angular",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Allan",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Allerta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Allerta Stencil",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Allura",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Almarai",
-  v: [300, 400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Almendra",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Almendra Display",
-  v: [400],
-  f: "display"
-}, {
-  n: "Almendra SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Amarante",
-  v: [400],
-  f: "display"
-}, {
-  n: "Amaranth",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Amatic SC",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Amethysta",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Amiko",
-  v: [400, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Amiri",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Amita",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Anaheim",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Andada",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Andika",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Angkor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Annie Use Your Telescope",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Anonymous Pro",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Antic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Antic Didone",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Antic Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Anton",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Arapey",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Arbutus",
-  v: [400],
-  f: "display"
-}, {
-  n: "Arbutus Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Architects Daughter",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Archivo",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Archivo Black",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Archivo Narrow",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Aref Ruqaa",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Arima Madurai",
-  v: [100, 200, 300, 400, 500, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Arimo",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Arizonia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Armata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Arsenal",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Artifika",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Arvo",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Arya",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Asap",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Asap Condensed",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Asar",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Asset",
-  v: [400],
-  f: "display"
-}, {
-  n: "Assistant",
-  v: [200, 300, 400, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Astloch",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Asul",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Athiti",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Atma",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Atomic Age",
-  v: [400],
-  f: "display"
-}, {
-  n: "Aubrey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Audiowide",
-  v: [400],
-  f: "display"
-}, {
-  n: "Autour One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Average",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Average Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Averia Gruesa Libre",
-  v: [400],
-  f: "display"
-}, {
-  n: "Averia Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Averia Sans Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Averia Serif Libre",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "B612",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "B612 Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Bad Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bahiana",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bahianita",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bai Jamjuree",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Baloo 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Bhai 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Bhaina 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Chettan 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Da 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Paaji 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Tamma 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Tammudu 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Baloo Thambi 2",
-  v: [400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Balsamiq Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Balthazar",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bangers",
-  v: [400],
-  f: "display"
-}, {
-  n: "Barlow",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barlow Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barlow Semi Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Barriecito",
-  v: [400],
-  f: "display"
-}, {
-  n: "Barrio",
-  v: [400],
-  f: "display"
-}, {
-  n: "Basic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Baskervville",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Battambang",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Baumans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bayon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Be Vietnam",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Bebas Neue",
-  v: [400],
-  f: "display"
-}, {
-  n: "Belgrano",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bellefair",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Belleza",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Bellota",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Bellota Text",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "BenchNine",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Bentham",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Berkshire Swash",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Beth Ellen",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bevan",
-  v: [400],
-  f: "display"
-}, {
-  n: "Big Shoulders Display",
-  v: [100, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Big Shoulders Text",
-  v: [100, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Bigelow Rules",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bigshot One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bilbo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Bilbo Swash Caps",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "BioRhyme",
-  v: [200, 300, 400, 700, 800],
-  f: "serif"
-}, {
-  n: "BioRhyme Expanded",
-  v: [200, 300, 400, 700, 800],
-  f: "serif"
-}, {
-  n: "Biryani",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Bitter",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Black And White Picture",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Black Han Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Black Ops One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Blinker",
-  v: [100, 200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Bokor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bonbon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Boogaloo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bowlby One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bowlby One SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Brawler",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bree Serif",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Bubblegum Sans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bubbler One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Buda",
-  v: [300],
-  f: "display"
-}, {
-  n: "Buenard",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Bungee",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Hairline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Inline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Bungee Shade",
-  v: [400],
-  f: "display"
-}, {
-  n: "Butcherman",
-  v: [400],
-  f: "display"
-}, {
-  n: "Butterfly Kids",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cabin",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cabin Condensed",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Cabin Sketch",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Caesar Dressing",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cagliostro",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cairo",
-  v: [200, 300, 400, 600, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Caladea",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Calistoga",
-  v: [400],
-  f: "display"
-}, {
-  n: "Calligraffitti",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cambay",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cambo",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Candal",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cantarell",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cantata One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Cantora One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Capriola",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cardo",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Carme",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carrois Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carrois Gothic SC",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Carter One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Catamaran",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Caudex",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Caveat",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Caveat Brush",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Cedarville Cursive",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ceviche One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chakra Petch",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Changa",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Changa One",
-  v: [400, "400i"],
-  f: "display"
-}, {
-  n: "Chango",
-  v: [400],
-  f: "display"
-}, {
-  n: "Charm",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Charmonman",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Chathura",
-  v: [100, 300, 400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Chau Philomene One",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Chela One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chelsea Market",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chenla",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cherry Cream Soda",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cherry Swash",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Chewy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chicle",
-  v: [400],
-  f: "display"
-}, {
-  n: "Chilanka",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Chivo",
-  v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Chonburi",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cinzel",
-  v: [400, 700, 900],
-  f: "serif"
-}, {
-  n: "Cinzel Decorative",
-  v: [400, 700, 900],
-  f: "display"
-}, {
-  n: "Clicker Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Coda",
-  v: [400, 800],
-  f: "display"
-}, {
-  n: "Coda Caption",
-  v: [800],
-  f: "sans-serif"
-}, {
-  n: "Codystar",
-  v: [300, 400],
-  f: "display"
-}, {
-  n: "Coiny",
-  v: [400],
-  f: "display"
-}, {
-  n: "Combo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Comfortaa",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Comic Neue",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "handwriting"
-}, {
-  n: "Coming Soon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Concert One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Condiment",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Content",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Contrail One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Convergence",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Cookie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Copse",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Corben",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Cormorant",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant Garamond",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant Infant",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Cormorant SC",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Cormorant Unicase",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Cormorant Upright",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Courgette",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Courier Prime",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Cousine",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Coustard",
-  v: [400, 900],
-  f: "serif"
-}, {
-  n: "Covered By Your Grace",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Crafty Girls",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Creepster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Crete Round",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Crimson Pro",
-  v: [200, 300, 400, 500, 600, 700, 800, 900, "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Crimson Text",
-  v: [400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Croissant One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Crushed",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cuprum",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Cute Font",
-  v: [400],
-  f: "display"
-}, {
-  n: "Cutive",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Cutive Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "DM Mono",
-  v: [300, "300i", 400, "400i", 500, "500i"],
-  f: "monospace"
-}, {
-  n: "DM Sans",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "DM Serif Display",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "DM Serif Text",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Damion",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Dancing Script",
-  v: [400, 500, 600, 700],
-  f: "handwriting"
-}, {
-  n: "Dangrek",
-  v: [400],
-  f: "display"
-}, {
-  n: "Darker Grotesque",
-  v: [300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "David Libre",
-  v: [400, 500, 700],
-  f: "serif"
-}, {
-  n: "Dawning of a New Day",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Days One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dekko",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius Swash Caps",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Delius Unicase",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Della Respira",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Denk One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Devonshire",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Dhurjati",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Didact Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Diplomata",
-  v: [400],
-  f: "display"
-}, {
-  n: "Diplomata SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Do Hyeon",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dokdo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Domine",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Donegal One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Doppio One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dorsa",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dosis",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Dr Sugiyama",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Duru Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Dynalight",
-  v: [400],
-  f: "display"
-}, {
-  n: "EB Garamond",
-  v: [400, 500, 600, 700, 800, "400i", "500i", "600i", "700i", "800i"],
-  f: "serif"
-}, {
-  n: "Eagle Lake",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "East Sea Dokdo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Eater",
-  v: [400],
-  f: "display"
-}, {
-  n: "Economica",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Eczar",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "El Messiri",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Electrolize",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Elsie",
-  v: [400, 900],
-  f: "display"
-}, {
-  n: "Elsie Swash Caps",
-  v: [400, 900],
-  f: "display"
-}, {
-  n: "Emblema One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Emilys Candy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Encode Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Expanded",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Semi Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Encode Sans Semi Expanded",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Engagement",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Englebert",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Enriqueta",
-  v: [400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Epilogue",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Erica One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Esteban",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Euphoria Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ewert",
-  v: [400],
-  f: "display"
-}, {
-  n: "Exo",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Exo 2",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Expletus Sans",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Fahkwang",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Fanwood Text",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Farro",
-  v: [300, 400, 500, 700],
-  f: "sans-serif"
-}, {
-  n: "Farsan",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fascinate",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fascinate Inline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Faster One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fasthand",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Fauna One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Faustina",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Federant",
-  v: [400],
-  f: "display"
-}, {
-  n: "Federo",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Felipa",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Fenix",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Finger Paint",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fira Code",
-  v: [300, 400, 500, 600, 700],
-  f: "monospace"
-}, {
-  n: "Fira Mono",
-  v: [400, 500, 700],
-  f: "monospace"
-}, {
-  n: "Fira Sans",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fira Sans Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fira Sans Extra Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Fjalla One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Fjord One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Flamenco",
-  v: [300, 400],
-  f: "display"
-}, {
-  n: "Flavors",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fondamento",
-  v: [400, "400i"],
-  f: "handwriting"
-}, {
-  n: "Fontdiner Swanky",
-  v: [400],
-  f: "display"
-}, {
-  n: "Forum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Francois One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Frank Ruhl Libre",
-  v: [300, 400, 500, 700, 900],
-  f: "serif"
-}, {
-  n: "Freckle Face",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fredericka the Great",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fredoka One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Freehand",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fresca",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Frijole",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fruktur",
-  v: [400],
-  f: "display"
-}, {
-  n: "Fugaz One",
-  v: [400],
-  f: "display"
-}, {
-  n: "GFS Didot",
-  v: [400],
-  f: "serif"
-}, {
-  n: "GFS Neohellenic",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Gabriela",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Gaegu",
-  v: [300, 400, 700],
-  f: "handwriting"
-}, {
-  n: "Gafata",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Galada",
-  v: [400],
-  f: "display"
-}, {
-  n: "Galdeano",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Galindo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gamja Flower",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gayathri",
-  v: [100, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Gelasio",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Gentium Basic",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Gentium Book Basic",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Geo",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Geostar",
-  v: [400],
-  f: "display"
-}, {
-  n: "Geostar Fill",
-  v: [400],
-  f: "display"
-}, {
-  n: "Germania One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gidugu",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Gilda Display",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Girassol",
-  v: [400],
-  f: "display"
-}, {
-  n: "Give You Glory",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Glass Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Glegoo",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Gloria Hallelujah",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Goblin One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gochi Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gorditas",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Gothic A1",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Gotu",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Goudy Bookletter 1911",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Graduate",
-  v: [400],
-  f: "display"
-}, {
-  n: "Grand Hotel",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Gravitas One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Great Vibes",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Grenze",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Grenze Gotisch",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Griffy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gruppo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gudea",
-  v: [400, "400i", 700],
-  f: "sans-serif"
-}, {
-  n: "Gugi",
-  v: [400],
-  f: "display"
-}, {
-  n: "Gupter",
-  v: [400, 500, 700],
-  f: "serif"
-}, {
-  n: "Gurajada",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Habibi",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Halant",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Hammersmith One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Hanalei",
-  v: [400],
-  f: "display"
-}, {
-  n: "Hanalei Fill",
-  v: [400],
-  f: "display"
-}, {
-  n: "Handlee",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hanuman",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Happy Monkey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Harmattan",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Headland One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Heebo",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Henny Penny",
-  v: [400],
-  f: "display"
-}, {
-  n: "Hepta Slab",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Herr Von Muellerhoff",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hi Melody",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Hind",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Guntur",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Madurai",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Siliguri",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Hind Vadodara",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Holtwood One SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Homemade Apple",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Homenaje",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Mono",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "IBM Plex Sans",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Sans Condensed",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "IBM Plex Serif",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "IM Fell DW Pica",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell DW Pica SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell Double Pica",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell Double Pica SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell English",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell English SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell French Canon",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell French Canon SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "IM Fell Great Primer",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "IM Fell Great Primer SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Ibarra Real Nova",
-  v: [400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Iceberg",
-  v: [400],
-  f: "display"
-}, {
-  n: "Iceland",
-  v: [400],
-  f: "display"
-}, {
-  n: "Imprima",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Inconsolata",
-  v: [200, 300, 400, 500, 600, 700, 800, 900],
-  f: "monospace"
-}, {
-  n: "Inder",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Indie Flower",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Inika",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Inknut Antiqua",
-  v: [300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Inria Sans",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Inria Serif",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Inter",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Irish Grover",
-  v: [400],
-  f: "display"
-}, {
-  n: "Istok Web",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Italiana",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Italianno",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Itim",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Jacques Francois",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Jacques Francois Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jaldi",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Jim Nightshade",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Jockey One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Jolly Lodger",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jomhuria",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jomolhari",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Josefin Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, "100i", "200i", "300i", "400i", "500i", "600i", "700i"],
-  f: "sans-serif"
-}, {
-  n: "Josefin Slab",
-  v: [100, "100i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Jost",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Joti One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Jua",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Judson",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Julee",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Julius Sans One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Junge",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Jura",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Just Another Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Just Me Again Down Here",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "K2D",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Kadwa",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Kalam",
-  v: [300, 400, 700],
-  f: "handwriting"
-}, {
-  n: "Kameron",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Kanit",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Kantumruy",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Karla",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Karma",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Katibeh",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kaushan Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Kavivanar",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Kavoon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kdam Thmor",
-  v: [400],
-  f: "display"
-}, {
-  n: "Keania One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kelly Slab",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kenia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Khand",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Khmer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Khula",
-  v: [300, 400, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Kirang Haerang",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kite One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Knewave",
-  v: [400],
-  f: "display"
-}, {
-  n: "KoHo",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kodchasan",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kosugi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Kosugi Maru",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Kotta One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Koulen",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kranky",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kreon",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Kristi",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Krona One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Krub",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kulim Park",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Kumar One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kumar One Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Kurale",
-  v: [400],
-  f: "serif"
-}, {
-  n: "La Belle Aurore",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lacquer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Laila",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Lakki Reddy",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lalezar",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lancelot",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lateef",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lato",
-  v: [100, "100i", 300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "League Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Leckerli One",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ledger",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Lekton",
-  v: [400, "400i", 700],
-  f: "sans-serif"
-}, {
-  n: "Lemon",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lemonada",
-  v: [300, 400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Lexend Deca",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Exa",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Giga",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Mega",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Peta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Tera",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Lexend Zetta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Libre Barcode 128",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 128 Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Extended",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Extended Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Barcode 39 Text",
-  v: [400],
-  f: "display"
-}, {
-  n: "Libre Baskerville",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Libre Caslon Display",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Libre Caslon Text",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Libre Franklin",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Life Savers",
-  v: [400, 700, 800],
-  f: "display"
-}, {
-  n: "Lilita One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lily Script One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Limelight",
-  v: [400],
-  f: "display"
-}, {
-  n: "Linden Hill",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Literata",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Liu Jian Mao Cao",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Livvic",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Lobster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lobster Two",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Londrina Outline",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Sketch",
-  v: [400],
-  f: "display"
-}, {
-  n: "Londrina Solid",
-  v: [100, 300, 400, 900],
-  f: "display"
-}, {
-  n: "Long Cang",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lora",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Love Ya Like A Sister",
-  v: [400],
-  f: "display"
-}, {
-  n: "Loved by the King",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Lovers Quarrel",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Luckiest Guy",
-  v: [400],
-  f: "display"
-}, {
-  n: "Lusitana",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Lustria",
-  v: [400],
-  f: "serif"
-}, {
-  n: "M PLUS 1p",
-  v: [100, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "M PLUS Rounded 1c",
-  v: [100, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Ma Shan Zheng",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Macondo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Macondo Swash Caps",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mada",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Magra",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Maiden Orange",
-  v: [400],
-  f: "display"
-}, {
-  n: "Maitree",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Major Mono Display",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Mako",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mali",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "handwriting"
-}, {
-  n: "Mallanna",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mandali",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Manjari",
-  v: [100, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Manrope",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mansalva",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Manuale",
-  v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
-  f: "serif"
-}, {
-  n: "Marcellus",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marcellus SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marck Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Margarine",
-  v: [400],
-  f: "display"
-}, {
-  n: "Markazi Text",
-  v: [400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Marko One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Marmelad",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Martel",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Martel Sans",
-  v: [200, 300, 400, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Marvel",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Mate",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Mate SC",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Maven Pro",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "McLaren",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meddon",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "MedievalSharp",
-  v: [400],
-  f: "display"
-}, {
-  n: "Medula One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meera Inimai",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Megrim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Meie Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Merienda",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Merienda One",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Merriweather",
-  v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Merriweather Sans",
-  v: [300, "300i", 400, "400i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Metal",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metal Mania",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metamorphous",
-  v: [400],
-  f: "display"
-}, {
-  n: "Metrophobic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Michroma",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Milonga",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miltonian",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miltonian Tattoo",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mina",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Miniver",
-  v: [400],
-  f: "display"
-}, {
-  n: "Miriam Libre",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Mirza",
-  v: [400, 500, 600, 700],
-  f: "display"
-}, {
-  n: "Miss Fajardose",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mitr",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Modak",
-  v: [400],
-  f: "display"
-}, {
-  n: "Modern Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mogra",
-  v: [400],
-  f: "display"
-}, {
-  n: "Molengo",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Molle",
-  v: ["400i"],
-  f: "handwriting"
-}, {
-  n: "Monda",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Monofett",
-  v: [400],
-  f: "display"
-}, {
-  n: "Monoton",
-  v: [400],
-  f: "display"
-}, {
-  n: "Monsieur La Doulaise",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Montaga",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Montez",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Montserrat",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Montserrat Alternates",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Montserrat Subrayada",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Moul",
-  v: [400],
-  f: "display"
-}, {
-  n: "Moulpali",
-  v: [400],
-  f: "display"
-}, {
-  n: "Mountains of Christmas",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Mouse Memoirs",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Mr Bedfort",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mr Dafoe",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mr De Haviland",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mrs Saint Delafield",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mrs Sheppards",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Mukta",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Mahee",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Malar",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mukta Vaani",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Mulish",
-  v: [200, 300, 400, 500, 600, 700, 800, 900, "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "MuseoModerno",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "display"
-}, {
-  n: "Mystery Quest",
-  v: [400],
-  f: "display"
-}, {
-  n: "NTR",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nanum Brush Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Nanum Gothic",
-  v: [400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Nanum Gothic Coding",
-  v: [400, 700],
-  f: "monospace"
-}, {
-  n: "Nanum Myeongjo",
-  v: [400, 700, 800],
-  f: "serif"
-}, {
-  n: "Nanum Pen Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Neucha",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Neuton",
-  v: [200, 300, 400, "400i", 700, 800],
-  f: "serif"
-}, {
-  n: "New Rocker",
-  v: [400],
-  f: "display"
-}, {
-  n: "News Cycle",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Niconne",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Niramit",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Nixie One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nobile",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Nokora",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Norican",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Nosifer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Notable",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nothing You Could Do",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Noticia Text",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Noto Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans HK",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans JP",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans KR",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans SC",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Sans TC",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Noto Serif",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Noto Serif JP",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif KR",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif SC",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Noto Serif TC",
-  v: [200, 300, 400, 500, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Nova Cut",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Flat",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Nova Oval",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Round",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Script",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Slim",
-  v: [400],
-  f: "display"
-}, {
-  n: "Nova Square",
-  v: [400],
-  f: "display"
-}, {
-  n: "Numans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Nunito",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Nunito Sans",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Odibee Sans",
-  v: [400],
-  f: "display"
-}, {
-  n: "Odor Mean Chey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Offside",
-  v: [400],
-  f: "display"
-}, {
-  n: "Old Standard TT",
-  v: [400, "400i", 700],
-  f: "serif"
-}, {
-  n: "Oldenburg",
-  v: [400],
-  f: "display"
-}, {
-  n: "Oleo Script",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Oleo Script Swash Caps",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Open Sans",
-  v: [300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Open Sans Condensed",
-  v: [300, "300i", 700],
-  f: "sans-serif"
-}, {
-  n: "Oranienbaum",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Orbitron",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Oregano",
-  v: [400, "400i"],
-  f: "display"
-}, {
-  n: "Orienta",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Original Surfer",
-  v: [400],
-  f: "display"
-}, {
-  n: "Oswald",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Over the Rainbow",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Overlock",
-  v: [400, "400i", 700, "700i", 900, "900i"],
-  f: "display"
-}, {
-  n: "Overlock SC",
-  v: [400],
-  f: "display"
-}, {
-  n: "Overpass",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Overpass Mono",
-  v: [300, 400, 600, 700],
-  f: "monospace"
-}, {
-  n: "Ovo",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Oxanium",
-  v: [200, 300, 400, 500, 600, 700, 800],
-  f: "display"
-}, {
-  n: "Oxygen",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Oxygen Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "PT Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "PT Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "PT Sans Caption",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "PT Sans Narrow",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "PT Serif",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "PT Serif Caption",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Pacifico",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Padauk",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Palanquin",
-  v: [100, 200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Palanquin Dark",
-  v: [400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Pangolin",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Paprika",
-  v: [400],
-  f: "display"
-}, {
-  n: "Parisienne",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Passero One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Passion One",
-  v: [400, 700, 900],
-  f: "display"
-}, {
-  n: "Pathway Gothic One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Patrick Hand",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Patrick Hand SC",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Pattaya",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Patua One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pavanam",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Paytone One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Peddana",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Peralta",
-  v: [400],
-  f: "display"
-}, {
-  n: "Permanent Marker",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Petit Formal Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Petrona",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Philosopher",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Piedra",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pinyon Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Pirata One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Plaster",
-  v: [400],
-  f: "display"
-}, {
-  n: "Play",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Playball",
-  v: [400],
-  f: "display"
-}, {
-  n: "Playfair Display",
-  v: [400, 500, 600, 700, 800, 900, "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Playfair Display SC",
-  v: [400, "400i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Podkova",
-  v: [400, 500, 600, 700, 800],
-  f: "serif"
-}, {
-  n: "Poiret One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poller One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poly",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Pompiere",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pontano Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Poor Story",
-  v: [400],
-  f: "display"
-}, {
-  n: "Poppins",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Port Lligat Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Port Lligat Slab",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Pragati Narrow",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Prata",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Preahvihear",
-  v: [400],
-  f: "display"
-}, {
-  n: "Press Start 2P",
-  v: [400],
-  f: "display"
-}, {
-  n: "Pridi",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Princess Sofia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Prociono",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Prompt",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Prosto One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Proza Libre",
-  v: [400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Public Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Puritan",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Purple Purse",
-  v: [400],
-  f: "display"
-}, {
-  n: "Quando",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Quantico",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Quattrocento",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Quattrocento Sans",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Questrial",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Quicksand",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Quintessential",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Qwigley",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Racing Sans One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Radley",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Rajdhani",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Rakkas",
-  v: [400],
-  f: "display"
-}, {
-  n: "Raleway",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Raleway Dots",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ramabhadra",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ramaraja",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Rambla",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Rammetto One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ranchers",
-  v: [400],
-  f: "display"
-}, {
-  n: "Rancho",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ranga",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Rasa",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "Rationale",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ravi Prakash",
-  v: [400],
-  f: "display"
-}, {
-  n: "Red Hat Display",
-  v: [400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Red Hat Text",
-  v: [400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Red Rose",
-  v: [300, 400, 700],
-  f: "display"
-}, {
-  n: "Redressed",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Reem Kufi",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Reenie Beanie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Revalia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Rhodium Libre",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Ribeye",
-  v: [400],
-  f: "display"
-}, {
-  n: "Ribeye Marrow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Righteous",
-  v: [400],
-  f: "display"
-}, {
-  n: "Risque",
-  v: [400],
-  f: "display"
-}, {
-  n: "Roboto",
-  v: [100, "100i", 300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Roboto Condensed",
-  v: [300, "300i", 400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Roboto Mono",
-  v: [100, 200, 300, 400, 500, 600, 700, "100i", "200i", "300i", "400i", "500i", "600i", "700i"],
-  f: "monospace"
-}, {
-  n: "Roboto Slab",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Rochester",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rock Salt",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rokkitt",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "serif"
-}, {
-  n: "Romanesco",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ropa Sans",
-  v: [400, "400i"],
-  f: "sans-serif"
-}, {
-  n: "Rosario",
-  v: [300, 400, 500, 600, 700, "300i", "400i", "500i", "600i", "700i"],
-  f: "sans-serif"
-}, {
-  n: "Rosarivo",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Rouge Script",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rowdies",
-  v: [300, 400, 700],
-  f: "display"
-}, {
-  n: "Rozha One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Rubik",
-  v: [300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Rubik Mono One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruda",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Rufina",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Ruge Boogie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Ruluko",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Rum Raisin",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruslan Display",
-  v: [400],
-  f: "display"
-}, {
-  n: "Russo One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ruthie",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Rye",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sacramento",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sahitya",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Sail",
-  v: [400],
-  f: "display"
-}, {
-  n: "Saira",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Extra Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Semi Condensed",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Saira Stencil One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Salsa",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sanchez",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Sancreek",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sansita",
-  v: [400, "400i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Sarabun",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "sans-serif"
-}, {
-  n: "Sarala",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sarina",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sarpanch",
-  v: [400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Satisfy",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sawarabi Gothic",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sawarabi Mincho",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Scada",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Scheherazade",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Schoolbell",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Scope One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Seaweed Script",
-  v: [400],
-  f: "display"
-}, {
-  n: "Secular One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sedgwick Ave",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sedgwick Ave Display",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Sen",
-  v: [400, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Sevillana",
-  v: [400],
-  f: "display"
-}, {
-  n: "Seymour One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Shadows Into Light",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shadows Into Light Two",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shanti",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Share",
-  v: [400, "400i", 700, "700i"],
-  f: "display"
-}, {
-  n: "Share Tech",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Share Tech Mono",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Shojumaru",
-  v: [400],
-  f: "display"
-}, {
-  n: "Short Stack",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Shrikhand",
-  v: [400],
-  f: "display"
-}, {
-  n: "Siemreap",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sigmar One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Signika",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Signika Negative",
-  v: [300, 400, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Simonetta",
-  v: [400, "400i", 900, "900i"],
-  f: "display"
-}, {
-  n: "Single Day",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sintony",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sirin Stencil",
-  v: [400],
-  f: "display"
-}, {
-  n: "Six Caps",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Skranji",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Slabo 13px",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Slabo 27px",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Slackey",
-  v: [400],
-  f: "display"
-}, {
-  n: "Smokum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Smythe",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sniglet",
-  v: [400, 800],
-  f: "display"
-}, {
-  n: "Snippet",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Snowburst One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sofadi One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sofia",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Solway",
-  v: [300, 400, 500, 700, 800],
-  f: "serif"
-}, {
-  n: "Song Myung",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sonsie One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sora",
-  v: [100, 200, 300, 400, 500, 600, 700, 800],
-  f: "sans-serif"
-}, {
-  n: "Sorts Mill Goudy",
-  v: [400, "400i"],
-  f: "serif"
-}, {
-  n: "Source Code Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "monospace"
-}, {
-  n: "Source Sans Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Source Serif Pro",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Space Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Spartan",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Special Elite",
-  v: [400],
-  f: "display"
-}, {
-  n: "Spectral",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "serif"
-}, {
-  n: "Spectral SC",
-  v: [200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
-  f: "serif"
-}, {
-  n: "Spicy Rice",
-  v: [400],
-  f: "display"
-}, {
-  n: "Spinnaker",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Spirax",
-  v: [400],
-  f: "display"
-}, {
-  n: "Squada One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sree Krushnadevaraya",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sriracha",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Srisakdi",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Staatliches",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stalemate",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Stalinist One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stardos Stencil",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Stint Ultra Condensed",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stint Ultra Expanded",
-  v: [400],
-  f: "display"
-}, {
-  n: "Stoke",
-  v: [300, 400],
-  f: "serif"
-}, {
-  n: "Strait",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Stylish",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Sue Ellen Francisco",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Suez One",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Sulphur Point",
-  v: [300, 400, 700],
-  f: "sans-serif"
-}, {
-  n: "Sumana",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Sunflower",
-  v: [300, 500, 700],
-  f: "sans-serif"
-}, {
-  n: "Sunshiney",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Supermercado One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Sura",
-  v: [400, 700],
-  f: "serif"
-}, {
-  n: "Suranna",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Suravaram",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Suwannaphum",
-  v: [400],
-  f: "display"
-}, {
-  n: "Swanky and Moo Moo",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Syncopate",
-  v: [400, 700],
-  f: "sans-serif"
-}, {
-  n: "Tajawal",
-  v: [200, 300, 400, 500, 700, 800, 900],
-  f: "sans-serif"
-}, {
-  n: "Tangerine",
-  v: [400, 700],
-  f: "handwriting"
-}, {
-  n: "Taprom",
-  v: [400],
-  f: "display"
-}, {
-  n: "Tauri",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Taviraj",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Teko",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Telex",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tenali Ramakrishna",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tenor Sans",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Text Me One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Thasadith",
-  v: [400, "400i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "The Girl Next Door",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Tienne",
-  v: [400, 700, 900],
-  f: "serif"
-}, {
-  n: "Tillana",
-  v: [400, 500, 600, 700, 800],
-  f: "handwriting"
-}, {
-  n: "Timmana",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Tinos",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Titan One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Titillium Web",
-  v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900],
-  f: "sans-serif"
-}, {
-  n: "Tomorrow",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "sans-serif"
-}, {
-  n: "Trade Winds",
-  v: [400],
-  f: "display"
-}, {
-  n: "Trirong",
-  v: [100, "100i", 200, "200i", 300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i", 900, "900i"],
-  f: "serif"
-}, {
-  n: "Trocchi",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Trochut",
-  v: [400, "400i", 700],
-  f: "display"
-}, {
-  n: "Trykker",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Tulpen One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Turret Road",
-  v: [200, 300, 400, 500, 700, 800],
-  f: "display"
-}, {
-  n: "Ubuntu",
-  v: [300, "300i", 400, "400i", 500, "500i", 700, "700i"],
-  f: "sans-serif"
-}, {
-  n: "Ubuntu Condensed",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Ubuntu Mono",
-  v: [400, "400i", 700, "700i"],
-  f: "monospace"
-}, {
-  n: "Ultra",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Uncial Antiqua",
-  v: [400],
-  f: "display"
-}, {
-  n: "Underdog",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unica One",
-  v: [400],
-  f: "display"
-}, {
-  n: "UnifrakturCook",
-  v: [700],
-  f: "display"
-}, {
-  n: "UnifrakturMaguntia",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unkempt",
-  v: [400, 700],
-  f: "display"
-}, {
-  n: "Unlock",
-  v: [400],
-  f: "display"
-}, {
-  n: "Unna",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "VT323",
-  v: [400],
-  f: "monospace"
-}, {
-  n: "Vampiro One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Varela",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Varela Round",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Varta",
-  v: [300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Vast Shadow",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vesper Libre",
-  v: [400, 500, 700, 900],
-  f: "serif"
-}, {
-  n: "Viaoda Libre",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vibes",
-  v: [400],
-  f: "display"
-}, {
-  n: "Vibur",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Vidaloka",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Viga",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Voces",
-  v: [400],
-  f: "display"
-}, {
-  n: "Volkhov",
-  v: [400, "400i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Vollkorn",
-  v: [400, 500, 600, 700, 800, 900, "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "serif"
-}, {
-  n: "Vollkorn SC",
-  v: [400, 600, 700, 900],
-  f: "serif"
-}, {
-  n: "Voltaire",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Waiting for the Sunrise",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Wallpoet",
-  v: [400],
-  f: "display"
-}, {
-  n: "Walter Turncoat",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Warnes",
-  v: [400],
-  f: "display"
-}, {
-  n: "Wellfleet",
-  v: [400],
-  f: "display"
-}, {
-  n: "Wendy One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Wire One",
-  v: [400],
-  f: "sans-serif"
-}, {
-  n: "Work Sans",
-  v: [100, 200, 300, 400, 500, 600, 700, 800, 900, "100i", "200i", "300i", "400i", "500i", "600i", "700i", "800i", "900i"],
-  f: "sans-serif"
-}, {
-  n: "Yanone Kaffeesatz",
-  v: [200, 300, 400, 500, 600, 700],
-  f: "sans-serif"
-}, {
-  n: "Yantramanav",
-  v: [100, 300, 400, 500, 700, 900],
-  f: "sans-serif"
-}, {
-  n: "Yatra One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yellowtail",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Yeon Sung",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yeseva One",
-  v: [400],
-  f: "display"
-}, {
-  n: "Yesteryear",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Yrsa",
-  v: [300, 400, 500, 600, 700],
-  f: "serif"
-}, {
-  n: "ZCOOL KuaiLe",
-  v: [400],
-  f: "display"
-}, {
-  n: "ZCOOL QingKe HuangYou",
-  v: [400],
-  f: "display"
-}, {
-  n: "ZCOOL XiaoWei",
-  v: [400],
-  f: "serif"
-}, {
-  n: "Zeyada",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Zhi Mang Xing",
-  v: [400],
-  f: "handwriting"
-}, {
-  n: "Zilla Slab",
-  v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
-  f: "serif"
-}, {
-  n: "Zilla Slab Highlight",
-  v: [400, 700],
-  f: "display"
 }]);
+
+// export default [
+//   {
+//     n: "Default",
+//     v: [],
+//     f: "default",
+//   },
+//   {
+//     n: "Arial",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Tahoma",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Verdana",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Helvetica",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Times New Roman",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Trebuchet MS",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+//   {
+//     n: "Georgia",
+//     f: "sans-serif",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//   },
+
+//   {
+//     n: "ABeeZee",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Abel",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Abhaya Libre",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Abril Fatface",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aclonica",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Acme",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Actor",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Adamina",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Advent Pro",
+//     v: [100, 200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aguafina Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Akronim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aladin",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Alata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alatsi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aldrich",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alef",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alegreya",
+//     v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alegreya SC",
+//     v: [400, "400i", 500, "500i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alegreya Sans",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Alegreya Sans SC",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aleo",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alex Brush",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Alfa Slab One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Alice",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alike",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Alike Angular",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Allan",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Allerta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Allerta Stencil",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Allura",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Almarai",
+//     v: [300, 400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Almendra",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Almendra Display",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Almendra SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amarante",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Amaranth",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Amatic SC",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Amethysta",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amiko",
+//     v: [400, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Amiri",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Amita",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Anaheim",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Andada",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Andika",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Angkor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Annie Use Your Telescope",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Anonymous Pro",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Antic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Antic Didone",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Antic Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Anton",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arapey",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arbutus",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Arbutus Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Architects Daughter",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Archivo",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Archivo Black",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Archivo Narrow",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Aref Ruqaa",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arima Madurai",
+//     v: [100, 200, 300, 400, 500, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Arimo",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arizonia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Armata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Arsenal",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Artifika",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arvo",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Arya",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asap",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asap Condensed",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Asar",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Asset",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Assistant",
+//     v: [200, 300, 400, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Astloch",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Asul",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Athiti",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Atma",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Atomic Age",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Aubrey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Audiowide",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Autour One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Average",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Average Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Averia Gruesa Libre",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Sans Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Averia Serif Libre",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "B612",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "B612 Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Bad Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bahiana",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bahianita",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bai Jamjuree",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Baloo 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Bhai 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Bhaina 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Chettan 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Da 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Paaji 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Tamma 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Tammudu 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Baloo Thambi 2",
+//     v: [400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Balsamiq Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Balthazar",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bangers",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Barlow",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barlow Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barlow Semi Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Barriecito",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Barrio",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Basic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Baskervville",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Battambang",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Baumans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bayon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Be Vietnam",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bebas Neue",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Belgrano",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bellefair",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Belleza",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bellota",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Bellota Text",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "BenchNine",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bentham",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Berkshire Swash",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Beth Ellen",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bevan",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Big Shoulders Display",
+//     v: [100, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Big Shoulders Text",
+//     v: [100, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Bigelow Rules",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bigshot One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bilbo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Bilbo Swash Caps",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "BioRhyme",
+//     v: [200, 300, 400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "BioRhyme Expanded",
+//     v: [200, 300, 400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Biryani",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bitter",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Black And White Picture",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Black Han Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Black Ops One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Blinker",
+//     v: [100, 200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Bokor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bonbon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Boogaloo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bowlby One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bowlby One SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Brawler",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bree Serif",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bubblegum Sans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bubbler One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Buda",
+//     v: [300],
+//     f: "display",
+//   },
+//   {
+//     n: "Buenard",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Bungee",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Hairline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Inline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Bungee Shade",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Butcherman",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Butterfly Kids",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cabin",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cabin Condensed",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cabin Sketch",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Caesar Dressing",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cagliostro",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cairo",
+//     v: [200, 300, 400, 600, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Caladea",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Calistoga",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Calligraffitti",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cambay",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cambo",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Candal",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cantarell",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cantata One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cantora One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Capriola",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cardo",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Carme",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carrois Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carrois Gothic SC",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Carter One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Catamaran",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Caudex",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Caveat",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Caveat Brush",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Cedarville Cursive",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ceviche One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chakra Petch",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Changa",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Changa One",
+//     v: [400, "400i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Chango",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Charm",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Charmonman",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Chathura",
+//     v: [100, 300, 400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chau Philomene One",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chela One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chelsea Market",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chenla",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cherry Cream Soda",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cherry Swash",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Chewy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chicle",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Chilanka",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Chivo",
+//     v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Chonburi",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cinzel",
+//     v: [400, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cinzel Decorative",
+//     v: [400, 700, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Clicker Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Coda",
+//     v: [400, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Coda Caption",
+//     v: [800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Codystar",
+//     v: [300, 400],
+//     f: "display",
+//   },
+//   {
+//     n: "Coiny",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Combo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Comfortaa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Comic Neue",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Coming Soon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Concert One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Condiment",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Content",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Contrail One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Convergence",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cookie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Copse",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Corben",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Cormorant",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Garamond",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Infant",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant SC",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Unicase",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cormorant Upright",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Courgette",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Courier Prime",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Cousine",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Coustard",
+//     v: [400, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Covered By Your Grace",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Crafty Girls",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Creepster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Crete Round",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Crimson Pro",
+//     v: [
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Crimson Text",
+//     v: [400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Croissant One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Crushed",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cuprum",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Cute Font",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Cutive",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Cutive Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "DM Mono",
+//     v: [300, "300i", 400, "400i", 500, "500i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "DM Sans",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "DM Serif Display",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "DM Serif Text",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Damion",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dancing Script",
+//     v: [400, 500, 600, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dangrek",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Darker Grotesque",
+//     v: [300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "David Libre",
+//     v: [400, 500, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Dawning of a New Day",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Days One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dekko",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius Swash Caps",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Delius Unicase",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Della Respira",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Denk One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Devonshire",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Dhurjati",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Didact Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Diplomata",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Diplomata SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Do Hyeon",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dokdo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Domine",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Donegal One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Doppio One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dorsa",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dosis",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dr Sugiyama",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Duru Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Dynalight",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "EB Garamond",
+//     v: [400, 500, 600, 700, 800, "400i", "500i", "600i", "700i", "800i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Eagle Lake",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "East Sea Dokdo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Eater",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Economica",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Eczar",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "El Messiri",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Electrolize",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Elsie",
+//     v: [400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Elsie Swash Caps",
+//     v: [400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Emblema One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Emilys Candy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Encode Sans",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Expanded",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Semi Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Encode Sans Semi Expanded",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Engagement",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Englebert",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Enriqueta",
+//     v: [400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Epilogue",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Erica One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Esteban",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Euphoria Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ewert",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Exo",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Exo 2",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Expletus Sans",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Fahkwang",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fanwood Text",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Farro",
+//     v: [300, 400, 500, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Farsan",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fascinate",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fascinate Inline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Faster One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fasthand",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Fauna One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Faustina",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Federant",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Federo",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Felipa",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Fenix",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Finger Paint",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fira Code",
+//     v: [300, 400, 500, 600, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Fira Mono",
+//     v: [400, 500, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Fira Sans",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fira Sans Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fira Sans Extra Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fjalla One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Fjord One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Flamenco",
+//     v: [300, 400],
+//     f: "display",
+//   },
+//   {
+//     n: "Flavors",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fondamento",
+//     v: [400, "400i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Fontdiner Swanky",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Forum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Francois One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Frank Ruhl Libre",
+//     v: [300, 400, 500, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Freckle Face",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fredericka the Great",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fredoka One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Freehand",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fresca",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Frijole",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fruktur",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Fugaz One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "GFS Didot",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "GFS Neohellenic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gabriela",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gaegu",
+//     v: [300, 400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gafata",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Galada",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Galdeano",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Galindo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gamja Flower",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gayathri",
+//     v: [100, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gelasio",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gentium Basic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gentium Book Basic",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Geo",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Geostar",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Geostar Fill",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Germania One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gidugu",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gilda Display",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Girassol",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Give You Glory",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Glass Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Glegoo",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gloria Hallelujah",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Goblin One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gochi Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gorditas",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Gothic A1",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gotu",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Goudy Bookletter 1911",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Graduate",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Grand Hotel",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Gravitas One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Great Vibes",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Grenze",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Grenze Gotisch",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Griffy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gruppo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gudea",
+//     v: [400, "400i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Gugi",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Gupter",
+//     v: [400, 500, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Gurajada",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Habibi",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Halant",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Hammersmith One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hanalei",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Hanalei Fill",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Handlee",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hanuman",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Happy Monkey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Harmattan",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Headland One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Heebo",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Henny Penny",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Hepta Slab",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Herr Von Muellerhoff",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hi Melody",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Hind",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Guntur",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Madurai",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Siliguri",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Hind Vadodara",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Holtwood One SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Homemade Apple",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Homenaje",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Mono",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "IBM Plex Sans",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Sans Condensed",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "IBM Plex Serif",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell DW Pica",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell DW Pica SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Double Pica",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Double Pica SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell English",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell English SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell French Canon",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell French Canon SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Great Primer",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "IM Fell Great Primer SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ibarra Real Nova",
+//     v: [400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Iceberg",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Iceland",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Imprima",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Inconsolata",
+//     v: [200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Inder",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Indie Flower",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Inika",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inknut Antiqua",
+//     v: [300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inria Sans",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Inria Serif",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Inter",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Irish Grover",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Istok Web",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Italiana",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Italianno",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Itim",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Jacques Francois",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jacques Francois Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jaldi",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Jim Nightshade",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Jockey One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Jolly Lodger",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jomhuria",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jomolhari",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Josefin Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Josefin Slab",
+//     v: [100, "100i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jost",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Joti One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Jua",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Judson",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Julee",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Julius Sans One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Junge",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Jura",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Just Another Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Just Me Again Down Here",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "K2D",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kadwa",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kalam",
+//     v: [300, 400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kameron",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kanit",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kantumruy",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Karla",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Karma",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Katibeh",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kaushan Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kavivanar",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Kavoon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kdam Thmor",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Keania One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kelly Slab",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kenia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Khand",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Khmer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Khula",
+//     v: [300, 400, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kirang Haerang",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kite One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Knewave",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "KoHo",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kodchasan",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kosugi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kosugi Maru",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kotta One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Koulen",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kranky",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kreon",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Kristi",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Krona One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Krub",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kulim Park",
+//     v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Kumar One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kumar One Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Kurale",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "La Belle Aurore",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lacquer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Laila",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lakki Reddy",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lalezar",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lancelot",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lateef",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lato",
+//     v: [100, "100i", 300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "League Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Leckerli One",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ledger",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lekton",
+//     v: [400, "400i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lemon",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lemonada",
+//     v: [300, 400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Lexend Deca",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Exa",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Giga",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Mega",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Peta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Tera",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lexend Zetta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Libre Barcode 128",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 128 Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Extended",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Extended Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Barcode 39 Text",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Libre Baskerville",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Caslon Display",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Caslon Text",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Libre Franklin",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Life Savers",
+//     v: [400, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Lilita One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lily Script One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Limelight",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Linden Hill",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Literata",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Liu Jian Mao Cao",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Livvic",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Lobster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lobster Two",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Outline",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Sketch",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Londrina Solid",
+//     v: [100, 300, 400, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Long Cang",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lora",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Love Ya Like A Sister",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Loved by the King",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Lovers Quarrel",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Luckiest Guy",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Lusitana",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Lustria",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "M PLUS 1p",
+//     v: [100, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "M PLUS Rounded 1c",
+//     v: [100, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ma Shan Zheng",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Macondo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Macondo Swash Caps",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mada",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Magra",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Maiden Orange",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Maitree",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Major Mono Display",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Mako",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mali",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mallanna",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mandali",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Manjari",
+//     v: [100, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Manrope",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mansalva",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Manuale",
+//     v: [400, 500, 600, 700, "400i", "500i", "600i", "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marcellus",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marcellus SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marck Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Margarine",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Markazi Text",
+//     v: [400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marko One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Marmelad",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Martel",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Martel Sans",
+//     v: [200, 300, 400, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Marvel",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mate",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Mate SC",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Maven Pro",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "McLaren",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meddon",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "MedievalSharp",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Medula One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meera Inimai",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Megrim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Meie Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merienda",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merienda One",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Merriweather",
+//     v: [300, "300i", 400, "400i", 700, "700i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Merriweather Sans",
+//     v: [300, "300i", 400, "400i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Metal",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metal Mania",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metamorphous",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Metrophobic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Michroma",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Milonga",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miltonian",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miltonian Tattoo",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mina",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Miniver",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Miriam Libre",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mirza",
+//     v: [400, 500, 600, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Miss Fajardose",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mitr",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Modak",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Modern Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mogra",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Molengo",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Molle",
+//     v: ["400i"],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Monda",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Monofett",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Monoton",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Monsieur La Doulaise",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Montaga",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Montez",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Montserrat",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Montserrat Alternates",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Montserrat Subrayada",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Moul",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Moulpali",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Mountains of Christmas",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Mouse Memoirs",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mr Bedfort",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mr Dafoe",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mr De Haviland",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mrs Saint Delafield",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mrs Sheppards",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Mukta",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Mahee",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Malar",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mukta Vaani",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Mulish",
+//     v: [
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "MuseoModerno",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Mystery Quest",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "NTR",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nanum Brush Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Nanum Gothic",
+//     v: [400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nanum Gothic Coding",
+//     v: [400, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Nanum Myeongjo",
+//     v: [400, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Nanum Pen Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Neucha",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Neuton",
+//     v: [200, 300, 400, "400i", 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "New Rocker",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "News Cycle",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Niconne",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Niramit",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nixie One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nobile",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nokora",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Norican",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Nosifer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Notable",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nothing You Could Do",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Noticia Text",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans HK",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans JP",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans KR",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans SC",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Sans TC",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Noto Serif",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif JP",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif KR",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif SC",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Noto Serif TC",
+//     v: [200, 300, 400, 500, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Nova Cut",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Flat",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Nova Oval",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Round",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Script",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Slim",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Nova Square",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Numans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nunito",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Nunito Sans",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Odibee Sans",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Odor Mean Chey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Offside",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Old Standard TT",
+//     v: [400, "400i", 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Oldenburg",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Oleo Script",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Oleo Script Swash Caps",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Open Sans",
+//     v: [300, "300i", 400, "400i", 600, "600i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Open Sans Condensed",
+//     v: [300, "300i", 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oranienbaum",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Orbitron",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oregano",
+//     v: [400, "400i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Orienta",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Original Surfer",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Oswald",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Over the Rainbow",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Overlock",
+//     v: [400, "400i", 700, "700i", 900, "900i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Overlock SC",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Overpass",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Overpass Mono",
+//     v: [300, 400, 600, 700],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Ovo",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Oxanium",
+//     v: [200, 300, 400, 500, 600, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Oxygen",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Oxygen Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "PT Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "PT Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Sans Caption",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Sans Narrow",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "PT Serif",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "PT Serif Caption",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pacifico",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Padauk",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Palanquin",
+//     v: [100, 200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Palanquin Dark",
+//     v: [400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Pangolin",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Paprika",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Parisienne",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Passero One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Passion One",
+//     v: [400, 700, 900],
+//     f: "display",
+//   },
+//   {
+//     n: "Pathway Gothic One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Patrick Hand",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Patrick Hand SC",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Pattaya",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Patua One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pavanam",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Paytone One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Peddana",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Peralta",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Permanent Marker",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Petit Formal Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Petrona",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Philosopher",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Piedra",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pinyon Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Pirata One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Plaster",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Play",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Playball",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Playfair Display",
+//     v: [
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Playfair Display SC",
+//     v: [400, "400i", 700, "700i", 900, "900i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Podkova",
+//     v: [400, 500, 600, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Poiret One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poller One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poly",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pompiere",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pontano Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Poor Story",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Poppins",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Port Lligat Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Port Lligat Slab",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Pragati Narrow",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Prata",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Preahvihear",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Press Start 2P",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Pridi",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Princess Sofia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Prociono",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Prompt",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Prosto One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Proza Libre",
+//     v: [400, "400i", 500, "500i", 600, "600i", 700, "700i", 800, "800i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Public Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Puritan",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Purple Purse",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Quando",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Quantico",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quattrocento",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Quattrocento Sans",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Questrial",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quicksand",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Quintessential",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Qwigley",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Racing Sans One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Radley",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rajdhani",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rakkas",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Raleway",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Raleway Dots",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ramabhadra",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ramaraja",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rambla",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rammetto One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ranchers",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Rancho",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ranga",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Rasa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rationale",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ravi Prakash",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Red Hat Display",
+//     v: [400, "400i", 500, "500i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Red Hat Text",
+//     v: [400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Red Rose",
+//     v: [300, 400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Redressed",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Reem Kufi",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Reenie Beanie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Revalia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Rhodium Libre",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ribeye",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Ribeye Marrow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Righteous",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Risque",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Roboto",
+//     v: [
+//       100,
+//       "100i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Roboto Condensed",
+//     v: [300, "300i", 400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Roboto Mono",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Roboto Slab",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rochester",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rock Salt",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rokkitt",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Romanesco",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ropa Sans",
+//     v: [400, "400i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rosario",
+//     v: [300, 400, 500, 600, 700, "300i", "400i", "500i", "600i", "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rosarivo",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rouge Script",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rowdies",
+//     v: [300, 400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Rozha One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Rubik",
+//     v: [300, "300i", 400, "400i", 500, "500i", 700, "700i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rubik Mono One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruda",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rufina",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Ruge Boogie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Ruluko",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Rum Raisin",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruslan Display",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Russo One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ruthie",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Rye",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sacramento",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sahitya",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sail",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Saira",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Extra Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Semi Condensed",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Saira Stencil One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Salsa",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sanchez",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sancreek",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sansita",
+//     v: [400, "400i", 700, "700i", 800, "800i", 900, "900i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarabun",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarala",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sarina",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sarpanch",
+//     v: [400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Satisfy",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sawarabi Gothic",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sawarabi Mincho",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Scada",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Scheherazade",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Schoolbell",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Scope One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Seaweed Script",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Secular One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sedgwick Ave",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sedgwick Ave Display",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Sen",
+//     v: [400, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sevillana",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Seymour One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Shadows Into Light",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shadows Into Light Two",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shanti",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Share",
+//     v: [400, "400i", 700, "700i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Share Tech",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Share Tech Mono",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Shojumaru",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Short Stack",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Shrikhand",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Siemreap",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sigmar One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Signika",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Signika Negative",
+//     v: [300, 400, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Simonetta",
+//     v: [400, "400i", 900, "900i"],
+//     f: "display",
+//   },
+//   {
+//     n: "Single Day",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sintony",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sirin Stencil",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Six Caps",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Skranji",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Slabo 13px",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Slabo 27px",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Slackey",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Smokum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Smythe",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sniglet",
+//     v: [400, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Snippet",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Snowburst One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sofadi One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sofia",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Solway",
+//     v: [300, 400, 500, 700, 800],
+//     f: "serif",
+//   },
+//   {
+//     n: "Song Myung",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sonsie One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sora",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sorts Mill Goudy",
+//     v: [400, "400i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Source Code Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Source Sans Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Source Serif Pro",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Space Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Spartan",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Special Elite",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Spectral",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Spectral SC",
+//     v: [
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Spicy Rice",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Spinnaker",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Spirax",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Squada One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sree Krushnadevaraya",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sriracha",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Srisakdi",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Staatliches",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stalemate",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Stalinist One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stardos Stencil",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Stint Ultra Condensed",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stint Ultra Expanded",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Stoke",
+//     v: [300, 400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Strait",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Stylish",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sue Ellen Francisco",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Suez One",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sulphur Point",
+//     v: [300, 400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sumana",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Sunflower",
+//     v: [300, 500, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Sunshiney",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Supermercado One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Sura",
+//     v: [400, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suranna",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suravaram",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Suwannaphum",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Swanky and Moo Moo",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Syncopate",
+//     v: [400, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tajawal",
+//     v: [200, 300, 400, 500, 700, 800, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tangerine",
+//     v: [400, 700],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Taprom",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Tauri",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Taviraj",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Teko",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Telex",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tenali Ramakrishna",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tenor Sans",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Text Me One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Thasadith",
+//     v: [400, "400i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "The Girl Next Door",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Tienne",
+//     v: [400, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Tillana",
+//     v: [400, 500, 600, 700, 800],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Timmana",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tinos",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Titan One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Titillium Web",
+//     v: [200, "200i", 300, "300i", 400, "400i", 600, "600i", 700, "700i", 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Tomorrow",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Trade Winds",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Trirong",
+//     v: [
+//       100,
+//       "100i",
+//       200,
+//       "200i",
+//       300,
+//       "300i",
+//       400,
+//       "400i",
+//       500,
+//       "500i",
+//       600,
+//       "600i",
+//       700,
+//       "700i",
+//       800,
+//       "800i",
+//       900,
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Trocchi",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Trochut",
+//     v: [400, "400i", 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Trykker",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Tulpen One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Turret Road",
+//     v: [200, 300, 400, 500, 700, 800],
+//     f: "display",
+//   },
+//   {
+//     n: "Ubuntu",
+//     v: [300, "300i", 400, "400i", 500, "500i", 700, "700i"],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ubuntu Condensed",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Ubuntu Mono",
+//     v: [400, "400i", 700, "700i"],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Ultra",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Uncial Antiqua",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Underdog",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unica One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "UnifrakturCook",
+//     v: [700],
+//     f: "display",
+//   },
+//   {
+//     n: "UnifrakturMaguntia",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unkempt",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Unlock",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Unna",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "VT323",
+//     v: [400],
+//     f: "monospace",
+//   },
+//   {
+//     n: "Vampiro One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Varela",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Varela Round",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Varta",
+//     v: [300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Vast Shadow",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vesper Libre",
+//     v: [400, 500, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Viaoda Libre",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vibes",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Vibur",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Vidaloka",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Viga",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Voces",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Volkhov",
+//     v: [400, "400i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Vollkorn",
+//     v: [
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "serif",
+//   },
+//   {
+//     n: "Vollkorn SC",
+//     v: [400, 600, 700, 900],
+//     f: "serif",
+//   },
+//   {
+//     n: "Voltaire",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Waiting for the Sunrise",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Wallpoet",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Walter Turncoat",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Warnes",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Wellfleet",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Wendy One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Wire One",
+//     v: [400],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Work Sans",
+//     v: [
+//       100,
+//       200,
+//       300,
+//       400,
+//       500,
+//       600,
+//       700,
+//       800,
+//       900,
+//       "100i",
+//       "200i",
+//       "300i",
+//       "400i",
+//       "500i",
+//       "600i",
+//       "700i",
+//       "800i",
+//       "900i",
+//     ],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yanone Kaffeesatz",
+//     v: [200, 300, 400, 500, 600, 700],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yantramanav",
+//     v: [100, 300, 400, 500, 700, 900],
+//     f: "sans-serif",
+//   },
+//   {
+//     n: "Yatra One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yellowtail",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Yeon Sung",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yeseva One",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "Yesteryear",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Yrsa",
+//     v: [300, 400, 500, 600, 700],
+//     f: "serif",
+//   },
+//   {
+//     n: "ZCOOL KuaiLe",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "ZCOOL QingKe HuangYou",
+//     v: [400],
+//     f: "display",
+//   },
+//   {
+//     n: "ZCOOL XiaoWei",
+//     v: [400],
+//     f: "serif",
+//   },
+//   {
+//     n: "Zeyada",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Zhi Mang Xing",
+//     v: [400],
+//     f: "handwriting",
+//   },
+//   {
+//     n: "Zilla Slab",
+//     v: [300, "300i", 400, "400i", 500, "500i", 600, "600i", 700, "700i"],
+//     f: "serif",
+//   },
+//   {
+//     n: "Zilla Slab Highlight",
+//     v: [400, 700],
+//     f: "display",
+//   },
+//   {
+//     n: "Fantasy",
+//     v: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+//     f: "fantasy",
+//   },
+// ];
 
 /***/ }),
 
@@ -8467,18 +12316,18 @@ __webpack_require__.r(__webpack_exports__);
 
 // const { __ } = wp.i18n;
 // const icons = {};
-// const img_path = qubely_admin.plugin + 'assets/img/blocks';
+// const img_path = mrmTypography_admin.plugin + 'assets/img/blocks';
 //
-// icons.qubely = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
+// icons.mrmTypography = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M15.8 8c0-2.2-.8-4-2.3-5.5-1.5-1.5-3.4-2.3-5.5-2.3s-4 .8-5.5 2.3c-1.5 1.5-2.3 3.3-2.3 5.5s.8 4 2.3 5.5c1.5 1.5 3.3 2.3 5.5 2.3.9 0 1.8-.1 2.6-.4l-2.2-2.3c-.1-.1-.3-.2-.4-.2-1.4 0-2.5-.5-3.4-1.4-1-.9-1.4-2.1-1.4-3.5s.5-2.6 1.4-3.5c.9-.9 2-1.4 3.4-1.4s2.5.5 3.4 1.4c.9.9 1.4 2.1 1.4 3.5 0 .7-.1 1.4-.4 2-.2.5-.8.6-1.2.2-1.1-1.1-2.8-1.2-4-.2l2.5 2.6 2.1 2.2c.9.9 2.4 1 3.4.1l.3-.3-1.3-1.3c-.2-.2-.2-.4 0-.6 1-1.3 1.6-2.9 1.6-4.7z" /></svg>;
 //
 // icons.solid = <svg xmlns="http://www.w3.org/2000/svg" width="19" height="2"><switch><g><path d="M0 0h19v2H0z" /></g></switch></svg>;
 // icons.dot = <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><g><g transform="translate(-1378 -121)"><g transform="translate(1229 110)"><g transform="translate(149 11)"><circle class="st0" cx="1" cy="1" r="1" /><circle class="st0" cx="17" cy="1" r="1" /><circle class="st0" cx="5" cy="1" r="1" /><circle class="st0" cx="13" cy="1" r="1" /><circle class="st0" cx="9" cy="1" r="1" /></g></g></g></g></g></switch></svg>;
 // icons.dash = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="2"><switch><g><path d="M18 2h-2V0h2v2zm-4 0h-2V0h2v2zm-4 0H8V0h2v2zM6 2H4V0h2v2zM2 2H0V0h2v2z" /></g></switch></svg>;
 // icons.wave = <svg xmlns="http://www.w3.org/2000/svg" width="21" height="4"><switch><g><path d="M8 3.5c-.8 0-1.7-.3-2.5-.9C4 1.5 2.4 1.5.7 2.6c-.2.1-.5.1-.7-.2-.1-.2-.1-.5.2-.7 2-1.3 4-1.3 5.8 0 1.5 1 2.8 1 4.2-.2 1.6-1.4 3.4-1.4 5.3 0 1.5 1.1 3.1 1.2 4.7.1.2-.1.5-.1.7.1.1.2.1.5-.1.7-2 1.3-3.9 1.3-5.8-.1-1.5-1.1-2.9-1.1-4.1 0C9.9 3.1 9 3.5 8 3.5z" /></g></switch></svg>;
 //
-// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="qubely-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="qubely-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
-// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="qubely-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="qubely-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_top = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" y="4" width="6" height="12" rx="1" /><path class="mrmTypography-svg-stroke" d="M0 1h14" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_middle = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g fill="none"><g transform="translate(1 1)"><rect class="mrmTypography-svg-fill" x="4" width="6" height="14" rx="1" /><path d="M0 7h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g><path d="M13 8h2" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
+// icons.vertical_bottom = <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1)" fill="none"><rect class="mrmTypography-svg-fill" x="4" width="6" height="12" rx="1" /><path d="M0 15h14" class="mrmTypography-svg-stroke" stroke-width="2" stroke-linecap="square" /></g></svg>;
 //
 // icons.icon_classic = <img src={`${img_path}/icon/classic.svg`} alt={__('Classic')} />;
 // icons.icon_fill = <img src={`${img_path}/icon/fill.svg`} alt={__('Fill')} />;
@@ -8491,9 +12340,9 @@ __webpack_require__.r(__webpack_exports__);
 // icons.pie_outline = <img src={`${img_path}/pieprogress/outline.svg`} alt={__('Outline')} />;
 // icons.pie_outline_fill = <img src={`${img_path}/pieprogress/outline-fill.svg`} alt={__('Outline Fill')} />;
 //
-// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
-// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="qubely-svg-stroke" fill="none" /></svg>;
+// icons.corner_square = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h10.967v10.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_rounded = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h6.967c2.209 0 4 1.791 4 4v6.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
+// icons.corner_round = <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 1h1.967c4.971 0 9 4.029 9 9v1.763" stroke-width="2" className="mrmTypography-svg-stroke" fill="none" /></svg>;
 //
 // icons.tab_tabs = <img src={`${img_path}/tab/tabs.svg`} alt={__('Tabs')} />;
 // icons.tab_pills = <img src={`${img_path}/tab/pills.svg`} alt={__('Pills')} />;
@@ -8548,12 +12397,12 @@ __webpack_require__.r(__webpack_exports__);
 // icons.postgrid_design_6 = <img src={`${img_path}/postgrid/16.svg`} alt={__('Design 6')} />;
 //
 //
-// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
-// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
-// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
-// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
-// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
-// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="qubely-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
+// icons.h1 = <svg width="17" height="13" viewBox="0 0 17 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M16.809 13h-1.147v-4.609c0-.55.013-.986.039-1.309l-.276.259c-.109.094-.474.394-1.096.898l-.576-.728 2.1-1.65h.957v7.139z" /></g></svg>;
+// icons.h2 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.278 13h-4.839v-.869l1.841-1.851c.544-.557.904-.951 1.082-1.184.177-.233.307-.452.388-.657.081-.205.122-.425.122-.659 0-.322-.097-.576-.291-.762-.194-.186-.461-.278-.803-.278-.273 0-.538.05-.793.151-.256.101-.551.283-.886.547l-.62-.757c.397-.335.783-.573 1.157-.713s.773-.21 1.196-.21c.664 0 1.196.173 1.597.52.4.347.601.813.601 1.399 0 .322-.058.628-.173.918-.116.29-.293.588-.532.896-.239.308-.637.723-1.194 1.248l-1.24 1.201v.049h3.389v1.011z" /></g></svg>;
+// icons.h3 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.01 7.502c0 .452-.132.829-.396 1.13-.264.301-.635.504-1.113.608v.039c.573.072 1.003.25 1.289.535.286.285.43.663.43 1.135 0 .687-.243 1.217-.728 1.589-.485.373-1.175.559-2.07.559-.791 0-1.458-.129-2.002-.386v-1.021c.303.15.623.265.962.347.339.081.664.122.977.122.553 0 .967-.103 1.24-.308.273-.205.41-.522.41-.952 0-.381-.151-.661-.454-.84-.303-.179-.778-.269-1.426-.269h-.62v-.933h.63c1.139 0 1.709-.394 1.709-1.182 0-.306-.099-.542-.298-.708-.199-.166-.492-.249-.879-.249-.27 0-.531.038-.781.115-.251.076-.547.225-.889.447l-.562-.801c.654-.482 1.414-.723 2.28-.723.719 0 1.281.155 1.685.464.404.309.605.736.605 1.279z" /></g></svg>;
+// icons.h4 = <svg width="19" height="13" viewBox="0 0 19 13" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M18.532 11.442h-.962v1.558h-1.118v-1.558h-3.262v-.884l3.262-4.717h1.118v4.648h.962v.952zm-2.08-.952v-1.792c0-.638.016-1.16.049-1.567h-.039c-.091.215-.234.475-.43.781l-1.772 2.578h2.192z" /></g></svg>;
+// icons.h5 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M15.861 8.542c.719 0 1.289.19 1.709.571.42.381.63.9.63 1.558 0 .762-.238 1.357-.715 1.785-.477.428-1.155.642-2.034.642-.798 0-1.424-.129-1.88-.386v-1.04c.264.15.566.265.908.347.342.081.659.122.952.122.518 0 .911-.116 1.182-.347.27-.231.405-.57.405-1.016 0-.853-.544-1.279-1.631-1.279-.153 0-.342.015-.566.046-.225.031-.422.066-.591.105l-.513-.303.273-3.486h3.711v1.021h-2.7l-.161 1.768.417-.068c.164-.026.365-.039.603-.039z" /></g></svg>;
+// icons.h6 = <svg width="19" height="14" viewBox="0 0 19 14" xmlns="http://www.w3.org/2000/svg"><g className="mrmTypography-svg-fill" fill-rule="nonzero"><path d="M10.83 13h-2.109v-5.792h-5.924v5.792h-2.101v-12.85h2.101v5.256h5.924v-5.256h2.109z" /><path d="M13.459 9.958c0-2.793 1.138-4.189 3.413-4.189.358 0 .661.028.908.083v.957c-.247-.072-.534-.107-.859-.107-.765 0-1.34.205-1.724.615-.384.41-.592 1.068-.625 1.973h.059c.153-.264.368-.468.645-.613.277-.145.602-.217.977-.217.648 0 1.152.199 1.514.596.361.397.542.936.542 1.616 0 .749-.209 1.34-.627 1.775-.418.435-.989.652-1.711.652-.511 0-.955-.123-1.333-.369s-.668-.604-.872-1.074c-.203-.47-.305-1.036-.305-1.697zm2.49 2.192c.394 0 .697-.127.911-.381.213-.254.32-.617.32-1.089 0-.41-.1-.732-.3-.967-.2-.234-.5-.352-.901-.352-.247 0-.475.053-.684.159-.208.106-.373.251-.493.435s-.181.372-.181.564c0 .459.125.846.374 1.16.249.314.567.471.955.471z" /></g></svg>;
 // icons.p = <svg width="20px" height="20px" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1534 189v73q0 29-18.5 61t-42.5 32q-50 0-54 1-26 6-32 31-3 11-3 64v1152q0 25-18 43t-43 18h-108q-25 0-43-18t-18-43v-1218h-143v1218q0 25-17.5 43t-43.5 18h-108q-26 0-43.5-18t-17.5-43v-496q-147-12-245-59-126-58-192-179-64-117-64-259 0-166 88-286 88-118 209-159 111-37 417-37h479q25 0 43 18t18 43z" /></svg>
 // icons.span = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
 // icons.div = <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect x="0" fill="none" width="20px" height="20px" /><g><path d="M9 6l-4 4 4 4-1 2-6-6 6-6zm2 8l4-4-4-4 1-2 6 6-6 6z" /></g></svg>
@@ -8694,6 +12543,13 @@ const attributes = {
   isRequiredLastName: {
     type: "boolean",
     default: false
+  },
+  typography: {
+    type: "object",
+    default: {},
+    style: [{
+      selector: "mrm-form-group.submit .mrm-submit-button"
+    }]
   },
   emailLabel: {
     type: "string",
@@ -9039,7 +12895,10 @@ const mrmEmailField = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      inputTypography,
+      labelTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -9048,7 +12907,9 @@ const mrmEmailField = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -9063,7 +12924,9 @@ const mrmEmailField = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group email",
@@ -9106,10 +12969,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -9161,10 +13026,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -9224,7 +13089,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -9251,6 +13116,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -9319,6 +13198,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -9347,7 +13240,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        typography,
+        inputTypography,
+        labelTypography
       }
     } = this.props;
     let fieldSpacing = {
@@ -9355,7 +13251,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -9370,7 +13268,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
@@ -9613,7 +13513,10 @@ const mrmFirstName = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      labelTypography,
+      inputTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -9622,7 +13525,9 @@ const mrmFirstName = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -9637,7 +13542,9 @@ const mrmFirstName = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group first-name",
@@ -9679,10 +13586,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -9734,10 +13643,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -9793,7 +13702,7 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -9820,6 +13729,20 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
@@ -9888,6 +13811,20 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -9919,7 +13856,10 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        inputTypography,
+        labelTypography,
+        Typography
       }
     } = this.props;
     let fieldSpacing = {
@@ -9927,7 +13867,9 @@ class Editor extends Component {
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + "px"
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -9942,7 +13884,9 @@ class Editor extends Component {
       paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
-      borderColor: inputBorderColor
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-form-group first-name",
@@ -10433,7 +14377,10 @@ const mrmLastName = _ref => {
       inputBorderColor,
       rowSpacing,
       labelColor,
-      labelSpacing
+      labelSpacing,
+      labelTypography,
+      inputTypography,
+      Typography
     }
   } = _ref;
   let layout = formLayout;
@@ -10442,7 +14389,9 @@ const mrmLastName = _ref => {
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + "px"
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let checkboxLabelColor = {
     color: labelColor
@@ -10457,7 +14406,9 @@ const mrmLastName = _ref => {
     paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
     borderWidth: inputBorderWidth + "px",
-    borderColor: inputBorderColor
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group last-name",
@@ -10499,10 +14450,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -10554,10 +14507,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeOBProps = (key, value) => {
     this.props.setAttributes({
@@ -10628,13 +14581,13 @@ class Editor extends Component {
       labelTypography = attributes.labelTypography,
       device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -10644,36 +14597,50 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   inputFieldStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      inputTypography = attributes.inputTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -10681,7 +14648,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -10690,28 +14657,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -10719,8 +14686,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -10750,15 +14729,20 @@ class Editor extends Component {
         inputBorderColor,
         rowSpacing,
         labelColor,
-        labelSpacing
+        labelSpacing,
+        labelTypography,
+        inputTypography,
+        Typography
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + "px"
     };
     let labelStyle = {
       color: labelColor,
-      marginBottom: labelSpacing + 'px'
+      marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family
     };
     let checkboxLabelColor = {
       color: labelColor
@@ -10766,14 +14750,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: inputBgColor,
       color: inputTextColor,
-      borderRadius: inputBorderRadius + 'px',
-      paddingTop: inputPaddingTop + 'px',
-      paddingRight: inputPaddingRight + 'px',
-      paddingBottom: inputPaddingBottom + 'px',
-      paddingLeft: inputPaddingLeft + 'px',
+      borderRadius: inputBorderRadius + "px",
+      paddingTop: inputPaddingTop + "px",
+      paddingRight: inputPaddingRight + "px",
+      paddingBottom: inputPaddingBottom + "px",
+      paddingLeft: inputPaddingLeft + "px",
       borderStyle: inputBorderStyle,
-      borderWidth: inputBorderWidth + 'px',
-      borderColor: inputBorderColor
+      borderWidth: inputBorderWidth + "px",
+      borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family
     };
 
     // display the map selector
@@ -11136,7 +15122,7 @@ const attributes = {
   },
   buttonAlign: {
     type: 'string',
-    default: 'center'
+    default: 'left'
   },
   postAction: {
     type: 'string',
@@ -11176,7 +15162,7 @@ const attributes = {
   },
   buttonWidth: {
     type: 'number',
-    default: 25
+    default: ''
   },
   typography: {
     type: 'object',
@@ -11195,15 +15181,15 @@ const attributes = {
   },
   paddingTopBottom: {
     type: "number",
-    default: 25
+    default: 15
   },
   paddingLeftRight: {
     type: "number",
-    default: 25
+    default: 20
   },
   lineHeight: {
     type: "number",
-    default: 1.2
+    default: 1
   },
   letterSpacing: {
     type: "number",
@@ -11282,7 +15268,8 @@ const mrmButton = _ref => {
   } = _ref;
   let layout = formLayout;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + 'px',
+    textAlign: buttonAlign
   };
   let buttonStyle = {
     // backgroundColor: buttonBgColor,
@@ -11296,7 +15283,7 @@ const mrmButton = _ref => {
     fontWeight: typography.weight,
     fontFamily: typography.family,
     fontSize: buttonFontSize,
-    textAlign: buttonAlign,
+    // textAlign: buttonAlign,
     // borderWidth:  buttonBorderWidth+'px',
     borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
     borderColor: buttonBorderColor,
@@ -11615,7 +15602,8 @@ class Editor extends Component {
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px'
+      marginBottom: rowSpacing + 'px',
+      textAlign: buttonAlign
     };
     let buttonStyle = {
       // backgroundColor: buttonBgColor,
@@ -11629,7 +15617,7 @@ class Editor extends Component {
       fontWeight: typography.weight,
       fontFamily: typography.family,
       fontSize: buttonFontSize,
-      textAlign: buttonAlign,
+      // textAlign: buttonAlign,
       // borderWidth:  buttonBorderWidth+'px',
       borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
       borderColor: buttonBorderColor,
@@ -11952,15 +15940,19 @@ const mrmCustomField = _ref => {
       inputPaddingLeft,
       inputBorderStyle,
       inputBorderWidth,
-      inputBorderColor
+      inputBorderColor,
+      inputTypography,
+      labelTypography
     }
   } = _ref;
   let fieldSpacing = {
-    marginBottom: rowSpacing + 'px'
+    marginBottom: rowSpacing + "px"
   };
   let labelStyle = {
     color: labelColor,
-    marginBottom: labelSpacing + 'px'
+    marginBottom: labelSpacing + "px",
+    fontWeight: labelTypography.weight,
+    fontFamily: labelTypography.family
   };
   let radioLabelColor = {
     color: labelColor
@@ -11971,22 +15963,24 @@ const mrmCustomField = _ref => {
   let inputStyle = {
     backgroundColor: inputBgColor,
     color: inputTextColor,
-    borderRadius: inputBorderRadius + 'px',
-    paddingTop: inputPaddingTop + 'px',
-    paddingRight: inputPaddingRight + 'px',
-    paddingBottom: inputPaddingBottom + 'px',
-    paddingLeft: inputPaddingLeft + 'px',
+    borderRadius: inputBorderRadius + "px",
+    paddingTop: inputPaddingTop + "px",
+    paddingRight: inputPaddingRight + "px",
+    paddingBottom: inputPaddingBottom + "px",
+    paddingLeft: inputPaddingLeft + "px",
     borderStyle: inputBorderStyle,
-    borderWidth: inputBorderWidth + 'px',
-    borderColor: inputBorderColor
+    borderWidth: inputBorderWidth + "px",
+    borderColor: inputBorderColor,
+    fontWeight: inputTypography.weight,
+    fontFamily: inputTypography.family
   };
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group text",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -11997,13 +15991,13 @@ const mrmCustomField = _ref => {
     placeholder: custom_text_placeholder,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group textarea",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -12015,13 +16009,13 @@ const mrmCustomField = _ref => {
     rows: "4",
     cols: "50",
     style: inputStyle
-  }))), field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group date",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_name,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : '', field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : "", field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -12032,7 +16026,7 @@ const mrmCustomField = _ref => {
     placeholder: field_name,
     required: field_require,
     style: inputStyle
-  }))), field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group radio"
   }, radioOption.map((option, index) => {
@@ -12040,6 +16034,7 @@ const mrmCustomField = _ref => {
       className: "mrm-radio-group mintmrm-radiobtn",
       style: fieldSpacing
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      key: index,
       type: "radio",
       id: option.label,
       name: field_slug,
@@ -12047,10 +16042,10 @@ const mrmCustomField = _ref => {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.label,
       style: radioLabelColor
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
-  })), field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-form-group checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
@@ -12065,16 +16060,16 @@ const mrmCustomField = _ref => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: checkboxLabelColor
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
-  }, "*")))), field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "*")))), field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     key: `mrm-${field_label}`,
     className: "mrm-form-group select",
     style: fieldSpacing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: field_slug,
     style: labelStyle
-  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("", "mrm"), field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "required-mark"
   }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "input-wrapper"
@@ -12084,6 +16079,7 @@ const mrmCustomField = _ref => {
     style: inputStyle
   }, selectOption.map((option, index) => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      key: index,
       value: makeSlug(option.value)
     }, option.label);
   })))));
@@ -12109,10 +16105,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _components_components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -12164,10 +16162,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -12192,9 +16190,9 @@ class Editor extends Component {
     });
     let defaultOption = {
       value: slug_name,
-      label: 'Label' + '-' + attributes.radio_option_count
+      label: "Label" + "-" + attributes.radio_option_count
     };
-    if ('radio' === attributes.field_type) {
+    if ("radio" === attributes.field_type) {
       attributes.radioOption.push(defaultOption);
       setAttributes(attributes.radioOption);
     }
@@ -12211,25 +16209,25 @@ class Editor extends Component {
       className: "mrm-inline-label",
       label: "Field Type",
       value: attributes.field_type,
-      onChange: select_type => this.onChangeAttribute('field_type', select_type),
+      onChange: select_type => this.onChangeAttribute("field_type", select_type),
       options: [{
-        value: 'text',
-        label: 'Text'
+        value: "text",
+        label: "Text"
       }, {
-        value: 'textarea',
-        label: 'Text Area'
+        value: "textarea",
+        label: "Text Area"
       }, {
-        value: 'radio',
-        label: 'Radio Button'
+        value: "radio",
+        label: "Radio Button"
       }, {
-        value: 'checkbox',
-        label: 'Checkbox'
+        value: "checkbox",
+        label: "Checkbox"
       }, {
-        value: 'select',
-        label: 'Select'
+        value: "select",
+        label: "Select"
       }, {
-        value: 'date',
-        label: 'Date'
+        value: "date",
+        label: "Date"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
@@ -12238,28 +16236,28 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_name: state
       })
-    }), attributes.field_type != 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type != "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Field Label",
       value: attributes.field_label,
       onChange: state => setAttributes({
         field_label: state
       })
-    }), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_textarea_placeholder,
       onChange: state => setAttributes({
         custom_textarea_placeholder: state
       })
-    }), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+    }), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       className: "mrm-inline-label",
       label: " Placeholder Text",
       value: attributes.custom_text_placeholder,
       onChange: state => setAttributes({
         custom_text_placeholder: state
       })
-    }), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "select-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -12316,7 +16314,7 @@ class Editor extends Component {
         fill: "#fff",
         d: "M0 0h22v22H0z"
       }))))));
-    })), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "radio-option-wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "add-option-wrapper"
@@ -12479,27 +16477,29 @@ class Editor extends Component {
       select_option_count: attributes.select_option_count + 1
     });
     let defaultOption = {
-      value: 'option' + '-' + attributes.select_option_count,
-      label: 'Option' + '-' + attributes.select_option_count
+      value: "option" + "-" + attributes.select_option_count,
+      label: "Option" + "-" + attributes.select_option_count
     };
-    if ('select' === attributes.field_type) {
+    if ("select" === attributes.field_type) {
       attributes.selectOption.push(defaultOption);
       setAttributes(attributes.selectOption);
     }
   };
   formStyle = () => {
     let {
-      attributes,
-      setAttributes
-    } = this.props;
+        attributes,
+        setAttributes
+      } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: "Form Style",
+      title: "Label Style",
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute('rowSpacing', rowSpacing),
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
       min: 0,
       max: 50,
@@ -12509,18 +16509,30 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: labelColor => this.onChangeAttribute('labelColor', labelColor),
+      onChange: labelColor => this.onChangeAttribute("labelColor", labelColor),
       value: attributes.labelColor
-    }), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Label Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.labelSpacing,
-      onChange: labelSpacing => this.onChangeAttribute('labelSpacing', labelSpacing),
+      onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
       min: 0,
       max: 50,
       step: 1
-    })));
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    }));
   };
   inputFieldStyle = () => {
     let {
@@ -12535,12 +16547,12 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputTextColor => this.onChangeAttribute('inputTextColor', inputTextColor),
+      onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
       value: attributes.inputTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBgColor => this.onChangeAttribute('inputBgColor', inputBgColor),
+      onChange: inputBgColor => this.onChangeAttribute("inputBgColor", inputBgColor),
       value: attributes.inputBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
@@ -12548,7 +16560,7 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderRadius,
-      onChange: radius => this.onChangeAttribute('inputBorderRadius', radius),
+      onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
       min: 0,
       max: 100,
@@ -12557,28 +16569,28 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.inputBorderStyle,
-      onChange: inputBorderStyle => this.onChangeAttribute('inputBorderStyle', inputBorderStyle),
+      onChange: inputBorderStyle => this.onChangeAttribute("inputBorderStyle", inputBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.inputBorderWidth,
-      onChange: border => this.onChangeAttribute('inputBorderWidth', border),
+      onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
       min: 0,
       max: 5,
@@ -12586,8 +16598,20 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: inputBorderColor => this.onChangeAttribute('inputBorderColor', inputBorderColor),
+      onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
+    // label={__('Typography')}
+    , {
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
     }));
   };
   getInspectorControls = () => {
@@ -12600,7 +16624,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: "mrm-block-inspected-inspector-control-wrapper",
       className: "mrm-block-control-wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), 'radio' !== attributes.field_type && 'checkbox' !== attributes.field_type && this.inputFieldStyle())));
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, null, this.customFields(), this.formStyle(), "radio" !== attributes.field_type && "checkbox" !== attributes.field_type && this.inputFieldStyle())));
   };
 
   /**
@@ -12614,11 +16638,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -12626,14 +16652,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -12642,7 +16670,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -12667,11 +16695,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -12679,14 +16709,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -12695,7 +16727,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -12721,11 +16753,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -12733,14 +16767,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -12749,7 +16785,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -12773,11 +16809,13 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
       color: attributes.labelColor,
-      marginBottom: attributes.labelSpacing + 'px'
+      marginBottom: attributes.labelSpacing + "px",
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
     let checkboxLabelColor = {
       color: attributes.labelColor
@@ -12785,14 +16823,16 @@ class Editor extends Component {
     let inputStyle = {
       backgroundColor: attributes.inputBgColor,
       color: attributes.inputTextColor,
-      borderRadius: attributes.inputBorderRadius + 'px',
-      paddingTop: attributes.inputPaddingTop + 'px',
-      paddingRight: attributes.inputPaddingRight + 'px',
-      paddingBottom: attributes.inputPaddingBottom + 'px',
-      paddingLeft: attributes.inputPaddingLeft + 'px',
+      borderRadius: attributes.inputBorderRadius + "px",
+      paddingTop: attributes.inputPaddingTop + "px",
+      paddingRight: attributes.inputPaddingRight + "px",
+      paddingBottom: attributes.inputPaddingBottom + "px",
+      paddingLeft: attributes.inputPaddingLeft + "px",
       borderStyle: attributes.inputBorderStyle,
-      borderWidth: attributes.inputBorderWidth + 'px',
-      borderColor: attributes.inputBorderColor
+      borderWidth: attributes.inputBorderWidth + "px",
+      borderColor: attributes.inputBorderColor,
+      fontWeight: attributes.inputTypography.weight,
+      fontFamily: attributes.inputTypography.family
     };
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: `mrm-${attributes.field_label}`,
@@ -12801,7 +16841,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: labelStyle
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "input-wrapper"
@@ -12841,7 +16881,7 @@ class Editor extends Component {
       field_slug: slug_name
     });
     let fieldSpacing = {
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
 
     // let labelStyle = {
@@ -12850,7 +16890,9 @@ class Editor extends Component {
     // }
 
     let checkboxLabelColor = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
     };
 
     // let inputStyle = {
@@ -12877,7 +16919,7 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: attributes.field_slug,
       style: checkboxLabelColor
-    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(attributes.field_label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, attributes.field_label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(attributes.field_label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*"))));
   };
@@ -12888,10 +16930,12 @@ class Editor extends Component {
     } = this.props;
     let fieldSpacing = {
       //color:  attributes.labelColor,
-      marginBottom: attributes.rowSpacing + 'px'
+      marginBottom: attributes.rowSpacing + "px"
     };
     let labelStyle = {
-      color: attributes.labelColor
+      color: attributes.labelColor,
+      fontWeight: attributes.labelTypography.weight,
+      fontFamily: attributes.labelTypography.family
       //marginBottom:  attributes.labelSpacing+'px',
     };
 
@@ -12916,9 +16960,10 @@ class Editor extends Component {
       name: field_slug,
       required: attributes.field_require
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      key: index,
       htmlFor: option.label,
       style: labelStyle
-    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(option.label, 'mrm') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('', 'mrm'), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, option.label ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)(option.label, "mrm") : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("", "mrm"), attributes.field_require && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "required-mark"
     }, "*")));
   };
@@ -12948,7 +16993,7 @@ class Editor extends Component {
       attributes,
       setAttributes
     } = this.props;
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == 'text' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == 'textarea' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == 'date' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == 'select' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == 'checkbox' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == 'radio' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, this.getInspectorControls(), attributes.field_type == "text" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextField(attributes)), attributes.field_type == "textarea" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderTextareaField(attributes)), attributes.field_type == "date" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderDateField(attributes)), attributes.field_type == "select" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderSelectField(attributes)), attributes.field_type == "checkbox" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderCheckboxField(attributes)), attributes.field_type == "radio" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, this.renderRadioField(attributes)));
   }
 }
 /* harmony default export */ __webpack_exports__["default"] = (compose([])(Editor));
@@ -13073,7 +17118,8 @@ const {
   Radio,
   DateTimePicker,
   DatePicker,
-  TabPanel
+  TabPanel,
+  ColorPicker
 } = wp.components;
 const {
   Component,
@@ -13117,7 +17163,9 @@ function Sidebar() {
       },
       form_layout: {
         form_placement: "",
-        form_animation: ""
+        form_animation: "",
+        close_button_color: "",
+        close_background_color: ""
       },
       schedule: {
         form_scheduling: false,
@@ -13151,6 +17199,8 @@ function Sidebar() {
   // form position and animation
   const [formPosition, setFormPosition] = useState("default");
   const [formAnimation, setFormAnimation] = useState("none");
+  const [closeButtonColor, setCloseButtonColor] = useState("#000");
+  const [closeBackgroundColor, setCloseBackgroundColor] = useState("#fff");
 
   // form scheduling
   const [formScheduling, setFormScheduling] = useState(false);
@@ -13222,7 +17272,7 @@ function Sidebar() {
     return !!pattern.test(str);
   }
   useEffect(() => {
-    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51;
+    var _prevSetting$settings, _prevSetting$settings2, _prevSetting$settings7, _prevSetting$settings8, _prevSetting$settings9, _prevSetting$settings13, _prevSetting$settings14, _prevSetting$settings15, _prevSetting$settings19, _prevSetting$settings20, _prevSetting$settings21, _prevSetting$settings25, _prevSetting$settings26, _prevSetting$settings27, _prevSetting$settings31, _prevSetting$settings32, _prevSetting$settings33, _prevSetting$settings40, _prevSetting$settings41, _prevSetting$settings42, _prevSetting$settings46, _prevSetting$settings47, _prevSetting$settings50, _prevSetting$settings51, _prevSetting$settings54, _prevSetting$settings55, _prevSetting$settings58, _prevSetting$settings59;
     // set selected confiramation type
     if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings = prevSetting.settings) !== null && _prevSetting$settings !== void 0 && (_prevSetting$settings2 = _prevSetting$settings.confirmation_type) !== null && _prevSetting$settings2 !== void 0 && _prevSetting$settings2.selected_confirmation_type) {
       var _prevSetting$settings3, _prevSetting$settings4, _prevSetting$settings5, _prevSetting$settings6;
@@ -13296,6 +17346,22 @@ function Sidebar() {
     } else {
       setFormAnimation("none");
     }
+
+    //set form close button color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings54 = prevSetting.settings) !== null && _prevSetting$settings54 !== void 0 && (_prevSetting$settings55 = _prevSetting$settings54.form_layout) !== null && _prevSetting$settings55 !== void 0 && _prevSetting$settings55.close_button_color) {
+      var _prevSetting$settings56, _prevSetting$settings57;
+      setCloseButtonColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings56 = prevSetting.settings) === null || _prevSetting$settings56 === void 0 ? void 0 : (_prevSetting$settings57 = _prevSetting$settings56.form_layout) === null || _prevSetting$settings57 === void 0 ? void 0 : _prevSetting$settings57.close_button_color);
+    } else {
+      setCloseButtonColor("#000");
+    }
+
+    //set form close button background color
+    if (prevSetting !== null && prevSetting !== void 0 && (_prevSetting$settings58 = prevSetting.settings) !== null && _prevSetting$settings58 !== void 0 && (_prevSetting$settings59 = _prevSetting$settings58.form_layout) !== null && _prevSetting$settings59 !== void 0 && _prevSetting$settings59.close_background_color) {
+      var _prevSetting$settings60, _prevSetting$settings61;
+      setCloseBackgroundColor(prevSetting === null || prevSetting === void 0 ? void 0 : (_prevSetting$settings60 = prevSetting.settings) === null || _prevSetting$settings60 === void 0 ? void 0 : (_prevSetting$settings61 = _prevSetting$settings60.form_layout) === null || _prevSetting$settings61 === void 0 ? void 0 : _prevSetting$settings61.close_background_color);
+    } else {
+      setCloseBackgroundColor("#fff");
+    }
   }, [prevSetting]);
   useEffect(async () => {
     if ("same-page" === currentTab) {
@@ -13310,7 +17376,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -13338,7 +17406,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -13366,7 +17436,9 @@ function Sidebar() {
           },
           form_layout: {
             form_position: formPosition,
-            form_animation: formAnimation
+            form_animation: formAnimation,
+            close_button_color: closeButtonColor,
+            close_background_color: closeBackgroundColor
           },
           schedule: {
             form_scheduling: formScheduling,
@@ -13383,7 +17455,7 @@ function Sidebar() {
         }
       });
     }
-  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
+  }, [selectedConfirmationType, messageToShow, afterFormSubmission, selectedPageId, redirectionMessage, customURL, customRedirectionMessage, formPosition, formAnimation, closeButtonColor, closeBackgroundColor, formScheduling, submissionStartDate, submissionStartTime, maxEntries, count, maxType, currentTab]);
   useEffect(() => {
     localStorage.setItem("getsettings", JSON.stringify(settingData));
   }, [settingData]);
@@ -13476,10 +17548,10 @@ function Sidebar() {
   }, "Same Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "page" ? "tab-nav-item active" : "tab-nav-item",
     onClick: () => handleConfirmationType("page")
-  }, "To a page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, "To A Page"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: tabState === "custom-url" ? "tab-nav-item active" : "tab-nav-item",
     onClick: () => handleConfirmationType("custom-url")
-  }, "To a custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "To A Custom URL")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "pannel-tab-content"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: tabState === "same-page" ? "single-tab-content same-page-tab-content active" : "single-tab-content same-page-tab-content"
@@ -13581,9 +17653,51 @@ function Sidebar() {
     }, {
       label: "Fly Ins",
       value: "flyins"
+    }, {
+      label: "Fixed on top",
+      value: "fixed-on-top"
+    }, {
+      label: "Fixed on bottom",
+      value: "fixed-on-bottom"
     }],
     onChange: state => setFormPosition(state)
-  })))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Close Button Color",
+    className: "form-layout-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Close Icon", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon for form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Background", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon Background"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Animation",
     className: "form-animation-settings",
     initialOpen: false
@@ -13629,12 +17743,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_interface__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/interface */ "./node_modules/@wordpress/interface/build-module/components/fullscreen-mode/index.js");
-/* harmony import */ var _wordpress_interface__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/interface */ "./node_modules/@wordpress/interface/build-module/components/interface-skeleton/index.js");
-/* harmony import */ var _components_notices__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/notices */ "./src/components/notices/index.js");
-/* harmony import */ var _components_header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/header */ "./src/components/header/index.js");
-/* harmony import */ var _components_sidebar__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/sidebar */ "./src/components/sidebar/index.jsx");
-/* harmony import */ var _components_block_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/block-editor */ "./src/components/block-editor/index.js");
+/* harmony import */ var _wordpress_interface__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/interface */ "./node_modules/@wordpress/interface/build-module/index.js");
+/* harmony import */ var _components_notices__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/notices */ "./src/components/notices/index.js");
+/* harmony import */ var _components_header__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/header */ "./src/components/header/index.js");
+/* harmony import */ var _components_sidebar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/sidebar */ "./src/components/sidebar/index.jsx");
+/* harmony import */ var _components_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/block-editor */ "./src/components/block-editor/index.js");
 
 /**
  * WordPress dependencies
@@ -13657,15 +17770,15 @@ function Editor(_ref) {
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "mrm-editor-builder"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_2__.FullscreenMode, {
     isActive: false
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SlotFillProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropZoneProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FocusReturnProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    header: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_header__WEBPACK_IMPORTED_MODULE_3__["default"], null),
-    sidebar: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_sidebar__WEBPACK_IMPORTED_MODULE_4__["default"], null),
-    content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_notices__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_block_editor__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SlotFillProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_2__.InterfaceSkeleton, {
+    header: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_header__WEBPACK_IMPORTED_MODULE_4__["default"], null),
+    sidebar: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_sidebar__WEBPACK_IMPORTED_MODULE_5__["default"], null),
+    content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_notices__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_block_editor__WEBPACK_IMPORTED_MODULE_6__["default"], {
       settings: settings
     }))
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)))));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Editor);
 
@@ -14973,7 +19086,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /**
- * React Router v6.4.2
+ * React Router v6.4.3
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -15331,37 +19444,11 @@ function useMatch(pattern) {
  */
 
 /**
- * When processing relative navigation we want to ignore ancestor routes that
- * do not contribute to the path, such that index/pathless layout routes don't
- * interfere.
- *
- * For example, when moving a route element into an index route and/or a
- * pathless layout route, relative link behavior contained within should stay
- * the same.  Both of the following examples should link back to the root:
- *
- *   <Route path="/">
- *     <Route path="accounts" element={<Link to=".."}>
- *   </Route>
- *
- *   <Route path="/">
- *     <Route path="accounts">
- *       <Route element={<AccountsLayout />}>       // <-- Does not contribute
- *         <Route index element={<Link to=".."} />  // <-- Does not contribute
- *       </Route
- *     </Route>
- *   </Route>
- */
-function getPathContributingMatches(matches) {
-  return matches.filter((match, index) => index === 0 || !match.route.index && match.pathnameBase !== matches[index - 1].pathnameBase);
-}
-/**
  * Returns an imperative method for changing the location. Used by <Link>s, but
  * may also be used by other elements to change the location.
  *
  * @see https://reactrouter.com/docs/en/v6/hooks/use-navigate
  */
-
-
 function useNavigate() {
   !useInRouterContext() ?  true ? (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.invariant)(false, // TODO: This error is probably because they somehow have 2 versions of the
   // router loaded. We can help them understand how to avoid that.
@@ -15376,7 +19463,7 @@ function useNavigate() {
   let {
     pathname: locationPathname
   } = useLocation();
-  let routePathnamesJson = JSON.stringify(getPathContributingMatches(matches).map(match => match.pathnameBase));
+  let routePathnamesJson = JSON.stringify((0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.UNSAFE_getPathContributingMatches)(matches).map(match => match.pathnameBase));
   let activeRef = react__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
   react__WEBPACK_IMPORTED_MODULE_1__.useEffect(() => {
     activeRef.current = true;
@@ -15465,7 +19552,7 @@ function useResolvedPath(to, _temp2) {
   let {
     pathname: locationPathname
   } = useLocation();
-  let routePathnamesJson = JSON.stringify(getPathContributingMatches(matches).map(match => match.pathnameBase));
+  let routePathnamesJson = JSON.stringify((0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.UNSAFE_getPathContributingMatches)(matches).map(match => match.pathnameBase));
   return react__WEBPACK_IMPORTED_MODULE_1__.useMemo(() => (0,_remix_run_router__WEBPACK_IMPORTED_MODULE_0__.resolveTo)(to, JSON.parse(routePathnamesJson), locationPathname, relative === "path"), [to, routePathnamesJson, locationPathname, relative]);
 }
 /**
@@ -15549,7 +19636,7 @@ function useRoutes(routes, locationArg) {
   // to use the scoped location instead of the global location.
 
 
-  if (locationArg) {
+  if (locationArg && renderedMatches) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(LocationContext.Provider, {
       value: {
         location: _extends({
@@ -16361,6 +20448,17 @@ module.exports = window["React"];
 
 /***/ }),
 
+/***/ "@wordpress/a11y":
+/*!******************************!*\
+  !*** external ["wp","a11y"] ***!
+  \******************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = window["wp"]["a11y"];
+
+/***/ }),
+
 /***/ "@wordpress/block-editor":
 /*!*************************************!*\
   !*** external ["wp","blockEditor"] ***!
@@ -16405,6 +20503,17 @@ module.exports = window["wp"]["components"];
 
 /***/ }),
 
+/***/ "@wordpress/compose":
+/*!*********************************!*\
+  !*** external ["wp","compose"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = window["wp"]["compose"];
+
+/***/ }),
+
 /***/ "@wordpress/data":
 /*!******************************!*\
   !*** external ["wp","data"] ***!
@@ -16413,6 +20522,17 @@ module.exports = window["wp"]["components"];
 
 "use strict";
 module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/deprecated":
+/*!************************************!*\
+  !*** external ["wp","deprecated"] ***!
+  \************************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = window["wp"]["deprecated"];
 
 /***/ }),
 
@@ -16493,100 +20613,47 @@ module.exports = window["wp"]["mediaUtils"];
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js":
-/*!**************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js ***!
-  \**************************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ "@wordpress/plugins":
+/*!*********************************!*\
+  !*** external ["wp","plugins"] ***!
+  \*********************************/
+/***/ (function(module) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _assertThisInitialized; }
-/* harmony export */ });
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-  return self;
-}
+module.exports = window["wp"]["plugins"];
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/classCallCheck.js ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ "@wordpress/preferences":
+/*!*************************************!*\
+  !*** external ["wp","preferences"] ***!
+  \*************************************/
+/***/ (function(module) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _classCallCheck; }
-/* harmony export */ });
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
+module.exports = window["wp"]["preferences"];
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/createClass.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/createClass.js ***!
-  \****************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ "@wordpress/primitives":
+/*!************************************!*\
+  !*** external ["wp","primitives"] ***!
+  \************************************/
+/***/ (function(module) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _createClass; }
-/* harmony export */ });
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  Object.defineProperty(Constructor, "prototype", {
-    writable: false
-  });
-  return Constructor;
-}
+module.exports = window["wp"]["primitives"];
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ "@wordpress/viewport":
+/*!**********************************!*\
+  !*** external ["wp","viewport"] ***!
+  \**********************************/
+/***/ (function(module) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _defineProperty; }
-/* harmony export */ });
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
+module.exports = window["wp"]["viewport"];
 
 /***/ }),
 
@@ -16614,128 +20681,6 @@ function _extends() {
     return target;
   };
   return _extends.apply(this, arguments);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _getPrototypeOf; }
-/* harmony export */ });
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/inherits.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/inherits.js ***!
-  \*************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _inherits; }
-/* harmony export */ });
-/* harmony import */ var _setPrototypeOf_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./setPrototypeOf.js */ "./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js");
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  Object.defineProperty(subClass, "prototype", {
-    writable: false
-  });
-  if (superClass) (0,_setPrototypeOf_js__WEBPACK_IMPORTED_MODULE_0__["default"])(subClass, superClass);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js":
-/*!******************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js ***!
-  \******************************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _possibleConstructorReturn; }
-/* harmony export */ });
-/* harmony import */ var _typeof_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
-/* harmony import */ var _assertThisInitialized_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./assertThisInitialized.js */ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js");
-
-
-function _possibleConstructorReturn(self, call) {
-  if (call && ((0,_typeof_js__WEBPACK_IMPORTED_MODULE_0__["default"])(call) === "object" || typeof call === "function")) {
-    return call;
-  } else if (call !== void 0) {
-    throw new TypeError("Derived constructors may only return object or undefined");
-  }
-  return (0,_assertThisInitialized_js__WEBPACK_IMPORTED_MODULE_1__["default"])(self);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _setPrototypeOf; }
-/* harmony export */ });
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-  return _setPrototypeOf(o, p);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/typeof.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/typeof.js ***!
-  \***********************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ _typeof; }
-/* harmony export */ });
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  }, _typeof(obj);
 }
 
 /***/ })
@@ -16921,9 +20866,9 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
     title: __("MRM Button", "mrm"),
     category: "common",
     icon: _components_mrm_button_block_icon__WEBPACK_IMPORTED_MODULE_18__["default"].Button,
-    supports: {
-      align: ["left", "right", "center"]
-    },
+    // supports: {
+    //   align: ["left", "right", "center"],
+    // },
     attributes: _components_mrm_button_block_attributes__WEBPACK_IMPORTED_MODULE_19__["default"],
     edit: _components_mrm_button_block_edit__WEBPACK_IMPORTED_MODULE_20__["default"],
     save: _components_mrm_button_block_block__WEBPACK_IMPORTED_MODULE_17__["default"]

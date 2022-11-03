@@ -1,4 +1,4 @@
-.qubely-drag-dimension-wrap{
+.mrmTypography-drag-dimension-wrap{
   display: flex;
   justify-content: center;
   margin: 0 -14px;
@@ -7,14 +7,14 @@
 
 /* padding */
 
-.qubely-dimension-padding{
+.mrmTypography-dimension-padding{
   position: relative;
   height: 60px;
   width: 110px;
   background: white;
 }
 
-.qubely-dimension-padding::before {
+.mrmTypography-dimension-padding::before {
   content: attr(data-text);
   position: absolute;
   left: 50%;
@@ -26,7 +26,7 @@
 }
 
 
-.qubely-dimension-padding > .dimension-item > span{
+.mrmTypography-dimension-padding > .dimension-item > span{
   content: '';
   display: inline-block;
   position: absolute;
@@ -38,7 +38,7 @@
 
 /* margin */
 
-.qubely-dimension-margin-wrap{
+.mrmTypography-dimension-margin-wrap{
   padding: 40px 0;
   display: inline-flex;
   position: relative;
@@ -47,7 +47,7 @@
   justify-content: center;
 }
 
-.qubely-dimension-margin::after {
+.mrmTypography-dimension-margin::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
@@ -58,12 +58,12 @@
   text-transform: capitalize;
   pointer-events: none;
 }
-.qubely-drag-margin-top.qubely-dimension-margin::after{
+.mrmTypography-drag-margin-top.mrmTypography-dimension-margin::after{
   color: #fff;
 }
 
 
-.qubely-dimension-margin > .dimension-item > span{
+.mrmTypography-dimension-margin > .dimension-item > span{
   content: '';
   position: absolute;
   width: 100%;
@@ -76,10 +76,10 @@
 /* left-right */
 
 
-.qubely-dimension-padding > .padding-right > span,
-.qubely-dimension-padding > .padding-left > span,
-.qubely-dimension-margin > .margin-right > span,
-.qubely-dimension-margin > .margin-left > span{
+.mrmTypography-dimension-padding > .padding-right > span,
+.mrmTypography-dimension-padding > .padding-left > span,
+.mrmTypography-dimension-margin > .margin-right > span,
+.mrmTypography-dimension-margin > .margin-left > span{
   width: 20px;
   clip-path: polygon(0 4px, 100% 22px, 100% calc(100% - 22px), -4px 100%);
   cursor: w-resize;
@@ -88,8 +88,8 @@
   background-image: url("data:image/svg+xml,%3Csvg width='8' height='15' viewBox='0 0 8 15' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ADB3BF'%3E%3Cpath d='M6.663.837c.274 0 .499.098.499.219v13.562c0 .12-.225.219-.499.219s-.499-.099-.499-.219v-13.562c0-.121.225-.219.499-.219'/%3E%3Cpath d='M3.663.837c.274 0 .499.098.499.219v13.562c0 .12-.225.219-.499.219s-.499-.099-.499-.219v-13.562c0-.121.225-.219.499-.219'/%3E%3Cpath d='M.663.837c.274 0 .499.098.499.219v13.562c0 .12-.225.219-.499.219s-.499-.099-.499-.219v-13.562c0-.121.225-.219.499-.219'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-.qubely-dimension-padding > .padding-right > span,
-.qubely-dimension-margin > .margin-right > span{
+.mrmTypography-dimension-padding > .padding-right > span,
+.mrmTypography-dimension-margin > .margin-right > span{
   left: auto;
   right: 0;
   cursor: e-resize;
@@ -100,10 +100,10 @@
 /*top-bottom*/
 
 
-.qubely-dimension-padding > .padding-top > span,
-.qubely-dimension-padding > .padding-bottom > span,
-.qubely-dimension-margin > .margin-top > span,
-.qubely-dimension-margin > .margin-bottom > span{
+.mrmTypography-dimension-padding > .padding-top > span,
+.mrmTypography-dimension-padding > .padding-bottom > span,
+.mrmTypography-dimension-margin > .margin-top > span,
+.mrmTypography-dimension-margin > .margin-bottom > span{
   height: 20px;
   cursor: n-resize;
   clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 22px 100%);
@@ -112,8 +112,8 @@
   background-position: center center;
 }
 
-.qubely-dimension-padding > .padding-bottom > span,
-.qubely-dimension-margin > .margin-bottom > span{
+.mrmTypography-dimension-padding > .padding-bottom > span,
+.mrmTypography-dimension-margin > .margin-bottom > span{
   top: auto;
   bottom: 0;
   cursor: s-resize;
@@ -124,38 +124,38 @@
 /*background*/
 
 
-.qubely-dimension-padding > .dimension-item > span,
-.qubely-dimension-margin > .dimension-item > span{
+.mrmTypography-dimension-padding > .dimension-item > span,
+.mrmTypography-dimension-margin > .dimension-item > span{
   background-color: #DFE1E4;
 }
 
-.qubely-drag-margin-top .dimension-item.margin-top > span,
-.qubely-drag-margin-left .dimension-item.margin-left > span,
-.qubely-drag-margin-right .dimension-item.margin-right > span,
-.qubely-drag-margin-bottom .dimension-item.margin-bottom > span{
+.mrmTypography-drag-margin-top .dimension-item.margin-top > span,
+.mrmTypography-drag-margin-left .dimension-item.margin-left > span,
+.mrmTypography-drag-margin-right .dimension-item.margin-right > span,
+.mrmTypography-drag-margin-bottom .dimension-item.margin-bottom > span{
   background-color: #0286BA ;
 }
 
-.qubely-drag-padding-top .dimension-item.padding-top > span,
-.qubely-drag-padding-left .dimension-item.padding-left > span,
-.qubely-drag-padding-right .dimension-item.padding-right > span,
-.qubely-drag-padding-bottom .dimension-item.padding-bottom > span{
+.mrmTypography-drag-padding-top .dimension-item.padding-top > span,
+.mrmTypography-drag-padding-left .dimension-item.padding-left > span,
+.mrmTypography-drag-padding-right .dimension-item.padding-right > span,
+.mrmTypography-drag-padding-bottom .dimension-item.padding-bottom > span{
   background-color: #0286BA ;
 }
 
 
-.qubely-drag-padding-right .dimension-item.padding-right > span,
-.qubely-drag-padding-left .dimension-item.padding-left > span,
-.qubely-drag-margin-right .dimension-item.margin-right > span,
-.qubely-drag-margin-left .dimension-item.margin-left > span{
+.mrmTypography-drag-padding-right .dimension-item.padding-right > span,
+.mrmTypography-drag-padding-left .dimension-item.padding-left > span,
+.mrmTypography-drag-margin-right .dimension-item.margin-right > span,
+.mrmTypography-drag-margin-left .dimension-item.margin-left > span{
   background-image: url("data:image/svg+xml,%3Csvg width='8' height='15' viewBox='0 0 8 15' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff'%3E%3Cpath d='M6.663.837c.274 0 .499.098.499.219v13.562c0 .12-.225.219-.499.219s-.499-.099-.499-.219v-13.562c0-.121.225-.219.499-.219'/%3E%3Cpath d='M3.663.837c.274 0 .499.098.499.219v13.562c0 .12-.225.219-.499.219s-.499-.099-.499-.219v-13.562c0-.121.225-.219.499-.219'/%3E%3Cpath d='M.663.837c.274 0 .499.098.499.219v13.562c0 .12-.225.219-.499.219s-.499-.099-.499-.219v-13.562c0-.121.225-.219.499-.219'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 
-.qubely-drag-padding-top .dimension-item.padding-top > span,
-.qubely-drag-padding-bottom .dimension-item.padding-bottom > span,
-.qubely-drag-margin-top .dimension-item.margin-top > span,
-.qubely-drag-margin-bottom .dimension-item.margin-bottom > span{
+.mrmTypography-drag-padding-top .dimension-item.padding-top > span,
+.mrmTypography-drag-padding-bottom .dimension-item.padding-bottom > span,
+.mrmTypography-drag-margin-top .dimension-item.margin-top > span,
+.mrmTypography-drag-margin-bottom .dimension-item.margin-bottom > span{
   background-image: url("data:image/svg+xml,%3Csvg width='16' height='8' viewBox='0 0 16 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff'%3E%3Cpath d='M.913 1.114c0-.274.1-.499.223-.499h13.805c.122 0 .223.225.223.499s-.1.499-.223.499h-13.805c-.123 0-.223-.225-.223-.499'/%3E%3Cpath d='M.913 4.114c0-.274.1-.499.223-.499h13.805c.122 0 .223.225.223.499s-.1.499-.223.499h-13.805c-.123 0-.223-.225-.223-.499'/%3E%3Cpath d='M.913 7.114c0-.274.1-.499.223-.499h13.805c.122 0 .223.225.223.499s-.1.499-.223.499h-13.805c-.123 0-.223-.225-.223-.499'/%3E%3C/g%3E%3C/svg%3E");
 }
 
@@ -173,7 +173,7 @@
   border: none;
   width: 26px !important;
 }
-#wpwrap .qubely-drag-dimension-wrap .dimension-item > input{
+#wpwrap .mrmTypography-drag-dimension-wrap .dimension-item > input{
   padding: 0 !important;
   &[type="number"]::-webkit-outer-spin-button,
   &[type="number"]::-webkit-inner-spin-button {
@@ -232,18 +232,18 @@
 }
 
 
-.qubely-dimension-padding > .padding-top > span{
+.mrmTypography-dimension-padding > .padding-top > span{
   cursor: s-resize;
 }
 
-.qubely-dimension-padding > .padding-bottom > span{
+.mrmTypography-dimension-padding > .padding-bottom > span{
   cursor: n-resize;
 }
 
-.qubely-dimension-padding > .padding-left > span{
+.mrmTypography-dimension-padding > .padding-left > span{
   cursor: e-resize;
 }
 
-.qubely-dimension-padding > .padding-right > span{
+.mrmTypography-dimension-padding > .padding-right > span{
   cursor: w-resize;
 }

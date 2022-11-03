@@ -44,6 +44,7 @@ const mrmButton = ({
     let layout = formLayout
     let fieldSpacing = {
         marginBottom:  rowSpacing+'px',
+        textAlign : buttonAlign
     }
 
     let buttonStyle = {
@@ -58,7 +59,7 @@ const mrmButton = ({
         fontWeight: typography.weight,
         fontFamily: typography.family,
         fontSize : buttonFontSize,
-        textAlign: buttonAlign,
+        // textAlign: buttonAlign,
         // borderWidth:  buttonBorderWidth+'px',
         borderWidth: outline === 'fill' ? '0' : buttonBorderWidth+'px',
         borderColor:  buttonBorderColor,

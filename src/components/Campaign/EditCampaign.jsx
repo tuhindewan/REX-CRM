@@ -560,8 +560,10 @@ export default function EditCampaign(props) {
           <div className="mintmrm-container">
             <div className="left-section">
               <div className="back-button">
-                <DoubleAngleLeftIcon />
-                <Link to="/campaigns">Campaigns</Link>
+                <Link to="/campaigns">
+                  <DoubleAngleLeftIcon />
+                  Campaigns
+                </Link>
               </div>
               <h2 className="campaign-title">Edit Campaign</h2>
             </div>

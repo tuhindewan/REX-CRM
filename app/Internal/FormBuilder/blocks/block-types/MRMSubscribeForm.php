@@ -36,7 +36,6 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
             ob_start();
             $output = '';
             $output .= $get_form_data_by_id["form_body"];
-
             $output .=  ob_get_clean();
             echo $output;
             die();

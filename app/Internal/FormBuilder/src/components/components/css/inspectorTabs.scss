@@ -1,7 +1,7 @@
 $border-color: #D6D9DD;
-.components-panel[data-qubely-tab]{
-  &:not([data-qubely-tab='advance']) .components-panel__body.block-editor-block-inspector__advanced,
-  &:not([data-qubely-tab='advance']) .components-panel__body.editor-block-inspector__advanced.block-editor-block-inspector__advanced{
+.components-panel[data-mrmTypography-tab]{
+  &:not([data-mrmTypography-tab='advance']) .components-panel__body.block-editor-block-inspector__advanced,
+  &:not([data-mrmTypography-tab='advance']) .components-panel__body.editor-block-inspector__advanced.block-editor-block-inspector__advanced{
     display: none;
   }
   .block-editor-block-card{
@@ -28,7 +28,7 @@ $border-color: #D6D9DD;
   }
 }
 
-.qubely-inspector-tabs{
+.mrmTypography-inspector-tabs{
   display: flex;
   //margin-left: -16px;
   //margin-right: -16px;
@@ -82,10 +82,10 @@ $border-color: #D6D9DD;
       border-top: none;
       border-radius: 0 0 10px 10px;
     }
-    &:not(.qubely-active)::after{
+    &:not(.mrmTypography-active)::after{
       background: #F2F4F5;
     }
-    &.qubely-active{
+    &.mrmTypography-active{
       background: #fff;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
@@ -117,7 +117,7 @@ $border-color: #D6D9DD;
         border-bottom-left-radius: 0;
         border-left-color: transparent;
       }
-      &.qubely-active::after{
+      &.mrmTypography-active::after{
         border-left-color: $border-color;
       }
       &::before,
@@ -131,7 +131,7 @@ $border-color: #D6D9DD;
         border-bottom-right-radius: 0;
         border-right-color: transparent;
       }
-      &.qubely-active::after{
+      &.mrmTypography-active::after{
         border-right-color: $border-color;
       }
       &::before,
@@ -152,16 +152,16 @@ $border-color: #D6D9DD;
     svg{
       z-index: 2;
     }
-    &.qubely-active h5{
+    &.mrmTypography-active h5{
       color: #2184F9;
     }
     &:focus path,
-    &.qubely-active path{
+    &.mrmTypography-active path{
       fill: #2184F9;
     }
   }
 
-  &.advance.qubely-inspector-tabs-count-3{
+  &.advance.mrmTypography-inspector-tabs-count-3{
     button:first-child{
       border-bottom-right-radius: 0;
       &::after{
@@ -180,7 +180,7 @@ $border-color: #D6D9DD;
 
 }
 
-.components-panel .components-panel__body .qubely-inspector-tabs-container{
+.components-panel .components-panel__body .mrmTypography-inspector-tabs-container{
   position: static !important;
   margin-left: -16px;
   margin-right: -16px;
@@ -188,13 +188,13 @@ $border-color: #D6D9DD;
   top: 0 !important;
 }
 
-.qubely-inspector-tabs-container{
+.mrmTypography-inspector-tabs-container{
   position: sticky;
   top: -3px;
   z-index: 9;
   border-top: calc(0.1em + 1px) solid #F2F4F5;
-  &.qubely-is-sticky{
-    .qubely-inspector-tabs{
+  &.mrmTypography-is-sticky{
+    .mrmTypography-inspector-tabs{
       &::before,
       &::after{
         display: none;
@@ -213,7 +213,7 @@ $border-color: #D6D9DD;
           bottom: -1px;
           opacity: 0;
         }
-        &.qubely-active::after{
+        &.mrmTypography-active::after{
           opacity: 1;
         }
       }
@@ -221,8 +221,8 @@ $border-color: #D6D9DD;
   }
 }
 
-.qubely-inspector-tab .components-panel__body:first-child,
-.edit-post-settings-sidebar__panel-block .qubely-inspector-tab .components-panel__body:first-child{
+.mrmTypography-inspector-tab .components-panel__body:first-child,
+.edit-post-settings-sidebar__panel-block .mrmTypography-inspector-tab .components-panel__body:first-child{
   margin-top: 0;
   border-top: none !important;
 }

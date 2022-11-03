@@ -422,8 +422,8 @@ export default function FormIndex(props) {
                     <ul
                       className={
                         isBulkAction
-                          ? "mintmrm-dropdown show"
-                          : "mintmrm-dropdown"
+                          ? "select-option mintmrm-dropdown show"
+                          : "select-option mintmrm-dropdown"
                       }
                     >
                       <li className="delete" onClick={deleteMultipleList}>

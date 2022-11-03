@@ -36,6 +36,11 @@ const attributes = {
     type: "boolean",
     default: false,
   },
+  typography: {
+    type: "object",
+    default: {},
+    style: [{ selector: "mrm-form-group.submit .mrm-submit-button" }],
+  },
 
   emailLabel: {
     type: "string",

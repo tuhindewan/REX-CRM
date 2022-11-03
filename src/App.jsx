@@ -17,7 +17,7 @@ const App = () => {
       <ReactFlowProvider>
         <HashRouter>
           <>
-            <SearchNavbar />
+            {/* <SearchNavbar /> */}
 
             <Routes>
               {routes.map((route, index) => (

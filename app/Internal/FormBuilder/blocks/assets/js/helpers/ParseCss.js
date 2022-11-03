@@ -110,7 +110,7 @@ function isWpfnlBlock(blocks) {
 
 function getData(pId) {
 	wp.apiFetch({
-		path: 'qubely/v1/qubely_get_content',
+		path: 'mrmTypography/v1/mrmTypography_get_content',
 		method: 'POST',
 		data: { postId: pId }
 	}).then(response => {
@@ -118,7 +118,7 @@ function getData(pId) {
 			const innerBlock = innerBlocks(wp.blocks.parse(response.data), true);
 			if (innerBlock.css) {
 				wp.apiFetch({
-					path: 'qubely/v1/append_qubely_css',
+					path: 'mrmTypography/v1/append_mrmTypography_css',
 					method: 'POST',
 					data: { css: innerBlock.css, post_id: select('core/editor').getCurrentPostId() }
 				}).then(res => {
@@ -134,7 +134,7 @@ function getData(pId) {
 
 function getReusableBlockCSS(pId) {
 	return wp.apiFetch({
-		path: 'qubely/v1/qubely_get_content',
+		path: 'mrmTypography/v1/mrmTypography_get_content',
 		method: 'POST',
 		data: { postId: pId }
 	}).then(response => response);
@@ -155,7 +155,7 @@ function parseBlock(blocks) {
 
 /*function setAvailableBlocksMeta(data) {
     wp.apiFetch({
-        path: 'qubely/v1/set_qubely_available_blocks_meta',
+        path: 'mrmTypography/v1/set_mrmTypography_available_blocks_meta',
         method: 'POST',
         data
     })

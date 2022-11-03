@@ -1,25 +1,25 @@
-.qubely-field-tabs {
+.mrmTypography-field-tabs {
   margin-left: -16px;
   margin-right: -16px;
   background: #f7f8fc;
   &:last-child {
     margin-bottom: -16px !important;
   }
-  &.qubely-has-label {
+  &.mrmTypography-has-label {
     border-top: 1px solid #e9e9e9;
-    .qubely-field-tab-header {
+    .mrmTypography-field-tab-header {
       padding-top: 10px;
       label {
         margin: 0 15px;
       }
     }
-    .qubely-field-tab-menus {
+    .mrmTypography-field-tab-menus {
       margin-top: 10px;
     }
   }
   &.panel-group {
     margin-top: 20px;
-    .qubely-field-tab-menus {
+    .mrmTypography-field-tab-menus {
       cursor: pointer;
       display: flex;
       justify-content: space-evenly;
@@ -27,14 +27,14 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        .qubely-tab-menu {
+        .mrmTypography-tab-menu {
           flex-grow: 1;
         }
       }
     }
   }
   &:not(.panel-group) {
-    .qubely-field-tab-menus {
+    .mrmTypography-field-tab-menus {
       display: flex;
       button {
         flex-grow: 1;
@@ -59,14 +59,14 @@
       }
     }
 
-    .qubely-field-tab-items {
+    .mrmTypography-field-tab-items {
       padding: 15px;
     }
   }
 }
 
-.qubely-field .qubely-field-boxshadow,
-.qubely-field.qubely-field-typography {
+.mrmTypography-field .mrmTypography-field-boxshadow,
+.mrmTypography-field.mrmTypography-field-typography {
   border: 1px solid #e9e9e9;
   padding: 12px;
   border-radius: 5px;

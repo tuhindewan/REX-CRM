@@ -43,8 +43,8 @@ class Modal extends Component {
 
         return (
             <Fragment>
-                <span onClick={e => { this.close() }} className="qubely-pagelist-modal-overlay">&nbsp;</span>
-                <div className={`qubely-pagelist-modal-inner`} onClick={e => e.stopPropagation()}   >
+                <span onClick={e => { this.close() }} className="mrmTypography-pagelist-modal-overlay">&nbsp;</span>
+                <div className={`mrmTypography-pagelist-modal-inner`} onClick={e => e.stopPropagation()}   >
                     {this.props.children}
                 </div>
             </Fragment>
@@ -60,16 +60,16 @@ const Manager = {
         }
         if (!node) {
             node = document.createElement('div')
-            node.className = "qubely-builder-modal"
+            node.className = "mrmTypography-builder-modal"
             document.body.appendChild(node)
         }
         wp.element.render(component, node)
-        document.body.classList.add('qubely-builder-modal-open')
+        document.body.classList.add('mrmTypography-builder-modal-open')
     },
     close() {
         onClose && onClose(() => {
             wp.element.unmountComponentAtNode(node)
-            document.body.classList.remove('qubely-builder-modal-open')
+            document.body.classList.remove('mrmTypography-builder-modal-open')
         });
     },
 }

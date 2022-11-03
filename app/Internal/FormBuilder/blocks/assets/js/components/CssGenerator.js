@@ -28,9 +28,9 @@ const isEmpty = (obj) => {
     return (typeof obj == 'object' && Object.keys(obj).length != 0) ? true : false
 }
 
-// {{QUBELY}} Replace
+// {{mrmTypography}} Replace
 const replaceWarp = (selector, ID) => {
-    return selector.replace(new RegExp('{{QUBELY}}', "g"), '.qubely-block-' + ID)
+    return selector.replace(new RegExp('{{mrmTypography}}', "g"), '.mrmTypography-block-' + ID)
 }
 
 export const objectReplace = (warp, value) => {
@@ -251,7 +251,7 @@ export const CssGenerator = (settings, blockName, blockID, isInline = false, glo
     if (notResponsiveCss.length > 0) { __CSS += notResponsiveCss.join('') }
 
     if (global) {
-        __CSS = __CSS.replace(new RegExp('.qubely-block-global', "g"), frontend ? '.qubely-frontend' : '.qubely-editor');
+        __CSS = __CSS.replace(new RegExp('.mrmTypography-block-global', "g"), frontend ? '.mrmTypography-frontend' : '.mrmTypography-editor');
     }
 
     if (isInline) {
@@ -265,9 +265,9 @@ export const CssGenerator = (settings, blockName, blockID, isInline = false, glo
 
 // Set CSS to Head
 const setStyle = (styleCss, blockID, global = false, frontend = false) => {
-    let styleSelector = window.document, id = 'qubely-block-' + blockID;
+    let styleSelector = window.document, id = 'mrmTypography-block-' + blockID;
     if (global && frontend) {
-        id = 'qubely-global-styles';
+        id = 'mrmTypography-global-styles';
     }
 
     if (styleSelector.getElementById(id) === null) {

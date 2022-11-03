@@ -1,6 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
+import Typography from "../components/Typography";
 
 import { __ } from "@wordpress/i18n";
 const { withSelect, withDispatch, useSelect, useDispatch } = wp.data;
@@ -102,7 +103,7 @@ class Editor extends Component {
       device = attributes.device;
 
     return (
-      <PanelBody title="Form Style" initialOpen={false}>
+      <PanelBody title="Label Style" initialOpen={false}>
         <label className="blocks-base-control__label">Row Spacing</label>
         <RangeControl
           value={attributes.rowSpacing}
@@ -135,6 +136,16 @@ class Editor extends Component {
           min={0}
           max={50}
           step={1}
+        />
+
+        <label className="blocks-base-control__label"></label>
+        <Typography
+          // label={__('Typography')}
+          value={labelTypography}
+          onChange={(value) => setAttributes({ labelTypography: value })}
+          disableLineHeight
+          device={device}
+          onDeviceChange={(value) => setAttributes({ device: value })}
         />
       </PanelBody>
     );
@@ -226,6 +237,15 @@ class Editor extends Component {
           }
           value={attributes.inputBorderColor}
         />
+        <label className="blocks-base-control__label"></label>
+        <Typography
+          // label={__('Typography')}
+          value={inputTypography}
+          onChange={(value) => setAttributes({ inputTypography: value })}
+          disableLineHeight
+          device={device}
+          onDeviceChange={(value) => setAttributes({ device: value })}
+        />
       </PanelBody>
     );
   };
@@ -266,6 +286,9 @@ class Editor extends Component {
         rowSpacing,
         labelColor,
         labelSpacing,
+        typography,
+        inputTypography,
+        labelTypography
       },
     } = this.props;
 
@@ -276,6 +299,8 @@ class Editor extends Component {
     let labelStyle = {
       color: labelColor,
       marginBottom: labelSpacing + "px",
+      fontWeight: labelTypography.weight,
+      fontFamily: labelTypography.family,
     };
 
     let checkboxLabelColor = {
@@ -293,6 +318,8 @@ class Editor extends Component {
       borderStyle: inputBorderStyle,
       borderWidth: inputBorderWidth + "px",
       borderColor: inputBorderColor,
+      fontWeight: inputTypography.weight,
+      fontFamily: inputTypography.family,
     };
 
     // display the map selector

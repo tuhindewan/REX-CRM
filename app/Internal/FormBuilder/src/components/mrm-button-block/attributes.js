@@ -293,7 +293,7 @@ const attributes = {
     },
     buttonAlign: {
         type: 'string',
-        default: 'center'
+        default: 'left'
     },
 
     postAction: {
@@ -335,7 +335,7 @@ const attributes = {
     },
     buttonWidth: {
         type: 'number',
-        default: 25
+        default: ''
     },
     typography:{
         type: 'object',
@@ -354,15 +354,15 @@ const attributes = {
     },
     paddingTopBottom: {
         type: "number",
-        default: 25,
+        default: 15,
     },
     paddingLeftRight: {
         type: "number",
-        default: 25,
+        default: 20,
     },
     lineHeight: {
         type: "number",
-        default: 1.2,
+        default: 1,
     },
     letterSpacing: {
         type: "number",
