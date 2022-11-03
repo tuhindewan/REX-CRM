@@ -656,8 +656,7 @@ export default function EditCampaign(props) {
                                 {recipientLists?.length} Lists.
                               </span>
                               <span className="recipients">
-                                {recipientLists?.length + recipientTags?.length}{" "}
-                                Recipients
+                                {recipientsCount} Recipients
                               </span>
                               {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                             </button>
