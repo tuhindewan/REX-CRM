@@ -236,17 +236,19 @@ export default function ContactListTable(props) {
         });
     }
 
-    // Get lists
-    getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
+    if (false == isFilter) {
+      // Get lists
+      getLists().then((results) => {
+        results.data.map(function () {
+          setLists(results.data);
+        });
       });
-    });
 
-    // Get tags
-    getTags().then((results) => {
-      setTags(results.data);
-    });
+      // Get tags
+      getTags().then((results) => {
+        setTags(results.data);
+      });
+    }
 
     if (false == isFilter) getData();
 
