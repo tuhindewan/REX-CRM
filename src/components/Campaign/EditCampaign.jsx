@@ -778,7 +778,7 @@ export default function EditCampaign(props) {
                     <span>
                       {emailData[selectedEmailIndex]?.email_subject?.length}/200
                     </span>
-                    <div className="setting-section">
+                    <div className="setting-section" style={isReadonly ? {display: 'none'} : {display: 'inline'}}>
                       <div
                           onClick={() => {
                             setSubjectPersonalization((prev) => !prev);
@@ -827,7 +827,7 @@ export default function EditCampaign(props) {
                       }
                       /200
                     </span>
-                    <div className="setting-section">
+                    <div className="setting-section" style={isReadonly ? {display: 'none'} : {display: 'inline'}}>
                       <div
                           onClick={() => {
                             setPreviewPersonalization((prev) => !prev);
