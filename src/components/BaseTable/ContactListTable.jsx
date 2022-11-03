@@ -857,27 +857,25 @@ export default function ContactListTable(props) {
               </table>
             </div>
           </div>
-          {totalPages > 1 && (
-            <div>
-              {false === isFilter ? (
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              ) : (
-                <Pagination
-                  currentPage={filterPage}
-                  pageSize={filterPerPage}
-                  onPageChange={setFilterPage}
-                  totalCount={filterCount}
-                  totalPages={filterTotalPages}
-                />
-              )}
-            </div>
-          )}
+          <div>
+            {false === isFilter ? (
+              <Pagination
+                currentPage={page}
+                pageSize={perPage}
+                onPageChange={setPage}
+                totalCount={count}
+                totalPages={totalPages}
+              />
+            ) : (
+              <Pagination
+                currentPage={filterPage}
+                pageSize={filterPerPage}
+                onPageChange={setFilterPage}
+                totalCount={filterCount}
+                totalPages={filterTotalPages}
+              />
+            )}
+          </div>
         </>
       )}
       <div className="mintmrm-container" style={{ display: showAlert }}>
