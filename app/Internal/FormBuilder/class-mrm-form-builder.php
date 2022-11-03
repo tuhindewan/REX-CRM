@@ -82,7 +82,7 @@ Class FormBuilderHelper {
         $settings = array(
             'disableCustomColors'    => get_theme_support( 'disable-custom-colors' ),
             'disableCustomFontSizes' => get_theme_support( 'disable-custom-font-sizes' ),
-            'allowedBlockTypes'      => $allowedBlocks,
+            'allowedBlockTypes'      => $allowed_blocks,
             'isRTL'                  => is_rtl(),
             '__experimentalBlockPatterns'       => [],
             '__experimentalFeatures'            => [
