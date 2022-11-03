@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
+import ContactNavbar from "../components/ContactNavbar";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
 import ListIcon from "../components/Icons/ListIcon";
@@ -9,14 +10,21 @@ import ListItem from "../components/List/ListItem";
 import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-import { deleteMultipleListsItems, deleteSingleList, submitList, updateList } from "../services/List";
 import LoadingIndicator from "../components/LoadingIndicator";
-import ContactNavbar from "../components/ContactNavbar";
 import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import {ClearNotification} from "../utils/admin-notification";
 
+import {
+  deleteMultipleListsItems,
+  deleteSingleList,
+  submitList,
+  updateList,
+} from "../services/List";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 const Lists = () => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   // showCreate shows the create form if true
   const [showCreate, setShowCreate] = useState(false);
 
@@ -186,7 +194,7 @@ const Lists = () => {
 
   // Handle list create or update form submission
   const createOrUpdate = async () => {
-    let result = (0 != editID) ? updateList(values) : submitList(values);
+    let result = 0 != editID ? updateList(values) : submitList(values);
 
     result.then((response) => {
       if (201 === response.code) {
@@ -210,8 +218,7 @@ const Lists = () => {
           list: response.message,
         });
       }
-    })
-
+    });
   };
 
   // Hide create form after click on cancel
@@ -364,7 +371,13 @@ const Lists = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
-                    <p className={errors ? "error-message show" : "error-message"}>{errors?.list}</p>
+                    <p
+                      className={
+                        errors ? "error-message show" : "error-message"
+                      }
+                    >
+                      {errors?.list}
+                    </p>
                   </div>
                   <div className="form-group contact-input-field">
                     <label htmlFor="data" aria-required>
@@ -538,8 +551,7 @@ const Lists = () => {
                               style={{ textAlign: "center" }}
                             >
                               <ListIcon />
-                              No List Found{" "}
-                              {search ? `"${search}"` : null}
+                              No List Found {search ? `"${search}"` : null}
                             </td>
                           </tr>
                         )}

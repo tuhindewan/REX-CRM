@@ -224,6 +224,9 @@ body.is-fullscreen-mode .get-mrm-header {
   background-color: #6f6af8;
   border-radius: 20px;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .mrm-hr {
+  margin: 24px 0;
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header {
   display: flex;
   align-items: center;
@@ -378,7 +381,7 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option {
   margin-top: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 5px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio] {
   display: none;
@@ -411,8 +414,8 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label::after {
   content: "";
   position: absolute;
-  left: 6px;
-  top: 4px;
+  left: 5px;
+  top: 3px;
   width: 8px;
   height: 8px;
   border-radius: 100%;
@@ -520,6 +523,20 @@ body.is-fullscreen-mode .get-mrm-header {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker {
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful {
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful .react-colorful__saturation {
+  width: 100%;
+  height: 80px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful .react-colorful__hue,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful .react-colorful__alpha {
+  width: 96%;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav {
   background: #ffffff;
@@ -779,6 +796,16 @@ body.is-fullscreen-mode .get-mrm-header {
   overflow: auto;
   overflow-x: hidden;
 }
+.mrm-form-builder-sidebar .block-editor-block-inspector::-webkit-scrollbar {
+  width: 5px;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector::-webkit-scrollbar-track {
+  background: #f2f5f8;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector::-webkit-scrollbar-thumb {
+  background-color: #6f6af8;
+  border-radius: 20px;
+}
 .mrm-form-builder-sidebar .block-editor-block-inspector .block-editor-block-card {
   border-bottom: 1px solid #e0e0e0;
   align-items: center;
@@ -808,6 +835,7 @@ body.is-fullscreen-mode .get-mrm-header {
   width: calc(100% - 190px);
   margin-bottom: 0;
   padding-right: 10px;
+  text-transform: none;
 }
 .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field .components-text-control__input {
   border-radius: 6px;
@@ -861,6 +889,7 @@ body.is-fullscreen-mode .get-mrm-header {
   color: #A7A8B3;
   display: block;
   margin-bottom: 8px;
+  text-transform: none;
 }
 .mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input,
 .mrm-block-control-wrapper .components-panel__body .components-base-control .components-select-control__input,
@@ -888,6 +917,7 @@ body.is-fullscreen-mode .get-mrm-header {
   line-height: 1.5;
   letter-spacing: -0.01em;
   color: #A7A8B3;
+  text-transform: none;
 }
 .mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-base-control__field {
   display: flex;
@@ -916,7 +946,7 @@ body.is-fullscreen-mode .get-mrm-header {
 .mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control > .components-input-control__container {
   width: 190px;
 }
-.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-base-control__field {
+.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-flex {
   flex-flow: row-reverse;
   justify-content: space-between;
 }
@@ -1564,7 +1594,7 @@ div[data-type="mrmTypography/row"].is-resizing .components-resizable-box__contai
 }
 .mrmTypography-field-group .mrmTypography-field label {
   font-size: 13px;
-  color: #87888A;
+  color: #A7A8B3;
   display: block;
 }
 .mrmTypography-field-group.mrmTypography-wide {
@@ -2347,15 +2377,14 @@ html.wp-toolbar {
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/typography.scss ***!
   \*************************************************************************************************************************************************************************************************************************************************************************************************************/
-.mrmTypography-field-font-family {
+.mrmTypography-field .mrmTypography-field-font-family {
   min-width: calc(65% - 15px);
 }
-
-.mrmTypography-field-font-weight {
+.mrmTypography-field .mrmTypography-field-font-weight {
   min-width: 35%;
 }
-
-.mrmTypography-font-family-picker, .mrmTypography-font-weight-picker-wrapper {
+.mrmTypography-field .mrmTypography-font-family-picker,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
   align-items: center;
   background-color: rgb(255, 255, 255);
   cursor: default;
@@ -2375,14 +2404,15 @@ html.wp-toolbar {
   vertical-align: middle;
   padding-left: 5px;
 }
-.mrmTypography-font-family-picker .editor-rich-text, .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
+.mrmTypography-field .mrmTypography-font-family-picker .editor-rich-text,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
   width: 100%;
 }
-.mrmTypography-font-family-picker .selected-font-family, .mrmTypography-font-weight-picker-wrapper .selected-font-family {
+.mrmTypography-field .mrmTypography-font-family-picker .selected-font-family,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper .selected-font-family {
   color: black;
 }
-
-.mrmTypography-font-family-option-wrapper {
+.mrmTypography-field .mrmTypography-font-family-option-wrapper {
   top: 100%;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
@@ -2393,23 +2423,23 @@ html.wp-toolbar {
   box-sizing: border-box;
   border-radius: 4px;
   z-index: 100;
+  color: #333;
 }
-
-.mrmTypography-font-weight-wrapper {
-  top: 100%;
-  left: 62%;
-  background-color: rgb(255, 255, 255);
+.mrmTypography-field .mrmTypography-font-weight-wrapper {
+  top: calc(100% + 6px);
+  right: 0;
+  background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
-  margin-bottom: 8px;
-  margin-top: 8px;
-  position: relative;
-  width: 40%;
+  position: absolute;
   box-sizing: border-box;
   border-radius: 4px;
   z-index: 100;
+  color: #333 !important;
+  margin: 0;
+  width: 117px;
 }
-
-.mrmTypography-font-family-options, .mrmTypography-font-family-weights {
+.mrmTypography-field .mrmTypography-font-family-options,
+.mrmTypography-field .mrmTypography-font-family-weights {
   max-height: 270px;
   overflow-y: auto;
   padding-bottom: 4px;
@@ -2417,8 +2447,8 @@ html.wp-toolbar {
   position: relative;
   box-sizing: border-box;
 }
-
-.mrmTypography-active-font-family, .mrmTypography-active-font-weight {
+.mrmTypography-field .mrmTypography-active-font-family,
+.mrmTypography-field .mrmTypography-active-font-weight {
   background-color: rgb(38, 132, 255);
   color: rgb(255, 255, 255);
   cursor: default;
@@ -2432,11 +2462,11 @@ html.wp-toolbar {
   box-sizing: border-box;
   padding: 8px 12px;
 }
-
-.mrmTypography-font-family-option, .mrmTypography-font-weight-option {
+.mrmTypography-field .mrmTypography-font-family-option,
+.mrmTypography-field .mrmTypography-font-weight-option {
   background-color: transparent;
   color: inherit;
-  cursor: default;
+  cursor: pointer;
   display: block;
   font-size: inherit;
   width: 100%;
@@ -2447,39 +2477,42 @@ html.wp-toolbar {
   box-sizing: border-box;
   padding: 8px 12px;
 }
-
-.mrmTypography-font-family-option:hover, .mrmTypography-font-weight-option:hover {
+.mrmTypography-field .mrmTypography-font-family-option:hover,
+.mrmTypography-field .mrmTypography-font-weight-option:hover {
   background-color: #e8eaeb;
 }
-
-.mrmTypography-font-family-search-wrapper {
+.mrmTypography-field .mrmTypography-active-font-weight,
+.mrmTypography-field .mrmTypography-active-font-family {
+  color: #fff !important;
+}
+.mrmTypography-field .mrmTypography-font-family-search-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
-.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
+.mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
   border: none !important;
   background-color: transparent !important;
 }
-.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
+.mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
   outline: 0;
   box-shadow: none;
 }
-
-.mrmTypography-font-weight-picker-wrapper {
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
-
-.mrmTypography-font-select-icon {
+.mrmTypography-field .mrmTypography-font-select-icon {
   display: flex;
   align-items: center;
   padding-right: 3px;
 }
-
-.mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
+.mrmTypography-field .mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
   width: 100%;
+}
+.mrmTypography-field .mrmTypography-field-group-btn.mrmTypography-field.mrmTypography-d-flex {
+  display: none;
 }
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/range.scss ***!
@@ -2592,6 +2625,12 @@ html.wp-toolbar {
 .mrmTypography-field.mrmTypography-field-toggle > label {
   width: auto;
   margin-bottom: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #A7A8B3;
+  display: block;
 }
 .mrmTypography-field.mrmTypography-field-toggle .components-toggle-control,
 .mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field {
@@ -2602,6 +2641,36 @@ html.wp-toolbar {
 }
 .mrmTypography-field.mrmTypography-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
   background-color: #2184f9;
+}
+.mrmTypography-field .mrmTypography-font-family-picker,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
+  border-radius: 6px;
+  outline: none;
+  box-shadow: none;
+  background: #FFFFFF;
+  border: 1px solid #E4E6EB;
+  padding: 4px 7px;
+  line-height: 1.5715;
+  color: #1d2129;
+  font-size: 14px;
+  font-weight: 500;
+  height: 42px;
+  cursor: pointer;
+  position: relative;
+}
+.mrmTypography-field .mrmTypography-font-family-picker::before,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper::before {
+  content: url("data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20viewBox%3D%220%200%2012%207%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20stroke%3D%22%23A7A8B3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.8%22%20d%3D%22M11%201L6%206%201%201%22%2F%3E%3C%2Fsvg%3E");
+  width: 12px;
+  display: block;
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  transition: all 0.3s ease;
+}
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
+  padding: 4px 10px;
+  color: #7a8b9a !important;
 }
 /*!**************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/buttonGroup.scss ***!

@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AlertPopup from "../components/AlertPopup";
+import ContactNavbar from "../components/ContactNavbar";
 import DeletePopup from "../components/DeletePopup";
 import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
@@ -11,12 +12,14 @@ import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
-import ContactNavbar from "../components/ContactNavbar";
 import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import {ClearNotification} from "../utils/admin-notification";
 
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 const Tags = () => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
@@ -357,7 +360,13 @@ const Tags = () => {
                       value={values["title"]}
                       onChange={handleChange}
                     />
-                    <p className={errors ? "error-message show" : "error-message"}>{errors?.tag}</p>
+                    <p
+                      className={
+                        errors ? "error-message show" : "error-message"
+                      }
+                    >
+                      {errors?.tag}
+                    </p>
                   </div>
                   <div className="contact-button-field">
                     <button

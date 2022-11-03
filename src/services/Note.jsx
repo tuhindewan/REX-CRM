@@ -1,5 +1,6 @@
 // Contact note submit post request
 export async function submitNote(note, contactID) {
+  note.created_by = `${window.MRM_Vars.current_userID}`;
   return await fetch(
     `${window.MRM_Vars.api_base_url}mrm/v1/contact/${contactID}/notes`,
     {
@@ -18,6 +19,7 @@ export async function submitNote(note, contactID) {
 
 // Custom fields update put request
 export async function updateNote(note, contactID) {
+  note.created_by = `${window.MRM_Vars.current_userID}`;
   return await fetch(
     `${window.MRM_Vars.api_base_url}mrm/v1/contact/${contactID}/notes/${note.id}`,
     {

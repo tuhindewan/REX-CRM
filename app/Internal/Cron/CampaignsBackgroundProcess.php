@@ -8,6 +8,7 @@ use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Admin\API\Controllers\CampaignController;
 use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
+use Mint\MRM\Utilites\Helper\ContactData;
 
 class CampaignsBackgroundProcess
 {
@@ -89,13 +90,14 @@ class CampaignsBackgroundProcess
 			$campaigns = CampaignController::get_instance()->get_publish_campaign_id();
 			$campaign_ids = array_column( $campaigns, 'id' );
             $campaign_scheduled_emails_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
+			$last_recipient_id = 0;
 
 			foreach ( $campaign_ids as $campaign_id ) {
 				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
                 if ( is_array( $campaign_emails ) && !empty( $campaign_emails ) ) {
                     foreach ( $campaign_emails as $campaign_email ) {
                         $campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
-
+						
                         $offset = get_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
                         $per_batch = 10;
                         $recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
@@ -122,11 +124,14 @@ class CampaignsBackgroundProcess
                                         ]
                                     );
 									update_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, ++$offset );
+
+									$last_recipient_id = $email['id'];
                                 }
                                 if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
                                     break;
                                 }
                             }
+							CampaignModel::update_campaign_email_meta( $campaign_email_id, '_last_recipient_id', $last_recipient_id );
                         }
                         else {
                             //delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
@@ -135,7 +140,10 @@ class CampaignsBackgroundProcess
                             break;
                         }
                     }
-                }
+                }else{
+					CampaignModel::update_campaign_status( $campaign_id, 'archived' );
+				}
+
 				if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
 					break;
 				}
@@ -165,6 +173,7 @@ class CampaignsBackgroundProcess
                     $email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int)$recipient[ 'id' ] : '';
                     $scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int)$recipient[ 'email_id' ] : '';
                     $campaign_id = isset( $recipient[ 'campaign_id' ] ) ? (int)$recipient[ 'campaign_id' ] : '';
+					$contact_id = isset( $recipient[ 'contact_id' ] ) ? (int)$recipient[ 'contact_id' ] : '';
 
                     $headers = [
                         'MIME-Version: 1.0',
@@ -173,25 +182,28 @@ class CampaignsBackgroundProcess
 
                     $email_builder 	= CampaignEmailBuilderModel::get( $scheduled_email_id );
 					$email 			= CampaignModel::get_campaign_email_by_id( $campaign_id, $scheduled_email_id);
-					error_log(print_r($email, 1));
                     $email_body 	= isset( $email_builder[ 'email_body' ] ) 	? $email_builder[ 'email_body' ] : '';
-                    $sender_email 	= $email->sender_email;
-                    $sender_name 	= $email->sender_name;
-                    $email_subject 	= $email->email_subject;
+                    $sender_email 	= isset( $email->sender_email ) ? $email->sender_email : '';
+                    $sender_name 	= isset( $email->sender_name ) ? $email->sender_name : '';
+                    $email_subject 	= isset( $email->email_subject ) ? self::update_dynamic_placeholders( $email->email_subject, $contact_id ) : '';
+                    $email_preview 	= isset( $email->email_preview_text ) ? self::update_dynamic_placeholders( $email->email_preview_text, $contact_id ) : '';
 
                     $from = 'From: '. $sender_name;
                     $headers[] = $from . ' <' . $sender_email . '>';
                     $headers[] = 'Reply-To: ' . $sender_email;
 
                     $email_sent = wp_mail( $recipient_email, $email_subject, $email_body, $headers );
-					error_log(print_r($email_sent, 1));
+
                     if( $email_sent ) {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'sent' );
                     }
                     else {
                         self::update_scheduled_emails_status( $email_scheduled_id, 'failed' );
                     }
-
+					$meta_value = CampaignModel::get_campaign_email_meta( $scheduled_email_id, '_last_recipient_id' );
+					if( $contact_id == $meta_value ){
+						CampaignModel::update_campaign_email_status( $campaign_id, $scheduled_email_id, 'sent' );
+					}
                     if( $this->time_exceeded( $sending_emails_status ) || $this->memory_exceeded() ) {
                         break;
                     }
@@ -378,4 +390,19 @@ class CampaignsBackgroundProcess
 		// Deal with large (float) values which run into the maximum integer size.
 		return min( $bytes, PHP_INT_MAX );
 	}
+
+    /**
+     * @desc Replace custom placeholders from email subject
+     * @param string $email_subject
+     * @param int $contact_id
+     * @return array|string|string[]
+     * @since 1.0.0
+     */
+    private function update_dynamic_placeholders( string $data, int $contact_id ) {
+        $data = str_replace( '{{first_name}}', ContactData::get_info( $contact_id, 'first_name' ), $data );
+        $data = str_replace( '{{last_name}}', ContactData::get_info( $contact_id, 'last_name' ), $data );
+        $data = str_replace( '{{email}}', ContactData::get_info( $contact_id, 'email' ), $data );
+        $data = str_replace( '{{city}}', ContactData::get_meta( $contact_id, 'city' ), $data );
+        return $data;
+    }
 }

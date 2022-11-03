@@ -13,17 +13,18 @@ import NoCampaign from "./Campaign/NoCampaign";
 import SingleCampaign from "./Campaign/SingleCampaign";
 import CampaignsNavbar from "./CampaignNav";
 import DeletePopup from "./DeletePopup";
+import Delete from "./Icons/Delete";
 import Search from "./Icons/Search";
+import ThreeDotIcon from "./Icons/ThreeDotIcon";
 import LoadingIndicator from "./LoadingIndicator";
 import Pagination from "./Pagination";
 import PublishAlert from "./PublishAlert";
 import SuccessfulNotification from "./SuccessfulNotification";
-import ThreeDotIcon from "./Icons/ThreeDotIcon";
-import Delete from "./Icons/Delete";
 import { ClearNotification } from "../utils/admin-notification";
 
 
 export default function AllCampaigns() {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "campaigns");
   useGlobalStore.setState({
     hideGlobalNav: true,
@@ -245,17 +246,17 @@ export default function AllCampaigns() {
                   <div className="bulk-action">
                     {/* show more options section */}
                     <button
-                        className="more-option"
-                        onClick={() => setShowMoreOptions(!showMoreOptions)}
+                      className="more-option"
+                      onClick={() => setShowMoreOptions(!showMoreOptions)}
                     >
                       <ThreeDotIcon />
 
                       <ul
-                          className={
-                            showMoreOptions
-                                ? "select-option mintmrm-dropdown show"
-                                : "select-option mintmrm-dropdown"
-                          }
+                        className={
+                          showMoreOptions
+                            ? "select-option mintmrm-dropdown show"
+                            : "select-option mintmrm-dropdown"
+                        }
                       >
                         <li onClick={deleleMultipleCampaign}>
                           <Delete /> Delete Selected
@@ -327,10 +328,10 @@ export default function AllCampaigns() {
 
                         <div className="table-body">
                           {!campaigns.length && <NoCampaign search={search} />}
-                          {campaigns.map((campaign, idx) => {
+                          {campaigns.map((campaign) => {
                             return (
                               <SingleCampaign
-                                key={idx}
+                                key={campaign.id}
                                 campaign={campaign}
                                 setCurrentActive={setCurrentActive}
                                 currentActive={currentActive}

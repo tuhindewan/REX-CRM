@@ -23,7 +23,6 @@ export function AdminNavMenuClassChange(page, url) {
       url === "/"
         ? "admin.php?page=mrm-admin"
         : "admin.php?page=mrm-admin#/" + url;
-
     const currentItemsSelector =
       url === "/"
         ? `li > a[href$="${pageUrl}"], li > a[href*="${pageUrl}?"]`

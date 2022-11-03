@@ -521,8 +521,7 @@ function Sidebar() {
                     <span className="mintmrm-tooltip">
                       <QuestionIcon />
                       <p>
-                        Where do you want to send the user after form
-                        confirmation?
+                        Where do you want to send the user after form confirmation?
                       </p>
                     </span>
                   </label>
@@ -727,62 +726,6 @@ function Sidebar() {
               </div>
             </PanelBody>
 
-            <PanelBody
-              title="Close Button Color"
-              className="form-layout-settings"
-              initialOpen={false}
-            >
-              <div className="single-settings">
-                <label className="settings-label">
-                  Close Icon
-                  <span className="mintmrm-tooltip">
-                    <QuestionIcon />
-                    <p>
-                      Choose a color for the <CrossIcon /> icon for form
-                    </p>
-                  </span>
-                </label>
-
-                <ColorPicker
-                  color={closeButtonColor}
-                  onChange={setCloseButtonColor}
-                  enableAlpha
-                  defaultValue={closeButtonColor}
-                />
-                <ColorPalette
-                  color={closeButtonColor}
-                  onChange={setCloseButtonColor}
-                  enableAlpha
-                  defaultValue={closeButtonColor}
-                />
-              </div>
-
-              <div className="single-settings">
-                <label className="settings-label">
-                  Background
-                  <span className="mintmrm-tooltip">
-                    <QuestionIcon />
-                    <p>
-                      Choose a color for the <CrossIcon /> icon Background
-                    </p>
-                  </span>
-                </label>
-
-                <ColorPicker
-                  color={closeBackgroundColor}
-                  onChange={setCloseBackgroundColor}
-                  enableAlpha
-                  defaultValue={closeBackgroundColor}
-                />
-                <ColorPalette
-                  color={closeBackgroundColor}
-                  onChange={setCloseBackgroundColor}
-                  enableAlpha
-                  defaultValue={closeBackgroundColor}
-                />
-              </div>
-            </PanelBody>
-
             {"default" !== formPosition && (
               <PanelBody
                 title="Form Animation"
@@ -812,6 +755,64 @@ function Sidebar() {
                 </div>
               </PanelBody>
             )}
+            
+            <PanelBody
+              title="Close Button Color"
+              className="form-layout-settings"
+              initialOpen={false}
+            >
+              <div className="single-settings">
+                <label className="settings-label">
+                  Icon Color
+                  <span className="mintmrm-tooltip">
+                    <QuestionIcon />
+                    <p> Choose a color for the <CrossIcon /> icon for form </p>
+                  </span>
+                </label>
+
+                <ColorPicker
+                  color={closeButtonColor}
+                  onChange={setCloseButtonColor}
+                  enableAlpha
+                  defaultValue={closeButtonColor}
+                />
+
+                <hr className="mrm-hr" />
+                
+                <ColorPalette
+                  color={closeButtonColor}
+                  onChange={setCloseButtonColor}
+                  enableAlpha
+                  defaultValue={closeButtonColor}
+                />
+              </div>
+
+              <div className="single-settings">
+                <label className="settings-label">
+                  Background Color
+                  <span className="mintmrm-tooltip">
+                    <QuestionIcon />
+                    <p>
+                      Choose a color for the <CrossIcon /> icon Background
+                    </p>
+                  </span>
+                </label>
+
+                <ColorPicker
+                  color={closeBackgroundColor}
+                  onChange={setCloseBackgroundColor}
+                  enableAlpha
+                  defaultValue={closeBackgroundColor}
+                />
+                <ColorPalette
+                  color={closeBackgroundColor}
+                  onChange={setCloseBackgroundColor}
+                  enableAlpha
+                  defaultValue={closeBackgroundColor}
+                />
+              </div>
+            </PanelBody>
+
 
             {/* <PanelBody
             title="Schedule"

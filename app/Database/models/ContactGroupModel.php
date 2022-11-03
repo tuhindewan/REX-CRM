@@ -137,6 +137,30 @@ class ContactGroupModel{
 
 
     /**
+     * Run SQL query to get groups from database
+     * 
+     * @param string $type     Tag or List or Segment type
+     * @param int $offset
+     * @param int $limit
+     * @param string $search
+     * 
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_all_to_custom_select( $type )
+    {
+        global $wpdb;
+        $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+        
+        $results = $wpdb->get_results( $wpdb->prepare( "SELECT id, title FROM $group_table ORDER BY title ASC" ), ARRAY_A ) ;
+        return array(
+            'data'          => $results
+        );
+	
+    }
+
+
+    /**
      * Delete a group from the database
      * 
      * @param mixed $id group id (tag_id, list_id, segment_id)

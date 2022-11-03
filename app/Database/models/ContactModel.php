@@ -6,6 +6,7 @@ use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactMetaSchema;
 use Mint\MRM\DataBase\Tables\ContactNoteSchema;
 use Mint\MRM\DataBase\Tables\ContactSchema;
+use Mint\MRM\DataBase\Tables\MessageSchema;
 use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;

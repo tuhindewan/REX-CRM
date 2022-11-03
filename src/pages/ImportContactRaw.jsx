@@ -1,10 +1,13 @@
 import React, { useRef, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
 import {ClearWarning} from "../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 export default function ImportContactRaw() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   const navigate = useNavigate();
   // stores the text data
   const [text, setText] = useState("");

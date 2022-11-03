@@ -11,6 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -48,6 +49,9 @@ const toOrdinalSuffix = (num) => {
 };
 
 export default function ContactDetails() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
+
   const [isActive, setActive] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tabState, setTabState] = useState(1);
@@ -55,6 +59,7 @@ export default function ContactDetails() {
   const [contactData, setContactData] = useState({});
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
+  const [refreshFeed, setRefreshFeed] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);
   const [isEmailForm, setIsEmailForm] = useState(true);
@@ -201,6 +206,8 @@ export default function ContactDetails() {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
         setShowLoader(false);
       }
     }
@@ -217,6 +224,24 @@ export default function ContactDetails() {
       setCustomFields(results.data);
     });
   }, []);
+
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
+        setShowLoader(false);
+        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
+      }
+    }
+
+    getData();
+  }, [refreshFeed]);
 
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
@@ -564,10 +589,6 @@ export default function ContactDetails() {
     // }));
   };
 
-  // useEffect(() =>{
-
-  // }, [gender]);
-
   return (
     <>
       <div className="mintmrm-contact-details">
@@ -610,9 +631,9 @@ export default function ContactDetails() {
                     </div>
 
                     <p>
-                      Added via {contactData.added_by_login} on{" "}
-                      {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
-                      at {contactData.created_time}
+                      Added via {contactData.added_by_login} on {createMonth}{" "}
+                      {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                      {contactData.created_time}
                     </p>
                     {contactData.status == "pending" && (
                       <div
@@ -647,7 +668,7 @@ export default function ContactDetails() {
                   <button className="create-note" onClick={noteForm}>
                     <CreateNoteIcon />
                   </button>
-                  
+
                   <button className="create-mail" onClick={emailForm}>
                     <EmailIcon />
                   </button>
@@ -1224,9 +1245,11 @@ export default function ContactDetails() {
                         ) : (
                           <SingleActivityFeed
                             notes={contactData?.notes}
+                            messages={contactData?.messages}
+                            activities={contactData?.activities}
                             contactId={contactData?.id}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
+                            refresh={refreshFeed}
+                            setRefresh={setRefreshFeed}
                           />
                         )}
                       </div>
@@ -1409,10 +1432,9 @@ export default function ContactDetails() {
               isCloseNote={isCloseNote}
               setIsCloseNote={setIsCloseNote}
               contactID={id}
-              refresh={refresh}
-              setRefresh={setRefresh}
+              refresh={refreshFeed}
+              setRefresh={setRefreshFeed}
             />
-
           </div>
         )}
       </div>

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate,Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ColumnItems from "../components/ContactDetails/ColumnItems";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
 import { getWordPressRoles, submitWordPressRoles } from "../services/Import";
 import { ClearWarning } from "../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 export default function ImportWordpress() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   const navigate = useNavigate();
   const [roles, setRoles] = useState([]);
   // The select all checkbox
