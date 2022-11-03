@@ -214,7 +214,7 @@ export default function ContactListTable(props) {
     } else {
       setIsFilter(false);
     }
-  }, [filterRequest, filterPage, filterCount, filterSearch]);
+  }, [filterRequest, filterPage, filterSearch]);
 
   useEffect(() => {
     async function getData() {
