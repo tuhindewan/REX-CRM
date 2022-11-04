@@ -120,7 +120,15 @@ export default function EmailDrawer(props) {
                 />
               </div>
               <div className="body-footer">
-                <p className="error-message">{errors?.email}</p>
+                <p
+                    className={
+                      errors?.email
+                          ? "error-message show"
+                          : "error-message"
+                    }
+                >
+                  {errors?.email}
+                </p>
                 <button
                   className="contact-cancel mintmrm-btn outline"
                   onClick={closeSection}
