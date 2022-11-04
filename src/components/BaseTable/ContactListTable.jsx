@@ -186,6 +186,7 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     const getFilter = async () => {
+      setShowLoader(true);
       return fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/filter?search=${filterSearch}&page=${filterPage}&per-page=${filterPerPage}`,
         {
@@ -226,6 +227,7 @@ export default function ContactListTable(props) {
 
   useEffect(() => {
     async function getData() {
+      setShowLoader(true);
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts?page=${page}&per-page=${perPage}${query}`
       )

@@ -127,7 +127,7 @@ class ContactGroupModel{
             return array(
                 'data'          => $query_results,
                 'total_pages'   => $totalPages,
-                'count'         => $count
+                'total_count'   => $count
             );
         } catch(\Exception $e) {
             return NULL;

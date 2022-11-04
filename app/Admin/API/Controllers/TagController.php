@@ -7,6 +7,7 @@ use Mint\MRM\DataStores\TagData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\DataBase\Models\ContactModel;
 use MRM\Common\MRM_Common;
 
 /**
@@ -165,6 +166,12 @@ class TagController extends BaseController {
         $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
 
         $groups = ContactGroupModel::get_all( 'tags', $offset, $perPage, $search, $order_by, $order_type );
+        // Count contacts groups
+        $groups['count_groups'] = [
+            'lists'     => ContactGroupModel::get_groups_count( "lists" ),
+            'tags'      => absint( $groups['total_count'] ),
+            'contacts'  => ContactModel::get_contacts_count()
+        ];
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }

@@ -584,5 +584,19 @@ class ContactModel{
         }
         return false;
     }
+
+
+    /**
+     * Return total number of contacts 
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_contacts_count()
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name" ) ) );
+    }
     
 }

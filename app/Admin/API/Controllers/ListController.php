@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Exception;
 use Mint\MRM\DataBase\Models\ContactGroupModel;
+use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataStores\ListData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
@@ -125,7 +126,12 @@ class ListController extends BaseController {
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
-
+        // Count contacts groups
+        $groups['count_groups'] = [
+            'lists'     => absint( $groups['total_count'] ),
+            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
+            'contacts'  => ContactModel::get_contacts_count()
+        ];
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }

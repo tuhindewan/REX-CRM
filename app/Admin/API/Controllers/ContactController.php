@@ -206,8 +206,8 @@ class ContactController extends BaseController {
 
         // Count contacts groups
         $contacts['count_groups'] = [
-            'lists'     => ContactGroupModel::get_groups_count( "tags" ),
-            'tags'      => ContactGroupModel::get_groups_count( "lists" ),
+            'lists'     => ContactGroupModel::get_groups_count( "lists" ),
+            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
             'contacts'  => absint( $contacts['total_count'] )
         ];
 

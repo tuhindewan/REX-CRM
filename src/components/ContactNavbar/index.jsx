@@ -1,5 +1,4 @@
 import { __ } from "@wordpress/i18n";
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import routes from "../../routes";
@@ -10,24 +9,6 @@ export default function Navbar(props) {
   const { countGroups } = props;
   const location = useLocation();
   const navbarMarkup = useGlobalStore((state) => state.navbarMarkup);
-  const hideGlobalNav = useGlobalStore((state) => state.hideGlobalNav);
-  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
-
-  const [dataCount, setDataCount] = useState(0);
-
-  // useEffect(() => {
-  //   const getCount = async () => {
-  //     const countData = await fetch(
-  //       `${window.MRM_Vars.api_base_url}mrm/v1/general`
-  //     );
-  //     const countJson = await countData.json();
-  //     if (countJson.code == 200) {
-  //       setDataCount(countJson.data);
-  //     }
-  //   };
-  //   getCount();
-  // }, [counterRefresh]);
-
   return (
     <>
       <div className="contact-header">

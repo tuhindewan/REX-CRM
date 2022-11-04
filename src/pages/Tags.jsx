@@ -110,7 +110,7 @@ const Tags = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTableHead, setShowTableHead] = useState(false);
-
+  const [countGroups, setCountGroups] = useState([]);
   const [listening, setListening] = useState(false);
 
   const sortByRef = useRef(null);
@@ -233,8 +233,9 @@ const Tags = () => {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setTags(resJson.data.data);
-        setCount(resJson.data.count);
+        setCount(resJson.data.total_count);
         setTotalPages(resJson.data.total_pages);
+        setCountGroups(resJson.data.count_groups);
         setLoading(false);
         setShowTableHead(true);
       }
@@ -348,7 +349,7 @@ const Tags = () => {
 
   return (
     <>
-      <ContactNavbar />
+      <ContactNavbar countGroups={countGroups} />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">
