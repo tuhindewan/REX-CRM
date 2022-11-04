@@ -1,18 +1,10 @@
 import { Link } from "react-router-dom";
+import ContactListTable from "../components/BaseTable/ContactListTable";
 // import { Button } from "rsuite";
-import BaseTable from "../components/BaseTable/index";
 import Import from "../components/Icons/Import";
 import Plus from "../components/Icons/Plus";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
-
-// const leftMarkup = (
-//   <>
-//     <Link to="/contacts/import">
-//       <Button appearance="primary">+ Import</Button>
-//     </Link>
-//   </>
-// );
 
 const Contacts = () => {
   // Admin active menu selection
@@ -38,7 +30,7 @@ const Contacts = () => {
     hideGlobalNav: false,
   });
 
-  return <BaseTable endpoint="contacts"></BaseTable>;
+  return <ContactListTable></ContactListTable>;
 };
 
 export default Contacts;

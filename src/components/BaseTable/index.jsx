@@ -1,45 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import ContactCards from "../ContactCards/index";
 
 import { useLocation } from "react-router-dom";
+import ContactNavbar from "../ContactNavbar/index";
 import ContactProfile from "../Icons/ContactProfile";
 import Pending from "../Icons/Pending";
 import Subscribe from "../Icons/Subscribe";
 import Unsubscribe from "../Icons/Unsubscribe";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
-import ContactNavbar from "../ContactNavbar/index";
-import {  ClearNotification } from "../../utils/admin-notification";
 
-
-const BaseTable = () => {
+const BaseTable = (props) => {
   const [refresh, setRefresh] = useState();
   const [countData, setCountData] = useState([]);
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
   const location = useLocation();
 
-  useEffect(() => {
-    async function getTotal() {
-      const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/total-count`
-      );
-      const resJson = await res.json();
-      setCountData(resJson);
-    }
-    getTotal();
-    if ("contact-created" == location.state?.status) {
-      setShowNotification("block");
-      setMessage(location.state?.message);
-    }
-    ClearNotification('none',setShowNotification)
-  }, [refresh]);
-
-
   return (
     <>
       <ContactNavbar />
+
       <div className="contact-list-page">
         <div className="mintmrm-container">
           <div className="contact-info-wrapper">
@@ -76,6 +58,7 @@ const BaseTable = () => {
           </div>
         </div>
       </div>
+
       <SuccessfulNotification display={showNotification} message={message} />
     </>
   );

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { deleteSingleContact } from "../../services/Contact";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import HoverMenu from "../HoverMenu";
@@ -10,9 +9,9 @@ import Delete from "../Icons/Delete";
 import EyeIcon from "../Icons/EyeIcon";
 import SendMessageIcon from "../Icons/SendMessageIcon";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import NoteDrawer from "../NoteDrawer";
 import Portal from "../Portal";
-import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 export default function SingleContact(props) {
   // global counter update real time
@@ -29,7 +28,6 @@ export default function SingleContact(props) {
   const [isClose, setIsClose] = useState(true);
 
   const {
-    index,
     contact,
     toggleRefresh,
     currentActive,
@@ -37,11 +35,6 @@ export default function SingleContact(props) {
     handleSelectOne,
     selected,
   } = props;
-  const handleDelete = () => {
-    setIsDelete("block");
-    setDeleteTitle("Delete Contact");
-    setDeleteMessage("Are you sure you want to delete the contact?");
-  };
   const [listening, setListening] = useState(false);
 
   const moreOptionRef = useRef(null);
@@ -49,24 +42,6 @@ export default function SingleContact(props) {
   useEffect(
     ListenForOutsideClicks(listening, setListening, moreOptionRef, setActive)
   );
-
-  // Delete contact after delete confirmation
-  const onDeleteStatus = async (status) => {
-    if (status) {
-      deleteSingleContact(contact.id).then((result) => {
-        if (200 === result.code) {
-          toggleRefresh();
-          navigate("../contacts", {
-            state: {
-              status: "contact-created",
-              message: result?.message,
-            },
-          });
-        }
-      });
-    }
-    setIsDelete("none");
-  };
 
   // Hide delete popup after click on cancel
   const onDeleteShow = async (status) => {
@@ -217,7 +192,7 @@ export default function SingleContact(props) {
                     <li
                       className="action-list"
                       onClick={() => {
-                        handleDelete();
+                        props.deleteContact(contact.id);
                       }}
                     >
                       <Delete />
@@ -251,7 +226,6 @@ export default function SingleContact(props) {
           title={deleteTitle}
           message={deleteMessage}
           onDeleteShow={onDeleteShow}
-          onDeleteStatus={onDeleteStatus}
         />
       </div>
     </>
