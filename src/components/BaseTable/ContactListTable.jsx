@@ -108,7 +108,7 @@ export default function ContactListTable() {
   const [filteredTags, setFilteredTags] = useState([]);
   const [listColumns, setListColumns] = useState([]);
   const [columns, setColumns] = useState([]);
-
+  const [countData, setCountData] = useState([]);
   const [listening, setListening] = useState(false);
 
   // Outside click events for add column checkbox dropdown
@@ -241,6 +241,7 @@ export default function ContactListTable() {
         })
         .then((data) => {
           if (200 == data.code) {
+            setCountData(data.data.count_status);
             setContactData(data.data.data);
             setCount(data.data.total_count);
             setTotalPages(data.data.total_pages);
@@ -547,25 +548,25 @@ export default function ContactListTable() {
               source={<ContactProfile />}
               url="#"
               cardTitle="Total Contacts"
-              // totalAmount={countData.total_contacts}
+              totalAmount={count}
             />
             <ContactCards
               source={<Subscribe />}
               url="#"
               cardTitle="Subscribed"
-              // totalAmount={countData.total_subscribed}
+              totalAmount={countData.subscribed}
             />
             <ContactCards
               source={<Unsubscribe />}
               url="#"
               cardTitle="Unsubscribed"
-              // totalAmount={countData.total_unsubscribed}
+              totalAmount={countData.unsubscribed}
             />
             <ContactCards
               source={<Pending />}
               url="#"
               cardTitle="Pending"
-              // totalAmount={countData.total_pending}
+              totalAmount={countData.pending}
             />
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import ContactCards from "../ContactCards/index";
 
@@ -18,61 +18,46 @@ const BaseTable = (props) => {
   const [message, setMessage] = useState("");
   const location = useLocation();
 
-  useEffect(() => {
-    async function getTotal() {
-      const res = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/total-count`
-      );
-      const resJson = await res.json();
-      setCountData(resJson);
-    }
-    getTotal();
-  }, [refresh]);
-
   return (
     <>
       <ContactNavbar />
 
-      {"contacts" == props.endpoint ? (
-        <div className="contact-list-page">
-          <div className="mintmrm-container">
-            <div className="contact-info-wrapper">
-              <ContactCards
-                source={<ContactProfile />}
-                url="#"
-                cardTitle="Total Contacts"
-                totalAmount={countData.total_contacts}
-              />
-              <ContactCards
-                source={<Subscribe />}
-                url="#"
-                cardTitle="Subscribed"
-                totalAmount={countData.total_subscribed}
-              />
-              <ContactCards
-                source={<Unsubscribe />}
-                url="#"
-                cardTitle="Unsubscribed"
-                totalAmount={countData.total_unsubscribed}
-              />
-              <ContactCards
-                source={<Pending />}
-                url="#"
-                cardTitle="Pending"
-                totalAmount={countData.total_pending}
-              />
-            </div>
+      <div className="contact-list-page">
+        <div className="mintmrm-container">
+          <div className="contact-info-wrapper">
+            <ContactCards
+              source={<ContactProfile />}
+              url="#"
+              cardTitle="Total Contacts"
+              totalAmount={countData.total_contacts}
+            />
+            <ContactCards
+              source={<Subscribe />}
+              url="#"
+              cardTitle="Subscribed"
+              totalAmount={countData.total_subscribed}
+            />
+            <ContactCards
+              source={<Unsubscribe />}
+              url="#"
+              cardTitle="Unsubscribed"
+              totalAmount={countData.total_unsubscribed}
+            />
+            <ContactCards
+              source={<Pending />}
+              url="#"
+              cardTitle="Pending"
+              totalAmount={countData.total_pending}
+            />
+          </div>
 
-            <div className="contact-list-area">
-              <div className="contact-list-body">
-                <ContactListTable refresh={refresh} setRefresh={setRefresh} />
-              </div>
+          <div className="contact-list-area">
+            <div className="contact-list-body">
+              <ContactListTable refresh={refresh} setRefresh={setRefresh} />
             </div>
           </div>
         </div>
-      ) : (
-        "null"
-      )}
+      </div>
 
       <SuccessfulNotification display={showNotification} message={message} />
     </>

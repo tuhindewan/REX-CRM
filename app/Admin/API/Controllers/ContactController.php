@@ -211,6 +211,13 @@ class ContactController extends BaseController {
             'contacts'  => absint( $contacts['total_count'] )
         ];
 
+        // Count contacts based on status
+        $contacts['count_status'] = [
+            'subscribed'        => ContactModel::get_contacts_status_count( "subscribed" ),
+            'unsubscribed'      => ContactModel::get_contacts_status_count( "unsubscribed" ),
+            'pending'           => ContactModel::get_contacts_status_count( "pending" )
+        ];
+
         $contacts['current_page'] = (int) $page;
 
         if(isset($contacts)) {

@@ -598,5 +598,19 @@ class ContactModel{
         $table_name = $wpdb->prefix . ContactSchema::$table_name;
         return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name" ) ) );
     }
+
+
+    /**
+     * Return total number of contacts based on status
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_contacts_status_count( $status )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name WHERE status= %s", [$status] ) ) );
+    }
     
 }
