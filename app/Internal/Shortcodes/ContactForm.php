@@ -125,6 +125,16 @@ class ContactForm {
                     $class = 'custom-background';
                 }
             }
+	        if($block['blockName'] == 'core/cover'){
+		        if(isset($block['attrs']['customOverlayColor'])){
+			        $class = 'custom-background';
+		        }
+		        if(isset($block['attrs']['url'])){
+			        $class = 'custom-background';
+		        }if(isset($block['attrs']['overlayColor'])){
+			        $class = 'custom-background';
+		        }
+	        }
 
             $block_html .= render_block( $block );
         }
