@@ -302,7 +302,7 @@ class TagController extends BaseController {
     public function get_all_to_custom_select(){
 
         $groups = ContactGroupModel::get_all_to_custom_select( 'tags' );
-
+        
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
