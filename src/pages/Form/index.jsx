@@ -21,13 +21,17 @@ import FormTemplate from "./FormTemplate";
 export default function FormIndex(props) {
   AdminNavMenuClassChange("mrm-admin", "forms");
 
-  // this will hold all the info on Form Data
+  /*
+   * declaring variables
+   */
+
+  // contains all the info of Form Data
   const [formData, setFormData] = useState({});
 
   // loading or not
   const [loading, setLoading] = useState(false);
 
-  // how many to show per page
+  // how many forms to show per page
   const [perPage, setPerPage] = useState(10);
 
   // current page
@@ -42,7 +46,8 @@ export default function FormIndex(props) {
   // search input value is stored here
   const [search, setSearch] = useState("");
 
-  // search query, search query only updates when there are more than 3 characters typed
+  // search query, search query only updates when any characters typed
+  // we can add any number to start searching after hitting that number of characters
   const [query, setQuery] = useState("");
 
   // refresh the whole list if this boolean changes
@@ -58,16 +63,16 @@ export default function FormIndex(props) {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
 
-  const [isActive, setActive] = useState(false);
-
-  const menuButtonRef = useRef(null);
-
+  // bulk action menu 
   const [isBulkAction, setBulkAction] = useState(false);
 
+  // to send any error message
   const [errors, setErrors] = useState({});
 
+  // get Id of any selected form
   const [formId, setFormId] = useState();
 
+  // Variables to show notifications
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
@@ -75,66 +80,29 @@ export default function FormIndex(props) {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
 
+  // sort by option toggle option
   const [toggleDropdown, setToggleDropdown] = useState(false);
+  // sorting options variables
+  const [sortBy, setSortBy] = useState("Date");
+  const [sortByType, setSortByType] = useState("DESC");
 
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
-  const [sortBy, setSortBy] = useState("Date");
-  const [sortByType, setSortByType] = useState("DESC");
-
-  const navigate = useNavigate();
-
+  // to select template or build for scratch
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
 
-  // the data is fetched again whenver refresh is changed
-  function toggleRefresh() {
-    setRefresh(!refresh);
-  }
+  // status checkbox states
+  const [state, setState] = useState({
+    checkedA: true,
+    checkedB: false,
+  });
 
-  // to show dropdown options
-  const showMoreOption = () => {
-    setActive(!isActive);
-  };
 
-  // to show bulk select options
-  const showBulkAction = () => {
-    setBulkAction(!isBulkAction);
-  };
-
-  // Hide delete popup after click on cancel
-  const onDeleteShow = async (status) => {
-    setIsDelete(status);
-  };
-
-  // Hide alert popup after click on ok
-  const onShowAlert = async (status) => {
-    setShowAlert(status);
-  };
-
-  // handler for all item click
-  const handleSelectAll = (e) => {
-    if (allSelected) {
-      setSelected([]);
-    } else {
-      setSelected(formData?.map((form) => form.id));
-    }
-    setAllSelected(!allSelected);
-  };
-
-  // handler for one single item click
-  const handleSelectOne = (e) => {
-    if (selected.includes(e.target.id)) {
-      // already in selected list so remove it from the array
-      setSelected(selected.filter((element) => element != e.target.id));
-      // corner case where one item is deselected so hide all checked
-      setAllSelected(false);
-    } else {
-      // add id to the array
-      setSelected([...selected, e.target.id]);
-    }
-  };
+  /*
+  * Hooks
+  */
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
@@ -158,6 +126,31 @@ export default function FormIndex(props) {
     }, 3000);
     return () => clearTimeout(timer);
   }, [page, perPage, query, refresh, sortBy]);
+
+
+  /*
+  * Functions 
+  */
+
+  // the data is fetched again whenever refresh is changed
+  function toggleRefresh() {
+    setRefresh(!refresh);
+  }
+
+  // to show bulk select options
+  const showBulkAction = () => {
+    setBulkAction(!isBulkAction);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
+
+  // Hide alert popup after click on ok
+  const onShowAlert = async (status) => {
+    setShowAlert(status);
+  };
 
   // confirmation for delete and set form id to prepare deletation
   const deleteForm = async (formId) => {
@@ -239,23 +232,6 @@ export default function FormIndex(props) {
     setIsDelete("none");
   };
 
-  // function to sort by title ascending or default decending
-  const handleSort = (param, name) => {
-    setSortBy(name);
-    if ("title" === param) {
-      setSortByType("ASC");
-    } else {
-      setSortByType("DESC");
-    }
-    setToggleDropdown(false);
-  };
-
-  // status checkbox states
-  const [state, setState] = useState({
-    checkedA: true,
-    checkedB: false,
-  });
-
   // handle and update status of a form
   const statusSwitch = async (event, index) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -323,6 +299,31 @@ export default function FormIndex(props) {
     }
   };
 
+  // open form builder after the template modal
+  const redirectFormBuilder = () => {
+    setIsTemplate(true);
+    setIsClose(!isClose);
+  };
+
+  // redirect to Form-builder page with a reaload
+  const openFormBuilder = (id) => {
+    window.location.replace(
+      `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/${id}`
+    );
+    window.location.reload();
+  };
+
+  // function to sort by title ascending or default descending
+  const handleSort = (param, name) => {
+    setSortBy(name);
+    if ("title" === param) {
+      setSortByType("ASC");
+    } else {
+      setSortByType("DESC");
+    }
+    setToggleDropdown(false);
+  };
+
   // function for copying shortcode from the input field
   const handleCopyShortcode = (formId) => {
     var copyText = document.getElementById("shortcode-" + formId);
@@ -337,17 +338,32 @@ export default function FormIndex(props) {
     return () => clearTimeout(timer);
   };
 
-  const redirectFormBuilder = () => {
-    setIsTemplate(true);
-    setIsClose(!isClose);
+  // handler for one single item click
+  const handleSelectOne = (e) => {
+    if (selected.includes(e.target.id)) {
+      // already in selected list so remove it from the array
+      setSelected(selected.filter((element) => element != e.target.id));
+      // corner case where one item is deselected so hide all checked
+      setAllSelected(false);
+    } else {
+      // add id to the array
+      setSelected([...selected, e.target.id]);
+    }
   };
 
-  const openFormBuilder = (id) => {
-    window.location.replace(
-      `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/${id}`
-    );
-    window.location.reload();
+  // handler for all item click
+  const handleSelectAll = (e) => {
+    if (allSelected) {
+      setSelected([]);
+    } else {
+      setSelected(formData?.map((form) => form.id));
+    }
+    setAllSelected(!allSelected);
   };
+
+  /*
+  * Render method
+  */
 
   return (
     <div>
