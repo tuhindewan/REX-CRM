@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import CrossIcon from "../Icons/CrossIcon";
 import Search from "../Icons/Search";
@@ -33,7 +33,7 @@ export default function CustomSelect(props) {
     setFilterAdder,
     filterAdder,
     filterRequest,
-    
+
     prefix,
   } = props;
   const buttonRef = useRef(null);
@@ -50,6 +50,7 @@ export default function CustomSelect(props) {
   // loading or not
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
+  const [searchItems, setSearchItems] = useState("");
 
   // function used for either showing or hiding the dropdown
   function toggleActive(event) {
@@ -64,14 +65,15 @@ export default function CustomSelect(props) {
   }
 
   // helper function to set the search query only when there are at least 3 characters or more
-  function handleSearch(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    const value = e.target.value;
-    setSearch(value);
-    if (value.length >= 1) setQuery(`&search=${value}`);
-    else setQuery("");
-  }
+  const filteredItems = useMemo(() => {
+    if (searchItems) {
+      return items.filter(
+        (item) =>
+          item.title.toLowerCase().indexOf(searchItems.toLocaleLowerCase()) > -1
+      );
+    }
+    return items;
+  }, [searchItems, items]);
 
   // handler for one single item click for both list item and checkbox rendering
   const handleSelectOne = (e) => {
@@ -160,15 +162,10 @@ export default function CustomSelect(props) {
       ]);
     } else {
       async function getItems() {
-        setLoading(true);
-        const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1${endpoint}?&page=${page}&per-page=${perPage}${query}`
-        );
-        const resJson = await res.json();
-        if (resJson.code == 200) {
-          setItems(resJson.data.data);
-          setLoading(false);
+        if (endpoint == "/lists") {
+          setItems(window.MRM_Vars.lists.data);
         } else {
+          setItems(window.MRM_Vars.tags.data);
         }
       }
       if (!options) getItems();
@@ -226,8 +223,7 @@ export default function CustomSelect(props) {
                   type="search"
                   name="column-search"
                   placeholder={searchPlaceHolder}
-                  value={search}
-                  onChange={handleSearch}
+                  onChange={(e) => setSearchItems(e.target.value)}
                 />
               </span>
             </li>
@@ -262,10 +258,10 @@ export default function CustomSelect(props) {
                 </li>
               );
             })}
-          {items?.length > 0 &&
+          {filteredItems?.length > 0 &&
             !options &&
             !loading &&
-            items.map((item, index) => {
+            filteredItems.map((item, index) => {
               let checked = checkIfSelected(item.id);
               return (
                 <li
@@ -297,9 +293,9 @@ export default function CustomSelect(props) {
                 </li>
               );
             })}
-          {items?.length == 0 && allowNewCreate && !loading && !options && (
-            <div>No Item Found</div>
-          )}
+          {filteredItems?.length == 0 ? (
+            <div className="no-item-found">No item found</div>
+          ) : null}
           {loading && <LoadingIndicator type="table" />}
         </ul>
       </div>

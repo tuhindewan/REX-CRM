@@ -7,8 +7,6 @@ import {
   deleteMultipleContactsItems,
   deleteSingleContact,
 } from "../../services/Contact";
-import { getLists } from "../../services/List";
-import { getTags } from "../../services/Tag";
 import { ClearNotification } from "../../utils/admin-notification";
 import AlertPopup from "../AlertPopup";
 import ContactCards from "../ContactCards";
@@ -57,8 +55,8 @@ export default function ContactListTable() {
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
 
-  const [listsdata, setLists] = useState([]);
-  const [tagsdata, setTags] = useState([]);
+  const [lists, setLists] = useState([]);
+  const [tags, setTags] = useState([]);
 
   const [filterData, setFilterData] = useState({});
 
@@ -249,20 +247,6 @@ export default function ContactListTable() {
             setShowLoader(false);
           }
         });
-    }
-
-    if (false == isFilter) {
-      // Get lists
-      getLists().then((results) => {
-        results.data.map(function () {
-          setLists(results.data);
-        });
-      });
-
-      // Get tags
-      getTags().then((results) => {
-        setTags(results.data);
-      });
     }
 
     if (false == isFilter) getData();
