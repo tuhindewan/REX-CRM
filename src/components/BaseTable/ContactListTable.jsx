@@ -24,6 +24,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
+import {  ClearNotification } from "../../utils/admin-notification";
+
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -252,10 +254,7 @@ export default function ContactListTable(props) {
 
     if (false == isFilter) getData();
 
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [perPage, page, query, refresh, isFilter]);
 
   useEffect(() => {

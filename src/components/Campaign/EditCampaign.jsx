@@ -23,6 +23,7 @@ import useUnload from "../Unload";
 import WarningNotification from "../WarningNotification";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
+import {  ClearNotification } from "../../utils/admin-notification";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -165,10 +166,7 @@ export default function EditCampaign(props) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [refresh]);
 
   const validateCampaign = (value, index) => {
@@ -267,10 +265,7 @@ export default function EditCampaign(props) {
 
     const isValid = validate();
     setIsValid(isValid);
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   const validate = () => {
@@ -433,10 +428,7 @@ export default function EditCampaign(props) {
       setIsPublish("none");
       const isValid = validate();
       setIsValid(isValid);
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 

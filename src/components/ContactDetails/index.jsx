@@ -34,6 +34,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
+import { DateTime } from "../../utils/admin-settings";
+import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -207,7 +209,6 @@ export default function ContactDetails() {
         setAssignLists(resJson.data?.lists);
         setAssignTags(resJson.data?.tags);
         setShowLoader(false);
-        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
 
@@ -245,50 +246,17 @@ export default function ContactDetails() {
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
     : contactData.created_at;
+  const DateFormat = DateTime(contactData.created_at, lastUpdate)
+  const day = DateFormat.day;
+  const month = DateFormat.month;
+  const date = DateFormat.date;
+  const year = DateFormat.year;
+  const hour = DateFormat.hour;
+  const minute = DateFormat.minute;
 
-  const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const monthIdx = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const monthFullIdx = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const dateFormat = new Date(lastUpdate);
-  const createDate = new Date(contactData.created_at);
-
-  const day = weekDay[dateFormat.getDay()];
-  const month = monthIdx[dateFormat.getMonth()];
-  const date = dateFormat.getDate();
-  const year = dateFormat.getFullYear();
-  const hour = dateFormat.getHours();
-  const minute = dateFormat.getMinutes();
-
-  const createMonth = monthFullIdx[createDate.getMonth()];
-  const createDay = createDate.getDate();
-  const createYear = createDate.getFullYear();
+  const createMonth = DateFormat.createMonth;
+  const createDay = DateFormat.createDay;
+  const createYear = DateFormat.createYear;
 
   const toggleTab = (index) => {
     setTabState(index);
@@ -395,10 +363,7 @@ export default function ContactDetails() {
       }
     }
 
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   //to open input field to add new tag to a contact
@@ -479,10 +444,7 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   // Send Double opt-in email
@@ -507,11 +469,7 @@ export default function ContactDetails() {
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-      setShowWarning("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
   };
 
   const handleDelete = () => {
@@ -559,10 +517,7 @@ export default function ContactDetails() {
       setMessage(resJson.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   const selectTags = () => {
@@ -917,8 +872,6 @@ export default function ContactDetails() {
                           <span className="title">Last Update</span>
                           <span className="title-value">
                             {day}, {month} {date}, {year}
-                            {/* {hour}:{minute} */}
-                            {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
                           </span>
                         </li>
 

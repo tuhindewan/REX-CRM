@@ -1,8 +1,5 @@
-import { __ } from "@wordpress/i18n";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-import routes from "../routes";
-import CampaignsLogo from "./Icons/CampaignsLogo";
 import Plus from "./Icons/Plus";
 
 export default function CampaignsNavbar() {

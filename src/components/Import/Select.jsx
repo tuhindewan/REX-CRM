@@ -84,7 +84,6 @@ export default function Select(props) {
         setItems(resJson.data.data);
         setLoading(false);
       } else {
-        console.log(resJson);
       }
     }
     if (!options) getItems();

@@ -87,17 +87,9 @@ class Editor extends Component {
           checked={isRequiredName}
           onChange={(state) => setAttributes({ isRequiredName: state })}
         />
-      </PanelBody>
-    );
-  };
 
-  formStyle = () => {
-    let { attributes, setAttributes } = this.props,
-      labelTypography = attributes.labelTypography,
-      device = attributes.device;
+        <hr className="mrm-hr" />
 
-    return (
-      <PanelBody title="Label Style" initialOpen={false}>
         <label className="blocks-base-control__label">Row Spacing</label>
         <RangeControl
           value={attributes.rowSpacing}
@@ -110,6 +102,30 @@ class Editor extends Component {
           step={1}
         />
 
+      </PanelBody>
+    );
+  };
+
+  formStyle = () => {
+    let { attributes, setAttributes } = this.props,
+      labelTypography = attributes.labelTypography,
+      device = attributes.device;
+
+    return (
+      <PanelBody title="Label Style" initialOpen={false}>
+        <label className="blocks-base-control__label"></label>
+
+        <div className="mrm-block-typography">
+          <Typography
+            label={__('Typography')}
+            value={labelTypography}
+            onChange={(value) => setAttributes({ labelTypography: value })}
+            disableLineHeight
+            device={device}
+            onDeviceChange={(value) => setAttributes({ device: value })}
+          />
+        </div>
+        
         <hr className="mrm-hr" />
 
         <label className="blocks-base-control__label">Label Color</label>
@@ -131,15 +147,7 @@ class Editor extends Component {
           max={50}
           step={1}
         />
-        <label className="blocks-base-control__label"></label>
-        <Typography
-          // label={__('Typography')}
-          value={labelTypography}
-          onChange={(value) => setAttributes({ labelTypography: value })}
-          disableLineHeight
-          device={device}
-          onDeviceChange={(value) => setAttributes({ device: value })}
-        />
+        
       </PanelBody>
     );
   };
@@ -151,6 +159,19 @@ class Editor extends Component {
 
     return (
       <PanelBody title="Input Field Style" initialOpen={false}>
+        <div className="mrm-block-typography">
+          <Typography
+            label={__('Typography')}
+            value={inputTypography}
+            onChange={(value) => setAttributes({ inputTypography: value })}
+            disableLineHeight
+            device={device}
+            onDeviceChange={(value) => setAttributes({ device: value })}
+          />
+        </div>
+
+        <hr className="mrm-hr" />
+
         <label className="blocks-base-control__label">Text Color</label>
         <ColorPalette
           onChange={(inputTextColor) =>
@@ -230,15 +251,7 @@ class Editor extends Component {
           }
           value={attributes.inputBorderColor}
         />
-        <label className="blocks-base-control__label"></label>
-        <Typography
-          // label={__('Typography')}
-          value={inputTypography}
-          onChange={(value) => setAttributes({ inputTypography: value })}
-          disableLineHeight
-          device={device}
-          onDeviceChange={(value) => setAttributes({ device: value })}
-        />
+        
       </PanelBody>
     );
   };

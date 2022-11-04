@@ -49,28 +49,6 @@ export default function ImportMailchimp() {
         "Content-type": "application/json",
       },
     };
-
-    // const res = await fetch(
-    //   `${window.MRM_Vars.api_base_url}mrm/v1/contacts/import/mailchimp/attrs`,
-    //   options
-    // );
-    // const resJson = await res.json();
-    // if (resJson.code == 200) {
-    //   const options = [];
-    //   // iterate over all the lists and set list options
-    //   resJson.data?.lists.map((list) => {
-    //     options.push({
-    //       title: list.name,
-    //       id: list.id,
-    //     });
-    //   });
-
-    //   setListsOptions(options);
-    // } else {
-    //   window.alert(resJson.message);
-    // }
-    // console.log(resJson);
-
     setIsVerified(true);
   }
 

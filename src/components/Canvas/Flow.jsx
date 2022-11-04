@@ -215,7 +215,6 @@ const Flow = () => {
           <select
             value={objectEdit.data.value}
             onChange={(e) => {
-              console.log(e.target.value);
 
               setObjectEdit({
                 ...objectEdit,

@@ -6,6 +6,7 @@ import ImportNavbar from "./Import/ImportNavbar";
 import Select from "./Import/Select";
 import ListenForOutsideClicks from "./ListenForOutsideClicks";
 import WarningNotification from "./WarningNotification";
+import {ClearWarning} from "../utils/admin-notification";
 
 export default function WordPressFieldMap() {
   const location = useLocation();
@@ -114,10 +115,7 @@ export default function WordPressFieldMap() {
         setMessage(resJson.message);
       }
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearWarning('none',setShowWarning)
     } catch (e) {
       window.alert(e.message);
       setLoading(false);
