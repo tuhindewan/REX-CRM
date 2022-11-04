@@ -10,9 +10,17 @@
       padding: 30px;
 
       .editor-styles-wrapper {
-        max-width: 900px;
         margin: 0 auto;
         width: 100%;
+        max-width: 900px;
+      }
+    }
+
+    .show-all-block {
+      .editor-styles-wrapper {
+        max-width: none;
+        width: calc(100% - 370px);
+        margin-left: 20px;
       }
     }
   }

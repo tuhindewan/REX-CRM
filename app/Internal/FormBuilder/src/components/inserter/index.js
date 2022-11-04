@@ -12,9 +12,9 @@ export function Inserter({ setIsInserterOpened }) {
     // );
     return (
         <div className="edit-post-editor__inserter-panel">
-            <div className="edit-post-editor__inserter-panel-header">
+            {/* <div className="edit-post-editor__inserter-panel-header">
                 <Button icon={close} onClick={() => setIsInserterOpened(false)} />
-            </div>
+            </div> */}
             <div className="edit-post-editor__inserter-panel-content">
                 <Library
                     showMostUsedBlocks
