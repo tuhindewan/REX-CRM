@@ -13,7 +13,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
 
 const BaseTable = (props) => {
-  console.log(props);
   const [refresh, setRefresh] = useState();
   const [countData, setCountData] = useState([]);
   const [showNotification, setShowNotification] = useState("none");

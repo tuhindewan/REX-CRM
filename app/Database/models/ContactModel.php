@@ -287,7 +287,7 @@ class ContactModel{
         return array(
             'data'=> $results,
             'total_pages' => ceil( $count / $limit ),
-            'count' => $count
+            'total_count' => $count
         );
 	
     }
