@@ -240,6 +240,18 @@
   background-color: #ccd0d9;
   border-radius: 20px;
 }
+.mintmrm .mrm-form-wrapper .mrm-form-wrapper-inner.custom-background {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+.mintmrm .mrm-form-wrapper .mrm-form-wrapper-inner.custom-background .mrm-form-overflow {
+  padding: 0;
+}
+.mintmrm .mrm-form-wrapper .mrm-form-wrapper-inner.custom-background .mrm-form-overflow .wp-block-columns {
+  margin-bottom: 0;
+  padding-right: 80px;
+}
 
 /*
 ---------------form animations------------------
@@ -348,7 +360,7 @@
   background: #4cd79d;
 }
 .mintmrm .mrm-flyins .mrm-form-overflow {
-  max-height: 360px;
+  max-height: 410px;
   overflow: auto;
   padding: 15px;
 }

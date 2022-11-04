@@ -2,8 +2,11 @@ import { useState } from "react";
 import { deleteSingleNote } from "../../services/Note";
 import DeletePopup from "../DeletePopup";
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
+import EmailDeliveredIcon from "../Icons/EmailDeliveredIcon";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
+import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
+
 
 export default function SingleActivityFeed(props) {
   const { refresh, setRefresh } = props;
@@ -30,10 +33,7 @@ export default function SingleActivityFeed(props) {
           setMessage(response?.message);
           setRefresh(!refresh);
         }
-        const timer = setTimeout(() => {
-          setShowNotification("none");
-        }, 3000);
-        return () => clearTimeout(timer);
+        ClearNotification('none',setShowNotification)
       });
     }
     setIsDelete("none");
@@ -75,42 +75,62 @@ export default function SingleActivityFeed(props) {
                         <span className="feed-date">3 hours age</span>
                     </div> */}
 
-          {props.notes?.map((note) => {
+          {props.activities?.map((activity) => {
             return (
               <>
-                <div className="single-feed" key={note.id}>
-                  <span className="icon icon-warning">
-                    <CreateNoteIconSm />
-                  </span>
-                  <div className="description">
-                    <b>{note.created_by} wrote a note:</b>
-                    <div className="writen-note">
-                      {note.description?.length > 200
-                        ? note.description.substring(0, 200) + "..."
-                        : note.description}
-                    </div>
-                  </div>
-                  <span className="feed-date">
-                    {note.created_at} ago
-                    <button
-                      className="note-edit"
-                      title="Edit Note"
-                      onClick={(event) => {
-                        openNoteDrawer(note.id);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="note-delete"
-                      title="Detele Note"
-                      onClick={(event) => {
-                        handleNoteDelete(note.id);
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </span>
+                <div className="single-feed" key={activity.id}>
+                  {activity.type === "MRM Note" ? (
+                    <>
+                      <span className="icon icon-warning">
+                        <CreateNoteIconSm />
+                      </span>
+                      <div className="description">
+                        <b>{activity.created_by} wrote a note:</b>
+                        <div className="writen-note">
+                          {activity.description?.length > 200
+                            ? activity.description.substring(0, 200) + "..."
+                            : activity.description}
+                        </div>
+                      </div>
+                      <span className="feed-date">
+                        {activity.created_at} ago
+                        <button
+                          className="note-edit"
+                          title="Edit Note"
+                          onClick={(event) => {
+                            openNoteDrawer(activity.id);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="note-delete"
+                          title="Detele Note"
+                          onClick={(event) => {
+                            handleNoteDelete(activity.id);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="icon icon-success">
+                        <EmailDeliveredIcon />
+                      </span>
+                      <div className="description">
+                        <b>
+                          Sent {activity.email_subject} to{" "}
+                          {activity.email_address}
+                        </b>
+                        <div className="writen-note">{activity.email_body}</div>
+                      </div>
+                      <span className="feed-date">
+                        {activity.created_at} ago
+                      </span>
+                    </>
+                  )}
                 </div>
               </>
             );

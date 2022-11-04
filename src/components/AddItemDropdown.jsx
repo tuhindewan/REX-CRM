@@ -33,7 +33,7 @@ export default function AddItemDropdown(props) {
   }, [search, items]);
 
   const checkIfSelected = (id) => {
-    const checked = selected?.findIndex((item) => item == id) >= 0;
+    const checked = selected?.findIndex((item) => item.id == id) >= 0;
     return checked;
   };
 
@@ -42,16 +42,18 @@ export default function AddItemDropdown(props) {
     e.stopPropagation();
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected?.findIndex((item) => item == id);
+    const index = selected?.findIndex((item) => item.id == id);
     if (allowMultiple) {
       if (index >= 0) {
-        setSelected(selected.filter((item) => item != id));
+        setSelected(selected.filter((item) => item.id != id));
       } else {
-        setSelected([...selected, id]);
+        // add id to the array
+        setSelected([...selected, { id: id, title: value }]);
+        // setSelected([...selected, id]);
       }
     } else {
       if (index >= 0) setSelected([]);
-      else setSelected([id]);
+      else setSelected([{ id: id, title: value }]);
     }
   };
 
@@ -74,7 +76,7 @@ export default function AddItemDropdown(props) {
       const resJson = await res.json();
       if (resJson.code == 201) {
         setSearch("");
-        setSelected([...selected, resJson.data]);
+        setSelected([...selected, { id: resJson.data, title: body.title }]);
         setShowNotification("block");
         setMessage(resJson?.message);
         setRefresh(!refresh);

@@ -2,7 +2,6 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from "./App.jsx";
-import App2 from './App2'
 
 /**
  * Import the stylesheet for the plugin.

@@ -11,6 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -33,6 +34,8 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
+import { DateTime } from "../../utils/admin-settings";
+import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -46,6 +49,9 @@ const toOrdinalSuffix = (num) => {
 };
 
 export default function ContactDetails() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
+
   const [isActive, setActive] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tabState, setTabState] = useState(1);
@@ -53,6 +59,7 @@ export default function ContactDetails() {
   const [contactData, setContactData] = useState({});
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
+  const [refreshFeed, setRefreshFeed] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);
   const [isEmailForm, setIsEmailForm] = useState(true);
@@ -199,8 +206,9 @@ export default function ContactDetails() {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
         setShowLoader(false);
-        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
 
@@ -217,53 +225,38 @@ export default function ContactDetails() {
     });
   }, []);
 
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`
+      );
+      const resJson = await res.json();
+      if (resJson.code == 200) {
+        setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
+        setShowLoader(false);
+        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
+      }
+    }
+
+    getData();
+  }, [refreshFeed]);
+
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
     : contactData.created_at;
+  const DateFormat = DateTime(contactData.created_at, lastUpdate)
+  const day = DateFormat.day;
+  const month = DateFormat.month;
+  const date = DateFormat.date;
+  const year = DateFormat.year;
+  const hour = DateFormat.hour;
+  const minute = DateFormat.minute;
 
-  const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const monthIdx = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const monthFullIdx = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const dateFormat = new Date(lastUpdate);
-  const createDate = new Date(contactData.created_at);
-
-  const day = weekDay[dateFormat.getDay()];
-  const month = monthIdx[dateFormat.getMonth()];
-  const date = dateFormat.getDate();
-  const year = dateFormat.getFullYear();
-  const hour = dateFormat.getHours();
-  const minute = dateFormat.getMinutes();
-
-  const createMonth = monthFullIdx[createDate.getMonth()];
-  const createDay = createDate.getDate();
-  const createYear = createDate.getFullYear();
+  const createMonth = DateFormat.createMonth;
+  const createDay = DateFormat.createDay;
+  const createYear = DateFormat.createYear;
 
   const toggleTab = (index) => {
     setTabState(index);
@@ -370,10 +363,7 @@ export default function ContactDetails() {
       }
     }
 
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   //to open input field to add new tag to a contact
@@ -454,10 +444,7 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   // Send Double opt-in email
@@ -482,11 +469,7 @@ export default function ContactDetails() {
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-      setShowWarning("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
   };
 
   const handleDelete = () => {
@@ -534,10 +517,7 @@ export default function ContactDetails() {
       setMessage(resJson.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   };
 
   const selectTags = () => {
@@ -609,10 +589,6 @@ export default function ContactDetails() {
     // }));
   };
 
-  // useEffect(() =>{
-
-  // }, [gender]);
-
   return (
     <>
       <div className="mintmrm-contact-details">
@@ -655,9 +631,9 @@ export default function ContactDetails() {
                     </div>
 
                     <p>
-                      Added via {contactData.added_by_login} on{" "}
-                      {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
-                      at {contactData.created_time}
+                      Added via {contactData.added_by_login} on {createMonth}{" "}
+                      {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                      {contactData.created_time}
                     </p>
                     {contactData.status == "pending" && (
                       <div
@@ -692,7 +668,7 @@ export default function ContactDetails() {
                   <button className="create-note" onClick={noteForm}>
                     <CreateNoteIcon />
                   </button>
-                  
+
                   <button className="create-mail" onClick={emailForm}>
                     <EmailIcon />
                   </button>
@@ -896,8 +872,6 @@ export default function ContactDetails() {
                           <span className="title">Last Update</span>
                           <span className="title-value">
                             {day}, {month} {date}, {year}
-                            {/* {hour}:{minute} */}
-                            {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
                           </span>
                         </li>
 
@@ -1271,9 +1245,11 @@ export default function ContactDetails() {
                         ) : (
                           <SingleActivityFeed
                             notes={contactData?.notes}
+                            messages={contactData?.messages}
+                            activities={contactData?.activities}
                             contactId={contactData?.id}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
+                            refresh={refreshFeed}
+                            setRefresh={setRefreshFeed}
                           />
                         )}
                       </div>
@@ -1328,7 +1304,7 @@ export default function ContactDetails() {
                     </div>
                     <div ref={selectListRef}>
                       <div className="list-wrapper">
-                        {contactData?.lists?.map((list, idx) => {
+                        {contactData?.lists?.map((list) => {
                           return (
                             <span className="single-list" key={list.id}>
                               {list.title}
@@ -1388,7 +1364,7 @@ export default function ContactDetails() {
                     </div>
                     <div ref={selectTagRef}>
                       <div className="tag-wrapper">
-                        {contactData?.tags?.map((tag, idx) => {
+                        {contactData?.tags?.map((tag) => {
                           return (
                             <span className="single-list" key={tag.id}>
                               {tag.title}
@@ -1456,10 +1432,9 @@ export default function ContactDetails() {
               isCloseNote={isCloseNote}
               setIsCloseNote={setIsCloseNote}
               contactID={id}
-              refresh={refresh}
-              setRefresh={setRefresh}
+              refresh={refreshFeed}
+              setRefresh={setRefreshFeed}
             />
-
           </div>
         )}
       </div>

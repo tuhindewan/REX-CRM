@@ -1,10 +1,14 @@
 import React, { useRef, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DragAndDrop from "../components/DragAndDrop";
 import ImportSVG from "../components/Icons/ImportSVG";
 import ImportNavbar from "../components/Import/ImportNavbar";
 import WarningNotification from "../components/WarningNotification";
+import {ClearWarning} from "../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../utils/admin-settings";
 export default function ImportContactFile() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   const navigate = useNavigate();
   // stores the selected file reference
   const [file, setFile] = useState(null);
@@ -27,13 +31,9 @@ export default function ImportContactFile() {
       } else {
         setShowWarning("block");
         setMessage("File Format Not Supported.");
-        const timer = setTimeout(() => {
-          setShowWarning("none");
-        }, 3000);
-        return () => clearTimeout(timer);
+        ClearWarning('none',setShowWarning)
       }
     } catch (e) {
-      console.log(e);
     }
   }
 
@@ -64,10 +64,7 @@ export default function ImportContactFile() {
     } else {
       setShowWarning("block");
       setMessage(resJson.message);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearWarning('none',setShowWarning)
     }
   }
   const routeChange = () => {

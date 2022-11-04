@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import AlertPopup from "../../components/AlertPopup";
@@ -17,8 +17,11 @@ import Delete from "../../components/Icons/Delete";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import FormTemplate from "./FormTemplate";
+import { ClearNotification } from "../../utils/admin-notification";
+
 
 export default function FormIndex(props) {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "forms");
 
   /*
@@ -100,6 +103,17 @@ export default function FormIndex(props) {
   });
 
 
+  // to show bulk select options
+  const showBulkAction = () => {
+    setBulkAction(!isBulkAction);
+  };
+
+  // Hide delete popup after click on cancel
+  const onDeleteShow = async (status) => {
+    setIsDelete(status);
+  };
+
+
   /*
   * Hooks
   */
@@ -121,10 +135,7 @@ export default function FormIndex(props) {
       }
     }
     getForms();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh, sortBy]);
 
 
@@ -136,16 +147,6 @@ export default function FormIndex(props) {
   function toggleRefresh() {
     setRefresh(!refresh);
   }
-
-  // to show bulk select options
-  const showBulkAction = () => {
-    setBulkAction(!isBulkAction);
-  };
-
-  // Hide delete popup after click on cancel
-  const onDeleteShow = async (status) => {
-    setIsDelete(status);
-  };
 
   // Hide alert popup after click on ok
   const onShowAlert = async (status) => {
@@ -264,10 +265,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     } else {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
@@ -292,10 +290,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 
@@ -330,12 +325,11 @@ export default function FormIndex(props) {
     copyText.select();
     //deprecated - can be changed with notification.clipboard (only for trusted sites)
     document.execCommand("copy");
-    setShowNotification("block");
-    setMessage("Shortcode copied ! ");
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+
+    AddSuccessNotification({
+      message : setMessage("Shortcode copied ! "),
+      event : setShowNotification
+    })
   };
 
   // handler for one single item click

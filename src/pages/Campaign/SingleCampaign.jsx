@@ -107,8 +107,7 @@ export default function SingleCampaign(props) {
                     props.editField(props.campaign);
                   }}
                 >
-                  {" "}
-                  Edit
+                  {"archived" == props.campaign.status ? "View" : "Edit"}
                 </li>
               )}
 

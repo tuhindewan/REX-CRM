@@ -263,6 +263,21 @@
                 background-color: #ccd0d9;
                 border-radius: 20px;
             }
+
+            &.custom-background {
+                background: transparent;
+                border-radius: 0;
+                padding: 0;
+
+                .mrm-form-overflow {
+                    padding: 0;
+
+                    .wp-block-columns {
+                        margin-bottom: 0;
+                        padding-right: 80px;
+                    }
+                }
+            }
         }
     }
 }

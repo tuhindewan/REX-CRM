@@ -9,17 +9,21 @@ import ListItem from "./ListItem";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
+import LoadingIndicator from "../../components/LoadingIndicator/index";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import { ClearNotification } from "../../utils/admin-notification";
 import {
   deleteMultipleListsItems,
   deleteSingleList,
   submitList,
   updateList,
 } from "../../services/List";
-import LoadingIndicator from "../../components/LoadingIndicator";
 import ContactNavbar from "../../components/ContactNavbar";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 const Lists = () => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   // showCreate shows the create form if true
   const [showCreate, setShowCreate] = useState(false);
 
@@ -244,10 +248,7 @@ const Lists = () => {
       }
     }
     getLists();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   // Get field id from child component

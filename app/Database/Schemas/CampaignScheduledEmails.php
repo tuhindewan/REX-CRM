@@ -24,7 +24,9 @@ class CampaignScheduledEmailsSchema implements Schema {
             `email` VARCHAR(190) NOT NULL,
             `status` ENUM('scheduled', 'sent', 'failed'),
             `scheduled_at` TIMESTAMP NOT NULL,
-            `updated_at` TIMESTAMP NOT NULL
+            `updated_at` TIMESTAMP NOT NULL,
+            INDEX `email_id_index` (`email_id` ASC),
+            INDEX `campaign_id_index` (`campaign_id` ASC)
          )";
     }
 }

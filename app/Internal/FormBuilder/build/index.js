@@ -3747,11 +3747,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/media-utils */ "@wordpress/media-utils");
 /* harmony import */ var _wordpress_media_utils__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_media_utils__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../sidebar */ "./src/components/sidebar/index.jsx");
-/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/keyboard-shortcuts */ "@wordpress/keyboard-shortcuts");
-/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../sidebar */ "./src/components/sidebar/index.jsx");
+/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/keyboard-shortcuts */ "@wordpress/keyboard-shortcuts");
+/* harmony import */ var _wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9__);
 
 /**
  * WordPress dependencies
@@ -3769,24 +3771,23 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 function BlockEditor(_ref) {
   let {
     settings: _settings
   } = _ref;
   const location = window.location.hash;
-  var locationArray = location.split('/');
+  var locationArray = location.split("/");
   const lastIndex = locationArray.at(-1);
-  const id = lastIndex.replace("#", '');
+  const id = lastIndex.replace("#", "");
   const [blocks, updateBlocks] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const {
     createInfoNotice
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/notices');
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)("core/notices");
   const canUserCreateMedia = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    const _canUserCreateMedia = select('core').canUser('create', 'media');
+    const _canUserCreateMedia = select("core").canUser("create", "media");
     return _canUserCreateMedia || _canUserCreateMedia !== false;
   }, []);
-  const defaultData = '<!-- wp:mrmformfield/email-field-block -->\n' + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + '<!-- /wp:mrmformfield/email-field-block -->\n' + '\n' + '<!-- wp:mrmformfield/mrm-button-block -->\n' + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + '<!-- /wp:mrmformfield/mrm-button-block -->';
+  const defaultData = "<!-- wp:mrmformfield/email-field-block -->\n" + '<div class="mrm-form-group email" style="margin-bottom:12px"><label for="mrm-email" style="color:#363B4E;margin-bottom:7px"></label><div class="input-wrapper"><input type="email" name="email" id="mrm-email" placeholder="Email" required style="background-color:#ffffff;color:#7A8B9A;border-radius:5px;padding-top:11px;padding-right:14px;padding-bottom:11px;padding-left:14px;border-style:solid;border-width:1px;border-color:#DFE1E8" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"/></div></div>\n' + "<!-- /wp:mrmformfield/email-field-block -->\n" + "\n" + "<!-- wp:mrmformfield/mrm-button-block -->\n" + '<div class="mrm-form-group submit" style="margin-bottom:12px;text-align:left"><button class="mrm-submit-button mintmrm-btn" type="submit" style="background-color:;color:;border-radius:5px;padding:15px 20px;line-height:1;letter-spacing:0;border-style:none;font-size:15px;border-width:0;border-color:;width:%">Submit</button></div>\n' + "<!-- /wp:mrmformfield/mrm-button-block -->";
   const settings = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     if (!canUserCreateMedia) {
       return _settings;
@@ -3818,18 +3819,18 @@ function BlockEditor(_ref) {
         const resJson = await res.json();
         if (200 === resJson.code) {
           var _resJson$data$;
-          window.localStorage.setItem('getmrmblocks', resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
-          const storedBlocks = window.localStorage.getItem('getmrmblocks');
+          window.localStorage.setItem("getmrmblocks", resJson === null || resJson === void 0 ? void 0 : (_resJson$data$ = resJson.data[0]) === null || _resJson$data$ === void 0 ? void 0 : _resJson$data$.form_body);
+          const storedBlocks = window.localStorage.getItem("getmrmblocks");
           if (storedBlocks !== null && storedBlocks !== void 0 && storedBlocks.length) {
             handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(storedBlocks));
           }
         } else {
           handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
-          window.localStorage.setItem('getmrmblocks', defaultData);
+          window.localStorage.setItem("getmrmblocks", defaultData);
         }
       } else {
         handleUpdateBlocks(() => (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.parse)(defaultData));
-        window.localStorage.setItem('getmrmblocks', defaultData);
+        window.localStorage.setItem("getmrmblocks", defaultData);
       }
     };
     getFormData();
@@ -3853,25 +3854,24 @@ function BlockEditor(_ref) {
   }
   function handleUpdateBlocksByOnInput(blocks) {
     updateBlocks(blocks);
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
+    window.localStorage.setItem("getmrmblocks", (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(blocks));
   }
   function handlePersistBlocks(newBlocks) {
     updateBlocks(newBlocks);
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
-    window.localStorage.setItem('getmrmblocks', (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
+    window.localStorage.setItem("getmrmblocks", (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__.serialize)(newBlocks));
   }
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "get-mrm-block-editor"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_8__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorProvider, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_keyboard_shortcuts__WEBPACK_IMPORTED_MODULE_9__.ShortcutProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockEditorProvider, {
     value: blocks,
     onInput: handleUpdateBlocksByOnInput,
     onChange: handlePersistBlocks,
     settings: settings
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_7__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_sidebar__WEBPACK_IMPORTED_MODULE_8__["default"].InspectorFill, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockInspector, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "editor-styles-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockEditorKeyboardShortcuts, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.WritingFlow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.ObserveTyping, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockList, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockEditorKeyboardShortcuts, null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockTools, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.WritingFlow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.ObserveTyping, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockList, {
     className: "get-mrm-block-editor__block-list"
-  })))))));
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Popover.Slot, null)))));
 }
 /* harmony default export */ __webpack_exports__["default"] = (BlockEditor);
 
@@ -3937,16 +3937,7 @@ const {
     onChange: val => {
       device && onDeviceChange ? onDeviceChange(val) : updateDevice(val);
     }
-  })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, {
-    className: "mrmTypography-field-child mrmTypography-d-flex"
-  }, options.map(_ref2 => {
-    let [title, option] = _ref2;
-    const activeBtn = option === getValue() ? 'qubley-active-group-btn' : '';
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
-      className: `qubley-group-button ${activeBtn}${additionalClass ? ` ${additionalClass}` : ''}`,
-      onClick: () => onButtonClick(option)
-    }, title);
-  })));
+  })), !responsive && label && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, " ", label, " "));
 }
 
 /***/ }),
@@ -11343,6 +11334,17 @@ class Editor extends Component {
       onChange: state => this.props.setAttributes({
         emailPlaceholder: state
       })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
     }));
   };
   formStyle = () => {
@@ -11355,16 +11357,20 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Label Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
-      allowReset: true,
-      min: 0,
-      max: 50,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -11380,20 +11386,6 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: labelTypography,
-      onChange: value => setAttributes({
-        labelTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   inputFieldStyle = () => {
@@ -11406,7 +11398,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
@@ -11462,20 +11469,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: inputTypography,
-      onChange: value => setAttributes({
-        inputTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -11956,6 +11949,17 @@ class Editor extends Component {
       onChange: state => setAttributes({
         isRequiredName: state
       })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
     }));
   };
   formStyle = () => {
@@ -11970,14 +11974,20 @@ class Editor extends Component {
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
-    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
-      allowReset: true,
-      min: 0,
-      max: 50,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -11993,20 +12003,6 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: labelTypography,
-      onChange: value => setAttributes({
-        labelTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   inputFieldStyle = () => {
@@ -12019,7 +12015,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
@@ -12075,20 +12086,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: inputTypography,
-      onChange: value => setAttributes({
-        inputTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -12835,6 +12832,17 @@ class Editor extends Component {
       onChange: state => setAttributes({
         isRequiredLastName: state
       })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
     }));
   };
   formStyle = () => {
@@ -12847,16 +12855,20 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Label Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
-      allowReset: true,
-      min: 0,
-      max: 50,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -12872,18 +12884,6 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: labelTypography,
-      onChange: value => setAttributes({
-        labelTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   inputFieldStyle = () => {
@@ -12896,7 +12896,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
@@ -12952,18 +12967,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: inputTypography,
-      onChange: value => setAttributes({
-        inputTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -13694,7 +13697,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Button Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: typography,
+      onChange: value => setAttributes({
+        typography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: buttonTextColor => this.onChangeAttribute('buttonTextColor', buttonTextColor),
@@ -13704,6 +13722,34 @@ class Editor extends Component {
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: buttonBgColor => this.onChangeAttribute('buttonBgColor', buttonBgColor),
       value: attributes.buttonBgColor
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Font size', 'mrm'),
+      value: attributes.buttonFontSize,
+      onChange: btnBorder => this.onChangeAttribute('buttonFontSize', btnBorder),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Line Height', 'mrm'),
+      value: attributes.lineHeight,
+      onChange: btn_lineHeight => setAttributes({
+        lineHeight: btn_lineHeight
+      }),
+      allowReset: true,
+      min: 0,
+      max: 100,
+      step: 1
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Letter Spacing', 'mrm'),
+      value: attributes.letterSpacing,
+      onChange: btn_letterSpacing => setAttributes({
+        letterSpacing: btn_letterSpacing
+      }),
+      allowReset: true,
+      min: 0,
+      max: 20,
+      step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
@@ -13790,49 +13836,6 @@ class Editor extends Component {
       min: 0,
       max: 100,
       step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Line Height', 'mrm'),
-      value: attributes.lineHeight,
-      onChange: btn_lineHeight => setAttributes({
-        lineHeight: btn_lineHeight
-      }),
-      allowReset: true,
-      min: 0,
-      max: 100,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Letter Spacing', 'mrm'),
-      value: attributes.letterSpacing,
-      onChange: btn_letterSpacing => setAttributes({
-        letterSpacing: btn_letterSpacing
-      }),
-      allowReset: true,
-      min: 0,
-      max: 20,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Font size"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.buttonFontSize,
-      onChange: btnBorder => this.onChangeAttribute('buttonFontSize', btnBorder),
-      allowReset: true,
-      min: 0,
-      max: 100,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: typography,
-      onChange: value => setAttributes({
-        typography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -14642,6 +14645,17 @@ class Editor extends Component {
       onChange: state => setAttributes({
         field_require: state
       })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      className: "blocks-base-control__label"
+    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
+      value: attributes.rowSpacing,
+      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
+      allowReset: true,
+      min: 0,
+      max: 50,
+      step: 1
     }));
   };
   onChangeRadioValueField = (option, val, index) => {
@@ -14759,16 +14773,20 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Label Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      className: "blocks-base-control__label"
-    }, "Row Spacing"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      value: attributes.rowSpacing,
-      onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
-      allowReset: true,
-      min: 0,
-      max: 50,
-      step: 1
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: labelTypography,
+      onChange: value => setAttributes({
+        labelTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
       className: "mrm-hr"
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
@@ -14784,19 +14802,7 @@ class Editor extends Component {
       min: 0,
       max: 50,
       step: 1
-    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: labelTypography,
-      onChange: value => setAttributes({
-        labelTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
-    }));
+    })));
   };
   inputFieldStyle = () => {
     let {
@@ -14808,7 +14814,22 @@ class Editor extends Component {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
       title: "Input Field Style",
       initialOpen: false
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "mrm-block-typography"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      value: inputTypography,
+      onChange: value => setAttributes({
+        inputTypography: value
+      }),
+      disableLineHeight: true,
+      device: device,
+      onDeviceChange: value => setAttributes({
+        device: value
+      })
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+      className: "mrm-hr"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputTextColor => this.onChangeAttribute("inputTextColor", inputTextColor),
@@ -14864,18 +14885,6 @@ class Editor extends Component {
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
       onChange: inputBorderColor => this.onChangeAttribute("inputBorderColor", inputBorderColor),
       value: attributes.inputBorderColor
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"]
-    // label={__('Typography')}
-    , {
-      value: inputTypography,
-      onChange: value => setAttributes({
-        inputTypography: value
-      }),
-      disableLineHeight: true,
-      device: device,
-      onDeviceChange: value => setAttributes({
-        device: value
-      })
     }));
   };
   getInspectorControls = () => {
@@ -15925,43 +15934,7 @@ function Sidebar() {
       value: "fixed-on-bottom"
     }],
     onChange: state => setFormPosition(state)
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-    title: "Close Button Color",
-    className: "form-layout-settings",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Close Icon", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon for form"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
-    color: closeButtonColor,
-    onChange: setCloseButtonColor,
-    enableAlpha: true,
-    defaultValue: closeButtonColor
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-    color: closeButtonColor,
-    onChange: setCloseButtonColor,
-    enableAlpha: true,
-    defaultValue: closeButtonColor
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "single-settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    className: "settings-label"
-  }, "Background", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "mintmrm-tooltip"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon Background"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
-    color: closeBackgroundColor,
-    onChange: setCloseBackgroundColor,
-    enableAlpha: true,
-    defaultValue: closeBackgroundColor
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-    color: closeBackgroundColor,
-    onChange: setCloseBackgroundColor,
-    enableAlpha: true,
-    defaultValue: closeBackgroundColor
-  }))))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+  })))), "default" !== formPosition && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
     title: "Form Animation",
     className: "form-animation-settings",
     initialOpen: false
@@ -15986,7 +15959,45 @@ function Sidebar() {
       value: "slide-in-up"
     }],
     onChange: state => setFormAnimation(state)
-  }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorSlot, {
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+    title: "Close Button Color",
+    className: "form-layout-settings",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Icon Color", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, " Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon for form "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    className: "mrm-hr"
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeButtonColor,
+    onChange: setCloseButtonColor,
+    enableAlpha: true,
+    defaultValue: closeButtonColor
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "single-settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "settings-label"
+  }, "Background Color", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "mintmrm-tooltip"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_QuestionIcon__WEBPACK_IMPORTED_MODULE_5__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Choose a color for the ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Icons_CrossIcon__WEBPACK_IMPORTED_MODULE_4__["default"], null), " icon Background"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPicker, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+    color: closeBackgroundColor,
+    onChange: setCloseBackgroundColor,
+    enableAlpha: true,
+    defaultValue: closeBackgroundColor
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorSlot, {
     bubblesVirtually: true
   }))));
 }
@@ -16037,13 +16048,13 @@ function Editor(_ref) {
     className: "mrm-editor-builder"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_6__["default"], {
     isActive: false
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SlotFillProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropZoneProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FocusReturnProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_7__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SlotFillProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_interface__WEBPACK_IMPORTED_MODULE_7__["default"], {
     header: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_header__WEBPACK_IMPORTED_MODULE_3__["default"], null),
     sidebar: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_sidebar__WEBPACK_IMPORTED_MODULE_4__["default"], null),
     content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_notices__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_block_editor__WEBPACK_IMPORTED_MODULE_5__["default"], {
       settings: settings
     }))
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)))));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover.Slot, null)));
 }
 /* harmony default export */ __webpack_exports__["default"] = (Editor);
 

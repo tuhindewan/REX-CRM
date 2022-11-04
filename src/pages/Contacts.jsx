@@ -15,6 +15,7 @@ import { AdminNavMenuClassChange } from "../utils/admin-settings";
 // );
 
 const Contacts = () => {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "contacts");
 
   useGlobalStore.setState({

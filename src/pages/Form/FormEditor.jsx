@@ -22,7 +22,11 @@ import SuccessfulNotification from "../../components/SuccessfulNotification";
 import WarningNotification from "../../components/WarningNotification";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
+import {  ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 const FormEditor = (props) => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "forms");
   // Hide WordPress admin notices
   const location = useLocation();
   const match = matchPath({ path: "form-builder" }, location.pathname);
@@ -188,9 +192,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
+      ClearNotification('none',setShowNotification)
       return () => clearTimeout(timer);
     } else {
       const res = await fetch(
@@ -213,10 +215,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 
@@ -259,10 +258,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     } else {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
@@ -284,10 +280,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 

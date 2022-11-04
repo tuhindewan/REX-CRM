@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
 import "../../style/Canvas.css";
 import ConditionSettingsDrawer from "./ConditionSettingsDrawer";
 import DelaySettingsDrawer from "./DelaySettingsDrawer";
@@ -13,44 +11,6 @@ const CanvasSettingsDrawer = (props) => {
     selectedNodeID,
     selectedNodeType,
   } = props;
-
-
-
-  // if (selectedNodeType === "sendEmailStep"){
-  //   return (
-  //     <>
-  //       <SendEmailSettingsDrawer 
-  //       openSettingsDrawer={openSettingsDrawer}
-  //       setOpenSettingsDrawer={setOpenSettingsDrawer}
-  //       selectedNodeID={selectedNodeID}
-  //       selectedNodeType={selectedNodeType}/>
-  //     </>
-  //   );
-  // }
-
-  // if (selectedNodeType === "delayStep"){
-  //   return (
-  //     <>
-  //       <DelaySettingsDrawer 
-  //       openSettingsDrawer={openSettingsDrawer}
-  //       setOpenSettingsDrawer={setOpenSettingsDrawer}
-  //       selectedNodeID={selectedNodeID}
-  //       selectedNodeType={selectedNodeType}/>
-  //     </>
-  //   );
-  // }
-
-  // if (selectedNodeType === "conditionStep"){
-  //   return (
-  //     <>
-  //       <ConditionSettingsDrawer 
-  //       openSettingsDrawer={openSettingsDrawer}
-  //       setOpenSettingsDrawer={setOpenSettingsDrawer}
-  //       selectedNodeID={selectedNodeID}
-  //       selectedNodeType={selectedNodeType}/>
-  //     </>
-  //   );
-  // }
 
   return (
     <>

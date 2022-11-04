@@ -24,6 +24,8 @@ import SuccessfulNotification from "../../components/SuccessfulNotification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
+import {  ClearNotification } from "../../utils/admin-notification";
+
 
 export default function ContactListTable(props) {
   const { refresh, setRefresh } = props;
@@ -214,7 +216,7 @@ export default function ContactListTable(props) {
     } else {
       setIsFilter(false);
     }
-  }, [filterRequest, filterPage, filterCount, filterSearch]);
+  }, [filterRequest, filterPage, filterSearch]);
 
   useEffect(() => {
     async function getData() {
@@ -236,24 +238,23 @@ export default function ContactListTable(props) {
         });
     }
 
-    // Get lists
-    getLists().then((results) => {
-      results.data.map(function () {
-        setLists(results.data);
+    if (false == isFilter) {
+      // Get lists
+      getLists().then((results) => {
+        results.data.map(function () {
+          setLists(results.data);
+        });
       });
-    });
 
-    // Get tags
-    getTags().then((results) => {
-      setTags(results.data);
-    });
+      // Get tags
+      getTags().then((results) => {
+        setTags(results.data);
+      });
+    }
 
     if (false == isFilter) getData();
 
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [perPage, page, query, refresh, isFilter]);
 
   useEffect(() => {
@@ -855,27 +856,25 @@ export default function ContactListTable(props) {
               </table>
             </div>
           </div>
-          {totalPages > 1 && (
-            <div>
-              {false === isFilter ? (
-                <Pagination
-                  currentPage={page}
-                  pageSize={perPage}
-                  onPageChange={setPage}
-                  totalCount={count}
-                  totalPages={totalPages}
-                />
-              ) : (
-                <Pagination
-                  currentPage={filterPage}
-                  pageSize={filterPerPage}
-                  onPageChange={setFilterPage}
-                  totalCount={filterCount}
-                  totalPages={filterTotalPages}
-                />
-              )}
-            </div>
-          )}
+          <div>
+            {false === isFilter ? (
+              <Pagination
+                currentPage={page}
+                pageSize={perPage}
+                onPageChange={setPage}
+                totalCount={count}
+                totalPages={totalPages}
+              />
+            ) : (
+              <Pagination
+                currentPage={filterPage}
+                pageSize={filterPerPage}
+                onPageChange={setFilterPage}
+                totalCount={filterCount}
+                totalPages={filterTotalPages}
+              />
+            )}
+          </div>
         </>
       )}
       <div className="mintmrm-container" style={{ display: showAlert }}>

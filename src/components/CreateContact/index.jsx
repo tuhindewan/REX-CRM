@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
@@ -7,10 +8,13 @@ import { createContact } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../AddItemDropdown";
+import CrossIcon from "../Icons/CrossIcon";
 import InputItem from "../InputItem/index";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
 const CreateContact = (props) => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   let navigate = useNavigate();
 
   // global counter update real time
@@ -143,8 +147,7 @@ const CreateContact = (props) => {
           });
         }
       });
-
-    }else{
+    } else {
       setContactSaveLoader(false);
     }
   };
@@ -204,6 +207,24 @@ const CreateContact = (props) => {
 
   const capitalizeFirst = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const deleteSelectedList = (e, id) => {
+    const index = assignLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setAssignLists(assignLists.filter((item) => item.id != id));
+    }
+  };
+
+  const deleteSelectedTag = (e, id) => {
+    const index = assignTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setAssignTags(assignTags.filter((item) => item.id != id));
+    }
   };
 
   return (
@@ -299,7 +320,23 @@ const CreateContact = (props) => {
                   }
                   onClick={handleList}
                 >
-                  Select Lists
+                  {assignLists.length != 0
+                    ? assignLists?.map((list) => {
+                        return (
+                          <span className="single-list" key={list.id}>
+                            {list.title}
+
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={(e) => deleteSelectedList(e, list.id)}
+                            >
+                              <CrossIcon />
+                            </button>
+                          </span>
+                        );
+                      })
+                    : "Select Lists"}
                 </button>
                 <AddItemDropdown
                   isActive={isActiveList}
@@ -325,7 +362,23 @@ const CreateContact = (props) => {
                   }
                   onClick={handleTag}
                 >
-                  Select Tags
+                  {assignTags.length != 0
+                    ? assignTags?.map((tag) => {
+                        return (
+                          <span className="single-list" key={tag.id}>
+                            {tag.title}
+
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={(e) => deleteSelectedTag(e, tag.id)}
+                            >
+                              <CrossIcon />
+                            </button>
+                          </span>
+                        );
+                      })
+                    : "Select Tags"}
                 </button>
                 <AddItemDropdown
                   isActive={isActiveTag}
@@ -357,9 +410,7 @@ const CreateContact = (props) => {
                 className="contact-save mintmrm-btn "
               >
                 Save
-                {contactSaveLoader &&
-                  <span className="mintmrm-loader"></span>
-                }
+                {contactSaveLoader && <span className="mintmrm-loader"></span>}
               </button>
             </div>
           </div>

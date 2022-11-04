@@ -13,8 +13,13 @@ import { useGlobalStore } from "../../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../../services/Tag";
 import ContactNavbar from "../../components/ContactNavbar";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import {ClearNotification} from "../../utils/admin-notification";
+
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 const Tags = () => {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
@@ -225,10 +230,7 @@ const Tags = () => {
       }
     }
     getTags();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   const deleteTag = async (tag_id) => {

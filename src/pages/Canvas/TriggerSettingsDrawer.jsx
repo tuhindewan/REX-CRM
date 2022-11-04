@@ -20,8 +20,7 @@ const TriggerSettingsDrawer = (props) => {
       }
     })
   }
-  
-  console.log(triggerStep);
+
   //TO DO: All trigger data in a variable from rest API
 
   return (

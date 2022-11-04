@@ -151,30 +151,6 @@ export default function CustomFieldCreate() {
                 handleChange={handleChange}
                 isRequired
               />
-              {/* <Selectbox
-                label="Type"
-                name="type"
-                options={[
-                  {
-                    title: "Text",
-                    id: "text",
-                  },
-                  {
-                    title: "Date",
-                    id: "date",
-                  },
-                  {
-                    title: "Number",
-                    id: "number",
-                  },
-                ]}
-                tags={false}
-                placeholder="Select Type"
-                multiple={false}
-                value={customFields.type}
-                onSelect={onSelect}
-                error={errors?.type}
-              /> */}
               {isShow ? (
                 <DynamicInput
                   options={customFields?.options}

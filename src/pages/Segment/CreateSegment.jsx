@@ -101,7 +101,6 @@ const CreateSegment = () => {
     };
 
     submitSegment(segment).then((response) => {
-      console.log(response);
       if (201 === response.code) {
         // Navigate to campaigns list with success message
         navigate("../segments", {

@@ -20,8 +20,10 @@ import PublishAlert from "../../components/PublishAlert";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
 import Delete from "../../components/Icons/Delete";
+import { ClearNotification } from "../../utils/admin-notification";
 
 export default function AllCampaigns() {
+  // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "campaigns");
   useGlobalStore.setState({
     hideGlobalNav: true,
@@ -63,10 +65,7 @@ export default function AllCampaigns() {
       setTotalPages(results.total_pages);
       setShowLoader(false);
     });
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh]);
 
   // Multiple selection confirmation
@@ -204,10 +203,7 @@ export default function AllCampaigns() {
       setIsUpdate("none");
       const isValid = validate();
       setIsValid(isValid);
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 
@@ -331,10 +327,10 @@ export default function AllCampaigns() {
 
                         <div className="table-body">
                           {!campaigns.length && <NoCampaign search={search} />}
-                          {campaigns.map((campaign, idx) => {
+                          {campaigns.map((campaign) => {
                             return (
                               <SingleCampaign
-                                key={idx}
+                                key={campaign.id}
                                 campaign={campaign}
                                 setCurrentActive={setCurrentActive}
                                 currentActive={currentActive}

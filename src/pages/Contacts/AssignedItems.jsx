@@ -5,6 +5,7 @@ import Search from "../../components/Icons/Search";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import WarningNotification from "../../components/WarningNotification";
+import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
 
 export default function AssignedItems(props) {
   const {
@@ -124,11 +125,7 @@ export default function AssignedItems(props) {
     } catch (e) {
     } finally {
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
     }
   };
 
@@ -177,10 +174,7 @@ export default function AssignedItems(props) {
     } catch (e) {
     } finally {
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 
