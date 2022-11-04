@@ -1,18 +1,19 @@
-/*!************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
-  \************************************************************************************************************************************************************************************************************************************************************************/
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************/
 /**
  * Colors
  */
 /**
- * SCSS Variables.
- *
- * Please use variables from this sheet to ensure consistency across the UI.
- * Don't add to this sheet unless you're pretty sure the value will be reused in many places.
- * For example, don't add rules to this sheet that affect block visuals. It's purely for UI.
+ * Deprecated colors.
+ * Please avoid using these.
  */
 /**
  * Colors
+ */
+/**
+ * Deprecated colors.
+ * Please avoid using these.
  */
 /**
  * Fonts & basic variables.
@@ -31,21 +32,14 @@
  * Editor widths.
  */
 /**
- * Block & Editor UI.
+ * Block UI.
+ */
+/**
+ * Border radii.
  */
 /**
  * Block paddings.
  */
-/**
- * React Native specific.
- * These variables do not appear to be used anywhere else.
- */
-/**
-*  Converts a hex value into the rgb equivalent.
-*
-* @param {string} hex - the hexadecimal value to convert
-* @return {string} comma separated rgb values
-*/
 /**
  * Breakpoint mixins
  */
@@ -80,7 +74,7 @@
 .get-mrm-header {
   align-items: center;
   background: white;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #ddd;
   display: flex;
   height: 60px;
   justify-content: space-between;
@@ -133,6 +127,18 @@
   }
 }
 
+/* Mobile menu opened. */
+@media (max-width: 783px) {
+  .auto-fold .wp-responsive-open .get-mrm-header {
+    left: 190px;
+  }
+}
+/* In small screens with responsive menu expanded there is small white space. */
+@media (max-width: 600px) {
+  .auto-fold .wp-responsive-open .get-mrm-header {
+    margin-left: -18px;
+  }
+}
 body.is-fullscreen-mode .get-mrm-header {
   left: 0 !important;
 }
@@ -2374,9 +2380,9 @@ html.wp-toolbar {
 .components-modal__frame *::after {
   box-sizing: inherit;
 }
-/*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/typography.scss ***!
-  \*************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/typography.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .mrmTypography-field .mrmTypography-field-font-family {
   min-width: calc(65% - 15px);
 }
@@ -2514,9 +2520,9 @@ html.wp-toolbar {
 .mrmTypography-field .mrmTypography-field-group-btn.mrmTypography-field.mrmTypography-d-flex {
   display: none;
 }
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/range.scss ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/range.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .mrmTypography-input-range {
   display: flex;
 }
@@ -2613,9 +2619,9 @@ html.wp-toolbar {
   width: 100%;
   margin-bottom: 2px;
 }
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/toggle.scss ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/toggle.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .mrmTypography-field.mrmTypography-field-toggle {
   display: flex;
   flex-wrap: wrap;
@@ -2672,9 +2678,9 @@ html.wp-toolbar {
   padding: 4px 10px;
   color: #7a8b9a !important;
 }
-/*!**************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/buttonGroup.scss ***!
-  \**************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/buttonGroup.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 .mrmTypography-field-group-btn {
   align-items: center;
 }
