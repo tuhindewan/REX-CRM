@@ -7,7 +7,9 @@ import { useSelect, useDispatch } from "@wordpress/data";
 import { useEffect, useState, useMemo } from "@wordpress/element";
 import { serialize, parse } from "@wordpress/blocks";
 import { uploadMedia } from "@wordpress/media-utils";
-import { SlotFillProvider, Popover } from "@wordpress/components";
+import { SlotFillProvider, Popover ,Button } from "@wordpress/components";
+
+import PlusIcon from "../Icons/PlusIcon";
 
 import {
   BlockEditorKeyboardShortcuts,
@@ -22,6 +24,7 @@ import {
  * Internal dependencies
  */
 import Sidebar from "../sidebar";
+import { Inserter } from "../inserter";
 import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
 
 function BlockEditor({ settings: _settings }) {
@@ -30,6 +33,7 @@ function BlockEditor({ settings: _settings }) {
   const lastIndex = locationArray.at(-1);
   const id = lastIndex.replace("#", "");
   const [blocks, updateBlocks] = useState([]);
+  const [showAll, updateShowAll] = useState(false);
   const { createInfoNotice } = useDispatch("core/notices");
 
   const canUserCreateMedia = useSelect((select) => {
@@ -117,8 +121,18 @@ function BlockEditor({ settings: _settings }) {
     updateBlocks(newBlocks);
     window.localStorage.setItem("getmrmblocks", serialize(newBlocks));
   }
+  function handleShowAll(){
+    updateShowAll(!showAll)
+
+  }
   return (
     <div className="get-mrm-block-editor">
+      <Button 
+       className={showAll ? 'active' : '' }
+       onClick={handleShowAll}>
+        <PlusIcon />
+      </Button>
+      
       <ShortcutProvider>
         <BlockEditorProvider
           value={blocks}
@@ -126,20 +140,29 @@ function BlockEditor({ settings: _settings }) {
           onChange={handlePersistBlocks}
           settings={settings}
         >
-          <Sidebar.InspectorFill>
-            <BlockInspector />
-          </Sidebar.InspectorFill>
-          <div className="editor-styles-wrapper">
-            <BlockEditorKeyboardShortcuts />
-            <BlockTools>
-              <WritingFlow>
-                <ObserveTyping>
-                  <BlockList className="get-mrm-block-editor__block-list" />
-                </ObserveTyping>
-              </WritingFlow>
-            </BlockTools>
-            <Popover.Slot />
+          <div className={showAll ? 'mrm-block-editor-wrapper show-all-block' : 'mrm-block-editor-wrapper' } >
+            <div className="interface-interface-skeleton__secondary-sidebar">
+              <Inserter setIsInserterOpened={true} />
+            </div>
+            
+            <Sidebar.InspectorFill>
+              <BlockInspector />
+            </Sidebar.InspectorFill>
+
+            <div className="editor-styles-wrapper">
+              <BlockEditorKeyboardShortcuts />
+              <BlockTools>
+                <WritingFlow>
+                  <ObserveTyping>
+                    <BlockList className="get-mrm-block-editor__block-list" />
+                  </ObserveTyping>
+                </WritingFlow>
+              </BlockTools>
+              <Popover.Slot />
+            </div>
+
           </div>
+
         </BlockEditorProvider>
       </ShortcutProvider>
     </div>
