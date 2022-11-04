@@ -3,7 +3,10 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // Internal dependencies
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { deleteMultipleContactsItems } from "../../services/Contact";
+import {
+  deleteMultipleContactsItems,
+  deleteSingleContact,
+} from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import { ClearNotification } from "../../utils/admin-notification";
@@ -32,8 +35,7 @@ import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
 
-export default function ContactListTable(props) {
-  const { refresh, setRefresh } = props;
+export default function ContactListTable() {
   const [isLists, setIsLists] = useState(false);
   const [isTags, setIsTags] = useState(false);
   const [isStatus, setIsStatus] = useState(false);
@@ -79,7 +81,8 @@ export default function ContactListTable(props) {
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
-
+  const [contactId, setContactId] = useState();
+  const [refresh, setRefresh] = useState();
   // Prepare filter object
   const [filterAdder, setFilterAdder] = useState({
     lists: [],
@@ -263,6 +266,10 @@ export default function ContactListTable(props) {
 
     if (false == isFilter) getData();
 
+    if ("contact-created" == location.state?.status) {
+      setShowNotification("block");
+      setMessage(location.state?.message);
+    }
     ClearNotification("none", setShowNotification);
   }, [perPage, page, query, refresh, isFilter]);
 
@@ -306,6 +313,37 @@ export default function ContactListTable(props) {
   const showMoreOption = () => {
     setIsActive(!isActive);
     setIsAssignTo(false);
+  };
+
+  // Get contact id from child component for delete
+  const deleteContact = async (contact_id) => {
+    setIsDelete("block");
+    setContactId(contact_id);
+    setDeleteTitle("Contact Delete");
+    setDeleteMessage("Are you sure you want to delete the contact?");
+  };
+
+  // Delete contact after delete confirmation
+  const onDeleteStatus = async (status) => {
+    if (status) {
+      deleteSingleContact(contactId).then((result) => {
+        if (200 === result.code) {
+          setShowNotification("block");
+          setMessage(result.message);
+          toggleRefresh();
+          useGlobalStore.setState({
+            counterRefresh: !counterRefresh,
+          });
+        } else {
+          setErrors({
+            ...errors,
+            title: result?.message,
+          });
+        }
+      });
+    }
+    setIsDelete("none");
+    ClearNotification("none", setShowNotification);
   };
 
   async function deleteMultipleContacts() {
@@ -894,6 +932,7 @@ export default function ContactListTable(props) {
                                 currentActive={currentActive}
                                 setCurrentActive={setCurrentActive}
                                 handleSelectOne={handleSelectOne}
+                                deleteContact={deleteContact}
                                 selected={selected}
                                 columns={columns}
                               />
@@ -939,6 +978,7 @@ export default function ContactListTable(props) {
           onDeleteShow={onDeleteShow}
           onMultiDelete={onMultiDelete}
           selected={selected}
+          onDeleteStatus={onDeleteStatus}
         />
       </div>
       <SuccessfulNotification display={showNotification} message={message} />

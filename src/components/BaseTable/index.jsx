@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import ContactCards from "../ContactCards/index";
 
 import { useLocation } from "react-router-dom";
-import { ClearNotification } from "../../utils/admin-notification";
 import ContactNavbar from "../ContactNavbar/index";
 import ContactProfile from "../Icons/ContactProfile";
 import Pending from "../Icons/Pending";
@@ -28,11 +27,6 @@ const BaseTable = (props) => {
       setCountData(resJson);
     }
     getTotal();
-    if ("contact-created" == location.state?.status) {
-      setShowNotification("block");
-      setMessage(location.state?.message);
-    }
-    ClearNotification("none", setShowNotification);
   }, [refresh]);
 
   return (
