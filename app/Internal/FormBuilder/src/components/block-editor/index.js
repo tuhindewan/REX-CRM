@@ -7,7 +7,7 @@ import { useSelect, useDispatch } from "@wordpress/data";
 import { useEffect, useState, useMemo } from "@wordpress/element";
 import { serialize, parse } from "@wordpress/blocks";
 import { uploadMedia } from "@wordpress/media-utils";
-import { SlotFillProvider, Popover } from "@wordpress/components";
+import { SlotFillProvider, Popover ,Button } from "@wordpress/components";
 
 import {
   BlockEditorKeyboardShortcuts,
@@ -22,6 +22,7 @@ import {
  * Internal dependencies
  */
 import Sidebar from "../sidebar";
+import { Inserter } from "../inserter";
 import { ShortcutProvider } from "@wordpress/keyboard-shortcuts";
 
 function BlockEditor({ settings: _settings }) {
@@ -30,6 +31,7 @@ function BlockEditor({ settings: _settings }) {
   const lastIndex = locationArray.at(-1);
   const id = lastIndex.replace("#", "");
   const [blocks, updateBlocks] = useState([]);
+  const [showAll, updateShowAll] = useState(false);
   const { createInfoNotice } = useDispatch("core/notices");
 
   const canUserCreateMedia = useSelect((select) => {
@@ -117,8 +119,14 @@ function BlockEditor({ settings: _settings }) {
     updateBlocks(newBlocks);
     window.localStorage.setItem("getmrmblocks", serialize(newBlocks));
   }
+  function handleShowAll(){
+    console.log( typeof showAll)
+    updateShowAll(true)
+
+  }
   return (
     <div className="get-mrm-block-editor">
+      <Button onClick={handleShowAll}> Show All</Button>
       <ShortcutProvider>
         <BlockEditorProvider
           value={blocks}
@@ -126,6 +134,10 @@ function BlockEditor({ settings: _settings }) {
           onChange={handlePersistBlocks}
           settings={settings}
         >
+          {showAll && <div className="interface-interface-skeleton__secondary-sidebar">
+            <Inserter setIsInserterOpened={true} />
+          </div>
+          }
           <Sidebar.InspectorFill>
             <BlockInspector />
           </Sidebar.InspectorFill>
