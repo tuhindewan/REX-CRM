@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 // import { Button } from "rsuite";
-import BaseTable from "../components/BaseTable/index";
+import BaseTable from "./Contacts/index";
 import Import from "../components/Icons/Import";
 import Plus from "../components/Icons/Plus";
 import { useGlobalStore } from "../hooks/useGlobalStore";
@@ -37,7 +37,7 @@ const Contacts = () => {
     hideGlobalNav: false,
   });
 
-  return <BaseTable endpoint="contacts" ></BaseTable>;
+  return <BaseTable endpoint="contacts"></BaseTable>;
 };
 
 export default Contacts;
