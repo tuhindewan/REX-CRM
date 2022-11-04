@@ -298,5 +298,21 @@ class ContactGroupModel{
     }
 
 
+    /**
+     * Return contact groups count data
+     * 
+     * @param mixed $type
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_groups_count( $type )
+    {
+        global $wpdb;
+        $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $group_table WHERE type = %s", [ $type ] ) ) );
+    }
+
+
     
 }

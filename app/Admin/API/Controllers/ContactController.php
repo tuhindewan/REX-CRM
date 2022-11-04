@@ -11,6 +11,7 @@ use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 use Mint\MRM\Constants;
 use MailchimpMarketing;
+use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\MRM\DataBase\Models\CustomFieldModel;
 use Mint\MRM\Internal\Constants as InternalConstants;
 use Mint\MRM\DataBase\Models\MessageModel;
@@ -195,14 +196,22 @@ class ContactController extends BaseController {
         $search     = isset( $params['search'] ) ? $params['search'] : '';
                 
         $contacts   = ContactModel::get_all( $offset, $perPage, $search );
+
+        // Merge tags and lists to contacts
         $contacts['data'] = array_map( function( $contact ){
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );
             return $contact;
         }, $contacts['data'] );
 
+        // Count contacts groups
+        $contacts['count_groups'] = [
+            'lists' => ContactGroupModel::get_groups_count( "tags" ),
+            'tags'  => ContactGroupModel::get_groups_count( "lists" )
+        ];
+
         $contacts['current_page'] = (int) $page;
-        error_log(print_r($contacts, 1));
+
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }
