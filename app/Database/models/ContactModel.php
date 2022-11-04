@@ -273,26 +273,22 @@ class ContactModel{
 		}
         
         // Prepare sql results for list view
-        try {
-            $query_results  =  $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", [$offset, $limit] ), ARRAY_A ) ;
-            $results = array();
-            
-            foreach( $query_results as $query_result ){
-                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
-                $new_meta = self::get_meta( $q_id );
-                $results[] = array_merge($query_result, $new_meta);
-            }
-
-            $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) );
-
-            return array(
-                'data'=> $results,
-                'total_pages' => ceil($count / $limit),
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
+        $query_results  =  $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", [$offset, $limit] ), ARRAY_A ) ;
+        $results = array();
+        
+        foreach( $query_results as $query_result ){
+            $q_id = isset($query_result['id']) ? $query_result['id'] : "";
+            $new_meta = self::get_meta( $q_id );
+            $results[] = array_merge($query_result, $new_meta);
         }
+
+        $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) );
+
+        return array(
+            'data'=> $results,
+            'total_pages' => ceil( $count / $limit ),
+            'count' => $count
+        );
 	
     }
 

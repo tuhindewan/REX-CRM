@@ -202,7 +202,7 @@ class ContactController extends BaseController {
         }, $contacts['data'] );
 
         $contacts['current_page'] = (int) $page;
-
+        error_log(print_r($contacts, 1));
         if(isset($contacts)) {
             return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
         }
