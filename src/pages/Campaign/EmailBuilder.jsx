@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-const Editor = React.lazy(() => import("../../Editor/Editor"));
+const Editor = React.lazy(() => import("../../components/Editor/Editor"));
 
 const EmailBuilder = (props) => {
   const {
