@@ -283,12 +283,11 @@ class ContactModel{
                 $results[] = array_merge($query_result, $new_meta);
             }
 
-            $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $contact_table $search_terms" ) );
-            $totalPages = ceil($count / $limit);
+            $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) );
 
             return array(
                 'data'=> $results,
-                'total_pages' => $totalPages,
+                'total_pages' => ceil($count / $limit),
                 'count' => $count
             );
         } catch(\Exception $e) {
