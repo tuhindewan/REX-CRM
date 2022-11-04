@@ -26,10 +26,10 @@ export default function SelectDropdown(props) {
   const handleMap = () => {
     setIsActiveMap(!isActiveMap);
   };
-  const handleSelect = (id, title, arg1) => {
+  const handleSelect = (id, title, field_value) => {
     setSelected(title);
     setIsActiveMap(false);
-    props.handleSelect(id, title, arg1)
+    props.handleSelect(id, title, field_value)
   };
   return (
     <>
@@ -67,7 +67,7 @@ export default function SelectDropdown(props) {
               <li
                 key={id}
                 className="single-column"
-                onClick={() => handleSelect(option.id, option.title, props.arg1)}
+                onClick={() => handleSelect(option.id, option.title, props.field_value)}
               >
                 <div class="mintmrm-checkbox">
                   <label className="mrm-custom-select-label">

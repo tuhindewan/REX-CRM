@@ -152,7 +152,7 @@ class ContactGroupModel{
         global $wpdb;
         $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
         
-        $results = $wpdb->get_results( $wpdb->prepare( "SELECT id, title FROM $group_table ORDER BY title ASC" ), ARRAY_A ) ;
+        $results = $wpdb->get_results( $wpdb->prepare( "SELECT id, title FROM $group_table WHERE type = %s ORDER BY title ASC", [$type] ), ARRAY_A ) ;
         return array(
             'data'          => $results
         );

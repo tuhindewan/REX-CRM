@@ -97,6 +97,18 @@ class Editor extends Component {
             device = attributes.device;
         return (
             <PanelBody title="Button Style" initialOpen={false}>
+                <div className="mrm-block-typography">
+                    <Typography
+                        label={__('Typography')}
+                        value={typography}
+                        onChange={ (value) => setAttributes({ typography: value }) }
+                        disableLineHeight
+                        device={device}
+                        onDeviceChange={value => setAttributes({ device: value })}
+                    />
+                </div>
+
+                <hr className="mrm-hr"/>
 
                 <label className="blocks-base-control__label">Text Color</label>
                 <ColorPalette
@@ -110,6 +122,46 @@ class Editor extends Component {
                     value = { attributes.buttonBgColor }
                 />
 
+                <RangeControl
+                    label={__(
+                        'Font size',
+                        'mrm'
+                    )}
+                    value={ attributes.buttonFontSize }
+                    onChange={ btnBorder => this.onChangeAttribute( 'buttonFontSize', btnBorder )}
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+                <RangeControl
+                    label={__(
+                        'Line Height',
+                        'mrm'
+                    )}
+                    value={attributes.lineHeight}
+                    onChange={(btn_lineHeight) =>
+                        setAttributes({lineHeight: btn_lineHeight})
+                    }
+                    allowReset={true}
+                    min={0}
+                    max={100}
+                    step={1}
+                />
+                <RangeControl
+                    label={__(
+                        'Letter Spacing',
+                        'mrm'
+                    )}
+                    value={attributes.letterSpacing}
+                    onChange={(btn_letterSpacing) =>
+                        setAttributes({letterSpacing: btn_letterSpacing})
+                    }
+                    allowReset={true}
+                    min={0}
+                    max={20}
+                    step={1}
+                />
                 <hr className="mrm-hr"/>
 
                 <label className="blocks-base-control__label">Border Radius</label>
@@ -215,54 +267,7 @@ class Editor extends Component {
                     max={100}
                     step={1}
                 />
-                <RangeControl
-                    label={__(
-                        'Line Height',
-                        'mrm'
-                    )}
-                    value={attributes.lineHeight}
-                    onChange={(btn_lineHeight) =>
-                        setAttributes({lineHeight: btn_lineHeight})
-                    }
-                    allowReset={true}
-                    min={0}
-                    max={100}
-                    step={1}
-                />
-                <RangeControl
-                    label={__(
-                        'Letter Spacing',
-                        'mrm'
-                    )}
-                    value={attributes.letterSpacing}
-                    onChange={(btn_letterSpacing) =>
-                        setAttributes({letterSpacing: btn_letterSpacing})
-                    }
-                    allowReset={true}
-                    min={0}
-                    max={20}
-                    step={1}
-                />
 
-                <label className="blocks-base-control__label">Font size</label>
-                <RangeControl
-                    value={ attributes.buttonFontSize }
-                    onChange={ btnBorder => this.onChangeAttribute( 'buttonFontSize', btnBorder )}
-                    allowReset={true}
-                    min={0}
-                    max={100}
-                    step={1}
-                />
-
-                <label className="blocks-base-control__label"></label>
-                <Typography
-                    // label={__('Typography')}
-                    value={typography}
-                    onChange={ (value) => setAttributes({ typography: value }) }
-                    disableLineHeight
-                    device={device}
-                    onDeviceChange={value => setAttributes({ device: value })}
-                />
             </PanelBody>
         )
     }

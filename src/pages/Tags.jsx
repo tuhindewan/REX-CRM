@@ -6,13 +6,15 @@ import Delete from "../components/Icons/Delete";
 import Search from "../components/Icons/Search";
 import TagIcon from "../components/Icons/TagIcon";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
-import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 import LoadingIndicator from "../components/LoadingIndicator";
 import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import TagItem from "../components/Tag/TagItem";
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import { deleteMultipleTagsItems, deleteSingleTag } from "../services/Tag";
+import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
+import {ClearNotification} from "../utils/admin-notification";
+
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 const Tags = () => {
@@ -228,10 +230,7 @@ const Tags = () => {
       }
     }
     getTags();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   const deleteTag = async (tag_id) => {

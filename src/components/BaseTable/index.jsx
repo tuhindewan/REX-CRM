@@ -10,8 +10,8 @@ import Unsubscribe from "../Icons/Unsubscribe";
 import SuccessfulNotification from "../SuccessfulNotification";
 import ContactListTable from "./ContactListTable";
 import ContactNavbar from "../ContactNavbar/index";
+import {  ClearNotification } from "../../utils/admin-notification";
 
-import "./style.css";
 
 const BaseTable = () => {
   const [refresh, setRefresh] = useState();
@@ -33,10 +33,7 @@ const BaseTable = () => {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [refresh]);
 
 

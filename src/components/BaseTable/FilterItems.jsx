@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Search from "../Icons/Search";
 import ColumnList from "./ColumnList";
 
@@ -25,11 +24,6 @@ export default function FilterItems(props) {
       <li className="single-column">
         <ColumnList title="Unsubscribe" name="unsubscribe" id="unsubscribe" />
       </li>
-      {/* {contactListColumns.map((column, index) => {
-              <li className="single-column">
-                <ColumnList title={column.title} key={index} />
-              </li>;
-            })} */}
     </ul>
   );
 }

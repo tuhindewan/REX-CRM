@@ -7,7 +7,7 @@ import Select from "./Import/Select";
 import SelectDropdown from "./SelectDropdown";
 import WarningNotification from "./WarningNotification";
 import ListenForOutsideClicks from "./ListenForOutsideClicks";
-
+import { ClearNotification } from "../utils/admin-notification";
 export default function SelectFieldsMap() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -124,10 +124,7 @@ export default function SelectFieldsMap() {
         setMessage(resJson.message);
       }
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     } catch (e) {
       setLoading(false);
     }
@@ -160,22 +157,22 @@ export default function SelectFieldsMap() {
   };
 
   // handle selectbox and prepare the mapping
-  function onSelect(field_id, field_name, arg1) {
+  function onSelect(field_id, field_name, field_value) {
     const selectedValue = field_id;
-    const idx = map.findIndex((item) => item.source == arg1);
+    const idx = map.findIndex((item) => item.source == field_value);
     if (selectedValue == "no_import") {
-      mapState.filter((item) => item.source != arg1);
+      mapState.filter((item) => item.source != field_value);
       return;
     }
     if (idx != -1) {
       // mapping already exists so update the map
-      map[idx]["source"] = arg1;
+      map[idx]["source"] = field_value;
       map[idx]["target"] = selectedValue;
     } else {
       setMapState([
         ...mapState,
         {
-          source: arg1,
+          source: field_value,
           target: selectedValue,
         },
       ]);
@@ -241,7 +238,7 @@ export default function SelectFieldsMap() {
                               <div className="form-group map-dropdown">
                                 <SelectDropdown
                                   handleSelect={onSelect}
-                                  arg1={header}
+                                  field_value={header}
                                   options={selectOptions}
                                 />
                               </div>

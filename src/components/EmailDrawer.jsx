@@ -2,6 +2,7 @@ import { useState } from "react";
 import { submitEmail } from "../services/Message";
 import CrossIcon from "./Icons/CrossIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
+import { ClearNotification } from "../utils/admin-notification";
 
 export default function EmailDrawer(props) {
   const { isClose, setIsClose, contact, refresh, setRefresh } = props;
@@ -49,12 +50,9 @@ export default function EmailDrawer(props) {
           email_body: "",
         });
         setRefresh(!refresh);
-        const timer = setTimeout(() => {
-          setShowNotification("none");
-        }, 3000);
         setSendEmailLoader(false);
 
-        return () => clearTimeout(timer);
+        ClearNotification('none',setShowNotification)
 
       } else {
         // Error messages

@@ -8,6 +8,7 @@ import { createContact } from "../../services/Contact";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../AddItemDropdown";
+import CrossIcon from "../Icons/CrossIcon";
 import InputItem from "../InputItem/index";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 
@@ -208,6 +209,24 @@ const CreateContact = (props) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const deleteSelectedList = (e, id) => {
+    const index = assignLists.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setAssignLists(assignLists.filter((item) => item.id != id));
+    }
+  };
+
+  const deleteSelectedTag = (e, id) => {
+    const index = assignTags.findIndex((item) => item.id == id);
+
+    // already in selected list so remove it from the array
+    if (0 <= index) {
+      setAssignTags(assignTags.filter((item) => item.id != id));
+    }
+  };
+
   return (
     <>
       <div className="create-contact">
@@ -301,7 +320,23 @@ const CreateContact = (props) => {
                   }
                   onClick={handleList}
                 >
-                  Select Lists
+                  {assignLists.length != 0
+                    ? assignLists?.map((list) => {
+                        return (
+                          <span className="single-list" key={list.id}>
+                            {list.title}
+
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={(e) => deleteSelectedList(e, list.id)}
+                            >
+                              <CrossIcon />
+                            </button>
+                          </span>
+                        );
+                      })
+                    : "Select Lists"}
                 </button>
                 <AddItemDropdown
                   isActive={isActiveList}
@@ -327,7 +362,23 @@ const CreateContact = (props) => {
                   }
                   onClick={handleTag}
                 >
-                  Select Tags
+                  {assignTags.length != 0
+                    ? assignTags?.map((tag) => {
+                        return (
+                          <span className="single-list" key={tag.id}>
+                            {tag.title}
+
+                            <button
+                              className="close-list"
+                              title="Delete"
+                              onClick={(e) => deleteSelectedTag(e, tag.id)}
+                            >
+                              <CrossIcon />
+                            </button>
+                          </span>
+                        );
+                      })
+                    : "Select Tags"}
                 </button>
                 <AddItemDropdown
                   isActive={isActiveTag}

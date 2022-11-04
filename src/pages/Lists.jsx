@@ -7,11 +7,13 @@ import ListIcon from "../components/Icons/ListIcon";
 import Search from "../components/Icons/Search";
 import ThreeDotIcon from "../components/Icons/ThreeDotIcon";
 import ListItem from "../components/List/ListItem";
-import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
-import LoadingIndicator from "../components/LoadingIndicator";
 import Pagination from "../components/Pagination";
 import SuccessfulNotification from "../components/SuccessfulNotification";
 import { useGlobalStore } from "../hooks/useGlobalStore";
+import LoadingIndicator from "../components/LoadingIndicator";
+import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
+import {ClearNotification} from "../utils/admin-notification";
+
 import {
   deleteMultipleListsItems,
   deleteSingleList,
@@ -247,10 +249,7 @@ const Lists = () => {
       }
     }
     getLists();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   // Get field id from child component

@@ -107,16 +107,21 @@ class ContactForm {
                 $show = false;
             }
         }
+
+        
+
 	    $block_html = '';
         $class      = '';
         foreach( $blocks as $block ) {
+
             if($block['blockName'] == 'core/columns'){
-                if(!isset($block['attrs']['style']['color']['background'])){
+                if(isset($block['attrs']['style']['color']['background'])){
+
                     $class = 'custom-background';
                 }
             }
             if($block['blockName'] == 'core/group'){
-                if(!isset($block['attrs']['style']['color']['background'])){
+                if(isset($block['attrs']['style']['color']['background'])){
                     $class = 'custom-background';
                 }
             }

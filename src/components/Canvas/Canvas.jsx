@@ -77,7 +77,6 @@ const Canvas = () => {
       method: 'get',
       url: `/wp-json/mrm/v1/workflows/${id}`
     }).then((response)=>{
-      //console.log(response.data['data']);
       setTitle(response.data['data'][0].title);
       setWorkflowData(response.data['data'][0].workflow_data);
       setGlobalState(response.data['data'][0].global_state);
@@ -135,9 +134,7 @@ const Canvas = () => {
   
 
   const deleteNode = useCallback((nodeID) => {
-    //console.log(`${nodeID}`);
     setNodes((prevNodes) => {
-      //console.log(prevNodes);
       return prevNodes.filter((node) => node.id != nodeID);
     });
     deleteEdges(nodeID);
@@ -145,9 +142,7 @@ const Canvas = () => {
 
   const deleteEdges = useCallback(
     (nodeID) => {
-      //console.log(`${nodeID}`);
       setEdges((prevEdges) => {
-        //console.log(prevEdges);
         return prevEdges.filter(
           (edge) => edge.source != nodeID && edge.target != nodeID
         );
@@ -157,7 +152,6 @@ const Canvas = () => {
   );
 
   const resetNode = (nodeID) => {
-    //console.log(`${nodeID}`);
     deleteEdges(nodeID);
   };
 
@@ -218,9 +212,6 @@ const Canvas = () => {
   );
 
   const allnodes = () => {
-    console.log(nodes)
-    console.log("Triggered...");
-    console.log(edges)
 
     let startNode = 0;
 
@@ -229,21 +220,18 @@ const Canvas = () => {
         startNode = idx;
         for (const jdx in nodes) {
           if (nodes[jdx].id === edges[startNode].target) {
-            console.log(`${nodes[jdx].action}...`);
             break;
           }
         }
       }
     }
     let currentNodeId = edges[startNode].target;
-    //console.log(currentNodeId)
 
     for (const idx in edges) {
       if (edges[idx].source === currentNodeId) {
         currentNodeId = edges[idx].target;
         for (const jdx in nodes) {
           if (nodes[jdx].id === currentNodeId) {
-            console.log(`${nodes[jdx].action}...`);
           }
         }
       }

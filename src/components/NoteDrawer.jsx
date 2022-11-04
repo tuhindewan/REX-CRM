@@ -3,6 +3,7 @@ import { getSingleNote, submitNote, updateNote } from "../services/Note";
 import CrossIcon from "./Icons/CrossIcon";
 import LoadingIndicator from "./LoadingIndicator";
 import SuccessfulNotification from "./SuccessfulNotification";
+import { ClearNotification } from "../utils/admin-notification";
 
 export default function NoteDrawer(props) {
   const { isCloseNote, setIsCloseNote, refresh, setRefresh } = props;
@@ -84,13 +85,10 @@ export default function NoteDrawer(props) {
         }
         setErrors({});
         setRefresh(!refresh);
-        const timer = setTimeout(() => {
-          setShowNotification("none");
-        }, 3000);
         setAddNoteLoader(false);
         setShowLoader(false);
 
-        return () => clearTimeout(timer);
+        ClearNotification('none',setShowNotification)
       } else {
         setAddNoteLoader(false);
 

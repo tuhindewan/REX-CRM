@@ -20,6 +20,8 @@ import LoadingIndicator from "./LoadingIndicator";
 import Pagination from "./Pagination";
 import PublishAlert from "./PublishAlert";
 import SuccessfulNotification from "./SuccessfulNotification";
+import { ClearNotification } from "../utils/admin-notification";
+
 
 export default function AllCampaigns() {
   // Admin active menu selection
@@ -64,10 +66,7 @@ export default function AllCampaigns() {
       setTotalPages(results.total_pages);
       setShowLoader(false);
     });
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification('none',setShowNotification)
   }, [page, perPage, query, refresh]);
 
   // Multiple selection confirmation
@@ -205,10 +204,7 @@ export default function AllCampaigns() {
       setIsUpdate("none");
       const isValid = validate();
       setIsValid(isValid);
-      const timer = setTimeout(() => {
-        setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification('none',setShowNotification)
     }
   };
 

@@ -48,6 +48,7 @@ export declare const blocks: {
     advanced_carousel: typeof Carousel;
     advanced_navbar: typeof Navbar;
     advanced_social: typeof Social;
+    advanced_hero: typeof Hero;
     advanced_wrapper: typeof Wrapper;
     advanced_section: typeof Section;
     advanced_group: typeof Group;
