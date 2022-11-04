@@ -18,6 +18,7 @@ import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import FormTemplate from "./FormTemplate";
 import { ClearNotification } from "../../utils/admin-notification";
+import { AddSuccessNotification } from "../../utils/admin-notification";
 
 
 export default function FormIndex(props) {
