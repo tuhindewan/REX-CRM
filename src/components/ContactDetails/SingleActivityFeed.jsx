@@ -3,6 +3,7 @@ import { deleteSingleNote } from "../../services/Note";
 import DeletePopup from "../DeletePopup";
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
 import EmailDeliveredIcon from "../Icons/EmailDeliveredIcon";
+import EmailFailedIcon from "../Icons/EmailFailedIcon";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
 import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
@@ -116,12 +117,20 @@ export default function SingleActivityFeed(props) {
                     </>
                   ) : (
                     <>
-                      <span className="icon icon-success">
-                        <EmailDeliveredIcon />
-                      </span>
+                      {activity.status === 'sent'
+                          ? (
+                              <span className="icon icon-success">
+                                <EmailDeliveredIcon />
+                              </span>
+                          ) : (
+                              <span className="icon icon-danger">
+                                <EmailFailedIcon />
+                              </span>
+                          )}
+
                       <div className="description">
                         <b>
-                          Sent {activity.email_subject} to{" "}
+                          {activity.status === 'sent' ? 'Sent' : 'Failed'} {activity.email_subject} to{" "}
                           {activity.email_address}
                         </b>
                         <div className="writen-note">{activity.email_body}</div>
