@@ -30,19 +30,6 @@ const Lists = () => {
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
 
-  // set navbar Buttons
-  useGlobalStore.setState({
-    navbarMarkup: (
-      <button
-        className="contact-save mintmrm-btn"
-        onClick={() => setShowCreate((prev) => !prev)}
-      >
-        + Add List
-      </button>
-    ),
-    hideGlobalNav: false,
-  });
-
   // editID is the id of the edit page
   const [editID, setEditID] = useState(0);
 
@@ -109,7 +96,7 @@ const Lists = () => {
   // loading or not
   const [loading, setLoading] = useState(false);
   const [showTableHead, setShowTableHead] = useState(false);
-
+  const [countGroups, setCountGroups] = useState([]);
   const [listening, setListening] = useState(false);
 
   const sortByRef = useRef(null);
@@ -241,8 +228,9 @@ const Lists = () => {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setLists(resJson.data.data);
-        setCount(resJson.data.count);
+        setCount(resJson.data.total_count);
         setTotalPages(resJson.data.total_pages);
+        setCountGroups(resJson.data.count_groups);
         setLoading(false);
         setShowTableHead(true);
       }
@@ -348,7 +336,7 @@ const Lists = () => {
 
   return (
     <>
-      <ContactNavbar />
+      <ContactNavbar countGroups={countGroups} />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">

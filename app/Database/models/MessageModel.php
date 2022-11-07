@@ -117,4 +117,10 @@ class MessageModel {
             return [];
         }
     }
+
+    public static function update( $message_id, $key, $value ) {
+        global $wpdb;
+        $msg_table_name = $wpdb->prefix . MessageSchema::$table_name;
+        $wpdb->update( $msg_table_name, [ $key => $value ], [ 'id' => $message_id ] );
+    }
 }

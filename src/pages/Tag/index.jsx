@@ -22,13 +22,23 @@ const Tags = () => {
   AdminNavMenuClassChange("mrm-admin", "contacts");
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
-
   // set navbar Buttons
   useGlobalStore.setState({
     navbarMarkup: (
       <button
         className="contact-save mintmrm-btn"
-        onClick={() => setShowCreate((prev) => !prev)}
+        onClick={() => {
+          // if user is currently updating reset the fields so that add new list displays a blank form
+          if (editID != 0) {
+            setEditID(0);
+            setValues({
+              title: "",
+              data: "",
+            });
+          } else {
+            setShowCreate((prevShowCreate) => !prevShowCreate);
+          }
+        }}
       >
         + Add Tag
       </button>
@@ -100,7 +110,7 @@ const Tags = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTableHead, setShowTableHead] = useState(false);
-
+  const [countGroups, setCountGroups] = useState([]);
   const [listening, setListening] = useState(false);
 
   const sortByRef = useRef(null);
@@ -223,14 +233,15 @@ const Tags = () => {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setTags(resJson.data.data);
-        setCount(resJson.data.count);
+        setCount(resJson.data.total_count);
         setTotalPages(resJson.data.total_pages);
+        setCountGroups(resJson.data.count_groups);
         setLoading(false);
         setShowTableHead(true);
       }
     }
     getTags();
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh, orderBy, orderType]);
 
   const deleteTag = async (tag_id) => {
@@ -338,7 +349,7 @@ const Tags = () => {
 
   return (
     <>
-      <ContactNavbar />
+      <ContactNavbar countGroups={countGroups} />
       {showCreate && (
         <div className="tag-contact">
           <div className="mintmrm-container">

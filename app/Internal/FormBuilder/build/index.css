@@ -159,9 +159,14 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 30px;
 }
 .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content .editor-styles-wrapper {
-  max-width: 900px;
   margin: 0 auto;
   width: 100%;
+  max-width: 900px;
+}
+.form-editor-page .interface-interface-skeleton__body .show-all-block .editor-styles-wrapper {
+  max-width: none;
+  width: calc(100% - 370px);
+  margin-left: 20px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar {
   width: 360px;
@@ -761,6 +766,60 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .get-mrm-block-editor__block-list .wp-block {
   max-width: 540px;
+}
+
+.get-mrm-block-editor > .components-button {
+  position: absolute;
+  z-index: 9;
+  background: #573bff;
+  color: #fff;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  padding: 8px 9px;
+  border: none;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.get-mrm-block-editor > .components-button svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+}
+.get-mrm-block-editor > .components-button svg path {
+  stroke: #fff;
+}
+.get-mrm-block-editor > .components-button.active svg {
+  transform: rotate(45deg);
+}
+.get-mrm-block-editor .mrm-block-editor-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar {
+  max-height: 720px;
+  overflow: auto;
+  overflow-x: hidden;
+  width: 0;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar::-webkit-scrollbar-track {
+  background: #f2f5f8;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar::-webkit-scrollbar-thumb {
+  background-color: #6f6af8;
+  border-radius: 20px;
+}
+.get-mrm-block-editor .block-editor-inserter__main-area {
+  background: #fff;
+  padding: 20px;
+}
+.get-mrm-block-editor .show-all-block .interface-interface-skeleton__secondary-sidebar {
+  width: 350px;
 }
 
 .pannel-toggle-btn-style, .mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button {

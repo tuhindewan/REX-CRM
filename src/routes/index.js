@@ -19,8 +19,8 @@ import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
-import Lists from "../pages/List";
-import Tags from "../pages/Tag";
+import Lists from "../pages/Tag/index";
+import Tags from "../pages/List/index";
 
 const routes = [
   {

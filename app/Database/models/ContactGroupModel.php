@@ -127,7 +127,7 @@ class ContactGroupModel{
             return array(
                 'data'          => $query_results,
                 'total_pages'   => $totalPages,
-                'count'         => $count
+                'total_count'   => $count
             );
         } catch(\Exception $e) {
             return NULL;
@@ -295,6 +295,22 @@ class ContactGroupModel{
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Return contact groups count data
+     * 
+     * @param mixed $type
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_groups_count( $type )
+    {
+        global $wpdb;
+        $group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $group_table WHERE type = %s", [ $type ] ) ) );
     }
 
 

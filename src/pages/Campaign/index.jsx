@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
@@ -207,6 +207,14 @@ export default function AllCampaigns() {
     }
   };
 
+  const [listening, setListening] = useState(false);
+
+  // Outside click events for bulk action dropdown
+  const threeDotRef = useRef(null);
+  useEffect(
+      ListenForOutsideClicks( listening, setListening, threeDotRef, setShowMoreOptions )
+  );
+
   return (
     <>
       <div className="campaign-index-page">
@@ -247,13 +255,14 @@ export default function AllCampaigns() {
                     <button
                       className="more-option"
                       onClick={() => setShowMoreOptions(!showMoreOptions)}
+                      ref={threeDotRef}
                     >
                       <ThreeDotIcon />
 
                       <ul
                         className={
                           showMoreOptions
-                            ? "select-option mintmrm-dropdown show"
+                            ? "select-option mintmrm-dropdown show "
                             : "select-option mintmrm-dropdown"
                         }
                       >

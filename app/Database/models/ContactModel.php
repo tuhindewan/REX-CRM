@@ -273,27 +273,22 @@ class ContactModel{
 		}
         
         // Prepare sql results for list view
-        try {
-            $query_results  =  $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", [$offset, $limit] ), ARRAY_A ) ;
-            $results = array();
-            
-            foreach( $query_results as $query_result ){
-                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
-                $new_meta = self::get_meta( $q_id );
-                $results[] = array_merge($query_result, $new_meta);
-            }
-
-            $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $contact_table $search_terms" ) );
-            $totalPages = ceil($count / $limit);
-
-            return array(
-                'data'=> $results,
-                'total_pages' => $totalPages,
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
+        $query_results  =  $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", [$offset, $limit] ), ARRAY_A ) ;
+        $results = array();
+        
+        foreach( $query_results as $query_result ){
+            $q_id = isset($query_result['id']) ? $query_result['id'] : "";
+            $new_meta = self::get_meta( $q_id );
+            $results[] = array_merge($query_result, $new_meta);
         }
+
+        $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) );
+
+        return array(
+            'data'=> $results,
+            'total_pages' => ceil( $count / $limit ),
+            'total_count' => $count
+        );
 	
     }
 
@@ -588,6 +583,34 @@ class ContactModel{
             return $results;
         }
         return false;
+    }
+
+
+    /**
+     * Return total number of contacts 
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_contacts_count()
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name" ) ) );
+    }
+
+
+    /**
+     * Return total number of contacts based on status
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_contacts_status_count( $status )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name WHERE status= %s", [$status] ) ) );
     }
     
 }

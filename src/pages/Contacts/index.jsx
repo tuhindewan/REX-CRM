@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import ContactCards from "../../components/ContactCards/index";
 
@@ -12,8 +12,7 @@ import ContactListTable from "./ContactListTable";
 import ContactNavbar from "../../components/ContactNavbar/index";
 import {  ClearNotification } from "../../utils/admin-notification";
 
-
-const BaseTable = () => {
+const BaseTable = (props) => {
   const [refresh, setRefresh] = useState();
   const [countData, setCountData] = useState([]);
   const [showNotification, setShowNotification] = useState("none");
@@ -39,6 +38,7 @@ const BaseTable = () => {
   return (
     <>
       <ContactNavbar />
+
       <div className="contact-list-page">
         <div className="mintmrm-container">
           <div className="contact-info-wrapper">
@@ -75,6 +75,7 @@ const BaseTable = () => {
           </div>
         </div>
       </div>
+
       <SuccessfulNotification display={showNotification} message={message} />
     </>
   );

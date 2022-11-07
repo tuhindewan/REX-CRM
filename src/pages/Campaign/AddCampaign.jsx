@@ -148,7 +148,7 @@ export default function AddCampaign(props) {
         setShowWarning("block");
         setMessage(response?.message);
       }
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     });
   };
 
@@ -293,8 +293,6 @@ export default function AddCampaign(props) {
     emailData[selectedEmailIndex]?.email_json,
   ]);
 
-  let handlePublish = async () => {};
-
   useUnload((e) => {
     e.preventDefault();
     e.returnValue = "";
@@ -339,36 +337,36 @@ export default function AddCampaign(props) {
   };
 
   // Set email subject text custom tag/placeholder
-  const handleSubjectPlaceholder = async ( placeholder ) => {
+  const handleSubjectPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.subject;
-    const newData = prevData + ' ' + placeholder;
+    const newData = prevData + " " + placeholder;
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
       if (newData.length > 200) {
         return copy;
       }
-      copy[selectedEmailIndex]['subject'] = newData;
+      copy[selectedEmailIndex]["subject"] = newData;
       return copy;
     });
     validatePublish();
-  }
+  };
 
   // Set email preview text custom tag/placeholder
-  const handlePreviewPlaceholder = async ( placeholder ) => {
+  const handlePreviewPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.preview;
-    const newData = prevData + ' ' + placeholder;
+    const newData = prevData + " " + placeholder;
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
       if (newData.length > 200) {
         return copy;
       }
-      copy[selectedEmailIndex]['preview'] = newData;
+      copy[selectedEmailIndex]["preview"] = newData;
       return copy;
     });
     validatePublish();
-  }
+  };
 
   return (
     <>
@@ -546,26 +544,68 @@ export default function AddCampaign(props) {
                   </span>
                   <div className="setting-section">
                     <div
-                        onClick={() => {
-                          setSubjectPersonalization((prev) => !prev);
-                        }}
+                      onClick={() => {
+                        setSubjectPersonalization((prev) => !prev);
+                      }}
                     >
                       <SettingIcon />
                     </div>
                     <ul
-                        className={
-                          subjectPersonalization
-                              ? "mintmrm-dropdown show"
-                              : "mintmrm-dropdown"
-                        }
+                      className={
+                        subjectPersonalization
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
                     >
                       <div className="title">Personalization</div>
-                      <li onClick={handleSubjectPlaceholder.bind( this, '{{first_name}}' )}>First name</li>
-                      <li onClick={handleSubjectPlaceholder.bind( this, '{{last_name}}' )}>Last Name</li>
-                      <li onClick={handleSubjectPlaceholder.bind( this, '{{email}}' )}>Email</li>
-                      <li onClick={handleSubjectPlaceholder.bind( this, '{{city}}' )}>City</li>
-                      <li onClick={handleSubjectPlaceholder.bind( this, '{{state}}' )}>State / Province</li>
-                      <li onClick={handleSubjectPlaceholder.bind( this, '{{country}}' )}>Country</li>
+                      <li
+                        onClick={handleSubjectPlaceholder.bind(
+                          this,
+                          "{{first_name}}"
+                        )}
+                      >
+                        First name
+                      </li>
+                      <li
+                        onClick={handleSubjectPlaceholder.bind(
+                          this,
+                          "{{last_name}}"
+                        )}
+                      >
+                        Last Name
+                      </li>
+                      <li
+                        onClick={handleSubjectPlaceholder.bind(
+                          this,
+                          "{{email}}"
+                        )}
+                      >
+                        Email
+                      </li>
+                      <li
+                        onClick={handleSubjectPlaceholder.bind(
+                          this,
+                          "{{city}}"
+                        )}
+                      >
+                        City
+                      </li>
+                      <li
+                        onClick={handleSubjectPlaceholder.bind(
+                          this,
+                          "{{state}}"
+                        )}
+                      >
+                        State / Province
+                      </li>
+                      <li
+                        onClick={handleSubjectPlaceholder.bind(
+                          this,
+                          "{{country}}"
+                        )}
+                      >
+                        Country
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -597,12 +637,54 @@ export default function AddCampaign(props) {
                       }
                     >
                       <div className="title">Personalization</div>
-                      <li onClick={handlePreviewPlaceholder.bind( this, '{{first_name}}' )}>First name</li>
-                      <li onClick={handlePreviewPlaceholder.bind( this, '{{last_name}}' )}>Last Name</li>
-                      <li onClick={handlePreviewPlaceholder.bind( this, '{{email}}' )}>Email</li>
-                      <li onClick={handlePreviewPlaceholder.bind( this, '{{city}}' )}>City</li>
-                      <li onClick={handlePreviewPlaceholder.bind( this, '{{state}}' )}>State / Province</li>
-                      <li onClick={handlePreviewPlaceholder.bind( this, '{{country}}' )}>Country</li>
+                      <li
+                        onClick={handlePreviewPlaceholder.bind(
+                          this,
+                          "{{first_name}}"
+                        )}
+                      >
+                        First name
+                      </li>
+                      <li
+                        onClick={handlePreviewPlaceholder.bind(
+                          this,
+                          "{{last_name}}"
+                        )}
+                      >
+                        Last Name
+                      </li>
+                      <li
+                        onClick={handlePreviewPlaceholder.bind(
+                          this,
+                          "{{email}}"
+                        )}
+                      >
+                        Email
+                      </li>
+                      <li
+                        onClick={handlePreviewPlaceholder.bind(
+                          this,
+                          "{{city}}"
+                        )}
+                      >
+                        City
+                      </li>
+                      <li
+                        onClick={handlePreviewPlaceholder.bind(
+                          this,
+                          "{{state}}"
+                        )}
+                      >
+                        State / Province
+                      </li>
+                      <li
+                        onClick={handlePreviewPlaceholder.bind(
+                          this,
+                          "{{country}}"
+                        )}
+                      >
+                        Country
+                      </li>
                     </ul>
                   </div>
                 </div>
