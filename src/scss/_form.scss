@@ -189,6 +189,8 @@
 
   .contact-list-area {
     .contact-list-table {
+      overflow-x: visible;
+      
       table {
         thead,
         tbody {
