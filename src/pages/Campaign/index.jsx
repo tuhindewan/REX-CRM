@@ -21,6 +21,7 @@ import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
 import Delete from "../../components/Icons/Delete";
 import { ClearNotification } from "../../utils/admin-notification";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function AllCampaigns() {
   // Admin active menu selection
