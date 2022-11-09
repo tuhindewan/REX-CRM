@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ContactListTable from "../components/BaseTable/ContactListTable";
+import ContactListTable from "./Contacts/ContactListTable";
 // import { Button } from "rsuite";
 import Import from "../components/Icons/Import";
 import Plus from "../components/Icons/Plus";

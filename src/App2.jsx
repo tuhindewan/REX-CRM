@@ -1,9 +1,7 @@
-import Editor from './Editor/Editor'
+import Editor from "./components/Editor/Editor";
 
 const App2 = () => {
-    return (
-        <Editor/>
-    );
+  return <Editor />;
 };
 
 export default App2;

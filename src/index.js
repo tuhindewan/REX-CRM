@@ -6,8 +6,8 @@ import App from "./App.jsx";
 /**
  * Import the stylesheet for the plugin.
  */
-import "./scss/style.scss";
-import "./style/main.scss";
+import "./assets/styles/scss/style.scss";
+import "./assets/styles/main.scss";
 
 
 const rootElement = document.getElementById('crm-app');
