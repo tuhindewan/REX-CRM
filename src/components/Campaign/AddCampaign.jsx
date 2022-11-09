@@ -61,25 +61,23 @@ export default function AddCampaign(props) {
   const [message, setMessage] = useState("");
 
   const menuRef = useRef(null);
-  /*const [listening, setListening] = useState(false);
+  const [listening, setListening] = useState(false);
   useEffect(
     ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
-  );*/
+  );
 
   const [previewPersonalization, setPreviewPersonalization] = useState(false);
   const [subjectPersonalization, setSubjectPersonalization] = useState(false);
 
   // Outside click events for bulk action dropdown
   const subjSettingsIconRef = useRef(null);
-  /*const [listeningSubjPersonalization, setListeningSubjPersonalization] = useState(false);
   useEffect(
-      ListenForOutsideClicks( listeningSubjPersonalization, setListeningSubjPersonalization, subjSettingsIconRef, setSubjectPersonalization )
-  );*/
+      ListenForOutsideClicks( listening, setListening, subjSettingsIconRef, setSubjectPersonalization )
+  );
   // Outside click events for bulk action dropdown
   const prevSettingsIconRef = useRef(null);
-  const [listeningPrevPersonalization, setListeningPrevPersonalization] = useState(false);
   useEffect(
-      ListenForOutsideClicks( listeningPrevPersonalization, setListeningPrevPersonalization, prevSettingsIconRef, setPreviewPersonalization )
+      ListenForOutsideClicks( listening, setListening, prevSettingsIconRef, setPreviewPersonalization )
   );
 
   const [listAdder, setListAdder] = useState({
@@ -555,7 +553,7 @@ export default function AddCampaign(props) {
                   <span>
                     {emailData[selectedEmailIndex]?.subject.length}/200
                   </span>
-                  <div className="setting-section">
+                  <div className="setting-section" ref={subjSettingsIconRef}>
                     <div
                       onClick={() => {
                         setSubjectPersonalization((prev) => !prev);
@@ -635,7 +633,7 @@ export default function AddCampaign(props) {
                   <span>
                     {emailData[selectedEmailIndex]?.preview.length}/200
                   </span>
-                  <div className="setting-section">
+                  <div className="setting-section" ref={prevSettingsIconRef}>
                     <div
                       onClick={() => {
                         setPreviewPersonalization((prev) => !prev);
@@ -649,7 +647,6 @@ export default function AddCampaign(props) {
                           ? "mintmrm-dropdown show"
                           : "mintmrm-dropdown"
                       }
-                      ref={prevSettingsIconRef}
                     >
                       <div className="title">Personalization</div>
                       <li

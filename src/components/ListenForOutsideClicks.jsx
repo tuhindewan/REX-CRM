@@ -10,8 +10,6 @@ export default function ListenForOutsideClicks(listening, setListening, menuRef,
                 const cur = menuRef.current
                 const node = evt.target
                 if (cur?.contains(node)) return
-                console.log( 'setIsOpen' );
-                console.log( setIsOpen );
                 setIsOpen(false)
             })
         })
