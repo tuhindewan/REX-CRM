@@ -1,25 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import React, { useEffect, useState } from "react";
 import AlertPopup from "../../components/AlertPopup";
 import DeletePopup from "../../components/DeletePopup";
 import CopyIcon from "../../components/Icons/CopyIcon";
+import Delete from "../../components/Icons/Delete";
+import EditIcon from "../../components/Icons/EditIcon";
 import FormIconSM from "../../components/Icons/FormIconSM";
 import FormIconXL from "../../components/Icons/FormIconXL";
 import Plus from "../../components/Icons/Plus";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
-import Pagination from "../../components/Pagination";
-import EyeIcon from "../../components/Icons/EyeIcon";
-import EditIcon from "../../components/Icons/EditIcon";
-import Delete from "../../components/Icons/Delete";
 import LoadingIndicator from "../../components/LoadingIndicator";
+import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { getAllTemplates } from "../../services/Form";
+import {
+  AddSuccessNotification,
+  ClearNotification,
+} from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import FormTemplate from "./FormTemplate";
-import { ClearNotification } from "../../utils/admin-notification";
-import { AddSuccessNotification } from "../../utils/admin-notification";
-
 
 export default function FormIndex(props) {
   // Admin active menu selection
@@ -67,7 +67,7 @@ export default function FormIndex(props) {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
 
-  // bulk action menu 
+  // bulk action menu
   const [isBulkAction, setBulkAction] = useState(false);
 
   // to send any error message
@@ -75,6 +75,8 @@ export default function FormIndex(props) {
 
   // get Id of any selected form
   const [formId, setFormId] = useState();
+
+  const [formTemplates, setFormTemplates] = useState([]);
 
   // Variables to show notifications
   const [showNotification, setShowNotification] = useState("none");
@@ -103,7 +105,6 @@ export default function FormIndex(props) {
     checkedB: false,
   });
 
-
   // to show bulk select options
   const showBulkAction = () => {
     setBulkAction(!isBulkAction);
@@ -114,10 +115,9 @@ export default function FormIndex(props) {
     setIsDelete(status);
   };
 
-
   /*
-  * Hooks
-  */
+   * Hooks
+   */
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
@@ -136,13 +136,19 @@ export default function FormIndex(props) {
       }
     }
     getForms();
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh, sortBy]);
 
+  // Get all form templates ffrom the helper addon
+  useEffect(() => {
+    getAllTemplates().then((response) => {
+      setFormTemplates(response.forms);
+    });
+  }, []);
 
   /*
-  * Functions 
-  */
+   * Functions
+   */
 
   // the data is fetched again whenever refresh is changed
   function toggleRefresh() {
@@ -266,7 +272,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     } else {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
@@ -291,7 +297,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -328,9 +334,9 @@ export default function FormIndex(props) {
     document.execCommand("copy");
 
     AddSuccessNotification({
-      message : setMessage("Shortcode copied ! "),
-      event : setShowNotification
-    })
+      message: setMessage("Shortcode copied ! "),
+      event: setShowNotification,
+    });
   };
 
   // handler for one single item click
@@ -357,8 +363,8 @@ export default function FormIndex(props) {
   };
 
   /*
-  * Render method
-  */
+   * Render method
+   */
 
   return (
     <div>
@@ -651,6 +657,7 @@ export default function FormIndex(props) {
         isNewCampaign={true}
         setIsClose={setIsClose}
         setIsTemplate={setIsTemplate}
+        formTemplates={formTemplates}
       />
     </div>
   );

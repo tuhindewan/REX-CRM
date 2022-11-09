@@ -1,10 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import CrossIcon from "../../components/Icons/CrossIcon";
 
 const FormTemplate = (props) => {
-  const { isClose, setIsClose, setIsTemplate, isOpen } = props;
-
+  const { isClose, setIsClose, setIsTemplate, isOpen, formTemplates } = props;
+  console.log(formTemplates);
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
