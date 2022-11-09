@@ -9,6 +9,7 @@ const FormTemplate = (props) => {
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
   const [formTemplates, setFormTemplates] = useState([]);
+  const [countFormTemplates, setCountFormTemplates] = useState(0);
   const [formBuilderUrl, setFormBuilderUrl] = useState(
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
   );
@@ -28,6 +29,7 @@ const FormTemplate = (props) => {
   useEffect(() => {
     getAllTemplates(1, 10).then((response) => {
       setFormTemplates(response.forms);
+      setCountFormTemplates(response.count);
     });
   }, []);
 
@@ -98,16 +100,16 @@ const FormTemplate = (props) => {
                   </div>
                 </div>
 
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
+                {formTemplates?.length > 0 &&
+                  formTemplates.map((template) => {
+                    return (
+                      <SingleTemplate
+                        key={template.id}
+                        template={template}
+                      />
+                    );
+                })}
+                
               </div>
             </div>
 

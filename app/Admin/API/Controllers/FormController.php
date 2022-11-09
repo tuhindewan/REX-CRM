@@ -377,12 +377,13 @@ class FormController extends BaseController {
         $response = self::remote_get( $api_url ,[
             'timeout'       => $timeout,
         ]);
-        
-        if( isset( $response['success'] ) && true == $response['success'] ){
-            error_log(print_r($response, 1));
 
+        if( isset( $response['success'] ) && true == $response['success'] ){
+            if( isset( $response['data'] ) && !empty( $response['data'] ) ){
+                return rest_ensure_response( $response['data']['data'] );
+            }
+            return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
         }
-        $forms = $response['data']['data']['forms'];
         
         // if ($force_update || false === $templates_data) {
         //     $timeout = ($force_update) ? 40 : 55;
@@ -393,7 +394,6 @@ class FormController extends BaseController {
         //     $forms = $response['data']['data']['forms'];
         //     set_transient($cache_key, $forms, 24 * HOUR_IN_SECONDS);
         // }
-        return $forms;
         
     }
 

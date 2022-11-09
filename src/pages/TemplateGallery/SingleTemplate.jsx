@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SingleTemplate() {
+export default function SingleTemplate(props) {
 
+  const {id, title, featured_image} = props.template;
   return (
     <>
       <div className="mintmrm-single-template">
@@ -11,11 +12,13 @@ export default function SingleTemplate() {
             <div className="hoverlay">
               <button type="button" className="select-this mintmrm-btn">Select</button>
             </div>
-            <div className="template-image-wrapper"> </div>
+            <div className="template-image-wrapper"> 
+              <img src={featured_image} alt="contact-author-img" />
+            </div>
           </div>
 
           <div className="template-info">
-            <span className="title">Sunglasses</span>
+            <span className="title">{title}</span>
           </div>
         </div>
 
