@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import CrossIcon from "../../components/Icons/CrossIcon";
 
 import EmailBuilder from "./EmailBuilder";
+import SingleTemplate from "../TemplateGallery/SingleTemplate";
 
 export default function CampaignTemplates(props) {
   const {
@@ -53,61 +54,65 @@ export default function CampaignTemplates(props) {
 
   return (
     <>
-      <div
-        className={
-          props.isOpen && !isClose
-            ? "mintmrm-template-alert-wrapper"
-            : "mintmrm-template-alert-wrapper inactive"
-        }
-      >
-        <div class="mintmrm-template-confirmation">
-          <div className="template-confirmation-header">
-            <h3>Choose Template</h3>
-            <div className="cross-icon" onClick={closeSection}>
-              <CrossIcon />
-            </div>
+      <div className="mintmrm-template-modal">
+        <div className="template-modal-inner">
+          <div className="cross-icon" onClick={closeSection}>
+            <CrossIcon />
           </div>
-          <div className="template-confirmation-body">
-            <div className="template-header">
-              <div className="template-tab-section">
-                <ul className="tab-list">
-                  <li className="brand-template active">Branded templates</li>
-                  {/* <li className="my-templates">My templates</li> */}
-                </ul>
-              </div>
-              <div className="email-type-dropdown">
-                {/* <button className="type-button">Email Type</button> */}
-              </div>
-            </div>
-            <div className="template-body">
-              <div
-                className="template-select-section"
-                onClick={openTemplateBuilder}
-              >
-                {emailData?.email_body?.length === 0 ? (
-                  <Link to="">
-                    <button
-                      type="submit"
-                      className="save-template mintmrm-btn "
-                    >
-                      Start From Scratch
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="">
-                    <button
-                      type="submit"
-                      className="save-template mintmrm-btn "
-                    >
-                      Edit Template
-                    </button>
-                  </Link>
-                )}
-              </div>
-              <div className="template-select-section coming-soon">
-                <h2>Amazing Templates Are Coming Soon</h2>
+
+          <div className="template-modal-overflow">
+            <div className="template-modal-header">
+              <h4 className="modal-title">Choose Form</h4>
+
+              <ul className="template-filter">
+                <li className="active">Pop-up</li>
+                <li>Slide–in</li>
+                <li>Fixed bar</li>
+                <li>Below pages</li>
+              </ul>
+
+              <div className="template-type">
+                <select name="" id="">
+                  <option value="">Form Type</option>
+                </select>
               </div>
             </div>
+
+            <div className="template-modal-body">
+              <div className="mintmrm-template-wrapper">
+
+                <div className="mintmrm-single-template create-from-scratch">
+
+                  <div className="mintmrm-single-remote-wrapper">
+                      <div className="mintmrm-single-remote-template">
+                        <a href="#" className="mintmrm-btn"> Start From scratch </a>
+                        <div className="template-image-wrapper"></div>
+                      </div>
+
+                      <div className="template-info">
+                        <span className="title">title</span>
+                      </div>
+                  </div>
+                </div>
+
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+
+              </div>
+            </div>
+
+            <div className="template-modal-footer">
+
+            </div>
+
           </div>
         </div>
       </div>
