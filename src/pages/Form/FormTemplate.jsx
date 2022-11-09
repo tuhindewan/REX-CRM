@@ -88,9 +88,6 @@ const FormTemplate = (props) => {
                 <SingleTemplate />
                 <SingleTemplate />
                 <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
 
               </div>
             </div>

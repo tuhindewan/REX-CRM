@@ -123,9 +123,6 @@ export default function CampaignTemplates(props) {
                 <SingleTemplate />
                 <SingleTemplate />
                 <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
 
               </div>
             </div>
