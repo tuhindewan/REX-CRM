@@ -389,6 +389,7 @@ const FormEditor = (props) => {
               <button
                 className={moreOption ? "three-dot-btn show" : "three-dot-btn"}
                 onClick={clickShowOption}
+                ref={menuRef}
               >
                 <ThreeDotIcon />
                 <ul className="mintmrm-dropdown">

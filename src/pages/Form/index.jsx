@@ -19,7 +19,7 @@ import SuccessfulNotification from "../../components/SuccessfulNotification";
 import FormTemplate from "./FormTemplate";
 import { ClearNotification } from "../../utils/admin-notification";
 import { AddSuccessNotification } from "../../utils/admin-notification";
-
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function FormIndex(props) {
   // Admin active menu selection
@@ -67,7 +67,10 @@ export default function FormIndex(props) {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
 
-  // bulk action menu 
+  // whether to show more options or not
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
+
+  // bulk action menu
   const [isBulkAction, setBulkAction] = useState(false);
 
   // to send any error message
@@ -103,7 +106,6 @@ export default function FormIndex(props) {
     checkedB: false,
   });
 
-
   // to show bulk select options
   const showBulkAction = () => {
     setBulkAction(!isBulkAction);
@@ -114,10 +116,17 @@ export default function FormIndex(props) {
     setIsDelete(status);
   };
 
+  const [listening, setListening] = useState(false);
+
+  // Outside click events for bulk action dropdown
+  const threeDotRef = useRef(null);
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, threeDotRef, setShowMoreOptions)
+  );
 
   /*
-  * Hooks
-  */
+   * Hooks
+   */
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
@@ -136,13 +145,12 @@ export default function FormIndex(props) {
       }
     }
     getForms();
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh, sortBy]);
 
-
   /*
-  * Functions 
-  */
+   * Functions
+   */
 
   // the data is fetched again whenever refresh is changed
   function toggleRefresh() {
@@ -266,7 +274,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     } else {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
@@ -291,7 +299,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -328,9 +336,9 @@ export default function FormIndex(props) {
     document.execCommand("copy");
 
     AddSuccessNotification({
-      message : setMessage("Shortcode copied ! "),
-      event : setShowNotification
-    })
+      message: setMessage("Shortcode copied ! "),
+      event: setShowNotification,
+    });
   };
 
   // handler for one single item click
@@ -357,8 +365,8 @@ export default function FormIndex(props) {
   };
 
   /*
-  * Render method
-  */
+   * Render method
+   */
 
   return (
     <div>
@@ -428,20 +436,26 @@ export default function FormIndex(props) {
                   </span>
 
                   <div className="bulk-action">
-                    <button className="more-option" onClick={showBulkAction}>
-                      <ThreeDotIcon />
-                    </button>
-                    <ul
-                      className={
-                        isBulkAction
-                          ? "select-option mintmrm-dropdown show"
-                          : "select-option mintmrm-dropdown"
-                      }
+                    {/* show more options section */}
+                    <button
+                      className="more-option"
+                      onClick={() => setShowMoreOptions(!showMoreOptions)}
+                      ref={threeDotRef}
                     >
-                      <li className="delete" onClick={deleteMultipleList}>
-                        Delete
-                      </li>
-                    </ul>
+                      <ThreeDotIcon />
+
+                      <ul
+                        className={
+                          showMoreOptions
+                            ? "select-option mintmrm-dropdown show "
+                            : "select-option mintmrm-dropdown"
+                        }
+                      >
+                        <li onClick={deleteMultipleList}>
+                          <Delete /> Delete Selected
+                        </li>
+                      </ul>
+                    </button>
                   </div>
                 </div>
               </div>
