@@ -84,10 +84,21 @@ const FormEditor = (props) => {
   const [resTime, setResTime] = useState(2000);
 
   const navigate = useNavigate();
+
+  // code for outside clicks for campaign select
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
   useEffect(
     ListenForOutsideClicks(listening, setListening, menuRef, setDropDown)
+  );
+
+  // outside click for threeDotOption
+  const [listeningThreeDot, setListeningThreeDot] = useState(false);
+
+  // Outside click events for bulk action dropdown
+  const threeDotRef = useRef(null);
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, threeDotRef, setMoreOption)
   );
 
   const toggleEnable = () => {
@@ -389,7 +400,7 @@ const FormEditor = (props) => {
               <button
                 className={moreOption ? "three-dot-btn show" : "three-dot-btn"}
                 onClick={clickShowOption}
-                ref={menuRef}
+                ref={threeDotRef}
               >
                 <ThreeDotIcon />
                 <ul className="mintmrm-dropdown">
