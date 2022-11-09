@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import CrossIcon from "../../components/Icons/CrossIcon";
 
 import EmailBuilder from "./EmailBuilder";
+import SingleTemplate from "../TemplateGallery/SingleTemplate";
 
 export default function CampaignTemplates(props) {
   const {
@@ -58,70 +59,61 @@ export default function CampaignTemplates(props) {
           <div className="cross-icon" onClick={closeSection}>
             <CrossIcon />
           </div>
-          
-          <div className="template-modal-header">
-            <h4 className="modal-title">Choose Form</h4>
 
-            <ul className="template-filter">
-              <li className="active">Pop-up</li>
-              <li>Slide–in</li>
-              <li>Fixed bar</li>
-              <li>Below pages</li>
-            </ul>
+          <div className="template-modal-overflow">
+            <div className="template-modal-header">
+              <h4 className="modal-title">Choose Form</h4>
 
-            <div className="template-type">
-              <select name="" id="">
-                <option value="">Form Type</option>
-              </select>
+              <ul className="template-filter">
+                <li className="active">Pop-up</li>
+                <li>Slide–in</li>
+                <li>Fixed bar</li>
+                <li>Below pages</li>
+              </ul>
+
+              <div className="template-type">
+                <select name="" id="">
+                  <option value="">Form Type</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="template-modal-body">
-            <div className="mintmrm-template-wrapper">
+            <div className="template-modal-body">
+              <div className="mintmrm-template-wrapper">
 
-              <div className="mintmrm-single-template create-from-scratch">
-                <a href="#" className="mintmrm-btn"> Start From scratch </a>
+                <div className="mintmrm-single-template create-from-scratch">
 
-                <div className="mintmrm-single-remote-wrapper">
-                    <div className="mintmrm-single-remote-template">
-                      <div className="template-image-wrapper"></div>
-                    </div>
+                  <div className="mintmrm-single-remote-wrapper">
+                      <div className="mintmrm-single-remote-template">
+                        <a href="#" className="mintmrm-btn"> Start From scratch </a>
+                        <div className="template-image-wrapper"></div>
+                      </div>
 
-                    <div className="template-info">
-                      <span className="title">title</span>
-                    </div>
-                </div>
-              </div>
-
-              <div className="mintmrm-single-template">
-                <div className="mintmrm-single-remote-wrapper">
-                  <div className="mintmrm-single-remote-template">
-                    <div className="template-image-wrapper"> </div>
-                  </div>
-
-                  <div className="template-info">
-                    <span className="title"></span>
-                    <div className="template-action">
-                      <span className="steps"> steps</span>
-
-                      <a href="" target="_blank" className="mintmrm-btn preview">
-                        Preview
-                      </a>
-
-                    </div>
+                      <div className="template-info">
+                        <span className="title">title</span>
+                      </div>
                   </div>
                 </div>
 
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+                <SingleTemplate />
+
               </div>
+            </div>
+
+            <div className="template-modal-footer">
 
             </div>
 
           </div>
-
-          <div className="template-modal-footer">
-
-          </div>
-
         </div>
       </div>
 
