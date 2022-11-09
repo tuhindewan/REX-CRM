@@ -13,7 +13,6 @@ import LoadingIndicator from "../../components/LoadingIndicator";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { getAllTemplates } from "../../services/Form";
 import {
   AddSuccessNotification,
   ClearNotification,
@@ -76,8 +75,6 @@ export default function FormIndex(props) {
   // get Id of any selected form
   const [formId, setFormId] = useState();
 
-  const [formTemplates, setFormTemplates] = useState([]);
-
   // Variables to show notifications
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
@@ -138,13 +135,6 @@ export default function FormIndex(props) {
     getForms();
     ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh, sortBy]);
-
-  // Get all form templates ffrom the helper addon
-  useEffect(() => {
-    getAllTemplates().then((response) => {
-      setFormTemplates(response.forms);
-    });
-  }, []);
 
   /*
    * Functions
@@ -657,7 +647,6 @@ export default function FormIndex(props) {
         isNewCampaign={true}
         setIsClose={setIsClose}
         setIsTemplate={setIsTemplate}
-        formTemplates={formTemplates}
       />
     </div>
   );

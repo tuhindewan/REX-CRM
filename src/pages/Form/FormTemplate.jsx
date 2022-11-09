@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CrossIcon from "../../components/Icons/CrossIcon";
+import { getAllTemplates } from "../../services/Form";
 
 const FormTemplate = (props) => {
-  const { isClose, setIsClose, setIsTemplate, isOpen, formTemplates } = props;
-  console.log(formTemplates);
+  const { isClose, setIsClose, setIsTemplate, isOpen } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
+  const [formTemplates, setFormTemplates] = useState([]);
   const [formBuilderUrl, setFormBuilderUrl] = useState(
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
   );
@@ -21,6 +22,13 @@ const FormTemplate = (props) => {
     setIsTemplateBuilder(true);
     setIsCloseBuilder(!isCloseBuilder);
   };
+
+  // Get all form templates ffrom the helper addon
+  useEffect(() => {
+    getAllTemplates(1, 10).then((response) => {
+      setFormTemplates(response.forms);
+    });
+  }, []);
 
   // Templates selection popup close after finishing email building
   const setCloseTemplateSelection = (status) => {
@@ -37,6 +45,7 @@ const FormTemplate = (props) => {
 
   return (
     <>
+      {console.log(formTemplates)}
       <div
         className={
           isOpen && !isClose

@@ -344,4 +344,68 @@ class FormController extends BaseController {
     }
 
 
+
+    /**
+     * Function used to get all form templates
+     * 
+     * @param WP_REST_Request $request
+     * @return [type]
+     * @since 1.0.0
+     */
+    public function get_form_templates( WP_REST_Request $request )
+    {
+        // Get values from API request
+        $params = MRM_Common::get_api_params_values( $request );
+        
+        $force_update  = isset( $params['force_update'] ) ? $params['force_update'] : "";
+
+        $cache_key = 'mrm_form_templates_data_'. MRM_VERSION;
+        
+        // $templates_data = apply_filters('mrm/form_templates_data', get_transient($cache_key));
+
+        $timeout = ($force_update) ? 40 : 55;
+
+        $response = self::remote_get("https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/all", [
+            'timeout'       => $timeout,
+        ]);
+        
+        $forms = $response['data']['data']['forms'];
+        
+        // if ($force_update || false === $templates_data) {
+        //     $timeout = ($force_update) ? 40 : 55;
+
+        //     $templates = self::remote_get("https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/all", [
+        //         'timeout'       => $timeout,
+        //     ]);
+        //     $forms = $response['data']['data']['forms'];
+        //     set_transient($cache_key, $forms, 24 * HOUR_IN_SECONDS);
+        // }
+        return $forms;
+        
+    }
+
+
+    /**
+	 * @param $url
+	 * @param $args
+	 * @return array
+	 */
+    private function remote_get($url, $args)
+    {
+        $response = wp_remote_get($url, $args);
+        if ( is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response) ) {
+            return [
+                'success' => false,
+                'message' => $this->get_error_response(__('Failed to get data.', 'mrm' ), 400),
+                'data'    => $response,
+            ];
+        }
+        return [
+            'success' => true,
+            'message' => 'Data successfully retrieved',
+            'data'    => json_decode(wp_remote_retrieve_body($response), true),
+        ];
+    }
+
+
 }
