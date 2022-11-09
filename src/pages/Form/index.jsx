@@ -121,8 +121,16 @@ export default function FormIndex(props) {
   // Outside click events for bulk action dropdown
   const threeDotRef = useRef(null);
   useEffect(
-    ListenForOutsideClicks(listening, setListening, threeDotRef, setShowMoreOptions)
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      threeDotRef,
+      setShowMoreOptions
+    )
   );
+
+  // shrink title
+  const [titleShrink, setTitleShrink] = useState("");
 
   /*
    * Hooks
@@ -364,6 +372,15 @@ export default function FormIndex(props) {
     setAllSelected(!allSelected);
   };
 
+  // handle to shrink the title if it's greater than 25 character
+  const handleTitleShrink = (title) => {
+    if (26 > title.length) {
+      return title;
+    }else {
+      return title.slice(0,25)+'...';
+    }
+  };
+
   /*
    * Render method
    */
@@ -516,7 +533,7 @@ export default function FormIndex(props) {
                                             openFormBuilder(form.id)
                                           }
                                         >
-                                          {form.title}
+                                          {handleTitleShrink(form.title)}
                                         </a>
 
                                         <small>{form.created_ago} ago</small>
