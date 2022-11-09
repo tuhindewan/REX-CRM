@@ -22,7 +22,7 @@ import SuccessfulNotification from "../../components/SuccessfulNotification";
 import WarningNotification from "../../components/WarningNotification";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";
-import {  ClearNotification } from "../../utils/admin-notification";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 const FormEditor = (props) => {
   // Admin active menu selection
@@ -203,7 +203,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
       return () => clearTimeout(timer);
     } else {
       const res = await fetch(
@@ -226,7 +226,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -269,7 +269,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     } else {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/${id}`,
@@ -291,7 +291,7 @@ const FormEditor = (props) => {
         setSaveSuccess(false);
         setsaveLoader(false);
       }
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -456,11 +456,14 @@ const FormEditor = (props) => {
                       className="all-recipients selected show"
                       onClick={showDropDown}
                     >
-                      <span className="tags">{recipientTags?.length} Tags</span>
-                      <span className="from">and</span>
                       <span className="lists">
-                        {recipientLists?.length} Lists.
+                        {recipientLists?.length} Lists
                       </span>
+
+                      <span className="from">and</span>
+
+                      <span className="tags">{recipientTags?.length} Tags.</span>
+
                       <span className="recipients"></span>
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
                     </button>
