@@ -357,7 +357,7 @@ class FormController extends BaseController {
      * Function used to get all form templates
      * 
      * @param WP_REST_Request $request
-     * @return [type]
+     * @return WP_REST_Response
      * @since 1.0.0
      */
     public function get_form_templates( WP_REST_Request $request )
@@ -369,32 +369,26 @@ class FormController extends BaseController {
 
         $cache_key = 'mrm_form_templates_data_'. MRM_VERSION;
         
-        // $templates_data = apply_filters('mrm/form_templates_data', get_transient($cache_key));
+        // Get form templates transient data
+        $templates_data = apply_filters('mrm/form_templates_data', get_transient($cache_key));
+        
+        // Set transient for form templates
+        if ($force_update || false === $templates_data) {
+            $timeout = ($force_update) ? 40 : 55;
 
-        $timeout = ($force_update) ? 40 : 55;
+            $api_url = self::get_form_templates_remote_api_url();
+            $response = self::remote_get( $api_url ,[
+                'timeout'       => $timeout,
+            ]);
 
-        $api_url = self::get_form_templates_remote_api_url();
-        $response = self::remote_get( $api_url ,[
-            'timeout'       => $timeout,
-        ]);
-
-        if( isset( $response['success'] ) && true == $response['success'] ){
-            if( isset( $response['data'] ) && !empty( $response['data'] ) ){
-                return rest_ensure_response( $response['data']['data'] );
+            if( isset( $response['success'] ) && true == $response['success'] ){
+                if( isset( $response['data'] ) && !empty( $response['data'] ) ){
+                    set_transient($cache_key, $response['data']['data'], 24 * HOUR_IN_SECONDS);
+                }
             }
-            return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
         }
-        
-        // if ($force_update || false === $templates_data) {
-        //     $timeout = ($force_update) ? 40 : 55;
 
-        //     $templates = self::remote_get("https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/all", [
-        //         'timeout'       => $timeout,
-        //     ]);
-        //     $forms = $response['data']['data']['forms'];
-        //     set_transient($cache_key, $forms, 24 * HOUR_IN_SECONDS);
-        // }
-        
+        return rest_ensure_response( $templates_data );
     }
 
 
