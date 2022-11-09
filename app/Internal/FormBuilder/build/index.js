@@ -13767,7 +13767,7 @@ class Editor extends Component {
   onChangeOutlineStyle = (outline, onChangeOutlineStyle) => {
     this.props.setAttributes({
       outline: onChangeOutlineStyle,
-      buttonBorderStyle: 'solid',
+      buttonBorderStyle: "solid",
       buttonTextColor: "#573bff",
       buttonBorderColor: "#573bff"
     });
@@ -13807,7 +13807,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-block-typography"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Typography"),
       value: typography,
       onChange: value => setAttributes({
         typography: value
@@ -13822,38 +13822,41 @@ class Editor extends Component {
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Text Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: buttonTextColor => this.onChangeAttribute('buttonTextColor', buttonTextColor),
+      onChange: buttonTextColor => this.onChangeAttribute("buttonTextColor", buttonTextColor),
       value: attributes.buttonTextColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Background Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: buttonBgColor => this.onChangeAttribute('buttonBgColor', buttonBgColor),
+      onChange: buttonBgColor => this.onChangeAttribute("buttonBgColor", buttonBgColor),
       value: attributes.buttonBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Font size', 'mrm'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Font size", "mrm"),
       value: attributes.buttonFontSize,
-      onChange: btnBorder => this.onChangeAttribute('buttonFontSize', btnBorder),
+      onChange: btnBorder => this.onChangeAttribute("buttonFontSize", btnBorder),
       allowReset: true,
+      resetFallbackValue: 15,
       min: 0,
       max: 100,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Line Height', 'mrm'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Line Height", "mrm"),
       value: attributes.lineHeight,
       onChange: btn_lineHeight => setAttributes({
         lineHeight: btn_lineHeight
       }),
       allowReset: true,
+      resetFallbackValue: 1,
       min: 0,
       max: 100,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Letter Spacing', 'mrm'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Letter Spacing", "mrm"),
       value: attributes.letterSpacing,
       onChange: btn_letterSpacing => setAttributes({
         letterSpacing: btn_letterSpacing
       }),
       allowReset: true,
+      resetFallbackValue: 0,
       min: 0,
       max: 20,
       step: 1
@@ -13863,8 +13866,9 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Radius"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.buttonBorderRadius,
-      onChange: btnRadius => this.onChangeAttribute('buttonBorderRadius', btnRadius),
+      onChange: btnRadius => this.onChangeAttribute("buttonBorderRadius", btnRadius),
       allowReset: true,
+      resetFallbackValue: 5,
       min: 0,
       max: 100,
       step: 1
@@ -13872,27 +13876,27 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Style"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
       value: attributes.buttonBorderStyle,
-      onChange: buttonBorderStyle => this.onChangeAttribute('buttonBorderStyle', buttonBorderStyle),
+      onChange: buttonBorderStyle => this.onChangeAttribute("buttonBorderStyle", buttonBorderStyle),
       options: [{
-        value: 'none',
-        label: 'None'
+        value: "none",
+        label: "None"
       }, {
-        value: 'solid',
-        label: 'Solid'
+        value: "solid",
+        label: "Solid"
       }, {
-        value: 'Dashed',
-        label: 'dashed'
+        value: "Dashed",
+        label: "dashed"
       }, {
-        value: 'Dotted',
-        label: 'dotted'
+        value: "Dotted",
+        label: "dotted"
       }, {
-        value: 'Double',
-        label: 'double'
+        value: "Double",
+        label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Button Outline Style', 'mrm'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Button Outline Style", "mrm"),
       value: attributes.outline,
-      onChange: outline_style => this.onChangeOutlineStyle('outline', outline_style),
+      onChange: outline_style => this.onChangeOutlineStyle("outline", outline_style),
       options: [{
         value: "fill",
         label: "Fill"
@@ -13904,8 +13908,9 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Button Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.buttonWidth,
-      onChange: buttonWidth => this.onChangeAttribute('buttonWidth', buttonWidth),
+      onChange: buttonWidth => this.onChangeAttribute("buttonWidth", buttonWidth),
       allowReset: true,
+      resetFallbackValue: 20,
       min: 0,
       max: 100,
       step: 10
@@ -13913,33 +13918,36 @@ class Editor extends Component {
       className: "blocks-base-control__label"
     }, "Border Width"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
       value: attributes.buttonBorderWidth,
-      onChange: btnBorder => this.onChangeAttribute('buttonBorderWidth', btnBorder),
+      onChange: btnBorder => this.onChangeAttribute("buttonBorderWidth", btnBorder),
       allowReset: true,
+      resetFallbackValue: 1,
       min: 0,
       max: 5,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       className: "blocks-base-control__label"
     }, "Border Color"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      onChange: buttonBorderColor => this.onChangeAttribute('buttonBorderColor', buttonBorderColor),
+      onChange: buttonBorderColor => this.onChangeAttribute("buttonBorderColor", buttonBorderColor),
       value: attributes.buttonBorderColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Padding Top & Bottom', 'wpfnl'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Padding Top & Bottom", "wpfnl"),
       value: attributes.paddingTopBottom,
       onChange: btn_padding_top_bottom => setAttributes({
         paddingTopBottom: btn_padding_top_bottom
       }),
       allowReset: true,
+      resetFallbackValue: 15,
       min: 0,
       max: 100,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Padding Left & Right', 'mrm'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Padding Left & Right", "mrm"),
       value: attributes.paddingLeftRight,
       onChange: btn_padding_left_right => setAttributes({
         paddingLeftRight: btn_padding_left_right
       }),
       allowReset: true,
+      resetFallbackValue: 15,
       min: 0,
       max: 100,
       step: 1
@@ -13976,14 +13984,14 @@ class Editor extends Component {
       }
     } = this.props;
     let fieldSpacing = {
-      marginBottom: rowSpacing + 'px',
+      marginBottom: rowSpacing + "px",
       textAlign: buttonAlign
     };
     let buttonStyle = {
       // backgroundColor: buttonBgColor,
-      backgroundColor: outline === 'fill' ? buttonBgColor : 'transparent',
+      backgroundColor: outline === "fill" ? buttonBgColor : "transparent",
       color: buttonTextColor,
-      borderRadius: buttonBorderRadius + 'px',
+      borderRadius: buttonBorderRadius + "px",
       padding: "" + paddingTopBottom + "px " + paddingLeftRight + "px",
       lineHeight: lineHeight,
       letterSpacing: letterSpacing,
@@ -13993,7 +14001,7 @@ class Editor extends Component {
       fontSize: buttonFontSize,
       // textAlign: buttonAlign,
       // borderWidth:  buttonBorderWidth+'px',
-      borderWidth: outline === 'fill' ? '0' : buttonBorderWidth + 'px',
+      borderWidth: outline === "fill" ? "0" : buttonBorderWidth + "px",
       borderColor: buttonBorderColor,
       width: buttonWidth + "%"
     };
@@ -14017,7 +14025,7 @@ class Editor extends Component {
       onChange: content => this.props.setAttributes({
         buttonText: content
       }),
-      placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Submit', 'mrm')
+      placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Submit", "mrm")
     })));
   }
 }
