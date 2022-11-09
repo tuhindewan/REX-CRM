@@ -31,6 +31,14 @@ class FormController extends BaseController {
      */
     public $args;
 
+    /**
+     * Remote API url for form templates
+     * 
+     * @var string
+     * @since 1.0.0
+     */
+    public static $form_templates_remote_api_url = "https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/all";
+
 
     /**
      * Function used to handle create  or update requests
@@ -365,10 +373,15 @@ class FormController extends BaseController {
 
         $timeout = ($force_update) ? 40 : 55;
 
-        $response = self::remote_get("https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/all", [
+        $api_url = self::get_form_templates_remote_api_url();
+        $response = self::remote_get( $api_url ,[
             'timeout'       => $timeout,
         ]);
         
+        if( isset( $response['success'] ) && true == $response['success'] ){
+            error_log(print_r($response, 1));
+
+        }
         $forms = $response['data']['data']['forms'];
         
         // if ($force_update || false === $templates_data) {
@@ -386,9 +399,12 @@ class FormController extends BaseController {
 
 
     /**
+     * Function used to call remote url and prepare response
+     * 
 	 * @param $url
 	 * @param $args
 	 * @return array
+     * @since 1.0.0
 	 */
     private function remote_get($url, $args)
     {
@@ -407,5 +423,17 @@ class FormController extends BaseController {
         ];
     }
 
+
+    /**
+     * Function used to get remote API url for form templates
+     * 
+     * @param void
+     * @return string
+     * @since 1.0.0
+     */
+    public static function get_form_templates_remote_api_url()
+    {
+        return self::$form_templates_remote_api_url;
+    }
 
 }
