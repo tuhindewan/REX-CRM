@@ -85,7 +85,28 @@ export default function CampaignTemplates(props) {
 
                   <div className="mintmrm-single-remote-wrapper">
                       <div className="mintmrm-single-remote-template">
-                        <a href="#" className="mintmrm-btn"> Start From scratch </a>
+                      {emailData?.email_body?.length === 0 ? (
+                        <Link to="">
+                          {/* <button
+                            type="submit"
+                            className="save-template mintmrm-btn "
+                          >
+                            Start From Scratch
+                          </button> */}
+                          <button type="button" className="mintmrm-btn" onClick={openTemplateBuilder} > Start From Scratch </button>
+                        </Link>
+                      ) : (
+                        <Link to="">
+                          {/* <button
+                            type="submit"
+                            className="save-template mintmrm-btn "
+                          >
+                            Edit Template
+                          </button> */}
+                          <button type="button" className="mintmrm-btn" onClick={openTemplateBuilder} > Edit Template </button>
+                        </Link>
+                      )}
+                        
                         <div className="template-image-wrapper"></div>
                       </div>
 

@@ -212,24 +212,17 @@
   height: 905px;
   background: rgba(51, 51, 51, 0.2);
   z-index: 999;
+  display: none;
+
+  &.active {
+    display: block;
+  }
 
   .template-modal-inner {
     position: relative;
     height: 100%;
     max-width: 1365px;
     margin: 0 auto;
-
-    &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    &::-webkit-scrollbar-track {
-      background: #f9fafb;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #ccd0d9;
-      border-radius: 20px;
-    }
   }
 
   .template-modal-overflow {
@@ -243,6 +236,18 @@
     width: 100%;
     margin: 0 auto;
     overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f9fafb;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: $primary-color;
+      border-radius: 20px;
+    }
   }
 
   .cross-icon {
@@ -258,6 +263,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    z-index: 2;
 
     svg path {
       fill: #A7A8B3;

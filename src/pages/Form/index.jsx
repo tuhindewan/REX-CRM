@@ -630,6 +630,7 @@ export default function FormIndex(props) {
             </div>
           </div>
         </div>
+
         <div className="mintmrm-container" style={{ display: isDelete }}>
           <DeletePopup
             title={deleteTitle}
@@ -645,6 +646,7 @@ export default function FormIndex(props) {
         </div>
         <SuccessfulNotification display={showNotification} message={message} />
       </div>
+      
       <FormTemplate
         isOpen={isTemplate}
         isClose={isClose}
