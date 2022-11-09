@@ -53,13 +53,8 @@ export default function CampaignTemplates(props) {
 
   return (
     <>
-      <div
-        className={
-          props.isOpen && !isClose
-            ? "mintmrm-template-alert-wrapper"
-            : "mintmrm-template-alert-wrapper inactive"
-        }
-      >
+      {/* <div className={ props.isOpen && !isClose ? "mintmrm-template-alert-wrapper" : "mintmrm-template-alert-wrapper inactive" } > */}
+      <div className="mintmrm-template-alert-wrapper" >
         <div class="mintmrm-template-confirmation">
           <div className="template-confirmation-header">
             <h3>Choose Template</h3>
@@ -67,6 +62,7 @@ export default function CampaignTemplates(props) {
               <CrossIcon />
             </div>
           </div>
+
           <div className="template-confirmation-body">
             <div className="template-header">
               <div className="template-tab-section">
@@ -79,6 +75,7 @@ export default function CampaignTemplates(props) {
                 {/* <button className="type-button">Email Type</button> */}
               </div>
             </div>
+
             <div className="template-body">
               <div
                 className="template-select-section"
@@ -108,7 +105,42 @@ export default function CampaignTemplates(props) {
                 <h2>Amazing Templates Are Coming Soon</h2>
               </div>
             </div>
+            
           </div>
+        </div>
+      </div>
+
+      <div className="mintmrm-template-modal">
+        <div className="template-modal-inner">
+          <div className="cross-icon" onClick={closeSection}>
+            <CrossIcon />
+          </div>
+          
+          <div className="template-modal-header">
+            <h4 className="modal-title">Choose Form</h4>
+
+            <ul className="template-filter">
+              <li>Pop-up</li>
+              <li>Slide–in</li>
+              <li>Fixed bar</li>
+              <li>Below pages</li>
+            </ul>
+
+            <div className="template-type">
+              <select name="" id="">
+                <option value="">Form Type</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="template-modal-body">
+
+          </div>
+
+          <div className="template-modal-footer">
+
+          </div>
+
         </div>
       </div>
 
