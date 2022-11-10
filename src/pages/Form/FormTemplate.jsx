@@ -75,7 +75,7 @@ const FormTemplate = (props) => {
 
               <ul className="template-filter">
                 <li className="active">Pop-up</li>
-                <li>Slide–in</li>
+                <li>Slide-in</li>
                 <li>Fixed bar</li>
                 <li>Below pages</li>
               </ul>

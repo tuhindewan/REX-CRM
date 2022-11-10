@@ -312,6 +312,10 @@
           transition: all 0.3s ease;
         }
 
+        &:hover {
+          color: #2D3149;
+        }
+
         &.active {
           color: #2D3149;
 
