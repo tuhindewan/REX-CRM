@@ -22,7 +22,7 @@ export function AddSuccessNotification(Notification){
 export function ClearNotification(value,event){
     const timer = setTimeout(() => {
         event(value);
-    }, 3000);
+    }, 5000);
     return () => clearTimeout(timer);
 }
 

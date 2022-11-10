@@ -8,16 +8,16 @@ import NoSegmentIcon from "../../components/Icons/NoSegmentIcon";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
-import SegmentList from "./SegmentList";
+import LoadingIndicator from "../../components/LoadingIndicator";
+import Pagination from "../../components/Pagination";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
   deleteMultipleSegmentItems,
   deleteSingleSegment,
   getAllSegments,
 } from "../../services/Segment";
-import LoadingIndicator from "../../components/LoadingIndicator";
-import Pagination from "../../components/Pagination";
-import SuccessfulNotification from "../../components/SuccessfulNotification";
+import SegmentList from "./SegmentList";
 
 const Segments = () => {
   // global counter update real time
@@ -64,7 +64,6 @@ const Segments = () => {
     setLoading(true);
     getAllSegments(orderBy, orderType, page, perPage, query).then(
       (response) => {
-        console.log(response.data);
         setSegments(response.data.data);
         setCount(response.data.total_count);
         setCountGroups(response.data.count_groups);
@@ -413,7 +412,11 @@ const Segments = () => {
       <div className="mintmrm-container" style={{ display: showAlert }}>
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 };

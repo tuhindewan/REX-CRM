@@ -1,5 +1,16 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AlertPopup from "../../components/AlertPopup";
+import CampaignsNavbar from "../../components/CampaignNav";
+import DeletePopup from "../../components/DeletePopup";
+import Delete from "../../components/Icons/Delete";
+import Search from "../../components/Icons/Search";
+import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import LoadingIndicator from "../../components/LoadingIndicator";
+import Pagination from "../../components/Pagination";
+import PublishAlert from "../../components/PublishAlert";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
   deleleMultipleCampaigns,
@@ -7,21 +18,10 @@ import {
   getAllCampaigns,
   updateCampaignStatus,
 } from "../../services/Campaign";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
-import AlertPopup from "../../components/AlertPopup";
 import NoCampaign from "./NoCampaign";
 import SingleCampaign from "./SingleCampaign";
-import CampaignsNavbar from "../../components/CampaignNav";
-import DeletePopup from "../../components/DeletePopup";
-import Search from "../../components/Icons/Search";
-import LoadingIndicator from "../../components/LoadingIndicator";
-import Pagination from "../../components/Pagination";
-import PublishAlert from "../../components/PublishAlert";
-import SuccessfulNotification from "../../components/SuccessfulNotification";
-import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
-import Delete from "../../components/Icons/Delete";
-import { ClearNotification } from "../../utils/admin-notification";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function AllCampaigns() {
   // Admin active menu selection
@@ -34,6 +34,11 @@ export default function AllCampaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
+  // order by which field
+  const [orderBy, setOrderBy] = useState("id");
+
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("desc");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
   const [showNotification, setShowNotification] = useState("none");
@@ -58,16 +63,26 @@ export default function AllCampaigns() {
   const [selected, setSelected] = useState([]);
   const [showAlert, setShowAlert] = useState("none");
   const [isUpdate, setIsUpdate] = useState("none");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
+  const [listening, setListening] = useState(false);
+  const sortByRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, sortByRef, setShowDropdown)
+  );
 
   useEffect(() => {
-    getAllCampaigns(page, perPage, query).then((results) => {
-      setCampaigns(results.data);
-      setCount(results.count);
-      setTotalPages(results.total_pages);
-      setShowLoader(false);
-    });
-    ClearNotification('none',setShowNotification)
-  }, [page, perPage, query, refresh]);
+    getAllCampaigns(page, perPage, query, orderBy, orderType).then(
+      (results) => {
+        setCampaigns(results.data);
+        setCount(results.count);
+        setTotalPages(results.total_pages);
+        setShowLoader(false);
+      }
+    );
+    ClearNotification("none", setShowNotification);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   // Multiple selection confirmation
   const deleleMultipleCampaign = async () => {
@@ -204,17 +219,41 @@ export default function AllCampaigns() {
       setIsUpdate("none");
       const isValid = validate();
       setIsValid(isValid);
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
-
-  const [listening, setListening] = useState(false);
 
   // Outside click events for bulk action dropdown
   const threeDotRef = useRef(null);
   useEffect(
-      ListenForOutsideClicks( listening, setListening, threeDotRef, setShowMoreOptions )
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      threeDotRef,
+      setShowMoreOptions
+    )
   );
+
+  // Show/hide sort dropdown
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  // Handle campaign list sorting
+  const handleSorting = (event, order_by, order_type) => {
+    setShowDropdown(false);
+    setOrderBy(order_by);
+    setOrderType(order_type);
+    if (order_by == "title" && order_type == "asc") {
+      setSortButtonName("Name (A - Z)");
+    } else if (order_by == "title" && order_type == "desc") {
+      setSortButtonName("Name (Z - A)");
+    } else if (order_by == "created_at" && order_type == "asc") {
+      setSortButtonName("Date Created Asc");
+    } else {
+      setSortButtonName("Date Created Desc");
+    }
+  };
 
   return (
     <>
@@ -225,7 +264,41 @@ export default function AllCampaigns() {
             <div className="campaign-list-area">
               <div className="campaign-list-header">
                 <div className="left-filters">
-                  <h2 className="table-title">List View</h2>
+                  <p className="sort-by">Sort by</p>
+                  <div className="sort-by-dropdown" ref={sortByRef}>
+                    <button
+                      className={
+                        showDropdown
+                          ? "drop-down-button show"
+                          : "drop-down-button"
+                      }
+                      onClick={handleDropdown}
+                    >
+                      {sortButtonName}
+                    </button>
+                    <ul
+                      className={
+                        showDropdown
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li
+                        onClick={(event) =>
+                          handleSorting(event, "title", "asc")
+                        }
+                      >
+                        Name (A - Z)
+                      </li>
+                      <li
+                        onClick={(event) =>
+                          handleSorting(event, "title", "desc")
+                        }
+                      >
+                        Name (Z - A)
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
                 <div className="right-buttons">
@@ -353,17 +426,15 @@ export default function AllCampaigns() {
                             );
                           })}
                         </div>
-                        {totalPages > 1 && (
-                          <div className="table-footer">
-                            <Pagination
-                              currentPage={page}
-                              pageSize={perPage}
-                              onPageChange={setPage}
-                              totalCount={count}
-                              totalPages={totalPages}
-                            />
-                          </div>
-                        )}
+                        <div>
+                          <Pagination
+                            currentPage={page}
+                            pageSize={perPage}
+                            onPageChange={setPage}
+                            totalCount={count}
+                            totalPages={totalPages}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -386,7 +457,11 @@ export default function AllCampaigns() {
       <div className="mintmrm-container" style={{ display: showAlert }}>
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
       <div className="mintmrm-container" style={{ display: isUpdate }}>
         <PublishAlert
           title="Campaign Update"

@@ -4,7 +4,6 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
-use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
@@ -325,10 +324,21 @@ class CampaignController extends BaseController {
         $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 10;
         $offset     =  ($page - 1) * $perPage;
 
+        $order_by = isset($params['order-by']) ? strtolower($params['order-by']) : 'id';
+        $order_type = isset($params['order-type']) ? strtolower($params['order-type']) : 'desc';
+
+        // valid order by fields and types
+        $allowed_order_by_fields = array("title", "created_at");
+        $allowed_order_by_types = array("asc", "desc");
+
+        // validate order by fields or use default otherwise
+        $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
+        $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
+
         // Contact Search keyword
         $search     = isset( $params['search'] ) ? $params['search'] : '';
                 
-        $campaigns   = ModelsCampaign::get_all( $offset, $perPage, $search );
+        $campaigns   = ModelsCampaign::get_all( $offset, $perPage, $search, $order_by, $order_type );
 
         $campaigns['current_page'] = (int) $page;
         

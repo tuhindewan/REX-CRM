@@ -212,7 +212,6 @@ class CampaignModel {
         $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
         $campaign['id']     = $id;
         $campaign['emails']    = self::get_campaign_email( $id );
-        error_log(print_r($campaign, 1));
         return $campaign;
     }
 
@@ -227,7 +226,7 @@ class CampaignModel {
      * @return array
      * @since 1.0.0
      */
-    public static function get_all( $offset = 0, $limit = 10, $search = '' )
+    public static function get_all( $offset = 0, $limit = 10, $search = '', $order_by = 'id', $order_type = 'desc' )
     {
         global $wpdb;
         $campaign_table = $wpdb->prefix . CampaignSchema::$campaign_table;
@@ -240,7 +239,7 @@ class CampaignModel {
 		}
         
         // Prepare sql results for list view
-        $results     = $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ), ARRAY_A ) ;
+        $results     = $wpdb->get_results( $wpdb->prepare( "SELECT id, title, status, type, created_at FROM $campaign_table $search_terms ORDER BY $order_by $order_type  LIMIT $offset, $limit" ), ARRAY_A ) ;
             
         $count       = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) as total FROM $campaign_table $search_terms" ) );
         $total_pages = ceil($count / $limit);

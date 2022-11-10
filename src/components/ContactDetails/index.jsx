@@ -11,7 +11,11 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import {
+  ClearNotification,
+  ClearNotificationWithWarring,
+} from "../../utils/admin-notification";
+import { AdminNavMenuClassChange, DateTime } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -34,11 +38,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
-import { DateTime } from "../../utils/admin-settings";
-import {
-  ClearNotification,
-  ClearNotificationWithWarring,
-} from "../../utils/admin-notification";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -1554,7 +1553,11 @@ export default function ContactDetails() {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
       <WarningNotification display={showWarning} message={message} />
     </>
   );

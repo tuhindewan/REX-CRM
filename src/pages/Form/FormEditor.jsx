@@ -7,7 +7,6 @@ import {
   useParams,
 } from "react-router-dom";
 import AlertPopup from "../../components/AlertPopup";
-import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
 import DoubleAngleLeftIcon from "../../components/Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../../components/Icons/DownArrowIcon";
 import EditIcon from "../../components/Icons/EditIcon";
@@ -20,10 +19,11 @@ import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import WarningNotification from "../../components/WarningNotification";
-import DesktopView from "./DesktopView";
-import MobileView from "./MobileView";
 import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
+import DesktopView from "./DesktopView";
+import MobileView from "./MobileView";
 const FormEditor = (props) => {
   // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "forms");
@@ -105,6 +105,12 @@ const FormEditor = (props) => {
     setEnable(!enable);
   };
 
+  if ("form-created" == location.state?.status) {
+    setShowNotification("block");
+    setMessage("Form has been imported successfully");
+    window.location.reload();
+  }
+
   // Hide alert popup after click on ok
   const onShowAlert = async (status) => {
     setShowAlert(status);
@@ -178,7 +184,7 @@ const FormEditor = (props) => {
         lists: recipientLists,
         tags: recipientTags,
       },
-      status: 0,
+      status: "draft",
       meta_fields: {
         settings: settingData,
       },
@@ -244,7 +250,7 @@ const FormEditor = (props) => {
         lists: recipientLists,
         tags: recipientTags,
       },
-      status: 1,
+      status: "published",
       meta_fields: {
         settings: settingData,
       },
@@ -462,7 +468,9 @@ const FormEditor = (props) => {
 
                       <span className="from">and</span>
 
-                      <span className="tags">{recipientTags?.length} Tags.</span>
+                      <span className="tags">
+                        {recipientTags?.length} Tags.
+                      </span>
 
                       <span className="recipients"></span>
                       {dropDown ? <UpArrowIcon /> : <DownArrowIcon />}
@@ -509,6 +517,7 @@ const FormEditor = (props) => {
           {savedSuccess && (
             <SuccessfulNotification
               display={showNotification}
+              setShowNotification={setShowNotification}
               message={message}
             />
           )}

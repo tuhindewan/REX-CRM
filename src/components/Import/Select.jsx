@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
@@ -196,10 +196,7 @@ export default function Select(props) {
 
         {items?.length == 0 && allowNewCreate && !loading && !options && (
           <>
-            <button
-              className="mrm-custom-select-add-btn"
-              onClick={addNewItem}
-            >
+            <button className="mrm-custom-select-add-btn" onClick={addNewItem}>
               {`+ Add new ${name} "${search}"`}
             </button>
           </>
@@ -207,7 +204,11 @@ export default function Select(props) {
         {loading && <LoadingIndicator type="table" />}
       </ul>
       <WarningNotification display={showWarning} message={message} />
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }

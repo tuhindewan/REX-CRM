@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import React, { useEffect, useState, useRef } from "react";
 import AlertPopup from "../../components/AlertPopup";
 import DeletePopup from "../../components/DeletePopup";
 import CopyIcon from "../../components/Icons/CopyIcon";
+import Delete from "../../components/Icons/Delete";
+import EditIcon from "../../components/Icons/EditIcon";
 import FormIconSM from "../../components/Icons/FormIconSM";
 import FormIconXL from "../../components/Icons/FormIconXL";
 import Plus from "../../components/Icons/Plus";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
-import Pagination from "../../components/Pagination";
-import EyeIcon from "../../components/Icons/EyeIcon";
-import EditIcon from "../../components/Icons/EditIcon";
-import Delete from "../../components/Icons/Delete";
 import LoadingIndicator from "../../components/LoadingIndicator";
+import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import {
+  AddSuccessNotification,
+  ClearNotification,
+} from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import FormTemplate from "./FormTemplate";
-import { ClearNotification } from "../../utils/admin-notification";
-import { AddSuccessNotification } from "../../utils/admin-notification";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function FormIndex(props) {
@@ -266,7 +266,7 @@ export default function FormIndex(props) {
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ status: "1" }),
+          body: JSON.stringify({ status: "published" }),
         }
       )
         .then((response) => response.json())
@@ -291,7 +291,7 @@ export default function FormIndex(props) {
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ status: "0" }),
+          body: JSON.stringify({ status: "draft" }),
         }
       )
         .then((response) => response.json())
@@ -575,7 +575,7 @@ export default function FormIndex(props) {
                                 <td className="status">
                                   <span className="wpfnl-switcher">
                                     <input
-                                      checked={form.status === "1"}
+                                      checked={form.status === "published"}
                                       type="checkbox"
                                       name="checkedB"
                                       id={"st-" + form.id}
@@ -661,6 +661,7 @@ export default function FormIndex(props) {
             </div>
           </div>
         </div>
+
         <div className="mintmrm-container" style={{ display: isDelete }}>
           <DeletePopup
             title={deleteTitle}
@@ -674,8 +675,13 @@ export default function FormIndex(props) {
         <div className="mintmrm-container" style={{ display: showAlert }}>
           <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
         </div>
-        <SuccessfulNotification display={showNotification} message={message} />
+        <SuccessfulNotification
+          display={showNotification}
+          setShowNotification={setShowNotification}
+          message={message}
+        />
       </div>
+
       <FormTemplate
         isOpen={isTemplate}
         isClose={isClose}

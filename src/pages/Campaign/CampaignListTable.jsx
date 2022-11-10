@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DeletePopup from "../../components/DeletePopup";
 import NoCampaign from "./NoCampaign";
 // Internal dependencies
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { deleteSingleCampaign } from "../../services/Campaign";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import { deleteSingleCampaign } from "../../services/Campaign";
 import SingleCampaign from "./SingleCampaign";
 
 export default function CampaignListTable(props) {
@@ -126,7 +126,11 @@ export default function CampaignListTable(props) {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }
