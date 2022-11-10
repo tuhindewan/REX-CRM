@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import Search from "./Icons/Search";
 import SuccessfulNotification from "./SuccessfulNotification";
-import WarningNotification from "./WarningNotification";
 
 export default function AddItemDropdown(props) {
   const {
@@ -17,10 +16,9 @@ export default function AddItemDropdown(props) {
     setRefresh,
   } = props;
   const [search, setSearch] = useState("");
-  const [query, setQuery] = useState("");
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
 
   const filteredItems = useMemo(() => {
     if (search) {
@@ -77,11 +75,13 @@ export default function AddItemDropdown(props) {
       if (resJson.code == 201) {
         setSearch("");
         setSelected([...selected, { id: resJson.data, title: body.title }]);
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(resJson?.message);
         setRefresh(!refresh);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson?.message);
       }
     } catch (e) {
@@ -150,11 +150,12 @@ export default function AddItemDropdown(props) {
           </>
         )}
       </ul>
-      <WarningNotification display={showWarning} message={message} />
       <SuccessfulNotification
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

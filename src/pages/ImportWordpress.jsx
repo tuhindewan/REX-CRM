@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ColumnItems from "../components/ContactDetails/ColumnItems";
 import ImportNavbar from "../components/Import/ImportNavbar";
-import WarningNotification from "../components/WarningNotification";
+import SuccessfulNotification from "../components/SuccessfulNotification";
 import { getWordPressRoles, submitWordPressRoles } from "../services/Import";
-import { ClearWarning } from "../utils/admin-notification";
+import { ClearNotification } from "../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 export default function ImportWordpress() {
@@ -16,8 +16,9 @@ export default function ImportWordpress() {
   const [allSelected, setAllSelected] = useState(false);
   // single selected array which holds selected roles ids
   const [selected, setSelected] = useState([]);
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
 
   //Fetch roles from the native WordPress
   useEffect(() => {
@@ -59,9 +60,10 @@ export default function ImportWordpress() {
           },
         });
       } else {
-        setShowWarning("block");
-        setMessage(response.message);
-        ClearWarning('none',setShowWarning)
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(response?.message);
+        ClearNotification("none", setShowNotification);
       }
     });
   };
@@ -147,7 +149,13 @@ export default function ImportWordpress() {
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }
