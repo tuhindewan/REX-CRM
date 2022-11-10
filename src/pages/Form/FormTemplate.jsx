@@ -1,8 +1,10 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import CrossIcon from "../../components/Icons/CrossIcon";
 import SingleTemplate from "../../pages/TemplateGallery/SingleTemplate";
 
+import CrossIcon from "../../components/Icons/CrossIcon";
+import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
+import ArrowRightIcon from "../../components/Icons/ArrowRightIcon";
 
 const FormTemplate = (props) => {
   const { isClose, setIsClose, setIsTemplate, isOpen } = props;
@@ -93,7 +95,15 @@ const FormTemplate = (props) => {
             </div>
 
             <div className="template-modal-footer">
+              <div className="template-pagination">
+                <button type="button" className="prev">
+                  <ArrowLeftIcon/>
+                </button>
 
+                <button type="button" className="next">
+                  <ArrowRightIcon/>
+                </button>
+              </div>
             </div>
 
           </div>

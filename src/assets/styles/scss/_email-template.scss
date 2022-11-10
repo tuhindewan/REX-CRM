@@ -346,6 +346,42 @@
 
   }
 
+  .template-modal-footer {
+    .template-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      box-shadow: 0px 1px 1px #b6b9bf4d;
+      border-radius: 6px;
+      width: 104px;
+      margin: 0 auto;
+
+      button {
+        padding: 16px 8px;
+        background: transparent;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.prev {
+          border-right: 1px solid #E9EAEE;
+        }
+
+        path {
+          transition: all 0.3s ease;
+        }
+
+        &:hover {
+          path {
+            fill: #2E2D34;
+          }
+        }
+      }
+    }
+  }
+
 }
 
 .mintmrm{
