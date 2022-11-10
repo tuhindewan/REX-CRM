@@ -503,7 +503,7 @@ export default function FormIndex(props) {
                                             openFormBuilder(form.id)
                                           }
                                         >
-                                          {form.title}
+                                          {form.title?.length > 20 ? form.title.substring(0, 20) + "..." : form.title}
                                         </a>
 
                                         <small>{form.created_ago} ago</small>

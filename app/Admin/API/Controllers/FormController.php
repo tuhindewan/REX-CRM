@@ -56,6 +56,10 @@ class FormController extends BaseController {
         if (empty($title)) {
             return $this->get_error_response( __( 'Form name is mandatory', 'mrm' ), 200);
         }
+
+        if ( strlen( $title ) > 150 ) {
+            return $this->get_error_response( __( 'Form title character limit exceeded 150 characters', 'mrm' ), 200);
+        }
         
         //group Ids validation
 //        $group_ids = isset( $params['group_ids'] ) ? $params['group_ids'] : [];
