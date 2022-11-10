@@ -1,6 +1,8 @@
+import { ClearNotification } from "../utils/admin-notification";
 import { useMemo, useState } from "react";
 import Search from "./Icons/Search";
 import SuccessfulNotification from "./SuccessfulNotification";
+import { createNewGroup } from "../services/Common";
 
 export default function AddItemDropdown(props) {
   const {
@@ -57,36 +59,25 @@ export default function AddItemDropdown(props) {
 
   // Handle new list or tag creation
   const addNewItem = async () => {
-    let res = null;
     let body = {
       title: search,
     };
 
-    try {
-      res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      const resJson = await res.json();
-      if (resJson.code == 201) {
+    createNewGroup(endpoint, body).then((response) => {
+      if (201 === response.code) {
         setSearch("");
-        setSelected([...selected, { id: resJson.data, title: body.title }]);
+        setSelected([...selected, { id: response?.data, title: body.title }]);
         setNotificationType("success");
         setShowNotification("block");
-        setMessage(resJson?.message);
+        setMessage(response?.message);
         setRefresh(!refresh);
       } else {
         setNotificationType("warning");
         setShowNotification("block");
-        setMessage(resJson?.message);
+        setMessage(response?.message);
       }
-    } catch (e) {
-    } finally {
-    }
+      ClearNotification("none", setShowNotification);
+    });
   };
 
   return (
