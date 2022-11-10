@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import SingleTemplate from "../../pages/TemplateGallery/SingleTemplate";
+import { getAllTemplates, getSingleTemplate } from "../../services/Form";
 
 import CrossIcon from "../../components/Icons/CrossIcon";
 import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
@@ -8,10 +8,11 @@ import ArrowRightIcon from "../../components/Icons/ArrowRightIcon";
 
 const FormTemplate = (props) => {
   const { isClose, setIsClose, setIsTemplate, isOpen } = props;
-
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
+  const [formTemplates, setFormTemplates] = useState([]);
+  const [countFormTemplates, setCountFormTemplates] = useState(0);
   const [formBuilderUrl, setFormBuilderUrl] = useState(
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
   );
@@ -20,12 +21,26 @@ const FormTemplate = (props) => {
     setIsClose(!isClose);
   };
 
+  const onImportTemplate = async (template_id) => {
+    getSingleTemplate(template_id).then((response) => {
+      console.log(response);
+    });
+  }
+
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
     setIsFormBuilderOpen(true);
     setIsTemplateBuilder(true);
     setIsCloseBuilder(!isCloseBuilder);
   };
+
+  // Get all form templates ffrom the helper addon
+  useEffect(() => {
+    getAllTemplates(1, 10).then((response) => {
+      setFormTemplates(response.forms);
+      setCountFormTemplates(response.count);
+    });
+  }, []);
 
   // Templates selection popup close after finishing email building
   const setCloseTemplateSelection = (status) => {
@@ -42,7 +57,13 @@ const FormTemplate = (props) => {
 
   return (
     <>
-      <div className={ isOpen && !isClose ? "mintmrm-template-modal active" : "mintmrm-template-modal" } >
+      <div
+        className={
+          isOpen && !isClose
+            ? "mintmrm-template-modal active"
+            : "mintmrm-template-modal"
+        }
+      >
         <div className="template-modal-inner">
           <div className="cross-icon" onClick={closeSection}>
             <CrossIcon />
@@ -62,35 +83,46 @@ const FormTemplate = (props) => {
               <div className="template-type">
                 <select name="" id="">
                   <option value="">Form Type</option>
+                  <option value="">Popup</option>
+                  <option value="">Embeded</option>
+                  <option value="">Landing Page</option>
                 </select>
               </div>
             </div>
 
             <div className="template-modal-body">
               <div className="mintmrm-template-wrapper">
-
                 <div className="mintmrm-single-template create-from-scratch">
-
                   <div className="mintmrm-single-remote-wrapper">
-                      <div className="mintmrm-single-remote-template">
-                        <button type="button" className="mintmrm-btn" onClick={openFormBuilder}> Start From Scratch </button>
-                        <div className="template-image-wrapper"></div>
-                      </div>
+                    <div className="mintmrm-single-remote-template">
+                      <button
+                        type="button"
+                        className="mintmrm-btn"
+                        onClick={openFormBuilder}
+                      >
+                        {" "}
+                        Start From Scratch{" "}
+                      </button>
+                      <div className="template-image-wrapper"></div>
+                    </div>
 
-                      <div className="template-info">
-                        <span className="title">title</span>
-                      </div>
+                    <div className="template-info">
+                      <span className="title">title</span>
+                    </div>
                   </div>
                 </div>
 
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-                <SingleTemplate />
-
+                {formTemplates?.length > 0 &&
+                  formTemplates.map((template) => {
+                    return (
+                      <SingleTemplate
+                        key={template.id}
+                        template={template}
+                        onImportTemplate={onImportTemplate}
+                      />
+                    );
+                })}
+                
               </div>
             </div>
 
@@ -109,7 +141,6 @@ const FormTemplate = (props) => {
           </div>
         </div>
       </div>
-
     </>
   );
 };

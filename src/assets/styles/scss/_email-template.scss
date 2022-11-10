@@ -423,6 +423,7 @@
         width: 167px;
         box-shadow: 0px 10px 16px #bdc1c880;
         font-size: 15px;
+        padding: 12px 15px;
         border: none;
         z-index: 9;
       }
@@ -437,7 +438,6 @@
     }
 
     .template-image-wrapper {
-      background-image: url('http://mrm.local/wp-content/uploads/2022/11/template-thumbnail.jpg');
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: top center;
