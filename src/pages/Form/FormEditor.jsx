@@ -95,6 +95,8 @@ const FormEditor = (props) => {
   };
 
   if ("form-created" == location.state?.status) {
+    setShowNotification("block");
+    setMessage("Form has been imported successfully");
     window.location.reload();
   }
 

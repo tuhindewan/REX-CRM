@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 const FormTemplate = (props) => {
   let navigate = useNavigate();
 
+  const [saveLoader, setSaveLoader] = useState(false);
   const { isClose, setIsClose, setIsTemplate, isOpen } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
@@ -27,8 +28,8 @@ const FormTemplate = (props) => {
   };
 
   const onImportTemplate = async (template_id) => {
+    setSaveLoader(true);
     getSingleTemplate(template_id).then((response) => {
-      console.log(response);
       let template = response?.data;
       const formData = {
         title: template.title,
@@ -144,6 +145,8 @@ const FormTemplate = (props) => {
                         key={template.id}
                         template={template}
                         onImportTemplate={onImportTemplate}
+                        setSaveLoader={setSaveLoader}
+                        saveLoader={saveLoader}
                       />
                     );
                   })}
