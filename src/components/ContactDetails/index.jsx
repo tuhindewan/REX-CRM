@@ -321,6 +321,30 @@ export default function ContactDetails() {
           setIsValidate(true);
         }
         break;
+        case "first_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              first_name: "First name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
+        case "last_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              last_name: "Last name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
       default:
         break;
     }
@@ -907,12 +931,14 @@ export default function ContactDetails() {
                             <InputItem
                               name="first_name"
                               handleChange={handleChange}
+                              error={errors?.first_name}
                               label="First name"
                               value={contactData.first_name}
                             />
                             <InputItem
                               name="last_name"
                               handleChange={handleChange}
+                              error={errors?.last_name}
                               label="Last name"
                               value={contactData.last_name}
                             />
