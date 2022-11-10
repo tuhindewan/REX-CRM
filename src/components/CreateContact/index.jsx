@@ -111,6 +111,30 @@ const CreateContact = (props) => {
           return true;
         }
         break;
+        case "first_name":
+        if (value.length > 35) {
+          setErrors({
+            ...errors,
+            first_name: "First name character limit exceeded 35 characters",
+          });
+          return false;
+        }else {
+          setErrors({});
+          return true;
+        }
+        break;
+        case "last_name":
+        if (value.length > 35) {
+          setErrors({
+            ...errors,
+            last_name: "Last name character limit exceeded 35 characters",
+          });
+          return false;
+        }else {
+          setErrors({});
+          return true;
+        }
+        break;
       default:
         break;
     }
@@ -126,7 +150,7 @@ const CreateContact = (props) => {
 
     setContactSaveLoader(true);
 
-    if (validate(event, "email", contactData.email)) {
+    if (validate(event, "email", contactData.email) && validate(event, "first_name", contactData.first_name) && validate(event, "last_name", contactData.last_name)) {
       createContact(contactData).then((response) => {
         if (201 === response.code) {
           // Navigate user with success message
@@ -248,12 +272,14 @@ const CreateContact = (props) => {
               <InputItem
                 label="First name"
                 name="first_name"
+                error={errors?.first_name}
                 values={contactData.first_name}
                 handleChange={handleChange}
               />
               <InputItem
                 label="Last name"
                 name="last_name"
+                error={errors?.last_name}
                 values={contactData.last_name}
                 handleChange={handleChange}
               />
