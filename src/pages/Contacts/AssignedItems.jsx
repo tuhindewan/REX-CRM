@@ -4,11 +4,7 @@ import Plus from "../../components/Icons/Plus";
 import Search from "../../components/Icons/Search";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
-import WarningNotification from "../../components/WarningNotification";
-import {
-  ClearNotification,
-  ClearNotificationWithWarring,
-} from "../../utils/admin-notification";
+import { ClearNotification } from "../../utils/admin-notification";
 
 export default function AssignedItems(props) {
   const {
@@ -20,12 +16,7 @@ export default function AssignedItems(props) {
     options = null,
     name = "list", // used inside the new button of
     listTitle = "CHOOSE LIST",
-    listTitleOnNotFound = "No Data Found",
-    searchPlaceHolder = "Search...",
     allowMultiple = true,
-    showSearchBar = true,
-    showListTitle = true,
-    showSelectedInside = true,
     allowNewCreate = true,
     contactIds,
     prefix,
@@ -36,9 +27,9 @@ export default function AssignedItems(props) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     async function getItems() {
@@ -116,19 +107,22 @@ export default function AssignedItems(props) {
         setSearch("");
         setQuery("");
         setSelected([...selected, { id: resJson.data, title: body.title }]);
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(resJson?.message);
       } else if (400 == resJson.code) {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson?.message);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson?.message);
       }
     } catch (e) {
     } finally {
       setLoading(false);
-      ClearNotificationWithWarring("none", setShowNotification, setShowWarning);
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -168,10 +162,10 @@ export default function AssignedItems(props) {
         props.setShowNotification("block");
         props.setMessage(resJson.message);
       } else if (400 == resJson.code) {
-        setShowWarning("block");
+        setNotificationType("warning");
         setMessage(resJson?.message);
       } else {
-        setShowWarning("block");
+        setShowNotification("block");
         setMessage(resJson?.message);
       }
     } catch (e) {
@@ -262,11 +256,12 @@ export default function AssignedItems(props) {
           Assign {placeholder}
         </Link>
       </ul>
-      <WarningNotification display={showWarning} message={message} />
       <SuccessfulNotification
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

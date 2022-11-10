@@ -11,10 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import {
-  ClearNotification,
-  ClearNotificationWithWarring,
-} from "../../utils/admin-notification";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange, DateTime } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
@@ -35,7 +32,6 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
-import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 
@@ -75,14 +71,13 @@ export default function ContactDetails() {
   const [country, setCountry] = useState(false);
   const [stateRegion, setStateRegion] = useState(false);
   const [genderButton, setGenderButton] = useState();
-  const [stateRegionButton, setStateRegionButton] = useState();
   const [countryButton, setCountryButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
   const [timezones, setTimezones] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
-  const [showWarning, setShowWarning] = useState("none");
   const [isValidate, setIsValidate] = useState(true);
+  const [notificationType, setNotificationType] = useState("success");
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -134,9 +129,6 @@ export default function ContactDetails() {
     ListenForOutsideClicks(listening, setListening, selectTagRef, setSelectTag)
   );
   const [errors, setErrors] = useState({});
-
-  // Error message
-  const [errorMessage, setErrorMessage] = useState("");
 
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
@@ -353,6 +345,7 @@ export default function ContactDetails() {
       const code = responseData?.code;
 
       if (code === 201) {
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(responseData?.message);
         toggleRefresh();
@@ -437,6 +430,7 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 201) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
       toggleRefresh();
@@ -464,15 +458,17 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
     } else {
       // Validation messages
-      setShowWarning("block");
+      setNotificationType("warning");
+      setShowNotification("block");
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    ClearNotificationWithWarring("none", setShowNotification, setShowWarning);
+    ClearNotification("none", setShowNotification);
   };
 
   const handleDelete = () => {
@@ -516,6 +512,7 @@ export default function ContactDetails() {
     );
     const resJson = await res.json();
     if (resJson.code == 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(resJson.message);
     }
@@ -1453,8 +1450,9 @@ export default function ContactDetails() {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
-      <WarningNotification display={showWarning} message={message} />
     </>
   );
 }

@@ -52,7 +52,6 @@ export default function EditCampaign(props) {
   // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
   const [recipientsCount, satRecipientsCount] = useState(0);
-  const [showWarning, setShowWarning] = useState("none");
 
   // recipient lists and recipients tags state variables to whom the email(s) should be sent
   const [recipientLists, setRecipientLists] = useState([]);
@@ -60,7 +59,6 @@ export default function EditCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
-  const [responseMessage, setResponseMessage] = useState("");
   const [isEmailDelete, setIsEmailDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
@@ -75,7 +73,6 @@ export default function EditCampaign(props) {
   const [campaignStatus, setCampaignStatus] = useState("");
   const [isReadonly, setIsReadonly] = useState(false);
   const [isPublish, setIsPublish] = useState("none");
-  const [publishCampaign, setPublishCampaign] = useState(false);
   const [listAdder, setListAdder] = useState({
     lists: [],
     tags: [],

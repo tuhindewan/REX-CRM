@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ClearNotification } from "../../utils/admin-notification";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
-import WarningNotification from "../WarningNotification";
-import {  ClearNotificationWithWarring } from "../../utils/admin-notification";
+import SuccessfulNotification from "../SuccessfulNotification";
 export default function AddItems(props) {
   const {
     selected,
@@ -22,8 +22,9 @@ export default function AddItems(props) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     async function getItems() {
@@ -66,13 +67,15 @@ export default function AddItems(props) {
         props.setMessage(resJson?.message);
         props.setIsAssignTo(true);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson.message);
       }
+      ClearNotification("none", setShowNotification);
     } catch (e) {
     } finally {
       setLoading(false);
-      ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -149,13 +152,15 @@ export default function AddItems(props) {
         props.setShowNotification("block");
         props.setMessage(resJson.message);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson.message);
       }
+      ClearNotification("none", setShowNotification);
     } catch (e) {
     } finally {
       setLoading(false);
-      ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -235,7 +240,13 @@ export default function AddItems(props) {
               </li>;
             })} */}
       </ul>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
     </>
   );
 }
