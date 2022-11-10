@@ -7,7 +7,11 @@ import {
   getSingleTemplate,
 } from "../../services/Form";
 
+import { useNavigate } from "react-router-dom";
+
 const FormTemplate = (props) => {
+  let navigate = useNavigate();
+
   const { isClose, setIsClose, setIsTemplate, isOpen } = props;
   const [isCloseBuilder, setIsCloseBuilder] = useState("none");
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
@@ -24,6 +28,7 @@ const FormTemplate = (props) => {
 
   const onImportTemplate = async (template_id) => {
     getSingleTemplate(template_id).then((response) => {
+      console.log(response);
       let template = response?.data;
       const formData = {
         title: template.title,
@@ -39,7 +44,13 @@ const FormTemplate = (props) => {
       };
 
       createNewForm(formData).then((response) => {
-        console.log(response);
+        if (201 === response.code) {
+          // Navigate user with success message
+          navigate(`/form-builder/${response.data}`, {
+            state: { status: "form-created", message: response?.message },
+          });
+        } else {
+        }
       });
     });
   };
