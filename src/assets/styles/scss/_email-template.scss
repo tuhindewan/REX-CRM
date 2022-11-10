@@ -1,3 +1,15 @@
+.email-builder-editor {
+  position: fixed;
+  top: 32px;
+  right: 0;
+  padding: 15px;
+  width: calc(100% - 160px);
+  height: 100%;
+  background: rgba(51, 51, 51, 0.2);
+  z-index: 999;
+  padding: 0;
+}
+
 // .mintmrm-template-alert-wrapper {
 //   position: fixed;
 //   top: 32px;

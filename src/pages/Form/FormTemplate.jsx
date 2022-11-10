@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import SingleTemplate from "../../pages/TemplateGallery/SingleTemplate";
+import FormSingleTemplate from "../TemplateGallery/FormSingleTemplate";
 import { getAllTemplates, getSingleTemplate } from "../../services/Form";
 
 import CrossIcon from "../../components/Icons/CrossIcon";
@@ -115,7 +115,7 @@ const FormTemplate = (props) => {
                 {formTemplates?.length > 0 &&
                   formTemplates.map((template) => {
                     return (
-                      <SingleTemplate
+                      <FormSingleTemplate
                         key={template.id}
                         template={template}
                         onImportTemplate={onImportTemplate}

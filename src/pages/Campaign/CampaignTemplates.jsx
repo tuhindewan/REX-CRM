@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import EmailBuilder from "./EmailBuilder";
-import SingleTemplate from "../TemplateGallery/SingleTemplate";
+import CampaignSingleTemplate from "../TemplateGallery/CampaignSingleTemplate";
 
 import CrossIcon from "../../components/Icons/CrossIcon";
 import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
@@ -116,6 +116,11 @@ export default function CampaignTemplates(props) {
                     </div>
                   </div>
                 </div>
+
+                <CampaignSingleTemplate />
+                <CampaignSingleTemplate />
+                <CampaignSingleTemplate />
+                <CampaignSingleTemplate />
 
                 <div className="mintmrm-single-template create-from-scratch coming-soon">
                   <div className="coming-soon-inner">
