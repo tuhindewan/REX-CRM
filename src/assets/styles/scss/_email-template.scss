@@ -2,12 +2,15 @@
   position: fixed;
   top: 32px;
   right: 0;
-  padding: 15px;
+  padding: 0;
   width: calc(100% - 160px);
   height: 100%;
   background: rgba(51, 51, 51, 0.2);
   z-index: 999;
-  padding: 0;
+}
+
+.folded .email-builder-editor {
+  width: calc(100% - 36px);
 }
 
 // .mintmrm-template-alert-wrapper {
@@ -610,11 +613,18 @@
   .auto-fold .mintmrm-template-modal {
     width: calc(100% - 36px);
   }
+  .folded .email-builder-editor {
+    width: calc(100% - 36px);
+  }
 
 }
 
 @media only screen and (max-width: 782px) {
   .auto-fold .mintmrm-template-modal {
+    width: 100%;
+  }
+
+  .folded .email-builder-editor {
     width: 100%;
   }
 
