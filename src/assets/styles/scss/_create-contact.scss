@@ -130,6 +130,10 @@
         }
         .mintmrm-dropdown {
           min-width: 332px;
+
+          li {
+            display: block;
+          }
         }
         .add-contact {
           .searchbar {
