@@ -348,7 +348,7 @@ class Editor extends Component {
                     </BlockControls>
                     <RichText
                         className='mrm-submit-button mintmrm-btn'
-                        tagName="button"
+                        tagName="p"
                         type='button'
                         value={ buttonText }
                         style={ buttonStyle }
