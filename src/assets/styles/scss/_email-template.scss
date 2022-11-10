@@ -209,7 +209,8 @@
   right: 0;
   padding: 40px;
   width: calc(100% - 160px);
-  height: 905px;
+  height: 100%;
+  max-height: 905px;
   background: rgba(51, 51, 51, 0.2);
   z-index: 999;
   display: none;
@@ -275,7 +276,6 @@
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 43px;
 
     .modal-title {
       font-weight: 600;
@@ -347,6 +347,8 @@
   }
 
   .template-modal-footer {
+    margin-top: 30px;
+
     .template-pagination {
       display: flex;
       align-items: center;
@@ -395,7 +397,7 @@
   .mintmrm-single-template {
     width: calc(100% / 4 - 40px);
     margin-left: 40px;
-    margin-bottom: 40px;
+    margin-top: 40px;
     position: relative;
 
     &.create-from-scratch {
@@ -429,6 +431,33 @@
       }
     }
 
+    &.coming-soon {
+      width: calc(75% - 40px);
+
+      .coming-soon-inner {
+        width: 100%;
+        height: calc(100% - 35px);
+        min-height: 120px;
+        background: #fff;
+        text-align: center;
+        border-radius: 10px;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      h2 {
+        width: 100%;
+        text-align: center;
+        z-index: 2;
+        font-size: 16px;
+        font-weight: 600;
+        color: #2D3149;
+        cursor: text;
+      }
+    }
+
     .mintmrm-single-remote-wrapper {
       position: relative;
     }
@@ -438,17 +467,18 @@
     }
 
     .template-image-wrapper {
+      background-image: url(http://mrm.local/wp-content/uploads/2022/11/template-thumbnail.jpg);
       background-repeat: no-repeat;
       background-size: 100% auto;
-      background-position: top center;
+      background-position: center center;
       border-radius: 10px;
       position: relative;
       overflow: hidden;
 
-      &:before {
-        content: "";
+      &:before{
+        content: '';
         display: block;
-        padding-top: calc(100% + 19px);
+        padding-top: 100%;
       }
     }
 
@@ -510,4 +540,66 @@
 
 .folded .mintmrm-template-modal {
   width: calc(100% - 36px);
+}
+
+
+//---------responsive style--------
+@media only screen and (max-width: 1599px) {
+  .mintmrm-template-modal .template-modal-overflow {
+    padding: 40px;
+  }
+
+  .mintmrm .mintmrm-template-wrapper {
+    margin-left: -30px;
+  }
+  .mintmrm .mintmrm-single-template {
+    width: calc(25% - 30px);
+    margin-left: 30px;
+    margin-top: 30px;
+  }
+}
+
+@media only screen and (max-width: 1399px) {
+  .mintmrm .mintmrm-single-template {
+    width: calc(100% / 3 - 30px);
+  }
+
+  .mintmrm .mintmrm-single-template.coming-soon {
+    width: calc(66.33333333% - 30px);
+  }
+  
+}
+
+@media only screen and (max-width: 1199px) {
+  .mintmrm-template-modal .template-modal-overflow {
+    padding: 30px;
+  }
+  .mintmrm-template-modal .template-modal-header .template-filter {
+    gap: 18px;
+  }
+  .mintmrm-template-modal .template-modal-header .template-filter li {
+    font-size: 15px;
+  }
+  .mintmrm .mintmrm-single-template .template-info .title {
+    font-size: 16px;
+  }
+
+  .mintmrm-template-modal .template-modal-footer .template-pagination button {
+    padding: 13px 8px;
+  }
+
+}
+
+@media only screen and (max-width: 960px) {
+  .auto-fold .mintmrm-template-modal {
+    width: calc(100% - 36px);
+  }
+
+}
+
+@media only screen and (max-width: 782px) {
+  .auto-fold .mintmrm-template-modal {
+    width: 100%;
+  }
+
 }

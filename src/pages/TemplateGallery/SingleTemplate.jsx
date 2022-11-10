@@ -19,7 +19,7 @@ export default function SingleTemplate(props) {
               <button type="button" className="select-this mintmrm-btn" onClick={() => onImportTemplate(id)}>Select</button>
             </div>
             <div className="template-image-wrapper" style={templateBgImage} > 
-              <img src={featured_image} alt="contact-author-img" />
+            
             </div>
           </div>
 

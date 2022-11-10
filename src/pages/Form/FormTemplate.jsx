@@ -121,7 +121,15 @@ const FormTemplate = (props) => {
                         onImportTemplate={onImportTemplate}
                       />
                     );
-                })}
+
+                })}{
+
+                  <div className="mintmrm-single-template create-from-scratch coming-soon">
+                    <div className="coming-soon-inner">
+                      <h2>Amazing Templates Are Coming Soon</h2>
+                    </div>
+                  </div>
+                }
                 
               </div>
             </div>
