@@ -15,7 +15,6 @@ import PublishAlert from "../../components/PublishAlert";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ToolTip from "../../components/ToolTip";
 import useUnload from "../../components/Unload";
-import WarningNotification from "../../components/WarningNotification";
 import {
   deleteCampaignEmail,
   updateCampaignRequest,
@@ -46,6 +45,7 @@ export default function EditCampaign(props) {
   const [emailData, setEmailData] = useState([{ ...defaultEmailData }]);
   const [activeEmailData, setActiveEmailData] = useState(defaultEmailData);
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   // tracks currently selected email index and highlights in the UI
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
@@ -254,11 +254,13 @@ export default function EditCampaign(props) {
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
         // Show success message
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(response?.message);
         toggleRefresh();
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(response?.message);
       }
     });
@@ -417,11 +419,13 @@ export default function EditCampaign(props) {
       updateCampaignRequest(campaign).then((response) => {
         if (201 === response.code) {
           // Show success message
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response?.message);
           toggleRefresh();
         } else {
-          setShowWarning("block");
+          setNotificationType("warning");
+          setShowNotification("block");
           setMessage(response?.message);
         }
       });
@@ -1065,9 +1069,10 @@ export default function EditCampaign(props) {
       <SuccessfulNotification
         display={showNotification}
         setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
         message={message}
       />
-      <WarningNotification display={showWarning} message={message} />
       {!isClose && (
         <CampaignTemplates
           refresh={refresh}

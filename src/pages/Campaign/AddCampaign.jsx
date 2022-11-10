@@ -9,9 +9,9 @@ import SettingIcon from "../../components/Icons/SettingIcon";
 import TemplateIcon from "../../components/Icons/TemplateIcon";
 import UpArrowIcon from "../../components/Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ToolTip from "../../components/ToolTip";
 import useUnload from "../../components/Unload";
-import WarningNotification from "../../components/WarningNotification";
 import { submitCampaign } from "../../services/Campaign";
 import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
@@ -57,7 +57,8 @@ export default function AddCampaign(props) {
   const [refresh, setRefresh] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
-  const [showWarning, setShowWarning] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
 
   const menuRef = useRef(null);
@@ -68,7 +69,6 @@ export default function AddCampaign(props) {
 
   const [previewPersonalization, setPreviewPersonalization] = useState(false);
   const [subjectPersonalization, setSubjectPersonalization] = useState(false);
-  const [showNotification, setShowNotification] = useState("none");
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -146,7 +146,8 @@ export default function AddCampaign(props) {
           state: { status: "campaign-created", message: response?.message },
         });
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(response?.message);
       }
       ClearNotification("none", setShowNotification);
@@ -171,25 +172,6 @@ export default function AddCampaign(props) {
       );
       return copy;
     });
-  };
-
-  const validateCampaign = (value, index) => {
-    if (value.length > 0) {
-      setShowWarning("block");
-      setMessage("Sender Email is missing on email " + (index + 1));
-      return false;
-    } else if (
-      !new RegExp(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
-      ).test(value)
-    ) {
-      setShowWarning("block");
-      setMessage("Sender Email Address is not valid on email" + (index + 1));
-      return false;
-    } else {
-      setErrors({});
-      return true;
-    }
   };
 
   const validateSenderEmail = (event, name, value) => {
@@ -767,7 +749,13 @@ export default function AddCampaign(props) {
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
       <CampaignTemplates
         refresh={refresh}
         setRefresh={setRefresh}

@@ -1177,7 +1177,7 @@ ul.mintmrm-dropdown {
   display: flex;
   .alert-toast {
     position: fixed;
-    top: 50px;
+    bottom: 50px;
     right: 30px;
 
     .alert-container {
@@ -1254,7 +1254,7 @@ ul.mintmrm-dropdown {
   display: flex;
   .alert-toast {
     position: fixed;
-    top: 50px;
+    bottom: 50px;
     right: 30px;
 
     .alert-container {
@@ -1266,13 +1266,33 @@ ul.mintmrm-dropdown {
       flex-flow: row wrap;
       align-items: center;
       padding: 15px;
-      animation: scrollDown 3s linear 1;
-      animation-fill-mode: forwards;
+      -webkit-animation: fadeinout 5s linear forwards;
+      animation: fadeinout 5s linear forwards;
 
       .successfull-icon,
       .cross-icon {
         height: 26px;
         width: 26px;
+      }
+
+      @-webkit-keyframes fadeinout {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeinout {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
       p {
