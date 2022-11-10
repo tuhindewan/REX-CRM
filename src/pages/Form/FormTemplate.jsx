@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import SingleTemplate from "../../pages/TemplateGallery/SingleTemplate";
-import { getAllTemplates } from "../../services/Form";
+import { getAllTemplates, getSingleTemplate } from "../../services/Form";
 
 const FormTemplate = (props) => {
   const { isClose, setIsClose, setIsTemplate, isOpen } = props;
@@ -17,6 +17,12 @@ const FormTemplate = (props) => {
   const closeSection = () => {
     setIsClose(!isClose);
   };
+
+  const onImportTemplate = async (template_id) => {
+    getSingleTemplate(template_id).then((response) => {
+      console.log(response);
+    });
+  }
 
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
@@ -106,6 +112,7 @@ const FormTemplate = (props) => {
                       <SingleTemplate
                         key={template.id}
                         template={template}
+                        onImportTemplate={onImportTemplate}
                       />
                     );
                 })}

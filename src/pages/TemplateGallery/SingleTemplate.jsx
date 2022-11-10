@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 export default function SingleTemplate(props) {
 
   const {id, title, featured_image} = props.template;
+  const {onImportTemplate} = props;
   return (
     <>
       <div className="mintmrm-single-template">
         <div className="mintmrm-single-remote-wrapper">
           <div className="mintmrm-single-remote-template">
             <div className="hoverlay">
-              <button type="button" className="select-this mintmrm-btn">Select</button>
+              <button type="button" className="select-this mintmrm-btn" onClick={() => onImportTemplate(id)}>Select</button>
             </div>
             <div className="template-image-wrapper"> 
               <img src={featured_image} alt="contact-author-img" />

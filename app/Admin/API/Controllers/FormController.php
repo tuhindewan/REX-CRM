@@ -3,9 +3,7 @@
 namespace Mint\MRM\Admin\API\Controllers;
 
 use Exception;
-use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataBase\Models\FormModel;
-use Mint\MRM\DataStores\ContactData;
 use Mint\MRM\DataStores\FormData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
@@ -52,6 +50,7 @@ class FormController extends BaseController {
 
         // Get values from the API request
         $params = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
         //Form title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
