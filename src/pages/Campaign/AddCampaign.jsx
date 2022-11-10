@@ -102,6 +102,24 @@ export default function AddCampaign(props) {
     }
   }
 
+  // handler function for campaign title
+  const handleTitleChange = async (event) => {
+    const { name, value } = event.target;
+
+    if( value.length > 150 ) {
+      setErrors({
+        ...errors,
+        title: "Campaign title character limit exceeded 150 characters",
+      });
+    }else{
+      setErrors({
+        ...errors,
+        title: "",
+      });
+      setCampaignTitle(value);
+    }
+  };
+
   // Prepare campaign object and send post request to backend
   const saveCampaign = async (status) => {
     const campaign = {
@@ -138,6 +156,8 @@ export default function AddCampaign(props) {
       }),
     };
 
+    setErrors({});
+    
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
@@ -420,9 +440,18 @@ export default function AddCampaign(props) {
                         type="text"
                         name="title"
                         value={campaignTitle}
-                        onChange={(e) => setCampaignTitle(e.target.value)}
+                        onChange={(event) => handleTitleChange(event)}
                         placeholder="Enter Campaign title"
                       />
+                      <p
+                        className={
+                          errors?.title
+                            ? "error-message show"
+                            : "error-message"
+                        }
+                      >
+                        {errors?.title}
+                      </p>
                     </div>
                     <div className="email-to input-item">
                       <div className="select-options" ref={menuRef}>

@@ -119,6 +119,25 @@ export default function EditCampaign(props) {
     }
   }
 
+  // handler function for campaign title
+  const handleTitleChange = async (event) => {
+    setIsValid(true);
+    const { name, value } = event.target;
+
+    if( value?.length > 150 ) {
+      setErrors({
+        ...errors,
+        title: "Campaign title character limit exceeded 150 characters",
+      });
+    }else{
+      setErrors({
+        ...errors,
+        title: "",
+      });
+      setCampaignTitle(value);
+    }
+  };
+
   // fetch campaign data
   const fetchCampaignData = async () => {
     const response = await fetch(`/wp-json/mrm/v1/campaigns/${id}`);
@@ -229,7 +248,7 @@ export default function EditCampaign(props) {
       }),
       campaign_id: id,
     };
-
+    setErrors({});
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
         // Show success message
@@ -631,13 +650,19 @@ export default function EditCampaign(props) {
                           type="text"
                           name="title"
                           value={campaignTitle}
-                          onChange={(e) => {
-                            setIsValid(true);
-                            setCampaignTitle(e.target.value);
-                          }}
+                          onChange={(event) => handleTitleChange(event)}
                           placeholder="Enter Campaign title"
                           disabled={isReadonly}
                         />
+                        <p
+                        className={
+                          errors?.title
+                            ? "error-message show"
+                            : "error-message"
+                        }
+                      >
+                        {errors?.title}
+                      </p>
                       </div>
                       <div className="email-to input-item">
                         <div className="select-options" ref={menuRef}>
