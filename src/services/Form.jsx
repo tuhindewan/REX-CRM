@@ -19,3 +19,18 @@ export async function getSingleTemplate(id) {
     }
   });
 }
+
+// POST request to create new form
+export async function createNewForm(form) {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/forms`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(form),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

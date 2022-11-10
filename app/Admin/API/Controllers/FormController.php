@@ -50,12 +50,13 @@ class FormController extends BaseController {
 
         // Get values from the API request
         $params = MRM_Common::get_api_params_values( $request );
+
         //Form title validation
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
             return $this->get_error_response( __( 'Form name is mandatory', 'mrm' ), 200);
         }
-//		error_log(print_r($params['status'],1));
+        
         //group Ids validation
 //        $group_ids = isset( $params['group_ids'] ) ? $params['group_ids'] : [];
 //        if (empty($group_ids['lists']) && empty($group_ids['tags'])){

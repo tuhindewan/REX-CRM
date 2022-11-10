@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import SingleTemplate from "../../pages/TemplateGallery/SingleTemplate";
-import { getAllTemplates, getSingleTemplate } from "../../services/Form";
+import {
+  createNewForm,
+  getAllTemplates,
+  getSingleTemplate,
+} from "../../services/Form";
 
 const FormTemplate = (props) => {
   const { isClose, setIsClose, setIsTemplate, isOpen } = props;
@@ -33,7 +37,10 @@ const FormTemplate = (props) => {
           settings: template.settings,
         },
       };
-      console.log(formData);
+
+      createNewForm(formData).then((response) => {
+        console.log(response);
+      });
     });
   };
 
