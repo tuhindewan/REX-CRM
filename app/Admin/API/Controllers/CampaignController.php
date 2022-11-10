@@ -4,7 +4,6 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
-use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;

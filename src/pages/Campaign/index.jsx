@@ -34,6 +34,11 @@ export default function AllCampaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
+  // order by which field
+  const [orderBy, setOrderBy] = useState("title");
+
+  // order type asc or desc
+  const [orderType, setOrderType] = useState("asc");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
   const [showNotification, setShowNotification] = useState("none");
@@ -58,6 +63,14 @@ export default function AllCampaigns() {
   const [selected, setSelected] = useState([]);
   const [showAlert, setShowAlert] = useState("none");
   const [isUpdate, setIsUpdate] = useState("none");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [sortButtonName, setSortButtonName] = useState("Name (A - Z)");
+  const [listening, setListening] = useState(false);
+  const sortByRef = useRef(null);
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, sortByRef, setShowDropdown)
+  );
 
   useEffect(() => {
     getAllCampaigns(page, perPage, query).then((results) => {
@@ -208,8 +221,6 @@ export default function AllCampaigns() {
     }
   };
 
-  const [listening, setListening] = useState(false);
-
   // Outside click events for bulk action dropdown
   const threeDotRef = useRef(null);
   useEffect(
@@ -221,6 +232,27 @@ export default function AllCampaigns() {
     )
   );
 
+  // Show/hide sort dropdown
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  // Handle campaign list sorting
+  const handleSorting = (event, order_by, order_type) => {
+    setShowDropdown(false);
+    setOrderBy(order_by);
+    setOrderType(order_type);
+    if (order_by == "title" && order_type == "asc") {
+      setSortButtonName("Name (A - Z)");
+    } else if (order_by == "title" && order_type == "desc") {
+      setSortButtonName("Name (Z - A)");
+    } else if (order_by == "created_at" && order_type == "asc") {
+      setSortButtonName("Date Created Asc");
+    } else {
+      setSortButtonName("Date Created Desc");
+    }
+  };
+
   return (
     <>
       <div className="campaign-index-page">
@@ -230,7 +262,41 @@ export default function AllCampaigns() {
             <div className="campaign-list-area">
               <div className="campaign-list-header">
                 <div className="left-filters">
-                  <h2 className="table-title">List View</h2>
+                  <p className="sort-by">Sort by</p>
+                  <div className="sort-by-dropdown" ref={sortByRef}>
+                    <button
+                      className={
+                        showDropdown
+                          ? "drop-down-button show"
+                          : "drop-down-button"
+                      }
+                      onClick={handleDropdown}
+                    >
+                      {sortButtonName}
+                    </button>
+                    <ul
+                      className={
+                        showDropdown
+                          ? "mintmrm-dropdown show"
+                          : "mintmrm-dropdown"
+                      }
+                    >
+                      <li
+                        onClick={(event) =>
+                          handleSorting(event, "title", "asc")
+                        }
+                      >
+                        Name (A - Z)
+                      </li>
+                      <li
+                        onClick={(event) =>
+                          handleSorting(event, "title", "desc")
+                        }
+                      >
+                        Name (Z - A)
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
                 <div className="right-buttons">

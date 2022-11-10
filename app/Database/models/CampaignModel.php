@@ -212,7 +212,6 @@ class CampaignModel {
         $campaign           = $wpdb->get_row( $select_query, ARRAY_A );
         $campaign['id']     = $id;
         $campaign['emails']    = self::get_campaign_email( $id );
-        error_log(print_r($campaign, 1));
         return $campaign;
     }
 
