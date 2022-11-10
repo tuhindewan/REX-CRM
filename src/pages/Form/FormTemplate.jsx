@@ -90,7 +90,7 @@ const FormTemplate = (props) => {
   };
   const SelectFilter = (filter) =>{
     const updateItems = formTemplates.filter((curElem) => {
-      return curElem.id === filter;
+      return curElem.form_position === filter;
     });
     setFormTemplatesFilter(updateItems);
   };
@@ -114,10 +114,10 @@ const FormTemplate = (props) => {
               <h4 className="modal-title">Choose Form</h4>
 
               <ul className="template-filter">
-                <li className="active" onClick={() => SelectFilter('2')}>Pop-up</li>
-                <li onClick={() => SelectFilter('3')}>Slide-in</li>
-                <li>Fixed bar</li>
-                <li>Below pages</li>
+                <li className="active" onClick={() => SelectFilter('popup')}>Pop-up</li>
+                <li onClick={() => SelectFilter('flyins')}>Fly-Ins</li>
+                <li onClick={() => SelectFilter('fixed-on-top')}>Fixed Bar Top</li>
+                <li onClick={() => SelectFilter('fixed-on-bottom')}>Fixed on bottom</li>
               </ul>
 
               <div className="template-type">
