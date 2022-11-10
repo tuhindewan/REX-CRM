@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import DragAndDrop from "../components/DragAndDrop";
 import ImportSVG from "../components/Icons/ImportSVG";
 import ImportNavbar from "../components/Import/ImportNavbar";
-import WarningNotification from "../components/WarningNotification";
-import {ClearWarning} from "../utils/admin-notification";
+import SuccessfulNotification from "../components/SuccessfulNotification";
+import { ClearNotification } from "../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
 export default function ImportContactFile() {
   // Admin active menu selection
@@ -12,9 +12,9 @@ export default function ImportContactFile() {
   const navigate = useNavigate();
   // stores the selected file reference
   const [file, setFile] = useState(null);
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
-
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
   const uploadRef = useRef(null);
 
   // sets the file reference on file select
@@ -29,12 +29,12 @@ export default function ImportContactFile() {
       if (droppedFile.type == "text/csv") {
         setFile(droppedFile);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage("File Format Not Supported.");
-        ClearWarning('none',setShowWarning)
+        ClearNotification("none", setShowNotification);
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   // open upload picker while clicking on click to upload
@@ -62,9 +62,10 @@ export default function ImportContactFile() {
         },
       });
     } else {
-      setShowWarning("block");
-      setMessage(resJson.message);
-      ClearWarning('none',setShowWarning)
+      setNotificationType("warning");
+      setShowNotification("block");
+      setMessage(resJson?.message);
+      ClearNotification("none", setShowNotification);
     }
   }
   const routeChange = () => {
@@ -142,7 +143,13 @@ export default function ImportContactFile() {
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }

@@ -170,25 +170,6 @@ export default function EditCampaign(props) {
     ClearNotification("none", setShowNotification);
   }, [refresh]);
 
-  const validateCampaign = (value, index) => {
-    if (!value.length) {
-      setShowWarning("block");
-      setMessage("Sender Email is missing on email " + (index + 1));
-      return false;
-    } else if (
-      !new RegExp(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
-      ).test(value)
-    ) {
-      setShowWarning("block");
-      setMessage("Sender Email Address is not valid on email" + (index + 1));
-      return false;
-    } else {
-      setErrors({});
-      return true;
-    }
-  };
-
   const validateSenderEmail = (name, value) => {
     if (
       !new RegExp(
