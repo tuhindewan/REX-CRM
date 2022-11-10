@@ -246,7 +246,7 @@ export default function FormIndex(props) {
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ status: "1" }),
+          body: JSON.stringify({ status: "published" }),
         }
       )
         .then((response) => response.json())
@@ -271,7 +271,7 @@ export default function FormIndex(props) {
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ status: "0" }),
+          body: JSON.stringify({ status: "draft" }),
         }
       )
         .then((response) => response.json())
@@ -540,7 +540,7 @@ export default function FormIndex(props) {
                                 <td className="status">
                                   <span className="wpfnl-switcher">
                                     <input
-                                      checked={form.status === "1"}
+                                      checked={form.status === "published"}
                                       type="checkbox"
                                       name="checkedB"
                                       id={"st-" + form.id}

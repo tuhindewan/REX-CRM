@@ -167,7 +167,7 @@ const FormEditor = (props) => {
         lists: recipientLists,
         tags: recipientTags,
       },
-      status: 0,
+      status: 'draft',
       meta_fields: {
         settings: settingData,
       },
@@ -233,7 +233,7 @@ const FormEditor = (props) => {
         lists: recipientLists,
         tags: recipientTags,
       },
-      status: 1,
+      status: 'published',
       meta_fields: {
         settings: settingData,
       },
