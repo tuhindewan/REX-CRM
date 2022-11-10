@@ -11405,6 +11405,7 @@ class Editor extends Component {
       value: attributes.rowSpacing,
       onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
+      resetFallbackValue: 12,
       min: 0,
       max: 50,
       step: 1
@@ -11423,7 +11424,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-block-typography"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Typography"),
       value: labelTypography,
       onChange: value => setAttributes({
         labelTypography: value
@@ -11446,6 +11447,7 @@ class Editor extends Component {
       value: attributes.labelSpacing,
       onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
+      resetFallbackValue: 7,
       min: 0,
       max: 50,
       step: 1
@@ -11464,7 +11466,7 @@ class Editor extends Component {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-block-typography"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Typography'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Typography"),
       value: inputTypography,
       onChange: value => setAttributes({
         inputTypography: value
@@ -11494,6 +11496,7 @@ class Editor extends Component {
       value: attributes.inputBorderRadius,
       onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
+      resetFallbackValue: 5,
       min: 0,
       max: 100,
       step: 1
@@ -11524,6 +11527,7 @@ class Editor extends Component {
       value: attributes.inputBorderWidth,
       onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
+      resetFallbackValue: 1,
       min: 0,
       max: 5,
       step: 1
@@ -12020,6 +12024,7 @@ class Editor extends Component {
       value: attributes.rowSpacing,
       onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
+      resetFallbackValue: 12,
       min: 0,
       max: 50,
       step: 1
@@ -12063,6 +12068,7 @@ class Editor extends Component {
       value: attributes.labelSpacing,
       onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
+      resetFallbackValue: 7,
       min: 0,
       max: 50,
       step: 1
@@ -12111,6 +12117,7 @@ class Editor extends Component {
       value: attributes.inputBorderRadius,
       onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
+      resetFallbackValue: 5,
       min: 0,
       max: 100,
       step: 1
@@ -12141,6 +12148,7 @@ class Editor extends Component {
       value: attributes.inputBorderWidth,
       onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
+      resetFallbackValue: 1,
       min: 0,
       max: 5,
       step: 1
@@ -12947,6 +12955,7 @@ class Editor extends Component {
       value: attributes.rowSpacing,
       onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
+      resetFallbackValue: 12,
       min: 0,
       max: 50,
       step: 1
@@ -12988,6 +12997,7 @@ class Editor extends Component {
       value: attributes.labelSpacing,
       onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
+      resetFallbackValue: 7,
       min: 0,
       max: 50,
       step: 1
@@ -13036,6 +13046,7 @@ class Editor extends Component {
       value: attributes.inputBorderRadius,
       onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
+      resetFallbackValue: 5,
       min: 0,
       max: 100,
       step: 1
@@ -13066,6 +13077,7 @@ class Editor extends Component {
       value: attributes.inputBorderWidth,
       onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
+      resetFallbackValue: 1,
       min: 0,
       max: 5,
       step: 1
@@ -14768,6 +14780,7 @@ class Editor extends Component {
       value: attributes.rowSpacing,
       onChange: rowSpacing => this.onChangeAttribute("rowSpacing", rowSpacing),
       allowReset: true,
+      resetFallbackValue: 12,
       min: 0,
       max: 50,
       step: 1
@@ -14914,6 +14927,7 @@ class Editor extends Component {
       value: attributes.labelSpacing,
       onChange: labelSpacing => this.onChangeAttribute("labelSpacing", labelSpacing),
       allowReset: true,
+      resetFallbackValue: 7,
       min: 0,
       max: 50,
       step: 1
@@ -14962,6 +14976,7 @@ class Editor extends Component {
       value: attributes.inputBorderRadius,
       onChange: radius => this.onChangeAttribute("inputBorderRadius", radius),
       allowReset: true,
+      resetFallbackValue: 5,
       min: 0,
       max: 100,
       step: 1
@@ -14992,6 +15007,7 @@ class Editor extends Component {
       value: attributes.inputBorderWidth,
       onChange: border => this.onChangeAttribute("inputBorderWidth", border),
       allowReset: true,
+      resetFallbackValue: 1,
       min: 0,
       max: 5,
       step: 1

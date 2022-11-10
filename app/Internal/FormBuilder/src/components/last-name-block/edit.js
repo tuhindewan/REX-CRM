@@ -117,6 +117,7 @@ class Editor extends Component {
             this.onChangeAttribute("rowSpacing", rowSpacing)
           }
           allowReset={true}
+          resetFallbackValue={12}
           min={0}
           max={50}
           step={1}
@@ -160,6 +161,7 @@ class Editor extends Component {
             this.onChangeAttribute("labelSpacing", labelSpacing)
           }
           allowReset={true}
+          resetFallbackValue={7}
           min={0}
           max={50}
           step={1}
@@ -214,6 +216,7 @@ class Editor extends Component {
             this.onChangeAttribute("inputBorderRadius", radius)
           }
           allowReset={true}
+          resetFallbackValue={5}
           min={0}
           max={100}
           step={1}
@@ -256,6 +259,7 @@ class Editor extends Component {
             this.onChangeAttribute("inputBorderWidth", border)
           }
           allowReset={true}
+          resetFallbackValue={1}
           min={0}
           max={5}
           step={1}
