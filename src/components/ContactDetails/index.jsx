@@ -1346,10 +1346,6 @@ export default function ContactDetails() {
                         contactId={id}
                         refresh={refresh}
                         setRefresh={setRefresh}
-                        setShowNotification={setShowNotification}
-                        showNotification={"mone"}
-                        setMessage={setMessage}
-                        message={message}
                         isActive={selectList}
                       />
                     </div>
@@ -1406,10 +1402,6 @@ export default function ContactDetails() {
                           contactId={id}
                           refresh={refresh}
                           setRefresh={setRefresh}
-                          setShowNotification={setShowNotification}
-                          showNotification={"mone"}
-                          setMessage={setMessage}
-                          message={message}
                         />
                       )}
                     </div>

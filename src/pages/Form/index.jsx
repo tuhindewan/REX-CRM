@@ -77,6 +77,7 @@ export default function FormIndex(props) {
 
   // Variables to show notifications
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
@@ -173,6 +174,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (200 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -213,6 +215,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (200 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -252,6 +255,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (201 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -277,6 +281,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (201 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -644,6 +649,8 @@ export default function FormIndex(props) {
           display={showNotification}
           setShowNotification={setShowNotification}
           message={message}
+          notificationType={notificationType}
+          setNotificationType={setNotificationType}
         />
       </div>
 

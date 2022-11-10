@@ -1,3 +1,4 @@
+import { createNewGroup } from "../../services/Common";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ClearNotification } from "../../utils/admin-notification";
@@ -43,40 +44,28 @@ export default function AddItems(props) {
 
   // Handle new list or tag creation
   const addNewItem = async () => {
-    let res = null;
     let body = {
       title: search,
     };
-    try {
-      // create contact
-      setLoading(true);
-      res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
 
-      const resJson = await res.json();
-      if (resJson.code == 201) {
+    setLoading(true);
+    createNewGroup(endpoint, body).then((response) => {
+      if (201 === response.code) {
         setSearch("");
         setQuery("");
-        setSelected([...selected, { id: resJson.data, title: body.title }]);
-        props.setShowNotification("block");
-        props.setMessage(resJson?.message);
+        setSelected([...selected, { id: response?.data, title: body.title }]);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(response?.message);
         props.setIsAssignTo(true);
       } else {
         setNotificationType("warning");
         setShowNotification("block");
-        setMessage(resJson.message);
+        setMessage(response?.message);
       }
-      ClearNotification("none", setShowNotification);
-    } catch (e) {
-    } finally {
       setLoading(false);
       ClearNotification("none", setShowNotification);
-    }
+    });
   };
 
   // function used for checking whether the current item is selected or not
@@ -148,9 +137,10 @@ export default function AddItems(props) {
         setQuery("");
         setSelected([]);
         props.setIsAssignTo(!props.isActive);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(resJson.message);
         props.setRefresh(!props.refresh);
-        props.setShowNotification("block");
-        props.setMessage(resJson.message);
       } else {
         setNotificationType("warning");
         setShowNotification("block");

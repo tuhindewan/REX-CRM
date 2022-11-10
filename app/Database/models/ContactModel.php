@@ -94,6 +94,8 @@ class ContactModel{
         unset($args['added_by_login']);
         unset($args['avatar_url']);
         unset($args['notes']);
+        unset($args['messages']);
+        unset($args['activities']);
 
         try {
             $wpdb->update( 
