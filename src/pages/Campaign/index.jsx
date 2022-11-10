@@ -1,5 +1,16 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AlertPopup from "../../components/AlertPopup";
+import CampaignsNavbar from "../../components/CampaignNav";
+import DeletePopup from "../../components/DeletePopup";
+import Delete from "../../components/Icons/Delete";
+import Search from "../../components/Icons/Search";
+import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import LoadingIndicator from "../../components/LoadingIndicator";
+import Pagination from "../../components/Pagination";
+import PublishAlert from "../../components/PublishAlert";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import {
   deleleMultipleCampaigns,
@@ -7,21 +18,10 @@ import {
   getAllCampaigns,
   updateCampaignStatus,
 } from "../../services/Campaign";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
-import AlertPopup from "../../components/AlertPopup";
 import NoCampaign from "./NoCampaign";
 import SingleCampaign from "./SingleCampaign";
-import CampaignsNavbar from "../../components/CampaignNav";
-import DeletePopup from "../../components/DeletePopup";
-import Search from "../../components/Icons/Search";
-import LoadingIndicator from "../../components/LoadingIndicator";
-import Pagination from "../../components/Pagination";
-import PublishAlert from "../../components/PublishAlert";
-import SuccessfulNotification from "../../components/SuccessfulNotification";
-import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
-import Delete from "../../components/Icons/Delete";
-import { ClearNotification } from "../../utils/admin-notification";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function AllCampaigns() {
   // Admin active menu selection
@@ -66,7 +66,7 @@ export default function AllCampaigns() {
       setTotalPages(results.total_pages);
       setShowLoader(false);
     });
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh]);
 
   // Multiple selection confirmation
@@ -204,7 +204,7 @@ export default function AllCampaigns() {
       setIsUpdate("none");
       const isValid = validate();
       setIsValid(isValid);
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -213,7 +213,12 @@ export default function AllCampaigns() {
   // Outside click events for bulk action dropdown
   const threeDotRef = useRef(null);
   useEffect(
-      ListenForOutsideClicks( listening, setListening, threeDotRef, setShowMoreOptions )
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      threeDotRef,
+      setShowMoreOptions
+    )
   );
 
   return (
@@ -353,17 +358,15 @@ export default function AllCampaigns() {
                             );
                           })}
                         </div>
-                        {totalPages > 1 && (
-                          <div className="table-footer">
-                            <Pagination
-                              currentPage={page}
-                              pageSize={perPage}
-                              onPageChange={setPage}
-                              totalCount={count}
-                              totalPages={totalPages}
-                            />
-                          </div>
-                        )}
+                        <div>
+                          <Pagination
+                            currentPage={page}
+                            pageSize={perPage}
+                            onPageChange={setPage}
+                            totalCount={count}
+                            totalPages={totalPages}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
