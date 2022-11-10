@@ -35,10 +35,10 @@ export default function AllCampaigns() {
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   // order by which field
-  const [orderBy, setOrderBy] = useState("title");
+  const [orderBy, setOrderBy] = useState("id");
 
   // order type asc or desc
-  const [orderType, setOrderType] = useState("asc");
+  const [orderType, setOrderType] = useState("desc");
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
   const [showNotification, setShowNotification] = useState("none");
@@ -73,14 +73,16 @@ export default function AllCampaigns() {
   );
 
   useEffect(() => {
-    getAllCampaigns(page, perPage, query).then((results) => {
-      setCampaigns(results.data);
-      setCount(results.count);
-      setTotalPages(results.total_pages);
-      setShowLoader(false);
-    });
+    getAllCampaigns(page, perPage, query, orderBy, orderType).then(
+      (results) => {
+        setCampaigns(results.data);
+        setCount(results.count);
+        setTotalPages(results.total_pages);
+        setShowLoader(false);
+      }
+    );
     ClearNotification("none", setShowNotification);
-  }, [page, perPage, query, refresh]);
+  }, [page, perPage, query, refresh, orderBy, orderType]);
 
   // Multiple selection confirmation
   const deleleMultipleCampaign = async () => {
