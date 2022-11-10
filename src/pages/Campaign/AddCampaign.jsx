@@ -50,7 +50,6 @@ export default function AddCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
-  const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
   const [dropDown, setDropDown] = useState(false);
   const [errors, setErrors] = useState({});
@@ -737,13 +736,6 @@ export default function AddCampaign(props) {
                 >
                   Save draft
                 </button>
-                {responseMessage != "" && (
-                  <SuccessfulNotification
-                    display={"block"}
-                    message="Campaign is saved."
-                    setShowNotification={setShowNotification}
-                  />
-                )}
               </div>
             </div>
           </div>

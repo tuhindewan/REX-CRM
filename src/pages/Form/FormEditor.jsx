@@ -18,7 +18,6 @@ import InputItem from "../../components/InputItem";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
-import WarningNotification from "../../components/WarningNotification";
 import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import CampaignCustomSelect from "../Campaign/CampaignCustomSelect";
@@ -38,47 +37,29 @@ const FormEditor = (props) => {
   }
   const [preview, setPreview] = useState("editor");
 
-  // lists
-  const [lists, setLists] = useState([]);
-
-  // tags
-  const [tags, setTags] = useState([]);
-
   //loading
   const [loading, setLoading] = useState(true);
 
-  const [selectedLists, setSelectedLists] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
-
   const [moreOption, setMoreOption] = useState(false);
-  const [listDropdown, setListDropdown] = useState(false);
-  const [settingsPannel, setSettingsPannel] = useState(false);
 
   const [enable, setEnable] = useState(false);
 
   const params = useParams();
 
-  const [load, setLoad] = useState(false);
-
   const [id, setId] = useState(params.id);
 
   const [blockData, setBlockData] = useState();
-  const [showPreview, setShowPreview] = useState(false);
 
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [showAlert, setShowAlert] = useState("none");
-
-  const [savedSuccess, setSaveSuccess] = useState(false);
 
   const [recipientLists, setRecipientLists] = useState([]);
   const [recipientTags, setRecipientTags] = useState([]);
   const [dropDown, setDropDown] = useState(false);
 
-  const [groupIds, setGroupIds] = useState([]);
   const [saveLoader, setsaveLoader] = useState(false);
-
-  const [isReloaded, setIsReloaded] = useState(false);
 
   const [formData, setFormData] = useState({});
   const [resTime, setResTime] = useState(2000);
@@ -95,6 +76,7 @@ const FormEditor = (props) => {
   };
 
   if ("form-created" == location.state?.status) {
+    setNotificationType("success");
     setShowNotification("block");
     setMessage("Form has been imported successfully");
     window.location.reload();
@@ -188,14 +170,17 @@ const FormEditor = (props) => {
         body: JSON.stringify(post_data),
       });
       const responseData = await res.json();
-      setShowNotification("block");
-      setMessage(responseData?.message);
+
       if (201 === responseData?.code) {
-        setSaveSuccess(true);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
         setId(responseData?.data);
       } else if (200 === responseData?.code) {
-        setSaveSuccess(false);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
       }
       ClearNotification("none", setShowNotification);
@@ -212,13 +197,15 @@ const FormEditor = (props) => {
         }
       );
       const responseData = await res.json();
-      setShowNotification("block");
-      setMessage(responseData?.message);
       if (201 === responseData?.code) {
-        setSaveSuccess(true);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
       } else if (200 === responseData?.code) {
-        setSaveSuccess(false);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
       }
       ClearNotification("none", setShowNotification);
@@ -254,14 +241,17 @@ const FormEditor = (props) => {
         body: JSON.stringify(post_data),
       });
       const responseData = await res.json();
-      setShowNotification("block");
-      setMessage(responseData?.message);
+
       if (201 === responseData?.code) {
-        setSaveSuccess(true);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
         setId(responseData?.data);
       } else if (200 === responseData?.code) {
-        setSaveSuccess(false);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
       }
       ClearNotification("none", setShowNotification);
@@ -277,13 +267,16 @@ const FormEditor = (props) => {
         }
       );
       const responseData = await res.json();
-      setShowNotification("block");
-      setMessage(responseData?.message);
+
       if (201 === responseData?.code) {
-        setSaveSuccess(true);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
       } else if (200 === responseData?.code) {
-        setSaveSuccess(false);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(responseData?.message);
         setsaveLoader(false);
       }
       ClearNotification("none", setShowNotification);
@@ -497,16 +490,13 @@ const FormEditor = (props) => {
           <div className="mintmrm-container" style={{ display: showAlert }}>
             <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
           </div>
-          {savedSuccess && (
-            <SuccessfulNotification
-              display={showNotification}
-              setShowNotification={setShowNotification}
-              message={message}
-            />
-          )}
-          {!savedSuccess && (
-            <WarningNotification display={showNotification} message={message} />
-          )}
+          <SuccessfulNotification
+            display={showNotification}
+            setShowNotification={setShowNotification}
+            message={message}
+            notificationType={notificationType}
+            setNotificationType={setNotificationType}
+          />
         </div>
       </div>
     </>

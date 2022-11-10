@@ -163,6 +163,7 @@ export default function EditCampaign(props) {
     });
 
     if ("campaign-created" == location.state?.status) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(location.state?.message);
     }
@@ -449,6 +450,7 @@ export default function EditCampaign(props) {
 
       deleteCampaignEmail(id, emailID).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
