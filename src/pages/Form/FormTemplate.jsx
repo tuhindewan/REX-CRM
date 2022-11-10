@@ -21,6 +21,7 @@ const FormTemplate = (props) => {
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
   const [formTemplates, setFormTemplates] = useState([]);
+  const [formTemplatesFilter, setFormTemplatesFilter] = useState([]);
   const [countFormTemplates, setCountFormTemplates] = useState(0);
   const [formBuilderUrl, setFormBuilderUrl] = useState(
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
@@ -70,6 +71,7 @@ const FormTemplate = (props) => {
   useEffect(() => {
     getAllTemplates(1, 10).then((response) => {
       setFormTemplates(response.forms);
+      setFormTemplatesFilter(response.forms)
       setCountFormTemplates(response.count);
     });
   }, []);
@@ -85,6 +87,12 @@ const FormTemplate = (props) => {
   const openFormBuilder = () => {
     window.location.replace(formBuilderUrl);
     window.location.reload();
+  };
+  const SelectFilter = (filter) =>{
+    const updateItems = formTemplates.filter((curElem) => {
+      return curElem.id === filter;
+    });
+    setFormTemplatesFilter(updateItems);
   };
 
   return (
@@ -106,8 +114,8 @@ const FormTemplate = (props) => {
               <h4 className="modal-title">Choose Form</h4>
 
               <ul className="template-filter">
-                <li className="active">Pop-up</li>
-                <li>Slide-in</li>
+                <li className="active" onClick={() => SelectFilter('2')}>Pop-up</li>
+                <li onClick={() => SelectFilter('3')}>Slide-in</li>
                 <li>Fixed bar</li>
                 <li>Below pages</li>
               </ul>
@@ -144,8 +152,8 @@ const FormTemplate = (props) => {
                   </div>
                 </div>
 
-                {formTemplates?.length > 0 ? (
-                  formTemplates.map((template) => {
+                {formTemplatesFilter?.length > 0 ? (
+                    formTemplatesFilter.map((template) => {
                     return (
                       <FormSingleTemplate
                         key={template.id}
