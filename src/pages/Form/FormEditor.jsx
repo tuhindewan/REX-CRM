@@ -500,6 +500,7 @@ const FormEditor = (props) => {
           {savedSuccess && (
             <SuccessfulNotification
               display={showNotification}
+              setShowNotification={setShowNotification}
               message={message}
             />
           )}

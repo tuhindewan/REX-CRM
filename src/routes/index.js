@@ -1,26 +1,26 @@
 import { __ } from "@wordpress/i18n";
-import AllCampaigns from "../pages/Campaign";
-import AddCampaign from "../pages/Campaign/AddCampaign";
-import EditCampaign from "../pages/Campaign/EditCampaign";
-import EmailBuilder from "../pages/Campaign/EmailBuilder";
 import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";
-import FormIndex from "../pages/Form";
-import FormEditor from "../pages/Form/FormEditor";
 import ImportConfirmation from "../components/ImportConfirmation";
 import SelectFieldsMap from "../components/SelectFieldsMap";
-import Settings from "../pages/Setting";
 import WordPressFieldMap from "../components/WordPressFieldMap";
+import AllCampaigns from "../pages/Campaign";
+import AddCampaign from "../pages/Campaign/AddCampaign";
+import EditCampaign from "../pages/Campaign/EditCampaign";
+import EmailBuilder from "../pages/Campaign/EmailBuilder";
 import Contacts from "../pages/Contacts";
+import FormIndex from "../pages/Form";
+import FormEditor from "../pages/Form/FormEditor";
 import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
-import Lists from "../pages/Tag/index";
-import Tags from "../pages/List/index";
+import Lists from "../pages/List/index";
+import Settings from "../pages/Setting";
+import Tags from "../pages/Tag/index";
 
 const routes = [
   {

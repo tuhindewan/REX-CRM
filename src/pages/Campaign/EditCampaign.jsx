@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, matchPath, useLocation, useParams } from "react-router-dom";
-import {
-  deleteCampaignEmail,
-  updateCampaignRequest,
-} from "../../services/Campaign";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import DeletePopup from "../../components/DeletePopup";
 import Delete from "../../components/Icons/Delete";
 import DoubleAngleLeftIcon from "../../components/Icons/DoubleAngleLeftIcon";
@@ -21,9 +16,14 @@ import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ToolTip from "../../components/ToolTip";
 import useUnload from "../../components/Unload";
 import WarningNotification from "../../components/WarningNotification";
+import {
+  deleteCampaignEmail,
+  updateCampaignRequest,
+} from "../../services/Campaign";
+import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
-import {  ClearNotification } from "../../utils/admin-notification";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultEmailData = {
@@ -166,7 +166,7 @@ export default function EditCampaign(props) {
       setShowNotification("block");
       setMessage(location.state?.message);
     }
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   }, [refresh]);
 
   const validateCampaign = (value, index) => {
@@ -265,7 +265,7 @@ export default function EditCampaign(props) {
 
     const isValid = validate();
     setIsValid(isValid);
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   };
 
   const validate = () => {
@@ -428,7 +428,7 @@ export default function EditCampaign(props) {
       setIsPublish("none");
       const isValid = validate();
       setIsValid(isValid);
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -1062,7 +1062,11 @@ export default function EditCampaign(props) {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
       <WarningNotification display={showWarning} message={message} />
       {!isClose && (
         <CampaignTemplates

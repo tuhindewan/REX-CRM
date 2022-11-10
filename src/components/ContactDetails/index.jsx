@@ -11,7 +11,11 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import {
+  ClearNotification,
+  ClearNotificationWithWarring,
+} from "../../utils/admin-notification";
+import { AdminNavMenuClassChange, DateTime } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -34,8 +38,6 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
-import { DateTime } from "../../utils/admin-settings";
-import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
 
 const toOrdinalSuffix = (num) => {
   const int = parseInt(num),
@@ -247,7 +249,7 @@ export default function ContactDetails() {
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
     : contactData.created_at;
-  const DateFormat = DateTime(contactData.created_at, lastUpdate)
+  const DateFormat = DateTime(contactData.created_at, lastUpdate);
   const day = DateFormat.day;
   const month = DateFormat.month;
   const date = DateFormat.date;
@@ -364,7 +366,7 @@ export default function ContactDetails() {
       }
     }
 
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   };
 
   //to open input field to add new tag to a contact
@@ -445,7 +447,7 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   };
 
   // Send Double opt-in email
@@ -470,7 +472,7 @@ export default function ContactDetails() {
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
+    ClearNotificationWithWarring("none", setShowNotification, setShowWarning);
   };
 
   const handleDelete = () => {
@@ -518,7 +520,7 @@ export default function ContactDetails() {
       setMessage(resJson.message);
     }
     toggleRefresh();
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   };
 
   const selectTags = () => {
@@ -1447,7 +1449,11 @@ export default function ContactDetails() {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
       <WarningNotification display={showWarning} message={message} />
     </>
   );

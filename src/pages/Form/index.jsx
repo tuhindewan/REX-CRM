@@ -640,9 +640,13 @@ export default function FormIndex(props) {
         <div className="mintmrm-container" style={{ display: showAlert }}>
           <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
         </div>
-        <SuccessfulNotification display={showNotification} message={message} />
+        <SuccessfulNotification
+          display={showNotification}
+          setShowNotification={setShowNotification}
+          message={message}
+        />
       </div>
-      
+
       <FormTemplate
         isOpen={isTemplate}
         isClose={isClose}

@@ -457,7 +457,11 @@ export default function AllCampaigns() {
       <div className="mintmrm-container" style={{ display: showAlert }}>
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
       <div className="mintmrm-container" style={{ display: isUpdate }}>
         <PublishAlert
           title="Campaign Update"
