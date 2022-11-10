@@ -12,7 +12,7 @@ export async function getAllTemplates(page, perPage) {
 // Return single form template data from the database
 export async function getSingleTemplate(id) {
   return fetch(
-    `https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/single/?id=${id}`
+    `https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/${id}`
   ).then((response) => {
     if (response.ok) {
       return response.json();

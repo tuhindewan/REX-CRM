@@ -35,7 +35,7 @@ class FormController extends BaseController {
      * @var string
      * @since 1.0.0
      */
-    public static $form_templates_remote_api_url = "https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms/all";
+    public static $form_templates_remote_api_url = "https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms";
 
 
     /**
