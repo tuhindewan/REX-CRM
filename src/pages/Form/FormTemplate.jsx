@@ -20,9 +20,22 @@ const FormTemplate = (props) => {
 
   const onImportTemplate = async (template_id) => {
     getSingleTemplate(template_id).then((response) => {
-      console.log(response);
+      let template = response?.data;
+      const formData = {
+        title: template.title,
+        form_body: template.content,
+        group_ids: {
+          lists: [],
+          tags: [],
+        },
+        status: "draft",
+        meta_fields: {
+          settings: template.settings,
+        },
+      };
+      console.log(formData);
     });
-  }
+  };
 
   // Open template builder with full height and width
   const openTemplateBuilder = (event, data) => {
@@ -115,8 +128,7 @@ const FormTemplate = (props) => {
                         onImportTemplate={onImportTemplate}
                       />
                     );
-                })}
-                
+                  })}
               </div>
             </div>
 
