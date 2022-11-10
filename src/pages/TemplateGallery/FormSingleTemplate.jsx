@@ -1,8 +1,14 @@
 import React from "react";
 
-export default function SingleTemplate(props) {
+export default function FormSingleTemplate(props) {
+  console.log(props);
   const { id, title, featured_image } = props.template;
   const { onImportTemplate, setSaveLoader, saveLoader } = props;
+
+  const templateBgImage = {
+    backgroundImage: "url(" + featured_image + ")",
+  };
+
   return (
     <>
       <div className="mintmrm-single-template">
@@ -22,9 +28,10 @@ export default function SingleTemplate(props) {
                 <span className="mintmrm-loader"></span>
               </button>
             </div>
-            <div className="template-image-wrapper">
-              <img src={featured_image} alt="contact-author-img" />
-            </div>
+            <div
+              className="template-image-wrapper"
+              style={templateBgImage}
+            ></div>
           </div>
 
           <div className="template-info">

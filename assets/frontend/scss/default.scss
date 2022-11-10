@@ -35,16 +35,13 @@
             outline: none;
             box-shadow: none;
             max-width: 100%;
-        }
-        
-        input[type=date]:focus, 
-        input[type=email]:focus, 
-        input[type=text]:focus, 
-        textarea:focus, 
-        select:focus {
-            border-color: #e4e6eb;
-            color: #7a8b9a;
-            box-shadow: none;
+
+            &:active,
+            &:focus {
+                border-color: #573BFF!important;
+                color: #7a8b9a;
+                box-shadow: none;
+            }
         }
 
         .mintmrm-btn {
@@ -72,8 +69,18 @@
         }
 
         //----checkbox style----
-        .mintmrm-checkbox input[type="checkbox"] {
-            display: none;
+        .mintmrm-checkbox {
+            input[type="checkbox"] {
+                position: absolute;
+                top: 7px;
+                z-index: -1;
+                width: 0;
+            }
+
+            input[type="checkbox"]:active + label::before,
+            input[type="checkbox"]:focus + label::before {
+                border-color: #573bff;
+            }
         }
         .mintmrm-checkbox.no-title label {
             min-height: 20px;
@@ -128,8 +135,20 @@
         }
 
         //----radio btn style----
-        .mintmrm-radiobtn input[type="radio"] {
-            display: none;
+        .mintmrm-radiobtn {
+            position: relative;
+
+            input[type="radio"] {
+                position: absolute;
+                top: 7px;
+                z-index: -1;
+                width: 0;
+            }
+
+            input[type="radio"]:active + label::before,
+            input[type="radio"]:focus + label::before {
+                border-color: #573bff;
+            }
         }
         .mintmrm-radiobtn.no-title label {
             height: 16px;

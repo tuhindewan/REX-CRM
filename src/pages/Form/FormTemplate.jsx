@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import CrossIcon from "../../components/Icons/CrossIcon";
-import SingleTemplate from "../../pages/TemplateGallery/SingleTemplate";
 import {
   createNewForm,
   getAllTemplates,
@@ -8,6 +7,10 @@ import {
 } from "../../services/Form";
 
 import { useNavigate } from "react-router-dom";
+import FormSingleTemplate from "../TemplateGallery/FormSingleTemplate";
+
+import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
+import ArrowRightIcon from "../../components/Icons/ArrowRightIcon";
 
 const FormTemplate = (props) => {
   let navigate = useNavigate();
@@ -104,7 +107,7 @@ const FormTemplate = (props) => {
 
               <ul className="template-filter">
                 <li className="active">Pop-up</li>
-                <li>Slide–in</li>
+                <li>Slide-in</li>
                 <li>Fixed bar</li>
                 <li>Below pages</li>
               </ul>
@@ -112,6 +115,9 @@ const FormTemplate = (props) => {
               <div className="template-type">
                 <select name="" id="">
                   <option value="">Form Type</option>
+                  <option value="">Popup</option>
+                  <option value="">Embeded</option>
+                  <option value="">Landing Page</option>
                 </select>
               </div>
             </div>
@@ -138,10 +144,10 @@ const FormTemplate = (props) => {
                   </div>
                 </div>
 
-                {formTemplates?.length > 0 &&
+                {formTemplates?.length > 0 ? (
                   formTemplates.map((template) => {
                     return (
-                      <SingleTemplate
+                      <FormSingleTemplate
                         key={template.id}
                         template={template}
                         onImportTemplate={onImportTemplate}
@@ -149,11 +155,28 @@ const FormTemplate = (props) => {
                         saveLoader={saveLoader}
                       />
                     );
-                  })}
+                  })
+                ) : (
+                  <div className="mintmrm-single-template create-from-scratch coming-soon">
+                    <div className="coming-soon-inner">
+                      <h2>Amazing Templates Are Coming Soon</h2>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="template-modal-footer"></div>
+            <div className="template-modal-footer">
+              <div className="template-pagination">
+                <button type="button" className="prev">
+                  <ArrowLeftIcon />
+                </button>
+
+                <button type="button" className="next">
+                  <ArrowRightIcon />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

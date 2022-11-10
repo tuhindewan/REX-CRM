@@ -387,7 +387,6 @@ class FormController extends BaseController {
                 }
             }
         }
-
         return rest_ensure_response( $templates_data );
     }
 
