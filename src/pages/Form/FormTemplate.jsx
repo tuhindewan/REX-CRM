@@ -97,6 +97,13 @@ const FormTemplate = (props) => {
     });
     setFormTemplatesFilter(updateItems);
   };
+  const FormPosition = [
+    { label: "Pop Up", value: "popup" },
+    { label: "Fly Ins", value: "flyins" },
+    { label: "Fixed on top", value: "fixed-on-top" },
+    { label: "Fixed on bottom", value: "fixed-on-bottom" },
+    { label: "Fixed on right", value: "fixed-on-right" },
+  ];
 
   return (
     <>
@@ -117,44 +124,29 @@ const FormTemplate = (props) => {
               <h4 className="modal-title">Choose Form</h4>
 
               <ul className="template-filter">
-                <li
-                  className={formPositionActive == "popup" ? "active" : ""}
-                  onClick={() => SelectFilter("popup")}
-                >
-                  Pop-up
-                </li>
-                <li
-                  className={formPositionActive == "flyins" ? "active" : ""}
-                  onClick={() => SelectFilter("flyins")}
-                >
-                  Fly-Ins
-                </li>
-                <li
-                  className={
-                    formPositionActive == "fixed-on-top" ? "active" : ""
-                  }
-                  onClick={() => SelectFilter("fixed-on-top")}
-                >
-                  Fixed Bar Top
-                </li>
-                <li
-                  className={
-                    formPositionActive == "fixed-on-bottom" ? "active" : ""
-                  }
-                  onClick={() => SelectFilter("fixed-on-bottom")}
-                >
-                  Fixed on bottom
-                </li>
+                {FormPosition.map((position) => {
+                  return (
+                    <li
+                      key={position.value}
+                      className={
+                        formPositionActive == position.value ? "active" : ""
+                      }
+                      onClick={() => SelectFilter(position.value)}
+                    >
+                      {position.label}
+                    </li>
+                  );
+                })}
               </ul>
 
-              <div className="template-type">
-                <select name="" id="">
-                  <option value="">Form Type</option>
-                  <option value="">Popup</option>
-                  <option value="">Embeded</option>
-                  <option value="">Landing Page</option>
-                </select>
-              </div>
+              {/*<div className="template-type">*/}
+              {/*  <select name="" id="">*/}
+              {/*    <option value="">Form Type</option>*/}
+              {/*    <option value="">Popup</option>*/}
+              {/*    <option value="">Embeded</option>*/}
+              {/*    <option value="">Landing Page</option>*/}
+              {/*  </select>*/}
+              {/*</div>*/}
             </div>
 
             <div className="template-modal-body">
