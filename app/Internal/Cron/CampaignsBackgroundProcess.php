@@ -403,6 +403,10 @@ class CampaignsBackgroundProcess
         $data = str_replace( '{{last_name}}', ContactData::get_info( $contact_id, 'last_name' ), $data );
         $data = str_replace( '{{email}}', ContactData::get_info( $contact_id, 'email' ), $data );
         $data = str_replace( '{{city}}', ContactData::get_meta( $contact_id, 'city' ), $data );
+        $data = str_replace( '{{state}}', ContactData::get_meta( $contact_id, 'state' ), $data );
+        $data = str_replace( '{{country}}', ContactData::get_meta( $contact_id, 'country' ), $data );
+        $data = str_replace( '{{company}}', ContactData::get_meta( $contact_id, 'company' ), $data );
+        $data = str_replace( '{{designation}}', ContactData::get_meta( $contact_id, 'designation' ), $data );
         return $data;
     }
 }
