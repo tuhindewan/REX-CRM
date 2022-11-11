@@ -240,6 +240,27 @@ class FormRoute{
             ]
         ]);
 
+
+        /**
+         * Route to get all form templates
+         * 
+         * @return void
+         * @since 1.0.0
+         */
+        register_rest_route($this->namespace, '/' . $this->rest_base. '/get-form-templates', [
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_form_templates'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
     }
 
 }

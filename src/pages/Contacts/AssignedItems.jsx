@@ -5,7 +5,10 @@ import Search from "../../components/Icons/Search";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import WarningNotification from "../../components/WarningNotification";
-import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
+import {
+  ClearNotification,
+  ClearNotificationWithWarring,
+} from "../../utils/admin-notification";
 
 export default function AssignedItems(props) {
   const {
@@ -125,7 +128,7 @@ export default function AssignedItems(props) {
     } catch (e) {
     } finally {
       setLoading(false);
-      ClearNotificationWithWarring('none',setShowNotification,setShowWarning)
+      ClearNotificationWithWarring("none", setShowNotification, setShowWarning);
     }
   };
 
@@ -174,7 +177,7 @@ export default function AssignedItems(props) {
     } catch (e) {
     } finally {
       setLoading(false);
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -260,7 +263,11 @@ export default function AssignedItems(props) {
         </Link>
       </ul>
       <WarningNotification display={showWarning} message={message} />
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }

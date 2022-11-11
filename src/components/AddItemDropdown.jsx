@@ -151,7 +151,11 @@ export default function AddItemDropdown(props) {
         )}
       </ul>
       <WarningNotification display={showWarning} message={message} />
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }

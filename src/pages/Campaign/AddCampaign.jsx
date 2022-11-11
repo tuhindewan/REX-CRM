@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
-import { submitCampaign } from "../../services/Campaign";
 import Delete from "../../components/Icons/Delete";
 import DoubleAngleLeftIcon from "../../components/Icons/DoubleAngleLeftIcon";
 import DownArrowIcon from "../../components/Icons/DownArrowIcon";
@@ -13,10 +12,11 @@ import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import ToolTip from "../../components/ToolTip";
 import useUnload from "../../components/Unload";
 import WarningNotification from "../../components/WarningNotification";
+import { submitCampaign } from "../../services/Campaign";
+import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import CampaignCustomSelect from "./CampaignCustomSelect";
 import CampaignTemplates from "./CampaignTemplates";
-import {  ClearNotification } from "../../utils/admin-notification";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 // default email object empty template, this object is reused thats why declared here once
 const defaultCampaignData = {
@@ -68,6 +68,7 @@ export default function AddCampaign(props) {
 
   const [previewPersonalization, setPreviewPersonalization] = useState(false);
   const [subjectPersonalization, setSubjectPersonalization] = useState(false);
+  const [showNotification, setShowNotification] = useState("none");
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -758,6 +759,7 @@ export default function AddCampaign(props) {
                   <SuccessfulNotification
                     display={"block"}
                     message="Campaign is saved."
+                    setShowNotification={setShowNotification}
                   />
                 )}
               </div>

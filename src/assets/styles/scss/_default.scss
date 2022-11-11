@@ -30,16 +30,16 @@
     width: 100%;
     border-radius: 6px;
     display: block;
-    border: 1px solid #EBEDF0;
+    border: 1px solid #ebedf0;
 
     &::placeholder {
-      color: #A4A8B5;
+      color: #a4a8b5;
     }
 
     &::-webkit-input-placeholder,
     &::-moz-placeholder,
     &:-ms-input-placeholder {
-      color: #A4A8B5;
+      color: #a4a8b5;
     }
 
     &:focus {
@@ -125,6 +125,12 @@
         background-color: $primary-color;
         border-color: $primary-color;
         color: #fff;
+      }
+    }
+
+    &.show-loader {
+      .mintmrm-loader {
+        display: inline-block;
       }
     }
   }
@@ -278,7 +284,6 @@
     }
   }
 
-  
   //-------submit button loader--------
   .mrm-submit-button {
     position: relative;
@@ -318,7 +323,4 @@
       transform: rotate(360deg);
     }
   }
-
 } //end mintmrm
-
-

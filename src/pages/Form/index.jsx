@@ -1,25 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import React, { useEffect, useState } from "react";
 import AlertPopup from "../../components/AlertPopup";
 import DeletePopup from "../../components/DeletePopup";
 import CopyIcon from "../../components/Icons/CopyIcon";
+import Delete from "../../components/Icons/Delete";
+import EditIcon from "../../components/Icons/EditIcon";
 import FormIconSM from "../../components/Icons/FormIconSM";
 import FormIconXL from "../../components/Icons/FormIconXL";
 import Plus from "../../components/Icons/Plus";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
-import Pagination from "../../components/Pagination";
-import EyeIcon from "../../components/Icons/EyeIcon";
-import EditIcon from "../../components/Icons/EditIcon";
-import Delete from "../../components/Icons/Delete";
 import LoadingIndicator from "../../components/LoadingIndicator";
+import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import {
+  AddSuccessNotification,
+  ClearNotification,
+} from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import FormTemplate from "./FormTemplate";
-import { ClearNotification } from "../../utils/admin-notification";
-import { AddSuccessNotification } from "../../utils/admin-notification";
-
 
 export default function FormIndex(props) {
   // Admin active menu selection
@@ -67,7 +66,7 @@ export default function FormIndex(props) {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
 
-  // bulk action menu 
+  // bulk action menu
   const [isBulkAction, setBulkAction] = useState(false);
 
   // to send any error message
@@ -103,7 +102,6 @@ export default function FormIndex(props) {
     checkedB: false,
   });
 
-
   // to show bulk select options
   const showBulkAction = () => {
     setBulkAction(!isBulkAction);
@@ -114,10 +112,9 @@ export default function FormIndex(props) {
     setIsDelete(status);
   };
 
-
   /*
-  * Hooks
-  */
+   * Hooks
+   */
 
   // at first page load get all the available lists
   // also get lists if the page or perpage or search item changes
@@ -136,13 +133,12 @@ export default function FormIndex(props) {
       }
     }
     getForms();
-    ClearNotification('none',setShowNotification)
+    ClearNotification("none", setShowNotification);
   }, [page, perPage, query, refresh, sortBy]);
 
-
   /*
-  * Functions 
-  */
+   * Functions
+   */
 
   // the data is fetched again whenever refresh is changed
   function toggleRefresh() {
@@ -250,7 +246,7 @@ export default function FormIndex(props) {
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ status: "1" }),
+          body: JSON.stringify({ status: "published" }),
         }
       )
         .then((response) => response.json())
@@ -266,7 +262,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     } else {
       await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/forms/update-status/${formId}`,
@@ -275,7 +271,7 @@ export default function FormIndex(props) {
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ status: "0" }),
+          body: JSON.stringify({ status: "draft" }),
         }
       )
         .then((response) => response.json())
@@ -291,7 +287,7 @@ export default function FormIndex(props) {
             });
           }
         });
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -328,9 +324,9 @@ export default function FormIndex(props) {
     document.execCommand("copy");
 
     AddSuccessNotification({
-      message : setMessage("Shortcode copied ! "),
-      event : setShowNotification
-    })
+      message: setMessage("Shortcode copied ! "),
+      event: setShowNotification,
+    });
   };
 
   // handler for one single item click
@@ -357,8 +353,8 @@ export default function FormIndex(props) {
   };
 
   /*
-  * Render method
-  */
+   * Render method
+   */
 
   return (
     <div>
@@ -544,7 +540,7 @@ export default function FormIndex(props) {
                                 <td className="status">
                                   <span className="wpfnl-switcher">
                                     <input
-                                      checked={form.status === "1"}
+                                      checked={form.status === "published"}
                                       type="checkbox"
                                       name="checkedB"
                                       id={"st-" + form.id}
@@ -630,6 +626,7 @@ export default function FormIndex(props) {
             </div>
           </div>
         </div>
+
         <div className="mintmrm-container" style={{ display: isDelete }}>
           <DeletePopup
             title={deleteTitle}
@@ -643,8 +640,13 @@ export default function FormIndex(props) {
         <div className="mintmrm-container" style={{ display: showAlert }}>
           <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
         </div>
-        <SuccessfulNotification display={showNotification} message={message} />
+        <SuccessfulNotification
+          display={showNotification}
+          setShowNotification={setShowNotification}
+          message={message}
+        />
       </div>
+
       <FormTemplate
         isOpen={isTemplate}
         isClose={isClose}

@@ -256,7 +256,11 @@ const CustomFields = () => {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 };

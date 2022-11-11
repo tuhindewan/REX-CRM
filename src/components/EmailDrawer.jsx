@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { submitEmail } from "../services/Message";
+import { ClearNotification } from "../utils/admin-notification";
 import CrossIcon from "./Icons/CrossIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
-import { ClearNotification } from "../utils/admin-notification";
 
 export default function EmailDrawer(props) {
   const { isClose, setIsClose, contact, refresh, setRefresh } = props;
@@ -52,8 +52,7 @@ export default function EmailDrawer(props) {
         setRefresh(!refresh);
         setSendEmailLoader(false);
 
-        ClearNotification('none',setShowNotification)
-
+        ClearNotification("none", setShowNotification);
       } else {
         // Error messages
         setSendEmailLoader(false);
@@ -119,11 +118,9 @@ export default function EmailDrawer(props) {
               </div>
               <div className="body-footer">
                 <p
-                    className={
-                      errors?.email
-                          ? "error-message show"
-                          : "error-message"
-                    }
+                  className={
+                    errors?.email ? "error-message show" : "error-message"
+                  }
                 >
                   {errors?.email}
                 </p>
@@ -138,16 +135,18 @@ export default function EmailDrawer(props) {
                   className="contact-save mintmrm-btn "
                 >
                   Send
-                  {sendEmailLoader &&
-                    <span className="mintmrm-loader"></span>
-                  }
+                  {sendEmailLoader && <span className="mintmrm-loader"></span>}
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }

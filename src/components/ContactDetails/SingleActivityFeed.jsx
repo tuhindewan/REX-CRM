@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { deleteSingleNote } from "../../services/Note";
+import { ClearNotification } from "../../utils/admin-notification";
 import DeletePopup from "../DeletePopup";
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
 import EmailDeliveredIcon from "../Icons/EmailDeliveredIcon";
 import EmailFailedIcon from "../Icons/EmailFailedIcon";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
-import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
-
 
 export default function SingleActivityFeed(props) {
   const { refresh, setRefresh } = props;
@@ -34,7 +33,7 @@ export default function SingleActivityFeed(props) {
           setMessage(response?.message);
           setRefresh(!refresh);
         }
-        ClearNotification('none',setShowNotification)
+        ClearNotification("none", setShowNotification);
       });
     }
     setIsDelete("none");
@@ -117,21 +116,20 @@ export default function SingleActivityFeed(props) {
                     </>
                   ) : (
                     <>
-                      {activity.status === 'sent'
-                          ? (
-                              <span className="icon icon-success">
-                                <EmailDeliveredIcon />
-                              </span>
-                          ) : (
-                              <span className="icon icon-danger">
-                                <EmailFailedIcon />
-                              </span>
-                          )}
+                      {activity.status === "sent" ? (
+                        <span className="icon icon-success">
+                          <EmailDeliveredIcon />
+                        </span>
+                      ) : (
+                        <span className="icon icon-danger">
+                          <EmailFailedIcon />
+                        </span>
+                      )}
 
                       <div className="description">
                         <b>
-                          {activity.status === 'sent' ? 'Sent' : 'Failed'} {activity.email_subject} to{" "}
-                          {activity.email_address}
+                          {activity.status === "sent" ? "Sent" : "Failed"}{" "}
+                          {activity.email_subject} to {activity.email_address}
                         </b>
                         <div className="writen-note">{activity.email_body}</div>
                       </div>
@@ -154,7 +152,11 @@ export default function SingleActivityFeed(props) {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
       <NoteDrawer
         isOpenNote={isNoteForm}
         isCloseNote={isCloseNote}

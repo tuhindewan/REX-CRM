@@ -33,12 +33,16 @@
   box-shadow: none;
   max-width: 100%;
 }
-.mintmrm .mrm-form-wrapper input[type=date]:focus,
+.mintmrm .mrm-form-wrapper input[type=date]:active, .mintmrm .mrm-form-wrapper input[type=date]:focus,
+.mintmrm .mrm-form-wrapper input[type=email]:active,
 .mintmrm .mrm-form-wrapper input[type=email]:focus,
+.mintmrm .mrm-form-wrapper input[type=text]:active,
 .mintmrm .mrm-form-wrapper input[type=text]:focus,
+.mintmrm .mrm-form-wrapper textarea:active,
 .mintmrm .mrm-form-wrapper textarea:focus,
+.mintmrm .mrm-form-wrapper select:active,
 .mintmrm .mrm-form-wrapper select:focus {
-  border-color: #e4e6eb;
+  border-color: #573BFF !important;
   color: #7a8b9a;
   box-shadow: none;
 }
@@ -64,7 +68,14 @@
   color: #fff;
 }
 .mintmrm .mrm-form-wrapper .mintmrm-checkbox input[type=checkbox] {
-  display: none;
+  position: absolute;
+  top: 7px;
+  z-index: -1;
+  width: 0;
+}
+.mintmrm .mrm-form-wrapper .mintmrm-checkbox input[type=checkbox]:active + label::before,
+.mintmrm .mrm-form-wrapper .mintmrm-checkbox input[type=checkbox]:focus + label::before {
+  border-color: #573bff;
 }
 .mintmrm .mrm-form-wrapper .mintmrm-checkbox.no-title label {
   min-height: 20px;
@@ -117,8 +128,18 @@
   opacity: 1;
   visibility: visible;
 }
+.mintmrm .mrm-form-wrapper .mintmrm-radiobtn {
+  position: relative;
+}
 .mintmrm .mrm-form-wrapper .mintmrm-radiobtn input[type=radio] {
-  display: none;
+  position: absolute;
+  top: 7px;
+  z-index: -1;
+  width: 0;
+}
+.mintmrm .mrm-form-wrapper .mintmrm-radiobtn input[type=radio]:active + label::before,
+.mintmrm .mrm-form-wrapper .mintmrm-radiobtn input[type=radio]:focus + label::before {
+  border-color: #573bff;
 }
 .mintmrm .mrm-form-wrapper .mintmrm-radiobtn.no-title label {
   height: 16px;

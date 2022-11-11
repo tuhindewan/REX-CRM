@@ -2,12 +2,6 @@ import queryString from "query-string";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // Internal dependencies
-import { useGlobalStore } from "../../hooks/useGlobalStore";
-import {
-  deleteMultipleContactsItems,
-  deleteSingleContact,
-} from "../../services/Contact";
-import { ClearNotification } from "../../utils/admin-notification";
 import AlertPopup from "../../components/AlertPopup";
 import ContactCards from "../../components/ContactCards/index";
 import ContactNavbar from "../../components/ContactNavbar/index";
@@ -29,6 +23,12 @@ import ListenForOutsideClicks, {
 import LoadingIndicator from "../../components/LoadingIndicator";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { useGlobalStore } from "../../hooks/useGlobalStore";
+import {
+  deleteMultipleContactsItems,
+  deleteSingleContact,
+} from "../../services/Contact";
+import { ClearNotification } from "../../utils/admin-notification";
 import AssignedItems from "./AssignedItems";
 import ColumnList from "./ColumnList";
 import SingleContact from "./SingleContact";
@@ -973,7 +973,11 @@ export default function ContactListTable() {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }

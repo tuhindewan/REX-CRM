@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getSingleNote, submitNote, updateNote } from "../services/Note";
+import { ClearNotification } from "../utils/admin-notification";
 import CrossIcon from "./Icons/CrossIcon";
 import LoadingIndicator from "./LoadingIndicator";
 import SuccessfulNotification from "./SuccessfulNotification";
-import { ClearNotification } from "../utils/admin-notification";
 
 export default function NoteDrawer(props) {
   const { isCloseNote, setIsCloseNote, refresh, setRefresh } = props;
@@ -88,7 +88,7 @@ export default function NoteDrawer(props) {
         setAddNoteLoader(false);
         setShowLoader(false);
 
-        ClearNotification('none',setShowNotification)
+        ClearNotification("none", setShowNotification);
       } else {
         setAddNoteLoader(false);
 
@@ -181,7 +181,11 @@ export default function NoteDrawer(props) {
           )}
         </div>
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 }

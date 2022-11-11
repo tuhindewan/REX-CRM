@@ -1,25 +1,25 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AlertPopup from "../../components/AlertPopup";
+import ContactNavbar from "../../components/ContactNavbar";
 import DeletePopup from "../../components/DeletePopup";
 import Delete from "../../components/Icons/Delete";
 import ListIcon from "../../components/Icons/ListIcon";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
-import ListItem from "./ListItem";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import LoadingIndicator from "../../components/LoadingIndicator/index";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
-import LoadingIndicator from "../../components/LoadingIndicator/index";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
-import { ClearNotification } from "../../utils/admin-notification";
 import {
   deleteMultipleListsItems,
   deleteSingleList,
   submitList,
   updateList,
 } from "../../services/List";
-import ContactNavbar from "../../components/ContactNavbar";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import ListItem from "./ListItem";
 
 const Lists = () => {
   // Admin active menu selection
@@ -588,7 +588,11 @@ const Lists = () => {
       <div className="mintmrm-container" style={{ display: showAlert }}>
         <AlertPopup showAlert={showAlert} onShowAlert={onShowAlert} />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+      />
     </>
   );
 };
