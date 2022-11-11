@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import DoubleAngleLeftIcon from "../../components/Icons/DoubleAngleLeftIcon";
 import DoubleAngleRightIcon from "../../components/Icons/DoubleAngleRightIcon";
 import SingleCondition from "./SingleCondition";
+import { submitSegment } from "../../services/Segment";
 
 const CreateSegment = () => {
   let navigate = useNavigate();
@@ -71,7 +72,7 @@ const CreateSegment = () => {
   };
 
   // Submit segmentation to the API
-  const submitSegment = async () => {
+  const handleSubmit = async () => {
     let segment = {
       title: segmentName,
       data: {
@@ -252,7 +253,7 @@ const CreateSegment = () => {
             <button className="mintmrm-btn cancel" onClick={routeChange}>
               Cancel
             </button>
-            <button className="mintmrm-btn save" onClick={submitSegment}>
+            <button className="mintmrm-btn save" onClick={handleSubmit}>
               Save
             </button>
           </div>
