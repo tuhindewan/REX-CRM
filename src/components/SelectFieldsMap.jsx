@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
+import { ClearNotification } from "../utils/admin-notification";
 import ImportNavbar from "./Import/ImportNavbar";
 import Select from "./Import/Select";
-import SelectDropdown from "./SelectDropdown";
-import WarningNotification from "./WarningNotification";
 import ListenForOutsideClicks from "./ListenForOutsideClicks";
-import { ClearNotification } from "../utils/admin-notification";
+import SelectDropdown from "./SelectDropdown";
+import SuccessfulNotification from "./SuccessfulNotification";
 export default function SelectFieldsMap() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,8 +19,9 @@ export default function SelectFieldsMap() {
   const [lists, setLists] = useState([]);
   // holds selectbox currently selected tags
   const [tags, setTags] = useState([]);
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
   const [selectedStatus, setSelectedStatus] = useState();
   const [isActiveStatus, setIsActiveStatus] = useState(false);
   const [isActiveList, setIsActiveList] = useState(false);
@@ -120,11 +121,12 @@ export default function SelectFieldsMap() {
           state: { data: resJson.data },
         });
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson.message);
       }
       setLoading(false);
-      ClearNotification('none',setShowNotification)
+      ClearNotification("none", setShowNotification);
     } catch (e) {
       setLoading(false);
     }
@@ -384,7 +386,13 @@ export default function SelectFieldsMap() {
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }

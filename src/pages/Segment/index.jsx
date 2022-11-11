@@ -58,12 +58,15 @@ const Segments = () => {
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
 
+  const [countGroups, setCountGroups] = useState([]);
+
   useEffect(() => {
     setLoading(true);
     getAllSegments(orderBy, orderType, page, perPage, query).then(
       (response) => {
         setSegments(response.data.data);
-        setCount(response.data.count);
+        setCount(response.data.total_count);
+        setCountGroups(response.data.count_groups);
         setTotalPages(response.data.total_pages);
         setLoading(false);
       }
@@ -219,7 +222,7 @@ const Segments = () => {
 
   return (
     <>
-      <ContactNavbar />
+      <ContactNavbar countGroups={countGroups} />
       <div className="contact-list-page segment-page">
         <div className="mintmrm-container">
           <div className="contact-list-area">
@@ -340,8 +343,8 @@ const Segments = () => {
                               <label for="bulk-select">Name</label>
                             </span>
                           </th>
-                          <th>Contacts</th>
                           <th className="">Description</th>
+                          <th>Subscribers</th>
                           <th className="creation-date">Creation Date</th>
                           <th className="action"></th>
                         </tr>

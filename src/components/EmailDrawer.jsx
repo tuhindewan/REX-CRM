@@ -9,7 +9,7 @@ export default function EmailDrawer(props) {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
-
+  const [notificationType, setNotificationType] = useState("success");
   const [sendEmailLoader, setSendEmailLoader] = useState(false);
 
   const [email, setEmail] = useState({
@@ -41,6 +41,7 @@ export default function EmailDrawer(props) {
 
     submitEmail(email, contact.id).then((response) => {
       if (201 === response.code) {
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(response.message);
         setIsClose(!isClose);
@@ -146,6 +147,8 @@ export default function EmailDrawer(props) {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

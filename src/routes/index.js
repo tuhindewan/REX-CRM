@@ -18,9 +18,11 @@ import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
-import Lists from "../pages/List/index";
-import Settings from "../pages/Setting";
-import Tags from "../pages/Tag/index";
+import Lists from "../pages/Tag/index";
+import Tags from "../pages/List/index";
+import Segments from "../pages/Segment/index";
+import CreateSegment from "../pages/Segment/CreateSegment";
+import Settings from "../pages/Setting/index"
 
 const routes = [
   {
@@ -102,17 +104,17 @@ const routes = [
     title: __("Tags", "mrm"),
     // bage: 18,
   },
-  // {
-  //   path: "/segments",
-  //   element: Segments,
-  //   title: __("Segments", "mrm"),
-  //   // bage: 18,
-  // },
-  // {
-  //   path: "/segments/create",
-  //   element: CreateSegment,
-  //   hideInMenu: true,
-  // },
+  {
+    path: "/segments",
+    element: Segments,
+    title: __("Segments", "mrm"),
+    // bage: 18,
+  },
+  {
+    path: "/segments/create",
+    element: CreateSegment,
+    hideInMenu: true,
+  },
   {
     path: "/custom-fields",
     element: CustomFields,

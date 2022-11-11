@@ -15,7 +15,6 @@ import PublishAlert from "../../components/PublishAlert";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ToolTip from "../../components/ToolTip";
 import useUnload from "../../components/Unload";
-import WarningNotification from "../../components/WarningNotification";
 import {
   deleteCampaignEmail,
   updateCampaignRequest,
@@ -46,13 +45,13 @@ export default function EditCampaign(props) {
   const [emailData, setEmailData] = useState([{ ...defaultEmailData }]);
   const [activeEmailData, setActiveEmailData] = useState(defaultEmailData);
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   // tracks currently selected email index and highlights in the UI
   const [selectedEmailIndex, setSelectedEmailIndex] = useState(0);
   // campaign title state variable
   const [campaignTitle, setCampaignTitle] = useState("");
   const [recipientsCount, satRecipientsCount] = useState(0);
-  const [showWarning, setShowWarning] = useState("none");
 
   // recipient lists and recipients tags state variables to whom the email(s) should be sent
   const [recipientLists, setRecipientLists] = useState([]);
@@ -60,7 +59,6 @@ export default function EditCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
-  const [responseMessage, setResponseMessage] = useState("");
   const [isEmailDelete, setIsEmailDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
@@ -75,7 +73,6 @@ export default function EditCampaign(props) {
   const [campaignStatus, setCampaignStatus] = useState("");
   const [isReadonly, setIsReadonly] = useState(false);
   const [isPublish, setIsPublish] = useState("none");
-  const [publishCampaign, setPublishCampaign] = useState(false);
   const [listAdder, setListAdder] = useState({
     lists: [],
     tags: [],
@@ -122,6 +119,25 @@ export default function EditCampaign(props) {
     }
   }
 
+  // handler function for campaign title
+  const handleTitleChange = async (event) => {
+    setIsValid(true);
+    const { name, value } = event.target;
+
+    if( value?.length > 150 ) {
+      setErrors({
+        ...errors,
+        title: "Campaign title character limit exceeded 150 characters",
+      });
+    }else{
+      setErrors({
+        ...errors,
+        title: "",
+      });
+      setCampaignTitle(value);
+    }
+  };
+
   // fetch campaign data
   const fetchCampaignData = async () => {
     const response = await fetch(`/wp-json/mrm/v1/campaigns/${id}`);
@@ -163,30 +179,12 @@ export default function EditCampaign(props) {
     });
 
     if ("campaign-created" == location.state?.status) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(location.state?.message);
     }
     ClearNotification("none", setShowNotification);
   }, [refresh]);
-
-  const validateCampaign = (value, index) => {
-    if (!value.length) {
-      setShowWarning("block");
-      setMessage("Sender Email is missing on email " + (index + 1));
-      return false;
-    } else if (
-      !new RegExp(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
-      ).test(value)
-    ) {
-      setShowWarning("block");
-      setMessage("Sender Email Address is not valid on email" + (index + 1));
-      return false;
-    } else {
-      setErrors({});
-      return true;
-    }
-  };
 
   const validateSenderEmail = (name, value) => {
     if (
@@ -250,15 +248,17 @@ export default function EditCampaign(props) {
       }),
       campaign_id: id,
     };
-
+    setErrors({});
     updateCampaignRequest(campaign).then((response) => {
       if (201 === response.code) {
         // Show success message
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(response?.message);
         toggleRefresh();
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(response?.message);
       }
     });
@@ -417,11 +417,13 @@ export default function EditCampaign(props) {
       updateCampaignRequest(campaign).then((response) => {
         if (201 === response.code) {
           // Show success message
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response?.message);
           toggleRefresh();
         } else {
-          setShowWarning("block");
+          setNotificationType("warning");
+          setShowNotification("block");
           setMessage(response?.message);
         }
       });
@@ -445,6 +447,7 @@ export default function EditCampaign(props) {
 
       deleteCampaignEmail(id, emailID).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -647,13 +650,19 @@ export default function EditCampaign(props) {
                           type="text"
                           name="title"
                           value={campaignTitle}
-                          onChange={(e) => {
-                            setIsValid(true);
-                            setCampaignTitle(e.target.value);
-                          }}
+                          onChange={(event) => handleTitleChange(event)}
                           placeholder="Enter Campaign title"
                           disabled={isReadonly}
                         />
+                        <p
+                        className={
+                          errors?.title
+                            ? "error-message show"
+                            : "error-message"
+                        }
+                      >
+                        {errors?.title}
+                      </p>
                       </div>
                       <div className="email-to input-item">
                         <div className="select-options" ref={menuRef}>
@@ -1065,9 +1074,10 @@ export default function EditCampaign(props) {
       <SuccessfulNotification
         display={showNotification}
         setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
         message={message}
       />
-      <WarningNotification display={showWarning} message={message} />
       {!isClose && (
         <CampaignTemplates
           refresh={refresh}

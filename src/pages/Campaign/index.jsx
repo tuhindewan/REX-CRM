@@ -42,6 +42,7 @@ export default function AllCampaigns() {
   // search query, search query only updates when there are more than 3 characters typed
   const [query, setQuery] = useState("");
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   // total count of results
   const [count, setCount] = useState(0);
   // total number of pages for result
@@ -124,6 +125,7 @@ export default function AllCampaigns() {
     if (status) {
       deleteSingleCampaign(camaignID).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -143,6 +145,7 @@ export default function AllCampaigns() {
     if (status) {
       deleleMultipleCampaigns(selected).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -207,18 +210,18 @@ export default function AllCampaigns() {
       updateCampaignStatus(campaign).then((response) => {
         if (201 === response.code) {
           // Show success message
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response?.message);
           toggleRefresh();
           setCampaignID();
         } else {
-          setShowWarning("block");
+          setNotificationType("warning");
+          setShowNotification("block");
           setMessage(response?.message);
         }
       });
       setIsUpdate("none");
-      const isValid = validate();
-      setIsValid(isValid);
       ClearNotification("none", setShowNotification);
     }
   };
@@ -461,6 +464,8 @@ export default function AllCampaigns() {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
       <div className="mintmrm-container" style={{ display: isUpdate }}>
         <PublishAlert

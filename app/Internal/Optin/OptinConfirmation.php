@@ -8,8 +8,6 @@ use Mint\MRM\DataBase\Models\NoteModel;
 use Mint\MRM\DataStores\NoteData;
 use MRM\Common\MRM_Common;
 
-use function Crontrol\Event\get;
-
 class OptinConfirmation
 {
 
@@ -72,7 +70,7 @@ class OptinConfirmation
 				$notes = array(
 					'title' 		=> __('Subscriber double opt-in confirmed', 'mrm'),
 					'description'   => __('Subscriber confirmed double opt-in', 'mrm'),
-					'type' 			=> 'subscription',
+					'type' 			=> 'MRM Note',
 					'is_public' 	=> 1,
 					'status' 		=> 1,
 					'created_by' 	=> 1

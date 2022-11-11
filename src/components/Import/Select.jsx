@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import { ClearNotification } from "../../utils/admin-notification";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
 import SuccessfulNotification from "../SuccessfulNotification";
-import WarningNotification from "../WarningNotification";
 
 export default function Select(props) {
   const {
@@ -32,9 +32,9 @@ export default function Select(props) {
 
   // loading or not
   const [loading, setLoading] = useState(false);
-  const [showWarning, setShowWarning] = useState("none");
-  const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
+  const [message, setMessage] = useState("");
 
   // helper function to set the search query only when there are at least 3 characters or more
   function handleSearch(e) {
@@ -112,12 +112,15 @@ export default function Select(props) {
         setSearch("");
         setQuery("");
         setSelected([...selected, resJson.data]);
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(resJson?.message);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson?.message);
       }
+      ClearNotification("none", setShowNotification);
     } catch (e) {
     } finally {
       setLoading(false);
@@ -203,10 +206,11 @@ export default function Select(props) {
         )}
         {loading && <LoadingIndicator type="table" />}
       </ul>
-      <WarningNotification display={showWarning} message={message} />
       <SuccessfulNotification
         display={showNotification}
         setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
         message={message}
       />
     </>

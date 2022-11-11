@@ -86,6 +86,7 @@ class AdminAssets {
                 'timezone_list'         => Constants::get_timezone_list(),
                 'admin_url'             => get_admin_url(),
                 'countries'             => Constants::get_country_name(),
+                'states'                => Constants::get_country_state(),
                 'lists'                 => ContactGroupModel::get_all_to_custom_select( 'lists' ),
                 'tags'                  => ContactGroupModel::get_all_to_custom_select( 'tags' ),
             )

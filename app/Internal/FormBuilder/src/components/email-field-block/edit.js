@@ -103,11 +103,11 @@ class Editor extends Component {
             this.onChangeAttribute("rowSpacing", rowSpacing)
           }
           allowReset={true}
+          resetFallbackValue={12}
           min={0}
           max={50}
           step={1}
         />
-
       </PanelBody>
     );
   };
@@ -121,7 +121,7 @@ class Editor extends Component {
       <PanelBody title="Label Style" initialOpen={false}>
         <div className="mrm-block-typography">
           <Typography
-            label={__('Typography')}
+            label={__("Typography")}
             value={labelTypography}
             onChange={(value) => setAttributes({ labelTypography: value })}
             disableLineHeight
@@ -147,11 +147,11 @@ class Editor extends Component {
             this.onChangeAttribute("labelSpacing", labelSpacing)
           }
           allowReset={true}
+          resetFallbackValue={7}
           min={0}
           max={50}
           step={1}
         />
-
       </PanelBody>
     );
   };
@@ -165,7 +165,7 @@ class Editor extends Component {
       <PanelBody title="Input Field Style" initialOpen={false}>
         <div className="mrm-block-typography">
           <Typography
-            label={__('Typography')}
+            label={__("Typography")}
             value={inputTypography}
             onChange={(value) => setAttributes({ inputTypography: value })}
             disableLineHeight
@@ -201,6 +201,7 @@ class Editor extends Component {
             this.onChangeAttribute("inputBorderRadius", radius)
           }
           allowReset={true}
+          resetFallbackValue={5}
           min={0}
           max={100}
           step={1}
@@ -243,6 +244,7 @@ class Editor extends Component {
             this.onChangeAttribute("inputBorderWidth", border)
           }
           allowReset={true}
+          resetFallbackValue={1}
           min={0}
           max={5}
           step={1}
@@ -255,7 +257,6 @@ class Editor extends Component {
           }
           value={attributes.inputBorderColor}
         />
-        
       </PanelBody>
     );
   };
@@ -298,7 +299,7 @@ class Editor extends Component {
         labelSpacing,
         typography,
         inputTypography,
-        labelTypography
+        labelTypography,
       },
     } = this.props;
 
