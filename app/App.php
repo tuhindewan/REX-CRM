@@ -13,6 +13,7 @@ use Mint\MRM\Internal\Optin\OptinConfirmation;
 use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
+use Mint\MRM\Internal\Optin\UnsubscribeConfirmation;
 
 class App {
 
@@ -49,6 +50,8 @@ class App {
             FrontendAssets::get_instance();
             // Opt-in 
             OptinConfirmation::get_instance();
+            // Unsubscription
+            UnsubscribeConfirmation::get_instance();
         }
 
         CampaignsBackgroundProcess::get_instance()->init();
