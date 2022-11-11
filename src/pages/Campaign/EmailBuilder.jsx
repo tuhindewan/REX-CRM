@@ -24,7 +24,7 @@ const EmailBuilder = (props) => {
         }
       >
         <div className="email-builder-section" style={{ height: "100%" }}>
-          <Suspense fallback={<div>Loading</div>}>
+          <Suspense fallback={<div className="email-builder-loading"><span className="mintmrm-loader"></span></div>}>
             {!isCloseBuilder && (
               <Editor
                 selectedEmailIndex={selectedEmailIndex}
@@ -34,7 +34,7 @@ const EmailBuilder = (props) => {
                 setIsTemplate={setIsTemplate}
                 setIsCloseBuilder={setIsCloseBuilder}
                 refresh={refresh}
-                setRefresh={setRefresh}
+                // setRefresh={setRefresh}
                 setIsReadonly={props.setIsReadonly}
                 isReadonly={props.isReadonly}
               />
