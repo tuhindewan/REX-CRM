@@ -59,6 +59,8 @@ export default function AddCampaign(props) {
   const [isPublishValid, setIsPublishValid] = useState(false);
   const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [subjectCursorPosition, setSubjectCursorPosition] = useState(0 );
+  const [prevCursorPosition, setPrevCursorPosition] = useState(0 );
 
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -350,7 +352,10 @@ export default function AddCampaign(props) {
   // Set email subject text custom tag/placeholder
   const handleSubjectPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.subject;
-    const newData = prevData + " " + placeholder;
+    const prevDataFirstHalf = prevData.substring( 0, subjectCursorPosition );
+    const prevDataSecondHalf = prevData.substring( subjectCursorPosition, prevData.length );
+    const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
+    setSubjectCursorPosition( subjectCursorPosition + placeholder.length );
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -366,7 +371,10 @@ export default function AddCampaign(props) {
   // Set email preview text custom tag/placeholder
   const handlePreviewPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.preview;
-    const newData = prevData + " " + placeholder;
+    const prevDataFirstHalf = prevData.substring( 0, prevCursorPosition );
+    const prevDataSecondHalf = prevData.substring( prevCursorPosition, prevData.length );
+    const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
+    setPrevCursorPosition( prevCursorPosition + placeholder.length );
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -548,6 +556,9 @@ export default function AddCampaign(props) {
                     name="subject"
                     value={emailData[selectedEmailIndex]?.subject}
                     onChange={handleEmailFieldsChange}
+                    onClick={function ( e ) {
+                      setSubjectCursorPosition( e.target.selectionStart )
+                    }}
                     placeholder="Be Specific and concise to spark interest"
                   />
                   <span>
@@ -628,6 +639,9 @@ export default function AddCampaign(props) {
                     name="preview"
                     value={emailData[selectedEmailIndex]?.preview}
                     onChange={handleEmailFieldsChange}
+                    onClick={function ( e ) {
+                      setPrevCursorPosition( e.target.selectionStart )
+                    }}
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
