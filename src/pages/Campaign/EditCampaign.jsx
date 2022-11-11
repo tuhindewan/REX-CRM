@@ -943,19 +943,23 @@ export default function EditCampaign(props) {
                       </ul>
                     </div>
                   </div>
+
                   <div className="email-from input-item">
-                    <label>From</label>
-                    <input
-                      type="text"
-                      name="senderName"
-                      value={emailData[selectedEmailIndex]?.sender_name}
-                      onChange={(e) =>
-                        handleEmailFieldsChange(e.target.value, "sender_name")
-                      }
-                      placeholder="Enter Name"
-                      disabled={isReadonly}
-                    />
-                    <div className="email-input">
+                    <div className="form-group sender-name">
+                      <label>From</label>
+                      <input
+                        type="text"
+                        name="senderName"
+                        value={emailData[selectedEmailIndex]?.sender_name}
+                        onChange={(e) =>
+                          handleEmailFieldsChange(e.target.value, "sender_name")
+                        }
+                        placeholder="Enter Name"
+                        disabled={isReadonly}
+                      />
+                    </div>
+
+                    <div className="form-group email-input">
                       <input
                         type="email"
                         name="senderEmail"
@@ -969,26 +973,24 @@ export default function EditCampaign(props) {
                         placeholder="Enter Email"
                         disabled={isReadonly}
                       />
-                      <p
-                        className={
-                          errors?.email ? "error-message show" : "error-message"
-                        }
-                      >
+
+                      <p className={ errors?.email ? "error-message show" : "error-message" } >
                         {errors?.email}
                       </p>
                     </div>
                   </div>
+
                   <div className="email-design input-item">
                     <label>Design</label>
-                    <div
-                      className="add-template-section"
-                      onClick={openTemplate}
-                    >
-                      <TemplateIcon />
-                      <Link to="">Select a Template</Link>
+                    <div className="add-template-section" >
+                      <div className="add-template-area" onClick={openTemplate} >
+                        <TemplateIcon />
+                        <Link to="">Select a Template</Link>
+                      </div>
                     </div>
                   </div>
                 </div>
+
                 <div className="content-save-section">
                   {"active" == campaignStatus ? (
                     <button
