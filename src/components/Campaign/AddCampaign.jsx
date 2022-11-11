@@ -227,7 +227,13 @@ export default function AddCampaign(props) {
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
-      if (name == "subject" || name == "preview") {
+      if ( 'subject' === name ) {
+        setSubjectCursorPosition( e.target.selectionStart );
+      }
+      else if( 'preview' === name ) {
+        setPrevCursorPosition( e.target.selectionStart );
+      }
+        if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
       }
       if (name == "senderEmail") {
