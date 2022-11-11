@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AlertPopup from "../../components/AlertPopup";
 import DeletePopup from "../../components/DeletePopup";
 import CopyIcon from "../../components/Icons/CopyIcon";
@@ -9,6 +9,7 @@ import FormIconXL from "../../components/Icons/FormIconXL";
 import Plus from "../../components/Icons/Plus";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
@@ -66,6 +67,9 @@ export default function FormIndex(props) {
   // single selected array which holds selected ids
   const [selected, setSelected] = useState([]);
 
+  // whether to show more options or not
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
+
   // bulk action menu
   const [isBulkAction, setBulkAction] = useState(false);
 
@@ -112,6 +116,22 @@ export default function FormIndex(props) {
   const onDeleteShow = async (status) => {
     setIsDelete(status);
   };
+
+  const [listening, setListening] = useState(false);
+
+  // Outside click events for bulk action dropdown
+  const threeDotRef = useRef(null);
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      threeDotRef,
+      setShowMoreOptions
+    )
+  );
+
+  // shrink title
+  const [titleShrink, setTitleShrink] = useState("");
 
   /*
    * Hooks
@@ -357,6 +377,15 @@ export default function FormIndex(props) {
     setAllSelected(!allSelected);
   };
 
+  // handle to shrink the title if it's greater than 25 character
+  const handleTitleShrink = (title) => {
+    if (26 > title.length) {
+      return title;
+    } else {
+      return title.slice(0, 25) + "...";
+    }
+  };
+
   /*
    * Render method
    */
@@ -429,20 +458,26 @@ export default function FormIndex(props) {
                   </span>
 
                   <div className="bulk-action">
-                    <button className="more-option" onClick={showBulkAction}>
-                      <ThreeDotIcon />
-                    </button>
-                    <ul
-                      className={
-                        isBulkAction
-                          ? "select-option mintmrm-dropdown show"
-                          : "select-option mintmrm-dropdown"
-                      }
+                    {/* show more options section */}
+                    <button
+                      className="more-option"
+                      onClick={() => setShowMoreOptions(!showMoreOptions)}
+                      ref={threeDotRef}
                     >
-                      <li className="delete" onClick={deleteMultipleList}>
-                        Delete
-                      </li>
-                    </ul>
+                      <ThreeDotIcon />
+
+                      <ul
+                        className={
+                          showMoreOptions
+                            ? "select-option mintmrm-dropdown show "
+                            : "select-option mintmrm-dropdown"
+                        }
+                      >
+                        <li onClick={deleteMultipleList}>
+                          <Delete /> Delete Selected
+                        </li>
+                      </ul>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -503,7 +538,7 @@ export default function FormIndex(props) {
                                             openFormBuilder(form.id)
                                           }
                                         >
-                                          {form.title?.length > 20 ? form.title.substring(0, 20) + "..." : form.title}
+                                          {handleTitleShrink(form.title)}
                                         </a>
 
                                         <small>{form.created_ago} ago</small>

@@ -170,7 +170,8 @@ class TagController extends BaseController {
         $groups['count_groups'] = [
             'lists'     => ContactGroupModel::get_groups_count( "lists" ),
             'tags'      => absint( $groups['total_count'] ),
-            'contacts'  => ContactModel::get_contacts_count()
+            'contacts'  => ContactModel::get_contacts_count(),
+            'segments'  => ContactGroupModel::get_groups_count( "segments" )
         ];
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);

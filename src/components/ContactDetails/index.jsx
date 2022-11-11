@@ -68,13 +68,16 @@ export default function ContactDetails() {
   const [assignTags, setAssignTags] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
   const [gender, setGender] = useState(false);
-  const [country, setCountry] = useState(false);
+  const [country, setCountry] = useState(true);
+  const [countryState, setCountryState] = useState(false);
   const [stateRegion, setStateRegion] = useState(false);
   const [genderButton, setGenderButton] = useState();
   const [countryButton, setCountryButton] = useState();
+  const [countryStateButton, setCountryStateButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
   const [timezones, setTimezones] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [countryStates, setCountryStates] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
   const [isValidate, setIsValidate] = useState(true);
   const [notificationType, setNotificationType] = useState("success");
@@ -103,7 +106,7 @@ export default function ContactDetails() {
     )
   );
   useEffect(
-    ListenForOutsideClicks(listening, setListening, stateRef, setStateRegion)
+    ListenForOutsideClicks(listening, setListening, stateRef, setCountryState)
   );
 
   useEffect(
@@ -150,6 +153,7 @@ export default function ContactDetails() {
 
     setTimezones(window.MRM_Vars.timezone_list);
     setCountries(window.MRM_Vars.countries);
+    setCountryStates(window.MRM_Vars.states);
   }, [refresh]);
 
   // lists
@@ -161,6 +165,8 @@ export default function ContactDetails() {
   const [customFields, setCustomFields] = useState([]);
   const [searchTimezone, setSearchTimezone] = useState("");
   const [searchCountry, setSearchCountry] = useState("");
+  const [searchCountryState, setSearchCountryState] = useState("");
+  const [countryCode, setCountryCode] = useState("");
 
   const navigate = useNavigate();
 
@@ -187,6 +193,22 @@ export default function ContactDetails() {
     }
     return countries;
   }, [searchCountry, countries]);
+
+  const filteredCountryStates = useMemo(() => {
+    let allStates;
+    if (countryStates[countryCode]) {
+      allStates = Object.entries(countryStates[countryCode]);
+    }
+    if (searchCountryState) {
+      return allStates?.filter(
+        (state) =>
+          state[1]
+            .toLowerCase()
+            .indexOf(searchCountryState.toLocaleLowerCase()) > -1
+      );
+    }
+    return allStates;
+  }, [searchCountryState, countryStates, countryCode]);
 
   const toggleRefresh = () => {
     setRefresh(!refresh);
@@ -354,6 +376,7 @@ export default function ContactDetails() {
     contactData.meta_fields.gender = genderButton;
     contactData.meta_fields.timezone = selectedTimezone;
     contactData.meta_fields.country = countryButton;
+    contactData.meta_fields.state = countryStateButton;
     if (isValidate) {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
@@ -563,8 +586,8 @@ export default function ContactDetails() {
   const handleGender = () => {
     setGender(!gender);
   };
-  const handleState = () => {
-    setStateRegion(!stateRegion);
+  const handleCountryState = () => {
+    setCountryState(!countryState);
   };
   const handleCountry = () => {
     setCountry(!country);
@@ -594,6 +617,16 @@ export default function ContactDetails() {
   const handleCountrySelect = (e, name, value) => {
     setCountry(false);
     setCountryButton(value);
+    setCountryCode(name);
+    setCountryStateButton("");
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["country"]: countryButton,
+      },
+    }));
+
     // setContactData((prevState) => ({
     //   ...prevState,
     //   meta_fields: {
@@ -602,15 +635,28 @@ export default function ContactDetails() {
     // }));
   };
 
+  const handleCountryStateSelect = (e, name, value) => {
+    setCountryState(false);
+    setCountryStateButton(value);
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["state"]: countryStateButton,
+      },
+    }));
+  };
+
   const handleTimezoneSelect = (event, id, value) => {
     setSelectedTimezone(value);
     setShowTimezone(!showTimezone);
-    // setContactData((prevState) => ({
-    //   ...prevState,
-    //   meta_fields: {
-    //     ["timezone"]: value,
-    //   },
-    // }));
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["timezone"]: countryStateButton,
+      },
+    }));
   };
 
   return (
@@ -1023,12 +1069,6 @@ export default function ContactDetails() {
                                 label="City"
                               />
                               <InputItem
-                                name="state"
-                                handleChange={handleMetaChange}
-                                value={contactData?.meta_fields?.state}
-                                label="State / Province"
-                              />
-                              <InputItem
                                 name="postal"
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.postal}
@@ -1091,6 +1131,71 @@ export default function ContactDetails() {
                                   </div>
                                 </ul>
                               </div>
+                              <div
+                                className="form-group contact-input-field"
+                                ref={stateRef}
+                              >
+                                <label name="state">State / Province</label>
+                                <button
+                                  className="state-prove-region-button"
+                                  onClick={handleCountryState}
+                                >
+                                  {countryStateButton !== undefined
+                                    ? "" == countryStateButton
+                                      ? "Select State"
+                                      : countryStateButton
+                                    : contactData?.meta_fields.state
+                                    ? contactData?.meta_fields.state
+                                    : "Select State"}
+                                </button>
+                                <ul
+                                  className={
+                                    countryState
+                                      ? "mintmrm-dropdown state show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li className="searchbar">
+                                    <span class="pos-relative">
+                                      <Search />
+                                      <input
+                                        type="search"
+                                        name="column-search"
+                                        placeholder="Seacrh..."
+                                        value={searchCountryState}
+                                        onChange={(e) =>
+                                          setSearchCountryState(e.target.value)
+                                        }
+                                      />
+                                    </span>
+                                  </li>
+                                  <div className="option-section">
+                                    {filteredCountryStates &&
+                                      filteredCountryStates?.map((state) => {
+                                        return (
+                                          <li
+                                            key={state[0]}
+                                            onClick={(event) =>
+                                              handleCountryStateSelect(
+                                                event,
+                                                state[0],
+                                                state[1]
+                                              )
+                                            }
+                                          >
+                                            {state[1]}
+                                          </li>
+                                        );
+                                      })}
+                                  </div>
+                                </ul>
+                              </div>
+                              {/* <InputItem
+                                name="state"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.state}
+                                label="State / Province"
+                              /> */}
                             </div>
                           </div>
                         </div>
