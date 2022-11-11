@@ -78,6 +78,7 @@ export default function ContactListTable() {
   // global counter update real time
   const counterRefresh = useGlobalStore((state) => state.counterRefresh);
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [contactId, setContactId] = useState();
   const [refresh, setRefresh] = useState();
@@ -252,16 +253,11 @@ export default function ContactListTable() {
     if (false == isFilter) getData();
 
     if ("contact-created" == location.state?.status) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(location.state?.message);
     }
 
-    if (false == isFilter) getData();
-
-    if ("contact-created" == location.state?.status) {
-      setShowNotification("block");
-      setMessage(location.state?.message);
-    }
     ClearNotification("none", setShowNotification);
   }, [perPage, page, query, refresh, isFilter]);
 
@@ -977,6 +973,8 @@ export default function ContactListTable() {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

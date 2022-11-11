@@ -11,10 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import {
-  ClearNotification,
-  ClearNotificationWithWarring,
-} from "../../utils/admin-notification";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange, DateTime } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
@@ -35,7 +32,6 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
-import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 
@@ -72,17 +68,19 @@ export default function ContactDetails() {
   const [assignTags, setAssignTags] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
   const [gender, setGender] = useState(false);
-  const [country, setCountry] = useState(false);
+  const [country, setCountry] = useState(true);
+  const [countryState, setCountryState] = useState(false);
   const [stateRegion, setStateRegion] = useState(false);
   const [genderButton, setGenderButton] = useState();
-  const [stateRegionButton, setStateRegionButton] = useState();
   const [countryButton, setCountryButton] = useState();
+  const [countryStateButton, setCountryStateButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
   const [timezones, setTimezones] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [countryStates, setCountryStates] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
-  const [showWarning, setShowWarning] = useState("none");
   const [isValidate, setIsValidate] = useState(true);
+  const [notificationType, setNotificationType] = useState("success");
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -108,7 +106,7 @@ export default function ContactDetails() {
     )
   );
   useEffect(
-    ListenForOutsideClicks(listening, setListening, stateRef, setStateRegion)
+    ListenForOutsideClicks(listening, setListening, stateRef, setCountryState)
   );
 
   useEffect(
@@ -135,9 +133,6 @@ export default function ContactDetails() {
   );
   const [errors, setErrors] = useState({});
 
-  // Error message
-  const [errorMessage, setErrorMessage] = useState("");
-
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
 
@@ -158,6 +153,7 @@ export default function ContactDetails() {
 
     setTimezones(window.MRM_Vars.timezone_list);
     setCountries(window.MRM_Vars.countries);
+    setCountryStates(window.MRM_Vars.states);
   }, [refresh]);
 
   // lists
@@ -169,6 +165,8 @@ export default function ContactDetails() {
   const [customFields, setCustomFields] = useState([]);
   const [searchTimezone, setSearchTimezone] = useState("");
   const [searchCountry, setSearchCountry] = useState("");
+  const [searchCountryState, setSearchCountryState] = useState("");
+  const [countryCode, setCountryCode] = useState("");
 
   const navigate = useNavigate();
 
@@ -195,6 +193,22 @@ export default function ContactDetails() {
     }
     return countries;
   }, [searchCountry, countries]);
+
+  const filteredCountryStates = useMemo(() => {
+    let allStates;
+    if (countryStates[countryCode]) {
+      allStates = Object.entries(countryStates[countryCode]);
+    }
+    if (searchCountryState) {
+      return allStates?.filter(
+        (state) =>
+          state[1]
+            .toLowerCase()
+            .indexOf(searchCountryState.toLocaleLowerCase()) > -1
+      );
+    }
+    return allStates;
+  }, [searchCountryState, countryStates, countryCode]);
 
   const toggleRefresh = () => {
     setRefresh(!refresh);
@@ -329,6 +343,30 @@ export default function ContactDetails() {
           setIsValidate(true);
         }
         break;
+        case "first_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              first_name: "First name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
+        case "last_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              last_name: "Last name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
       default:
         break;
     }
@@ -338,6 +376,7 @@ export default function ContactDetails() {
     contactData.meta_fields.gender = genderButton;
     contactData.meta_fields.timezone = selectedTimezone;
     contactData.meta_fields.country = countryButton;
+    contactData.meta_fields.state = countryStateButton;
     if (isValidate) {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
@@ -353,6 +392,7 @@ export default function ContactDetails() {
       const code = responseData?.code;
 
       if (code === 201) {
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(responseData?.message);
         toggleRefresh();
@@ -437,6 +477,7 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 201) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
       toggleRefresh();
@@ -464,15 +505,17 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
     } else {
       // Validation messages
-      setShowWarning("block");
+      setNotificationType("warning");
+      setShowNotification("block");
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    ClearNotificationWithWarring("none", setShowNotification, setShowWarning);
+    ClearNotification("none", setShowNotification);
   };
 
   const handleDelete = () => {
@@ -516,6 +559,7 @@ export default function ContactDetails() {
     );
     const resJson = await res.json();
     if (resJson.code == 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(resJson.message);
     }
@@ -542,8 +586,8 @@ export default function ContactDetails() {
   const handleGender = () => {
     setGender(!gender);
   };
-  const handleState = () => {
-    setStateRegion(!stateRegion);
+  const handleCountryState = () => {
+    setCountryState(!countryState);
   };
   const handleCountry = () => {
     setCountry(!country);
@@ -573,6 +617,16 @@ export default function ContactDetails() {
   const handleCountrySelect = (e, name, value) => {
     setCountry(false);
     setCountryButton(value);
+    setCountryCode(name);
+    setCountryStateButton("");
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["country"]: countryButton,
+      },
+    }));
+
     // setContactData((prevState) => ({
     //   ...prevState,
     //   meta_fields: {
@@ -581,15 +635,28 @@ export default function ContactDetails() {
     // }));
   };
 
+  const handleCountryStateSelect = (e, name, value) => {
+    setCountryState(false);
+    setCountryStateButton(value);
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["state"]: countryStateButton,
+      },
+    }));
+  };
+
   const handleTimezoneSelect = (event, id, value) => {
     setSelectedTimezone(value);
     setShowTimezone(!showTimezone);
-    // setContactData((prevState) => ({
-    //   ...prevState,
-    //   meta_fields: {
-    //     ["timezone"]: value,
-    //   },
-    // }));
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["timezone"]: countryStateButton,
+      },
+    }));
   };
 
   return (
@@ -910,12 +977,14 @@ export default function ContactDetails() {
                             <InputItem
                               name="first_name"
                               handleChange={handleChange}
+                              error={errors?.first_name}
                               label="First name"
                               value={contactData.first_name}
                             />
                             <InputItem
                               name="last_name"
                               handleChange={handleChange}
+                              error={errors?.last_name}
                               label="Last name"
                               value={contactData.last_name}
                             />
@@ -1000,12 +1069,6 @@ export default function ContactDetails() {
                                 label="City"
                               />
                               <InputItem
-                                name="state"
-                                handleChange={handleMetaChange}
-                                value={contactData?.meta_fields?.state}
-                                label="State / Province"
-                              />
-                              <InputItem
                                 name="postal"
                                 handleChange={handleMetaChange}
                                 value={contactData?.meta_fields?.postal}
@@ -1068,6 +1131,71 @@ export default function ContactDetails() {
                                   </div>
                                 </ul>
                               </div>
+                              <div
+                                className="form-group contact-input-field"
+                                ref={stateRef}
+                              >
+                                <label name="state">State / Province</label>
+                                <button
+                                  className="state-prove-region-button"
+                                  onClick={handleCountryState}
+                                >
+                                  {countryStateButton !== undefined
+                                    ? "" == countryStateButton
+                                      ? "Select State"
+                                      : countryStateButton
+                                    : contactData?.meta_fields.state
+                                    ? contactData?.meta_fields.state
+                                    : "Select State"}
+                                </button>
+                                <ul
+                                  className={
+                                    countryState
+                                      ? "mintmrm-dropdown state show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li className="searchbar">
+                                    <span class="pos-relative">
+                                      <Search />
+                                      <input
+                                        type="search"
+                                        name="column-search"
+                                        placeholder="Seacrh..."
+                                        value={searchCountryState}
+                                        onChange={(e) =>
+                                          setSearchCountryState(e.target.value)
+                                        }
+                                      />
+                                    </span>
+                                  </li>
+                                  <div className="option-section">
+                                    {filteredCountryStates &&
+                                      filteredCountryStates?.map((state) => {
+                                        return (
+                                          <li
+                                            key={state[0]}
+                                            onClick={(event) =>
+                                              handleCountryStateSelect(
+                                                event,
+                                                state[0],
+                                                state[1]
+                                              )
+                                            }
+                                          >
+                                            {state[1]}
+                                          </li>
+                                        );
+                                      })}
+                                  </div>
+                                </ul>
+                              </div>
+                              {/* <InputItem
+                                name="state"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.state}
+                                label="State / Province"
+                              /> */}
                             </div>
                           </div>
                         </div>
@@ -1349,10 +1477,6 @@ export default function ContactDetails() {
                         contactId={id}
                         refresh={refresh}
                         setRefresh={setRefresh}
-                        setShowNotification={setShowNotification}
-                        showNotification={"mone"}
-                        setMessage={setMessage}
-                        message={message}
                         isActive={selectList}
                       />
                     </div>
@@ -1409,10 +1533,6 @@ export default function ContactDetails() {
                           contactId={id}
                           refresh={refresh}
                           setRefresh={setRefresh}
-                          setShowNotification={setShowNotification}
-                          showNotification={"mone"}
-                          setMessage={setMessage}
-                          message={message}
                         />
                       )}
                     </div>
@@ -1453,8 +1573,9 @@ export default function ContactDetails() {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
-      <WarningNotification display={showWarning} message={message} />
     </>
   );
 }

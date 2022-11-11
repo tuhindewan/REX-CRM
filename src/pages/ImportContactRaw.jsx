@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ImportNavbar from "../components/Import/ImportNavbar";
-import WarningNotification from "../components/WarningNotification";
-import {ClearWarning} from "../utils/admin-notification";
+import SuccessfulNotification from "../components/SuccessfulNotification";
+import { ClearNotification } from "../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../utils/admin-settings";
 
 export default function ImportContactRaw() {
@@ -11,8 +11,9 @@ export default function ImportContactRaw() {
   const navigate = useNavigate();
   // stores the text data
   const [text, setText] = useState("");
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
 
   // ref for referring textarea
   const textAreaRef = useRef(null);
@@ -46,9 +47,10 @@ export default function ImportContactRaw() {
         },
       });
     } else {
-      setShowWarning("block");
-      setMessage(resJson.message);
-      ClearWarning('none',setShowWarning)
+      setNotificationType("warning");
+      setShowNotification("block");
+      setMessage(resJson?.message);
+      ClearNotification("none", setShowNotification);
     }
   }
 
@@ -116,7 +118,13 @@ johnny@walker.com, Johny, Walker
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }

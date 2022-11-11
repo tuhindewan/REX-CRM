@@ -7,6 +7,7 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
 use Mint\MRM\DataStores\SegmentData;
+use Mint\MRM\DataBase\Models\ContactModel;
 use MRM\Common\MRM_Common;
 
 /**
@@ -106,9 +107,17 @@ class SegmentController extends BaseController {
 
         $segments = ContactGroupModel::get_all( "segments", $offset, $perPage, $search, $order_by, $order_type );
 
+        // Count contacts groups
+        $segments['count_groups'] = [
+            'segments'     => absint( $segments['total_count'] ),
+            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
+            'contacts'  => ContactModel::get_contacts_count(),
+            'lists'  => ContactGroupModel::get_groups_count( "lists" )
+        ];
+
         $segments['data'] = array_map(function($segment){
                                 $segment_data = maybe_unserialize( $segment->data );
-                                $segment->description = $segment_data['description'];
+                                $segment->description = isset($segment_data['description']) ? $segment_data['description'] : "";
                                 return $segment;
                             }, $segments['data']);
 
