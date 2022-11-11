@@ -88,3 +88,7 @@ assets/admin/dist
 dist/
 /node_modules
 /build
+
+
+.env.testing
+tests/_data/*.sql
