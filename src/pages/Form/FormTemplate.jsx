@@ -27,6 +27,8 @@ const FormTemplate = (props) => {
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
   );
 
+  const [formPositionActive, setFormPositionActive] = useState("popup")
+
   const closeSection = () => {
     setIsClose(!isClose);
   };
@@ -92,6 +94,8 @@ const FormTemplate = (props) => {
     window.location.reload();
   };
   const SelectFilter = (filter) =>{
+    setFormPositionActive(filter);
+    console.log(formPositionActive);
     const updateItems = formTemplates.filter((curElem) => {
       return curElem.form_position === filter;
     });
@@ -117,10 +121,10 @@ const FormTemplate = (props) => {
               <h4 className="modal-title">Choose Form</h4>
 
               <ul className="template-filter">
-                <li className="active" onClick={() => SelectFilter('popup')}>Pop-up</li>
-                <li onClick={() => SelectFilter('flyins')}>Fly-Ins</li>
-                <li onClick={() => SelectFilter('fixed-on-top')}>Fixed Bar Top</li>
-                <li onClick={() => SelectFilter('fixed-on-bottom')}>Fixed on bottom</li>
+                <li className={formPositionActive == 'popup' ? 'active' : '' } onClick={() => SelectFilter('popup')}>Pop-up</li>
+                <li className={formPositionActive == 'flyins' ? 'active' : '' } onClick={() => SelectFilter('flyins')}>Fly-Ins</li>
+                <li className={formPositionActive == 'fixed-on-top' ? 'active' : '' } onClick={() => SelectFilter('fixed-on-top')}>Fixed Bar Top</li>
+                <li className={formPositionActive == 'fixed-on-bottom' ? 'active' : '' } onClick={() => SelectFilter('fixed-on-bottom')}>Fixed on bottom</li>
               </ul>
 
               <div className="template-type">
