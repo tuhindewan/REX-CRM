@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function FormSingleTemplate(props) {
-  console.log(props);
   const { id, title, featured_image } = props.template;
   const { onImportTemplate, setSaveLoader, saveLoader } = props;
 

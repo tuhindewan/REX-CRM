@@ -15755,7 +15755,7 @@ class Editor extends Component {
       controls: ["left", "center", "right"]
     })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
       className: "mrm-submit-button mintmrm-btn",
-      tagName: "button",
+      tagName: "p",
       type: "button",
       value: buttonText,
       style: buttonStyle,

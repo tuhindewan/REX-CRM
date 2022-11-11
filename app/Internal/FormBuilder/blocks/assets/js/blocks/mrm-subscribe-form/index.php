@@ -87,7 +87,7 @@ class MRM_Subscribe_form
 
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
-        }elseif(!$form_status){
+        }elseif( 'draft' == $form_status ){
             return __('This form is not active. Please check','mrm');
         }
         $cookies = isset($_COOKIE['mrm_form_dismissed']) ? $_COOKIE['mrm_form_dismissed'] : '';

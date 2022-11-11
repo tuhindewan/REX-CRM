@@ -84,7 +84,7 @@ class FormData {
         $this->title            = isset($args['title'])         ? $args['title']         : NULL;
         $this->form_body        = isset($args['form_body'])     ? $args['form_body']     : NULL;
         $this->form_position    = isset($args['form_position']) ? $args['form_position'] : NULL;
-        $this->status           = isset($args['status'])        ? $args['status']        : NULL;
+        $this->status           = isset($args['status'])        ? $args['status']        : 'draft';
         $this->template_id      = isset($args['template_id'])   ? $args['template_id']   : NULL;
         $this->created_by       = isset($args['created_by'])    ? $args['created_by']    : NULL;
         $this->group_ids        = isset($args['group_ids'])     ? $args['group_ids']     : array();
