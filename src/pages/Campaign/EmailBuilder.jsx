@@ -34,7 +34,7 @@ const EmailBuilder = (props) => {
                 setIsTemplate={setIsTemplate}
                 setIsCloseBuilder={setIsCloseBuilder}
                 refresh={refresh}
-                // setRefresh={setRefresh}
+                setRefresh={setRefresh}
                 setIsReadonly={props.setIsReadonly}
                 isReadonly={props.isReadonly}
               />
