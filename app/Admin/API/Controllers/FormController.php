@@ -35,7 +35,7 @@ class FormController extends BaseController {
      * @var string
      * @since 1.0.0
      */
-    public static $form_templates_remote_api_url = "https://staging-coderex-satging.kinsta.cloud/wp-json/mha/v1/forms";
+    public static $form_templates_remote_api_url = "https://d-aardvark-fufe.instawp.xyz/wp-json/mha/v1/forms";
 
 
     /**
@@ -55,6 +55,10 @@ class FormController extends BaseController {
         $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : NULL;
         if (empty($title)) {
             return $this->get_error_response( __( 'Form name is mandatory', 'mrm' ), 200);
+        }
+
+        if ( strlen( $title ) > 150 ) {
+            return $this->get_error_response( __( 'Form title character limit exceeded 150 characters', 'mrm' ), 200);
         }
         
         //group Ids validation

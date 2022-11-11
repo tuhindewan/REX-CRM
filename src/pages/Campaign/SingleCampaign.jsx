@@ -43,7 +43,7 @@ export default function SingleCampaign(props) {
           <div className="title">
             {" "}
             <Link to={`../campaign/edit/${props.campaign.id}`}>
-              {props.campaign.title}
+            {props.campaign.title?.length > 20 ? props.campaign.title.substring(0, 20) + "..." : props.campaign.title}
             </Link>{" "}
             <span>{props.campaign.created_at} ago</span>
           </div>

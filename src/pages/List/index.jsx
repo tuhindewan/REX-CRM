@@ -85,6 +85,7 @@ const Lists = () => {
   const [errors, setErrors] = useState({});
 
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
   const [listID, setListID] = useState();
@@ -190,6 +191,7 @@ const Lists = () => {
         });
         setShowCreate(false);
         setEditID(0);
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(response.message);
         setErrors({});
@@ -255,6 +257,7 @@ const Lists = () => {
     if (status) {
       deleteSingleList(listID).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -288,6 +291,7 @@ const Lists = () => {
     if (status) {
       deleteMultipleListsItems(selected).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -592,6 +596,8 @@ const Lists = () => {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

@@ -34,10 +34,12 @@ export default function CampaignCustomSelect(props) {
   }, [searchList, lists]);
 
   const showTag = () => {
+    setSearchList("");
     setActiveTag(true);
     setActiveList(false);
   };
   const showList = () => {
+    setSearchTag("");
     setActiveTag(false);
     setActiveList(true);
   };

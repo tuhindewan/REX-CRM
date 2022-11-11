@@ -46,12 +46,12 @@ export default function SegmentList(props) {
           <label for={id}>{title}</label>
         </span>
       </td>
-      <td className="">{total_contacts}</td>
       <td className="">
         {description?.length > 30
           ? description.substring(0, 30) + "..."
           : description}
       </td>
+      <td className="">{total_contacts}</td>
       <td className="">{new Date(created_at).toDateString()}</td>
       <td ref={moreOptionRef}>
         <button

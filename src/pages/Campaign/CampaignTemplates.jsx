@@ -2,11 +2,10 @@ import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import EmailBuilder from "./EmailBuilder";
-import CampaignSingleTemplate from "../TemplateGallery/CampaignSingleTemplate";
 
-import CrossIcon from "../../components/Icons/CrossIcon";
 import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
 import ArrowRightIcon from "../../components/Icons/ArrowRightIcon";
+import CrossIcon from "../../components/Icons/CrossIcon";
 
 export default function CampaignTemplates(props) {
   const {
@@ -97,13 +96,21 @@ export default function CampaignTemplates(props) {
                     <div className="mintmrm-single-remote-template">
                       {emailData?.email_body?.length === 0 ? (
                         <Link to="">
-                          <button type="button" className="mintmrm-btn" onClick={openTemplateBuilder} >
+                          <button
+                            type="button"
+                            className="mintmrm-btn"
+                            onClick={openTemplateBuilder}
+                          >
                             Start From Scratch
                           </button>
                         </Link>
                       ) : (
                         <Link to="">
-                          <button type="button" className="mintmrm-btn" onClick={openTemplateBuilder} >
+                          <button
+                            type="button"
+                            className="mintmrm-btn"
+                            onClick={openTemplateBuilder}
+                          >
                             Edit Template
                           </button>
                         </Link>
@@ -117,32 +124,30 @@ export default function CampaignTemplates(props) {
                   </div>
                 </div>
 
+                {/* <CampaignSingleTemplate />
                 <CampaignSingleTemplate />
                 <CampaignSingleTemplate />
-                <CampaignSingleTemplate />
-                <CampaignSingleTemplate />
+                <CampaignSingleTemplate /> */}
 
                 <div className="mintmrm-single-template create-from-scratch coming-soon">
                   <div className="coming-soon-inner">
                     <h2>Amazing Templates Are Coming Soon</h2>
                   </div>
                 </div>
-                
               </div>
             </div>
 
             <div className="template-modal-footer">
               <div className="template-pagination">
                 <button type="button" className="prev">
-                  <ArrowLeftIcon/>
+                  <ArrowLeftIcon />
                 </button>
 
                 <button type="button" className="next">
-                  <ArrowRightIcon/>
+                  <ArrowRightIcon />
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       </div>
