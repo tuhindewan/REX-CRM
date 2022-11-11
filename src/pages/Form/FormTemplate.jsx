@@ -95,7 +95,6 @@ const FormTemplate = (props) => {
   };
   const SelectFilter = (filter) =>{
     setFormPositionActive(filter);
-    console.log(formPositionActive);
     const updateItems = formTemplates.filter((curElem) => {
       return curElem.form_position === filter;
     });
