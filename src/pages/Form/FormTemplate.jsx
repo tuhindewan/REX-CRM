@@ -9,9 +9,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import FormSingleTemplate from "../TemplateGallery/FormSingleTemplate";
 
-import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
-import ArrowRightIcon from "../../components/Icons/ArrowRightIcon";
-
 const FormTemplate = (props) => {
   let navigate = useNavigate();
 
@@ -27,7 +24,7 @@ const FormTemplate = (props) => {
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
   );
 
-  const [formPositionActive, setFormPositionActive] = useState("popup")
+  const [formPositionActive, setFormPositionActive] = useState("popup");
 
   const closeSection = () => {
     setIsClose(!isClose);
@@ -73,10 +70,10 @@ const FormTemplate = (props) => {
   useEffect(() => {
     getAllTemplates(1, 10).then((response) => {
       setFormTemplates(response.forms);
-        const updateItems = response.forms.filter((curElem) => {
-            return curElem.form_position === 'popup';
-        });
-        setFormTemplatesFilter(updateItems);
+      const updateItems = response.forms.filter((curElem) => {
+        return curElem.form_position === "popup";
+      });
+      setFormTemplatesFilter(updateItems);
       setCountFormTemplates(response.count);
     });
   }, []);
@@ -93,7 +90,7 @@ const FormTemplate = (props) => {
     window.location.replace(formBuilderUrl);
     window.location.reload();
   };
-  const SelectFilter = (filter) =>{
+  const SelectFilter = (filter) => {
     setFormPositionActive(filter);
     const updateItems = formTemplates.filter((curElem) => {
       return curElem.form_position === filter;
@@ -120,10 +117,34 @@ const FormTemplate = (props) => {
               <h4 className="modal-title">Choose Form</h4>
 
               <ul className="template-filter">
-                <li className={formPositionActive == 'popup' ? 'active' : '' } onClick={() => SelectFilter('popup')}>Pop-up</li>
-                <li className={formPositionActive == 'flyins' ? 'active' : '' } onClick={() => SelectFilter('flyins')}>Fly-Ins</li>
-                <li className={formPositionActive == 'fixed-on-top' ? 'active' : '' } onClick={() => SelectFilter('fixed-on-top')}>Fixed Bar Top</li>
-                <li className={formPositionActive == 'fixed-on-bottom' ? 'active' : '' } onClick={() => SelectFilter('fixed-on-bottom')}>Fixed on bottom</li>
+                <li
+                  className={formPositionActive == "popup" ? "active" : ""}
+                  onClick={() => SelectFilter("popup")}
+                >
+                  Pop-up
+                </li>
+                <li
+                  className={formPositionActive == "flyins" ? "active" : ""}
+                  onClick={() => SelectFilter("flyins")}
+                >
+                  Fly-Ins
+                </li>
+                <li
+                  className={
+                    formPositionActive == "fixed-on-top" ? "active" : ""
+                  }
+                  onClick={() => SelectFilter("fixed-on-top")}
+                >
+                  Fixed Bar Top
+                </li>
+                <li
+                  className={
+                    formPositionActive == "fixed-on-bottom" ? "active" : ""
+                  }
+                  onClick={() => SelectFilter("fixed-on-bottom")}
+                >
+                  Fixed on bottom
+                </li>
               </ul>
 
               <div className="template-type">
@@ -159,7 +180,7 @@ const FormTemplate = (props) => {
                 </div>
 
                 {formTemplatesFilter?.length > 0 ? (
-                    formTemplatesFilter.map((template) => {
+                  formTemplatesFilter.map((template) => {
                     return (
                       <FormSingleTemplate
                         key={template.id}
@@ -180,7 +201,7 @@ const FormTemplate = (props) => {
               </div>
             </div>
 
-            <div className="template-modal-footer">
+            {/* <div className="template-modal-footer">
               <div className="template-pagination">
                 <button type="button" className="prev">
                   <ArrowLeftIcon />
@@ -190,7 +211,7 @@ const FormTemplate = (props) => {
                   <ArrowRightIcon />
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
