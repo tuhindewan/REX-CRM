@@ -77,7 +77,7 @@ class ContactForm {
         $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
-        }elseif(!$form_status){
+        }elseif( 'draft' == $form_status){
             return __('This form is not active. Please check','mrm');
         }
         $get_setting        = FormModel::get_meta($form_id);

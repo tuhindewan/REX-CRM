@@ -239,8 +239,7 @@ class FormModel {
         // Prepare sql results for list view
         try {        
             // Return forms for a contact in list view
-            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT `id`,`title` FROM $form_table WHERE status = %d ORDER BY id DESC", array('published' ) ), ARRAY_A );
-
+            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT `id`,`title` FROM $form_table WHERE status = %s ORDER BY id DESC", array( 'published' ) ), ARRAY_A );
             return array(
                 'data'        => $select_query
             );
