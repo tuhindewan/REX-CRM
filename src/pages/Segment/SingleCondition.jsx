@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from "react";
 import DeleteIcon from '../../components/Icons/Delete'
 
-const SingleCondition = ({ index, segmentCondition, addCondition, deleteCondition }) => {
+const SingleCondition = ({ index, conditionsLength, segmentCondition, addCondition, deleteCondition }) => {
     const [conditionDropdown, setConditionDropdown] = useState(false);
     const [fieldTypeDropdown, setFieldTypeDropdown] = useState(false);
     const [fieldConditionDropdown, setFieldConditionDropdown] = useState(false);
@@ -36,9 +36,11 @@ const SingleCondition = ({ index, segmentCondition, addCondition, deleteConditio
     const  field_actions = segmentCondition.field_action;
     const  field_action_input = segmentCondition.field_action_input;
 
+    console.log('row is '+conditionsLength);
+
     return (
         <>
-            <div className="single-condition">
+            <div className={ conditionsLength > 1 ? "single-condition more-than-one-condition" : "single-condition only-one-condition" }>
                 <ul className="single-condition-inner">
                     <li className="single-condition-filed field-type">
                         <div className={ fieldTypeDropdown ? "mrm-custom-select-container show-dropdown" : "mrm-custom-select-container" } >
@@ -85,11 +87,13 @@ const SingleCondition = ({ index, segmentCondition, addCondition, deleteConditio
                         </div>
                     </li>
 
-                    <li className="single-condition-filed delete-condition">
-                        <button type="button" title="Delete this Condition" onClick={() => deleteCondition(index)}>
-                            <DeleteIcon />
-                        </button>
-                    </li>
+                    {conditionsLength > 1&& 
+                      <li className="single-condition-filed delete-condition">
+                          <button type="button" title="Delete this Condition" onClick={() => deleteCondition(index)}>
+                              <DeleteIcon />
+                          </button>
+                      </li>
+                    }
                 </ul>
 
                 <div className="condition-repeater">

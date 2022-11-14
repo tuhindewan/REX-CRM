@@ -158,7 +158,8 @@ const CreateSegment = () => {
             ...segmentConditions.slice(index + 1, segmentConditions.length)
         ]);
     };
-      
+
+    
     return (
         <>
             <div className="add-segment-page">
@@ -217,6 +218,7 @@ const CreateSegment = () => {
                                 <SingleCondition
                                 key={idx}
                                 index={idx}
+                                conditionsLength={segmentConditions.length}
                                 segmentCondition={segmentCondition}
                                 addCondition={addCondition}
                                 deleteCondition={deleteCondition}
