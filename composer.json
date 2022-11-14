@@ -10,7 +10,8 @@
   "scripts": {
     "test": "phpunit",
     "phpcs": "./vendor/bin/phpcs",
-    "phpcs-i": "./vendor/bin/phpcs -i"
+    "phpcs:fix": "./vendor/bin/phpcbf",
+    "phpcs:i": "./vendor/bin/phpcs -i"
   },
   "autoload": {
     "psr-4": {
