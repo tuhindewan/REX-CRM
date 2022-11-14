@@ -6,7 +6,6 @@ import SingleCondition from "./SingleCondition";
 
 const CreateSegment = () => {
     let navigate = useNavigate();
-    const [conditionDropdown, setConditionDropdown] = useState(false);
     const [preview, setPreview] = useState(false);
     const [segmentName, setSegmentName] = useState("");
     const [segmentDescription, setSegmentDescription] = useState("");
@@ -47,6 +46,7 @@ const CreateSegment = () => {
                 }, 
             ],
             field_action_input: 'input-text',
+            condition_logic: 'and',
         }
         
     ]);
@@ -113,7 +113,6 @@ const CreateSegment = () => {
     
 
     const addCondition = (value) => {
-
         setSegmentConditions(prevState => {
             return [...prevState, { 
                 field_type: [
@@ -147,6 +146,7 @@ const CreateSegment = () => {
                     }, 
                 ],
                 field_action_input: 'input-text',
+                condition_logic: value,
             }];
         })
     };
@@ -159,7 +159,7 @@ const CreateSegment = () => {
         ]);
     };
 
-    
+
     return (
         <>
             <div className="add-segment-page">

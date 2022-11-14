@@ -35,8 +35,7 @@ const SingleCondition = ({ index, conditionsLength, segmentCondition, addConditi
     const  field_conditions = segmentCondition.field_condition;
     const  field_actions = segmentCondition.field_action;
     const  field_action_input = segmentCondition.field_action_input;
-
-    console.log('row is '+conditionsLength);
+    const  condition_logic = segmentCondition.condition_logic;
 
     return (
         <>
@@ -50,7 +49,7 @@ const SingleCondition = ({ index, conditionsLength, segmentCondition, addConditi
 
                                 {field_types.map((field_type, idx) => {
                                     return (
-                                        <li key={idx} value={field_type.field_type_value}>{field_type.field_type_label}</li>
+                                      <li key={idx} value={field_type.field_type_value}>{field_type.field_type_label}</li>
                                     );
                                 })}
                             </ul>
@@ -108,8 +107,12 @@ const SingleCondition = ({ index, conditionsLength, segmentCondition, addConditi
                 </div>
 
                 <div className="condition-symbol">
+                  {condition_logic == 'and' &&
                     <span className="symbol-and">&</span>
+                  }
+                  {condition_logic == 'or' &&
                     <span className="symbol-or">or</span>
+                  }
                 </div>
             </div>
         </>
