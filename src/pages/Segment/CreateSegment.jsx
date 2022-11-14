@@ -1,25 +1,19 @@
-<<<<<<< HEAD:src/components/Segment/CreateSegment.jsx
-import React from "react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import SingleCondition from './SingleCondition'
-import ContactListTable from "../BaseTable/ContactListTable";
-=======
 import { default as React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DoubleAngleLeftIcon from "../../components/Icons/DoubleAngleLeftIcon";
 import DoubleAngleRightIcon from "../../components/Icons/DoubleAngleRightIcon";
 import SingleCondition from "./SingleCondition";
->>>>>>> bf63faeee22b1ff167a353699aee1331181299a9:src/pages/Segment/CreateSegment.jsx
-
-import DoubleAngleLeftIcon from '../Icons/DoubleAngleLeftIcon'
-import DoubleAngleRightIcon from '../Icons/DoubleAngleRightIcon'
 
 const CreateSegment = () => {
+    let navigate = useNavigate();
+    const [conditionDropdown, setConditionDropdown] = useState(false);
+    const [preview, setPreview] = useState(false);
+    const [segmentName, setSegmentName] = useState("");
+    const [segmentDescription, setSegmentDescription] = useState("");
+    const [errors, setErrors] = useState({});
     const [refresh, setRefresh] = useState();
     const [contactData, setContactData] = useState([]);
     const [matchDropdown, setMatchDropdown] = useState(false);
-    const [preview, setPreview] = useState(false);
     const [segmentConditions, setSegmentConditions] = useState([
         { 
             field_type: [
@@ -56,76 +50,67 @@ const CreateSegment = () => {
         }
         
     ]);
+
+    const showMatchDropdown = () => {
+        setMatchDropdown(!matchDropdown);
+    };
     
     const handlePreview = () => {
         setPreview(!preview);
     };
 
-<<<<<<< HEAD:src/components/Segment/CreateSegment.jsx
-    const showMatchDropdown = () => {
-        setMatchDropdown(!matchDropdown);
+    // Redirect to segments index page
+    const routeChange = async () => {
+        let path = `/segments`;
+        navigate(path);
     };
-=======
-    submitSegment(segment).then((response) => {
-      if (201 === response.code) {
-        // Navigate to campaigns list with success message
-        navigate("../segments", {
-          state: { status: "segment-created", message: response?.message },
+
+    // Submit segmentation to the API
+    const submitSegment = async () => {
+        let segment = {
+            title: segmentName,
+            data: {
+                description: segmentDescription,
+                filters: [
+                    [
+                        {
+                            source: "email_addresses",
+                            operator: "contains",
+                            value: [],
+                        },
+                        {
+                            source: "last_name",
+                            operator: "contains",
+                            value: [],
+                        },
+                    ],
+                    [
+                        {
+                            source: "subscription_status",
+                            operator: "is",
+                            value: [],
+                        },
+                    ],
+                ],
+            },
+        };
+    
+        submitSegment(segment).then((response) => {
+            if (201 === response.code) {
+                // Navigate to campaigns list with success message
+                    navigate("../segments", {
+                    state: { status: "segment-created", message: response?.message },
+                });
+            } else {
+                // Validation messages
+                setErrors({
+                    ...errors,
+                    title: response?.message,
+                });
+            }
         });
-      } else {
-        // Validation messages
-        setErrors({
-          ...errors,
-          title: response?.message,
-        });
-      }
-    });
-  };
-
-  return (
-    <>
-      <div className="add-segment-page">
-        <Link to="/segments">
-          <button className="backto-segment">
-            <DoubleAngleLeftIcon />
-            Back
-          </button>
-        </Link>
-
-        <h4 className="add-segment-title">Add Segment</h4>
-
-        <div className="segment-wrapper">
-          <div className="segment-header">
-            <div className="form-group">
-              <label htmlFor="">Segment Name</label>
-              <input
-                type="text"
-                name="segment_name"
-                placeholder="Enter segment name"
-                value={segmentName}
-                onChange={(e) => setSegmentName(e.target.value)}
-              />
-              <p
-                className={
-                  errors?.title ? "error-message show" : "error-message"
-                }
-              >
-                {errors?.title}
-              </p>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="">Segment Description</label>
-              <input
-                type="text"
-                name="segment_description"
-                placeholder="Enter segment description"
-                value={segmentDescription}
-                onChange={(e) => setSegmentDescription(e.target.value)}
-              />
-            </div>
->>>>>>> bf63faeee22b1ff167a353699aee1331181299a9:src/pages/Segment/CreateSegment.jsx
-
+    };
+    
 
     const addCondition = (value) => {
 
@@ -190,12 +175,27 @@ const CreateSegment = () => {
                     <div className="segment-header">
                         <div className="form-group">
                             <label htmlFor="">Segment Name</label>
-                            <input type="text" name="segment-name" />
+                            <input
+                                type="text"
+                                name="segment_name"
+                                placeholder="Enter segment name"
+                                value={segmentName}
+                                onChange={(e) => setSegmentName(e.target.value)}
+                            />
+                            <p className={ errors?.title ? "error-message show" : "error-message" } >
+                                {errors?.title}
+                            </p>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="">Segment Description</label>
-                            <input type="text" name="segment-description" />
+                            <input
+                                type="text"
+                                name="segment_description"
+                                placeholder="Enter segment description"
+                                value={segmentDescription}
+                                onChange={(e) => setSegmentDescription(e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -259,19 +259,18 @@ const CreateSegment = () => {
                                             </thead>
 
                                             <tbody>
-
                                                 {contactData.map((contact, idx) => {
                                                     return (
-                                                        <SingleContact
-                                                            key={idx}
-                                                            contact={contact}
-                                                            toggleRefresh={toggleRefresh}
-                                                            currentActive={currentActive}
-                                                            setCurrentActive={setCurrentActive}
-                                                            handleSelectOne={handleSelectOne}
-                                                            selected={selected}
-                                                            columns={columns}
-                                                        />
+                                                    <SingleContact
+                                                        key={idx}
+                                                        contact={contact}
+                                                        toggleRefresh={toggleRefresh}
+                                                        currentActive={currentActive}
+                                                        setCurrentActive={setCurrentActive}
+                                                        handleSelectOne={handleSelectOne}
+                                                        selected={selected}
+                                                        columns={columns}
+                                                    />
                                                     );
                                                 })}
                                             </tbody>
@@ -285,8 +284,8 @@ const CreateSegment = () => {
                 )}
 
                 <div className="save-btn-area">
-                    <button className="mintmrm-btn cancel">Cancel</button>
-                    <button className="mintmrm-btn save">Save</button>
+                    <button className="mintmrm-btn cancel" onClick={routeChange}> Cancel </button>
+                    <button className="mintmrm-btn save" onClick={submitSegment}> Save </button>
                 </div>
             </div>
         </>
