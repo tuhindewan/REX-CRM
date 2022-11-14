@@ -9,6 +9,7 @@ import SuccessfulNotification from "../SuccessfulNotification";
 import {ClearNotification, ClearNotificationWithWarring} from "../../utils/admin-notification";
 
 
+
 export default function SingleActivityFeed(props) {
   const { refresh, setRefresh } = props;
   const [isDelete, setIsDelete] = useState("none");
@@ -79,9 +80,11 @@ export default function SingleActivityFeed(props) {
           {props.activities?.map((activity) => {
             return (
               <>
+              {console.log(activity.email_body)}
                 <div className="single-feed" key={activity.id}>
                   {activity.type === "MRM Note" ? (
                     <>
+                    
                       <span className="icon icon-warning">
                         <CreateNoteIconSm />
                       </span>
@@ -133,7 +136,8 @@ export default function SingleActivityFeed(props) {
                           {activity.status === 'sent' ? 'Sent' : 'Failed'} {activity.email_subject} to{" "}
                           {activity.email_address}
                         </b>
-                        <div className="writen-note">{activity.email_body}</div>
+
+                        <div className="writen-note"  dangerouslySetInnerHTML={{__html: activity.email_body}}></div>
                       </div>
                       <span className="feed-date">
                         {activity.created_at} ago

@@ -536,6 +536,7 @@
           padding-right: 20px;
           max-height: 400px;
           overflow: auto;
+          overflow-x: hidden;
 
           .no-activity {
             display: flex;

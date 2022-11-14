@@ -686,6 +686,7 @@ export default function ContactDetails() {
                       {statusList.map((status, index) => {
                         return (
                           <>
+                          
                             {contactData.status != status && (
                               <li
                                 key={index}

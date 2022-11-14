@@ -12,6 +12,7 @@
   "dependencies": {
     "@arco-themes/react-easy-email-theme-purple": "^0.0.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
+    "@tinymce/tinymce-react": "^4.2.0",
     "axios": "^0.27.2",
     "classnames": "^2.3.2",
     "cross-env": "^7.0.3",
