@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
+import { ClearNotification } from "../utils/admin-notification";
 import ImportNavbar from "./Import/ImportNavbar";
-import WarningNotification from "./WarningNotification";
-import ListenForOutsideClicks from "./ListenForOutsideClicks";
 import Select from "./Import/Select";
+import ListenForOutsideClicks from "./ListenForOutsideClicks";
+import SuccessfulNotification from "./SuccessfulNotification";
 
 export default function WordPressFieldMap() {
   const location = useLocation();
@@ -16,8 +17,9 @@ export default function WordPressFieldMap() {
   const [lists, setLists] = useState([]);
   // holds selectbox currently selected tags
   const [tags, setTags] = useState([]);
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
   const [contacts, setContacts] = useState([]);
   const [isActiveStatus, setIsActiveStatus] = useState(false);
   const [isActiveList, setIsActiveList] = useState(false);
@@ -26,13 +28,29 @@ export default function WordPressFieldMap() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState();
   //Detect Outside Click to Hide Dropdown Element
-  const statusMenuRef = useRef(null)
-  const listMenuRef   = useRef(null)
-  const tagMenuRef    = useRef(null)
-  const [listening, setListening] = useState(false)
-  useEffect(ListenForOutsideClicks(listening, setListening, statusMenuRef, setIsActiveStatus))
-  useEffect(ListenForOutsideClicks(listening, setListening, listMenuRef, setIsActiveList))
-  useEffect(ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag))
+  const statusMenuRef = useRef(null);
+  const listMenuRef = useRef(null);
+  const tagMenuRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      statusMenuRef,
+      setIsActiveStatus
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      listMenuRef,
+      setIsActiveList
+    )
+  );
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, tagMenuRef, setIsActiveTag)
+  );
 
   // get the state from calling component
   const state = location.state;
@@ -70,7 +88,7 @@ export default function WordPressFieldMap() {
   const importContacts = async () => {
     setLoading(true);
     const body = {
-      contacts: contacts
+      contacts: contacts,
     };
 
     body.status = [selectedStatus];
@@ -94,16 +112,13 @@ export default function WordPressFieldMap() {
           state: { data: resJson.data },
         });
       } else {
-        setShowWarning("block");
-        setMessage(resJson.message);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(resJson?.message);
       }
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification("none", setShowNotification);
     } catch (e) {
-      console.log(e);
       window.alert(e.message);
       setLoading(false);
     }
@@ -197,7 +212,10 @@ export default function WordPressFieldMap() {
                   <h3>Contact Profile</h3>
 
                   <div className="contact-profile">
-                    <div className="form-group status-dropdown" ref={statusMenuRef}>
+                    <div
+                      className="form-group status-dropdown"
+                      ref={statusMenuRef}
+                    >
                       <label>Status</label>
                       <button
                         type="button"
@@ -232,7 +250,10 @@ export default function WordPressFieldMap() {
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Lists</label>
-                      <div className="mrm-custom-select-container" key="container">
+                      <div
+                        className="mrm-custom-select-container"
+                        key="container"
+                      >
                         <button
                           type="button"
                           className="mrm-custom-select-btn show"
@@ -262,7 +283,10 @@ export default function WordPressFieldMap() {
                     </div>
                     <div className="form-group status-dropdown">
                       <label>Tags</label>
-                      <div className="mrm-custom-select-container" key="container">
+                      <div
+                        className="mrm-custom-select-container"
+                        key="container"
+                      >
                         <button
                           type="button"
                           className="mrm-custom-select-btn show"
@@ -319,7 +343,13 @@ export default function WordPressFieldMap() {
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }

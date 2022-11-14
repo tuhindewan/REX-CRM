@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> e3f68c2e12ecfbdf3de121a0808a38aee8f47ba1
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/styles.scss ***!
   \********************************************************************************************************************************************************************************************************************************************************************************************************/
@@ -163,10 +159,14 @@ body.is-fullscreen-mode .get-mrm-header {
   padding: 30px;
 }
 .form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content .editor-styles-wrapper {
-  max-width: 697px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 20px;
+  max-width: 900px;
+}
+.form-editor-page .interface-interface-skeleton__body .show-all-block .editor-styles-wrapper {
+  max-width: none;
+  width: calc(100% - 370px);
+  margin-left: 20px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar {
   width: 360px;
@@ -217,14 +217,13 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel {
   position: absolute;
   top: 0;
-  left: 210px;
+  left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  visibility: hidden;
   transition: all 0.3s ease;
   overflow: auto;
   overflow-x: hidden;
+  z-index: 1;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar {
   width: 5px;
@@ -235,6 +234,9 @@ body.is-fullscreen-mode .get-mrm-header {
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar-thumb {
   background-color: #6f6af8;
   border-radius: 20px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .mrm-hr {
+  margin: 24px 0;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header {
   display: flex;
@@ -269,8 +271,21 @@ body.is-fullscreen-mode .get-mrm-header {
   outline: none;
   box-shadow: none;
 }
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button > span:before {
+  content: url("data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20viewBox%3D%220%200%2012%207%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20stroke%3D%22%23A7A8B3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.8%22%20d%3D%22M11%201L6%206%201%201%22%2F%3E%3C%2Fsvg%3E");
+  width: 12px;
+  display: block;
+  position: absolute;
+  right: 12px;
+  top: 18px;
+  transition: all 0.3s ease;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button[aria-expanded=true] > span:before {
+  transform: rotate(180deg);
+}
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button .components-panel__arrow {
   color: #a7a8b3;
+  display: none;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel > .components-panel__body:last-child {
   border-bottom-width: 1px;
@@ -377,7 +392,7 @@ body.is-fullscreen-mode .get-mrm-header {
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option {
   margin-top: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 5px;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio] {
   display: none;
@@ -519,6 +534,20 @@ body.is-fullscreen-mode .get-mrm-header {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker {
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful {
+  width: 100%;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful .react-colorful__saturation {
+  width: 100%;
+  height: 80px;
+}
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful .react-colorful__hue,
+.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-color-picker .react-colorful .react-colorful__alpha {
+  width: 96%;
 }
 .form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav {
   background: #ffffff;
@@ -679,12 +708,6 @@ body.is-fullscreen-mode .get-mrm-header {
   font-style: italic;
 }
 
-.form-editor-page .show-settings-pannel .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel {
-  left: 0;
-  opacity: 1;
-  visibility: visible;
-}
-
 @media only screen and (max-width: 1299px) {
   .form-editor-page .form-editor-body {
     padding: 20px;
@@ -735,17 +758,68 @@ body.is-fullscreen-mode .get-mrm-header {
   }
 }
 .get-mrm-block-editor__block-list {
-  padding-bottom: 48px;
-  padding-top: 53px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 80px 50px;
 }
 .get-mrm-block-editor__block-list .block-editor-block-list__block {
   margin-left: auto;
   margin-right: auto;
 }
 .get-mrm-block-editor__block-list .wp-block {
-  max-width: 580px;
+  max-width: 540px;
+}
+
+.get-mrm-block-editor > .components-button {
+  position: absolute;
+  z-index: 9;
+  background: #573bff;
+  color: #fff;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  padding: 8px 9px;
+  border: none;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.get-mrm-block-editor > .components-button svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+}
+.get-mrm-block-editor > .components-button svg path {
+  stroke: #fff;
+}
+.get-mrm-block-editor > .components-button.active svg {
+  transform: rotate(45deg);
+}
+.get-mrm-block-editor .mrm-block-editor-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar {
+  max-height: 720px;
+  overflow: auto;
+  overflow-x: hidden;
+  width: 0;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar::-webkit-scrollbar-track {
+  background: #f2f5f8;
+}
+.get-mrm-block-editor .interface-interface-skeleton__secondary-sidebar::-webkit-scrollbar-thumb {
+  background-color: #6f6af8;
+  border-radius: 20px;
+}
+.get-mrm-block-editor .block-editor-inserter__main-area {
+  background: #fff;
+  padding: 20px;
+}
+.get-mrm-block-editor .show-all-block .interface-interface-skeleton__secondary-sidebar {
+  width: 350px;
 }
 
 .pannel-toggle-btn-style, .mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button, .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button {
@@ -776,6 +850,27 @@ body.is-fullscreen-mode .get-mrm-header {
 .mrm-form-builder-sidebar .block-editor-block-inspector__no-blocks {
   margin-top: 20px;
 }
+.mrm-form-builder-sidebar .block-editor-block-inspector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+  background: #fff;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector::-webkit-scrollbar {
+  width: 5px;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector::-webkit-scrollbar-track {
+  background: #f2f5f8;
+}
+.mrm-form-builder-sidebar .block-editor-block-inspector::-webkit-scrollbar-thumb {
+  background-color: #6f6af8;
+  border-radius: 20px;
+}
 .mrm-form-builder-sidebar .block-editor-block-inspector .block-editor-block-card {
   border-bottom: 1px solid #e0e0e0;
   align-items: center;
@@ -805,6 +900,7 @@ body.is-fullscreen-mode .get-mrm-header {
   width: calc(100% - 190px);
   margin-bottom: 0;
   padding-right: 10px;
+  text-transform: none;
 }
 .mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field .components-text-control__input {
   border-radius: 6px;
@@ -858,6 +954,7 @@ body.is-fullscreen-mode .get-mrm-header {
   color: #A7A8B3;
   display: block;
   margin-bottom: 8px;
+  text-transform: none;
 }
 .mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input,
 .mrm-block-control-wrapper .components-panel__body .components-base-control .components-select-control__input,
@@ -885,6 +982,7 @@ body.is-fullscreen-mode .get-mrm-header {
   line-height: 1.5;
   letter-spacing: -0.01em;
   color: #A7A8B3;
+  text-transform: none;
 }
 .mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-base-control__field {
   display: flex;
@@ -913,7 +1011,7 @@ body.is-fullscreen-mode .get-mrm-header {
 .mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control > .components-input-control__container {
   width: 190px;
 }
-.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-base-control__field {
+.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-flex {
   flex-flow: row-reverse;
   justify-content: space-between;
 }
@@ -1031,6 +1129,1282 @@ body.is-fullscreen-mode .get-mrm-header {
   text-align: right;
 }
 
+.mrmTypography-field-group-btn {
+  align-items: center;
+}
+.mrmTypography-field-group-btn label {
+  margin-bottom: 0;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0px 9px;
+  color: #8d96a0;
+  font-size: 12px;
+  border-top: 1px solid #d6d9dd;
+  border-bottom: 1px solid #d6d9dd;
+  border-left: 1px solid #d6d9dd;
+  text-transform: capitalize;
+  cursor: pointer;
+  box-shadow: none;
+  line-height: 26px;
+  height: 26px;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.extra-padding {
+  padding: 0px 10px;
+  font-weight: bold;
+  font-size: 15px;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:last-child {
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  border-right: 1px solid #d6d9dd;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:first-child {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn {
+  color: #2184f9;
+  background: #d2e7ff;
+  border-color: #a9d0ff;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
+  border-left-color: #a9d0ff;
+}
+
+.mrmTypography-input-range {
+  display: flex;
+}
+.mrmTypography-input-range > *:not(:last-child) {
+  margin-right: 8px;
+}
+.mrmTypography-input-range input[type=number] {
+  width: 55px !important;
+}
+.mrmTypography-input-range input[type=range] {
+  -webkit-appearance: none;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+}
+.mrmTypography-input-range input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #E5E7EA;
+  border-radius: 5px;
+  border: 0px solid black;
+}
+.mrmTypography-input-range input[type=range]::-webkit-slider-thumb {
+  border: 1px solid white;
+  height: 14px;
+  width: 14px;
+  border-radius: 8px;
+  background: #606871;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
+.mrmTypography-input-range input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #f3f4f5;
+}
+.mrmTypography-input-range input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #E5E7EA;
+  border-radius: 5px;
+  border: 0px solid black;
+}
+.mrmTypography-input-range input[type=range]::-moz-range-thumb {
+  border: 1px solid white;
+  height: 14px;
+  width: 14px;
+  border-radius: 8px;
+  background: #606871;
+  cursor: pointer;
+}
+.mrmTypography-input-range input[type=range]::-ms-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  border-width: 14px 0;
+  color: transparent;
+}
+.mrmTypography-input-range input[type=range]::-ms-fill-lower {
+  background: #d7dadf;
+  border: 0px solid black;
+  border-radius: 10px;
+}
+.mrmTypography-input-range input[type=range]::-ms-fill-upper {
+  background: #E5E7EA;
+  border: 0px solid black;
+  border-radius: 10px;
+}
+.mrmTypography-input-range input[type=range]::-ms-thumb {
+  border: 1px solid white;
+  height: 14px;
+  width: 14px;
+  border-radius: 8px;
+  background: #606871;
+  cursor: pointer;
+}
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-lower {
+  background: #E5E7EA;
+}
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-upper {
+  background: #f3f4f5;
+}
+
+.mrmTypography-field-range > label {
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.mrmTypography-field.mrmTypography-field-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.mrmTypography-field.mrmTypography-field-toggle > label {
+  width: auto;
+  margin-bottom: 0;
+}
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control,
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field {
+  margin-bottom: 0 !important;
+}
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
+  margin-right: 0;
+}
+.mrmTypography-field.mrmTypography-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
+  background-color: #2184F9;
+}
+
+.mrmTypography-field-font-family {
+  min-width: calc(65% - 15px);
+}
+
+.mrmTypography-field-font-weight {
+  min-width: 35%;
+}
+
+.mrmTypography-font-family-picker, .mrmTypography-font-weight-picker-wrapper {
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  cursor: default;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+  border-color: rgb(204, 204, 204);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  transition: all 100ms ease 0s;
+  outline: 0px !important;
+  line-height: 28px;
+  height: 30px;
+  vertical-align: middle;
+  padding-left: 5px;
+}
+.mrmTypography-font-family-picker .editor-rich-text, .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
+  width: 100%;
+}
+.mrmTypography-font-family-picker .selected-font-family, .mrmTypography-font-weight-picker-wrapper .selected-font-family {
+  color: black;
+}
+
+.mrmTypography-font-family-option-wrapper {
+  top: 100%;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  position: absolute;
+  width: 70%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  z-index: 100;
+}
+
+.mrmTypography-font-weight-wrapper {
+  top: 100%;
+  left: 62%;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  position: absolute;
+  width: 40%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  z-index: 100;
+}
+
+.mrmTypography-font-family-options, .mrmTypography-font-family-weights {
+  max-height: 270px;
+  overflow-y: auto;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.mrmTypography-active-font-family, .mrmTypography-active-font-weight {
+  background-color: rgb(38, 132, 255);
+  color: rgb(255, 255, 255);
+  cursor: default;
+  display: block;
+  font-size: inherit;
+  width: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  padding: 8px 12px;
+}
+
+.mrmTypography-font-family-option, .mrmTypography-font-weight-option {
+  background-color: transparent;
+  color: inherit;
+  cursor: default;
+  display: block;
+  font-size: inherit;
+  width: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  padding: 8px 12px;
+}
+
+.mrmTypography-font-family-option:hover, .mrmTypography-font-weight-option:hover {
+  background-color: #e8eaeb;
+}
+
+.mrmTypography-font-family-search-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
+  border: none !important;
+  background-color: transparent !important;
+}
+.mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
+  outline: 0;
+  box-shadow: none;
+}
+
+.mrmTypography-font-weight-picker-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mrmTypography-font-select-icon {
+  display: flex;
+  align-items: center;
+  padding-right: 3px;
+}
+
+.mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
+  width: 100%;
+}
+
+button.components-button.qubley-group-button.qubley-active-group-btn {
+  display: none;
+}
+
+.mrmTypography-row {
+  position: relative;
+}
+
+.mrmTypography-column-layout {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.mrmTypography-column-1 {
+  flex: 1;
+}
+
+.mrmTypography-column-2 {
+  flex: 2;
+}
+
+.mrmTypography-column-3 {
+  flex: 3;
+}
+
+.mrmTypography-column-4 {
+  flex: 4;
+}
+
+.wp-block-mrmTypography-row {
+  display: block;
+}
+
+.wp-block-mrmTypography-row {
+  flex-wrap: wrap;
+}
+
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.wp-block-mrmTypography-row .block-editor-block-list__layout {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  padding-right: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+}
+
+.wp-block-mrmTypography-row .block-editor-block-list__layout .editor-block-list__block {
+  max-width: none;
+}
+
+.wp-block-mrmTypography-row [data-type="mrmTypography/column"] {
+  pointer-events: none;
+}
+
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] > .editor-block-list__block-edit {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+:not(.components-disabled) > .wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] > .editor-block-list__block-edit > * {
+  pointer-events: all;
+}
+
+.wp-block-mrmTypography-row > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="mrmTypography/column"] > .editor-block-list__block-edit > div > .block-editor-inner-blocks {
+  margin-top: -28px;
+  margin-bottom: -28px;
+}
+
+.wp-block-mrmTypography-row .block-editor-block-list__layout {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.wp-block-mrmTypography-row .block-editor-block-list__layout .editor-block-list__block {
+  max-width: none;
+}
+
+div[data-type="mrmTypography/row"].is-selected div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-selected div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer::after,
+div[data-type="mrmTypography/row"].is-resizing div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-resizing div[data-type="mrmTypography/column"]:last-child > div > div > .components-resizable-box__container.mrmTypography-column-resizer::after {
+  display: none;
+}
+
+.wp-block-mrmTypography-row [data-type="mrmTypography/column"] .components-resizable-box__container:hover .components-resizable-box__handle {
+  display: block;
+  z-index: 9;
+}
+
+.components-resizable-box__container.mrmTypography-column-resizer.is-selected-column > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-selected .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle,
+div[data-type="mrmTypography/row"].is-resizing .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle {
+  right: -15px;
+  top: 0;
+  background: transparent;
+  z-index: 9999;
+  width: auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transform: translateX(50%);
+  background: transparent;
+}
+.components-resizable-box__container.mrmTypography-column-resizer.is-selected-column > span > .components-resizable-box__handle::before,
+div[data-type="mrmTypography/row"].is-selected .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle::before,
+div[data-type="mrmTypography/row"].is-resizing .components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle::before {
+  background: #e3e4e7;
+  border: none;
+  opacity: 1;
+  border-radius: 30px;
+  width: 3.5px;
+  right: calc(50% - 2px);
+}
+
+.components-resizable-box__container.mrmTypography-column-resizer > span > .components-resizable-box__handle {
+  width: 8px;
+}
+
+.mrmTypography-flex-box {
+  display: flex;
+}
+
+.mrmTypography-flex-column {
+  flex-direction: column;
+}
+
+.mrmTypography-flex-1 {
+  flex: 1;
+}
+
+.mrmTypography-flex-2 {
+  flex: 2;
+}
+
+.mrmTypography-flex-3 {
+  flex: 3;
+}
+
+.mrmTypography-flex-4 {
+  flex: 4;
+}
+
+.item-center {
+  align-items: center;
+}
+
+.item-left {
+  align-items: flex-start;
+}
+
+.item-right {
+  align-items: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-left {
+  justify-content: flex-start;
+}
+
+.justify-right {
+  justify-content: flex-end;
+}
+
+.mrmTypography-palette-fields .mrmTypography-palette-unit {
+  padding-bottom: 12px;
+  padding-left: 3px;
+}
+
+[data-type="mrmTypography/columns"] .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+#wpwrap [data-type="mrmTypography/columns"] .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit p:last-child {
+  margin-bottom: 0;
+}
+
+#wpwrap [data-type="mrmTypography/columns"] .is-selected .mrmTypography-column[data-gwidth]::before {
+  content: attr(data-gwidth);
+  position: absolute;
+  font-size: 10px;
+  top: -1px;
+  right: -1px;
+  background: #2178c3;
+  padding: 0 8px;
+  border-radius: unset;
+  color: #fff;
+}
+
+.mrmTypography-field-group {
+  position: relative;
+  display: flex;
+}
+.mrmTypography-field-group:not(:last-child) {
+  margin-bottom: 20px;
+}
+.mrmTypography-field-group.mrmTypography-65-35 .mrmTypography-field:first-child {
+  max-width: calc(65% - 15px);
+}
+.mrmTypography-field-group.mrmTypography-65-35 .mrmTypography-field:last-child {
+  max-width: 35%;
+}
+.mrmTypography-field-group .mrmTypography-field {
+  flex-grow: 1;
+}
+.mrmTypography-field-group .mrmTypography-field label {
+  font-size: 13px;
+  color: #A7A8B3;
+  display: block;
+}
+.mrmTypography-field-group.mrmTypography-wide {
+  display: block;
+}
+.mrmTypography-field-group.mrmTypography-wide .mrmTypography-field {
+  width: 100%;
+}
+.mrmTypography-field-group.mrmTypography-wide .mrmTypography-field:not(:last-child) {
+  margin-bottom: 15px;
+}
+.mrmTypography-field-group:not(.mrmTypography-wide) .mrmTypography-field:not(:last-child) {
+  margin-right: 15px;
+  margin-bottom: 0;
+}
+
+.mrmTypography-field {
+  position: relative;
+  margin-bottom: 20px;
+}
+.mrmTypography-field:last-child {
+  margin-bottom: 0;
+}
+.mrmTypography-field .mrmTypography-field-child button:focus {
+  outline: 1px dotted rgba(0, 0, 0, 0.2);
+}
+.mrmTypography-field input[type=text],
+.mrmTypography-field input[type=number]:not(.components-range-control__number) {
+  width: 100%;
+  padding: 0 2px 0 0 !important;
+  height: 26px;
+  border: 1px solid #8d96a0;
+  margin: 0;
+  text-indent: 6px;
+}
+.mrmTypography-field > label {
+  width: 100%;
+  display: block;
+  line-height: 18px;
+  margin-bottom: 10px;
+}
+.mrmTypography-field > label::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.mrmTypography-field > label .mrmTypography-device {
+  margin-left: 5px;
+  display: inline-block;
+}
+.mrmTypography-field > label .mrmTypography-device > span {
+  padding: 0 2.5px;
+}
+
+.mrmTypography-field-group .mrmTypography-device {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  transform: translateY(-50%);
+  background: #fff;
+  border: 1px solid #E2E4E7;
+  padding: 0px 2px;
+  font-size: 0;
+  overflow: hidden;
+}
+.mrmTypography-field-group .mrmTypography-device > button {
+  border: none;
+  padding: 4px 2.5px;
+}
+
+.mrmTypography-device > button {
+  padding: 0px;
+  cursor: pointer;
+  font-weight: 900;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  font-family: "Font Awesome 5 Free";
+  font-size: 9px;
+  background: #E5E7EA;
+  color: #4d515a;
+  height: 18px;
+  line-height: 19px;
+  width: 18px;
+  border-radius: 50%;
+  border: none;
+}
+.mrmTypography-device > button:not(:last-child) {
+  margin-right: 4px;
+}
+.mrmTypography-device > button.mrmTypography-device-desktop::before {
+  content: "\f108";
+}
+.mrmTypography-device > button.mrmTypography-device-tablet::before {
+  content: "\f3fa";
+}
+.mrmTypography-device > button.mrmTypography-device-mobile::before {
+  content: "\f3cd";
+}
+.mrmTypography-device > button:focus {
+  outline: 0;
+  box-shadow: 0;
+}
+.mrmTypography-device > button.active {
+  background: #D2E7FF;
+  color: #2184F9;
+}
+
+.mrmTypography-group-color-palatte {
+  margin: 0;
+}
+.mrmTypography-group-color-palatte:not(:last-child) {
+  margin-bottom: 20px;
+}
+.mrmTypography-group-color-palatte > button {
+  position: relative;
+  float: left !important;
+  margin-right: 10px !important;
+  height: 28px !important;
+  width: 28px !important;
+  font-size: 0px !important;
+  border-radius: 50% !important;
+  border: none;
+  box-shadow: none !important;
+}
+.mrmTypography-group-color-palatte > button::after {
+  content: "\f05e";
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 28px;
+  color: red;
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+.mrmTypography-group-color-palatte .components-color-palette__item-wrapper {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+.mrmTypography-group-color-palatte::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.mrmTypography-unit-btn-group {
+  overflow: hidden;
+  display: inline-block;
+  font-size: 0;
+}
+.mrmTypography-unit-btn-group button {
+  line-height: 1;
+  display: inline-block;
+  border: none;
+  font-size: 10px;
+  padding: 0;
+  border-radius: 2px !important;
+  color: #8D96A0;
+  text-transform: uppercase;
+  background: transparent;
+  cursor: pointer;
+}
+.mrmTypography-unit-btn-group button:focus {
+  outline: 0;
+  box-shadow: none;
+}
+.mrmTypography-unit-btn-group button.active {
+  color: #2184F9;
+}
+.mrmTypography-unit-btn-group button:not(:last-child) {
+  margin-right: 5px;
+}
+
+.mrmTypography-d-flex {
+  display: flex;
+}
+
+.mrmTypography-align-center {
+  align-items: center;
+}
+
+.mrmTypography-align-justified {
+  justify-content: space-evenly;
+}
+.mrmTypography-align-justified > div {
+  padding: 0 5px;
+  display: inline-block !important;
+  margin-bottom: 0 !important;
+}
+.mrmTypography-align-justified > div label {
+  display: block;
+  margin-bottom: 8px !important;
+  text-align: center;
+}
+.mrmTypography-align-justified > div:first-child {
+  padding-left: 0;
+}
+.mrmTypography-align-justified > div:last-child {
+  padding-right: 0;
+}
+
+.mrmTypography-ml-auto {
+  margin-left: auto;
+}
+
+.mrmTypography-ml-10 {
+  margin-left: 10px;
+}
+
+.mrmTypography-ml-15 {
+  margin-left: 15px;
+}
+
+.mrmTypography-mr-auto {
+  margin-right: auto;
+}
+
+.mrmTypography-mr-15 {
+  margin-right: 15px;
+}
+
+.mrmTypography-mb-15 {
+  margin-bottom: 15px;
+}
+
+.mrmTypography-mb-20 {
+  margin-bottom: 20px;
+}
+
+.mrmTypography-mb-10 {
+  margin-bottom: 10px;
+}
+
+.mrmTypography-mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mrmTypography-w-100 {
+  width: 100%;
+}
+
+.mrmTypography-text-right {
+  text-align: right;
+}
+
+.mrmTypography-d-block {
+  display: block;
+}
+
+.mrmTypography-button {
+  background: #FFF;
+  border: 1px solid #E5E7EA;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  text-align: center;
+  color: #8D96A0;
+  transition: all 400ms;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.mrmTypography-button:focus {
+  box-shadow: none;
+  outline: 0;
+}
+.mrmTypography-button.active {
+  background: #D2E7FF;
+  color: #2184F9;
+  border-color: #A9D0FF;
+}
+.mrmTypography-button.active + .mrmTypography-button {
+  border-left-color: #A9D0FF;
+}
+.mrmTypography-button.mrmTypography-button-rounded {
+  border-radius: 3px !important;
+}
+
+.mrmTypography-field-button-list {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.mrmTypography-field-button-list .mrmTypography-button {
+  position: relative;
+  flex: 1 1 auto;
+}
+.mrmTypography-field-button-list .mrmTypography-button:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.mrmTypography-field-button-list .mrmTypography-button:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.mrmTypography-field-button-list .mrmTypography-button:not(:first-child) {
+  margin-left: -1px;
+}
+
+.mrmTypography-common-button, .mrmTypography-button-group .mrmTypography-button {
+  border: 1px solid #6c7781;
+  text-align: center;
+  flex-grow: 1;
+  padding: 4px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #555;
+  border-color: #ccc;
+  background: #f7f7f7;
+  box-shadow: inset 0 -1px 0 #ccc;
+  vertical-align: top;
+}
+.mrmTypography-common-button:first-child, .mrmTypography-button-group .mrmTypography-button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+.mrmTypography-common-button:last-child, .mrmTypography-button-group .mrmTypography-button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+.mrmTypography-common-button:not(:last-child), .mrmTypography-button-group .mrmTypography-button:not(:last-child) {
+  border-right: none;
+}
+.mrmTypography-common-button:hover, .mrmTypography-button-group .mrmTypography-button:hover {
+  background: #fafafa;
+  border-color: #999;
+  box-shadow: inset 0 -1px 0 #999;
+  color: #23282d;
+  text-decoration: none;
+}
+.mrmTypography-common-button.active, .mrmTypography-button-group .active.mrmTypography-button {
+  background: #0085ba;
+  border-color: #00648c;
+  color: #ffffff;
+  box-shadow: inset 0 -1px 0 #00648c;
+}
+.mrmTypography-common-button.active:hover, .mrmTypography-button-group .active.mrmTypography-button:hover {
+  background: #007eb1;
+  border-color: #00435d;
+  color: #fff;
+  box-shadow: inset 0 -1px 0 #00435d;
+}
+
+.mrmTypography-button-group {
+  display: flex;
+  border-radius: 5px;
+  width: 100%;
+  margin: 0;
+}
+.mrmTypography-button-group.mrmTypography-popup-button-group button {
+  padding: 5px 9px;
+}
+
+.mrmTypography-background-tab-wrap .mrmTypography-gradient {
+  margin-bottom: 0;
+}
+
+.components-resizable-box__container .mrmTypography-column {
+  max-width: 100%;
+}
+
+.block-editor-block-list__layout .components-resizable-box__container {
+  max-width: 100% !important;
+}
+
+.components-resizable-box__container .block-editor-inner-blocks .editor-block-list__block {
+  padding-left: 0;
+  padding-right: 0;
+}
+.components-resizable-box__container .block-editor-inner-blocks .editor-block-list__block .editor-block-list__block-edit {
+  margin: 0;
+}
+
+.mrmTypography-row .mrmTypography-column .block-editor-inner-blocks .block-editor-block-list__layout {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.edit-post-visual-editor .mrmTypography-row .editor-block-list__block .editor-block-list__block-edit {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > .editor-block-contextual-toolbar + [data-block] .components-resizable-box__container {
+  position: relative;
+}
+
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block.is_hovered[data-type="mrmTypography/columns"] > .editor-block-list__block-edit::before {
+  outline: 1px solid green;
+}
+
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > .editor-block-contextual-toolbar + [data-block] .components-resizable-box__container {
+  position: relative;
+}
+
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block.is_hovered .components-resizable-box__container {
+  position: relative;
+}
+
+.mrmTypography-row .block-editor-block-list__layout .editor-block-list__block.is_hovered .components-resizable-box__container::before {
+  z-index: 9999;
+  content: "";
+  position: absolute;
+  outline: 2px solid green;
+  transition: outline 0.1s linear;
+  pointer-events: none;
+  right: -14px;
+  left: -14px;
+  top: -14px;
+  bottom: -14px;
+}
+
+.mrmTypography-row-preset {
+  background: #F7F8FC;
+  padding: 25px 15px;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 18px;
+  color: #191E23;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-group {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-group button {
+  cursor: pointer;
+  width: calc(16.66% - 14px);
+  background: transparent;
+  border: none;
+  height: 50px;
+  margin: 7px !important;
+  display: inline-flex;
+  padding: 0 !important;
+  outline: 1px solid transparent;
+  transition: 300ms;
+  opacity: 1;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-group button i {
+  height: 50px;
+  background: #E2E6EC;
+  border: 1px solid #E2E6EC;
+  border-radius: 3px;
+  display: inline-block;
+  position: relative;
+  transition: 300ms;
+  font-style: normal;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-group button i:not(:last-of-type) {
+  margin-right: 2px;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-group button:hover {
+  border: none;
+  opacity: 1;
+}
+.mrmTypography-row-preset .mrmTypography-row-preset-group button:hover i {
+  font-style: normal;
+  background: #FFFFFF;
+  border: 1px solid #2184F9;
+  box-shadow: 0 0 0 1px rgba(33, 132, 249, 0.2);
+}
+.mrmTypography-row-preset .import-layout-btn-container .is-button.is-primary {
+  text-shadow: none;
+  background: #2184F9;
+  box-shadow: none;
+  border: 0;
+  padding: 10px 12px;
+  line-height: 1;
+  height: auto;
+  transition: color 300ms, background-color 300ms;
+}
+.mrmTypography-row-preset .import-layout-btn-container .is-button.is-primary:hover {
+  background: rgb(29, 116, 223);
+}
+
+.mrmTypography-component-remove-button {
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  top: 13px;
+  right: 15px;
+  padding: 0;
+  transition: 200ms;
+  font-size: 17px;
+  color: #CCCFD5;
+}
+.mrmTypography-component-remove-button:hover {
+  color: #B4B7BC;
+}
+
+.mrmTypography-inspect-tabs {
+  border: 1px solid #e2e4e7;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 30px;
+  position: relative;
+}
+.mrmTypography-inspect-tabs .components-tab-panel__tabs {
+  position: absolute;
+  top: -15px;
+  border: 2px solid #e2e4e7;
+  display: inline-block;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.mrmTypography-inspect-tabs .components-tab-panel__tabs button {
+  padding: 7px 15px;
+  box-shadow: none;
+  cursor: pointer;
+  border: none;
+  cursor: pointer;
+  transition: 400ms;
+}
+.mrmTypography-inspect-tabs .components-tab-panel__tabs button.active-tab {
+  background: #0085ba;
+  color: #fff;
+}
+.mrmTypography-inspect-tabs .components-tab-panel__tab-content {
+  margin-top: 10px;
+}
+.mrmTypography-inspect-tabs .components-tab-panel__tab-content .components-panel__body-title {
+  display: none;
+}
+.mrmTypography-inspect-tabs .components-tab-panel__tab-content .components-panel__body {
+  border-top: none;
+}
+
+#mrmTypographyImportLayoutBtn {
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  background: #2184F9;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+  white-space: nowrap;
+  border-width: 1px;
+  border-style: solid;
+  font-size: 13px;
+  margin: 0 15px 0 15px;
+  padding: 9px 12px;
+  border: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  transition: 400ms;
+}
+#mrmTypographyImportLayoutBtn:hover, #mrmTypographyImportLayoutBtn:focus, #mrmTypographyImportLayoutBtn:active {
+  color: #fff;
+  text-decoration: none;
+  background: rgb(29, 116, 223);
+}
+#mrmTypographyImportLayoutBtn img {
+  height: 16px;
+  width: 16px;
+  margin-right: 10px;
+}
+
+.mrmTypography-editor-btn {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  -webkit-appearance: button;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.mrmTypography-editor-btn::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button {
+  border: 1px solid #D8D8D8;
+  padding: 8px 13px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button .mrmTypography-gradient {
+  position: relative;
+  border: 2px solid #333;
+  background-image: linear-gradient(45deg, #333 50%, #ffffff 50%);
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button .mrmTypography-gradient i {
+  font-style: normal;
+  width: 22px;
+  visibility: hidden;
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button:not(:last-child) {
+  border-right: none;
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button.active {
+  background: #0085ba;
+  border-color: #006a95;
+  color: #fff;
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button.active .mrmTypography-gradient {
+  border-color: #fff;
+  background-image: linear-gradient(45deg, #0085ba 50%, #ffffff 50%);
+}
+.mrmTypography-field-type-switch .mrmTypography-field-switch-button button.active + button {
+  border-left-color: #006a95;
+}
+
+.mrmTypography-label-inline-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qubley-margin-indicator,
+.qubley-padding-indicator {
+  opacity: 0;
+}
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-margin-indicator .mrmTypography-indicator-top,
+.qubley-margin-indicator .mrmTypography-indicator-left,
+.qubley-margin-indicator .mrmTypography-indicator-right,
+.qubley-padding-indicator .mrmTypography-indicator-bottom,
+.qubley-padding-indicator .mrmTypography-indicator-top,
+.qubley-padding-indicator .mrmTypography-indicator-left,
+.qubley-padding-indicator .mrmTypography-indicator-right {
+  position: absolute;
+  opacity: 0.4;
+  background-color: rgba(3, 225, 109, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  color: #222;
+  z-index: 1;
+}
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-margin-indicator .mrmTypography-indicator-top,
+.qubley-padding-indicator .mrmTypography-indicator-bottom,
+.qubley-padding-indicator .mrmTypography-indicator-top {
+  height: 0px;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-padding-indicator .mrmTypography-indicator-bottom {
+  top: auto;
+  bottom: 0;
+}
+.qubley-margin-indicator .mrmTypography-indicator-left,
+.qubley-margin-indicator .mrmTypography-indicator-right,
+.qubley-padding-indicator .mrmTypography-indicator-left,
+.qubley-padding-indicator .mrmTypography-indicator-right {
+  width: 0px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+.qubley-margin-indicator .mrmTypography-indicator-right,
+.qubley-padding-indicator .mrmTypography-indicator-right {
+  left: auto;
+  right: 0;
+}
+
+.mrmTypography-section:hover .qubley-margin-indicator,
+.mrmTypography-section:hover .qubley-padding-indicator,
+.mrmTypography-section.active .qubley-margin-indicator,
+.mrmTypography-section.active .qubley-padding-indicator,
+.padding-input-dragging .qubley-margin-indicator,
+.padding-input-dragging .qubley-padding-indicator,
+.margin-input-dragging .qubley-margin-indicator,
+.margin-input-dragging .qubley-padding-indicator,
+.padding-dragging .qubley-margin-indicator,
+.padding-dragging .qubley-padding-indicator,
+.margin-dragging .qubley-margin-indicator,
+.margin-dragging .qubley-padding-indicator {
+  opacity: 1;
+}
+
+.qubley-margin-indicator .mrmTypography-indicator-bottom,
+.qubley-margin-indicator .mrmTypography-indicator-top,
+.qubley-margin-indicator .mrmTypography-indicator-left,
+.qubley-margin-indicator .mrmTypography-indicator-right {
+  background: rgba(0, 123, 243, 0.3);
+}
+.qubley-margin-indicator .mrmTypography-indicator-bottom {
+  transform: translateY(100%);
+}
+.qubley-margin-indicator .mrmTypography-indicator-top {
+  transform: translateY(-100%);
+}
+.qubley-margin-indicator .mrmTypography-indicator-left {
+  transform: translateX(-100%);
+}
+.qubley-margin-indicator .mrmTypography-indicator-right {
+  transform: translateX(100%);
+}
+
+.not-clickable, .disable-slide .mrmTypography-field-child {
+  filter: opacity(0.3);
+  pointer-events: none;
+}
+
+.block-editor-block-list__block .mrmTypography-row * > [data-type="mrmTypography/column"] .block-list-appender {
+  margin: 0;
+}
+
+.mrmTypography-row * > [data-type="mrmTypography/column"].has-child-selected {
+  z-index: 1;
+}
+
+.block-editor-block-list__layout .block-editor-block-list__block[data-type="mrmTypography/row"].is-selected {
+  z-index: inherit;
+}
+
+span.block-editor-block-icon img {
+  max-width: 24px;
+}
+
+.mrmTypography-import-button-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
 html.wp-toolbar {
   background: white;
 }
@@ -1046,10 +2420,6 @@ html.wp-toolbar {
 
 .editor-styles-wrapper {
   width: 100%;
-  font-family: "Noto Serif", serif;
-  font-size: 16px;
-  line-height: 1.8;
-  color: #1e1e1e;
 }
 @media (min-width: 600px) {
   .editor-styles-wrapper {
@@ -1069,12 +2439,354 @@ html.wp-toolbar {
 .components-modal__frame *::after {
   box-sizing: inherit;
 }
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/typography.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.mrmTypography-field .mrmTypography-field-font-family {
+  min-width: calc(65% - 15px);
+}
+.mrmTypography-field .mrmTypography-field-font-weight {
+  min-width: 35%;
+}
+.mrmTypography-field .mrmTypography-font-family-picker,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  cursor: default;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+  border-color: rgb(204, 204, 204);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  transition: all 100ms ease 0s;
+  outline: 0px !important;
+  line-height: 28px;
+  height: 30px;
+  vertical-align: middle;
+  padding-left: 5px;
+}
+.mrmTypography-field .mrmTypography-font-family-picker .editor-rich-text,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper .editor-rich-text {
+  width: 100%;
+}
+.mrmTypography-field .mrmTypography-font-family-picker .selected-font-family,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper .selected-font-family {
+  color: black;
+}
+.mrmTypography-field .mrmTypography-font-family-option-wrapper {
+  top: 100%;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  position: absolute;
+  width: 70%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  z-index: 100;
+  color: #333;
+}
+.mrmTypography-field .mrmTypography-font-weight-wrapper {
+  top: calc(100% + 6px);
+  right: 0;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 11px;
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 4px;
+  z-index: 100;
+  color: #333 !important;
+  margin: 0;
+  width: 117px;
+}
+.mrmTypography-field .mrmTypography-font-family-options,
+.mrmTypography-field .mrmTypography-font-family-weights {
+  max-height: 270px;
+  overflow-y: auto;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  position: relative;
+  box-sizing: border-box;
+}
+.mrmTypography-field .mrmTypography-active-font-family,
+.mrmTypography-field .mrmTypography-active-font-weight {
+  background-color: rgb(38, 132, 255);
+  color: rgb(255, 255, 255);
+  cursor: default;
+  display: block;
+  font-size: inherit;
+  width: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  padding: 8px 12px;
+}
+.mrmTypography-field .mrmTypography-font-family-option,
+.mrmTypography-field .mrmTypography-font-weight-option {
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  font-size: inherit;
+  width: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  box-sizing: border-box;
+  padding: 8px 12px;
+}
+.mrmTypography-field .mrmTypography-font-family-option:hover,
+.mrmTypography-field .mrmTypography-font-weight-option:hover {
+  background-color: #e8eaeb;
+}
+.mrmTypography-field .mrmTypography-active-font-weight,
+.mrmTypography-field .mrmTypography-active-font-family {
+  color: #fff !important;
+}
+.mrmTypography-field .mrmTypography-font-family-search-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search {
+  border: none !important;
+  background-color: transparent !important;
+}
+.mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:focus, .mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:active, .mrmTypography-field .mrmTypography-font-family-search-wrapper input.mrmTypography-font-family-search:hover {
+  outline: 0;
+  box-shadow: none;
+}
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.mrmTypography-field .mrmTypography-font-select-icon {
+  display: flex;
+  align-items: center;
+  padding-right: 3px;
+}
+.mrmTypography-field .mrmTypography-field.mrmTypography-field-typography .components-dropdown.mrmTypography-field {
+  width: 100%;
+}
+.mrmTypography-field .mrmTypography-field-group-btn.mrmTypography-field.mrmTypography-d-flex {
+  display: none;
+}
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/range.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.mrmTypography-input-range {
+  display: flex;
+}
+.mrmTypography-input-range > *:not(:last-child) {
+  margin-right: 8px;
+}
+.mrmTypography-input-range input[type=number] {
+  width: 55px !important;
+}
+.mrmTypography-input-range input[type=range] {
+  -webkit-appearance: none;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+}
+.mrmTypography-input-range input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #E5E7EA;
+  border-radius: 5px;
+  border: 0px solid black;
+}
+.mrmTypography-input-range input[type=range]::-webkit-slider-thumb {
+  border: 1px solid white;
+  height: 14px;
+  width: 14px;
+  border-radius: 8px;
+  background: #606871;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
+.mrmTypography-input-range input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #f3f4f5;
+}
+.mrmTypography-input-range input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #E5E7EA;
+  border-radius: 5px;
+  border: 0px solid black;
+}
+.mrmTypography-input-range input[type=range]::-moz-range-thumb {
+  border: 1px solid white;
+  height: 14px;
+  width: 14px;
+  border-radius: 8px;
+  background: #606871;
+  cursor: pointer;
+}
+.mrmTypography-input-range input[type=range]::-ms-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  border-width: 14px 0;
+  color: transparent;
+}
+.mrmTypography-input-range input[type=range]::-ms-fill-lower {
+  background: #d7dadf;
+  border: 0px solid black;
+  border-radius: 10px;
+}
+.mrmTypography-input-range input[type=range]::-ms-fill-upper {
+  background: #E5E7EA;
+  border: 0px solid black;
+  border-radius: 10px;
+}
+.mrmTypography-input-range input[type=range]::-ms-thumb {
+  border: 1px solid white;
+  height: 14px;
+  width: 14px;
+  border-radius: 8px;
+  background: #606871;
+  cursor: pointer;
+}
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-lower {
+  background: #E5E7EA;
+}
+.mrmTypography-input-range input[type=range]:focus::-ms-fill-upper {
+  background: #f3f4f5;
+}
 
-<<<<<<< HEAD
+.mrmTypography-field-range > label {
+  width: 100%;
+  margin-bottom: 2px;
+}
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/toggle.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.mrmTypography-field.mrmTypography-field-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.mrmTypography-field.mrmTypography-field-toggle > label {
+  width: auto;
+  margin-bottom: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #A7A8B3;
+  display: block;
+}
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control,
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field {
+  margin-bottom: 0 !important;
+}
+.mrmTypography-field.mrmTypography-field-toggle .components-toggle-control .components-base-control__field .components-form-toggle {
+  margin-right: 0;
+}
+.mrmTypography-field.mrmTypography-field-toggle .components-form-toggle.is-checked .components-form-toggle__track {
+  background-color: #2184f9;
+}
+.mrmTypography-field .mrmTypography-font-family-picker,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
+  border-radius: 6px;
+  outline: none;
+  box-shadow: none;
+  background: #FFFFFF;
+  border: 1px solid #E4E6EB;
+  padding: 4px 7px;
+  line-height: 1.5715;
+  color: #1d2129;
+  font-size: 14px;
+  font-weight: 500;
+  height: 42px;
+  cursor: pointer;
+  position: relative;
+}
+.mrmTypography-field .mrmTypography-font-family-picker::before,
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper::before {
+  content: url("data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20viewBox%3D%220%200%2012%207%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20stroke%3D%22%23A7A8B3%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.8%22%20d%3D%22M11%201L6%206%201%201%22%2F%3E%3C%2Fsvg%3E");
+  width: 12px;
+  display: block;
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  transition: all 0.3s ease;
+}
+.mrmTypography-field .mrmTypography-font-weight-picker-wrapper {
+  padding: 4px 10px;
+  color: #7a8b9a !important;
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/components/components/assets/css/buttonGroup.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.mrmTypography-field-group-btn {
+  align-items: center;
+}
+.mrmTypography-field-group-btn label {
+  margin-bottom: 0;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0px 9px;
+  color: #8d96a0;
+  font-size: 12px;
+  border-top: 1px solid #d6d9dd;
+  border-bottom: 1px solid #d6d9dd;
+  border-left: 1px solid #d6d9dd;
+  text-transform: capitalize;
+  cursor: pointer;
+  box-shadow: none;
+  line-height: 26px;
+  height: 26px;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.extra-padding {
+  padding: 0px 10px;
+  font-weight: bold;
+  font-size: 15px;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:last-child {
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  border-right: 1px solid #d6d9dd;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button:first-child {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn {
+  color: #2184f9;
+  background: #d2e7ff;
+  border-color: #a9d0ff;
+}
+.mrmTypography-field-group-btn .mrmTypography-field-child .qubley-group-button.qubley-active-group-btn + .qubley-group-button {
+  border-left-color: #a9d0ff;
+}
+
 /*# sourceMappingURL=index.css.map*/
-=======
-.get-mrm-header{align-items:center;background:#fff;border-bottom:1px solid #ddd;display:flex;height:60px;justify-content:space-between;position:sticky;right:0;top:0}@media(min-width:600px){.get-mrm-header{padding:24px;position:fixed;top:46px}}@media(min-width:782px){.get-mrm-header{top:32px}}.get-mrm-header{left:0}@media(min-width:783px){.get-mrm-header{left:160px}.auto-fold .get-mrm-header{left:36px}}@media(min-width:961px){.auto-fold .get-mrm-header{left:160px}}.folded .get-mrm-header{left:0}@media(min-width:783px){.folded .get-mrm-header{left:36px}}@media(max-width:783px){.auto-fold .wp-responsive-open .get-mrm-header{left:190px}}@media(max-width:600px){.auto-fold .wp-responsive-open .get-mrm-header{margin-left:-18px}}body.is-fullscreen-mode .get-mrm-header{left:0!important}.get-mrm-header__title{font-size:16px;padding:0 20px}.form-editor-page .interface-interface-skeleton__body{display:flex;flex-flow:row wrap}.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content{background:#e6e6e6;border-radius:10px;padding:30px;width:calc(100% - 395px)}.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content .editor-styles-wrapper{margin:0 auto;max-width:697px;padding:0 20px;width:100%}.form-editor-page .interface-interface-skeleton__sidebar{height:780px;margin-left:35px;width:360px}.form-editor-page .interface-interface-skeleton__sidebar .mrm-form-builder-sidebar{background:#fff;border-radius:6px;box-shadow:0 1px 1px hsla(220,7%,73%,.3);height:100%;overflow:hidden;position:relative}.form-editor-page .interface-interface-skeleton__sidebar .components-panel__header{align-items:center;border-bottom:1px solid #e9eaee;display:flex;height:58px;justify-content:center;padding:10px;text-align:center}.form-editor-page .interface-interface-skeleton__sidebar .components-panel__header h2{color:#2d3149;font-size:18px;font-weight:600;line-height:18px}.form-editor-page .interface-interface-skeleton__sidebar .components-panel{border:none;border-radius:6px;box-shadow:0 1px 1px hsla(220,7%,73%,.302);height:100%;overflow:auto;overflow-x:hidden}.form-editor-page .interface-interface-skeleton__sidebar .components-panel::-webkit-scrollbar{width:5px}.form-editor-page .interface-interface-skeleton__sidebar .components-panel::-webkit-scrollbar-track{background:#f2f5f8}.form-editor-page .interface-interface-skeleton__sidebar .components-panel::-webkit-scrollbar-thumb{background-color:#6f6af8;border-radius:20px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel{height:100%;left:210px;opacity:0;overflow:auto;overflow-x:hidden;position:absolute;top:0;transition:all .3s ease;visibility:hidden;width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar{width:5px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar-track{background:#f2f5f8}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel::-webkit-scrollbar-thumb{background-color:#6f6af8;border-radius:20px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header{align-items:center;display:flex;justify-content:space-between}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header h2{align-items:center;display:flex;padding-left:10px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header h2 svg{margin-right:10px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__header .close-pannel{align-items:center;cursor:pointer;display:flex;height:100%;justify-content:center;width:30px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title:hover{background-color:transparent}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button{box-shadow:none;color:#2d3149;font-size:16px;font-weight:600;line-height:1.3;outline:none;text-transform:capitalize}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-panel__body-title .components-button .components-panel__arrow{color:#a7a8b3}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel>.components-panel__body:last-child{border-bottom-width:1px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannelbody-wrapper{background:#f6f8fa;border-radius:8px;padding:16px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .settings-label{color:#2d3149;display:block;font-size:14px;font-weight:500;line-height:1.3;margin-bottom:6px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .settings-label .mintmrm-tooltip{margin-left:6px;position:relative;top:2px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings{margin-bottom:15px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings:last-child{margin-bottom:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=date],.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=email],.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=tel],.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings input[type=text],.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings select,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings textarea{background:#fff;border:none;border-radius:6px;box-shadow:0 1px 1px hsla(220,7%,73%,.3)!important;color:#b6b6b7;font-size:14px;font-weight:400;height:38px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings textarea{height:92px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select{position:relative}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select .mintmrm-custom-select-btn{background:#fff;border:none;border-radius:6px;box-shadow:0 1px 1px hsla(220,7%,73%,.302);color:#b6b6b7;font-size:14px;font-weight:400;height:38px;line-height:1;padding:7px 25px 7px 10px;position:relative;text-align:left;width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select .mintmrm-custom-select-btn:before{border-bottom:1px solid #2d3149;border-right:1px solid #2d3149;content:"";height:8px;position:absolute;right:14px;top:calc(50% - 2px);transform:translateY(-50%) rotate(45deg);transition:all .3s ease;width:8px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select ul.mintmrm-dropdown{background:#fff;border:1px solid #e2e5ed;border-radius:6px;box-shadow:0 10px 20px rgba(0,0,0,.06);display:none;padding:8px;position:absolute;right:0;top:calc(100% + 4px);transition:all .3s ease;width:100%;z-index:5}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select ul.mintmrm-dropdown:before{display:none}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .mintmrm-custom-select.show-dropdown .mintmrm-dropdown{display:block}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-input-control__backdrop{border:none;box-shadow:none;outline:none}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-input-control__suffix svg{stroke:#b6b6b7}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option{margin-bottom:14px;margin-top:8px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio]{display:none}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option.no-title label{height:16px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label{color:#808591;display:block;font-size:14px;font-weight:400;line-height:14px;padding-left:29px;position:relative;text-transform:capitalize}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label:before{background:#f7f7fa;border:1px solid #6f6af8;border-radius:100%;content:"";height:18px;left:0;position:absolute;top:-2px;transition:all .3s ease;width:18px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option label:after{background:#6f6af8;border-radius:100%;content:"";height:8px;left:5px;position:absolute;top:3px;transform:scale(0);transition:all .3s ease;width:8px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio]:checked+label{color:#6f6af8}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-radio-control__option input[type=radio]:checked+label:after{transform:scale(1)}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label{align-items:center;display:flex;justify-content:space-between}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label .components-base-control__field,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label .settings-label{margin-bottom:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings.inline-label .components-base-control__field .components-form-toggle{margin-right:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle__track{background:#eaeaea;border:1px solid #e3e3e3;border-radius:50px;height:22px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle__thumb{background:#fff;border:5px solid #fff;box-shadow:0 1.8px 1px hsla(0,0%,61%,.302);height:16px;left:3px;top:3px;width:16px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle.is-checked .components-form-toggle__thumb{transform:translateX(15px)}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle.is-checked .components-form-toggle__track{background-color:#4834f8;border-color:#4834f8}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .components-toggle-control .components-form-toggle__input:focus+.components-form-toggle__track{box-shadow:none;outline:0;outline-offset:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper{align-items:flex-start;display:flex;justify-content:space-between}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control__field{margin:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select{width:144px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper select{min-width:auto;width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper ul.mintmrm-dropdown{bottom:calc(100% + 4px);top:inherit;width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter{align-items:center;background:#fff;border-radius:6px;box-shadow:0 1px 1px hsla(220,7%,73%,.302);display:inline-flex}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number]{border-bottom:0;border-radius:0;border-top:0;box-shadow:none;height:38px;min-width:auto;padding:5px 10px;text-align:center;width:60px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number]::-webkit-inner-spin-button,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter input[type=number]{-moz-appearance:textfield}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .counter>span{align-items:center;cursor:pointer;display:flex;height:38px;justify-content:center;width:36px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav{align-items:center;background:#fff;border-radius:6px;box-shadow:0 1px 1px hsla(220,7%,73%,.302);display:flex;justify-content:center;margin-bottom:15px;padding:6px 10px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav .tab-nav-item{border-radius:4px;color:#808591;cursor:pointer;font-size:12px;font-weight:500;letter-spacing:-.01em;line-height:15px;padding:8px 9px;text-align:center}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-nav .tab-nav-item.active{background:#f6f8fa;color:#2d3149;font-weight:600}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-content .single-tab-content{display:none}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .pannel-tab-content .single-tab-content.active{display:block}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input[type=number],.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime select{height:36px;line-height:1;min-width:auto;padding:5px 10px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPickerNavigation{align-items:center;display:flex;height:auto;justify-content:space-between;left:0;padding:10px;position:absolute;top:0;width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPickerNavigation .DayPickerNavigation_button{display:block;height:26px;left:inherit;position:relative;right:inherit;top:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay{border:none;border-radius:5px;box-shadow:0 2px 3px rgba(51,51,51,.212)}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarMonth_table{border-spacing:6px;margin-top:3px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarMonth_caption{position:relative;top:-37px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid_month__horizontal{padding-top:48px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day{margin:0 10px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-legend.invisible{color:#2d3149;font-size:14px;font-weight:500;left:0;line-height:17px;margin-bottom:5px;position:relative;top:0}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-separator{margin:0 5px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-wrapper{align-items:center;margin-bottom:15px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-wrapper input[type=number]{width:70px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-time{align-items:center;display:flex}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-button{align-items:center;border:none;border-radius:5px;box-shadow:none;display:inline-flex;height:30px;justify-content:center;outline:none;width:30px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__timezone{font-size:11px;margin-left:5px;text-decoration:none}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker>div>div{width:100%!important}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_transitionContainer{height:285px!important;margin-bottom:11px;width:100%!important}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day{font-size:13px;padding:8px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay__selected .components-datetime__date__day{color:#fff}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .DayPickerNavigation_button__horizontalDefault{top:-5px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader{position:absolute;top:35px;width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul{display:flex}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul .DayPicker_weekHeader_li{flex:1;font-size:16px;padding:8px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__buttons .components-button{width:auto!important}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .validation-warning{color:red;font-style:italic}.form-editor-page .show-settings-pannel .interface-interface-skeleton__body .interface-interface-skeleton__sidebar .settings-pannel{left:0;opacity:1;visibility:visible}@media only screen and (max-width:1299px){.form-editor-page .form-editor-body{padding:20px}.form-editor-page .form-editor-body .form-editor-title-area{margin-bottom:20px}.form-editor-page .interface-interface-skeleton__body .interface-interface-skeleton__content{padding:20px;width:calc(100% - 320px)}.form-editor-page .interface-interface-skeleton__sidebar{margin-left:20px;width:300px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day{margin:0 7px;width:45px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__time-field-day input.components-datetime__time-field-day-input{width:100%}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-hours-input,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime input.components-datetime__time-field-minutes-input{padding:5px 6px;width:50px!important}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .CalendarMonthGrid{width:100%!important}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul{padding:0 13px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .DayPicker_weekHeader .DayPicker_weekHeader_ul .DayPicker_weekHeader_li{font-size:13px;padding:2px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .components-datetime .components-datetime__date .CalendarDay .components-datetime__date__day{padding:1px}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper{display:block}.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .components-base-control,.form-editor-page .interface-interface-skeleton__sidebar .settings-pannel .single-settings .submission-counter-wrapper .mintmrm-custom-select{margin-top:10px;width:100%}}.get-mrm-block-editor__block-list{padding-bottom:48px;padding-top:53px}.get-mrm-block-editor__block-list,.get-mrm-block-editor__block-list .block-editor-block-list__block{margin-left:auto;margin-right:auto}.get-mrm-block-editor__block-list .wp-block{max-width:580px}.mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button,.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button,.pannel-toggle-btn-style{background:transparent;box-shadow:none!important;color:#344054;font-size:15px;line-height:1.2;outline:none!important;padding:19px 32px 19px 13px}.mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button>span:before,.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button>span:before,.pannel-toggle-btn-style>span:before{content:url("data:image/svg+xml;charset=utf-8,%3Csvg fill=%27none%27 viewBox=%270 0 12 7%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cpath stroke=%27%23A7A8B3%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.8%27 d=%27M11 1 6 6 1 1%27/%3E%3C/svg%3E");display:block;position:absolute;right:12px;top:18px;transition:all .3s ease;width:12px}.mrm-block-control-wrapper .components-panel__body [aria-expanded=true].components-panel__body-toggle.components-button>span:before,.mrm-form-builder-sidebar .block-editor-block-inspector__advanced [aria-expanded=true].components-panel__body-toggle.components-button>span:before,.pannel-toggle-btn-style[aria-expanded=true]>span:before{transform:rotate(180deg)}.mrm-block-control-wrapper .components-panel__body .components-panel__body-toggle.components-button .components-panel__arrow,.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-panel__body-toggle.components-button .components-panel__arrow,.pannel-toggle-btn-style .components-panel__arrow{display:none}.mrm-form-builder-sidebar .block-editor-block-inspector__no-blocks{margin-top:20px}.mrm-form-builder-sidebar .block-editor-block-inspector .block-editor-block-card{align-items:center;border-bottom:1px solid #e0e0e0}.mrm-form-builder-sidebar .block-editor-block-inspector .block-editor-block-card__title{color:#344054;font-size:15px;font-weight:600;line-height:1.2;margin:0}.mrm-form-builder-sidebar .block-editor-block-inspector__advanced>.components-panel__body-title:hover{background:transparent!important}.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field{align-items:center;display:flex;flex-flow:row wrap}.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field .components-base-control__label{color:#a7a8b3;display:block;font-size:14px;font-weight:400;letter-spacing:-.01em;line-height:1.5;margin-bottom:0;padding-right:10px;width:calc(100% - 190px)}.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__field .components-text-control__input{background:#fff;border:1px solid #e4e6eb;border-radius:6px;box-shadow:none;color:#1d2129;font-size:14px;font-weight:500;height:auto;line-height:1.5715;outline:none;padding:9px 12px;width:190px}.mrm-form-builder-sidebar .block-editor-block-inspector__advanced .components-base-control__help{color:#ebb51d;font-size:13px;font-style:italic;margin-top:12px}.mrm-block-control-wrapper .components-panel__body .mrm-hr{margin:24px 0}.mrm-block-control-wrapper .components-panel__body div,.mrm-block-control-wrapper .components-panel__body label,.mrm-block-control-wrapper .components-panel__body p,.mrm-block-control-wrapper .components-panel__body section,.mrm-block-control-wrapper .components-panel__body span{color:inherit}.mrm-block-control-wrapper .components-panel__body>.components-panel__body-title{background:transparent!important}.mrm-block-control-wrapper .components-panel__body .components-color-palette__custom-color{padding:12px}.mrm-block-control-wrapper .components-panel__body .components-circular-option-picker__clear{background:#573bff;border:none;border-radius:4px;box-shadow:none;color:#fff}.mrm-block-control-wrapper .components-panel__body .components-circular-option-picker__clear:hover{color:#fff}.mrm-block-control-wrapper .components-panel__body label.blocks-base-control__label,.mrm-block-control-wrapper .components-panel__body label.components-input-control__label{color:#a7a8b3;display:block;font-size:14px;font-weight:400;letter-spacing:-.01em;line-height:1.5;margin-bottom:8px}.mrm-block-control-wrapper .components-panel__body .components-base-control .components-select-control__input,.mrm-block-control-wrapper .components-panel__body .components-base-control .components-text-control__input,.mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input{background:#fff;border:1px solid #e4e6eb;border-radius:6px;box-shadow:none;color:#1d2129;font-size:14px;font-weight:500;height:auto;line-height:1.5715;outline:none;padding:9px 12px}.mrm-block-control-wrapper .components-panel__body .components-input-control__backdrop{border:none!important;box-shadow:none!important;outline:none!important}.mrm-block-control-wrapper .components-panel__body .components-base-control .components-base-control__label{color:#a7a8b3;font-size:14px;font-weight:400;letter-spacing:-.01em;line-height:1.5}.mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-base-control__field{align-items:center;display:flex;justify-content:space-between}.mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-base-control__label{margin-bottom:0;padding-right:10px;width:calc(100% - 190px)}.mrm-block-control-wrapper .components-panel__body .mrm-inline-label .components-text-control__input{width:190px}.mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control{align-items:center;display:flex;flex-direction:row;justify-content:space-between}.mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control>.components-flex-item{margin-bottom:0;padding-right:10px;width:calc(100% - 190px)}.mrm-block-control-wrapper .components-panel__body .mrm-inline-label.components-select-control>.components-input-control__container{width:190px}.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-base-control__field{flex-flow:row-reverse;justify-content:space-between}.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-form-toggle{margin-left:12px;margin-right:0}.mrm-block-control-wrapper .components-panel__body .mrm-switcher-block .components-toggle-control__label{color:#a7a8b3;font-size:14px;font-weight:400;letter-spacing:-.01em;line-height:1.5;padding-right:10px}.mrm-block-control-wrapper .components-panel__body .components-range-control .components-range-control__root{align-items:center}.mrm-block-control-wrapper .components-panel__body .components-range-control .components-input-control__input{height:42px}.mrm-block-control-wrapper .components-panel__body .components-range-control .components-range-control__reset{background:#573bff;border-radius:6px;box-shadow:none;color:#fff;height:42px}.mrm-block-control-wrapper .components-panel__body .components-range-control .components-range-control__track{background-color:#007cba}.mrm-block-control-wrapper .components-panel__body .components-range-control .components-simple-tooltip{color:#fff}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper{background:#f7f7f7;border-radius:6px;margin-bottom:20px;padding:15px}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-wrapper,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-wrapper{align-items:center;display:flex;justify-content:space-between}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-wrapper h4,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-wrapper h4{color:#344054;font-size:15px;font-weight:600;line-height:1.2}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .add-option-button,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .add-option-button{align-items:center;background-color:#d4edda;border-color:#c3e6cb;border-radius:6px;color:#155724;display:flex;flex-flow:column;height:38px;justify-content:center;margin-left:auto;width:38px}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field{align-items:center;display:flex;flex-flow:row wrap;margin-top:10px}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-base-control,.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-base-control__field,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-base-control,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-base-control__field{margin:0}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-base-control,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-base-control{width:calc(100% - 49px)}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .components-text-control__input,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .components-text-control__input{padding:7px 12px}.mrm-block-control-wrapper .components-panel__body .radio-option-wrapper .single-option-field .delete-option-button,.mrm-block-control-wrapper .components-panel__body .select-option-wrapper .single-option-field .delete-option-button{align-items:center;background-color:#f8d7da;border:1px solid #f5c6cb;border-radius:5px;color:#721c24;cursor:pointer;display:flex;height:38px;justify-content:center;margin-left:10px;width:38px}.get-mrm-block-editor__block-list .alignleft{float:none;text-align:left}.get-mrm-block-editor__block-list .aligncenter{text-align:center}.get-mrm-block-editor__block-list .alignright{float:none;text-align:right}html.wp-toolbar{background:#fff}.mrm-form-builder-block-editor{bottom:0;left:0;min-height:calc(100vh - 32px);position:absolute;right:0;top:0}.editor-styles-wrapper{color:#1e1e1e;font-family:"Noto Serif",serif;font-size:16px;line-height:1.8;width:100%}@media(min-width:600px){.editor-styles-wrapper{width:calc(100% - 280px)}}.components-modal__frame,.mrm-form-builder-block-editor{box-sizing:border-box}.components-modal__frame *,.components-modal__frame :after,.components-modal__frame :before,.mrm-form-builder-block-editor *,.mrm-form-builder-block-editor :after,.mrm-form-builder-block-editor :before{box-sizing:inherit}
->>>>>>> 36b5340f98b2eb37b3a60717b05ba22e2e6ccbbd
-=======
-/*# sourceMappingURL=index.css.map*/
->>>>>>> e3f68c2e12ecfbdf3de121a0808a38aee8f47ba1

@@ -1,5 +1,4 @@
 import { __ } from "@wordpress/i18n";
-import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../hooks/useGlobalStore";
 import routes from "../../routes";
@@ -7,27 +6,9 @@ import routes from "../../routes";
 import "./style.css";
 
 export default function Navbar(props) {
-  const { refresh, setRefresh } = props;
+  const { countGroups } = props;
   const location = useLocation();
   const navbarMarkup = useGlobalStore((state) => state.navbarMarkup);
-  const hideGlobalNav = useGlobalStore((state) => state.hideGlobalNav);
-  const counterRefresh = useGlobalStore((state) => state.counterRefresh);
-
-  const [dataCount, setDataCount] = useState(0);
-
-  useEffect(() => {
-    const getCount = async () => {
-      const countData = await fetch(
-        `${window.MRM_Vars.api_base_url}mrm/v1/general`
-      );
-      const countJson = await countData.json();
-      if (countJson.code == 200) {
-        setDataCount(countJson.data);
-      }
-    };
-    getCount();
-  }, [counterRefresh]);
-
   return (
     <>
       <div className="contact-header">
@@ -54,39 +35,33 @@ export default function Navbar(props) {
                         >
                           <Link to={route.path}>
                             {__(route.title, "mintmrm")}
-                          </Link>
 
-                          {route.bage && (
-                            <span className="bage">{route.bage}</span>
-                          )}
-                          {"Contacts" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_contacts
-                                ? dataCount.total_contacts
-                                : "0"}
-                            </span>
-                          ) : "Lists" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_lists
-                                ? dataCount.total_lists
-                                : "0"}
-                            </span>
-                          ) : "Tags" === route.title ? (
-                            <span className="bage">
-                              {dataCount.total_tags
-                                ? dataCount.total_tags
-                                : "0"}
-                            </span>
-                          ) : (
-                            // : "Segments" === route.title ? (
-                            //   <span className="bage">
-                            //     {dataCount.total_segments
-                            //       ? dataCount.total_segments
-                            //       : "0"}
-                            //   </span>
-                            // )
-                            ""
-                          )}
+                            {route.bage && (
+                              <span className="bage">{route.bage}</span>
+                            )}
+
+                            {"Contacts" === route.title ? (
+                              <span className="bage">
+                                {countGroups.contacts
+                                  ? countGroups.contacts
+                                  : "0"}
+                              </span>
+                            ) : "Lists" === route.title ? (
+                              <span className="bage">
+                                {countGroups.lists ? countGroups.lists : "0"}
+                              </span>
+                            ) : "Tags" === route.title ? (
+                              <span className="bage">
+                                {countGroups.tags ? countGroups.tags : "0"}
+                              </span>
+                            ) : "Segments" === route.title ? (
+                              <span className="bage">
+                                {countGroups.segments ? countGroups.segments : "0"}
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </Link>
                         </li>
                       );
                     }

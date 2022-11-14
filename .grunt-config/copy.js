@@ -16,6 +16,7 @@ const getBuildFiles = [
     '!assets/**/*.map',
     '!node_modules/**',
     '!app/Internal/FormBuilder/node_modules/**',
+    '!app/Internal/FormBuilder/blocks/node_modules/**',
     '!bin/**',
     '!packages/**',
     '!src/**',

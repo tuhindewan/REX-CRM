@@ -6,7 +6,7 @@
  */
 
 
-class GetContactsTest extends WP_UnitTestCase {
+class GetsContactsTest extends WP_UnitTestCase {
 
 	 /**
      * Holds the WP REST Server object

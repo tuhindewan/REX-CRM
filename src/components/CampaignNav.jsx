@@ -1,8 +1,5 @@
-import { __ } from "@wordpress/i18n";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../hooks/useGlobalStore";
-import routes from "../routes";
-import CampaignsLogo from "./Icons/CampaignsLogo";
 import Plus from "./Icons/Plus";
 
 export default function CampaignsNavbar() {
@@ -22,32 +19,6 @@ export default function CampaignsNavbar() {
                   <h1>Campaigns</h1>
                 </Link>
               </div>
-              {/* <nav className="mintmrm-navbar">
-                <ul className="navbar-ul">
-                  {routes.map((route, index) => {
-                    if (route.campaignMenu) {
-                      return (
-                        <li
-                          className={
-                            location.pathname == route.path
-                              ? "navbar-li active"
-                              : "navbar-li "
-                          }
-                          key={index}
-                        >
-                          <Link to={route.path}>
-                            {__(route.title, "mintmrm")}
-                          </Link>
-
-                          {route.bage && (
-                            <span className="bage">{route.bage}</span>
-                          )}
-                        </li>
-                      );
-                    }
-                  })}
-                </ul>
-              </nav> */}
             </div>
             <div className="right-header-section">
               <div className="navbar-buttons">

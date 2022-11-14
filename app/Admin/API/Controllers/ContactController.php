@@ -11,8 +11,10 @@ use MRM\Common\MRM_Common;
 use MRM\Helpers\Importer\MRM_Importer;
 use Mint\MRM\Constants;
 use MailchimpMarketing;
+use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\MRM\DataBase\Models\CustomFieldModel;
 use Mint\MRM\Internal\Constants as InternalConstants;
+use Mint\MRM\DataBase\Models\MessageModel;
 
 /**
  * @author [MRM Team]
@@ -140,8 +142,16 @@ class ContactController extends BaseController {
             $contact    = TagController::get_tags_to_contact( $contact );
             $contact    = ListController::get_lists_to_contact( $contact );
             $contact    = NoteController::get_notes_to_contact( $contact );
+            $contact[ 'messages' ] = MessageModel::get_messages( $contact_id );
+            $contact[ 'activities' ] = isset( $contact[ 'notes' ], $contact[ 'messages' ] ) && is_array( $contact[ 'notes' ] ) && is_array( $contact[ 'messages' ] )
+                ? array_merge( $contact[ 'notes' ], $contact[ 'messages' ] ) : [];
+
+            if( !empty( $contact[ 'activities' ] ) ) {
+                $created_time_column = array_column( $contact[ 'activities' ], 'created_time' );
+                array_multisort( $created_time_column, SORT_DESC, $contact[ 'activities' ] );
+            }
         }
-        
+
         if($contact && isset($contact['email'])) {
             if (isset($contact['created_at'])){
                 $time = new \DateTimeImmutable($contact['created_at'], wp_timezone());
@@ -186,11 +196,28 @@ class ContactController extends BaseController {
         $search     = isset( $params['search'] ) ? $params['search'] : '';
                 
         $contacts   = ContactModel::get_all( $offset, $perPage, $search );
+
+        // Merge tags and lists to contacts
         $contacts['data'] = array_map( function( $contact ){
             $contact = TagController::get_tags_to_contact( $contact );
             $contact = ListController::get_lists_to_contact( $contact );
             return $contact;
         }, $contacts['data'] );
+
+        // Count contacts groups
+        $contacts['count_groups'] = [
+            'lists'     => ContactGroupModel::get_groups_count( "lists" ),
+            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
+            'segments'  => ContactGroupModel::get_groups_count("segments"),
+            'contacts'  => absint( $contacts['total_count'] )
+        ];
+
+        // Count contacts based on status
+        $contacts['count_status'] = [
+            'subscribed'        => ContactModel::get_contacts_status_count( "subscribed" ),
+            'unsubscribed'      => ContactModel::get_contacts_status_count( "unsubscribed" ),
+            'pending'           => ContactModel::get_contacts_status_count( "pending" )
+        ];
 
         $contacts['current_page'] = (int) $page;
 

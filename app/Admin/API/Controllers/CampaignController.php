@@ -4,7 +4,6 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\MRM\DataBase\Models\ContactGroupPivotModel;
 use Mint\MRM\DataBase\Models\MessageModel;
-use Mint\MRM\DataBase\Tables\CampaignSchema;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use Exception;
@@ -55,10 +54,12 @@ class CampaignController extends BaseController {
         
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
         // Assign Untitled as value if title is empty
         if ( isset($params['title']) && empty( $params['title'] )) {
             $params['title'] = "Untitled";
+        }
+        if ( strlen( $params['title'] ) > 150 ) {
+            return $this->get_error_response( __( 'Campaign title character limit exceeded 150 characters', 'mrm' ), 200);
         }
 
         $emails = isset($params['emails']) ? $params['emails'] : array();
@@ -114,7 +115,7 @@ class CampaignController extends BaseController {
 
                         $data['campaign'] = $this->campaign_data;
 
-                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                        if( isset( $data['campaign']['status'] ) && "active" == $data['campaign']['status'] ){
                             $email['scheduled_at'] = current_time('mysql');
                             $email['status']    = 'scheduled';
                         }
@@ -164,7 +165,7 @@ class CampaignController extends BaseController {
                         
                         $data['campaign'] = $this->campaign_data;
 
-                        if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                        if( isset( $data['campaign']['status'] ) && "active" == $data['campaign']['status'] ){
                             $email['scheduled_at'] = current_time('mysql');
                             $email['status']    = 'scheduled';
                         }
@@ -182,7 +183,7 @@ class CampaignController extends BaseController {
             // Send renponses back to the frontend
             if($this->campaign_data) {
                 $data['campaign'] = $this->campaign_data;
-                if( isset( $data['campaign']['status'] ) && "ongoing" == $data['campaign']['status'] ){
+                if( isset( $data['campaign']['status'] ) && "active" == $data['campaign']['status'] ){
                     return $this->get_success_response(__( 'Campaign has been started successfully', 'mrm' ), 201, $data);
                 }
                 return $this->get_success_response(__( 'Campaign has been saved successfully', 'mrm' ), 201, $data);
@@ -326,10 +327,21 @@ class CampaignController extends BaseController {
         $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 10;
         $offset     =  ($page - 1) * $perPage;
 
+        $order_by = isset($params['order-by']) ? strtolower($params['order-by']) : 'id';
+        $order_type = isset($params['order-type']) ? strtolower($params['order-type']) : 'desc';
+
+        // valid order by fields and types
+        $allowed_order_by_fields = array("title", "created_at");
+        $allowed_order_by_types = array("asc", "desc");
+
+        // validate order by fields or use default otherwise
+        $order_by = in_array($order_by, $allowed_order_by_fields) ? $order_by : 'id';
+        $order_type = in_array($order_type, $allowed_order_by_types) ? $order_type : 'desc';
+
         // Contact Search keyword
         $search     = isset( $params['search'] ) ? $params['search'] : '';
                 
-        $campaigns   = ModelsCampaign::get_all( $offset, $perPage, $search );
+        $campaigns   = ModelsCampaign::get_all( $offset, $perPage, $search, $order_by, $order_type );
 
         $campaigns['current_page'] = (int) $page;
         
@@ -363,10 +375,14 @@ class CampaignController extends BaseController {
         // Get values from REST API JSON
         $params         = MRM_Common::get_api_params_values( $request );
         $campaign_id    = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
-        $recipients_emails = self::get_reciepents_email($campaign_id);
-
         $campaign       = ModelsCampaign::get( $campaign_id );
+        // Prepare campaign data for response
+        $campaign['meta']['recipients'] = maybe_unserialize($campaign['meta_value']);
+        $recipients_emails = self::get_reciepents_email($campaign_id);
         $campaign['total_recipients'] = count($recipients_emails);
+        unset($campaign['meta_key']);
+        unset($campaign['meta_value']);
+
         if(isset($campaign)) {
             return $this->get_success_response("Query Successfull", 200, $campaign);
         }
@@ -486,8 +502,41 @@ class CampaignController extends BaseController {
         return ContactModel::get_single_email( $recipients_ids );
     }
 
+    
+    /**
+     * Update a campaign's status
+     * 
+     * @param WP_REST_Request $request
+     * 
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function status_update( WP_REST_Request $request  )
+    {
+        // Get params from status update API request
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $status      = isset( $params['status'] ) ? $params['status'] : "";
+        $campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : "";
+
+        $update = ModelsCampaign::update_campaign_status( $campaign_id, $status );
+        
+        if( $update ){
+            return $this->get_success_response(__( 'Campaign status has been updated successfully', 'mrm' ), 201);
+        }
+        return $this->get_error_response(__( 'Failed to update campaign status', 'mrm' ), 400);
+    }
+
+
+    /**
+     * Returns all publish campaigns
+     * 
+     * @return array
+     * @since 1.0.0
+     */
     public function get_publish_campaign_id()
     {
         return ModelsCampaign::get_publish_campaign_id();
     }
+
 }

@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Exception;
 use Mint\MRM\DataBase\Models\ContactGroupModel;
+use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataStores\ListData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
@@ -125,7 +126,13 @@ class ListController extends BaseController {
         $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
 
         $groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
-
+        // Count contacts groups
+        $groups['count_groups'] = [
+            'lists'     => absint( $groups['total_count'] ),
+            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
+            'contacts'  => ContactModel::get_contacts_count(),
+            'segments'  => ContactGroupModel::get_groups_count( "segments" )
+        ];
         if(isset($groups)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
         }
@@ -273,6 +280,24 @@ class ListController extends BaseController {
         }
 
         return $contact;
+    }
+
+
+    /**
+     * Function used to return all list to custom select dropdown
+     *
+     * @param void
+     * @return WP_REST_Response
+     * @since 1.0.0
+     */
+    public function get_all_to_custom_select(){
+
+        $groups = ContactGroupModel::get_all_to_custom_select( 'lists' );
+
+        if(isset($groups)) {
+            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $groups);
+        }
+        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
     }
 
 }

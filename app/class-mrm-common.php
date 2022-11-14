@@ -117,5 +117,22 @@ class MRM_Common {
     }
 
 
+    /**
+     * Partially hide or mask email address 
+     * 
+     * @param mixed $email
+     * @return string
+     * @since 1.0.0
+     */
+    public static function obfuscate_email( $email )
+    {
+        $em   = explode("@",$email);
+        $name = implode('@', array_slice($em, 0, count($em)-1));
+        $len  = floor(strlen($name)/2);
+    
+        return substr($name,0, $len) . str_repeat('*', $len) . "@" . end($em);   
+    }
+
+
 }
 

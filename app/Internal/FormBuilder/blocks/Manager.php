@@ -111,7 +111,7 @@ final class GetMRM_Block_Manager {
 					let cssInline = document.createElement('style');
 					cssInline.type = 'text/css';
 					cssInline.id = 'wpfnl-block-js-preview';
-					cssInline.innerHTML =JSON.parse( localStorage.getItem('qubelyCSS'));
+					cssInline.innerHTML =JSON.parse( localStorage.getItem('mrmTypographyCSS'));
 					window.document.getElementsByTagName("head")[0].appendChild(cssInline);
 				})
 			</script>

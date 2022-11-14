@@ -77,10 +77,9 @@ class ContactForm {
         $form_status = isset($form_data['status']) ? $form_data['status'] : 0 ;
         if (empty($form_data)){
             return __('Form ID is not valid','mrm');
-        }elseif(!$form_status){
-            return __('This form is not active. Please check');
+        }elseif( 'draft' == $form_status){
+            return __('This form is not active. Please check','mrm');
         }
-
         $get_setting        = FormModel::get_meta($form_id);
         $form_setting       = isset($get_setting['meta_fields']['settings']) ? $get_setting['meta_fields']['settings'] :  (object)[];
         $form_setting       = json_decode($form_setting);
@@ -89,34 +88,99 @@ class ContactForm {
         if($form_placement != 'default' ){
             $form_animation     =  !empty($form_setting->settings->form_layout->form_animation) ? $form_setting->settings->form_layout->form_animation: '';
         }
+
+        $form_close_button_color     = !empty($form_setting->settings->form_layout->close_button_color) ? $form_setting->settings->form_layout->close_button_color: '#fff';
+        $form_close_background_color = !empty($form_setting->settings->form_layout->close_background_color) ? $form_setting->settings->form_layout->close_background_color: '#000';
+
+        $blocks = parse_blocks( $form_data['form_body'] );
         $output = '';
-        ob_start();?>
-        <div class="mintmrm" >
-            <div id="mrm-<?php echo $form_placement ?>" class="mrm-form-wrapper mrm-<?php echo $form_animation ?> <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_placement?>">
-                <div class="mrm-form-wrapper-inner">
+        $cookies = isset($_COOKIE['mrm_form_dismissed']) ? $_COOKIE['mrm_form_dismissed'] : '';
+        $cookies = json_decode(stripslashes($cookies));
+
+        $show = true;
+        if(!empty($cookies->expire)){
+            $expire  = $cookies->expire;
+
+            $today = strtotime('today UTC');
+
+            if ($today < $expire) {
+                $show = false;
+            }
+        }
+
+        
+
+	    $block_html = '';
+        $class      = '';
+        foreach( $blocks as $block ) {
+            if($block['blockName'] == 'core/columns'){
+
+	            if(isset($block['attrs']['style']['color']['background'])){
+
+                    $class = 'custom-background';
+                }
+	            if(isset($block['attrs']['backgroundColor'])){
+
+                    $class = 'custom-background';
+                }
+
+            }
+            if($block['blockName'] == 'core/group'){
+                if(isset($block['attrs']['style']['color']['background'])){
+                    $class = 'custom-background';
+                }
+	            if(isset($block['attrs']['backgroundColor'])){
+
+		            $class = 'custom-background';
+	            }
+            }
+	        if($block['blockName'] == 'core/cover'){
+		        if(isset($block['attrs']['customOverlayColor'])){
+			        $class = 'custom-background';
+		        }
+		        if(isset($block['attrs']['url'])){
+			        $class = 'custom-background';
+		        }if(isset($block['attrs']['overlayColor'])){
+			        $class = 'custom-background';
+		        }
+	        }
+
+            $block_html .= render_block( $block );
+        }
+        if($show){
+            ob_start();?>
+            <div class="mintmrm" >
+                <div id="mrm-<?php echo $form_placement ?>" class="mrm-form-wrapper mrm-<?php echo $form_animation ?> <?php echo isset($this->attributes['class']) ? $this->attributes['class'] : '' ; echo 'mrm-'.$form_placement?>">
+                    <div class="mrm-form-wrapper-inner <?php echo $class ?>">
 
                     <?php if('default' != $form_placement){ ?>
-                        <span class="mrm-form-close">
-                            <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
+                        <span style="background:<?php echo $form_close_background_color;?>" class="mrm-form-close">
+                            <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="<?php echo $form_close_button_color;?>" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                         </span>
-                    <?php } ?>
+                        <?php } ?>
 
-                    <div class="mrm-form-overflow">
-                        <form method="post" id="mrm-form">
-                            <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
-                            <?php echo  $form_data['form_body'] ?>
-                        </form>
-                        
-                        <div class="response"></div>
+                        <div class="mrm-form-overflow">
+                            <form method="post" id="mrm-form">
+                                <input hidden name="form_id" value="<?php echo isset($form_data['id']) ? $form_data['id'] : 0 ?>" />
+                                <?php
+
+                               echo  $block_html;
+                                ?>
+                            </form>
+
+                            <div class="response"></div>
+                        </div>
+
                     </div>
-
                 </div>
+
             </div>
+            <?php
+            $output .= ob_get_clean();
 
-        </div>
-        <?php
-        $output .= ob_get_clean();
+            return $output;
+        }
 
-        return $output;
+
     }
 }

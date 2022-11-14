@@ -2,7 +2,7 @@ import domReady from "@wordpress/dom-ready";
 import { render } from "@wordpress/element";
 import { registerCoreBlocks } from "@wordpress/block-library";
 import Editor from "./editor";
-const { registerBlockType } = wp.blocks;
+const { registerBlockType} = wp.blocks;
 const { __ } = wp.i18n;
 import "./styles.scss";
 //Email
@@ -75,9 +75,9 @@ domReady(function () {
     title: __("MRM Button", "mrm"),
     category: "common",
     icon: ButtonIcon.Button,
-    supports: {
-      align: ["left", "right", "center"],
-    },
+    // supports: {
+    //   align: ["left", "right", "center"],
+    // },
     attributes: ButtonAttributes,
     edit: ButtonEdit,
     save: mrmButton,

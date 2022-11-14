@@ -74,13 +74,22 @@ class MessageController extends BaseController {
         // Prepare message data
         $message = new MessageData( $this->args );
 
-        
         MessageModel::insert( $message );
 
         $sent = $this->send_message( $message );
 
-        if( true == $sent ){
+        $messages = isset( $params['contact_id'] ) ? MessageModel::get_messages( $params['contact_id'] ) : [];
+        $messages = end($messages );
+        $message_id = is_array( $messages ) && isset( $messages[ 'id' ] ) ? $messages[ 'id' ] : false;
+
+        if( $sent ){
+            if( $message_id ) {
+                MessageModel::update( $message_id, 'status', 'sent' );
+            }
             return $this->get_success_response( __( 'Email has been sent successfully', 'mrm' ), 201 );
+        }
+        if( $message_id ) {
+            MessageModel::update( $message_id, 'status', 'failed' );
         }
         return $this->get_error_response(__( 'Email not sent', 'mrm' ), 200);
 
@@ -388,6 +397,7 @@ class MessageController extends BaseController {
             </td>
         </tr>
     </table>
+    <a href='". $domainLink ."/?mrm=1&amp;route=unsubscribe&amp;contact_id=".$contact_id."&amp;hash=".$hash."'>Unsubcribe</a>
 </center>
 </body>
 </html>

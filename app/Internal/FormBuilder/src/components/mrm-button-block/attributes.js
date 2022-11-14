@@ -277,7 +277,7 @@ const attributes = {
     },
     buttonBorderWidth: {
         type: 'number',
-        default: 1
+        default: 2
     },
     buttonBorderColor: {
         type: 'string',
@@ -328,7 +328,46 @@ const attributes = {
     customFieldSlug :{
         type : '',
         default: 'Field Slug'
-    }
+    },
+    outline: {
+        type: "string",
+        default: "fill",
+    },
+    buttonWidth: {
+        type: 'number',
+        default: ''
+    },
+    typography:{
+        type: 'object',
+        default: {},
+        style: [
+            { selector: 'mrm-form-group.submit .mrm-submit-button' }
+        ]
+    },
+    buttonFontSize:{
+        type: 'number',
+        default: 15
+    },
+    buttonFontSizeUnit:{
+        type: 'string',
+        default: 'px'
+    },
+    paddingTopBottom: {
+        type: "number",
+        default: 15,
+    },
+    paddingLeftRight: {
+        type: "number",
+        default: 20,
+    },
+    lineHeight: {
+        type: "number",
+        default: 1,
+    },
+    letterSpacing: {
+        type: "number",
+        default: 0,
+    },
 
 };
 

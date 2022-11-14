@@ -6,6 +6,7 @@ use Mint\MRM\DataBase\Tables\ContactGroupPivotSchema;
 use Mint\MRM\DataBase\Tables\ContactMetaSchema;
 use Mint\MRM\DataBase\Tables\ContactNoteSchema;
 use Mint\MRM\DataBase\Tables\ContactSchema;
+use Mint\MRM\DataBase\Tables\MessageSchema;
 use Mint\MRM\DataStores\ContactData;
 use MRM\Common\MRM_Common;
 use MRM\Data\MRM_Contact;
@@ -93,6 +94,8 @@ class ContactModel{
         unset($args['added_by_login']);
         unset($args['avatar_url']);
         unset($args['notes']);
+        unset($args['messages']);
+        unset($args['activities']);
 
         try {
             $wpdb->update( 
@@ -272,33 +275,22 @@ class ContactModel{
 		}
         
         // Prepare sql results for list view
-        try {
-            $select_query  =  "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT $offset, $limit" ;
-            $query_results   = json_decode( json_encode( $wpdb->get_results($select_query) ), true );
-            
-            $results = array();
-            
-            foreach( $query_results as $query_result ){
-                $q_id = isset($query_result['id']) ? $query_result['id'] : "";
-                $new_meta = self::get_meta( $q_id );
-                $results[] = array_merge($query_result, $new_meta);
-            }
-
-
-            $count_query    = "SELECT COUNT(*) as total FROM $contact_table $search_terms";
-            $count_result   = $wpdb->get_results($count_query);
-            
-            $count = (int) $count_result['0']->total;
-            $total_pages = ceil($count / $limit);
-
-            return array(
-                'data'=> $results,
-                'total_pages' => $total_pages,
-                'count' => $count
-            );
-        } catch(\Exception $e) {
-            return NULL;
+        $query_results  =  $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", [$offset, $limit] ), ARRAY_A ) ;
+        $results = array();
+        
+        foreach( $query_results as $query_result ){
+            $q_id = isset($query_result['id']) ? $query_result['id'] : "";
+            $new_meta = self::get_meta( $q_id );
+            $results[] = array_merge($query_result, $new_meta);
         }
+
+        $count   = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) );
+
+        return array(
+            'data'=> $results,
+            'total_pages' => ceil( $count / $limit ),
+            'total_count' => $count
+        );
 	
     }
 
@@ -593,6 +585,34 @@ class ContactModel{
             return $results;
         }
         return false;
+    }
+
+
+    /**
+     * Return total number of contacts 
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_contacts_count()
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name" ) ) );
+    }
+
+
+    /**
+     * Return total number of contacts based on status
+     * 
+     * @return int
+     * @since 1.0.0
+     */
+    public static function get_contacts_status_count( $status )
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . ContactSchema::$table_name;
+        return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name WHERE status= %s", [$status] ) ) );
     }
     
 }

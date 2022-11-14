@@ -9,7 +9,6 @@ export default function ImportConfirmation() {
     return <Navigate to="/contacts/import/csv" />;
   }
   const data = state.data;
-  console.log(data);
   return (
     <div className="mintmrm-import-page">
       <div className="mintmrm-header">

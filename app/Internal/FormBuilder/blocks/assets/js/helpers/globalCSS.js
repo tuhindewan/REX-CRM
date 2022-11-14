@@ -1,4 +1,4 @@
-const PATH = '/qubely/v1/global_settings';
+const PATH = '/mrmTypography/v1/global_settings';
 import { _device, _push } from '../components/CssHelper';
 import { DEFAULTPRESETS, DEFAULTBREAKINGPOINTS } from '../plugins/global-settings/constants';
 async function fetchFromApi() {
@@ -106,7 +106,7 @@ export const setTypoTitleStyle = (typos) => {
         let tempCSS = addTypo(typo.value, index)
         __CSS += tempCSS;
     });
-    injectGlobalCSS(__CSS, 'qubely-global-panel')
+    injectGlobalCSS(__CSS, 'mrmTypography-global-panel')
 }
 
 const appendTypoVariable = (value, index, type) => {
@@ -119,13 +119,13 @@ const appendTypoVariable = (value, index, type) => {
         };
 
     if (value.size) {
-        data = _appendVariables(generateVariables(value.size, `--qubely-typo${index + 1}-font-size:{{key}};`), data);
+        data = _appendVariables(generateVariables(value.size, `--mrmTypography-typo${index + 1}-font-size:{{key}};`), data);
     }
     if (value.height) {
-        data = _appendVariables(generateVariables(value.height, `--qubely-typo${index + 1}-line-height:{{key}};`), data)
+        data = _appendVariables(generateVariables(value.height, `--mrmTypography-typo${index + 1}-line-height:{{key}};`), data)
     }
     if (value.spacing) {
-        data = _appendVariables(generateVariables(value.spacing, `--qubely-typo${index + 1}-letter-spacing:{{key}};`), data)
+        data = _appendVariables(generateVariables(value.spacing, `--mrmTypography-typo${index + 1}-letter-spacing:{{key}};`), data)
     }
 
     if (data.md.length > 0) {
@@ -146,19 +146,19 @@ const appendTypoVariable = (value, index, type) => {
     }
     nonResponsiveProps += ':root{';
     if (value.family) {
-        nonResponsiveProps += `--qubely-typo${index + 1}-font-family:'${value.family}',${value.type};`;
+        nonResponsiveProps += `--mrmTypography-typo${index + 1}-font-family:'${value.family}',${value.type};`;
     }
     if (value.weight) {
         if (typeof value.weight === 'string') {
-            nonResponsiveProps += `--qubely-typo${index + 1}-font-weight:${value.weight.slice(0, -1)};`;
-            nonResponsiveProps += `--qubely-typo${index + 1}-font-style:italic;`;
+            nonResponsiveProps += `--mrmTypography-typo${index + 1}-font-weight:${value.weight.slice(0, -1)};`;
+            nonResponsiveProps += `--mrmTypography-typo${index + 1}-font-style:italic;`;
         } else {
-            nonResponsiveProps += `--qubely-typo${index + 1}-font-weight:${value.weight};`;
-            nonResponsiveProps += `--qubely-typo${index + 1}-font-style:normal;`;
+            nonResponsiveProps += `--mrmTypography-typo${index + 1}-font-weight:${value.weight};`;
+            nonResponsiveProps += `--mrmTypography-typo${index + 1}-font-style:normal;`;
         }
     }
     if (value.transform) {
-        nonResponsiveProps += `--qubely-typo${index + 1}-text-transform:${value.transform};`;
+        nonResponsiveProps += `--mrmTypography-typo${index + 1}-text-transform:${value.transform};`;
     }
 
     nonResponsiveProps += '}';
@@ -197,21 +197,21 @@ const setBreakingPoints = (breakingPoints) => {
 
     let tempCSS = '';
     if (typeof sm !== 'undefined') {
-        tempCSS += `@media (min-width: 576px){.qubely-section .qubely-container{max-width: ${sm}px;}}`
+        tempCSS += `@media (min-width: 576px){.mrmTypography-section .mrmTypography-container{max-width: ${sm}px;}}`
     }
     if (typeof md !== 'undefined') {
-        tempCSS += `@media (min-width: 768px){.qubely-section .qubely-container{max-width: ${md}px;}}`
+        tempCSS += `@media (min-width: 768px){.mrmTypography-section .mrmTypography-container{max-width: ${md}px;}}`
     }
     if (typeof lg !== 'undefined') {
-        tempCSS += `@media (min-width: 992px){.qubely-section .qubely-container{max-width: ${lg}px;}}`
+        tempCSS += `@media (min-width: 992px){.mrmTypography-section .mrmTypography-container{max-width: ${lg}px;}}`
     }
     if (typeof xl !== 'undefined') {
-        tempCSS += `@media (min-width: 1200px){.qubely-section .qubely-container{max-width: ${xl}px;}}`
+        tempCSS += `@media (min-width: 1200px){.mrmTypography-section .mrmTypography-container{max-width: ${xl}px;}}`
     }
     return tempCSS;
 }
 
-export const injectGlobalCSS = (_CSS, id = 'qubely-global-styles') => {
+export const injectGlobalCSS = (_CSS, id = 'mrmTypography-global-styles') => {
     let styleSelector = window.document;
     if (styleSelector.getElementById(id) === null) {
         let cssInline = document.createElement('style');
@@ -237,7 +237,7 @@ export const updateGlobalVaribales = async (presetValues, breakingPoints = undef
 
     const setGlobalCSS_Variables = (colors) => {
         let rootCSS = ':root {'
-        colors.forEach((color, index) => rootCSS += `--qubely-color-${index + 1}:${color};`);
+        colors.forEach((color, index) => rootCSS += `--mrmTypography-color-${index + 1}:${color};`);
         rootCSS += '}'
         return rootCSS;
     }
@@ -260,7 +260,7 @@ export const getGlobalSettings = (type) => {
     } = DEFAULTPRESETS;
     let breakingPoints = {
         ...DEFAULTBREAKINGPOINTS,
-        ...(typeof qubely_container_width !== undefined && qubely_container_width)
+        ...(typeof mrmTypography_container_width !== undefined && mrmTypography_container_width)
     }
     return fetchFromApi().then(data => {
         if (data.success) {
@@ -278,7 +278,7 @@ export const getGlobalSettings = (type) => {
             }
             const setGlobalCSS_Variables = (globalColors) => {
                 let rootCSS = ':root {'
-                globalColors.forEach((color, index) => rootCSS += `--qubely-color-${index + 1}:${color};`);
+                globalColors.forEach((color, index) => rootCSS += `--mrmTypography-color-${index + 1}:${color};`);
                 rootCSS += '}'
                 return rootCSS;
             }

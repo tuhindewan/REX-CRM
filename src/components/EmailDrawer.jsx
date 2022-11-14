@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { submitEmail } from "../services/Message";
+import { ClearNotification } from "../utils/admin-notification";
 import CrossIcon from "./Icons/CrossIcon";
 import SuccessfulNotification from "./SuccessfulNotification";
 
@@ -8,6 +9,8 @@ export default function EmailDrawer(props) {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
+  const [sendEmailLoader, setSendEmailLoader] = useState(false);
 
   const [email, setEmail] = useState({
     email_subject: "",
@@ -34,8 +37,11 @@ export default function EmailDrawer(props) {
     event.preventDefault();
     email.email_address = contact.email;
 
+    setSendEmailLoader(true);
+
     submitEmail(email, contact.id).then((response) => {
       if (201 === response.code) {
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(response.message);
         setIsClose(!isClose);
@@ -45,12 +51,13 @@ export default function EmailDrawer(props) {
           email_body: "",
         });
         setRefresh(!refresh);
-        const timer = setTimeout(() => {
-          setShowNotification("none");
-        }, 3000);
-        return () => clearTimeout(timer);
+        setSendEmailLoader(false);
+
+        ClearNotification("none", setShowNotification);
       } else {
         // Error messages
+        setSendEmailLoader(false);
+
         setErrors({
           ...errors,
           email: response.message,
@@ -111,7 +118,13 @@ export default function EmailDrawer(props) {
                 />
               </div>
               <div className="body-footer">
-                <p className="error-message">{errors?.email}</p>
+                <p
+                  className={
+                    errors?.email ? "error-message show" : "error-message"
+                  }
+                >
+                  {errors?.email}
+                </p>
                 <button
                   className="contact-cancel mintmrm-btn outline"
                   onClick={closeSection}
@@ -122,14 +135,21 @@ export default function EmailDrawer(props) {
                   onClick={handleSubmit}
                   className="contact-save mintmrm-btn "
                 >
-                  Save
+                  Send
+                  {sendEmailLoader && <span className="mintmrm-loader"></span>}
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { omit } from "lodash";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Link,
@@ -12,6 +11,8 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
+import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange, DateTime } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
 import CreateNoteIcon from "../Icons/CreateNoteIcon";
@@ -31,7 +32,6 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
-import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 
@@ -47,6 +47,9 @@ const toOrdinalSuffix = (num) => {
 };
 
 export default function ContactDetails() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "contacts");
+
   const [isActive, setActive] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [tabState, setTabState] = useState(1);
@@ -54,6 +57,7 @@ export default function ContactDetails() {
   const [contactData, setContactData] = useState({});
   const [id, setId] = useState(urlParams.id);
   const [refresh, setRefresh] = useState();
+  const [refreshFeed, setRefreshFeed] = useState();
   const [selectTag, setSelectTag] = useState(false);
   const [selectList, setSelectList] = useState(false);
   const [isEmailForm, setIsEmailForm] = useState(true);
@@ -64,15 +68,19 @@ export default function ContactDetails() {
   const [assignTags, setAssignTags] = useState([]);
   const [showLoader, setShowLoader] = useState(true);
   const [gender, setGender] = useState(false);
-  const [country, setCountry] = useState(false);
+  const [country, setCountry] = useState(true);
+  const [countryState, setCountryState] = useState(false);
   const [stateRegion, setStateRegion] = useState(false);
   const [genderButton, setGenderButton] = useState();
-  const [stateRegionButton, setStateRegionButton] = useState();
   const [countryButton, setCountryButton] = useState();
+  const [countryStateButton, setCountryStateButton] = useState();
   const [showTimezone, setShowTimezone] = useState(false);
   const [timezones, setTimezones] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [countryStates, setCountryStates] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
-  const [showWarning, setShowWarning] = useState("none");
+  const [isValidate, setIsValidate] = useState(true);
+  const [notificationType, setNotificationType] = useState("success");
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -98,7 +106,11 @@ export default function ContactDetails() {
     )
   );
   useEffect(
-    ListenForOutsideClicks(listening, setListening, stateRef, setStateRegion)
+    ListenForOutsideClicks(listening, setListening, stateRef, setCountryState)
+  );
+
+  useEffect(
+    ListenForOutsideClicks(listening, setListening, countryRef, setCountry)
   );
 
   useEffect(
@@ -121,9 +133,6 @@ export default function ContactDetails() {
   );
   const [errors, setErrors] = useState({});
 
-  // Error message
-  const [errorMessage, setErrorMessage] = useState("");
-
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
 
@@ -143,6 +152,8 @@ export default function ContactDetails() {
     });
 
     setTimezones(window.MRM_Vars.timezone_list);
+    setCountries(window.MRM_Vars.countries);
+    setCountryStates(window.MRM_Vars.states);
   }, [refresh]);
 
   // lists
@@ -153,6 +164,9 @@ export default function ContactDetails() {
 
   const [customFields, setCustomFields] = useState([]);
   const [searchTimezone, setSearchTimezone] = useState("");
+  const [searchCountry, setSearchCountry] = useState("");
+  const [searchCountryState, setSearchCountryState] = useState("");
+  const [countryCode, setCountryCode] = useState("");
 
   const navigate = useNavigate();
 
@@ -168,6 +182,34 @@ export default function ContactDetails() {
     return timezones;
   }, [searchTimezone, timezones]);
 
+  const filteredCountries = useMemo(() => {
+    if (searchCountry) {
+      return countries.filter(
+        (country) =>
+          country.title
+            .toLowerCase()
+            .indexOf(searchCountry.toLocaleLowerCase()) > -1
+      );
+    }
+    return countries;
+  }, [searchCountry, countries]);
+
+  const filteredCountryStates = useMemo(() => {
+    let allStates;
+    if (countryStates[countryCode]) {
+      allStates = Object.entries(countryStates[countryCode]);
+    }
+    if (searchCountryState) {
+      return allStates?.filter(
+        (state) =>
+          state[1]
+            .toLowerCase()
+            .indexOf(searchCountryState.toLocaleLowerCase()) > -1
+      );
+    }
+    return allStates;
+  }, [searchCountryState, countryStates, countryCode]);
+
   const toggleRefresh = () => {
     setRefresh(!refresh);
   };
@@ -180,8 +222,9 @@ export default function ContactDetails() {
       const resJson = await res.json();
       if (resJson.code == 200) {
         setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
         setShowLoader(false);
-        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
       }
     }
 
@@ -198,53 +241,39 @@ export default function ContactDetails() {
     });
   }, []);
 
+  useEffect(() => {
+    async function getData() {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${id}`
+      );
+      const resJson = await res.json();
+
+      if (resJson.code == 200) {
+        setContactData(resJson.data);
+        setAssignLists(resJson.data?.lists);
+        setAssignTags(resJson.data?.tags);
+        setShowLoader(false);
+        // setLastUpdate(contactData.updated_at ? contactData.updated_at: contactData.created_at);
+      }
+    }
+
+    getData();
+  }, [refreshFeed]);
+
   const lastUpdate = contactData.updated_at
     ? contactData.updated_at
     : contactData.created_at;
+  const DateFormat = DateTime(contactData.created_at, lastUpdate);
+  const day = DateFormat.day;
+  const month = DateFormat.month;
+  const date = DateFormat.date;
+  const year = DateFormat.year;
+  const hour = DateFormat.hour;
+  const minute = DateFormat.minute;
 
-  const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const monthIdx = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const monthFullIdx = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const dateFormat = new Date(lastUpdate);
-  const createDate = new Date(contactData.created_at);
-
-  const day = weekDay[dateFormat.getDay()];
-  const month = monthIdx[dateFormat.getMonth()];
-  const date = dateFormat.getDate();
-  const year = dateFormat.getFullYear();
-  const hour = dateFormat.getHours();
-  const minute = dateFormat.getMinutes();
-
-  const createMonth = monthFullIdx[createDate.getMonth()];
-  const createDay = createDate.getDate();
-  const createYear = createDate.getFullYear();
+  const createMonth = DateFormat.createMonth;
+  const createDay = DateFormat.createDay;
+  const createYear = DateFormat.createYear;
 
   const toggleTab = (index) => {
     setTabState(index);
@@ -281,6 +310,7 @@ export default function ContactDetails() {
             ...errors,
             email: "Email address is mandatory",
           });
+          setIsValidate(false);
         } else if (
           !new RegExp(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
@@ -290,24 +320,52 @@ export default function ContactDetails() {
             ...errors,
             email: "Enter a valid email address",
           });
+          setIsValidate(false);
         } else {
           setErrors({});
+          setIsValidate(true);
         }
         break;
       case "phone_number":
         if (
+          value.length &&
           !new RegExp(
-            /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/i
+            /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/i
           ).test(value)
         ) {
           setErrors({
             ...errors,
             phone_number: "Enter a valid phone number",
           });
+          setIsValidate(false);
         } else {
-          let newObj = omit(errors, "phone_number");
-          setErrors(newObj);
+          setErrors({});
+          setIsValidate(true);
         }
+        break;
+        case "first_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              first_name: "First name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
+        case "last_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              last_name: "Last name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
         break;
       default:
         break;
@@ -317,36 +375,38 @@ export default function ContactDetails() {
   const handleUpdate = async () => {
     contactData.meta_fields.gender = genderButton;
     contactData.meta_fields.timezone = selectedTimezone;
-    console.log(contactData);
-    const res = await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(contactData),
-      }
-    );
-    const responseData = await res.json();
-    const code = responseData?.code;
+    contactData.meta_fields.country = countryButton;
+    contactData.meta_fields.state = countryStateButton;
+    if (isValidate) {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(contactData),
+        }
+      );
+      const responseData = await res.json();
+      const code = responseData?.code;
 
-    if (code === 201) {
-      setShowNotification("block");
-      setMessage(responseData?.message);
-      toggleRefresh();
-      showEditMode();
-    } else {
-      // Validation messages
-      setErrors({
-        ...errors,
-        email: responseData?.message,
-      });
+      if (code === 201) {
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(responseData?.message);
+        toggleRefresh();
+        showEditMode();
+      } else {
+        // Validation messages
+        setErrors({
+          ...errors,
+          email: responseData?.message,
+        });
+      }
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+
+    ClearNotification("none", setShowNotification);
   };
 
   //to open input field to add new tag to a contact
@@ -417,6 +477,7 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 201) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
       toggleRefresh();
@@ -427,10 +488,7 @@ export default function ContactDetails() {
         email: responseData?.message,
       });
     }
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification("none", setShowNotification);
   };
 
   // Send Double opt-in email
@@ -447,19 +505,17 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
     } else {
       // Validation messages
-      setShowWarning("block");
+      setNotificationType("warning");
+      setShowNotification("block");
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-      setShowWarning("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification("none", setShowNotification);
   };
 
   const handleDelete = () => {
@@ -503,14 +559,12 @@ export default function ContactDetails() {
     );
     const resJson = await res.json();
     if (resJson.code == 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(resJson.message);
     }
     toggleRefresh();
-    const timer = setTimeout(() => {
-      setShowNotification("none");
-    }, 3000);
-    return () => clearTimeout(timer);
+    ClearNotification("none", setShowNotification);
   };
 
   const selectTags = () => {
@@ -532,8 +586,8 @@ export default function ContactDetails() {
   const handleGender = () => {
     setGender(!gender);
   };
-  const handleState = () => {
-    setStateRegion(!stateRegion);
+  const handleCountryState = () => {
+    setCountryState(!countryState);
   };
   const handleCountry = () => {
     setCountry(!country);
@@ -559,39 +613,51 @@ export default function ContactDetails() {
       },
     }));
   };
-  const handleStateSelect = (e, name, stateValue) => {
-    setStateRegion(false);
-    if (name == "state" && stateValue == "barisal") {
-      setStateRegionButton("Barisal");
-    } else if (name == "state" && stateValue == "chittagong") {
-      setStateRegionButton("Chittagong");
-    } else {
-      setStateRegionButton("Dhaka");
-    }
-  };
-  const handleCountrySelect = (e, name, countryValue) => {
+
+  const handleCountrySelect = (e, name, value) => {
     setCountry(false);
-    if (name == "country" && countryValue == "bangladesh") {
-      setCountryButton("Bangladesh");
-    } else if (name == "country" && countryValue == "india") {
-      setCountryButton("India");
-    }
+    setCountryButton(value);
+    setCountryCode(name);
+    setCountryStateButton("");
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["country"]: countryButton,
+      },
+    }));
+
+    // setContactData((prevState) => ({
+    //   ...prevState,
+    //   meta_fields: {
+    //     ["country"]: value,
+    //   },
+    // }));
+  };
+
+  const handleCountryStateSelect = (e, name, value) => {
+    setCountryState(false);
+    setCountryStateButton(value);
+
+    setContactData((prevState) => ({
+      ...prevState,
+      meta_fields: {
+        ["state"]: countryStateButton,
+      },
+    }));
   };
 
   const handleTimezoneSelect = (event, id, value) => {
     setSelectedTimezone(value);
     setShowTimezone(!showTimezone);
+
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["timezone"]: value,
+        ["timezone"]: countryStateButton,
       },
     }));
   };
-
-  // useEffect(() =>{
-
-  // }, [gender]);
 
   return (
     <>
@@ -635,9 +701,9 @@ export default function ContactDetails() {
                     </div>
 
                     <p>
-                      Added via {contactData.added_by_login} Add on{" "}
-                      {createMonth} {toOrdinalSuffix(createDay)}, {createYear}{" "}
-                      at {contactData.created_time}
+                      Added via {contactData.added_by_login} on {createMonth}{" "}
+                      {toOrdinalSuffix(createDay)}, {createYear} at{" "}
+                      {contactData.created_time}
                     </p>
                     {contactData.status == "pending" && (
                       <div
@@ -672,26 +738,10 @@ export default function ContactDetails() {
                   <button className="create-note" onClick={noteForm}>
                     <CreateNoteIcon />
                   </button>
-                  <NoteDrawer
-                    isOpenNote={isNoteForm}
-                    isCloseNote={isCloseNote}
-                    setIsCloseNote={setIsCloseNote}
-                    contactID={id}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                  />
 
                   <button className="create-mail" onClick={emailForm}>
                     <EmailIcon />
                   </button>
-                  <EmailDrawer
-                    isOpen={isEmailForm}
-                    isClose={isClose}
-                    setIsClose={setIsClose}
-                    contact={contactData}
-                    refresh={refresh}
-                    setRefresh={setRefresh}
-                  />
 
                   <div className="pos-relative" ref={threedotRef}>
                     <button className="more-option" onClick={shoMoreOption}>
@@ -803,17 +853,6 @@ export default function ContactDetails() {
                           </span>
                         </li>
                         <li>
-                          <span className="title">Address</span>
-                          <span className="title-value">
-                            {contactData?.meta_fields?.addresses
-                              ? contactData?.meta_fields?.addresses
-                              : "-"}
-                          </span>
-                        </li>
-                      </ul>
-                      <ul className="other-detail-info">
-                        <h4>Other</h4>
-                        <li>
                           <span className="title">Gender</span>
                           <span className="title-value">
                             {contactData?.meta_fields?.gender
@@ -821,6 +860,60 @@ export default function ContactDetails() {
                               : "-"}
                           </span>
                         </li>
+                      </ul>
+                      <ul className="basic-detail-info">
+                        <h4>Address</h4>
+                        <li>
+                          <span className="title">Address Line 1</span>
+                          <span className="title-value">
+                            {contactData?.meta_fields?.address_line_1
+                              ? contactData?.meta_fields?.address_line_1
+                              : "-"}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="title">Address Line 2</span>
+                          <span className="title-value">
+                            {contactData?.meta_fields?.address_line_2
+                              ? contactData?.meta_fields?.address_line_2
+                              : "-"}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="title">City</span>
+                          <span className="title-value">
+                            {contactData?.meta_fields?.city
+                              ? contactData?.meta_fields?.city
+                              : "-"}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="title">State / Province</span>
+                          <span className="title-value">
+                            {contactData?.meta_fields?.state
+                              ? contactData?.meta_fields?.state
+                              : "-"}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="title">Postal / Zip</span>
+                          <span className="title-value">
+                            {contactData?.meta_fields?.postal
+                              ? contactData?.meta_fields?.postal
+                              : "-"}
+                          </span>
+                        </li>
+                        <li>
+                          <span className="title">Country</span>
+                          <span className="title-value">
+                            {contactData?.meta_fields?.country
+                              ? contactData?.meta_fields?.country
+                              : "-"}
+                          </span>
+                        </li>
+                      </ul>
+                      <ul className="other-detail-info">
+                        <h4>Other</h4>
                         <li>
                           <span className="title">Timezone</span>
                           <span className="title-value">
@@ -849,8 +942,6 @@ export default function ContactDetails() {
                           <span className="title">Last Update</span>
                           <span className="title-value">
                             {day}, {month} {date}, {year}
-                            {/* {hour}:{minute} */}
-                            {/*contactData.updated_at ? contactData.updated_at: contactData.created_at*/}
                           </span>
                         </li>
 
@@ -872,14 +963,7 @@ export default function ContactDetails() {
 
                       <div className="profile-edit-field">
                         <div className="basic-info-edit">
-                          <h4>
-                            Basic Information
-                            {/* <Link to="">
-                          <button className="add-contact-btn mintmrm-btn ">
-                            <Plus /> Add contact
-                          </button>
-                        </Link> */}
-                          </h4>
+                          <h4>Basic Information</h4>
                           <div className="edit-input-field">
                             <InputItem
                               name="email"
@@ -893,12 +977,14 @@ export default function ContactDetails() {
                             <InputItem
                               name="first_name"
                               handleChange={handleChange}
+                              error={errors?.first_name}
                               label="First name"
                               value={contactData.first_name}
                             />
                             <InputItem
                               name="last_name"
                               handleChange={handleChange}
+                              error={errors?.last_name}
                               label="Last name"
                               value={contactData.last_name}
                             />
@@ -915,180 +1001,6 @@ export default function ContactDetails() {
                               handleChange={handleMetaChange}
                               value={contactData?.meta_fields?.date_of_birth}
                             />
-                          </div>
-                          <div className="adress-info-edit">
-                            <h4>Address</h4>
-                            <div className="adress-input-field">
-                              <InputItem
-                                name="addresses"
-                                handleChange={handleMetaChange}
-                                value={contactData?.meta_fields?.addresses}
-                                label="Address"
-                              />
-                              {/* <InputItem
-                                name="addresses"
-                                handleChange={handleMetaChange}
-                                value={contactData?.meta_fields?.addresses}
-                                label="Address Line 2"
-                              />
-                              <InputItem
-                                name="addresses"
-                                handleChange={handleMetaChange}
-                                value={contactData?.meta_fields?.addresses}
-                                label="City"
-                              />
-                              <div
-                                className="form-group contact-input-field"
-                                ref={stateRef}
-                              >
-                                <label name="state-prove-region">
-                                  State/Prove/Region
-                                </label>
-                                <button
-                                  className="state-prove-region-button"
-                                  onClick={handleState}
-                                >
-                                  {stateRegionButton
-                                    ? stateRegionButton
-                                    : "Select State"}
-                                </button>
-                                <ul
-                                  className={
-                                    stateRegion
-                                      ? "mintmrm-dropdown show"
-                                      : "mintmrm-dropdown"
-                                  }
-                                >
-                                  <li
-                                    onClick={(event) =>
-                                      handleStateSelect(
-                                        event,
-                                        "state",
-                                        "barisal"
-                                      )
-                                    }
-                                  >
-                                    Barisal
-                                  </li>
-                                  <li
-                                    onClick={(event) =>
-                                      handleStateSelect(
-                                        event,
-                                        "state",
-                                        "chittagong"
-                                      )
-                                    }
-                                  >
-                                    Chittagong
-                                  </li>
-                                  <li
-                                    onClick={(event) =>
-                                      handleStateSelect(event, "state", "dhaka")
-                                    }
-                                  >
-                                    Dhaka
-                                  </li>
-                                </ul>
-                                <ul
-                                  className={
-                                    stateRegion
-                                      ? "mintmrm-dropdown show"
-                                      : "mintmrm-dropdown"
-                                  }
-                                >
-                                  <li
-                                    onClick={(event) =>
-                                      handleStateSelect(
-                                        event,
-                                        "state",
-                                        "barisal"
-                                      )
-                                    }
-                                  >
-                                    Barisal
-                                  </li>
-                                  <li
-                                    onClick={(event) =>
-                                      handleStateSelect(
-                                        event,
-                                        "state",
-                                        "chittagong"
-                                      )
-                                    }
-                                  >
-                                    Chittagong
-                                  </li>
-                                  <li
-                                    onClick={(event) =>
-                                      handleStateSelect(event, "state", "dhaka")
-                                    }
-                                  >
-                                    Dhaka
-                                  </li>
-                                </ul>
-                              </div>
-                              <InputItem
-                                name="addresses"
-                                handleChange={handleMetaChange}
-                                value={contactData?.meta_fields?.addresses}
-                                label="Postal/Zip"
-                              />
-                              <div className="form-group contact-input-field">
-                                <label name="country">Country</label>
-                                <button
-                                  className="country-button"
-                                  onClick={handleCountry}
-                                >
-                                  {countryButton
-                                    ? countryButton
-                                    : "Select Country"}
-                                </button>
-                                <ul
-                                  className={
-                                    country
-                                      ? "mintmrm-dropdown show"
-                                      : "mintmrm-dropdown"
-                                  }
-                                >
-                                  <li
-                                    onClick={(event) =>
-                                      handleCountrySelect(
-                                        event,
-                                        "country",
-                                        "bangladesh"
-                                      )
-                                    }
-                                  >
-                                    Bangladesh
-                                  </li>
-                                  <li
-                                    onClick={(event) =>
-                                      handleCountrySelect(
-                                        event,
-                                        "country",
-                                        "india"
-                                      )
-                                    }
-                                  >
-                                    India
-                                  </li>
-                                </ul>
-                              </div> */}
-                              {/* <InputItem label="State" value={contactData?.meta_fields?.state} />
-                          <InputItem label="City" value={contactData?.meta_fields?.city}/>
-                          <InputItem label="Country" value={contactData?.meta_fields?.country}/> */}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="other-info-edit">
-                          <h4>Other</h4>
-                          <div className="edit-input-field">
-                            {/* <InputItem
-                            name="gender"
-                            handleChange={handleMetaChange}
-                            label="Gender"
-                            value={contactData?.meta_fields?.gender}
-                          /> */}
                             <div
                               className="form-group contact-input-field"
                               ref={genderRef}
@@ -1134,7 +1046,162 @@ export default function ContactDetails() {
                                 </li>
                               </ul>
                             </div>
-
+                          </div>
+                          <div className="adress-info-edit">
+                            <h4>Address</h4>
+                            <div className="adress-input-field">
+                              <InputItem
+                                name="address_line_1"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.address_line_1}
+                                label="Address Line 1"
+                              />
+                              <InputItem
+                                name="address_line_2"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.address_line_2}
+                                label="Address Line 2"
+                              />
+                              <InputItem
+                                name="city"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.city}
+                                label="City"
+                              />
+                              <InputItem
+                                name="postal"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.postal}
+                                label="Postal / Zip"
+                              />
+                              <div
+                                className="form-group contact-input-field"
+                                ref={countryRef}
+                              >
+                                <label name="country">Country</label>
+                                <button
+                                  className="country-button"
+                                  onClick={handleCountry}
+                                >
+                                  {countryButton
+                                    ? countryButton
+                                    : contactData?.meta_fields.country
+                                    ? contactData?.meta_fields.country
+                                    : "Select Country"}
+                                </button>
+                                <ul
+                                  className={
+                                    country
+                                      ? "mintmrm-dropdown country show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li className="searchbar">
+                                    <span class="pos-relative">
+                                      <Search />
+                                      <input
+                                        type="search"
+                                        name="column-search"
+                                        placeholder="Seacrh..."
+                                        value={searchCountry}
+                                        onChange={(e) =>
+                                          setSearchCountry(e.target.value)
+                                        }
+                                      />
+                                    </span>
+                                  </li>
+                                  <div className="option-section">
+                                    {filteredCountries?.length > 0 &&
+                                      filteredCountries?.map((country) => {
+                                        return (
+                                          <li
+                                            key={country.code}
+                                            onClick={(event) =>
+                                              handleCountrySelect(
+                                                event,
+                                                country.code,
+                                                country.title
+                                              )
+                                            }
+                                          >
+                                            {country.title}
+                                          </li>
+                                        );
+                                      })}
+                                  </div>
+                                </ul>
+                              </div>
+                              <div
+                                className="form-group contact-input-field"
+                                ref={stateRef}
+                              >
+                                <label name="state">State / Province</label>
+                                <button
+                                  className="state-prove-region-button"
+                                  onClick={handleCountryState}
+                                >
+                                  {countryStateButton !== undefined
+                                    ? "" == countryStateButton
+                                      ? "Select State"
+                                      : countryStateButton
+                                    : contactData?.meta_fields.state
+                                    ? contactData?.meta_fields.state
+                                    : "Select State"}
+                                </button>
+                                <ul
+                                  className={
+                                    countryState
+                                      ? "mintmrm-dropdown state show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li className="searchbar">
+                                    <span class="pos-relative">
+                                      <Search />
+                                      <input
+                                        type="search"
+                                        name="column-search"
+                                        placeholder="Seacrh..."
+                                        value={searchCountryState}
+                                        onChange={(e) =>
+                                          setSearchCountryState(e.target.value)
+                                        }
+                                      />
+                                    </span>
+                                  </li>
+                                  <div className="option-section">
+                                    {filteredCountryStates &&
+                                      filteredCountryStates?.map((state) => {
+                                        return (
+                                          <li
+                                            key={state[0]}
+                                            onClick={(event) =>
+                                              handleCountryStateSelect(
+                                                event,
+                                                state[0],
+                                                state[1]
+                                              )
+                                            }
+                                          >
+                                            {state[1]}
+                                          </li>
+                                        );
+                                      })}
+                                  </div>
+                                </ul>
+                              </div>
+                              {/* <InputItem
+                                name="state"
+                                handleChange={handleMetaChange}
+                                value={contactData?.meta_fields?.state}
+                                label="State / Province"
+                              /> */}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="other-info-edit">
+                          <h4>Other</h4>
+                          <div className="edit-input-field">
                             <InputItem
                               name="company"
                               handleChange={handleMetaChange}
@@ -1301,7 +1368,7 @@ export default function ContactDetails() {
                       </div>
 
                       <div className="activities-feed-wrapper">
-                        {contactData?.notes.length == 0 ? (
+                        {contactData?.activities.length == 0 ? (
                           <div className="no-activity">
                             <NoActivityIcon />
                             No Activity Found
@@ -1309,9 +1376,11 @@ export default function ContactDetails() {
                         ) : (
                           <SingleActivityFeed
                             notes={contactData?.notes}
+                            messages={contactData?.messages}
+                            activities={contactData?.activities}
                             contactId={contactData?.id}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
+                            refresh={refreshFeed}
+                            setRefresh={setRefreshFeed}
                           />
                         )}
                       </div>
@@ -1355,7 +1424,7 @@ export default function ContactDetails() {
                 </div>
               </div> */}
 
-                  <hr />
+                  {/* <hr /> */}
 
                   <div className="lists">
                     <div className="title-section">
@@ -1366,7 +1435,7 @@ export default function ContactDetails() {
                     </div>
                     <div ref={selectListRef}>
                       <div className="list-wrapper">
-                        {contactData?.lists?.map((list, idx) => {
+                        {contactData?.lists?.map((list) => {
                           return (
                             <span className="single-list" key={list.id}>
                               {list.title}
@@ -1408,10 +1477,6 @@ export default function ContactDetails() {
                         contactId={id}
                         refresh={refresh}
                         setRefresh={setRefresh}
-                        setShowNotification={setShowNotification}
-                        showNotification={"mone"}
-                        setMessage={setMessage}
-                        message={message}
                         isActive={selectList}
                       />
                     </div>
@@ -1426,7 +1491,7 @@ export default function ContactDetails() {
                     </div>
                     <div ref={selectTagRef}>
                       <div className="tag-wrapper">
-                        {contactData?.tags?.map((tag, idx) => {
+                        {contactData?.tags?.map((tag) => {
                           return (
                             <span className="single-list" key={tag.id}>
                               {tag.title}
@@ -1468,10 +1533,6 @@ export default function ContactDetails() {
                           contactId={id}
                           refresh={refresh}
                           setRefresh={setRefresh}
-                          setShowNotification={setShowNotification}
-                          showNotification={"mone"}
-                          setMessage={setMessage}
-                          message={message}
                         />
                       )}
                     </div>
@@ -1479,6 +1540,24 @@ export default function ContactDetails() {
                 </div>
               </div>
             </div>
+
+            <EmailDrawer
+              isOpen={isEmailForm}
+              isClose={isClose}
+              setIsClose={setIsClose}
+              contact={contactData}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+
+            <NoteDrawer
+              isOpenNote={isNoteForm}
+              isCloseNote={isCloseNote}
+              setIsCloseNote={setIsCloseNote}
+              contactID={id}
+              refresh={refreshFeed}
+              setRefresh={setRefreshFeed}
+            />
           </div>
         )}
       </div>
@@ -1490,8 +1569,13 @@ export default function ContactDetails() {
           onDeleteStatus={onDeleteStatus}
         />
       </div>
-      <SuccessfulNotification display={showNotification} message={message} />
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
     </>
   );
 }

@@ -21,7 +21,7 @@
   }
 }
 
-.qubely-builder-modal {
+.mrmTypography-builder-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -36,7 +36,7 @@
     box-sizing: border-box;
     pointer-events: all;
   }
-  .qubely-pagelist-modal-overlay {
+  .mrmTypography-pagelist-modal-overlay {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -48,7 +48,7 @@
   }
 }
 
-.qubely-builder-modal-header {
+.mrmTypography-builder-modal-header {
   position: absolute;
   top: 0;
   left: 0;
@@ -88,7 +88,7 @@
   }
 }
 
-.qubely-pagelist-modal-inner {
+.mrmTypography-pagelist-modal-inner {
   padding-top: 85px;
   position: relative;
   display: flex;
@@ -97,13 +97,13 @@
   border-radius: 6px;
   background: #ebeef4;
   max-width: 85%;
-  .qubely-layout-modal-sidebar {
+  .mrmTypography-layout-modal-sidebar {
     min-width: 270px;
     background: #0e2244;
     border-radius: 0 0 0 6px;
     color: #587e97;
     overflow-y: auto;
-    .qubely-modal-sidebar-content {
+    .mrmTypography-modal-sidebar-content {
       padding: 30px 40px;
       h3 {
         font-size: 21px;
@@ -135,7 +135,7 @@
       }
     }
   }
-  .qubely-layout-modal-content-area {
+  .mrmTypography-layout-modal-content-area {
     flex-grow: 1;
     max-height: 100%;
     overflow-y: auto;
@@ -145,14 +145,14 @@
 
 //template list header
 
-.qubely-template-list-header {
+.mrmTypography-template-list-header {
   text-align: center;
   background-color: #fff;
   border-radius: 6px 6px 0 0;
   position: relative;
   flex-grow: 1;
   padding-right: 50px;
-  button:not(.qubely-builder-close-modal) {
+  button:not(.mrmTypography-builder-close-modal) {
     display: inline-block;
     line-height: 25px;
     padding: 30px 40px;
@@ -173,7 +173,7 @@
       outline: none;
     }
   }
-  .qubely-builder-close-modal {
+  .mrmTypography-builder-close-modal {
     position: absolute;
     font-size: 20px;
     color: #9b9b9b;
@@ -195,7 +195,7 @@
 
 //template list sub header
 
-.qubely-template-list-sub-header {
+.mrmTypography-template-list-sub-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -206,7 +206,7 @@
     font-weight: 500;
     margin: 0;
   }
-  .qubely-template-filter-button-group {
+  .mrmTypography-template-filter-button-group {
     background: #f8fafb;
     display: inline-flex;
     border: 1px solid #d8d8d8;
@@ -271,7 +271,7 @@
   }
 }
 
-.qubely-modal-loader {
+.mrmTypography-modal-loader {
   display: inline-block;
   position: absolute;
   width: 80px;
@@ -285,16 +285,16 @@
   font-size: 24px;
   color: #1e7ed8;
 }
-.qubely-modal-loader img {
+.mrmTypography-modal-loader img {
   height: 80px;
   width: 80px;
 }
 
 /*block style*/
-.qubely-builder-template-found-empty {
+.mrmTypography-builder-template-found-empty {
   text-align: center;
   border-color: transparent !important;
-  .qubely-builder-empty-title {
+  .mrmTypography-builder-empty-title {
     display: block;
     width: 100%;
   }
@@ -312,7 +312,7 @@
     @media (max-width: 1199px) {
       width: 50%;
     }
-    &.qubely-builder-template-found-empty {
+    &.mrmTypography-builder-template-found-empty {
       width: 100%;
       text-align: center;
       opacity: 0.5;
@@ -320,7 +320,7 @@
       padding-top: 70px !important;
     }
   }
-  .qubely-pro {
+  .mrmTypography-pro {
     position: absolute;
     background: red;
     padding: 4px 5px;
@@ -332,12 +332,12 @@
     text-transform: uppercase;
     line-height: 1;
   }
-  &.qubely-frontendd-block-list {
+  &.mrmTypography-frontendd-block-list {
     display: block;
     padding-bottom: 35px;
     padding-top: 0px;
     > div {
-      &.qubely-reusable-list-title {
+      &.mrmTypography-reusable-list-title {
         color: #adafb2;
       }
       width: 100%;
@@ -351,20 +351,20 @@
       &:first-child {
         border-top: 1px solid #e2e4e7;
       }
-      .qubely-reusable-list-content {
+      .mrmTypography-reusable-list-content {
         flex-grow: 1;
       }
-      .qubely-reusable-list-info {
+      .mrmTypography-reusable-list-info {
         flex-grow: 1;
         max-width: 165px;
         display: flex;
         flex-wrap: nowrap;
       }
 
-      .qubely-reusable-list-button {
+      .mrmTypography-reusable-list-button {
         margin-left: 30px;
       }
-      .qubely-reusable-list-button button {
+      .mrmTypography-reusable-list-button button {
         display: inline-block;
         padding: 0;
         border: none;
@@ -389,7 +389,7 @@
   }
 }
 
-.qubely-default-template-image {
+.mrmTypography-default-template-image {
   transition: 300ms;
   img {
     width: 100%;
@@ -397,24 +397,24 @@
   }
 }
 
-.qubely-single-block-item {
+.mrmTypography-single-block-item {
   margin-bottom: 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
-.qubely-single-block-item .qubely-tmpl-title {
+.mrmTypography-single-block-item .mrmTypography-tmpl-title {
   background: #fff;
   margin: 0;
   color: #23282d;
   padding: 13px 15px;
 }
 
-.qubely-single-block-item .qubely-single-item-inner {
+.mrmTypography-single-block-item .mrmTypography-single-item-inner {
   position: relative;
   overflow: hidden;
-  .qubely-default-template-image {
+  .mrmTypography-default-template-image {
     transition: 300ms;
   }
-  .qubely-tmpl-info {
+  .mrmTypography-tmpl-info {
     position: absolute;
     width: 100%;
     background: rgba(0, 0, 0, 0.5);
@@ -427,7 +427,7 @@
     justify-content: center;
     transition: 300ms;
     opacity: 0;
-    .qubely-tmpl-title {
+    .mrmTypography-tmpl-title {
       margin: 0 0 15px;
       color: #fff;
       font-size: 19px;
@@ -435,17 +435,17 @@
     }
   }
   &:hover {
-    .qubely-tmpl-info {
+    .mrmTypography-tmpl-info {
       opacity: 1;
     }
-    .qubely-default-template-image {
+    .mrmTypography-default-template-image {
       filter: blur(3px);
     }
   }
 }
 
-.qubely-import-button-group span,
-.qubely-import-button-group a {
+.mrmTypography-import-button-group span,
+.mrmTypography-import-button-group a {
   display: inline-block;
   padding: 0 12px 2px;
   margin: 2px;
@@ -461,13 +461,13 @@
   text-decoration: none;
   cursor: pointer;
 }
-.qubely-import-button-group span i,
-.qubely-import-button-group a i {
+.mrmTypography-import-button-group span i,
+.mrmTypography-import-button-group a i {
   font-size: 10px;
   margin-right: 4px;
 }
 
-.qubely-import-button-group span {
+.mrmTypography-import-button-group span {
   background: #0085ba;
   border-color: #006a95 #00648c #00648c;
   box-shadow: inset 0 -1px 0 #00648c;
@@ -476,19 +476,19 @@
   text-shadow: 0 -1px 1px #005d82, 1px 0 1px #005d82, 0 1px 1px #005d82, -1px 0 1px #005d82;
 }
 
-.qubely-import-button-group a.qubely-button-download {
+.mrmTypography-import-button-group a.mrmTypography-button-download {
   border: 1px solid #1e70d6;
   background: #1e70d6;
   box-shadow: 0 1px 0 #165cb4;
   color: #fff;
 }
 
-.qubely-import-button-group .qubely-button-download {
+.mrmTypography-import-button-group .mrmTypography-button-download {
   margin-left: 5px;
 }
 
 /*multiple box*/
-#layouts-blocks-list div.qubely-multiple-template-box {
+#layouts-blocks-list div.mrmTypography-multiple-template-box {
   margin-bottom: 5px;
   .multiple-template-view {
     border: 1px solid #e2e4e7;
@@ -497,7 +497,7 @@
       0 20px 0 -10px #fff, 0 20px 1px -9px rgba(0, 0, 0, 0.08);
     cursor: pointer;
   }
-  .qubely-tmpl-info {
+  .mrmTypography-tmpl-info {
     padding: 10px 12px;
     h5 {
       margin: 0;
@@ -513,9 +513,9 @@
   }
 }
 
-.qubely-template-option-header {
+.mrmTypography-template-option-header {
   padding: 20px 20px 0;
-  .qubely-template-back {
+  .mrmTypography-template-back {
     cursor: pointer;
     .dashicons {
       vertical-align: text-bottom;
@@ -532,31 +532,31 @@
   font-size: 13px;
 }
 
-.qubely-template-back {
+.mrmTypography-template-back {
   cursor: pointer;
   .dashicons {
     vertical-align: text-bottom;
   }
 }
 
-/* .qubely-modal-loader span {
+/* .mrmTypography-modal-loader span {
 	width: 50px;
 	height: 50px;
 } */
 
 //global settings
 
-.qubely-import-global,
-.qubely-restore-global_preset {
+.mrmTypography-import-global,
+.mrmTypography-restore-global_preset {
   width: 500px;
   border-radius: 4px;
-  .qubely-import-settings-footer {
+  .mrmTypography-import-settings-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 20px;
   }
-  .qubely-restore-settings-footer {
+  .mrmTypography-restore-settings-footer {
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -572,7 +572,7 @@
     margin-bottom: -5px;
     margin-top: 20px;
   }
-  .qubely-import-settings {
+  .mrmTypography-import-settings {
     .label {
       font-size: 14px;
       margin-top: -5px;

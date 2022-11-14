@@ -1,7 +1,4 @@
 import CrossIcon from "./Icons/CrossIcon";
-import { useState } from "react";
-import Smile from "./Icons/Smile";
-import Attachment from "./Icons/Attachment";
 
 export default function ExportDrawer(prop) {
   const { isCloseNote, setIsCloseNote } = prop;

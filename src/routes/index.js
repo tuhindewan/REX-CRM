@@ -1,26 +1,28 @@
 import { __ } from "@wordpress/i18n";
-import AllCampaigns from "../components/AllCampaigns";
-import AddCampaign from "../components/Campaign/AddCampaign";
-import EditCampaign from "../components/Campaign/EditCampaign";
-import EmailBuilder from "../components/Campaign/EmailBuilder";
 import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
 import Dashboard from "../components/Dashboard";
-import FormIndex from "../components/Form";
-import FormEditor from "../components/Form/FormEditor";
 import ImportConfirmation from "../components/ImportConfirmation";
 import SelectFieldsMap from "../components/SelectFieldsMap";
-import Settings from "../components/Setting";
 import WordPressFieldMap from "../components/WordPressFieldMap";
+import AllCampaigns from "../pages/Campaign";
+import AddCampaign from "../pages/Campaign/AddCampaign";
+import EditCampaign from "../pages/Campaign/EditCampaign";
+import EmailBuilder from "../pages/Campaign/EmailBuilder";
 import Contacts from "../pages/Contacts";
+import FormIndex from "../pages/Form";
+import FormEditor from "../pages/Form/FormEditor";
 import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
-import Lists from "../pages/Lists";
-import Tags from "../pages/Tags";
+import Lists from "../pages/Tag/index";
+import Tags from "../pages/List/index";
+import Segments from "../pages/Segment/index";
+import CreateSegment from "../pages/Segment/CreateSegment";
+import Settings from "../pages/Setting/index"
 
 const routes = [
   {
@@ -102,17 +104,17 @@ const routes = [
     title: __("Tags", "mrm"),
     // bage: 18,
   },
-  // {
-  //   path: "/segments",
-  //   element: Segments,
-  //   title: __("Segments", "mrm"),
-  //   // bage: 18,
-  // },
-  // {
-  //   path: "/segments/create",
-  //   element: CreateSegment,
-  //   hideInMenu: true,
-  // },
+  {
+    path: "/segments",
+    element: Segments,
+    title: __("Segments", "mrm"),
+    // bage: 18,
+  },
+  {
+    path: "/segments/create",
+    element: CreateSegment,
+    hideInMenu: true,
+  },
   {
     path: "/custom-fields",
     element: CustomFields,

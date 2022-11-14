@@ -1,9 +1,11 @@
+import { createNewGroup } from "../../services/Common";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ClearNotification } from "../../utils/admin-notification";
 import Plus from "../Icons/Plus";
 import Search from "../Icons/Search";
 import LoadingIndicator from "../LoadingIndicator";
-import WarningNotification from "../WarningNotification";
+import SuccessfulNotification from "../SuccessfulNotification";
 export default function AddItems(props) {
   const {
     selected,
@@ -13,22 +15,17 @@ export default function AddItems(props) {
     options = null,
     name = "list", // used inside the new button of
     listTitle = "CHOOSE LIST",
-    listTitleOnNotFound = "No Data Found",
-    searchPlaceHolder = "Search...",
     allowMultiple = true,
-    showSearchBar = true,
-    showListTitle = true,
-    showSelectedInside = true,
     allowNewCreate = true,
     contactId,
   } = props;
-
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     async function getItems() {
@@ -47,41 +44,28 @@ export default function AddItems(props) {
 
   // Handle new list or tag creation
   const addNewItem = async () => {
-    let res = null;
     let body = {
       title: search,
     };
-    try {
-      // create contact
-      setLoading(true);
-      res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
 
-      const resJson = await res.json();
-      if (resJson.code == 201) {
+    setLoading(true);
+    createNewGroup(endpoint, body).then((response) => {
+      if (201 === response.code) {
         setSearch("");
         setQuery("");
-        setSelected([...selected, { id: resJson.data, title: body.title }]);
-        props.setShowNotification("block");
-        props.setMessage(resJson?.message);
+        setSelected([...selected, { id: response?.data, title: body.title }]);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(response?.message);
+        props.setIsAssignTo(true);
       } else {
-        setShowWarning("block");
-        setMessage(resJson.message);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(response?.message);
       }
-    } catch (e) {
-    } finally {
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-        props.setShowNotification("none");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
+      ClearNotification("none", setShowNotification);
+    });
   };
 
   // function used for checking whether the current item is selected or not
@@ -153,21 +137,20 @@ export default function AddItems(props) {
         setQuery("");
         setSelected([]);
         props.setIsAssignTo(!props.isActive);
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(resJson.message);
         props.setRefresh(!props.refresh);
-        props.setShowNotification("block");
-        props.setMessage(resJson.message);
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson.message);
       }
+      ClearNotification("none", setShowNotification);
     } catch (e) {
     } finally {
       setLoading(false);
-      const timer = setTimeout(() => {
-        props.setShowNotification("none");
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification("none", setShowNotification);
     }
   };
 
@@ -247,7 +230,13 @@ export default function AddItems(props) {
               </li>;
             })} */}
       </ul>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
     </>
   );
 }

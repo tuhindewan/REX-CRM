@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getLists } from "../services/List";
 import { getTags } from "../services/Tag";
+import { ClearNotification } from "../utils/admin-notification";
 import ImportNavbar from "./Import/ImportNavbar";
 import Select from "./Import/Select";
-import SelectDropdown from "./SelectDropdown";
-import WarningNotification from "./WarningNotification";
 import ListenForOutsideClicks from "./ListenForOutsideClicks";
-
+import SelectDropdown from "./SelectDropdown";
+import SuccessfulNotification from "./SuccessfulNotification";
 export default function SelectFieldsMap() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,8 +19,9 @@ export default function SelectFieldsMap() {
   const [lists, setLists] = useState([]);
   // holds selectbox currently selected tags
   const [tags, setTags] = useState([]);
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
   const [selectedStatus, setSelectedStatus] = useState();
   const [isActiveStatus, setIsActiveStatus] = useState(false);
   const [isActiveList, setIsActiveList] = useState(false);
@@ -120,14 +121,12 @@ export default function SelectFieldsMap() {
           state: { data: resJson.data },
         });
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(resJson.message);
       }
       setLoading(false);
-      const timer = setTimeout(() => {
-        setShowWarning("none");
-      }, 3000);
-      return () => clearTimeout(timer);
+      ClearNotification("none", setShowNotification);
     } catch (e) {
       setLoading(false);
     }
@@ -160,22 +159,22 @@ export default function SelectFieldsMap() {
   };
 
   // handle selectbox and prepare the mapping
-  function onSelect(field_id, field_name, arg1) {
+  function onSelect(field_id, field_name, field_value) {
     const selectedValue = field_id;
-    const idx = map.findIndex((item) => item.source == arg1);
+    const idx = map.findIndex((item) => item.source == field_value);
     if (selectedValue == "no_import") {
-      mapState.filter((item) => item.source != arg1);
+      mapState.filter((item) => item.source != field_value);
       return;
     }
     if (idx != -1) {
       // mapping already exists so update the map
-      map[idx]["source"] = arg1;
+      map[idx]["source"] = field_value;
       map[idx]["target"] = selectedValue;
     } else {
       setMapState([
         ...mapState,
         {
-          source: arg1,
+          source: field_value,
           target: selectedValue,
         },
       ]);
@@ -241,7 +240,7 @@ export default function SelectFieldsMap() {
                               <div className="form-group map-dropdown">
                                 <SelectDropdown
                                   handleSelect={onSelect}
-                                  arg1={header}
+                                  field_value={header}
                                   options={selectOptions}
                                 />
                               </div>
@@ -387,7 +386,13 @@ export default function SelectFieldsMap() {
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }

@@ -42,11 +42,13 @@ class FormSchema implements Schema{
             `form_body` longtext,
             `form_position` VARCHAR(255),
             `group_ids` VARCHAR(1000),
-            `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+            `status` VARCHAR(255) NOT NULL DEFAULT 'published',
             `template_id` bigint(20) unsigned NULL,
             `created_by` BIGINT(20),
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
+    		INDEX `form_id_index` (`id` DESC),
+    		INDEX `form_title_index` (`title` ASC),
             PRIMARY KEY (`id`)
          ) ";
     }

@@ -2,6 +2,7 @@
 
 namespace Mint\MRM\Internal\Admin;
 
+use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\MRM\Internal\Constants;
 
 class AdminAssets {
@@ -82,7 +83,12 @@ class AdminAssets {
                 'nonce' 			    => wp_create_nonce('wp_rest'),
                 'current_userID'        => get_current_user_id(),
                 'editor_data_source'    => $this->get_editor_source(),
-                'timezone_list'         => Constants::get_timezone_list()
+                'timezone_list'         => Constants::get_timezone_list(),
+                'admin_url'             => get_admin_url(),
+                'countries'             => Constants::get_country_name(),
+                'states'                => Constants::get_country_state(),
+                'lists'                 => ContactGroupModel::get_all_to_custom_select( 'lists' ),
+                'tags'                  => ContactGroupModel::get_all_to_custom_select( 'tags' ),
             )
         );
     }

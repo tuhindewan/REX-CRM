@@ -1,7 +1,8 @@
+import { ClearNotification } from "../utils/admin-notification";
 import { useMemo, useState } from "react";
 import Search from "./Icons/Search";
 import SuccessfulNotification from "./SuccessfulNotification";
-import WarningNotification from "./WarningNotification";
+import { createNewGroup } from "../services/Common";
 
 export default function AddItemDropdown(props) {
   const {
@@ -17,10 +18,9 @@ export default function AddItemDropdown(props) {
     setRefresh,
   } = props;
   const [search, setSearch] = useState("");
-  const [query, setQuery] = useState("");
-  const [showWarning, setShowWarning] = useState("none");
   const [message, setMessage] = useState("");
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
 
   const filteredItems = useMemo(() => {
     if (search) {
@@ -33,7 +33,7 @@ export default function AddItemDropdown(props) {
   }, [search, items]);
 
   const checkIfSelected = (id) => {
-    const checked = selected?.findIndex((item) => item == id) >= 0;
+    const checked = selected?.findIndex((item) => item.id == id) >= 0;
     return checked;
   };
 
@@ -42,49 +42,42 @@ export default function AddItemDropdown(props) {
     e.stopPropagation();
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
     let id = e.target.id ? e.target.id : e.target.dataset.customId;
-    const index = selected?.findIndex((item) => item == id);
+    const index = selected?.findIndex((item) => item.id == id);
     if (allowMultiple) {
       if (index >= 0) {
-        setSelected(selected.filter((item) => item != id));
+        setSelected(selected.filter((item) => item.id != id));
       } else {
-        setSelected([...selected, id]);
+        // add id to the array
+        setSelected([...selected, { id: id, title: value }]);
+        // setSelected([...selected, id]);
       }
     } else {
       if (index >= 0) setSelected([]);
-      else setSelected([id]);
+      else setSelected([{ id: id, title: value }]);
     }
   };
 
   // Handle new list or tag creation
   const addNewItem = async () => {
-    let res = null;
     let body = {
       title: search,
     };
 
-    try {
-      res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      const resJson = await res.json();
-      if (resJson.code == 201) {
+    createNewGroup(endpoint, body).then((response) => {
+      if (201 === response.code) {
         setSearch("");
-        setSelected([...selected, resJson.data]);
+        setSelected([...selected, { id: response?.data, title: body.title }]);
+        setNotificationType("success");
         setShowNotification("block");
-        setMessage(resJson?.message);
+        setMessage(response?.message);
         setRefresh(!refresh);
       } else {
-        setShowWarning("block");
-        setMessage(resJson?.message);
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(response?.message);
       }
-    } catch (e) {
-    } finally {
-    }
+      ClearNotification("none", setShowNotification);
+    });
   };
 
   return (
@@ -148,8 +141,13 @@ export default function AddItemDropdown(props) {
           </>
         )}
       </ul>
-      <WarningNotification display={showWarning} message={message} />
-      <SuccessfulNotification display={showNotification} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
     </>
   );
 }

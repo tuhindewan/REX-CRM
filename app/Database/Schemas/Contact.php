@@ -52,8 +52,8 @@ class ContactSchema implements Schema {
             `created_by` BIGINT(20),
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
-             INDEX `contact_wp_user_id_index` (`wp_user_id` ASC),
-             INDEX `contact_status_index` (`status` ASC)
+             INDEX `contact_email_index` (`email` ASC),
+             INDEX `contact_id_index` (`id` ASC)
          ) ";
     }
 }

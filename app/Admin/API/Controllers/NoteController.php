@@ -36,18 +36,7 @@ class NoteController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
         $contact_id = isset($params['contact_id']) ? $params['contact_id'] : "";
         $note_id    = isset($params['note_id']) ? $params['note_id'] : "";
-        // Note Title validation
-        $title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : '';
-        if ( empty( $title ) ) {
-			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
-		}
-
-        // Note type validation
-        $type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : '';
-        if ( empty( $type ) ) {
-			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  200);
-		}
-
+        
         // Note description validation
         $description = isset( $params['description'] ) ? sanitize_text_field( $params['description'] ) : '';
         if ( empty( $description ) ) {
@@ -148,7 +137,6 @@ class NoteController extends BaseController {
         $params = MRM_Common::get_api_params_values( $request );
     
         $note = NoteModel::get( $params['note_id'] );
-
         if(isset($note)) {
             return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $note);
         }
@@ -182,7 +170,10 @@ class NoteController extends BaseController {
         $contact['notes'] = NoteModel::get_notes_to_contact( $contact_id );
         $contact['notes'] = array_map(function($note){
 
-            $note['created_at'] = human_time_diff( strtotime($note['created_at']), time() );
+            if( isset( $note['created_at'] ) ) {
+                $note[ 'created_time' ] = $note['created_at'];
+                $note[ 'created_at' ]   = human_time_diff( strtotime( $note[ 'created_at' ] ), current_time( 'timestamp' ) );
+            }
             if(isset($note['created_by']) && !empty($note['created_by'])){
                 $user_meta = get_userdata( $note['created_by'] );
                 $note["created_by"] = $user_meta->data->user_login;
