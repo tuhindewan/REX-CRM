@@ -11,7 +11,9 @@
     "test": "phpunit",
     "phpcs": "./vendor/bin/phpcs",
     "phpcs:fix": "./vendor/bin/phpcbf",
-    "phpcs:i": "./vendor/bin/phpcs -i"
+    "phpcs:i": "./vendor/bin/phpcs -i",
+    "post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths ./vendor/phpcompatibility/php-compatibility",
+    "post-update-cmd" : "./vendor/bin/phpcs --config-set installed_paths ./vendor/phpcompatibility/php-compatibility"
   },
   "autoload": {
     "psr-4": {
