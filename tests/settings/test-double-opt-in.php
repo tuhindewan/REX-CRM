@@ -1,5 +1,7 @@
 <?php
 
+use MRM\Common\MRM_Common;
+
 class DoubleOptinSettingTest extends WP_UnitTestCase {
     /**
      * Holds the WP REST Server object
@@ -17,9 +19,27 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
     */
     public function setUp() {
         parent::setUp();
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        global $wpdb;
+
+        $charsetCollate = $wpdb->get_charset_collate();
+
+        $table = $wpdb->prefix . 'options';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+            $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+                `option_id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                `option_name` VARCHAR(192) NULL,
+                `option_value` LONGTEXT,
+                `autoload` VARCHAR(20) DEFAULT 'yes'
+             ) $charsetCollate;";
+
+            dbDelta($sql);
+        }
  
         // Initiating the REST API.
-        parent::setUp();
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
         $this->administrator = $this->factory->user->create(
@@ -46,35 +66,60 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
         wp_set_current_user( [] );
     }
 
-    // public function test_register_route() {
-	// 	$routes = $this->server->get_routes();
-	// 	$this->assertArrayHasKey( $this->namespaced_route, $routes );
-	// }
-
-    // public function test_endpoints() {
-	// 	$the_route = $this->namespaced_route;
-	// 	$routes = $this->server->get_routes();
-	// 	foreach( $routes as $route => $route_config ) {
-	// 		if( 0 === strpos( $the_route, $route ) ) {
-	// 			$this->assertTrue( is_array( $route_config ) );
-	// 			foreach( $route_config as $i => $endpoint ) {
-	// 				$this->assertArrayHasKey( 'callback', $endpoint );
-	// 				$this->assertArrayHasKey( 0, $endpoint[ 'callback' ], get_class( $this ) );
-	// 				$this->assertArrayHasKey( 1, $endpoint[ 'callback' ], get_class( $this ) );
-	// 				$this->assertTrue( is_callable( array( $endpoint[ 'callback' ][0], $endpoint[ 'callback' ][1] ) ) );
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-    public function test_name_route() {
-		$request  = new WP_REST_Request( 'GET', '/api/v2/name' );
-		$response = $this->server->dispatch( $request );
-        error_log(print_r($response, 1));
+    /**
+     * Optin create or update POST request response test
+     */
+    public function test_create_update_route() {
+		$request = new WP_REST_Request( 'POST', '/mrm/v1/settings/optin' );
+        $response = $this->server->dispatch( $request );
+        $request->set_body_params(
+            []
+        );
 		$this->assertEquals( 200, $response->get_status() );
-		$data = $response->get_data();
-		$this->assertArrayHasKey( 'name', $data );
-		$this->assertEquals( 'shawn', $data[ 'name' ] );
+
+	}
+
+    /**
+     * Optin setting post request api params key check
+     */
+    public function test_create_or_update( )
+    {
+        $request = new WP_REST_Request( 'POST', '/mrm/v1/settings/optin' );
+        $response = $this->server->dispatch( $request );
+        $request->set_body_params(
+            [
+                "optin" => [
+                    "enable"                => true,
+                    "email_subject"         => "Double opt-in confirmation email",
+                    "email_body"            => "<p>Hi Tuhin,</p>\n<p>This is just an hello</p>",
+                    "confirmation_type"     => "message",
+                    "confirmation_message"  => "Your subscription to our list has been confirmed."
+                ]
+            ]
+        );
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        // optin key check on api param values
+        $this->assertArrayHasKey("optin", $params);
+        $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
+
+        // Insert on wp_options table
+        $success = update_option('_mrm_optin_settings',  $setting_value);
+        $this->assertTrue($success);
+    }
+
+
+    /**
+     * Optin GET request response test
+     */
+    public function test_get_route() {
+		$request = new WP_REST_Request( 'GET', '/mrm/v1/settings/optin' );
+        $response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+        
+        $data  = $response->get_data();
 	}
 
 
