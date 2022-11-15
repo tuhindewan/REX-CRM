@@ -49,7 +49,7 @@ class OptinSettingController extends SettingBaseController {
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
             update_option('_mrm_optin_settings',  $setting_value);
-            return $this->get_success_response("Double optin settings has been successfully saved.");
+            return $this->get_success_response( __("Double opt-in settings have been successfully saved.", "mrm") );
         }
     }
 
