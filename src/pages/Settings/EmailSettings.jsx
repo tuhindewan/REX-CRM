@@ -22,6 +22,13 @@ export default function EmailSettings(){
                                     Email Settings
                                 </h4>
                             </header>
+
+                            <div className="form-wrapper">
+                                <div className="form-group">
+                                    <label htmlFor="">Business Name</label>
+                                    <input type="text" name="business-name" placeholder="Enter Business Name" />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="tab-footer">
