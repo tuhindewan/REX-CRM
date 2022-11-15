@@ -3,6 +3,7 @@
 namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\Mrm\Internal\Traits\Singleton;
+use MRM\Common\MRM_Common;
 use WP_REST_Request;
 
 /**
@@ -81,10 +82,19 @@ class SettingController extends BaseController {
      * @since 1.0.0
      */
     public function update_woocommerce_settings( WP_REST_Request $request ) {
-        if( 1 ) {
-            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, [] );
+        $params = MRM_Common::get_api_params_values( $request );
+        $params = is_array( $params ) && !empty( $params ) ? $params : [
+            'enable' => false,
+            'checkbox_label' => 'Please put a checkbox label.',
+            'lists' => [],
+            'tags' => [],
+            'double_optin' => true
+        ];
+
+        if( update_option( '_mrm_woocommerce_settings', $params ) ) {
+            return $this->get_success_response( __( 'WooCommerce settings has been successfully saved.', 'mrm' ), 200 );
         }
-        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'No changes have been made.', 'mrm' ), 400 );
     }
 
 
@@ -94,10 +104,16 @@ class SettingController extends BaseController {
      * @return array|\WP_Error
      * @since 1.0.0
      */
-    public function get_woocommerce_settings( WP_REST_Request $request ) {
-        if( 1 ) {
-            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, [] );
-        }
-        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+    public function get_woocommerce_settings() {
+        $default = [
+            'enable' => false,
+            'checkbox_label' => 'Please put a checkbox label.',
+            'lists' => [],
+            'tags' => [],
+            'double_optin' => true
+        ];
+        $settings = get_option( '_mrm_woocommerce_settings', $default );
+        $settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+        return $this->get_success_response( __( 'WooCommerce settings has been successfully saved.', 'mrm' ), 200, $settings );
     }
 }
