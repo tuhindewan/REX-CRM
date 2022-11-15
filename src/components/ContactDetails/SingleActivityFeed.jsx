@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { deleteSingleNote } from "../../services/Note";
 import DeletePopup from "../DeletePopup";
 import CreateNoteIconSm from "../Icons/CreateNoteIconSm";
@@ -15,6 +15,7 @@ export default function SingleActivityFeed(props) {
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteMessage, setDeleteMessage] = useState("");
+  const [emailBody, setEmailBody] = useState("");
   const [noteId, setNoteId] = useState();
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
@@ -54,7 +55,9 @@ export default function SingleActivityFeed(props) {
     setIsNoteForm(true);
     setIsCloseNote(!isCloseNote);
   };
+  // JSON.stringify(activity.email_body)
 
+ 
   return (
     <>
       <div className="single-activity-feed">
@@ -80,7 +83,6 @@ export default function SingleActivityFeed(props) {
           {props.activities?.map((activity) => {
             return (
               <>
-              {console.log(activity.email_body)}
                 <div className="single-feed" key={activity.id}>
                   {activity.type === "MRM Note" ? (
                     <>
@@ -137,7 +139,7 @@ export default function SingleActivityFeed(props) {
                           {activity.email_address}
                         </b>
 
-                        <div className="writen-note"  dangerouslySetInnerHTML={{__html: activity.email_body}}></div>
+                        <div className="writen-note">{JSON.stringify(activity.email_body).split("\n").join("<br/>")}</div>
                       </div>
                       <span className="feed-date">
                         {activity.created_at} ago
