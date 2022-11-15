@@ -20,6 +20,8 @@ Class BusinessSettingController extends SettingBaseController{
 	 */
 	public $args;
 
+	protected $option_key = '_mrm_business_info_setting';
+
 	/**
 	 * Get and send response to create a new settings
 	 * @param WP_REST_Request $request
@@ -48,7 +50,7 @@ Class BusinessSettingController extends SettingBaseController{
 					"social"        => $social
 				);
 
-				update_option('_mrm_business_info_setting',$business_options);
+				update_option( $this->option_key,$business_options );
 				return $this->get_success_response(__( 'Business information settings has been successfully saved.', 'mrm' ));
 			}
 		}
@@ -67,9 +69,22 @@ Class BusinessSettingController extends SettingBaseController{
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
-	public function get( $key ){
+	public function get( ){
 
-		error_log(print_r($key,1));
+		$default = array(
+			"business_name" => "",
+			"phone"         => "",
+			"address"       => "",
+			"logo_url"      => "",
+			"social"        => [
+				"icon"      => "",
+				"url"       => ""
+			]
+		);
+		$settings = get_option( $this->option_key, $default );
+		$settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+		return $this->get_success_response_data(  $settings );
+
 
 	}
 

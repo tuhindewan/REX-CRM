@@ -75,6 +75,26 @@ class Test_BusinessSettingController extends WP_UnitTestCase {
 
 	}
 
+	public function test_get(  ) {
+		$body = [
+			"business_name" => "",
+			"phone"         => "+8800178294804",
+			"address"       => "string",
+			"logo_url"      => "String",
+			"social"        => [
+				"icon"      => "String",
+				"url"       => "String"
+			]
+		];
+		update_option( '_mrm_business_info_setting', $body );
+		$response = self::$instance->get();
+		$this->assertTrue( is_object( $response ) );
+		$this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
+		$this->assertTrue( 200 === $response->get_status() );
+		$this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
+
+	}
+
 
 
 }

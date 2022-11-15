@@ -112,11 +112,11 @@ class SettingRoute {
         [
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [
-                $this->controller ,
+	            $this->business_controller ,
                 'get'
             ],
             'permission_callback' => [
-                $this->controller ,
+	            $this->business_controller ,
                 'rest_permissions_check'
             ] ,
         ]
