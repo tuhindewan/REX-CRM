@@ -41,16 +41,8 @@ class EmailSettingController extends SettingBaseController {
         // From email address validation
         if( isset($params['from_email']) ){
             $from_email = sanitize_text_field( $params['from_email'] );
-            if ( empty( $from_email ) ) {
-                $from_email_existance_failed = array (
-                    'success' => false,
-                    'message' => 'Email address is mandatory',
-                    'code'    => 200
-                );
-                return $from_email_existance_failed;
-            }
     
-            if ( !is_email( $from_email ) ) {
+            if ( !is_email( $from_email  ) && !empty( $from_email )) {
                 $from_email_validation_failded = array (
                     'success' => false,
                     'message' => 'Enter a valid email address from where to send email',
@@ -63,16 +55,8 @@ class EmailSettingController extends SettingBaseController {
         // Reply to email address validation
         if( isset($params['reply_email']) ){
             $reply_email = sanitize_text_field( $params['reply_email'] );
-            if ( empty( $reply_email ) ) {
-                $reply_email_existance_failed = array (
-                    'success' => false,
-                    'message' => 'Email address is mandatory',
-                    'code'    => 200
-                );
-                return $reply_email_existance_failed;
-            }
     
-            if ( !is_email( $reply_email ) ) {
+            if ( !is_email( $reply_email ) && !empty( $reply_email ) ) {
                 $reply_email_validation_failded = array (
                     'success' => false,
                     'message' => 'Enter a valid email address where to reply email',
@@ -86,9 +70,21 @@ class EmailSettingController extends SettingBaseController {
         // create email settings
         $from_name  = isset($params['from_name']) ? $params['from_name'] : "";
         $reply_name = isset($params['reply_name']) ? $params['reply_name']: "";
+        $from_email  = isset($params['from_email']) ? $params['from_email'] : "";
+        $reply_email = isset($params['reply_email']) ? $params['reply_email']: "";
 
-        $from_name   = sanitize_text_field( $from_name );
-        $reply_email = sanitize_text_field( $reply_email );
+        if ( empty( $reply_email ) || empty( $from_email )) {
+            $email_existance_failed = array (
+                'success' => false,
+                'message' => 'Email address is mandatory',
+                'code'    => 200
+            );
+            return $email_existance_failed;
+        }
+
+
+        $from_name  = sanitize_text_field( $from_name );
+        $reply_name = sanitize_text_field( $reply_name );
 
         $email_settings = array (
             "from_name"     => $from_name,
@@ -125,7 +121,7 @@ class EmailSettingController extends SettingBaseController {
      * @return WP_REST_Response
      * @since 1.0.0 
      */
-    public function get( $key ){
+    public function get( ){
         if (!get_option('email_settings')){
             $email_settings_data_failed = array(
                 'code'    => 400,

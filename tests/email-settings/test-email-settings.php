@@ -44,9 +44,10 @@ class EmailSettings extends WP_UnitTestCase {
     /**
     * Test case to check bad request for email creatiion
     */
-    public function test_create_email_settings_bad_request (){
+    public function test_create_email_settings_bad_request_both_worng_email (){
         $this->controller = EmailSettingController::get_instance();
-
+        
+        // Checking a bad request where both emails are not valid
         $bad_request_both_wrong_email = new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
 
         $bad_request_both_wrong_email->set_body_params(
@@ -60,9 +61,16 @@ class EmailSettings extends WP_UnitTestCase {
 
         $response = $this->controller->create_or_update($bad_request_both_wrong_email);
 
-        $this->assertEquals(0, $response['success'], 'Success code is Passed for Email Validation Bad Request!');
-        $this->assertEquals('Enter a valid email address from where to send email', $response['message'], 'Message is Passed for Email Validation Bad Request!');
+        $this->assertEquals(0, $response['success']);
+        $this->assertEquals('Enter a valid email address from where to send email', $response['message']);
+    }
 
+    /*
+    ** Checking a bad request where only reply email is Invalid
+    */
+    public function test_create_email_bad_request_only_reply_email (){
+        $this->controller = EmailSettingController::get_instance();
+        
         $bad_request_reply_email = new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
 
         $bad_request_reply_email->set_body_params(
@@ -76,19 +84,82 @@ class EmailSettings extends WP_UnitTestCase {
 
         $response = $this->controller->create_or_update($bad_request_reply_email);
 
-        $this->assertEquals(0, $response['success'], 'Success code is Passed for Email Validation Bad Request!');
-        $this->assertEquals('Enter a valid email address where to reply email', $response['message'], 'Message is Passed for Email Validation Bad Request!');
+        $this->assertEquals(0, $response['success']);
+        $this->assertEquals('Enter a valid email address where to reply email', $response['message']);
+    }
+
+    /*
+    ** Checking a bad request where only from email is Invalid
+    */
+    public function test_create_email_bad_request_only_from_email (){
+        $this->controller = EmailSettingController::get_instance();
+        
+        $bad_request_from_email = new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
+
+        $bad_request_from_email->set_body_params(
+            [
+                "from_name"        => "Coderex",
+                "from_email"       => "Invalid",
+                "reply_name"       => "fdsafsa",
+                "reply_email"      => "google@gmail.com"
+            ]
+        );
+
+        $response = $this->controller->create_or_update($bad_request_from_email);
+
+        $this->assertEquals(0, $response['success']);
+        $this->assertEquals('Enter a valid email address from where to send email', $response['message']);
+    }
+
+    /*
+    ** Checking a bad request where Email Field is empty
+    */
+    public function test_create_email_bad_request_empty_email (){
+        $this->controller = EmailSettingController::get_instance();
+        
+        $bad_request_empty_email= new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
+
+        $bad_request_empty_email->set_body_params(
+            [
+                "from_name"        => "Coderex",
+                "reply_name"       => "fdsafsa"
+            ]
+        );
+
+        $response = $this->controller->create_or_update($bad_request_empty_email);
+
+        $this->assertEquals(0, $response['success']);
+        $this->assertEquals('Email address is mandatory', $response['message']);
+    }
+
+    /*
+    ** Test to send no parameter
+    */
+    public function test_create_email_bad_request_no_parameter (){
+        $this->controller = EmailSettingController::get_instance();
+        
+        $bad_request_empty_email= new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
+
+        $bad_request_empty_email->set_body_params(
+            [
+            ]
+        );
+
+        $response = $this->controller->create_or_update($bad_request_empty_email);
+
+        $this->assertEquals(0, $response['success']);
+        $this->assertEquals('Email address is mandatory', $response['message']);
     }
 
     /**
-    * Test case to check good request for email creatiion
+    * Test case to check good request for email-settings creation
     */
     public function test_create_email_settings_good_request (){
         $this->controller = EmailSettingController::get_instance();
 
-        $bad_request = new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
+        $good_request = new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
 
-        $bad_request->set_body_params(
+        $good_request->set_body_params(
             [
                 "from_name"        => "Coderex",
                 "from_email"       => "support@coderex.co",
@@ -97,8 +168,23 @@ class EmailSettings extends WP_UnitTestCase {
             ]
         );
 
-        $response = $this->controller->create_or_update($bad_request);
+        $response = $this->controller->create_or_update($good_request);
 
         $this->assertEquals(1, $response['success']);
+        $this->assertEquals('Email settings has been saved successfully', $response['message']);
+        $this->assertEquals(201, $response['code']);
+    }
+
+    /**
+     * Test case to get email-settings
+     */
+    public function test_get_email_settings (){
+        $this->controller = EmailSettingController::get_instance();
+
+        $request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/email');
+
+        $response = $this->controller->get($request);
+
+        error_log(print_r($response, 1));
     }
 }
