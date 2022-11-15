@@ -103,7 +103,7 @@ class SettingRoute {
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [
                 $this->controller ,
-                'get_single'
+                'get'
             ],
             'permission_callback' => [
                 $this->controller ,

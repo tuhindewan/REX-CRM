@@ -36,19 +36,17 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Get an object
 	 * 
-	 * @param string $key
+	 * @param void
 	 * 
 	 * @return WP_REST_Response
 	 */
-	public abstract function get( $key );
+	public abstract function get();
 
 
 	/**
      * Prepare success response for REST API
      * 
 	 * @param $message
-	 * @param $code
-	 * @param $wp_error
 	 * 
      * @return array
      * @since 1.0.0
@@ -60,6 +58,20 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 		);
 
 		return rest_ensure_response($response);
+	}
+
+
+	/**
+     * Prepare success response with data for REST API
+     * 
+	 * @param $settings
+	 * 
+     * @return array
+     * @since 1.0.0
+     */  
+	public function get_success_response_data( $settings ) {
+		$settings['success'] = true;
+		return rest_ensure_response($settings);
 	}
 
 
