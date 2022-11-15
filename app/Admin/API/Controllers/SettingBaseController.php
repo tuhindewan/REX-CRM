@@ -85,20 +85,12 @@ abstract class SettingBaseController extends \WP_REST_Controller {
      * @return array
      * @since 1.0.0
      */  
-	public function get_error_response( $message = '', $code = 0, $wp_error = null  ) {
-		if ( 0 !== absint( $code ) ) {
-			$this->response_code = $code;
-		} else if ( empty( $code ) ) {
-			$this->response_code = 500;
-		}
-
-		$data = array();
-		if ( $wp_error instanceof \WP_Error ) {
-			$message = $wp_error->get_error_message();
-			$data    = $wp_error->get_error_data();
-		}
-
-		return new \WP_Error( $this->response_code, $message, array( 'status' => $this->response_code, 'error_data' => $data ) );
+	public function get_error_response( $message = '' ) {
+		$response =  array(
+			'success'    => false,
+			'message' => $message
+		);
+		return rest_ensure_response($response);
 	}
 
 
