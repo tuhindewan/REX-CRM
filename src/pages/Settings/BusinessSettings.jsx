@@ -5,7 +5,7 @@ import SettingIcon from "../../components/Icons/SettingIcon";
 export default function BusinessSettings() {
   
   return (
-    <div className="mintmrm-settings-page">
+     <div className="mintmrm-settings-page">
       <div className="mintmrm-container">
         <div className="mintmrm-settings">
           <h2 class="conatct-heading">Settings</h2>
