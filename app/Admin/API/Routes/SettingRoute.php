@@ -50,6 +50,7 @@ class SettingRoute {
     {
         $this->controller = SettingController::get_instance();
 
+        // API routes for WooCommerce settings
         register_rest_route($this->namespace, '/' . $this->rest_base . '/wc/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
