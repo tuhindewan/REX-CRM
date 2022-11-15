@@ -39,9 +39,9 @@ class OptinSettingController extends SettingBaseController {
         $params = MRM_Common::get_api_params_values( $request );
         
         if( array_key_exists( 'optin', $params ) ){
-
-            $setting_value = maybe_serialize( $params['optin'] );
+            $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
             update_option('_mrm_optin_settings',  $setting_value);
+            $this->get_success_response("Double optin settings has been successfully saved.");
         }
     }
 
@@ -55,8 +55,6 @@ class OptinSettingController extends SettingBaseController {
      */
     public function get( $key ){
  
-
-
     }
 
 
