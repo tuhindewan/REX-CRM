@@ -27,7 +27,7 @@ export default function DoubleOptin() {
                                         <div className="form-wrapper">
                                             <div className="form-group">
                                                 <label htmlFor="">
-                                                    Form Name
+                                                    Double Opt-In
                                                     <span class="mintmrm-tooltip">
                                                         <TooltipQuestionIcon />
                                                         <p>
@@ -39,18 +39,100 @@ export default function DoubleOptin() {
                                                 </label>
                                                 <span className="mintmrm-switcher">
                                                     <input
-                                                        
                                                         type="checkbox"
                                                         name="checkedB"
                                                         id="st"
-                                                        
                                                     />
-                                                    <label
-                                                        htmlFor={
-                                                            "st" 
-                                                        }
-                                                    ></label>
+                                                    <label htmlFor="st"></label>
                                                 </span>
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="">
+                                                    Email Subject
+                                                    <span class="mintmrm-tooltip">
+                                                        <TooltipQuestionIcon />
+                                                        <p>
+                                                            Define behaviour of
+                                                            the form after
+                                                            submission
+                                                        </p>
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="email-subject"
+                                                    placeholder="Enter Email Subject"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="">
+                                                    Email Body
+                                                    <span class="mintmrm-tooltip">
+                                                        <TooltipQuestionIcon />
+                                                        <p>
+                                                            Define behaviour of
+                                                            the form after
+                                                            submission
+                                                        </p>
+                                                    </span>
+                                                </label>
+                                                <textarea
+                                                    rows="4"
+                                                    placeholder="Enter Email Body"
+                                                ></textarea>
+                                            </div>
+                                            <hr></hr>
+                                            <div className="form-group">
+                                                <label htmlFor="">
+                                                    After Confirmation Type
+                                                    <span class="mintmrm-tooltip">
+                                                        <TooltipQuestionIcon />
+                                                        <p>
+                                                            Define behaviour of
+                                                            the form after
+                                                            submission
+                                                        </p>
+                                                    </span>
+                                                </label>
+                                                <span className="mintmrm-radiobtn">
+                                                    <input
+                                                        id="show-message"
+                                                        type="radio"
+                                                        name="message-redirect"
+                                                        checked
+                                                    />
+                                                    <label for="show-message">
+                                                        Show Message
+                                                    </label>
+                                                </span>
+                                                <span className="mintmrm-radiobtn">
+                                                    <input
+                                                        id="redirect-url"
+                                                        type="radio"
+                                                        name="message-redirect"
+                                                    />
+                                                    <label for="redirect-url">
+                                                        Redirect to an URL
+                                                    </label>
+                                                </span>
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="">
+                                                    Email Subject
+                                                    <span class="mintmrm-tooltip">
+                                                        <TooltipQuestionIcon />
+                                                        <p>
+                                                            Define behaviour of
+                                                            the form after
+                                                            submission
+                                                        </p>
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="email-subject"
+                                                    placeholder="Enter Email Subject"
+                                                />
                                             </div>
                                         </div>
                                     </div>
