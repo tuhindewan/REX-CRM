@@ -111,4 +111,16 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
     }
 
 
+    /**
+     * Optin GET request response test
+     */
+    public function test_get_route() {
+		$request = new WP_REST_Request( 'GET', '/mrm/v1/settings/optin' );
+        $response = $this->server->dispatch( $request );
+		$this->assertEquals( 200, $response->get_status() );
+        
+        $data  = $response->get_data();
+	}
+
+
 }
