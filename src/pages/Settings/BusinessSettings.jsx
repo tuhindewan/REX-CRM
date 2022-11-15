@@ -8,7 +8,14 @@ import UploadIcon from "../../components/Icons/UploadIcon";
 export default function BusinessSettings() {
   _.noConflict()
   let frame
+  const [tabState, setTabState] = useState(1);
 
+  //---business settings tab-----
+  const toggleTab = (index) => {
+    setTabState(index);
+  };
+
+  //-------logo upload from wp media--------
   const addLogo = (event) => {
     event.preventDefault()
 
@@ -60,10 +67,59 @@ export default function BusinessSettings() {
                     </h4>
                   </header>
 
-                  <div className="form-wrapper">
+                  <nav className="business-settings-tab-nav">
+                    <button type="button" className={tabState === 1 ? "active" : ""} onClick={() => toggleTab(1)} >Basic Settings</button>
+                    <button type="button" className={tabState === 2 ? "active" : ""} onClick={() => toggleTab(2)} >Social Media</button>
+                  </nav>
+
+                  <div className={ tabState === 1 ? "form-wrapper business-settings-wrapper active" : "form-wrapper business-settings-wrapper" }>
                     <div className="form-group">
                       <label htmlFor="business-name">Business Name</label>
-                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" pattern="" />
+                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="phone-number">Phone Number</label>
+                      <input type="text" name="phone-number" id="phone-number" placeholder="Enter Phone Number" />
+                    </div>
+
+                    <hr />
+
+                    <div className="form-group top-align">
+                      <label htmlFor="business-address">Business Address</label>
+                      <textarea name="business-address" id="business-address" cols="30" rows="3" placeholder="Enter Business Address "></textarea>
+                    </div>
+
+                    <hr />
+
+                    <div className="form-group top-align photo-upload">
+                      <label htmlFor="upload-logo">Upload Logo</label>
+                      
+                      <div className="photo-area">
+                        <div className="preview-img">
+                          <input type="hidden" id="preview-img-link" value="" />
+                          <img src="" id="preview-img-src" alt="logo" />
+                        </div>
+
+                        <div className="upload-area">
+                          <button onClick={addLogo} type="button">
+                            <span className="icon">
+                              <UploadIcon/>
+                            </span>
+                            <span className="title"><mark>Click to upload</mark> 
+                            {/* and drag and drop <br /> SVG, PNG JPG or GIF (max. 800x400px)  */}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div className={ tabState === 2 ? "form-wrapper social-settings-wrapper active" : "form-wrapper social-settings-wrapper" } >
+                    <div className="form-group">
+                      <label htmlFor="business-name">Business Name</label>
+                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" />
                     </div>
 
                     <div className="form-group">
