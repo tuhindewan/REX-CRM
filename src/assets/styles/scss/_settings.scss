@@ -164,7 +164,7 @@
                     }
                     .mintmrm-radiobtn {
                         margin-right: 30px;
-                        label::before{
+                        label::before {
                             width: 18px;
                             height: 18px;
                         }
@@ -172,6 +172,35 @@
                         label::after {
                             width: 8px;
                             height: 8px;
+                        }
+                    }
+                    .drop-down-button {
+                        margin-top: 12px;
+                        width: 100%;
+                        border: 1px solid #ebedf0;
+                        border-radius: 6px;
+                        padding: 15px;
+                        background-color: transparent;
+                        text-align: left;
+
+                        &::before {
+                            content: " ";
+                            display: block;
+                            position: absolute;
+                            border-style: solid;
+                            border-color: #686f7f;
+                            border-width: 0px 1px 1px 0px;
+                            transform: rotate(45deg);
+                            transition: border-width 150ms ease-in-out;
+                            height: 5px;
+                            right: 20px;
+                            top: 40%;
+                            width: 5px;
+                            cursor: pointer;
+                        }
+                        &.show::before {
+                            top: 47%;
+                            transform: rotate(225deg);
                         }
                     }
                 }
