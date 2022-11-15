@@ -14,7 +14,7 @@ use WP_REST_Request;
  * @desc [Responsible for managing double opt-in settings API callbacks]
  */
 
-class SettingController extends BaseController {
+class OptinSettingController extends SettingBaseController {
     
     use Singleton;
 
@@ -47,67 +47,18 @@ class SettingController extends BaseController {
 
 
     /**
-     * Delete request for tags
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_single( WP_REST_Request $request ){
-
-    }
-
-
-    /**
-     * Delete multiple tags
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_all( WP_REST_Request $request ){
-
-    }
-
-
-    /**
-     * Get all tags request for tags
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_all( WP_REST_Request $request ){
-
-
-    }
-
-
-    /**
      * Function used to handle a single get request
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
      * @since 1.0.0 
      */
-    public function get_single( WP_REST_Request $request ){
+    public function get( $key ){
  
 
 
     }
 
-
-    /**
-     * Get all contacts related to specific tag
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_contacts( WP_REST_Request $request )
-    {
-
-    }
 
 
 }

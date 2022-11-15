@@ -1,6 +1,6 @@
 <?php
 
-namespace Mint\MRM\Admin\API\Controllers\Settings;
+namespace Mint\MRM\Admin\API\Controllers;
 
 use WP_REST_Request;
 
@@ -12,7 +12,7 @@ use WP_REST_Request;
  * @desc [Abstract class for Settings REST API controller]
  */
 
-abstract class BaseController extends \WP_REST_Controller {
+abstract class SettingBaseController extends \WP_REST_Controller {
 
 	/**
      * REST API response code
@@ -53,11 +53,10 @@ abstract class BaseController extends \WP_REST_Controller {
      * @return array
      * @since 1.0.0
      */  
-	public function get_success_response( $message = '', $code = 0, $data = null ) {
+	public function get_success_response( $message = '' ) {
 		$response =  array(
-			'code'    => $code,
-			'message' => $message,
-			'data'  => $data,
+			'success'    => true,
+			'message' => $message
 		);
 
 		return rest_ensure_response($response);

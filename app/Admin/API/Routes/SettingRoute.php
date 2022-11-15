@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\Admin\API\Routes;
 
-use Mint\MRM\Admin\API\Controllers\SettingController;
+use Mint\MRM\Admin\API\Controllers\OptinSettingController;
 
 /**
  * @author [MRM Team]
@@ -48,7 +48,7 @@ class SettingRoute {
      */
     public function register_routes()
     {
-        $this->controller = SettingController::get_instance();
+        $this->controller = OptinSettingController::get_instance();
 
         /**
          * Register rest routes for double opt-in settings
