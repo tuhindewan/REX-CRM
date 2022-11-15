@@ -27,23 +27,6 @@
                     .mintmrm-btn {
                         margin-bottom: 0;
                     }
-                    &.outline {
-                        font-weight: 600;
-                        font-size: 16px;
-                        line-height: 1.19;
-                        color: #2d3149;
-                    }
-                    &.active,
-                    &:hover {
-                        background-color: #573bff;
-                        color: #fff;
-                        box-shadow: 0px 10px 16px rgba(97, 103, 116, 0.15);
-                        svg {
-                            path {
-                                fill: #ffffff;
-                            }
-                        }
-                    }
                 }
             }
 
@@ -178,6 +161,9 @@
                             margin-left: 13px;
                             filter: none;
                         }
+                    }
+                    .mintmrm-radiobtn {
+                        margin-right: 30px;
                     }
                 }
                 hr {
