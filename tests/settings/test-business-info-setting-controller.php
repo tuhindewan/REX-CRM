@@ -41,6 +41,14 @@ class Test_BusinessSettingController extends WP_UnitTestCase {
 		$response = self::$instance->create_or_update( $request );
 		$this->assertTrue(is_object($response) && get_class($response) ===  'WP_REST_Response' || get_class($response) ===  'WP_Error');
 
+		if( 'WP_REST_Response' === get_class( $response ) ) {
+			$this->assertTrue( 200 === $response->get_status() );
+		}
+		elseif( 'WP_Error' === get_class( $response ) ) {
+			$this->assertTrue( 400 === $response->get_error_code() );
+		}
+
+
 		$business_options_data = '';
 		$expected = is_array($business_options_data);
 		$actual = '';
