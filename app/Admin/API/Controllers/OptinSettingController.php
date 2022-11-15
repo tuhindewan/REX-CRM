@@ -62,7 +62,17 @@ class OptinSettingController extends SettingBaseController {
      * @since 1.0.0 
      */
     public function get(){
-        $settings = get_option( $this->option_key );
+
+        $default = [
+            "enable"                => true,
+            "email_subject"         => "",
+            "email_body"            => "",
+            "confirmation_type"     => "",
+            "confirmation_message"  => ""
+        ];
+
+        $settings = get_option( $this->option_key, $default );
+        $settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
         return $this->get_success_response_data( $settings );
     }
 
