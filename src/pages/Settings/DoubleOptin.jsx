@@ -54,7 +54,7 @@ export default function DoubleOptin() {
                                                         onChange={
                                                             handleSwitcher
                                                         }
-                                                        defaultChecked={true}
+                                                        defaultChecked={selectSwitch}
                                                     />
                                                     <label htmlFor="st"></label>
                                                 </span>
