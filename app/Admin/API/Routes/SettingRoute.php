@@ -3,6 +3,7 @@
 namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\WCSettingController;
+use Mint\MRM\Admin\API\Controllers\OptinSettingController;
 
 /**
  * @author [MRM Team]
@@ -56,7 +57,7 @@ class SettingRoute {
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
                     $this->wc_controller ,
-                    'update_woocommerce_settings'
+                    'create_or_update'
                 ],
                 'permission_callback' => [
                     $this->wc_controller ,
@@ -67,7 +68,7 @@ class SettingRoute {
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
                     $this->wc_controller ,
-                    'get_woocommerce_settings'
+                    'get'
                 ],
                 'permission_callback' => [
                     $this->wc_controller ,
@@ -75,6 +76,40 @@ class SettingRoute {
                 ] ,
             ],
         ]);
-    }
 
+        $this->controller = OptinSettingController::get_instance();
+
+        /**
+         * Register rest routes for double opt-in settings
+         * @since 1.0.0
+        */  
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/optin', [
+
+        // POST request for store on wp_options table
+        [
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [
+                $this->controller ,
+                'create_or_update'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ] ,
+        ],
+
+        // GET request for retrieving double opt-in settings
+        [
+            'methods' => \WP_REST_Server::READABLE,
+            'callback' => [
+                $this->controller ,
+                'get_single'
+            ],
+            'permission_callback' => [
+                $this->controller ,
+                'rest_permissions_check'
+            ] ,
+        ]
+    ]);
+    }
 }

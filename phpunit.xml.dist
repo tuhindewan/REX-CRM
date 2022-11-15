@@ -9,7 +9,8 @@
 >
     <testsuites>
         <testsuite name="sample">
-            <directory prefix="test-" suffix=".php">./tests/settings/</directory>
+<!--            <file>tests/settings/test-wc-route.php</file>-->
+            <file>tests/settings/test-wc-controller.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
