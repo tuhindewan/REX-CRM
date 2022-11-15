@@ -88,6 +88,10 @@
             }
 
             .tab-header {
+                border-bottom: 1px solid #EBEDF0;
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+
                 .title {
                     font-size: 20px;
                     line-height: 1.2;
@@ -114,6 +118,7 @@
                     align-items: center;
                     flex-flow: row wrap;
                     margin-bottom: 22px;
+
                     &:last-child {
                         margin-bottom: 0;
                     }
@@ -128,6 +133,7 @@
                         display: flex;
                         align-items: center;
                         gap: 9px;
+
                         .mintmrm-tooltip {
                             svg {
                                 rect {
@@ -136,6 +142,15 @@
                             }
                         }
                     }
+
+                    &.top-align {
+                        align-items: flex-start;
+
+                        & > label {
+                            padding-top: 0;
+                        }
+                    }
+                    
                     input[type="url"],
                     input[type="number"],
                     input[type="email"],
