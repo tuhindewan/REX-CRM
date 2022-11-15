@@ -1,0 +1,29 @@
+.mintmrm-settings-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+
+    .settings-navbar {
+        width: 314px;
+        background: #fff;
+        box-shadow: 0px 1px 1px #b6b9bf4d;
+        border-radius: 10px;
+
+        ul {
+            li {
+                // border: 1px solid #E3E2E7;
+                // border-radius: 8px;
+                // font-weight: 600;
+                // font-size: 15px;
+                // line-height: 1.2;
+                // color: #2D3149;
+                // padding: 17px 20px;
+                // display: flex;
+                // align-items: center;
+
+                svg {
+                    margin-right: 9px;
+                }
+            }
+        }
+    }
+}
