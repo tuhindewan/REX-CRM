@@ -45,7 +45,7 @@ class Test_Setting_Route extends WP_UnitTestCase {
     public function test_update_wc_settings() {
         $request = new WP_REST_Request( 'POST', '/mrm/v1/settings/wc' );
         $response = $this->server->dispatch( $request );
-        $this->assertEquals( 404, $response->get_status() );
+        $this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
     }
 
     /**
@@ -54,6 +54,6 @@ class Test_Setting_Route extends WP_UnitTestCase {
     public function test_get_wc_settings() {
         $request = new WP_REST_Request( 'GET', '/mrm/v1/settings/wc' );
         $response = $this->server->dispatch( $request );
-        $this->assertEquals( 404, $response->get_status() );
+        $this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
     }
 }

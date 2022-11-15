@@ -1,1 +1,1 @@
-{"version":1,"defects":{"Test_Setting_Route::test_get_contacts":3},"times":{"Test_Setting_Route::test_get_contacts":0.051}}
+{"version":1,"defects":{"Test_Setting_Route::test_get_contacts":3,"Test_Setting_Route::test_update_wc_settings":3,"Test_Setting_Route::test_get_wc_settings":3},"times":{"Test_Setting_Route::test_get_contacts":0.051,"Test_Setting_Route::test_update_wc_settings":0.046,"Test_Setting_Route::test_get_wc_settings":0.003}}
