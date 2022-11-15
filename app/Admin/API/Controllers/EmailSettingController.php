@@ -15,7 +15,7 @@ use Exception;
  * @desc [Responsible for managing double opt-in settings API callbacks]
  */
 
-class EmailSettingController {
+class EmailSettingController extends SettingBaseController {
     
     use Singleton;
 
@@ -117,15 +117,15 @@ class EmailSettingController {
         return $failed_data;
     }
 
+
     /**
-     * Get email settings
+     * Function used to handle a single get request
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
-     * @since 1.0.0
+     * @since 1.0.0 
      */
-    public function get_email_settings( ){
-        
+    public function get( $key ){
         if (!get_option('email_settings')){
             $email_settings_data_failed = array(
                 'code'    => 400,
@@ -142,16 +142,5 @@ class EmailSettingController {
 
         return $email_settings_data;
     }
-
-    /**
-     * User accessability check for REST API
-     * 
-     * @return bool
-     * @since 1.0.0
-     */  
-	public function rest_permissions_check()
-	{
-		return true;
-	}
 
 }

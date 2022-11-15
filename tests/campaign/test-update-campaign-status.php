@@ -82,45 +82,45 @@ class UpdateCampaignStatusTest extends WP_UnitTestCase {
         $this->assertEquals($update, 0);
     }
 
-    public function test_batch_v1_optin( $allow_batch, $allowed ) {
-		$args = array(
-			'methods'             => 'POST',
-			'callback'            => static function () {
-				return new WP_REST_Response( 'data' );
-			},
-			'permission_callback' => '__return_true',
-		);
+    // public function test_batch_v1_optin( $allow_batch, $allowed ) {
+	// 	$args = array(
+	// 		'methods'             => 'POST',
+	// 		'callback'            => static function () {
+	// 			return new WP_REST_Response( 'data' );
+	// 		},
+	// 		'permission_callback' => '__return_true',
+	// 	);
 
-		if ( null !== $allow_batch ) {
-			$args['allow_batch'] = $allow_batch;
-		}
+	// 	if ( null !== $allow_batch ) {
+	// 		$args['allow_batch'] = $allow_batch;
+	// 	}
 
-		register_rest_route(
-			'test-ns/v1',
-			'/test',
-			$args
-		);
+	// 	register_rest_route(
+	// 		'test-ns/v1',
+	// 		'/test',
+	// 		$args
+	// 	);
 
-		$request = new WP_REST_Request( 'POST', '/batch/v1' );
-		$request->set_body_params(
-			array(
-				'requests' => array(
-					array(
-						'path' => '/test-ns/v1/test',
-					),
-				),
-			)
-		);
+	// 	$request = new WP_REST_Request( 'POST', '/batch/v1' );
+	// 	$request->set_body_params(
+	// 		array(
+	// 			'requests' => array(
+	// 				array(
+	// 					'path' => '/test-ns/v1/test',
+	// 				),
+	// 			),
+	// 		)
+	// 	);
 
-		$response = rest_do_request( $request );
+	// 	$response = rest_do_request( $request );
 
-		$this->assertSame( 207, $response->get_status() );
+	// 	$this->assertSame( 207, $response->get_status() );
 
-		if ( $allowed ) {
-			$this->assertSame( 'data', $response->get_data()['responses'][0]['body'] );
-		} else {
-			$this->assertSame( 'rest_batch_not_allowed', $response->get_data()['responses'][0]['body']['code'] );
-		}
-	}
+	// 	if ( $allowed ) {
+	// 		$this->assertSame( 'data', $response->get_data()['responses'][0]['body'] );
+	// 	} else {
+	// 		$this->assertSame( 'rest_batch_not_allowed', $response->get_data()['responses'][0]['body']['code'] );
+	// 	}
+	// }
 
 }
