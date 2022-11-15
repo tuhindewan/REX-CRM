@@ -18,7 +18,9 @@ class Test_Setting_Route extends WP_UnitTestCase {
     private $server;
 
     /**
-     * Create a user and a post for our test.
+     * @desc Setup initial dependencies
+     * @return void
+     * @since 1.0.0
      */
     public function setUp():void {
         // Initiating the REST API.

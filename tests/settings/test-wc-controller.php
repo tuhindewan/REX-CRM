@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Test_Setting_Controller
+ * Class Test_WC_Controller
  *
  * @package mrm
  */
@@ -13,17 +13,18 @@
  */
 class Test_WC_Controller extends WP_UnitTestCase {
     private static $instance;
-    private static $reflector;
 
     /**
-     * @throws ReflectionException
+     * @desc Setup initial dependencies
+     * @return void
+     * @since 1.0.0
      */
     public function setUp(): void {
         self::$instance = \Mint\MRM\Admin\API\Controllers\WCSettingController::get_instance();
     }
 
     /**
-     * @desc Test case for create_or_update function
+     * @desc Test case for create_or_update() function
      * in WCSettingController class
      * @test
      * @return void
@@ -40,6 +41,7 @@ class Test_WC_Controller extends WP_UnitTestCase {
         ];
         $request->set_body( json_encode( $body ) );
         $response = self::$instance->create_or_update( $request );
+        $this->assertTrue( is_object( $response ) && 'WP_REST_Response' === get_class( $response ) );
         $this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
     }
 
