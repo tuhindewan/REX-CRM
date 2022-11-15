@@ -42,8 +42,17 @@ class Test_Setting_Route extends WP_UnitTestCase {
     /**
      * A single example test.
      */
-    public function test_get_contacts() {
+    public function test_update_wc_settings() {
         $request = new WP_REST_Request( 'POST', '/mrm/v1/settings/wc' );
+        $response = $this->server->dispatch( $request );
+        $this->assertEquals( 404, $response->get_status() );
+    }
+
+    /**
+     * A single example test.
+     */
+    public function test_get_wc_settings() {
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/settings/wc' );
         $response = $this->server->dispatch( $request );
         $this->assertEquals( 404, $response->get_status() );
     }
