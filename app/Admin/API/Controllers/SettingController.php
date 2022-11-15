@@ -3,6 +3,7 @@
 namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\Mrm\Internal\Traits\Singleton;
+use MRM\Common\MRM_Common;
 use WP_REST_Request;
 
 /**
@@ -18,7 +19,7 @@ class SettingController extends BaseController {
     use Singleton;
 
     /**
-     * Tag object arguments
+     * Setiings object arguments
      * 
      * @var object
      * @since 1.0.0
@@ -26,7 +27,7 @@ class SettingController extends BaseController {
     public $args;
 
     /**
-     * Get and send response to create a new tag
+     * Get and send response to create a new settings
      * 
      * @param WP_REST_Request
      * @return WP_REST_Response
@@ -34,6 +35,14 @@ class SettingController extends BaseController {
      */
     public function create_or_update( WP_REST_Request $request ){
 
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+        
+        if( array_key_exists( 'optin', $params ) ){
+
+            $setting_value = maybe_serialize( $params['optin'] );
+            update_option('_mrm_optin_settings',  $setting_value);
+        }
     }
 
 
