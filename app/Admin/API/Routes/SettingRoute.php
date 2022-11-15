@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\Admin\API\Routes;
 
-use Mint\MRM\Admin\API\Controllers\SettingController;
+use Mint\MRM\Admin\API\Controllers\EmailSettingController;
 
 /**
  * @author [MRM Team]
@@ -48,7 +48,7 @@ class SettingRoute {
      */
     public function register_routes()
     {
-        $this->controller = SettingController::get_instance();
+        $this->controller = EmailSettingController::get_instance();
 
         /**
          * Settings email endpoints
