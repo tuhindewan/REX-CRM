@@ -34,7 +34,7 @@ class WCSettingController extends SettingBaseController {
         ];
 
         if( update_option( '_mrm_woocommerce_settings', $params ) ) {
-            return $this->get_success_response( __( 'WooCommerce settings has been successfully saved.', 'mrm' ), 200 );
+            return $this->get_success_response( __( 'WooCommerce settings has been successfully saved.', 'mrm' ) );
         }
         return $this->get_error_response( __( 'No changes have been made.', 'mrm' ), 400 );
     }
@@ -44,7 +44,7 @@ class WCSettingController extends SettingBaseController {
      * @return array
      * @since 1.0.0
      */
-    public function get( $key ) {
+    public function get() {
         $default  = [
             'enable'         => false,
             'checkbox_label' => 'Please put a checkbox label.',
@@ -54,6 +54,6 @@ class WCSettingController extends SettingBaseController {
         ];
         $settings = get_option( '_mrm_woocommerce_settings', $default );
         $settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
-        return $this->get_success_response( __( 'WooCommerce settings has been successfully fetched.', 'mrm' ), 200, $settings );
+        return $this->get_success_response_data(  $settings );
     }
 }

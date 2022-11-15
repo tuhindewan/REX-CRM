@@ -43,6 +43,7 @@ class Test_WC_Controller extends WP_UnitTestCase {
         $response = self::$instance->create_or_update( $request );
         $this->assertTrue( is_object( $response ) && 'WP_REST_Response' === get_class( $response ) );
         $this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
+        $this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
     }
 
     /**
@@ -62,7 +63,9 @@ class Test_WC_Controller extends WP_UnitTestCase {
         ];
         update_option( '_mrm_woocommerce_settings', $body );
         $response = self::$instance->get();
+        $this->assertTrue( is_object( $response ) && 'WP_REST_Response' === get_class( $response ) );
         $this->assertTrue( 200 === $response->get_status() );
+        $this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
     }
 
 }
