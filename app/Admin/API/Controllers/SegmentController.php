@@ -109,14 +109,14 @@ class SegmentController extends BaseController {
 
         // Count contacts groups
         $segments['count_groups'] = [
-            'segments'     => absint( $segments['total_count'] ),
-            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
-            'contacts'  => ContactModel::get_contacts_count(),
-            'lists'  => ContactGroupModel::get_groups_count( "lists" )
+            'segments'     => absint( isset($segments['total_count']) ? $segments['total_count'] : "" ),
+            'tags'         => ContactGroupModel::get_groups_count( "tags" ),
+            'contacts'     => ContactModel::get_contacts_count(),
+            'lists'        => ContactGroupModel::get_groups_count( "lists" )
         ];
 
         $segments['data'] = array_map(function($segment){
-                                $segment_data = maybe_unserialize( $segment->data );
+                                $segment_data = maybe_unserialize( isset($segment->data) ?  $segment->data : "");
                                 $segment->description = isset($segment_data['description']) ? $segment_data['description'] : "";
                                 return $segment;
                             }, $segments['data']);
