@@ -1,28 +1,40 @@
-.mintmrm-settings-wrapper {
-    display: flex;
-    flex-flow: row wrap;
+.contact-settings-page {
+    padding-top: 40px;
 
-    .settings-navbar {
-        width: 314px;
-        background: #fff;
-        box-shadow: 0px 1px 1px #b6b9bf4d;
-        border-radius: 10px;
+    .mintmrm-settings {
+        .conatct-heading {
+            font-weight: 600;
+            font-size: 30px;
+            line-height: 36px;
+            color: #2d3149;
+            margin-bottom: 25px;
+        }
+        .mintmrm-settings-wrapper {
+            display: flex;
+            flex-flow: row wrap;
+            gap: 24px;
+            
+            .settings-navbar {
+                width: 314px;
+                background: #fff;
+                box-shadow: 0px 1px 1px #b6b9bf4d;
+                border-radius: 10px;
+                padding: 24px;
 
-        ul {
-            li {
-                // border: 1px solid #E3E2E7;
-                // border-radius: 8px;
-                // font-weight: 600;
-                // font-size: 15px;
-                // line-height: 1.2;
-                // color: #2D3149;
-                // padding: 17px 20px;
-                // display: flex;
-                // align-items: center;
-
-                svg {
-                    margin-right: 9px;
+                .mintmrm-btn.single-link {
+                    display: flex;
+                    align-items: center;
+                    padding: 18px 20px;
+                    svg {
+                        margin-right: 9px;
+                        
+                    }
                 }
+            }
+            .settings-tab-content{
+                background: #FFFFFF;
+                box-shadow: 0px 1px 1px rgb(182 185 191 / 30%);
+                border-radius: 10px;
             }
         }
     }
