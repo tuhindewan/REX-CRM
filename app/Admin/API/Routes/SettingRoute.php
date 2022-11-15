@@ -49,6 +49,31 @@ class SettingRoute {
     public function register_routes()
     {
         $this->controller = SettingController::get_instance();
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/wc/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->controller ,
+                    'update_woocommerce_settings'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->controller ,
+                    'get_woocommerce_settings'
+                ],
+                'permission_callback' => [
+                    $this->controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
     }
 
 }
