@@ -8,6 +8,7 @@ import SuccessfulNotification from "./SuccessfulNotification";
 export default function NoteDrawer(props) {
   const { isCloseNote, setIsCloseNote, refresh, setRefresh } = props;
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -73,6 +74,7 @@ export default function NoteDrawer(props) {
 
     result.then((response) => {
       if (201 === response.code) {
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(response?.message);
         setIsCloseNote(!isCloseNote);
@@ -185,6 +187,8 @@ export default function NoteDrawer(props) {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

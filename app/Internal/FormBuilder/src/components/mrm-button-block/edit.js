@@ -1,6 +1,5 @@
-import React from "react";
-import classnames from "classnames";
 import PropTypes from "prop-types";
+import React from "react";
 import Typography from "../../components/components/Typography";
 
 import { __ } from "@wordpress/i18n";
@@ -345,7 +344,7 @@ class Editor extends Component {
           </BlockControls>
           <RichText
             className="mrm-submit-button mintmrm-btn"
-            tagName="button"
+            tagName="p"
             type="button"
             value={buttonText}
             style={buttonStyle}

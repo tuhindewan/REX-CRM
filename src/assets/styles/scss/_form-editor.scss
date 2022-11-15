@@ -327,13 +327,8 @@
                   padding-right: 0;
                   font-weight: 500;
                   font-size: 14px;
-                  line-height: 10px;
                   letter-spacing: -0.01em;
                   color: #2d3149;
-                }
-                label:after {
-                  top: 3px;
-                  left: 5px;
                 }
               }
               .mintmrm-checkbox:hover {
@@ -475,10 +470,6 @@
 
               &:hover {
                 background-color: #f6f8fa;
-              }
-
-              .mrm-custom-select-label {
-                line-height: 1.1;
               }
             }
           }

@@ -102,7 +102,7 @@ class FormModel {
         $args['title']        = !empty($form->get_title()) ? $form->get_title() : "";
         $args['form_body']    = !empty($form->get_form_body()) ? $form->get_form_body() : "";
         $args['form_position']= !empty($form->get_form_position()) ? $form->get_form_position() : "";
-        $args['status']       = !empty($form->get_status() ? $form->get_status() : 0);
+        $args['status']       = $form->get_status();
         $args['template_id']  = !empty($form->get_template_id() ? $form->get_template_id() : "");
         $args['created_by']   = !empty($form->get_created_by() ? $form->get_created_by() : "");
         $args['updated_at']   = current_time('mysql'); 
@@ -239,8 +239,7 @@ class FormModel {
         // Prepare sql results for list view
         try {        
             // Return forms for a contact in list view
-            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT `id`,`title` FROM $form_table WHERE status = %d ORDER BY id DESC", array(1 ) ), ARRAY_A );
-
+            $select_query = $wpdb->get_results( $wpdb->prepare( "SELECT `id`,`title` FROM $form_table WHERE status = %s ORDER BY id DESC", array( 'published' ) ), ARRAY_A );
             return array(
                 'data'        => $select_query
             );

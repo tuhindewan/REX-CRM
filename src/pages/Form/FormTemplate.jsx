@@ -9,9 +9,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import FormSingleTemplate from "../TemplateGallery/FormSingleTemplate";
 
-import ArrowLeftIcon from "../../components/Icons/ArrowLeftIcon";
-import ArrowRightIcon from "../../components/Icons/ArrowRightIcon";
-
 const FormTemplate = (props) => {
   let navigate = useNavigate();
 
@@ -21,10 +18,13 @@ const FormTemplate = (props) => {
   const [isTemplateBuilder, setIsTemplateBuilder] = useState(true);
   const [isFormBuilderOpen, setIsFormBuilderOpen] = useState(false);
   const [formTemplates, setFormTemplates] = useState([]);
+  const [formTemplatesFilter, setFormTemplatesFilter] = useState([]);
   const [countFormTemplates, setCountFormTemplates] = useState(0);
   const [formBuilderUrl, setFormBuilderUrl] = useState(
     `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
   );
+
+  const [formPositionActive, setFormPositionActive] = useState("popup");
 
   const closeSection = () => {
     setIsClose(!isClose);
@@ -70,6 +70,10 @@ const FormTemplate = (props) => {
   useEffect(() => {
     getAllTemplates(1, 10).then((response) => {
       setFormTemplates(response.forms);
+      const updateItems = response.forms.filter((curElem) => {
+        return curElem.form_position === "popup";
+      });
+      setFormTemplatesFilter(updateItems);
       setCountFormTemplates(response.count);
     });
   }, []);
@@ -86,6 +90,20 @@ const FormTemplate = (props) => {
     window.location.replace(formBuilderUrl);
     window.location.reload();
   };
+  const SelectFilter = (filter) => {
+    setFormPositionActive(filter);
+    const updateItems = formTemplates.filter((curElem) => {
+      return curElem.form_position === filter;
+    });
+    setFormTemplatesFilter(updateItems);
+  };
+  const FormPosition = [
+    { label: "Pop Up", value: "popup" },
+    { label: "Fly Ins", value: "flyins" },
+    { label: "Fixed on top", value: "fixed-on-top" },
+    { label: "Fixed on bottom", value: "fixed-on-bottom" },
+    { label: "Fixed on right", value: "fixed-on-right" },
+  ];
 
   return (
     <>
@@ -106,20 +124,29 @@ const FormTemplate = (props) => {
               <h4 className="modal-title">Choose Form</h4>
 
               <ul className="template-filter">
-                <li className="active">Pop-up</li>
-                <li>Slide-in</li>
-                <li>Fixed bar</li>
-                <li>Below pages</li>
+                {FormPosition.map((position) => {
+                  return (
+                    <li
+                      key={position.value}
+                      className={
+                        formPositionActive == position.value ? "active" : ""
+                      }
+                      onClick={() => SelectFilter(position.value)}
+                    >
+                      {position.label}
+                    </li>
+                  );
+                })}
               </ul>
 
-              <div className="template-type">
-                <select name="" id="">
-                  <option value="">Form Type</option>
-                  <option value="">Popup</option>
-                  <option value="">Embeded</option>
-                  <option value="">Landing Page</option>
-                </select>
-              </div>
+              {/*<div className="template-type">*/}
+              {/*  <select name="" id="">*/}
+              {/*    <option value="">Form Type</option>*/}
+              {/*    <option value="">Popup</option>*/}
+              {/*    <option value="">Embeded</option>*/}
+              {/*    <option value="">Landing Page</option>*/}
+              {/*  </select>*/}
+              {/*</div>*/}
             </div>
 
             <div className="template-modal-body">
@@ -144,8 +171,8 @@ const FormTemplate = (props) => {
                   </div>
                 </div>
 
-                {formTemplates?.length > 0 ? (
-                  formTemplates.map((template) => {
+                {formTemplatesFilter?.length > 0 ? (
+                  formTemplatesFilter.map((template) => {
                     return (
                       <FormSingleTemplate
                         key={template.id}
@@ -166,7 +193,7 @@ const FormTemplate = (props) => {
               </div>
             </div>
 
-            <div className="template-modal-footer">
+            {/* <div className="template-modal-footer">
               <div className="template-pagination">
                 <button type="button" className="prev">
                   <ArrowLeftIcon />
@@ -176,7 +203,7 @@ const FormTemplate = (props) => {
                   <ArrowRightIcon />
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

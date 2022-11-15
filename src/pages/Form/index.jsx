@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AlertPopup from "../../components/AlertPopup";
 import DeletePopup from "../../components/DeletePopup";
 import CopyIcon from "../../components/Icons/CopyIcon";
@@ -9,6 +9,7 @@ import FormIconXL from "../../components/Icons/FormIconXL";
 import Plus from "../../components/Icons/Plus";
 import Search from "../../components/Icons/Search";
 import ThreeDotIcon from "../../components/Icons/ThreeDotIcon";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import Pagination from "../../components/Pagination";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
@@ -19,7 +20,6 @@ import {
 } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import FormTemplate from "./FormTemplate";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function FormIndex(props) {
   // Admin active menu selection
@@ -81,6 +81,7 @@ export default function FormIndex(props) {
 
   // Variables to show notifications
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
   const [deleteTitle, setDeleteTitle] = useState("");
@@ -193,6 +194,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (200 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -233,6 +235,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (200 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -272,6 +275,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (201 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -297,6 +301,7 @@ export default function FormIndex(props) {
         .then((response) => response.json())
         .then((response) => {
           if (201 === response.code) {
+            setNotificationType("success");
             setShowNotification("block");
             setMessage(response.message);
             toggleRefresh();
@@ -376,8 +381,8 @@ export default function FormIndex(props) {
   const handleTitleShrink = (title) => {
     if (26 > title.length) {
       return title;
-    }else {
-      return title.slice(0,25)+'...';
+    } else {
+      return title.slice(0, 25) + "...";
     }
   };
 
@@ -679,6 +684,8 @@ export default function FormIndex(props) {
           display={showNotification}
           setShowNotification={setShowNotification}
           message={message}
+          notificationType={notificationType}
+          setNotificationType={setNotificationType}
         />
       </div>
 

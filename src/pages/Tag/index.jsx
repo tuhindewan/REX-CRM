@@ -101,6 +101,7 @@ const Tags = () => {
   const [selected, setSelected] = useState([]);
   const [errors, setErrors] = useState({});
   const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
   const [message, setMessage] = useState("");
   const [isDelete, setIsDelete] = useState("none");
   const [tagID, setTagID] = useState();
@@ -204,6 +205,7 @@ const Tags = () => {
           title: "",
           data: "",
         });
+        setNotificationType("success");
         setShowNotification("block");
         setShowCreate(false);
         setEditID(0);
@@ -259,6 +261,7 @@ const Tags = () => {
     if (status) {
       deleteSingleTag(tagID).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -291,6 +294,7 @@ const Tags = () => {
     if (status) {
       deleteMultipleTagsItems(selected).then((response) => {
         if (200 === response.code) {
+          setNotificationType("success");
           setShowNotification("block");
           setMessage(response.message);
           toggleRefresh();
@@ -589,6 +593,8 @@ const Tags = () => {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
     </>
   );

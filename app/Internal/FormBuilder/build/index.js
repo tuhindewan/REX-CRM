@@ -13703,16 +13703,13 @@ mrmButton.propTypes = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _components_components_Typography__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/components/Typography */ "./src/components/components/Typography.js");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
-
+/* harmony import */ var _components_components_Typography__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/components/Typography */ "./src/components/components/Typography.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
@@ -13765,10 +13762,10 @@ const {
 
 class Editor extends Component {
   static propTypes = {
-    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().object.isRequired),
-    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().bool.isRequired),
-    name: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string.isRequired),
-    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().func.isRequired)
+    attributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().object.isRequired),
+    isSelected: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().bool.isRequired),
+    name: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string.isRequired),
+    setAttributes: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().func.isRequired)
   };
   onChangeAttribute = (key, value) => {
     this.props.setAttributes({
@@ -13818,8 +13815,8 @@ class Editor extends Component {
       initialOpen: false
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mrm-block-typography"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Typography"),
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_components_Typography__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Typography"),
       value: typography,
       onChange: value => setAttributes({
         typography: value
@@ -13842,7 +13839,7 @@ class Editor extends Component {
       onChange: buttonBgColor => this.onChangeAttribute("buttonBgColor", buttonBgColor),
       value: attributes.buttonBgColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Font size", "mrm"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Font size", "mrm"),
       value: attributes.buttonFontSize,
       onChange: btnBorder => this.onChangeAttribute("buttonFontSize", btnBorder),
       allowReset: true,
@@ -13851,7 +13848,7 @@ class Editor extends Component {
       max: 100,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Line Height", "mrm"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Line Height", "mrm"),
       value: attributes.lineHeight,
       onChange: btn_lineHeight => setAttributes({
         lineHeight: btn_lineHeight
@@ -13862,7 +13859,7 @@ class Editor extends Component {
       max: 100,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Letter Spacing", "mrm"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Letter Spacing", "mrm"),
       value: attributes.letterSpacing,
       onChange: btn_letterSpacing => setAttributes({
         letterSpacing: btn_letterSpacing
@@ -13906,7 +13903,7 @@ class Editor extends Component {
         label: "double"
       }]
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Button Outline Style", "mrm"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Button Outline Style", "mrm"),
       value: attributes.outline,
       onChange: outline_style => this.onChangeOutlineStyle("outline", outline_style),
       options: [{
@@ -13942,7 +13939,7 @@ class Editor extends Component {
       onChange: buttonBorderColor => this.onChangeAttribute("buttonBorderColor", buttonBorderColor),
       value: attributes.buttonBorderColor
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Padding Top & Bottom", "wpfnl"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Padding Top & Bottom", "wpfnl"),
       value: attributes.paddingTopBottom,
       onChange: btn_padding_top_bottom => setAttributes({
         paddingTopBottom: btn_padding_top_bottom
@@ -13953,7 +13950,7 @@ class Editor extends Component {
       max: 100,
       step: 1
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RangeControl, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Padding Left & Right", "mrm"),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Padding Left & Right", "mrm"),
       value: attributes.paddingLeftRight,
       onChange: btn_padding_left_right => setAttributes({
         paddingLeftRight: btn_padding_left_right
@@ -14030,14 +14027,14 @@ class Editor extends Component {
       controls: ["left", "center", "right"]
     })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
       className: "mrm-submit-button mintmrm-btn",
-      tagName: "button",
+      tagName: "p",
       type: "button",
       value: buttonText,
       style: buttonStyle,
       onChange: content => this.props.setAttributes({
         buttonText: content
       }),
-      placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Submit", "mrm")
+      placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("Submit", "mrm")
     })));
   }
 }

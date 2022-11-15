@@ -58,6 +58,9 @@ class CampaignController extends BaseController {
         if ( isset($params['title']) && empty( $params['title'] )) {
             $params['title'] = "Untitled";
         }
+        if ( strlen( $params['title'] ) > 150 ) {
+            return $this->get_error_response( __( 'Campaign title character limit exceeded 150 characters', 'mrm' ), 200);
+        }
 
         $emails = isset($params['emails']) ? $params['emails'] : array();
 

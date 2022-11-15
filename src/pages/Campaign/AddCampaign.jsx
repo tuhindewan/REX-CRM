@@ -9,9 +9,9 @@ import SettingIcon from "../../components/Icons/SettingIcon";
 import TemplateIcon from "../../components/Icons/TemplateIcon";
 import UpArrowIcon from "../../components/Icons/UpArrowIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 import ToolTip from "../../components/ToolTip";
 import useUnload from "../../components/Unload";
-import WarningNotification from "../../components/WarningNotification";
 import { submitCampaign } from "../../services/Campaign";
 import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
@@ -50,15 +50,17 @@ export default function AddCampaign(props) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [isClose, setIsClose] = useState(true);
   const [isTemplate, setIsTemplate] = useState(true);
-  const [responseMessage, setResponseMessage] = useState("");
   const [delay, setDelay] = useState();
   const [dropDown, setDropDown] = useState(false);
   const [errors, setErrors] = useState({});
   const [refresh, setRefresh] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [isPublishValid, setIsPublishValid] = useState(false);
-  const [showWarning, setShowWarning] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
+  const [subjectCursorPosition, setSubjectCursorPosition] = useState(0 );
+  const [prevCursorPosition, setPrevCursorPosition] = useState(0 );
 
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -68,7 +70,17 @@ export default function AddCampaign(props) {
 
   const [previewPersonalization, setPreviewPersonalization] = useState(false);
   const [subjectPersonalization, setSubjectPersonalization] = useState(false);
-  const [showNotification, setShowNotification] = useState("none");
+
+  // Outside click events for bulk action dropdown
+  const subjSettingsIconRef = useRef(null);
+  useEffect(
+      ListenForOutsideClicks( listening, setListening, subjSettingsIconRef, setSubjectPersonalization )
+  );
+  // Outside click events for bulk action dropdown
+  const prevSettingsIconRef = useRef(null);
+  useEffect(
+      ListenForOutsideClicks( listening, setListening, prevSettingsIconRef, setPreviewPersonalization )
+  );
 
   const [listAdder, setListAdder] = useState({
     lists: [],
@@ -102,6 +114,24 @@ export default function AddCampaign(props) {
       elems[i].style.display = "none";
     }
   }
+
+  // handler function for campaign title
+  const handleTitleChange = async (event) => {
+    const { name, value } = event.target;
+
+    if( value.length > 150 ) {
+      setErrors({
+        ...errors,
+        title: "Campaign title character limit exceeded 150 characters",
+      });
+    }else{
+      setErrors({
+        ...errors,
+        title: "",
+      });
+      setCampaignTitle(value);
+    }
+  };
 
   // Prepare campaign object and send post request to backend
   const saveCampaign = async (status) => {
@@ -139,6 +169,8 @@ export default function AddCampaign(props) {
       }),
     };
 
+    setErrors({});
+    
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
@@ -146,7 +178,8 @@ export default function AddCampaign(props) {
           state: { status: "campaign-created", message: response?.message },
         });
       } else {
-        setShowWarning("block");
+        setNotificationType("warning");
+        setShowNotification("block");
         setMessage(response?.message);
       }
       ClearNotification("none", setShowNotification);
@@ -173,25 +206,6 @@ export default function AddCampaign(props) {
     });
   };
 
-  const validateCampaign = (value, index) => {
-    if (value.length > 0) {
-      setShowWarning("block");
-      setMessage("Sender Email is missing on email " + (index + 1));
-      return false;
-    } else if (
-      !new RegExp(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/
-      ).test(value)
-    ) {
-      setShowWarning("block");
-      setMessage("Sender Email Address is not valid on email" + (index + 1));
-      return false;
-    } else {
-      setErrors({});
-      return true;
-    }
-  };
-
   const validateSenderEmail = (event, name, value) => {
     if (
       !new RegExp(
@@ -215,7 +229,13 @@ export default function AddCampaign(props) {
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
-      if (name == "subject" || name == "preview") {
+      if ( 'subject' === name ) {
+        setSubjectCursorPosition( e.target.selectionStart );
+      }
+      else if( 'preview' === name ) {
+        setPrevCursorPosition( e.target.selectionStart );
+      }
+        if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
       }
       if (name == "senderEmail") {
@@ -340,7 +360,10 @@ export default function AddCampaign(props) {
   // Set email subject text custom tag/placeholder
   const handleSubjectPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.subject;
-    const newData = prevData + " " + placeholder;
+    const prevDataFirstHalf = prevData.substring( 0, subjectCursorPosition );
+    const prevDataSecondHalf = prevData.substring( subjectCursorPosition, prevData.length );
+    const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
+    setSubjectCursorPosition( subjectCursorPosition + placeholder.length );
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -356,7 +379,10 @@ export default function AddCampaign(props) {
   // Set email preview text custom tag/placeholder
   const handlePreviewPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.preview;
-    const newData = prevData + " " + placeholder;
+    const prevDataFirstHalf = prevData.substring( 0, prevCursorPosition );
+    const prevDataSecondHalf = prevData.substring( prevCursorPosition, prevData.length );
+    const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
+    setPrevCursorPosition( prevCursorPosition + placeholder.length );
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -439,9 +465,18 @@ export default function AddCampaign(props) {
                         type="text"
                         name="title"
                         value={campaignTitle}
-                        onChange={(e) => setCampaignTitle(e.target.value)}
+                        onChange={(event) => handleTitleChange(event)}
                         placeholder="Enter Campaign title"
                       />
+                      <p
+                        className={
+                          errors?.title
+                            ? "error-message show"
+                            : "error-message"
+                        }
+                      >
+                        {errors?.title}
+                      </p>
                     </div>
                     <div className="email-to input-item">
                       <div className="select-options" ref={menuRef}>
@@ -538,12 +573,15 @@ export default function AddCampaign(props) {
                     name="subject"
                     value={emailData[selectedEmailIndex]?.subject}
                     onChange={handleEmailFieldsChange}
+                    onClick={function ( e ) {
+                      setSubjectCursorPosition( e.target.selectionStart )
+                    }}
                     placeholder="Be Specific and concise to spark interest"
                   />
                   <span>
                     {emailData[selectedEmailIndex]?.subject.length}/200
                   </span>
-                  <div className="setting-section">
+                  <div className="setting-section" ref={subjSettingsIconRef}>
                     <div
                       onClick={() => {
                         setSubjectPersonalization((prev) => !prev);
@@ -557,6 +595,7 @@ export default function AddCampaign(props) {
                           ? "mintmrm-dropdown show"
                           : "mintmrm-dropdown"
                       }
+                      ref={subjSettingsIconRef}
                     >
                       <div className="title">Personalization</div>
                       <li
@@ -617,12 +656,15 @@ export default function AddCampaign(props) {
                     name="preview"
                     value={emailData[selectedEmailIndex]?.preview}
                     onChange={handleEmailFieldsChange}
+                    onClick={function ( e ) {
+                      setPrevCursorPosition( e.target.selectionStart )
+                    }}
                     placeholder="Write a summary of your email to display after the subject line"
                   />
                   <span>
                     {emailData[selectedEmailIndex]?.preview.length}/200
                   </span>
-                  <div className="setting-section">
+                  <div className="setting-section" ref={prevSettingsIconRef}>
                     <div
                       onClick={() => {
                         setPreviewPersonalization((prev) => !prev);
@@ -755,19 +797,18 @@ export default function AddCampaign(props) {
                 >
                   Save draft
                 </button>
-                {responseMessage != "" && (
-                  <SuccessfulNotification
-                    display={"block"}
-                    message="Campaign is saved."
-                    setShowNotification={setShowNotification}
-                  />
-                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <WarningNotification display={showWarning} message={message} />
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
       <CampaignTemplates
         refresh={refresh}
         setRefresh={setRefresh}

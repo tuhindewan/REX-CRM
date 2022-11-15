@@ -397,6 +397,7 @@ class MessageController extends BaseController {
             </td>
         </tr>
     </table>
+    <a href='". $domainLink ."/?mrm=1&amp;route=unsubscribe&amp;contact_id=".$contact_id."&amp;hash=".$hash."'>Unsubcribe</a>
 </center>
 </body>
 </html>

@@ -11,10 +11,7 @@ import { deleteSingleContact } from "../../services/Contact";
 import { getCustomFields } from "../../services/CustomField";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
-import {
-  ClearNotification,
-  ClearNotificationWithWarring,
-} from "../../utils/admin-notification";
+import { ClearNotification } from "../../utils/admin-notification";
 import { AdminNavMenuClassChange, DateTime } from "../../utils/admin-settings";
 import DeletePopup from "../DeletePopup";
 import EmailDrawer from "../EmailDrawer";
@@ -35,7 +32,6 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
 import SuccessfulNotification from "../SuccessfulNotification";
-import WarningNotification from "../WarningNotification";
 import AddItems from "./AddItems";
 import SingleActivityFeed from "./SingleActivityFeed";
 
@@ -83,8 +79,8 @@ export default function ContactDetails() {
   const [countries, setCountries] = useState([]);
   const [countryStates, setCountryStates] = useState([]);
   const [selectedTimezone, setSelectedTimezone] = useState();
-  const [showWarning, setShowWarning] = useState("none");
   const [isValidate, setIsValidate] = useState(true);
+  const [notificationType, setNotificationType] = useState("success");
   // Prepare contact object
   const [tagListsAdder, setTagListsAdder] = useState({
     lists: [],
@@ -136,9 +132,6 @@ export default function ContactDetails() {
     ListenForOutsideClicks(listening, setListening, selectTagRef, setSelectTag)
   );
   const [errors, setErrors] = useState({});
-
-  // Error message
-  const [errorMessage, setErrorMessage] = useState("");
 
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
@@ -350,6 +343,30 @@ export default function ContactDetails() {
           setIsValidate(true);
         }
         break;
+        case "first_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              first_name: "First name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
+        case "last_name":
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              last_name: "Last name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
       default:
         break;
     }
@@ -375,6 +392,7 @@ export default function ContactDetails() {
       const code = responseData?.code;
 
       if (code === 201) {
+        setNotificationType("success");
         setShowNotification("block");
         setMessage(responseData?.message);
         toggleRefresh();
@@ -459,6 +477,7 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 201) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
       toggleRefresh();
@@ -486,15 +505,17 @@ export default function ContactDetails() {
     const responseData = await res.json();
     const code = responseData?.code;
     if (code === 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
     } else {
       // Validation messages
-      setShowWarning("block");
+      setNotificationType("warning");
+      setShowNotification("block");
       setMessage(responseData?.message);
     }
     toggleRefresh();
-    ClearNotificationWithWarring("none", setShowNotification, setShowWarning);
+    ClearNotification("none", setShowNotification);
   };
 
   const handleDelete = () => {
@@ -538,6 +559,7 @@ export default function ContactDetails() {
     );
     const resJson = await res.json();
     if (resJson.code == 200) {
+      setNotificationType("success");
       setShowNotification("block");
       setMessage(resJson.message);
     }
@@ -955,12 +977,14 @@ export default function ContactDetails() {
                             <InputItem
                               name="first_name"
                               handleChange={handleChange}
+                              error={errors?.first_name}
                               label="First name"
                               value={contactData.first_name}
                             />
                             <InputItem
                               name="last_name"
                               handleChange={handleChange}
+                              error={errors?.last_name}
                               label="Last name"
                               value={contactData.last_name}
                             />
@@ -1453,10 +1477,6 @@ export default function ContactDetails() {
                         contactId={id}
                         refresh={refresh}
                         setRefresh={setRefresh}
-                        setShowNotification={setShowNotification}
-                        showNotification={"mone"}
-                        setMessage={setMessage}
-                        message={message}
                         isActive={selectList}
                       />
                     </div>
@@ -1513,10 +1533,6 @@ export default function ContactDetails() {
                           contactId={id}
                           refresh={refresh}
                           setRefresh={setRefresh}
-                          setShowNotification={setShowNotification}
-                          showNotification={"mone"}
-                          setMessage={setMessage}
-                          message={message}
                         />
                       )}
                     </div>
@@ -1557,8 +1573,9 @@ export default function ContactDetails() {
         display={showNotification}
         setShowNotification={setShowNotification}
         message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
       />
-      <WarningNotification display={showWarning} message={message} />
     </>
   );
 }
