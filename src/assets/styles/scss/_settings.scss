@@ -13,28 +13,53 @@
             display: flex;
             flex-flow: row wrap;
             gap: 24px;
-            
+
             .settings-navbar {
                 width: 314px;
                 background: #fff;
                 box-shadow: 0px 1px 1px #b6b9bf4d;
                 border-radius: 10px;
                 padding: 24px;
-                
+                ul {
+                    li:last-child {
+                        .mintmrm-btn {
+                            margin-bottom: 0;
+                        }
+                    }
+                }
 
-                .mintmrm-btn{
+                .mintmrm-btn {
                     display: flex;
                     align-items: center;
                     padding: 18px 20px;
                     margin-bottom: 16px;
                     svg {
                         margin-right: 9px;
-                        
+                        path{
+                            transition: all 0.3s ease;
+                        }
                     }
+                    &.outline {
+                        font-weight: 600;
+                        font-size: 16px;
+                        line-height: 1.19;
+                        color: #2d3149;
+                    }
+                    &.active,
+                    &:hover {
+                        background-color: #573bff;
+                        color: #fff;
+                        svg {
+                            path {
+                                fill: #ffffff;
+                            }
+                        }
+                    }
+                    
                 }
             }
-            .settings-tab-content{
-                background: #FFFFFF;
+            .settings-tab-content {
+                background: #ffffff;
                 box-shadow: 0px 1px 1px rgb(182 185 191 / 30%);
                 border-radius: 10px;
             }

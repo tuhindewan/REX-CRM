@@ -12,43 +12,64 @@ export default function SettingsNav() {
     return (
         <div className="settings-navbar">
             <ul>
-                <li className={`mintmrm-btn ${
-              location.pathname.includes("business") ? "" : "outline"
-            }`}>
-                    <Link to="/settings/business-info">
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("business")
+                                ? "active"
+                                : ""
+                        }`}
+                        to="/settings/business-info"
+                    >
                         <SettingIcon />
                         Business Settings
                     </Link>
                 </li>
 
-                <li className={`mintmrm-btn ${
-              location.pathname.includes("email") ? "" : "outline"
-            }`}>
-                    <Link to="/settings/email-settings">
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("email") ? "active" : ""
+                        }`}
+                        to="/settings/email-settings"
+                    >
                         <EmailSettingsIcon />
                         Email Settings
                     </Link>
                 </li>
-                <li className={`mintmrm-btn ${
-              location.pathname.includes("optin") ? "" : "outline"
-            }`}>
-                    <Link to="/settings/optin">
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("optin") ? "active" : ""
+                        }`}
+                        to="/settings/optin"
+                    >
                         <EmailPendingIcon />
                         Double Op-tin Settings
                     </Link>
                 </li>
-                <li className={`mintmrm-btn ${
-              location.pathname.includes("general") ? "" : "outline"
-            }`}>
-                    <Link to="/settings/general">
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("general")
+                                ? "active"
+                                : ""
+                        }`}
+                        to="/settings/general"
+                    >
                         <GeneralSettingIcon />
                         General Settings
                     </Link>
                 </li>
-                <li className={`mintmrm-btn ${
-              location.pathname.includes("woocommerce") ? "" : "outline"
-            }`}>
-                    <Link to="/settings/woocommerce">
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("woocommerce")
+                                ? "active"
+                                : ""
+                        }`}
+                        to="/settings/woocommerce"
+                    >
                         <WooCommerceIcon />
                         WooCommerce settings
                     </Link>
