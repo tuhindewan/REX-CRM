@@ -28,6 +28,21 @@ export default function BusinessSettings() {
                       <label htmlFor="">Business Name</label>
                       <input type="text" name="business-name" placeholder="Enter Business Name" />
                     </div>
+
+                    <div className="form-group">
+                      <label htmlFor="">Phone Number</label>
+                      <input type="text" name="phone-number" placeholder="Enter Phone Number" />
+                    </div>
+
+                    <hr />
+
+                    <div className="form-group top-align">
+                      <label htmlFor="">Business Address</label>
+                      <textarea name="business-address" cols="30" rows="3"></textarea>
+                    </div>
+
+                    <hr />
+
                   </div>
 
                 </div>
