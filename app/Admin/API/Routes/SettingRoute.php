@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\Admin\API\Routes;
 
-use Mint\MRM\Admin\API\Controllers\SettingController;
+use Mint\MRM\Admin\API\Controllers\WCSettingController;
 
 /**
  * @author [MRM Team]
@@ -37,7 +37,7 @@ class SettingRoute {
      * @var object
      * @since 1.0.0
      */
-    protected $controller;
+    protected $wc_controller;
 
     
     /**
@@ -48,29 +48,29 @@ class SettingRoute {
      */
     public function register_routes()
     {
-        $this->controller = SettingController::get_instance();
+        $this->wc_controller = WCSettingController::get_instance();
 
         // API routes for WooCommerce settings
         register_rest_route($this->namespace, '/' . $this->rest_base . '/wc/', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [
-                    $this->controller ,
+                    $this->wc_controller ,
                     'update_woocommerce_settings'
                 ],
                 'permission_callback' => [
-                    $this->controller ,
+                    $this->wc_controller ,
                     'rest_permissions_check'
                 ] ,
             ],
             [
                 'methods' => \WP_REST_Server::READABLE,
                 'callback' => [
-                    $this->controller ,
+                    $this->wc_controller ,
                     'get_woocommerce_settings'
                 ],
                 'permission_callback' => [
-                    $this->controller ,
+                    $this->wc_controller ,
                     'rest_permissions_check'
                 ] ,
             ],
