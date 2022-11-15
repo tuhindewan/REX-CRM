@@ -11,10 +11,7 @@
     "test": "phpunit",
     "phpcs": "./vendor/bin/phpcs",
     "phpcs:fix": "./vendor/bin/phpcbf",
-    "phpcs:i": "./vendor/bin/phpcs -i",
-    "post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths ./vendor/phpcompatibility/php-compatibility",
-    "post-update-cmd" : "./vendor/bin/phpcs --config-set installed_paths ./vendor/phpcompatibility/php-compatibility"
-
+    "phpcs:i": "./vendor/bin/phpcs -i"
   },
   "autoload": {
     "psr-4": {
@@ -28,8 +25,10 @@
     "phpunit/phpunit": "^9.5",
     "yoast/phpunit-polyfills": "^1.0",
     "wp-coding-standards/wpcs": "^2.3",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "squizlabs/php_codesniffer": "^3.7",
     "phpcompatibility/php-compatibility": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "phpcompatibility/phpcompatibility-paragonie": "*",
     "phpcompatibility/phpcompatibility-wp": "*"
   },
   "config": {
@@ -37,5 +36,6 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
-  }
+  },
+  "prefer-stable" : true
 }
