@@ -71,7 +71,7 @@
             }
 
             .tab-header {
-                border-bottom: 1px solid #EBEDF0;
+                border-bottom: 1px solid #ebedf0;
                 margin-bottom: 30px;
                 padding-bottom: 20px;
 
@@ -133,7 +133,7 @@
                             padding-top: 0;
                         }
                     }
-                    
+
                     input[type="url"],
                     input[type="number"],
                     input[type="email"],
@@ -153,17 +153,26 @@
                             width: 34px;
                             height: 20px;
                         }
-                        label:after{
+                        label:after {
                             top: 1px;
                             left: 2px;
                         }
-                        input[type=checkbox]:checked + label:after {
+                        input[type="checkbox"]:checked + label:after {
                             margin-left: 13px;
                             filter: none;
                         }
                     }
                     .mintmrm-radiobtn {
                         margin-right: 30px;
+                        label::before{
+                            width: 18px;
+                            height: 18px;
+                        }
+
+                        label::after {
+                            width: 8px;
+                            height: 8px;
+                        }
                     }
                 }
                 hr {
