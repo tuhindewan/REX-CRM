@@ -63,7 +63,7 @@ export default function BusinessSettings() {
                   <div className="form-wrapper">
                     <div className="form-group">
                       <label htmlFor="business-name">Business Name</label>
-                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" />
+                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" pattern="" />
                     </div>
 
                     <div className="form-group">
