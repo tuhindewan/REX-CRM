@@ -114,11 +114,11 @@
                     align-items: center;
                     flex-flow: row wrap;
                     margin-bottom: 22px;
-                    &:last-child{
+                    &:last-child {
                         margin-bottom: 0;
                     }
 
-                    label {
+                    & > label {
                         font-weight: 600;
                         font-size: 15px;
                         line-height: 1.2;
@@ -128,14 +128,13 @@
                         display: flex;
                         align-items: center;
                         gap: 9px;
-                        .mintmrm-tooltip{
-                            svg{
-                                rect{
-                                    fill: #686F7F;
+                        .mintmrm-tooltip {
+                            svg {
+                                rect {
+                                    fill: #686f7f;
                                 }
                             }
                         }
-
                     }
                     input[type="url"],
                     input[type="number"],
@@ -149,10 +148,26 @@
                         padding: 12px 15px;
                         width: calc(100% - 223px);
                     }
+
+                    .mintmrm-switcher {
+                        span,
+                        label {
+                            width: 34px;
+                            height: 20px;
+                        }
+                        label:after{
+                            top: 1px;
+                            left: 2px;
+                        }
+                        input[type=checkbox]:checked + label:after {
+                            margin-left: 13px;
+                            filter: none;
+                        }
+                    }
                 }
                 hr {
                     display: block;
-                    border-color: #EBEDF0;
+                    border-color: #ebedf0;
                     margin: 30px 0;
                     border-bottom: none;
                 }
