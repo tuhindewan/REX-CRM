@@ -22,7 +22,11 @@ import Lists from "../pages/Tag/index";
 import Tags from "../pages/List/index";
 import Segments from "../pages/Segment/index";
 import CreateSegment from "../pages/Segment/CreateSegment";
-import Settings from "../pages/Setting/index"
+import BusinessSettings from "../pages/Settings/BusinessSettings";
+import EmailSettings from "../pages/Settings/EmailSettings";
+import DoubleOptin from "../pages/Settings/DoubleOptin";
+import GeneralSettings from "../pages/Settings/GeneralSettings";
+import WooCommerceSettings from "../pages/Settings/WooCommerceSettings";
 
 const routes = [
   {
@@ -182,8 +186,28 @@ const routes = [
     hideInMenu: true,
   },
   {
-    path: "/settings",
-    element: Settings,
+    path: "/settings/business-info",
+    element: BusinessSettings,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings/email-settings",
+    element: EmailSettings,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings/optin",
+    element: DoubleOptin,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings/general",
+    element: GeneralSettings,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings/woocommerce",
+    element: WooCommerceSettings,
     hideInMenu: true,
   },
 ];

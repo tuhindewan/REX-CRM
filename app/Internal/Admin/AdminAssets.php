@@ -46,6 +46,8 @@ class AdminAssets {
         if ( !$this->maybe_mrm_page($hook) ) {
             return false;
         }
+        wp_enqueue_media();
+        
         wp_enqueue_script(
             MRM_PLUGIN_NAME.'-select2',
             self::get_url('select2', 'js', 'external'),
@@ -91,6 +93,7 @@ class AdminAssets {
                 'tags'                  => ContactGroupModel::get_all_to_custom_select( 'tags' ),
             )
         );
+        
     }
 
 
