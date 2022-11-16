@@ -110,11 +110,13 @@
             width: calc(100% - (314px + 24px));
 
             .tab-body {
-                padding: 30px;
+                padding: 20px 30px 30px;
             }
 
             .tab-header {
-                margin-bottom: 17px;
+                margin-bottom: 30px;
+                padding-bottom: 18px;
+                border-bottom: 1px solid #ebedf0;
 
                 .title {
                     font-size: 20px;
@@ -456,20 +458,72 @@
             }
 
             .general-tab-content {
+                .general-single-settings {
+                    border: 1px solid #e4e6eb;
+                    border-radius: 6px;
+                    margin-bottom: 22px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    .general-settings-header {
+                        padding: 17px 20px 15px;
+
+                        .form-group {
+                            justify-content: space-between;
+                        }
+
+                        .form-group > label {
+                            width: 300px;
+                        }
+                    }
+
+                    .general-settings-body {
+                        border-top: 1px solid #e4e6eb;
+                        padding: 30px 24px;
+                        display: none;
+
+                        &.show {
+                            display: block;
+                        }
+
+                        .select-preference-wrapper {
+                            width: calc(100% - 223px);
+
+                            .mintmrm-radiobtn {
+                                display: block;
+                                margin-bottom: 20px;
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                }
                 .top-wrapper {
                     border: 1px solid #e4e6eb;
                     border-radius: 6px;
                     padding: 19px;
                     display: flex;
                     justify-content: space-between;
-                    margin-bottom: 0;
                 }
                 .inner-wrapper {
-                    border: 1px solid #E4E6EB;
+                    border: 1px solid #e4e6eb;
                     border-top: navajowhite;
                     border-radius: 0 0 6px 6px;
                     padding: 30px 24px;
                 }
+            }
+        }
+
+        //----only business tab content style----
+        .business-tab-content {
+            .tab-body {
+                padding: 30px;
+            }
+            .tab-header {
+                margin-bottom: 17px;
+                padding-bottom: 0;
+                border-bottom: none;
             }
         }
     }

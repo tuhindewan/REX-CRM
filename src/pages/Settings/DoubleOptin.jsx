@@ -23,7 +23,7 @@ export default function DoubleOptin() {
                             <SettingsNav />
 
                             <div className="settings-tab-content">
-                                <div className="single-tab-content optin-tab-content">
+                                <div className="single-tab-content double-optin-tab-content">
                                     <div className="tab-body">
                                         <header className="tab-header">
                                             <h4 className="title">
