@@ -11,13 +11,36 @@ import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 
 export default function CustomFieldSettings() {
     const [customFieldModal, setCustomFieldModal] = useState(false);
+    const [newCustomField, setNewCustomField] = useState([]);
 
+    //----show custom field modal-----
     const addCustomField = () => {
         setCustomFieldModal(!customFieldModal);
     };
 
+    //----close custom field modal-----
     const closeCustomFieldModal = () => {
         setCustomFieldModal(false);
+    };
+
+    //----add new custom field-----
+    const addNewCustomField = () => {
+        setNewCustomField(prevState => {
+            return [...prevState, { 
+              social_link: ''
+            }];
+        })
+
+        setCustomFieldModal(false);
+    };
+
+    //----delete custom field-----
+    const deleteCustomField = (index) => {
+        setNewCustomField([
+            ...newCustomField.slice(0, index),
+            ...newCustomField.slice(index + 1, newCustomField.length)
+        ]);
+
     };
 
     return (
@@ -35,6 +58,7 @@ export default function CustomFieldSettings() {
 
                                     <div className={customFieldModal ? 'add-custom-field-modal show-modal' : 'add-custom-field-modal'}>
                                         <AddCustomFieldModal 
+                                            addNewCustomField= {addNewCustomField}
                                             closeCustomFieldModal= {closeCustomFieldModal}
                                         />
                                     </div>
@@ -57,14 +81,26 @@ export default function CustomFieldSettings() {
                                             </div>
 
                                             <div className="custom-field-wrapper">
-                                                <div className="field-list-wrapper">
-                                                    <SingleCustomField/>
-                                                </div>
-
-                                                {/* <div className="no-field">
-                                                    <NoCustomFieldIcon/>
-                                                    <p>No custom field found</p>
-                                                </div> */}
+                                            {/* <SingleCustomField/> */}
+                                                { newCustomField.length > 0 ? (
+                                                    <div className="field-list-wrapper">
+                                                        {newCustomField.map((singleCustomField, idx) => {
+                                                            return (
+                                                                <SingleCustomField
+                                                                key={idx}
+                                                                index={idx}
+                                                                deleteCustomField={deleteCustomField}
+                                                                />
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <div className="no-field">
+                                                        <NoCustomFieldIcon/>
+                                                        <p>No custom field found</p>
+                                                    </div>
+                                                )}
+                                                
                                             </div>
                                         </div>
                                     </div>

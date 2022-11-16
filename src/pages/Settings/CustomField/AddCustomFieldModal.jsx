@@ -2,8 +2,7 @@ import React, { useRef, useState } from "react";
 
 import CrossIcon from "../../../components/Icons/CrossIcon";
 
-
-export default function AddCustomFieldModal({closeCustomFieldModal}) {
+export default function AddCustomFieldModal({addNewCustomField, closeCustomFieldModal}) {
 
     return (
         <>
@@ -32,7 +31,7 @@ export default function AddCustomFieldModal({closeCustomFieldModal}) {
 
                     <div className="modal-footer">
                         <button type="button" className="mintmrm-btn outline" onClick={closeCustomFieldModal}>Cancel</button>
-                        <button type="button" className="mintmrm-btn">Add</button>
+                        <button type="button" className="mintmrm-btn" onClick={addNewCustomField}>Add</button>
                     </div>
                 </div>
             </div>
