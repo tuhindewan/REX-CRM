@@ -121,7 +121,7 @@ class EmailSettingController extends SettingBaseController {
      * @return WP_REST_Response
      * @since 1.0.0 
      */
-    public function get( ){
+    public function get( WP_REST_Request $request ){
         if (!get_option('email_settings')){
             $email_settings_data_failed = array(
                 'code'    => 400,
