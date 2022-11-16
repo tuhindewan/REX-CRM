@@ -59,13 +59,12 @@ export default function BusinessSettings() {
     frame.open();
     return false;
   }
-
   //------add social media-------
   const addSocialMedia = (value) => {
     setSocialMedia(prevState => {
       return [...prevState, {
-        logo_url: '',
-        social_link: ''
+        icon: '',
+        url: ''
       }];
     })
   };
@@ -134,9 +133,6 @@ export default function BusinessSettings() {
     getBusinessData()
   },[]);
 
-  {console.log(socialMedia)}
-
-
   //------Delete social media-------
   const deleteSocialLogo = (index) => {
     setSocialMedia([
@@ -145,9 +141,32 @@ export default function BusinessSettings() {
     ]);
   };
 
+  const handleSocialUrl = (singleSocialMedia, val , index) => {
+    singleSocialMedia.icon = singleSocialMedia.icon;
+    singleSocialMedia.url = val.target.value;
+    const modifiedOption = socialMedia.map((value, thisIndex) => {
+        if (index === thisIndex) {
+            value = { ...socialMedia[index], ...singleSocialMedia };
+        }
+        return value;
+    });
+    setSocialMedia(modifiedOption);
+  }
+  const handleSocialIcon = (singleSocialMedia, val , index) => {
+    singleSocialMedia.url = singleSocialMedia.url;
+    singleSocialMedia.icon = val;
+      const modifiedOption = socialMedia.map((value, thisIndex) => {
+          if (index === thisIndex) {
+              value = { ...socialMedia[index], ...singleSocialMedia };
+          }
+          return value;
+      });
+      setSocialMedia(modifiedOption);
+  }
+
   return (
      <div className="mintmrm-settings-page">
-      <div className="mintmrm-container">
+       <div className="mintmrm-container">
         <div className="mintmrm-settings">
           <h2 class="conatct-heading">Settings</h2>
 
@@ -227,6 +246,11 @@ export default function BusinessSettings() {
                           <SingleSocialMedia
                           key={idx}
                           index={idx}
+                          icon ={singleSocialMedia.icon}
+                          url ={singleSocialMedia.url}
+                          data = {singleSocialMedia}
+                          handleSocialUrl = {handleSocialUrl}
+                          handleSocialIcon = {handleSocialIcon}
                           deleteSocialLogo={deleteSocialLogo}
                           />
                         );
