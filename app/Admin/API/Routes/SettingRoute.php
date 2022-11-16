@@ -2,6 +2,7 @@
 
 namespace Mint\MRM\Admin\API\Routes;
 
+use Mint\MRM\Admin\API\Controllers\GeneralSettingController;
 use Mint\MRM\Admin\API\Controllers\WCSettingController;
 use Mint\MRM\Admin\API\Controllers\BusinessSettingController;
 use Mint\MRM\Admin\API\Controllers\EmailSettingController;
@@ -63,6 +64,13 @@ class SettingRoute {
      * @since 1.0.0
      */
     protected $email_controller;
+
+    /**
+     * @desc GeneralSettingController class instance variable
+     * @var object
+     * @since 1.0.0
+     */
+    protected $general_controller;
 
     /**
      * Register API endpoints routes for tags module
@@ -207,5 +215,34 @@ class SettingRoute {
             ] ,
         ]
     ]);
+
+        // GeneralSettingController class instance
+        $this->general_controller = GeneralSettingController::get_instance();
+
+        // API routes for WooCommerce settings
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/general/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->general_controller ,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->general_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->general_controller ,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->general_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
     }
 }
