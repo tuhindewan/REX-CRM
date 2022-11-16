@@ -49,6 +49,19 @@ export default function DoubleOptin() {
       setSelectpage
     )
   );
+  const [selectPageOption, setSelectPageOption] = useState("");
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      selectPageRef,
+      setSelectpage
+    )
+  );
+  const handleSelectOption = (e) => {
+    setSelectPageOption(e.target.value);
+  };
 
   const handlePageSelect = () => {
     setSelectpage(!selectPage);
@@ -383,6 +396,10 @@ export default function DoubleOptin() {
                                           name={item.id}
                                           id={item.id}
                                           value={item.title}
+                                          checked={
+                                            selectPageOption == item.title
+                                          }
+                                          onChange={handleSelectOption}
                                         />
 
                                         <label
