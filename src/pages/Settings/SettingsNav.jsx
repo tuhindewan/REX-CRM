@@ -1,10 +1,12 @@
+import { Link, useLocation } from "react-router-dom";
+
 import SettingIcon from "../../components/Icons/SettingIcon";
-import EmailIcon from "../../components/Icons/EmailIcon";
 import EmailSettingsIcon from "../../components/Icons/EmailSettingsIcon";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import GeneralSettingIcon from "../../components/Icons/GeneralSettingIcon";
 import WooCommerceIcon from "../../components/Icons/WooCommerceIcon";
-import { Link, useLocation } from "react-router-dom";
+import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
+import SmtpIcon from "../../components/Icons/SmtpIcon";
 
 export default function SettingsNav() {
     const location = useLocation();
@@ -72,6 +74,32 @@ export default function SettingsNav() {
                     >
                         <WooCommerceIcon />
                         WooCommerce settings
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("custom-field")
+                                ? "active"
+                                : ""
+                        }`}
+                        to="/settings/custom-field"
+                    >
+                        <CustomFieldIcon />
+                        Contact Custom Field
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("smtp")
+                                ? "active"
+                                : ""
+                        }`}
+                        to="/settings/smtp"
+                    >
+                        <SmtpIcon />
+                        Smtp
                     </Link>
                 </li>
             </ul>
