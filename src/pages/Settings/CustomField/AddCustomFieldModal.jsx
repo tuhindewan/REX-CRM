@@ -39,7 +39,7 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                             </select>
                         </div>
 
-                        {customFieldType === 'text-field' || customFieldType === 'textarea-field' || customFieldType === 'number-field' || customFieldType === 'emial-field' &&
+                        {(customFieldType === 'text-field' || customFieldType === 'textarea-field' || customFieldType === 'number-field' || customFieldType === 'emial-field') &&
                             <div className="new-field-wrapper">
                                 <div className="form-group">
                                     <label>Label</label>
