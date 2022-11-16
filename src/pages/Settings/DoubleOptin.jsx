@@ -36,6 +36,7 @@ export default function DoubleOptin() {
     }
   };
 
+  // Submit optin object and hit post request
   const handleSubmit = async () => {
     setLoader(true);
     const optin = {
