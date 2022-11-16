@@ -27,6 +27,8 @@ import EmailSettings from "../pages/Settings/EmailSettings";
 import DoubleOptin from "../pages/Settings/DoubleOptin";
 import GeneralSettings from "../pages/Settings/GeneralSettings";
 import WooCommerceSettings from "../pages/Settings/WooCommerceSettings";
+import SmtpSettings from "../pages/Settings/SmtpSettings";
+import CustomFieldSettings from "../pages/Settings/CustomFieldSettings";
 
 const routes = [
   {
@@ -208,6 +210,16 @@ const routes = [
   {
     path: "/settings/woocommerce",
     element: WooCommerceSettings,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings/custom-field",
+    element: CustomFieldSettings,
+    hideInMenu: true,
+  },
+  {
+    path: "/settings/smtp",
+    element: SmtpSettings,
     hideInMenu: true,
   },
 ];

@@ -64,15 +64,15 @@
         .business-settings-tab-nav {
             display: flex;
             flex-flow: row wrap;
-            border-bottom: 1px solid #EBEDF0;
+            border-bottom: 1px solid #ebedf0;
             margin-bottom: 30px;
             gap: 30px;
-            
+
             button {
                 font-weight: 600;
                 font-size: 15px;
                 line-height: 1.3;
-                color: #2D3149;
+                color: #2d3149;
                 background: transparent;
                 padding-bottom: 10px;
                 cursor: pointer;
@@ -110,11 +110,13 @@
             width: calc(100% - (314px + 24px));
 
             .tab-body {
-                padding: 30px;
+                padding: 20px 30px 30px;
             }
 
             .tab-header {
-                margin-bottom: 17px;
+                margin-bottom: 30px;
+                padding-bottom: 18px;
+                border-bottom: 1px solid #ebedf0;
 
                 .title {
                     font-size: 20px;
@@ -197,6 +199,8 @@
                         label:after {
                             top: 1px;
                             left: 2px;
+                            width: 16px;
+                            height: 16px;
                         }
                         input[type="checkbox"]:checked + label:after {
                             margin-left: 13px;
@@ -223,6 +227,10 @@
                         padding: 15px;
                         background-color: transparent;
                         text-align: left;
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 1.21;
+                        color: #a4a8b5;
 
                         &::before {
                             content: " ";
@@ -240,7 +248,7 @@
                             cursor: pointer;
                         }
                         &.show::before {
-                            top: 47%;
+                            top: 65%;
                             transform: rotate(225deg);
                         }
                     }
@@ -275,7 +283,7 @@
                         }
                     }
                     .upload-area {
-                        border: 2px dashed #DADFE8;
+                        border: 2px dashed #dadfe8;
                         border-radius: 6px;
                         width: calc(100% - 138px);
                         height: 194px;
@@ -290,12 +298,12 @@
                             padding: 20px;
                             font-size: 14px;
                             line-height: 1.4;
-                            color: #A7A8B3;
+                            color: #a7a8b3;
                             background-color: transparent;
                         }
 
                         .icon {
-                            background: #F6F8FA;
+                            background: #f6f8fa;
                             border-radius: 100%;
                             height: 70px;
                             width: 70px;
@@ -334,7 +342,7 @@
                     font-size: 18px;
                     line-height: 1;
                     font-weight: 600;
-                    color: #2D3149;
+                    color: #2d3149;
                 }
 
                 .mintmrm-btn {
@@ -352,19 +360,19 @@
                 margin-top: 24px;
 
                 .single-media {
-                    background: #FFFFFF;
-                    border: 1px solid #E4E6EB;
+                    background: #ffffff;
+                    border: 1px solid #e4e6eb;
                     border-radius: 10px;
                     padding: 24px;
                     width: calc(100% / 2 - 15px);
                     position: relative;
-                    
+
                     .remove-media {
                         position: absolute;
                         right: 24px;
                         top: 24px;
-                        background: #FFFFFF;
-                        border: 1px solid #E4E6EB;
+                        background: #ffffff;
+                        border: 1px solid #e4e6eb;
                         border-radius: 6px;
                         width: 34px;
                         height: 34px;
@@ -373,7 +381,7 @@
                         justify-content: center;
 
                         path {
-                            fill: #A7A8B3;
+                            fill: #a7a8b3;
                         }
                     }
 
@@ -393,7 +401,7 @@
                         }
 
                         .upload-btn {
-                            background: #FFFFFF;
+                            background: #ffffff;
                             box-shadow: 0px 3px 4px #bbbbbb40;
                             border-radius: 20px;
                             width: 34px;
@@ -410,7 +418,7 @@
                                 height: 18px;
 
                                 path {
-                                    fill: #A7A8B3;
+                                    fill: #a7a8b3;
                                 }
                             }
                         }
@@ -438,11 +446,9 @@
                             width: 100%;
                             padding-right: 34px;
                         }
-
                     }
                 }
             }
-
 
             .tab-footer {
                 border-top: 1px solid #ebedf0;
@@ -450,6 +456,20 @@
                 display: flex;
                 justify-content: flex-end;
             }
+
         }
+
+        //----only business tab content style----
+        .business-tab-content {
+            .tab-body {
+                padding: 30px;
+            }
+            .tab-header {
+                margin-bottom: 17px;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+        }
+        
     }
 }
