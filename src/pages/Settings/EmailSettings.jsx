@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SettingsNav from "./SettingsNav";
 import EmailSettingsIcon from "../../components/Icons/EmailSettingsIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 
 export default function EmailSettings() {
   // Email Settings data if available
@@ -10,6 +11,19 @@ export default function EmailSettings() {
 
   const [values, setValues] = useState();
   const [changesOccured, setChangesOccured] = useState(false);
+
+  //notifications
+  const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
+  const [message, setMessage] = useState("");
+
+  const [refresh, setRefresh] = useState();
+  const [loader, setLoader] = useState(false);
+
+  // the data is fetched again whenver refresh is changed
+  function toggleRefresh() {
+    setRefresh((prev) => !prev);
+  }
 
   useEffect(() => {
     const getEmailSettings = async () => {
@@ -22,26 +36,39 @@ export default function EmailSettings() {
       setValues({ ...values, ...resJson.data });
     };
     getEmailSettings();
-  }, []);
+  }, [refresh]);
 
   const handleSubmit = async () => {
-    await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/settings/email`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      if (response.ok) {
-        setChangesOccured(false);
-        return response.json();
+    setLoader(true);
+    const res = await fetch(
+      `${window.MRM_Vars.api_base_url}mrm/v1/settings/email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(values),
       }
-    });
+    );
+    const resJson = await res.json();
+    setLoader(false);
+    setShowNotification("block");
+    setChangesOccured(false);
+    setMessage(resJson.message);
+    if (resJson.success) {
+      setNotificationType("success");
+    } else {
+      setNotificationType("failed");
+    }
+
+    toggleRefresh();
+    return resJson;
   };
 
   // Set values from list form
   const handleChange = (e) => {
     setChangesOccured(true);
+    setShowNotification("none");
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -177,21 +204,31 @@ export default function EmailSettings() {
 
                   <div className="tab-footer">
                     {changesOccured ? (
-                      <button
-                        className="mintmrm-btn"
-                        type="button"
-                        onClick={handleSubmit}
-                      >
-                        Save Settings
-                        <span className="mintmrm-loader"></span>
-                      </button>
+                      loader ? (
+                        <button
+                          className="mintmrm-btn show-loader"
+                          type="button"
+                          onClick={handleSubmit}
+                        >
+                          Save Settings
+                          <span className="mintmrm-loader"></span>
+                        </button>
+                      ) : (
+                        <button
+                          className="mintmrm-btn"
+                          type="button"
+                          onClick={handleSubmit}
+                        >
+                          Save Settings
+                          <span className="mintmrm-loader"></span>
+                        </button>
+                      )
                     ) : (
                       <button
                         className="mintmrm-btn"
                         type="button"
                         onClick={handleSubmit}
                         disabled={true}
-                        style={{ color: "gray" }}
                       >
                         Save Settings
                         <span className="mintmrm-loader"></span>
@@ -205,6 +242,13 @@ export default function EmailSettings() {
           </div>
         </div>
       </div>
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
     </>
   );
 }
