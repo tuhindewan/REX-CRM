@@ -110,11 +110,13 @@
             width: calc(100% - (314px + 24px));
 
             .tab-body {
-                padding: 30px;
+                padding: 20px 30px 30px;
             }
 
             .tab-header {
-                margin-bottom: 17px;
+                margin-bottom: 30px;
+                padding-bottom: 18px;
+                border-bottom: 1px solid #ebedf0;
 
                 .title {
                     font-size: 20px;
@@ -454,6 +456,20 @@
                 display: flex;
                 justify-content: flex-end;
             }
+
         }
+
+        //----only business tab content style----
+        .business-tab-content {
+            .tab-body {
+                padding: 30px;
+            }
+            .tab-header {
+                margin-bottom: 17px;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+        }
+        
     }
 }
