@@ -45,6 +45,7 @@ class OptinSettingController extends SettingBaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
+        error_log(print_r($params, 1));
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
             update_option('_mrm_optin_settings',  $setting_value);
@@ -64,10 +65,10 @@ class OptinSettingController extends SettingBaseController {
 
         $default = [
             "enable"                => true,
-            "email_subject"         => "",
-            "email_body"            => "",
-            "confirmation_type"     => "",
-            "confirmation_message"  => ""
+            "email_subject"         => "Please Confirm Subscription.",
+            "email_body"            => "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
+            "confirmation_type"     => "message",
+            "confirmation_message"  => "Subscription Confirmed. Thank you."
         ];
 
         $settings = get_option( $this->option_key, $default );
