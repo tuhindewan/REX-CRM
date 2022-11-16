@@ -183,8 +183,27 @@ class EmailSettings extends WP_UnitTestCase {
 
         $request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/email');
 
-        $response = $this->controller->get($request);
+        $response = $this->controller->get();
 
-        error_log(print_r($response, 1));
+        $this->assertEquals(400, $response['code']);
+        $this->assertEquals('Option key does not exist', $response['message']);
+
+        $post_request = new \WP_REST_Request( 'POST', '/mrm/v1/settings/email');
+
+        $post_request->set_body_params(
+            [
+                "from_name"        => "Coderex",
+                "from_email"       => "support@coderex.co",
+                "reply_name"       => "Google",
+                "reply_email"      => "support@google.com"
+            ]
+        );
+
+        $response = $this->controller->create_or_update($post_request);
+
+        $check = $this->controller->get();
+
+        $this->assertEquals(200, $check['code']);
+        $this->assertEquals('Query Successfull', $check['message']);
     }
 }

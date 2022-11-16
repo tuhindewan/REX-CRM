@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { submitOptin } from "../../services/Setting";
+import { ClearNotification } from "../../utils/admin-notification";
 import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
   const [selectOption, setSelectOption] = useState("message");
   const [selectSwitch, setSelectSwitch] = useState(true);
   const [loader, setLoader] = useState(false);
+  const [notificationType, setNotificationType] = useState("success");
+  const [showNotification, setShowNotification] = useState("none");
+  const [message, setMessage] = useState("");
   const [optinSetting, setOptinSettings] = useState({
     enable: true,
     email_subject: "",
@@ -37,7 +42,17 @@ export default function DoubleOptin() {
       optin: optinSetting,
     };
     submitOptin(optin).then((response) => {
-      console.log(response);
+      if (true === response.success) {
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(response?.message);
+      } else {
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(response?.message);
+      }
+      ClearNotification("none", setShowNotification);
+      setLoader(false);
     });
   };
 
@@ -253,6 +268,13 @@ export default function DoubleOptin() {
           </div>
         </div>
       </div>
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+        message={message}
+      />
     </>
   );
 }
