@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import _ from 'lodash'
 
 import SettingsNav from "./SettingsNav";
@@ -78,6 +78,29 @@ export default function BusinessSettings() {
       }];
     })
   };
+  const [businessName ,setBusinessName] = useState('');
+  const handleBuninessName = (event) =>{
+    setBusinessName(event.target.value)
+  }
+  const [phoneNumber ,setPhoneNumber] = useState('');
+  const handlePhoneNumber = (event) =>{
+    setPhoneNumber(event.target.value)
+  }
+  const [businessAddress ,setBusinessAddress] = useState('');
+  const handleBusinessAddress = (event) =>{
+    setBusinessAddress(event.target.value)
+  }
+
+  useEffect(()=> {
+    const getBusinessData = async () => {
+      const res = await fetch(
+          `${window.MRM_Vars.api_base_url}mrm/v1/settings/business`
+      );
+      const resJson = await res.json();
+      console.log(resJson)
+    };
+    getBusinessData()
+  })
 
   return (
      <div className="mintmrm-settings-page">
@@ -106,19 +129,19 @@ export default function BusinessSettings() {
                   <div className={ tabState === 1 ? "form-wrapper business-settings-wrapper active" : "form-wrapper business-settings-wrapper" }>
                     <div className="form-group">
                       <label htmlFor="business-name">Business Name</label>
-                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" />
+                      <input type="text" name="business-name" id="business-name" placeholder="Enter Business Name" value={businessName} onChange={handleBuninessName} />
                     </div>
 
                     <div className="form-group">
                       <label htmlFor="phone-number">Phone Number</label>
-                      <input type="text" name="phone-number" id="phone-number" placeholder="Enter Phone Number" />
+                      <input type="text" name="phone-number" id="phone-number" placeholder="Enter Phone Number" value={phoneNumber} onChange={handlePhoneNumber} />
                     </div>
 
                     <hr />
 
                     <div className="form-group top-align">
                       <label htmlFor="business-address">Business Address</label>
-                      <textarea name="business-address" id="business-address" cols="30" rows="3" placeholder="Enter Business Address "></textarea>
+                      <textarea name="business-address" id="business-address" cols="30" rows="3" placeholder="Enter Business Address " onChange={handleBusinessAddress} value={businessAddress}></textarea>
                     </div>
 
                     <hr />
