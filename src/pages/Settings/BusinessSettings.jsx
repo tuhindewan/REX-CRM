@@ -7,27 +7,12 @@ import SingleSocialMedia from "./SingleSocialMedia";
 import SettingIcon from "../../components/Icons/SettingIcon";
 import UploadIcon from "../../components/Icons/UploadIcon";
 import PlusIcon from "../../components/Icons/Plus";
-import CrossIcon from "../../components/Icons/CrossIcon";
 
 export default function BusinessSettings() {
   _.noConflict()
   let frame
-  const [tabState, setTabState] = useState(2);
-  const [socialMedia, setSocialMedia] = useState([
-    { 
-      logo_id: '1',
-      logo_name: 'Facebook',
-      logo_url: '',
-      link: ''
-    },
-    { 
-      logo_id: '2',
-      logo_name: 'Twitter',
-      logo_url: '',
-      link: ''
-    }
-    
-  ]);
+  const [tabState, setTabState] = useState(1);
+  const [socialMedia, setSocialMedia] = useState([]);
 
   //---business settings tab-----
   const toggleTab = (index) => {
@@ -35,7 +20,7 @@ export default function BusinessSettings() {
   };
 
   //-------logo upload from wp media--------
-  const addLogo = (event) => {
+  const addBusinessLogo = (event) => {
     event.preventDefault()
 
     // If the media frame already exists, reopen it.
@@ -74,9 +59,17 @@ export default function BusinessSettings() {
         logo_id: '4',
         logo_name: '',
         logo_url: '',
-        link: ''
+        social_link: ''
       }];
     })
+  };
+ 
+  //------Delete social media-------
+  const deleteSocialLogo = (index) => {
+    setSocialMedia([
+      ...socialMedia.slice(0, index),
+      ...socialMedia.slice(index + 1, socialMedia.length)
+    ]);
   };
 
   return (
@@ -133,7 +126,7 @@ export default function BusinessSettings() {
                         </div>
 
                         <div className="upload-area">
-                          <button onClick={addLogo} type="button">
+                          <button onClick={addBusinessLogo} type="button">
                             <span className="icon">
                               <UploadIcon/>
                             </span>
@@ -162,7 +155,7 @@ export default function BusinessSettings() {
                           <SingleSocialMedia
                           key={idx}
                           index={idx}
-                          socialMedialLength={singleSocialMedia.length}
+                          deleteSocialLogo={deleteSocialLogo}
                           />
                         );
                       })}
