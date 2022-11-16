@@ -184,7 +184,7 @@ export default function EmailSettings() {
                         </label>
                         {400 === getResponseCode ? (
                           <input
-                            type="teemailxt"
+                            type="email"
                             name="reply_email"
                             placeholder="Enter Reply-to Email"
                             onInput={handleChange}
@@ -203,26 +203,12 @@ export default function EmailSettings() {
                   </div>
 
                   <div className="tab-footer">
-                    {changesOccured ? (
-                      loader ? (
-                        <button
-                          className="mintmrm-btn show-loader"
-                          type="button"
-                          onClick={handleSubmit}
-                        >
+                    { changesOccured ? (
+                      <button className="mintmrm-btn" type="button" onClick={handleSubmit} >
                           Save Settings
-                          <span className="mintmrm-loader"></span>
-                        </button>
-                      ) : (
-                        <button
-                          className="mintmrm-btn"
-                          type="button"
-                          onClick={handleSubmit}
-                        >
-                          Save Settings
-                          <span className="mintmrm-loader"></span>
-                        </button>
-                      )
+                          {loader && <span className="mintmrm-loader"></span> }
+                       </button>
+
                     ) : (
                       <button
                         className="mintmrm-btn"
@@ -231,7 +217,7 @@ export default function EmailSettings() {
                         disabled={true}
                       >
                         Save Settings
-                        <span className="mintmrm-loader"></span>
+                        {loader && <span className="mintmrm-loader"></span> }
                       </button>
                     )}
                   </div>

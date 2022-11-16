@@ -463,6 +463,14 @@
                 padding: 20px 30px;
                 display: flex;
                 justify-content: flex-end;
+
+                .mintmrm-btn {
+                    .mintmrm-loader {
+                        display: inline-block;
+                        position: relative;
+                        top: 2px;
+                    }
+                }
             }
 
         }

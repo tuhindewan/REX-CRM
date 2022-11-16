@@ -263,7 +263,9 @@ export default function BusinessSettings() {
                 <div className="tab-footer">
                   <button className="mintmrm-btn" type="button" onClick={saveBusiness}>
                     Save Settings
-                    <span className="mintmrm-loader"></span>
+                    { saveLoader && 
+                      <span className="mintmrm-loader"></span>
+                    }
                   </button>
                 </div>
 
