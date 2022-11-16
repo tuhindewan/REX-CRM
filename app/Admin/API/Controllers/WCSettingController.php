@@ -34,9 +34,9 @@ class WCSettingController extends SettingBaseController {
         ];
 
         if( update_option( '_mrm_woocommerce_settings', $params ) ) {
-            return $this->get_success_response( __( 'WooCommerce settings has been successfully saved.', 'mrm' ) );
+            return $this->get_success_response( __( 'WooCommerce settings have been successfully saved.', 'mrm' ) );
         }
-        return $this->get_error_response( __( 'No changes have been made.', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'No changes have been made.', 'mrm' ) );
     }
 
     /**

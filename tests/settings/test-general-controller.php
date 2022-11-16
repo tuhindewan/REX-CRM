@@ -9,9 +9,9 @@
  * Test cases for the functions of the production
  * class Rex_Product_Data_Retriever.
  *
- * @see /app/Admin/API/Controllers/SettingController.php
+ * @see /app/Admin/API/Controllers/GeneralSettingController.php
  */
-class Test_WC_Controller extends WP_UnitTestCase {
+class Test_General_Controller extends WP_UnitTestCase {
     private static $instance;
 
     /**
@@ -20,27 +20,32 @@ class Test_WC_Controller extends WP_UnitTestCase {
      * @since 1.0.0
      */
     public function setUp(): void {
-        self::$instance = \Mint\MRM\Admin\API\Controllers\WCSettingController::get_instance();
+        self::$instance = \Mint\MRM\Admin\API\Controllers\GeneralSettingController::get_instance();
     }
 
     /**
      * @desc Test case for create_or_update() function
-     * in WCSettingController class
+     * in GeneralSettingController class
      * @test
      * @return void
      * @since 1.0.0
      */
     public function create_or_update() {
-        $request = new WP_REST_Request( 'POST', '/mrm/v1/wc/' );
+        $request = new WP_REST_Request( 'POST', '/mrm/v1/general/' );
         $body = [
-            'enable'         => false,
-            'checkbox_label' => 'Please put a checkbox label.',
-            'lists'          => [],
-            'tags'           => [],
-            'double_optin'   => true
+            'unsubscriber_settings' => [
+                'confirmation_type'    => 'message',
+                'page_id'              => 5,
+                'url'                  => 'url',
+                'confirmation_message' => 'String',
+            ],
+            'preference' => [],
+            'user_signup' => [],
+            'comment_form_subscription' => []
         ];
         $request->set_body( json_encode( $body ) );
         $response = self::$instance->create_or_update( $request );
+
         $this->assertTrue( is_object( $response ) );
         $this->assertTrue( 'WP_REST_Response' === get_class( $response ) || 'WP_Error' === get_class( $response ) );
 
@@ -55,7 +60,7 @@ class Test_WC_Controller extends WP_UnitTestCase {
 
     /**
      * @desc Test case for get() function
-     * in WCSettingController class
+     * in GeneralSettingController class
      * @test
      * @return void
      * @since 1.0.0
@@ -67,11 +72,14 @@ class Test_WC_Controller extends WP_UnitTestCase {
         $this->assertTrue( is_object( $response ) );
         $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
         $this->assertTrue( 200 === $response->get_status() );
+        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ] ) );
+        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'confirmation_type' ] ) );
+        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'page_id' ] ) );
+        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'url' ] ) );
+        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'confirmation_message' ] ) );
+        $this->assertTrue( isset( $data[ 'preference' ] ) );
+        $this->assertTrue( isset( $data[ 'user_signup' ] ) );
+        $this->assertTrue( isset( $data[ 'comment_form_subscription' ] ) );
         $this->assertTrue( isset( $data[ 'success' ] ) && $data[ 'success' ] );
-        $this->assertTrue( isset( $data[ 'enable' ] ) );
-        $this->assertTrue( isset( $data[ 'checkbox_label' ] ) );
-        $this->assertTrue( isset( $data[ 'lists' ] ) );
-        $this->assertTrue( isset( $data[ 'tags' ] ) );
-        $this->assertTrue( isset( $data[ 'double_optin' ] ) );
     }
 }
