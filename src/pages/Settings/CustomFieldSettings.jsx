@@ -1,8 +1,11 @@
 import React, { useRef, useState } from "react";
 
 import SettingsNav from "./SettingsNav";
+import SingleCustomField from "./CustomField/SingleCustomField";
 
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
+import PlusIcon from "../../components/Icons/Plus";
+import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 
 
 export default function CustomFieldSettings() {
@@ -28,7 +31,24 @@ export default function CustomFieldSettings() {
                                         </header>
 
                                         <div className="form-wrapper">
-                                            
+                                            <div className="form-header">
+                                                <h4>Add Custom Field</h4>
+                                                <button type="button" className="mintmrm-btn" title="Add Custom Field" >
+                                                    <PlusIcon/>
+                                                    Add Field
+                                                </button>
+                                            </div>
+
+                                            <div className="custom-field-wrapper">
+                                                <div className="field-list-wrapper">
+                                                    <SingleCustomField/>
+                                                </div>
+
+                                                {/* <div className="no-field">
+                                                    <NoCustomFieldIcon/>
+                                                    <p>No custom field found</p>
+                                                </div> */}
+                                            </div>
                                         </div>
                                     </div>
 
