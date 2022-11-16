@@ -297,6 +297,15 @@
                     width: calc((100% - 88px) / 3);
                 }
             }
+
+            
+            .only-one-condition {
+                .single-condition-inner {
+                    .single-condition-filed:not(.delete-condition) {
+                        width: calc((100% - 30px) / 3);
+                    }
+                } 
+            }
         }
 
         .preview-segment {

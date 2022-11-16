@@ -12,6 +12,11 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
 
     private $administrator;
 
+    /**
+    * Double opt-in setting controller instance
+    */
+    private static $instance;
+
     protected $namespaced_route = 'settings/optin';
 
 	/**
@@ -20,12 +25,13 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
     public function setUp() {
         parent::setUp();
 
+        self::$instance  = \Mint\MRM\Admin\API\Controllers\OptinSettingController::get_instance();
+
+        // create wp_options table on database container
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         global $wpdb;
-
         $charsetCollate = $wpdb->get_charset_collate();
-
         $table = $wpdb->prefix . 'options';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
@@ -105,6 +111,16 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
         $this->assertArrayHasKey("optin", $params);
         $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
 
+        $response = self::$instance->create_or_update( $request );
+		$this->assertTrue(is_object($response) && get_class($response) ===  'WP_REST_Response' || get_class($response) ===  'WP_Error');
+
+		if( 'WP_REST_Response' === get_class( $response ) ) {
+			$this->assertTrue( 200 === $response->get_status() );
+		}
+		elseif( 'WP_Error' === get_class( $response ) ) {
+			$this->assertTrue( 400 === $response->get_error_code() );
+		}
+
         // Insert on wp_options table
         $success = update_option('_mrm_optin_settings',  $setting_value);
         $this->assertTrue($success);
@@ -118,9 +134,31 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
 		$request = new WP_REST_Request( 'GET', '/mrm/v1/settings/optin' );
         $response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() );
-        
-        $data  = $response->get_data();
 	}
+
+
+    /**
+     * Test double opt-in setting get from database
+     */
+    public function test_get(  ) {
+		$body = [
+            "optin" => [
+                "enable"                => true,
+                "email_subject"         => "Double opt-in confirmation email",
+                "email_body"            => "<p>Hi Tuhin,</p>\n<p>This is just an hello</p>",
+                "confirmation_type"     => "message",
+                "confirmation_message"  => "Your subscription to our list has been confirmed."
+            ]
+        ];
+		update_option( '_mrm_optin_settings', $body );
+		$response = self::$instance->get();
+		$this->assertTrue( is_object( $response ) );
+		$this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
+		$this->assertTrue( 200 === $response->get_status() );
+		$this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
+
+	}
+
 
 
 }
