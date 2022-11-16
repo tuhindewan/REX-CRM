@@ -3,6 +3,11 @@ import React, { useRef, useState } from "react";
 import CrossIcon from "../../../components/Icons/CrossIcon";
 
 export default function AddCustomFieldModal({addNewCustomField, closeCustomFieldModal}) {
+    const [customFieldType, setCustomFieldType] = useState();
+
+    const selectFieldType = (event) => {
+        setCustomFieldType(event.target.value);
+    }
 
     return (
         <>
@@ -21,10 +26,15 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
 
                         <div className="form-group">
                             <label htmlFor="custom-field-type">Field Type</label>
-                            <select name="field-type" id="custom-field-type">
+                            <select name="field-type" id="custom-field-type" onChange={selectFieldType}>
                                 <option value="">Select field type</option>
-                                <option value="">Select field type</option>
-                                <option value="">Select field type</option>
+                                <option value="text-field">Text field</option>
+                                <option value="textarea-field">Multiline text field</option>
+                                <option value="number-field">Number field</option>
+                                <option value="emial-field">Email field</option>
+                                <option value="select-field">Select dropdown</option>
+                                <option value="radio-field">Radio</option>
+                                <option value="checkbox-field">Checkbox</option>
                             </select>
                         </div>
                     </div>

@@ -582,6 +582,15 @@
                 right: -13px;
                 top: -13px;
                 z-index: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                svg {
+                    width: 12px;
+                    height: 12px;
+                    display: block;
+                }
 
                 path {
                     fill: #A7A8B3;
