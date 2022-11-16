@@ -40,6 +40,8 @@ export default function DoubleOptin() {
   ]);
   const selectPageRef = useRef(null);
   const [listening, setListening] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isValidate, setIsValidate] = useState(true);
 
   useEffect(
     ListenForOutsideClicks(
@@ -73,9 +75,11 @@ export default function DoubleOptin() {
       "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
     confirmation_type: "message",
     confirmation_message: "Subscription Confirmed. Thank you.",
+    url:''
   });
   const onChangeValue = (e) => {
     setSelectOption(e.target.value);
+    setErrors({});
   };
   const handleSwitcher = () => {
     setSelectSwitch(!selectSwitch);
@@ -93,33 +97,73 @@ export default function DoubleOptin() {
   const handleChange = (event) => {
     event.persist();
     const { name, value } = event.target;
-
+    validate(name, value);
     setOptinSettings((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
+  const validate = (name, value) => {
+    switch (name) {
+      case "url":
+        if (
+          !new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?').test(value)
+        ) {
+          setErrors({
+            ...errors,
+            url: "Enter a valid URL",
+          });
+          setIsValidate(false);
+        } else {
+          setErrors({});
+          setIsValidate(true);
+        }
+        break;
+          if (value.length > 35) {
+            setErrors({
+              ...errors,
+              last_name: "Last name character limit exceeded 35 characters",
+            });
+            setIsValidate(false);
+          }else {
+            setErrors({});
+            setIsValidate(true);
+          }
+        break;
+      default:
+        break;
+    }
+  };
+
   // Submit optin object and hit post request
   const handleSubmit = async () => {
     setLoader(true);
+    const body_content = tinymce.get("tinymce").getContent();
+    const message_content = tinymce.get("confirmation-message").getContent();
     optinSetting.enable = selectSwitch;
+    optinSetting.confirmation_type = selectOption;
+    optinSetting.email_body = body_content;
+    optinSetting.confirmation_message = message_content;
     const optin = {
       optin: optinSetting,
     };
-    submitOptin(optin).then((response) => {
-      if (true === response.success) {
-        setNotificationType("success");
-        setShowNotification("block");
-        setMessage(response?.message);
-      } else {
-        setNotificationType("warning");
-        setShowNotification("block");
-        setMessage(response?.message);
-      }
-      ClearNotification("none", setShowNotification);
-      setLoader(false);
-    });
+    if(isValidate){
+      submitOptin(optin).then((response) => {
+        if (true === response.success) {
+          setNotificationType("success");
+          setShowNotification("block");
+          setMessage(response?.message);
+        } else {
+          setNotificationType("warning");
+          setShowNotification("block");
+          setMessage(response?.message);
+        }
+        
+      });
+    }
+    setLoader(false);
+    ClearNotification("none", setShowNotification);
   };
 
   useEffect(() => {
@@ -135,6 +179,7 @@ export default function DoubleOptin() {
       },
       quicktags: true,
       mediaButtons: true,
+      
     };
 
     let editorId = "tinymce";
@@ -142,17 +187,19 @@ export default function DoubleOptin() {
       tinymce.remove("#" + editorId);
     }
     wp.editor.initialize(editorId, tinyMceConfig);
-
     if (tinymce.get("confirmation-message")) {
       tinymce.remove("#" + "confirmation-message");
     }
     wp.editor.initialize("confirmation-message", tinyMceConfig);
+    
   }, [selectSwitch]);
 
   useEffect(() => {
     getOptinSettings().then((response) => {
-      console.log(response);
-      setSelectSwitch(response.enable)
+      tinymce.get("tinymce").setContent(response.email_body);
+      tinymce.get("confirmation-message").setContent(response.confirmation_message);
+      setSelectSwitch(response.enable);
+      setSelectOption(response.confirmation_type);
       setOptinSettings(response);
     });
   }, []);
@@ -338,9 +385,14 @@ export default function DoubleOptin() {
                             </label>
                             <input
                               type="text"
-                              name="redirect"
+                              name="url"
+                              value={optinSetting.url}
                               placeholder="Enter Redirect URL"
+                              onChange={handleChange}
                             />
+                            <p className={errors?.url ? "error-message show" : "error-message"}>
+                              {errors?.url}
+                            </p>
                           </div>
                           <div
                             className={
