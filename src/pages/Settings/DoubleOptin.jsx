@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
+import { submitOptin } from "../../services/Setting";
 import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
   const [selectOption, setSelectOption] = useState("message");
   const [selectSwitch, setSelectSwitch] = useState(true);
+  const [loader, setLoader] = useState(false);
+  const [optinSetting, setOptinSettings] = useState({
+    enable: true,
+    email_subject: "",
+    email_body: "",
+    confirmation_type: "message",
+    confirmation_message: "",
+  });
   const onChangeValue = (e) => {
     setSelectOption(e.target.value);
   };
@@ -13,13 +22,23 @@ export default function DoubleOptin() {
     setSelectSwitch(!selectSwitch);
   };
 
+  // Copy text to clipboard
   const copyToClipboard = (text) => {
-    console.log(navigator.clipboard);
     if ("clipboard" in navigator) {
       return navigator.clipboard.writeText(text);
     } else {
       return document.execCommand("copy", true, text);
     }
+  };
+
+  const handleSubmit = async () => {
+    setLoader(true);
+    const optin = {
+      optin: optinSetting,
+    };
+    submitOptin(optin).then((response) => {
+      console.log(response);
+    });
   };
 
   useEffect(() => {
@@ -219,9 +238,13 @@ export default function DoubleOptin() {
                 </div>
 
                 <div className="tab-footer">
-                  <button className="mintmrm-btn" type="button">
+                  <button
+                    className="mintmrm-btn"
+                    type="button"
+                    onClick={handleSubmit}
+                  >
                     Save Settings
-                    <span className="mintmrm-loader"></span>
+                    {loader && <span className="mintmrm-loader"></span>}
                   </button>
                 </div>
               </div>

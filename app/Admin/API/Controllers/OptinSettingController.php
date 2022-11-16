@@ -45,7 +45,6 @@ class OptinSettingController extends SettingBaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
             update_option('_mrm_optin_settings',  $setting_value);
