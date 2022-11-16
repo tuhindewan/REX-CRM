@@ -43,9 +43,9 @@ export default function DoubleOptin() {
             setSelectpage
         )
     );
-    const handleSelectOption = (e) =>{
+    const handleSelectOption = (e) => {
         setSelectPageOption(e.target.value);
-    }
+    };
 
     const handlePageSelect = () => {
         setSelectpage(!selectPage);
@@ -76,7 +76,6 @@ export default function DoubleOptin() {
     }, []);
     return (
         <>
-            {console.log(selectPageOption)}
             <div className="mintmrm-settings-page">
                 <div className="mintmrm-container">
                     <div className="mintmrm-settings">
@@ -243,8 +242,14 @@ export default function DoubleOptin() {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className={selectOption ===
-                                                                        "message" ? "form-group top-align confirmation-message-section show" : "form-group top-align confirmation-message-section"}>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "message"
+                                                                ? "form-group top-align confirmation-message-section show"
+                                                                : "form-group top-align confirmation-message-section"
+                                                        }
+                                                    >
                                                         <label htmlFor="">
                                                             Confirmation Message
                                                             <span class="mintmrm-tooltip">
@@ -263,7 +268,14 @@ export default function DoubleOptin() {
                                                             placeholder="Enter Confirmation Message"
                                                         ></textarea>
                                                     </div>
-                                                    <div className={ selectOption ==="redirect" ? "form-group redirect-url-section show" : "form-group redirect-url-section"}>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "redirect"
+                                                                ? "form-group redirect-url-section show"
+                                                                : "form-group redirect-url-section"
+                                                        }
+                                                    >
                                                         <label htmlFor="">
                                                             Redirect URL
                                                             <span class="mintmrm-tooltip">
@@ -283,7 +295,14 @@ export default function DoubleOptin() {
                                                             placeholder="Enter Redirect URL"
                                                         />
                                                     </div>
-                                                    <div className={ selectOption ==="redirect-page" ? "form-group page-dropdown-section show" : "form-group page-dropdown-section"}>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "redirect-page"
+                                                                ? "form-group page-dropdown-section show"
+                                                                : "form-group page-dropdown-section"
+                                                        }
+                                                    >
                                                         <label htmlFor="">
                                                             Redirect Page
                                                             <span class="mintmrm-tooltip">
@@ -356,8 +375,13 @@ export default function DoubleOptin() {
                                                                                         value={
                                                                                             item.title
                                                                                         }
-                                                                                        checked= { selectPageOption == item.title}
-                                                                                        onChange={handleSelectOption}
+                                                                                        checked={
+                                                                                            selectPageOption ==
+                                                                                            item.title
+                                                                                        }
+                                                                                        onChange={
+                                                                                            handleSelectOption
+                                                                                        }
                                                                                     />
 
                                                                                     <label
