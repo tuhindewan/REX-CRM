@@ -36,10 +36,10 @@ export default function CustomFieldSettings() {
 
     //----delete custom field-----
     const deleteCustomField = (index) => {
-        setNewCustomField([
-            ...newCustomField.slice(0, index),
-            ...newCustomField.slice(index + 1, newCustomField.length)
-        ]);
+        // setNewCustomField([
+        //     ...newCustomField.slice(0, index),
+        //     ...newCustomField.slice(index + 1, newCustomField.length)
+        // ]);
 
     };
 
@@ -81,7 +81,6 @@ export default function CustomFieldSettings() {
                                             </div>
 
                                             <div className="custom-field-wrapper">
-                                            {/* <SingleCustomField/> */}
                                                 { newCustomField.length > 0 ? (
                                                     <div className="field-list-wrapper">
                                                         {newCustomField.map((singleCustomField, idx) => {
