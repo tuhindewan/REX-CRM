@@ -151,6 +151,8 @@ export default function DoubleOptin() {
 
   useEffect(() => {
     getOptinSettings().then((response) => {
+      console.log(response);
+      setSelectSwitch(response.enable)
       setOptinSettings(response);
     });
   }, []);
@@ -186,11 +188,11 @@ export default function DoubleOptin() {
                         <span className="mintmrm-switcher">
                           <input
                             type="checkbox"
-                            name="checkedB"
+                            name="enable"
                             id="st"
                             value={selectSwitch}
                             onChange={handleSwitcher}
-                            defaultChecked={selectSwitch}
+                            checked={selectSwitch}
                           />
                           <label htmlFor="st"></label>
                         </span>
