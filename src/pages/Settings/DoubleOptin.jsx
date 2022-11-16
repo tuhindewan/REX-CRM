@@ -43,8 +43,8 @@ export default function DoubleOptin() {
             setSelectpage
         )
     );
-    const handleSelectOption = (e) => {
-        setSelectPageOption(e.target.value);
+    const handleSelectOption = (title) => {
+        setSelectPageOption(title);
     };
 
     const handlePageSelect = () => {
@@ -330,7 +330,9 @@ export default function DoubleOptin() {
                                                                     handlePageSelect
                                                                 }
                                                             >
-                                                                Select Page
+                                                                {selectPageOption
+                                                                    ? selectPageOption
+                                                                    : "Select Page"}
                                                             </button>
                                                             <ul
                                                                 className={
@@ -356,6 +358,11 @@ export default function DoubleOptin() {
                                                                     ) => {
                                                                         return (
                                                                             <li
+                                                                                onClick={() =>
+                                                                                    handleSelectOption(
+                                                                                        item.title
+                                                                                    )
+                                                                                }
                                                                                 key={
                                                                                     index
                                                                                 }
@@ -363,38 +370,9 @@ export default function DoubleOptin() {
                                                                                     "single-column"
                                                                                 }
                                                                             >
-                                                                                <div class="mintmrm-checkbox">
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        name={
-                                                                                            item.id
-                                                                                        }
-                                                                                        id={
-                                                                                            item.id
-                                                                                        }
-                                                                                        value={
-                                                                                            item.title
-                                                                                        }
-                                                                                        checked={
-                                                                                            selectPageOption ==
-                                                                                            item.title
-                                                                                        }
-                                                                                        onChange={
-                                                                                            handleSelectOption
-                                                                                        }
-                                                                                    />
-
-                                                                                    <label
-                                                                                        for={
-                                                                                            item.id
-                                                                                        }
-                                                                                        className="mrm-custom-select-label"
-                                                                                    >
-                                                                                        {
-                                                                                            item.title
-                                                                                        }
-                                                                                    </label>
-                                                                                </div>
+                                                                                {
+                                                                                    item.title
+                                                                                }
                                                                             </li>
                                                                         );
                                                                     }

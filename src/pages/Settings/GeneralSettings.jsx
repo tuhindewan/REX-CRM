@@ -534,65 +534,63 @@ export default function GeneralSettings() {
                                             <div
                                                 className={
                                                     optinSelectSwitch
-                                                        ? "general-settings-body show"
-                                                        : "general-settings-body"
+                                                        ? "general-settings-body user-signup-settings show"
+                                                        : "general-settings-body user-signup-settings"
                                                 }
                                             >
                                                 <div className="wp-user">
                                                     <span>WP User Role</span>
-                                                    <span></span>
+                                                    <span>
+                                                        Lists to be added
+                                                    </span>
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="confirmation-type">
-                                                        After Confirmation Type
-                                                        <span class="mintmrm-tooltip">
-                                                            <TooltipQuestionIcon />
-                                                            <p>
-                                                                Define behaviour
-                                                                of the form
-                                                                after submission
-                                                            </p>
-                                                        </span>
+                                                        Administrator
                                                     </label>
-                                                    <div>
-                                                        <span className="mintmrm-radiobtn">
-                                                            <input
-                                                                id="show-message"
-                                                                type="radio"
-                                                                name="message-redirect"
-                                                                value="message"
-                                                                checked={
-                                                                    selectUnsubscribeOption ===
-                                                                    "message"
-                                                                }
-                                                                onChange={
-                                                                    onChangeUnsubscribeValue
-                                                                }
-                                                            />
-                                                            <label for="show-message">
-                                                                Show Message
-                                                            </label>
-                                                        </span>
-                                                        <span className="mintmrm-radiobtn">
-                                                            <input
-                                                                id="redirect-url"
-                                                                type="radio"
-                                                                name="message-redirect"
-                                                                value="redirect"
-                                                                checked={
-                                                                    selectUnsubscribeOption ===
-                                                                    "redirect"
-                                                                }
-                                                                onChange={
-                                                                    onChangeUnsubscribeValue
-                                                                }
-                                                            />
-                                                            <label for="redirect-url">
-                                                                Redirect to an
-                                                                URL
-                                                            </label>
-                                                        </span>
-                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        className={
+                                                            isActiveList
+                                                                ? "drop-down-button show"
+                                                                : "drop-down-button"
+                                                        }
+                                                        onClick={handleList}
+                                                    >
+                                                        {assignLists.length != 0
+                                                            ? assignLists?.map(
+                                                                  (list) => {
+                                                                      return (
+                                                                          <span
+                                                                              className="single-list"
+                                                                              key={
+                                                                                  list.id
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  list.title
+                                                                              }
+
+                                                                              <button
+                                                                                  className="close-list"
+                                                                                  title="Delete"
+                                                                                  onClick={(
+                                                                                      e
+                                                                                  ) =>
+                                                                                      deleteSelectedList(
+                                                                                          e,
+                                                                                          list.id
+                                                                                      )
+                                                                                  }
+                                                                              >
+                                                                                  <CrossIcon />
+                                                                              </button>
+                                                                          </span>
+                                                                      );
+                                                                  }
+                                                              )
+                                                            : "Select Lists"}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
