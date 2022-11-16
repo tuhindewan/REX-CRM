@@ -33,8 +33,36 @@ class AdminAssets {
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-
+/** Load font and size selector */
+add_action( 'admin_head', array( $this, 'wdm_add_mce_button' ) );
     }
+
+    function wdm_add_mce_button() {
+        // check user permissions
+        if ( !current_user_can( 'edit_posts' ) &&  !current_user_can( 'edit_pages' ) ) {
+                   return;
+           }
+       // check if WYSIWYG is enabled
+       if ( 'true' == get_user_option( 'rich_editing' ) ) {
+           add_filter( 'mce_external_plugins', [$this, 'wdm_add_tinymce_plugin'] );
+           add_filter( 'mce_buttons', [$this, 'wdm_register_mce_button'] );
+           }
+}
+
+// register new button in the editor
+function wdm_register_mce_button( $buttons ) {
+    array_push( $buttons, 'wdm_mce_button' );
+    return $buttons;
+}
+
+
+// declare a script for the new button
+// the script will insert the shortcode on the click event
+function wdm_add_tinymce_plugin( $plugin_array ) {
+    error_log(print_r(get_stylesheet_directory_uri(), 1));
+  $plugin_array['wdm_mce_button'] = get_stylesheet_directory_uri() .'/js/wdm-mce-button.js';
+  return $plugin_array;
+}
 
     /**
      * Load plugin main js file

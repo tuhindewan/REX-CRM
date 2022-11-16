@@ -18,20 +18,31 @@ export default function DoubleOptin() {
       tinymce: {
         wpautop: true,
         plugins:
-          "charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview",
+          "charmap colorpicker compat3x directionality hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview",
         toolbar1:
-          "bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv",
+          "bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | wp_adv",
         toolbar2:
-          "formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help",
+          "formatselect alignjustify forecolor | fontsizeselect | fontselect |pastetext removeformat charmap | outdent indent | undo redo | wp_help",
       },
       quicktags: true,
       mediaButtons: true,
     };
+    tinymce.PluginManager.add("wdm_mce_button", function (editor, url) {
+      editor.addButton("wdm_mce_button", {
+        text: "WDM",
+        icon: false,
+        onclick: function () {
+          // change the shortcode as per your requirement
+          editor.insertContent("[wdm_shortcode]");
+        },
+      });
+    });
     let editorId = "tinymce";
     if (tinymce.get(editorId)) {
       tinymce.remove("#" + editorId);
     }
     wp.editor.initialize(editorId, tinyMceConfig);
+    wp.editor.initialize("confirmation_message", tinyMceConfig);
   }, []);
   return (
     <>
