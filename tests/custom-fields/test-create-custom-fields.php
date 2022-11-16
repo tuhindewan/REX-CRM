@@ -146,6 +146,25 @@ class CustomFieldsControllerTest extends WP_UnitTestCase {
     }
 
     /**
+	 * API endpoint reuqest check for get all fields
+	 */
+	public function test_delete_single() {
+        $this->controller = CustomFieldController::get_instance();
+
+        $field_id = rand(1,10);
+
+		$request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/custom-fields/');
+
+        $request->set_url_params([
+            'field_id' => $field_id
+        ]);
+
+        $response = $this->controller->delete_single($request);
+
+        $this->assertEquals(200, $response->data['code']);
+    }
+
+    /**
 	 * API endpoint reuqest check for get single field
 	 */
 	public function test_get_single() {

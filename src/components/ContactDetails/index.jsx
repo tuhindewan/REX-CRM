@@ -28,6 +28,7 @@ import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
+import InputTextArea from "../InputTextArea";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
@@ -661,6 +662,7 @@ export default function ContactDetails() {
 
   return (
     <>
+    {console.log(customFields)}
       <div className="mintmrm-contact-details">
         {showLoader ? (
           <LoadingIndicator type="table" />
@@ -1298,8 +1300,8 @@ export default function ContactDetails() {
                                     />
                                   )}
 
-                                  {field.type == "date" && (
-                                    <InputDate
+                                  {field.type == "textArea" && (
+                                    <InputTextArea
                                       name={field.slug}
                                       label={field.title}
                                       handleChange={handleMetaChange}
@@ -1308,6 +1310,8 @@ export default function ContactDetails() {
                                       }
                                     />
                                   )}
+
+                                  
                                 </>
                               );
                             })}
