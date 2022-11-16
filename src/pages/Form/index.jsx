@@ -578,7 +578,7 @@ export default function FormIndex(props) {
                                 </td>
 
                                 <td className="status">
-                                  <span className="wpfnl-switcher">
+                                  <span className="mintmrm-switcher">
                                     <input
                                       checked={form.status === "published"}
                                       type="checkbox"

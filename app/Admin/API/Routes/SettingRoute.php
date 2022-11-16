@@ -3,6 +3,8 @@
 namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\WCSettingController;
+use Mint\MRM\Admin\API\Controllers\BusinessSettingController;
+use Mint\MRM\Admin\API\Controllers\EmailSettingController;
 use Mint\MRM\Admin\API\Controllers\OptinSettingController;
 
 /**
@@ -31,16 +33,37 @@ class SettingRoute {
      */
     protected $rest_base = 'settings';
 
-
     /**
-     * MRM_Tag_Controller class object
-     * 
+     * @desc WCSettingsController class instance variable
      * @var object
      * @since 1.0.0
      */
     protected $wc_controller;
 
-    
+    /**
+     * OptinSettingController class object
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    protected $optin_controller;
+
+    /**
+     * BusinessSettingController class object
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    protected $business_controller;
+
+    /**
+     * EmailSettingController class object
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    protected $email_controller;
+
     /**
      * Register API endpoints routes for tags module
      * 
@@ -79,34 +102,108 @@ class SettingRoute {
 
         $this->controller = OptinSettingController::get_instance();
 
+        $this->email_controller = EmailSettingController::get_instance();
+
+        /**
+         * Settings email endpoints
+         * 
+         * @return void
+         * @since 1.0.0
+        */  
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/email', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->email_controller ,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->email_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->email_controller ,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->email_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
+
         /**
          * Register rest routes for double opt-in settings
          * @since 1.0.0
-        */  
-       register_rest_route($this->namespace, '/' . $this->rest_base . '/optin', [
+        */
+        $this->optin_controller = OptinSettingController::get_instance();
+
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/optin', [
+
+            // POST request for store on wp_options table
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->optin_controller ,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->optin_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+
+            // GET request for retrieving double opt-in settings
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->optin_controller ,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->optin_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ]
+        ]);
+
+
+	    /**
+	     * Business info controller
+	     */
+        $this->business_controller = BusinessSettingController::get_instance();
+        /**
+         * Register rest routes for double opt-in settings
+         * @since 1.0.0
+        */
+       register_rest_route($this->namespace, '/' . $this->rest_base . '/business', [
 
         // POST request for store on wp_options table
         [
             'methods' => \WP_REST_Server::CREATABLE,
             'callback' => [
-                $this->controller ,
+                $this->business_controller ,
                 'create_or_update'
             ],
             'permission_callback' => [
-                $this->controller ,
+                $this->business_controller ,
                 'rest_permissions_check'
             ] ,
         ],
 
-        // GET request for retrieving double opt-in settings
+        // GET request for retrieving Business settings
         [
             'methods' => \WP_REST_Server::READABLE,
             'callback' => [
-                $this->controller ,
+	            $this->business_controller ,
                 'get'
             ],
             'permission_callback' => [
-                $this->controller ,
+	            $this->business_controller ,
                 'rest_permissions_check'
             ] ,
         ]
