@@ -242,6 +242,12 @@
           }
           .mintmrm-radiobtn {
             margin-right: 30px;
+            label {
+              font-weight: 500;
+              font-size: 14px;
+              line-height: 1.21;
+              color: #344054;
+            }
             label::before {
               width: 18px;
               height: 18px;
@@ -252,12 +258,13 @@
               height: 8px;
             }
           }
+
           .drop-down-button {
             margin-top: 12px;
             width: 100%;
             border: 1px solid #ebedf0;
             border-radius: 6px;
-            padding: 15px;
+            padding: 15px 15px 10px;
             background-color: transparent;
             text-align: left;
             font-weight: 400;
@@ -283,6 +290,52 @@
             &.show::before {
               top: 65%;
               transform: rotate(225deg);
+            }
+
+            .single-list {
+              border: 1px solid #e4e6eb;
+              border-radius: 4px;
+              font-size: 12px;
+              line-height: 1;
+              letter-spacing: -0.01em;
+              color: #667085;
+              display: inline-block;
+              padding: 3px 22px 3px 6px;
+              margin-right: 6px;
+              margin-bottom: 5px;
+              position: relative;
+              vertical-align: middle;
+
+              .close-list {
+                background: transparent;
+                padding: 1px 6px 2px;
+                border-radius: 2px;
+                font-size: 10px;
+                cursor: pointer;
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 100%;
+                border: none;
+
+                &:before {
+                  content: "";
+                  position: absolute;
+                  left: 0;
+                  top: 0;
+                  height: 100%;
+                  width: 1px;
+                  background: #e4e6eb;
+                }
+                svg {
+                  width: 6px;
+                  height: 6px;
+
+                  path {
+                    fill: #a7a8b3;
+                  }
+                }
+              }
             }
           }
         }
@@ -476,6 +529,118 @@
           }
         }
       }
+
+      .general-tab-content {
+        .general-single-settings {
+          border: 1px solid #e4e6eb;
+          border-radius: 6px;
+          margin-bottom: 22px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .general-settings-header {
+            padding: 17px 20px 15px;
+
+            .form-group {
+              justify-content: space-between;
+            }
+
+            .form-group > label {
+              width: 300px;
+            }
+          }
+
+          .general-settings-body {
+            border-top: 1px solid #e4e6eb;
+            padding: 30px 24px;
+            display: none;
+
+            &.show {
+              display: block;
+            }
+            hr {
+              margin-left: -24px;
+              margin-right: -24px;
+            }
+            .select-preference-wrapper,
+            .editable-primary-field {
+              width: calc(100% - 223px);
+            }
+
+            .select-preference-wrapper {
+              .mintmrm-radiobtn {
+                display: block;
+                margin-bottom: 20px;
+                margin-right: 0;
+              }
+
+              .list-section {
+                background: #f6f8fa;
+                border-radius: 6px;
+                padding: 20px;
+
+                .drop-down-button {
+                  background-color: #ffffff;
+                  &::before {
+                    right: 38px;
+                  }
+                }
+              }
+            }
+            .editable-primary-field {
+              .mintmrm-checkbox {
+                display: block;
+                margin-bottom: 20px;
+
+                &:last-child {
+                  margin-bottom: 0;
+                }
+              }
+            }
+          }
+        }
+        .top-wrapper {
+          border: 1px solid #e4e6eb;
+          border-radius: 6px;
+          padding: 19px;
+          display: flex;
+          justify-content: space-between;
+        }
+        .inner-wrapper {
+          border: 1px solid #e4e6eb;
+          border-top: navajowhite;
+          border-radius: 0 0 6px 6px;
+          padding: 30px 24px;
+        }
+      }
+      .double-optin-tab-content {
+        .redirect-page-button {
+          width: calc(100% - 223px);
+
+          .drop-down-button {
+            padding: 15px;
+
+            &::before {
+              top: 50%;
+            }
+            &.show::before {
+              top: 55%;
+            }
+          }
+        }
+
+        .confirmation-message-section,
+        .redirect-url-section,
+        .page-dropdown-section {
+          display: none;
+
+          &.show {
+            display: flex;
+          }
+        }
+      }
     }
 
     //----only business tab content style----
@@ -606,7 +771,7 @@
         max-width: 518px;
         position: relative;
         margin: 0 auto;
-        transform: translateY(-140px);
+        transform: translateY(-20px);
         transition: all 0.3s ease;
 
         .modal-body {
@@ -637,6 +802,12 @@
               border-color: #e4e6eb;
               padding: 14px 15px;
             }
+
+            .mintmrm-tooltip {
+              position: relative;
+              top: 2px;
+              margin-left: 5px;
+            }
           }
         }
 
@@ -652,6 +823,13 @@
             width: 80px;
           }
         }
+
+        .new-field-wrapper {
+          background: #fff;
+          padding: 20px;
+          border-radius: 6px;
+          box-shadow: 0 1px 3px #33333324;
+        }
       }
 
       &.show-modal {
@@ -659,7 +837,7 @@
         visibility: visible;
 
         .modal-content-wrapper {
-          transform: translateY(-110px);
+          transform: translateY(0);
           transition-delay: 0.1s;
         }
       }

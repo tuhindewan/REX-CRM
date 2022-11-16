@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
+import Search from "../../components/Icons/Search";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { submitOptin } from "../../services/Setting";
 import { ClearNotification } from "../../utils/admin-notification";
@@ -13,6 +15,44 @@ export default function DoubleOptin() {
   const [notificationType, setNotificationType] = useState("success");
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
+  const [selectPage, setSelectpage] = useState(false);
+  const [pages, setpages] = useState([
+    {
+      title: "Privacy",
+      id: "0",
+    },
+    {
+      title: "Cart",
+      id: "1",
+    },
+    {
+      title: "Checkout",
+      id: "2",
+    },
+    {
+      title: "Shop",
+      id: "3",
+    },
+    {
+      title: "Blog",
+      id: "4",
+    },
+  ]);
+  const selectPageRef = useRef(null);
+  const [listening, setListening] = useState(false);
+
+  useEffect(
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      selectPageRef,
+      setSelectpage
+    )
+  );
+
+  const handlePageSelect = () => {
+    setSelectpage(!selectPage);
+  };
   const [optinSetting, setOptinSettings] = useState({
     enable: true,
     email_subject: "",
@@ -208,45 +248,136 @@ export default function DoubleOptin() {
                                   Redirect to an URL
                                 </label>
                               </span>
+                              <span className="mintmrm-radiobtn">
+                                <input
+                                  id="redirect-page"
+                                  type="radio"
+                                  name="message-redirect"
+                                  value="redirect-page"
+                                  checked={selectOption === "redirect-page"}
+                                  onChange={onChangeValue}
+                                />
+                                <label for="redirect-page">
+                                  Redirect to a page
+                                </label>
+                              </span>
                             </div>
                           </div>
-                          {selectOption === "message" ? (
-                            <div className="form-group top-align">
-                              <label htmlFor="">
-                                Confirmation Message
-                                <span class="mintmrm-tooltip">
-                                  <TooltipQuestionIcon />
-                                  <p>
-                                    Define behaviour of the form after
-                                    submission
-                                  </p>
-                                </span>
-                              </label>
-                              <textarea
-                                id="confirmation-message"
-                                rows="3"
-                                placeholder="Enter Confirmation Message"
-                              ></textarea>
+                          <div
+                            className={
+                              selectOption === "message"
+                                ? "form-group top-align confirmation-message-section show"
+                                : "form-group top-align confirmation-message-section"
+                            }
+                          >
+                            <label htmlFor="">
+                              Confirmation Message
+                              <span class="mintmrm-tooltip">
+                                <TooltipQuestionIcon />
+                                <p>
+                                  Define behaviour of the form after submission
+                                </p>
+                              </span>
+                            </label>
+                            <textarea
+                              id="confirmation-message"
+                              rows="3"
+                              placeholder="Enter Confirmation Message"
+                            ></textarea>
+                          </div>
+                          <div
+                            className={
+                              selectOption === "redirect"
+                                ? "form-group redirect-url-section show"
+                                : "form-group redirect-url-section"
+                            }
+                          >
+                            <label htmlFor="">
+                              Redirect URL
+                              <span class="mintmrm-tooltip">
+                                <TooltipQuestionIcon />
+                                <p>
+                                  Define behaviour of the form after submission
+                                </p>
+                              </span>
+                            </label>
+                            <input
+                              type="text"
+                              name="redirect"
+                              placeholder="Enter Redirect URL"
+                            />
+                          </div>
+                          <div
+                            className={
+                              selectOption === "redirect-page"
+                                ? "form-group page-dropdown-section show"
+                                : "form-group page-dropdown-section"
+                            }
+                          >
+                            <label htmlFor="">
+                              Redirect Page
+                              <span class="mintmrm-tooltip">
+                                <TooltipQuestionIcon />
+                                <p>
+                                  Define behaviour of the form after submission
+                                </p>
+                              </span>
+                            </label>
+                            <div
+                              className="redirect-page-button"
+                              ref={selectPageRef}
+                            >
+                              <button
+                                className={
+                                  selectPage
+                                    ? "drop-down-button show"
+                                    : "drop-down-button"
+                                }
+                                onClick={handlePageSelect}
+                              >
+                                Select Page
+                              </button>
+                              <ul
+                                className={
+                                  selectPage
+                                    ? "mintmrm-dropdown show"
+                                    : "mintmrm-dropdown"
+                                }
+                              >
+                                <li className="searchbar">
+                                  <span class="pos-relative">
+                                    <Search />
+                                    <input
+                                      type="search"
+                                      name="column-search"
+                                      placeholder="Search or create"
+                                    />
+                                  </span>
+                                </li>
+                                {pages.map((item, index) => {
+                                  return (
+                                    <li key={index} className={"single-column"}>
+                                      <div class="mintmrm-checkbox">
+                                        <input
+                                          type="checkbox"
+                                          name={item.id}
+                                          id={item.id}
+                                          value={item.title}
+                                        />
+
+                                        <label
+                                          for={item.id}
+                                          className="mrm-custom-select-label"
+                                        >
+                                          {item.title}
+                                        </label>
+                                      </div>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
                             </div>
-                          ) : (
-                            <div className="form-group">
-                              <label htmlFor="">
-                                Redirect URL
-                                <span class="mintmrm-tooltip">
-                                  <TooltipQuestionIcon />
-                                  <p>
-                                    Define behaviour of the form after
-                                    submission
-                                  </p>
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                name="redirect"
-                                placeholder="Enter Redirect URL"
-                              />
-                            </div>
-                          )}
+                          </div>
                         </>
                       ) : null}
                     </div>
