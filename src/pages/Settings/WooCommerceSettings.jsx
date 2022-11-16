@@ -91,7 +91,7 @@ export default function WooCommerceSettings() {
                         <SettingsNav />
 
                         <div className="settings-tab-content">
-                            <div className="single-tab-content email-tab-content">
+                            <div className="single-tab-content woocommerce-tab-content">
                                 <div className="tab-body">
                                     <header className="tab-header">
                                         <h4 className="title">

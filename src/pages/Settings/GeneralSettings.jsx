@@ -21,7 +21,7 @@ export default function GeneralSettings() {
                         <SettingsNav />
 
                         <div className="settings-tab-content">
-                            <div className="single-tab-content email-tab-content">
+                            <div className="single-tab-content general-tab-content">
                                 <div className="tab-body">
                                     <header className="tab-header">
                                         <h4 className="title">
@@ -31,7 +31,7 @@ export default function GeneralSettings() {
                                     </header>
 
                                     <div className="form-wrapper">
-                                        <div className="form-group">
+                                        <div className="form-group top-wrapper">
                                             <label htmlFor="">
                                                 Double Opt-In
                                                 <span class="mintmrm-tooltip">
@@ -56,23 +56,26 @@ export default function GeneralSettings() {
                                                 <label htmlFor="st"></label>
                                             </span>
                                         </div>
-                                        <div className="form-group">
-                                            <label htmlFor="from-name">
-                                                Form Name
-                                                <span class="mintmrm-tooltip">
-                                                    <TooltipQuestionIcon />
-                                                    <p>
-                                                        Define behaviour of the
-                                                        form after submission
-                                                    </p>
-                                                </span>
-                                            </label>
-                                            <input
-                                                id="from-name"
-                                                type="text"
-                                                name="from-name"
-                                                placeholder="Enter From Name"
-                                            />
+                                        <div className="inner-wrapper">
+                                            <div className="form-group">
+                                                <label htmlFor="from-name">
+                                                    Form Name
+                                                    <span class="mintmrm-tooltip">
+                                                        <TooltipQuestionIcon />
+                                                        <p>
+                                                            Define behaviour of
+                                                            the form after
+                                                            submission
+                                                        </p>
+                                                    </span>
+                                                </label>
+                                                <input
+                                                    id="from-name"
+                                                    type="text"
+                                                    name="from-name"
+                                                    placeholder="Enter From Name"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -454,6 +454,23 @@
                 display: flex;
                 justify-content: flex-end;
             }
+
+            .general-tab-content {
+                .top-wrapper {
+                    border: 1px solid #e4e6eb;
+                    border-radius: 6px;
+                    padding: 19px;
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 0;
+                }
+                .inner-wrapper {
+                    border: 1px solid #E4E6EB;
+                    border-top: navajowhite;
+                    border-radius: 0 0 6px 6px;
+                    padding: 30px 24px;
+                }
+            }
         }
     }
 }
