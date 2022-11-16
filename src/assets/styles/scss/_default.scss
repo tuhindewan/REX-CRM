@@ -263,7 +263,7 @@
   .top-align {
     align-items: flex-start;
 
-    label {
+    & > label {
       padding-top: 10px;
     }
   }
