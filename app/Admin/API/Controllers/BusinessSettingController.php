@@ -38,7 +38,7 @@ Class BusinessSettingController extends SettingBaseController{
 				$phone          = isset($params['phone']) ? sanitize_text_field($params['phone']) : '';
 				$address        = isset($params['address']) ? sanitize_text_field($params['address']) : '';
 				$logo_url       = isset($params['logo_url']) ? sanitize_text_field($params['logo_url']) : '';
-				$social         = isset($params['social']) ? sanitize_text_field($params['social']) : [];
+				$social         = isset($params['socialMedia']) ? $params['socialMedia'] : [];
 				if(!$this->phone_number_validation($phone))	{
 					return $this->get_error_response(__( 'Phone number format is not correct', 'mrm' ));
 				}
@@ -47,7 +47,7 @@ Class BusinessSettingController extends SettingBaseController{
 					"phone"         => $phone,
 					"address"       => $address,
 					"logo_url"      => $logo_url,
-					"social"        => $social
+					"socialMedia"   => $social
 				);
 
 				update_option( $this->option_key,$business_options );
@@ -76,7 +76,7 @@ Class BusinessSettingController extends SettingBaseController{
 			"phone"         => "",
 			"address"       => "",
 			"logo_url"      => "",
-			"social"        => [
+			"socialMedia"        => [
 				"icon"      => "",
 				"url"       => ""
 			]
