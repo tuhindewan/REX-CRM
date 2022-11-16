@@ -25,19 +25,11 @@ class GeneralSettingController extends SettingBaseController {
      */
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
-        $params = is_array( $params ) && !empty( $params ) ? $params : [
-            'unsubscriber_settings' => [
-                'confirmation_type'    => 'message',
-                'page_id'              => 5,
-                'url'                  => 'url',
-                'confirmation_message' => 'String',
-            ],
-            'preference' => [],
-            'user_signup' => [],
-            'comment_form_subscription' => []
-        ];
 
-        if( update_option( '_mrm_general_settings', $params ) ) {
+        if( is_array( $params ) && !empty( $params ) ) {
+            foreach( $params as $key => $value ) {
+                update_option( '_mrm_general_' . $key, $value );
+            }
             return $this->get_success_response( __( 'General settings have been successfully saved.', 'mrm' ) );
         }
         return $this->get_error_response( __( 'No changes have been made.', 'mrm' ) );
@@ -49,20 +41,29 @@ class GeneralSettingController extends SettingBaseController {
      * @return array|WP_REST_Response
      * @since 1.0.0
      */
-    public function get() {
-        $default  = [
-            'unsubscriber_settings' => [
-                'confirmation_type'    => 'message',
-                'page_id'              => 5,
-                'url'                  => 'url',
-                'confirmation_message' => 'String',
-            ],
-            'preference' => [],
-            'user_signup' => [],
-            'comment_form_subscription' => []
-        ];
-        $settings = get_option( '_mrm_general_settings', $default );
-        $settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+    public function get( WP_REST_Request $request ) {
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $option_keys = apply_filters( 'mrm_general_settings_option_key', [
+            'unsubscriber_settings',
+            'preference',
+            'user_signup',
+            'comment_form_subscription'
+        ] );
+
+        $settings = [];
+
+        if( isset( $params[ 'general_settings_key' ] ) ) {
+            $key = $params[ 'general_settings_key' ];
+            $settings[ $key ] = get_option( '_mrm_general_' . $key, [] );
+        }
+        else {
+            foreach( $option_keys as $key ) {
+                $settings[ $key ] = get_option( '_mrm_general_' . $key, [] );
+            }
+        }
+
+        $settings = is_array( $settings ) && !empty( $settings ) ? $settings : [];
         return $this->get_success_response_data(  $settings );
     }
 }

@@ -220,7 +220,7 @@ class SettingRoute {
         $this->general_controller = GeneralSettingController::get_instance();
 
         // API routes for WooCommerce settings
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/general/', [
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/general' . '(?:/(?P<general_settings_key>[a-z-|_]+))?', [
             [
                 'methods' => \WP_REST_Server::CREATABLE,
                 'callback' => [

@@ -69,7 +69,7 @@ Class BusinessSettingController extends SettingBaseController{
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
-	public function get( ){
+	public function get( WP_REST_Request $request ){
 
 		$default = array(
 			"business_name" => "",

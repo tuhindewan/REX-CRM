@@ -44,7 +44,7 @@ class WCSettingController extends SettingBaseController {
      * @return array
      * @since 1.0.0
      */
-    public function get() {
+    public function get( WP_REST_Request $request ) {
         $default  = [
             'enable'         => false,
             'checkbox_label' => 'Please put a checkbox label.',
