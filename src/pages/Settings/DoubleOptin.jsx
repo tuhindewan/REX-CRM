@@ -7,6 +7,7 @@ import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function DoubleOptin() {
     const [selectOption, setSelectOption] = useState("message");
+    const [selectPageOption, setSelectPageOption] = useState("");
     const [selectPage, setSelectpage] = useState(false);
     const [selectSwitch, setSelectSwitch] = useState(true);
     const [pages, setpages] = useState([
@@ -42,6 +43,9 @@ export default function DoubleOptin() {
             setSelectpage
         )
     );
+    const handleSelectOption = (e) =>{
+        setSelectPageOption(e.target.value);
+    }
 
     const handlePageSelect = () => {
         setSelectpage(!selectPage);
@@ -72,7 +76,7 @@ export default function DoubleOptin() {
     }, []);
     return (
         <>
-            {console.log(pages)}
+            {console.log(selectPageOption)}
             <div className="mintmrm-settings-page">
                 <div className="mintmrm-container">
                     <div className="mintmrm-settings">
@@ -352,6 +356,8 @@ export default function DoubleOptin() {
                                                                                         value={
                                                                                             item.title
                                                                                         }
+                                                                                        checked= { selectPageOption == item.title}
+                                                                                        onChange={handleSelectOption}
                                                                                     />
 
                                                                                     <label
