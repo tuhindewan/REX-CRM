@@ -12,3 +12,14 @@ export async function submitOptin(optin) {
     }
   });
 }
+
+// GET request to get double opt-in settings
+export async function getOptinSettings(optin) {
+  return await fetch(
+    `${window.MRM_Vars.api_base_url}mrm/v1/settings/optin`
+  ).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+  });
+}

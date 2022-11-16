@@ -4,7 +4,7 @@ import Search from "../../components/Icons/Search";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
-import { submitOptin } from "../../services/Setting";
+import { getOptinSettings, submitOptin } from "../../services/Setting";
 import { ClearNotification } from "../../utils/admin-notification";
 import SettingsNav from "./SettingsNav";
 
@@ -55,10 +55,11 @@ export default function DoubleOptin() {
   };
   const [optinSetting, setOptinSettings] = useState({
     enable: true,
-    email_subject: "",
-    email_body: "",
+    email_subject: "Please Confirm Subscription.",
+    email_body:
+      "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
     confirmation_type: "message",
-    confirmation_message: "",
+    confirmation_message: "Subscription Confirmed. Thank you.",
   });
   const onChangeValue = (e) => {
     setSelectOption(e.target.value);
@@ -76,9 +77,20 @@ export default function DoubleOptin() {
     }
   };
 
+  const handleChange = (event) => {
+    event.persist();
+    const { name, value } = event.target;
+
+    setOptinSettings((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   // Submit optin object and hit post request
   const handleSubmit = async () => {
     setLoader(true);
+    optinSetting.enable = selectSwitch;
     const optin = {
       optin: optinSetting,
     };
@@ -123,6 +135,12 @@ export default function DoubleOptin() {
     }
     wp.editor.initialize("confirmation-message", tinyMceConfig);
   }, [selectSwitch]);
+
+  useEffect(() => {
+    getOptinSettings().then((response) => {
+      setOptinSettings(response);
+    });
+  }, []);
 
   return (
     <>
@@ -179,8 +197,10 @@ export default function DoubleOptin() {
                             </label>
                             <input
                               type="text"
-                              name="email-subject"
+                              name="email_subject"
+                              value={optinSetting.email_subject}
                               placeholder="Enter Email Subject"
+                              onChange={handleChange}
                             />
                           </div>
                           <div className="form-group top-align">
