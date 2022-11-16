@@ -34,7 +34,7 @@ class SettingRoute {
     protected $rest_base = 'settings';
 
     /**
-     * @desc WCSettingsController class instance variable
+     * @desc WCSettingController class instance variable
      * @var object
      * @since 1.0.0
      */
@@ -72,6 +72,7 @@ class SettingRoute {
      */
     public function register_routes()
     {
+        // WCSettingController class instance
         $this->wc_controller = WCSettingController::get_instance();
 
         // API routes for WooCommerce settings
@@ -100,10 +101,8 @@ class SettingRoute {
             ],
         ]);
 
-        $this->controller = OptinSettingController::get_instance();
 
         $this->email_controller = EmailSettingController::get_instance();
-
         /**
          * Settings email endpoints
          * 
