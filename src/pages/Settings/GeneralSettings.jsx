@@ -456,7 +456,7 @@ export default function GeneralSettings() {
                                                             </p>
                                                         </span>
                                                     </label>
-                                                    <div className="select-preference-wrapper">
+                                                    <div className="editable-primary-field">
                                                         <span className="mintmrm-checkbox">
                                                             <input
                                                                 id="first-name"

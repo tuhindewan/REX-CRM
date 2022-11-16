@@ -548,18 +548,16 @@
                         &.show {
                             display: block;
                         }
+                        .select-preference-wrapper,
+                        .editable-primary-field {
+                            width: calc(100% - 223px);
+                        }
 
                         .select-preference-wrapper {
-                            width: calc(100% - 223px);
-
                             .mintmrm-radiobtn {
                                 display: block;
                                 margin-bottom: 20px;
                                 margin-right: 0;
-                            }
-                            .mintmrm-checkbox {
-                                display: block;
-                                margin-bottom: 20px;
                             }
 
                             .list-section {
@@ -572,6 +570,16 @@
                                     &::before {
                                         right: 38px;
                                     }
+                                }
+                            }
+                        }
+                        .editable-primary-field {
+                            .mintmrm-checkbox {
+                                display: block;
+                                margin-bottom: 20px;
+
+                                &:last-child{
+                                    margin-bottom: 0;
                                 }
                             }
                         }
@@ -589,6 +597,34 @@
                     border-top: navajowhite;
                     border-radius: 0 0 6px 6px;
                     padding: 30px 24px;
+                }
+            }
+            .double-optin-tab-content {
+
+                .redirect-page-button {
+                    width: calc(100% - 223px);
+
+                    .drop-down-button{
+                        padding: 15px;
+
+                        &::before{
+                            top: 50%;
+                        }
+                        &.show::before{
+                            top: 55%;
+                        }
+                    }
+                    
+                }
+
+                .confirmation-message-section,
+                .redirect-url-section,
+                .page-dropdown-section{
+                    display: none;
+
+                    &.show{
+                        display: flex;
+                    }
                 }
             }
         }
