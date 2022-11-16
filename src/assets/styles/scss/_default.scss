@@ -92,7 +92,9 @@
     border: none;
     outline: none;
     box-shadow: none;
+    cursor: pointer;
   }
+  
   input[type="submit"],
   button[type="submit"],
   .mintmrm-btn {
@@ -154,9 +156,6 @@
     font-weight: 500;
   }
 
-  button {
-    cursor: pointer;
-  }
 
   //------extendable classes--------
   .pos-relative {
