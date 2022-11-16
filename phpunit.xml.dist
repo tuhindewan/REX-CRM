@@ -13,6 +13,7 @@
             <file>tests/settings/test-wc-controller.php</file>
             <file>tests/settings/test-general-route.php</file>
             <file>tests/settings/test-general-controller.php</file>
+            <file>tests/settings/test-user-sign-up-to-contact.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
