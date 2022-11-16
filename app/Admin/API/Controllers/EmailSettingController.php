@@ -107,7 +107,7 @@ class EmailSettingController extends SettingBaseController {
         }
         $failed_data = array(
             'success' => false,
-            'message' => 'Failed to save',
+            'message' => 'No changes made. Can not save.',
             'code'    => 400
         );
         return $failed_data;
