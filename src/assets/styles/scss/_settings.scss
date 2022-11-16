@@ -604,7 +604,7 @@
                 max-width: 518px;
                 position: relative;
                 margin: 0 auto;
-                transform: translateY(-140px);
+                transform: translateY(-20px);
                 transition: all 0.3s ease;
 
                 .modal-body {
@@ -635,6 +635,12 @@
                             border-color: #E4E6EB;
                             padding: 14px 15px;
                         }
+
+                        .mintmrm-tooltip {
+                            position: relative;
+                            top: 2px;
+                            margin-left: 5px;
+                        }
                     }
                 }
 
@@ -650,6 +656,13 @@
                         width: 80px;
                     }
                 }
+
+                .new-field-wrapper {
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 6px;
+                    box-shadow: 0 1px 3px #33333324;
+                }
             }
 
             
@@ -658,7 +671,7 @@
                 visibility: visible;
 
                 .modal-content-wrapper {
-                    transform: translateY(-110px);
+                    transform: translateY(0);
                     transition-delay: 0.1s;
                 }
             }

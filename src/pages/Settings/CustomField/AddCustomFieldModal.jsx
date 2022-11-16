@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import CrossIcon from "../../../components/Icons/CrossIcon";
+import TooltipQuestionIcon from "../../../components/Icons/TooltipQuestionIcon";
 
 export default function AddCustomFieldModal({addNewCustomField, closeCustomFieldModal}) {
     const [customFieldType, setCustomFieldType] = useState();
@@ -37,6 +38,31 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                 <option value="checkbox-field">Checkbox</option>
                             </select>
                         </div>
+
+                        {customFieldType === 'text-field' || customFieldType === 'textarea-field' || customFieldType === 'number-field' || customFieldType === 'emial-field' &&
+                            <div className="new-field-wrapper">
+                                <div className="form-group">
+                                    <label>Label</label>
+                                    <input type="text" name="new-field-label" placeholder="Enter field Label" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>
+                                        Slug (Optional)
+                                        <span class="mintmrm-tooltip">
+                                            <TooltipQuestionIcon />
+                                            <p> Must enter an email where will a reply will be received </p>
+                                        </span>
+                                    </label>
+                                    <input type="text" name="new-field-slug" placeholder="Enter custom field slug" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Placeholder Text</label>
+                                    <input type="text" name="new-field-placeholder" placeholder="Enter placeholder text" />
+                                </div>
+                            </div>
+                        }
                     </div>
 
                     <div className="modal-footer">
