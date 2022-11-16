@@ -32,14 +32,14 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                 <option value="text-field">Text field</option>
                                 <option value="textarea-field">Multiline text field</option>
                                 <option value="number-field">Number field</option>
-                                <option value="emial-field">Email field</option>
+                                <option value="email-field">Email field</option>
                                 <option value="select-field">Select dropdown</option>
                                 <option value="radio-field">Radio</option>
                                 <option value="checkbox-field">Checkbox</option>
                             </select>
                         </div>
 
-                        {(customFieldType === 'text-field' || customFieldType === 'textarea-field' || customFieldType === 'number-field' || customFieldType === 'emial-field') &&
+                        {(customFieldType === 'text-field' || customFieldType === 'textarea-field' || customFieldType === 'number-field' || customFieldType === 'email-field') &&
                             <div className="new-field-wrapper">
                                 <div className="form-group">
                                     <label>Label</label>
@@ -60,6 +60,45 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                 <div className="form-group">
                                     <label>Placeholder Text</label>
                                     <input type="text" name="new-field-placeholder" placeholder="Enter placeholder text" />
+                                </div>
+
+                                <div className="form-group">
+                                    <span className="mintmrm-checkbox">
+                                        <input id="is-required" type="checkbox" />
+                                        <label for="is-required"> Mark as Required </label>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+
+                        {(customFieldType === 'select-field' || customFieldType === 'radio-field' || customFieldType === 'checkbox-field') &&
+                            <div className="new-field-wrapper">
+                                <div className="form-group">
+                                    <label>Label</label>
+                                    <input type="text" name="new-field-label" placeholder="Enter field Label" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>
+                                        Slug (Optional)
+                                        <span class="mintmrm-tooltip">
+                                            <TooltipQuestionIcon />
+                                            <p> Must enter an email where will a reply will be received </p>
+                                        </span>
+                                    </label>
+                                    <input type="text" name="new-field-slug" placeholder="Enter custom field slug" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Options</label>
+                                    
+                                </div>
+
+                                <div className="form-group">
+                                    <span className="mintmrm-checkbox">
+                                        <input id="is-required" type="checkbox" />
+                                        <label for="is-required"> Mark as Required </label>
+                                    </span>
                                 </div>
                             </div>
                         }
