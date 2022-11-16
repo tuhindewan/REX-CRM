@@ -8,7 +8,10 @@
     }
   ],
   "scripts": {
-    "test": "phpunit"
+    "test": "phpunit",
+    "phpcs": "./vendor/bin/phpcs",
+    "phpcs:fix": "./vendor/bin/phpcbf",
+    "phpcs:i": "./vendor/bin/phpcs -i"
   },
   "autoload": {
     "psr-4": {
@@ -19,10 +22,20 @@
     ]
   },
   "require-dev": {
-    "phpunit/phpunit": "^7",
-    "yoast/phpunit-polyfills": "^1.0"
+    "phpunit/phpunit": "^9.5",
+    "yoast/phpunit-polyfills": "^1.0",
+    "wp-coding-standards/wpcs": "^2.3",
+    "squizlabs/php_codesniffer": "^3.7",
+    "phpcompatibility/php-compatibility": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "phpcompatibility/phpcompatibility-paragonie": "*",
+    "phpcompatibility/phpcompatibility-wp": "*"
   },
   "config": {
-    "platform-check": false
-  }
+    "platform-check": false,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "prefer-stable" : true
 }

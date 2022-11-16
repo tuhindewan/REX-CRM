@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\BusinessSettingController;
 use Mint\MRM\Admin\API\Controllers\EmailSettingController;
+use Mint\MRM\Admin\API\Controllers\WCSettingController;
 use Mint\MRM\Admin\API\Controllers\OptinSettingController;
 
 /**
@@ -57,6 +58,13 @@ class SettingRoute {
      */
     protected $email_controller;
 
+    /**
+     * WCSettingController class object
+     * 
+     * @var object
+     * @since 1.0.0
+     */
+    protected $wc_controller;
 
     /**
      * Register API endpoints routes for tags module
@@ -66,8 +74,35 @@ class SettingRoute {
      */
     public function register_routes()
     {
-        $this->email_controller = EmailSettingController::get_instance();
+        $this->wc_controller = WCSettingController::get_instance();
+        // API routes for WooCommerce settings
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/wc/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->wc_controller ,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->wc_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->wc_controller ,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->wc_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
 
+
+        $this->email_controller = EmailSettingController::get_instance();
         /**
          * Settings email endpoints
          * 
@@ -173,5 +208,4 @@ class SettingRoute {
         ]
     ]);
     }
-
 }
