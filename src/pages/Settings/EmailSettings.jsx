@@ -1,120 +1,254 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SettingsNav from "./SettingsNav";
 import EmailSettingsIcon from "../../components/Icons/EmailSettingsIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 
 export default function EmailSettings() {
-    return (
-        <div className="mintmrm-settings-page">
-            <div className="mintmrm-container">
-                <div className="mintmrm-settings">
-                    <h2 class="conatct-heading">Settings</h2>
+  // Email Settings data if available
+  const [emailSettingsData, setEmailSettingsData] = useState({});
+  const [getResponseCode, setGetResponseCode] = useState();
 
-                    <div className="mintmrm-settings-wrapper">
-                        <SettingsNav />
+  const [values, setValues] = useState();
+  const [changesOccured, setChangesOccured] = useState(false);
 
-                        <div className="settings-tab-content">
-                            <div className="single-tab-content email-tab-content">
-                                <div className="tab-body">
-                                    <header className="tab-header">
-                                        <h4 className="title">
-                                            <EmailSettingsIcon />
-                                            Email Settings
-                                        </h4>
-                                    </header>
+  //notifications
+  const [showNotification, setShowNotification] = useState("none");
+  const [notificationType, setNotificationType] = useState("success");
+  const [message, setMessage] = useState("");
 
-                                    <div className="form-wrapper">
-                                        <div className="form-group">
-                                            <label htmlFor="from-name">
-                                                Form Name
-                                                <span class="mintmrm-tooltip">
-                                                    <TooltipQuestionIcon />
-                                                    <p>
-                                                        Define behaviour of the
-                                                        form after submission
-                                                    </p>
-                                                </span>
-                                            </label>
-                                            <input
-                                                id="from-name"
-                                                type="text"
-                                                name="from-name"
-                                                placeholder="Enter From Name"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="from-email">
-                                                Form Email
-                                                <span class="mintmrm-tooltip">
-                                                    <TooltipQuestionIcon />
-                                                    <p>
-                                                        Define behaviour of the
-                                                        form after submission
-                                                    </p>
-                                                </span>
-                                            </label>
-                                            <input
-                                                id="from-email"
-                                                type="email"
-                                                name="from-email"
-                                                placeholder="Enter From Email"
-                                            />
-                                        </div>
-                                        <hr></hr>
-                                        <div className="form-group">
-                                            <label htmlFor="reply-to-name">
-                                                Reply-to Name
-                                                <span class="mintmrm-tooltip">
-                                                    <TooltipQuestionIcon />
-                                                    <p>
-                                                        Define behaviour of the
-                                                        form after submission
-                                                    </p>
-                                                </span>
-                                            </label>
-                                            <input
-                                                id="reply-to-name"
-                                                type="text"
-                                                name="reply-to-name"
-                                                placeholder="Enter Reply-to Name"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="reply-to-email">
-                                                Reply-to Email
-                                                <span class="mintmrm-tooltip">
-                                                    <TooltipQuestionIcon />
-                                                    <p>
-                                                        Define behaviour of the
-                                                        form after submission
-                                                    </p>
-                                                </span>
-                                            </label>
-                                            <input
-                                                id="reply-to-email"
-                                                type="email"
-                                                name="reply-to-email"
-                                                placeholder="Enter Reply-to Email"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+  const [refresh, setRefresh] = useState();
+  const [loader, setLoader] = useState(false);
 
-                                <div className="tab-footer">
-                                    <button
-                                        className="mintmrm-btn"
-                                        type="button"
-                                    >
-                                        Save Settings
-                                        <span className="mintmrm-loader"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        {/* end settings-tab-content */}
-                    </div>
-                </div>
-            </div>
-        </div>
+  // the data is fetched again whenver refresh is changed
+  function toggleRefresh() {
+    setRefresh((prev) => !prev);
+  }
+
+  useEffect(() => {
+    const getEmailSettings = async () => {
+      const res = await fetch(
+        `${window.MRM_Vars.api_base_url}mrm/v1/settings/email`
+      );
+      const resJson = await res.json();
+      setGetResponseCode(resJson.code);
+      setEmailSettingsData(resJson.data);
+      setValues({ ...values, ...resJson.data });
+    };
+    getEmailSettings();
+  }, [refresh]);
+
+  const handleSubmit = async () => {
+    setLoader(true);
+    const res = await fetch(
+      `${window.MRM_Vars.api_base_url}mrm/v1/settings/email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }
     );
+    const resJson = await res.json();
+    setLoader(false);
+    setShowNotification("block");
+    setChangesOccured(false);
+    setMessage(resJson.message);
+    if (resJson.success) {
+      setNotificationType("success");
+    } else {
+      setNotificationType("failed");
+    }
+
+    toggleRefresh();
+    return resJson;
+  };
+
+  // Set values from list form
+  const handleChange = (e) => {
+    setChangesOccured(true);
+    setShowNotification("none");
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  return (
+    <>
+      <div className="mintmrm-settings-page">
+        <div className="mintmrm-container">
+          <div className="mintmrm-settings">
+            <h2 class="conatct-heading">Settings</h2>
+
+            <div className="mintmrm-settings-wrapper">
+              <SettingsNav />
+
+              <div className="settings-tab-content">
+                <div className="single-tab-content email-tab-content">
+                  <div className="tab-body">
+                    <header className="tab-header">
+                      <h4 className="title">
+                        <EmailSettingsIcon />
+                        Email Settings
+                      </h4>
+                    </header>
+
+                    <div className="form-wrapper">
+                      <div className="form-group">
+                        <label htmlFor="">
+                          From Name
+                          <span class="mintmrm-tooltip">
+                            <TooltipQuestionIcon />
+                            <p>Enter a name from whom to send the email</p>
+                          </span>
+                        </label>
+                        {400 === getResponseCode ? (
+                          <input
+                            type="text"
+                            name="from_name"
+                            placeholder="Enter From Name"
+                            onInput={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            name="from_name"
+                            placeholder="Enter From Name"
+                            defaultValue={emailSettingsData?.from_name}
+                            onInput={handleChange}
+                          />
+                        )}
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="">
+                          From Email
+                          <span class="mintmrm-tooltip">
+                            <TooltipQuestionIcon />
+                            <p>
+                              Must enter an email from where to send the email**
+                            </p>
+                          </span>
+                        </label>
+                        {400 === getResponseCode ? (
+                          <input
+                            type="email"
+                            name="from_email"
+                            placeholder="Enter From Email"
+                            onInput={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="email"
+                            name="from_email"
+                            placeholder="Enter From Email"
+                            defaultValue={emailSettingsData?.from_email}
+                            onInput={handleChange}
+                          />
+                        )}
+                      </div>
+                      <hr></hr>
+                      <div className="form-group">
+                        <label htmlFor="">
+                          Reply-to Name
+                          <span class="mintmrm-tooltip">
+                            <TooltipQuestionIcon />
+                            <p>Enter a name who will recieve a reply</p>
+                          </span>
+                        </label>
+                        {400 === getResponseCode ? (
+                          <input
+                            type="text"
+                            name="reply_name"
+                            placeholder="Enter Reply-to Name"
+                            onInput={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            name="reply_name"
+                            placeholder="Enter Reply-to Name"
+                            defaultValue={emailSettingsData?.reply_name}
+                            onInput={handleChange}
+                          />
+                        )}
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="">
+                          Reply-to Email
+                          <span class="mintmrm-tooltip">
+                            <TooltipQuestionIcon />
+                            <p>
+                              Must enter an email where will a reply will be
+                              received
+                            </p>
+                          </span>
+                        </label>
+                        {400 === getResponseCode ? (
+                          <input
+                            type="teemailxt"
+                            name="reply_email"
+                            placeholder="Enter Reply-to Email"
+                            onInput={handleChange}
+                          />
+                        ) : (
+                          <input
+                            type="email"
+                            name="reply_email"
+                            placeholder="Enter Reply-to Email"
+                            defaultValue={emailSettingsData?.reply_email}
+                            onInput={handleChange}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="tab-footer">
+                    {changesOccured ? (
+                      loader ? (
+                        <button
+                          className="mintmrm-btn show-loader"
+                          type="button"
+                          onClick={handleSubmit}
+                        >
+                          Save Settings
+                          <span className="mintmrm-loader"></span>
+                        </button>
+                      ) : (
+                        <button
+                          className="mintmrm-btn"
+                          type="button"
+                          onClick={handleSubmit}
+                        >
+                          Save Settings
+                          <span className="mintmrm-loader"></span>
+                        </button>
+                      )
+                    ) : (
+                      <button
+                        className="mintmrm-btn"
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={true}
+                      >
+                        Save Settings
+                        <span className="mintmrm-loader"></span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {/* end settings-tab-content */}
+            </div>
+          </div>
+        </div>
+      </div>
+      <SuccessfulNotification
+        display={showNotification}
+        setShowNotification={setShowNotification}
+        message={message}
+        notificationType={notificationType}
+        setNotificationType={setNotificationType}
+      />
+    </>
+  );
 }

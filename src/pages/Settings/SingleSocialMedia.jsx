@@ -4,10 +4,12 @@ import _ from 'lodash'
 import UploadIcon from "../../components/Icons/UploadIcon";
 import CrossIcon from "../../components/Icons/CrossIcon";
 
-export default function SingleSocialMedia({ index, deleteSocialLogo }) {
+export default function SingleSocialMedia( props ) {
   _.noConflict()
   let frame
-
+    const { index, deleteSocialLogo, icon, url, handleSocialUrl, data, handleSocialIcon } = props
+    const [socialLogo , setSocialLogo] = useState(icon)
+    const [socialUrl , setSocialUrl] = useState(url)
   //-------logo upload from wp media--------
   const addSocialLogo = (index) => {
 
@@ -33,12 +35,13 @@ export default function SingleSocialMedia({ index, deleteSocialLogo }) {
     frame.on('select', function () {
         var attachment = frame.state().get('selection').first().toJSON();
         document.getElementById("social-logo-src"+index).src = attachment.url;
+        handleSocialIcon(data,attachment.url, index )
+
     });
 
     frame.open();
     return false;
   }
-
     return (
         <>
             <div className="single-media">
@@ -47,7 +50,7 @@ export default function SingleSocialMedia({ index, deleteSocialLogo }) {
                 </button>
 
                 <div className="social-media-upload">
-                    <img src="" alt="logo" id={"social-logo-src" + index} />
+                    <img src={icon} alt="logo" id={"social-logo-src" + index} />
                     <button type="button" className="upload-btn" onClick={() => addSocialLogo(index)}>
                         <UploadIcon/>
                     </button>
@@ -55,7 +58,7 @@ export default function SingleSocialMedia({ index, deleteSocialLogo }) {
 
                 <div className="form-group">
                     <label htmlFor="">Link</label>
-                    <input type="text" name="" placeholder="https://" />
+                    <input type="text" name={"social-url" + index} id={"social-url" + index} placeholder="https://" value={url} onChange={ (val) => handleSocialUrl(data,val, index) } />
                 </div>
             </div>
         </>
