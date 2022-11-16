@@ -121,9 +121,6 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
 			$this->assertTrue( 400 === $response->get_error_code() );
 		}
 
-        // Insert on wp_options table
-        $success = update_option('_mrm_optin_settings',  $setting_value);
-        $this->assertTrue($success);
     }
 
 
