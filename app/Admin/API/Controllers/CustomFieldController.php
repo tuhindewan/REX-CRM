@@ -190,7 +190,7 @@ class CustomFieldController extends BaseController {
     
         $field = CustomFieldModel::get( $params['field_id'] );
         
-        if( $field->meta ){
+        if( !empty($field) && $field->meta ){
             $field->options = maybe_unserialize( $field->meta );
         }
         
