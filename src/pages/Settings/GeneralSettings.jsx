@@ -21,15 +21,15 @@ export default function GeneralSettings() {
 
     const [listening, setListening] = useState(false);
 
-        // Fetch lists 
-        useEffect(() => {
-            // Get lists
-            getLists().then((results) => {
-                results.data.map(function () {
-                    setLists(results.data);
-                });
+    // Fetch lists
+    useEffect(() => {
+        // Get lists
+        getLists().then((results) => {
+            results.data.map(function () {
+                setLists(results.data);
             });
-        }, [refresh]);
+        });
+    }, [refresh]);
 
     useEffect(
         ListenForOutsideClicks(
@@ -255,9 +255,15 @@ export default function GeneralSettings() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="general-settings-body show">
-                                                <div className="form-group">
-                                                    <label htmlFor="redirect-url">
+                                            <div
+                                                className={
+                                                    preferenceSelectSwitch
+                                                        ? "general-settings-body show"
+                                                        : "general-settings-body"
+                                                }
+                                            >
+                                                <div className="form-group top-align">
+                                                    <label htmlFor="">
                                                         Select Preference
                                                         <span class="mintmrm-tooltip">
                                                             <TooltipQuestionIcon />
@@ -331,103 +337,162 @@ export default function GeneralSettings() {
                                                                 subscriptions
                                                             </label>
                                                         </span>
-                                                        <div
-                                                            className="form-group"
-                                                            ref={listMenuRef}
-                                                        >
-                                                            <label>
-                                                                Assign List
-                                                                <span class="mintmrm-tooltip">
-                                                                    <TooltipQuestionIcon />
-                                                                    <p>
-                                                                        Define
-                                                                        behaviour
-                                                                        of the
-                                                                        form
-                                                                        after
-                                                                        submission
-                                                                    </p>
-                                                                </span>
-                                                            </label>
-                                                            <button
-                                                                type="button"
-                                                                className={
-                                                                    isActiveList
-                                                                        ? "drop-down-button show"
-                                                                        : "drop-down-button"
-                                                                }
-                                                                onClick={
-                                                                    handleList
+                                                        {selectPreferenceOption ==
+                                                        "contact-manage-following" ? (
+                                                            <div
+                                                                className="form-group list-section"
+                                                                ref={
+                                                                    listMenuRef
                                                                 }
                                                             >
-                                                                {assignLists.length !=
-                                                                0
-                                                                    ? assignLists?.map(
-                                                                          (
-                                                                              list
-                                                                          ) => {
-                                                                              return (
-                                                                                  <span
-                                                                                      className="single-list"
-                                                                                      key={
-                                                                                          list.id
-                                                                                      }
-                                                                                  >
-                                                                                      {
-                                                                                          list.title
-                                                                                      }
-
-                                                                                      <button
-                                                                                          className="close-list"
-                                                                                          title="Delete"
-                                                                                          onClick={(
-                                                                                              e
-                                                                                          ) =>
-                                                                                              deleteSelectedList(
-                                                                                                  e,
-                                                                                                  list.id
-                                                                                              )
+                                                                <label>
+                                                                    Lists
+                                                                    <span class="mintmrm-tooltip">
+                                                                        <TooltipQuestionIcon />
+                                                                        <p>
+                                                                            Define
+                                                                            behaviour
+                                                                            of
+                                                                            the
+                                                                            form
+                                                                            after
+                                                                            submission
+                                                                        </p>
+                                                                    </span>
+                                                                </label>
+                                                                <button
+                                                                    type="button"
+                                                                    className={
+                                                                        isActiveList
+                                                                            ? "drop-down-button show"
+                                                                            : "drop-down-button"
+                                                                    }
+                                                                    onClick={
+                                                                        handleList
+                                                                    }
+                                                                >
+                                                                    {assignLists.length !=
+                                                                    0
+                                                                        ? assignLists?.map(
+                                                                              (
+                                                                                  list
+                                                                              ) => {
+                                                                                  return (
+                                                                                      <span
+                                                                                          className="single-list"
+                                                                                          key={
+                                                                                              list.id
                                                                                           }
                                                                                       >
-                                                                                          <CrossIcon />
-                                                                                      </button>
-                                                                                  </span>
-                                                                              );
-                                                                          }
-                                                                      )
-                                                                    : "Select Lists"}
-                                                            </button>
-                                                            <AddItemDropdown
-                                                                isActive={
-                                                                    isActiveList
-                                                                }
-                                                                setIsActive={
-                                                                    setIsActiveList
-                                                                }
-                                                                selected={
-                                                                    assignLists
-                                                                }
-                                                                setSelected={
-                                                                    setAssignLists
-                                                                }
-                                                                endpoint="lists"
-                                                                items={lists}
-                                                                allowMultiple={
-                                                                    true
-                                                                }
-                                                                allowNewCreate={
-                                                                    true
-                                                                }
-                                                                name="list"
-                                                                title="CHOOSE LIST"
-                                                                refresh={
-                                                                    refresh
-                                                                }
-                                                                setRefresh={
-                                                                    setRefresh
-                                                                }
+                                                                                          {
+                                                                                              list.title
+                                                                                          }
+
+                                                                                          <button
+                                                                                              className="close-list"
+                                                                                              title="Delete"
+                                                                                              onClick={(
+                                                                                                  e
+                                                                                              ) =>
+                                                                                                  deleteSelectedList(
+                                                                                                      e,
+                                                                                                      list.id
+                                                                                                  )
+                                                                                              }
+                                                                                          >
+                                                                                              <CrossIcon />
+                                                                                          </button>
+                                                                                      </span>
+                                                                                  );
+                                                                              }
+                                                                          )
+                                                                        : "Select Lists"}
+                                                                </button>
+                                                                <AddItemDropdown
+                                                                    isActive={
+                                                                        isActiveList
+                                                                    }
+                                                                    setIsActive={
+                                                                        setIsActiveList
+                                                                    }
+                                                                    selected={
+                                                                        assignLists
+                                                                    }
+                                                                    setSelected={
+                                                                        setAssignLists
+                                                                    }
+                                                                    endpoint="lists"
+                                                                    items={
+                                                                        lists
+                                                                    }
+                                                                    allowMultiple={
+                                                                        true
+                                                                    }
+                                                                    allowNewCreate={
+                                                                        true
+                                                                    }
+                                                                    name="list"
+                                                                    title="CHOOSE LIST"
+                                                                    refresh={
+                                                                        refresh
+                                                                    }
+                                                                    setRefresh={
+                                                                        setRefresh
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        ) : null}
+                                                    </div>
+                                                </div>
+                                                <div className="form-group top-align">
+                                                    <label htmlFor="">
+                                                        Editable Primary Fields
+                                                        <span class="mintmrm-tooltip">
+                                                            <TooltipQuestionIcon />
+                                                            <p>
+                                                                Define behaviour
+                                                                of the form
+                                                                after submission
+                                                            </p>
+                                                        </span>
+                                                    </label>
+                                                    <div className="select-preference-wrapper">
+                                                        <span className="mintmrm-checkbox">
+                                                            <input
+                                                                id="first-name"
+                                                                type="checkbox"
                                                             />
-                                                        </div>
+                                                            <label for="first-name">
+                                                                First name
+                                                            </label>
+                                                        </span>
+                                                        <span className="mintmrm-checkbox">
+                                                            <input
+                                                                id="last-name"
+                                                                type="checkbox"
+                                                            />
+                                                            <label for="last-name">
+                                                                Last name
+                                                            </label>
+                                                        </span>
+                                                        <span className="mintmrm-checkbox">
+                                                            <input
+                                                                id="status"
+                                                                type="checkbox"
+                                                            />
+                                                            <label for="status">
+                                                                Status
+                                                            </label>
+                                                        </span>
+                                                        <span className="mintmrm-checkbox">
+                                                            <input
+                                                                id="lists"
+                                                                type="checkbox"
+                                                            />
+                                                            <label for="lists">
+                                                                Lists
+                                                            </label>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>

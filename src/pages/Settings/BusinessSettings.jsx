@@ -141,7 +141,7 @@ export default function BusinessSettings() {
                   </div>
 
                   <div className={ tabState === 2 ? "form-wrapper social-settings-wrapper active" : "form-wrapper social-settings-wrapper" } >
-                    <div className="social-media-header">
+                    <div className="form-header">
                       <h4>Social Media</h4>
                       <button type="button" className="mintmrm-btn" title="Add a social media" onClick={addSocialMedia} >
                         <PlusIcon/>

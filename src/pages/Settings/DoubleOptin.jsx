@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import SettingsNav from "./SettingsNav";
+import React, { useEffect, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
+import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
     const [selectOption, setSelectOption] = useState("message");
@@ -12,13 +12,29 @@ export default function DoubleOptin() {
     const handleSwitcher = () => {
         setSelectSwitch(!selectSwitch);
     };
+
+    useEffect(() => {
+        let tinyMceConfig = {
+            tinymce: {
+                wpautop: true,
+                plugins:
+                    "charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview",
+                toolbar1:
+                    "bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv",
+                toolbar2:
+                    "formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help",
+            },
+            quicktags: true,
+            mediaButtons: true,
+        };
+        wp.editor.initialize("tinymce", tinyMceConfig);
+    }, []);
     return (
         <>
             <div className="mintmrm-settings-page">
                 <div className="mintmrm-container">
                     <div className="mintmrm-settings">
                         <h2 class="conatct-heading">Settings</h2>
-
                         <div className="mintmrm-settings-wrapper">
                             <SettingsNav />
 
@@ -61,10 +77,11 @@ export default function DoubleOptin() {
                                                     <label htmlFor="st"></label>
                                                 </span>
                                             </div>
+
                                             {selectSwitch ? (
                                                 <>
                                                     <div className="form-group">
-                                                        <label htmlFor="email-subject">
+                                                        <label htmlFor="">
                                                             Email Subject
                                                             <span class="mintmrm-tooltip">
                                                                 <TooltipQuestionIcon />
@@ -78,14 +95,13 @@ export default function DoubleOptin() {
                                                             </span>
                                                         </label>
                                                         <input
-                                                            id="email-subject"
                                                             type="text"
                                                             name="email-subject"
                                                             placeholder="Enter Email Subject"
                                                         />
                                                     </div>
                                                     <div className="form-group top-align">
-                                                        <label htmlFor="email-body">
+                                                        <label htmlFor="">
                                                             Email Body
                                                             <span class="mintmrm-tooltip">
                                                                 <TooltipQuestionIcon />
@@ -98,15 +114,17 @@ export default function DoubleOptin() {
                                                                 </p>
                                                             </span>
                                                         </label>
+
                                                         <textarea
-                                                            id="email-body"
+                                                            id="tinymce"
                                                             rows="4"
                                                             placeholder="Enter Email Body"
                                                         ></textarea>
                                                     </div>
-                                                    <hr></hr>
+                                                    <hr />
+
                                                     <div className="form-group">
-                                                        <label htmlFor="confirmation-type">
+                                                        <label htmlFor="">
                                                             After Confirmation
                                                             Type
                                                             <span class="mintmrm-tooltip">
@@ -158,12 +176,31 @@ export default function DoubleOptin() {
                                                                     an URL
                                                                 </label>
                                                             </span>
+                                                            <span className="mintmrm-radiobtn">
+                                                                <input
+                                                                    id="redirect-page"
+                                                                    type="radio"
+                                                                    name="message-redirect"
+                                                                    value="redirect-page"
+                                                                    checked={
+                                                                        selectOption ===
+                                                                        "redirect-page"
+                                                                    }
+                                                                    onChange={
+                                                                        onChangeValue
+                                                                    }
+                                                                />
+                                                                <label for="redirect-page">
+                                                                    Redirect to
+                                                                    a page
+                                                                </label>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                     {selectOption ===
                                                     "message" ? (
                                                         <div className="form-group top-align">
-                                                            <label htmlFor="confirmation-message">
+                                                            <label htmlFor="">
                                                                 Confirmation
                                                                 Message
                                                                 <span class="mintmrm-tooltip">
@@ -179,49 +216,68 @@ export default function DoubleOptin() {
                                                                 </span>
                                                             </label>
                                                             <textarea
-                                                                id="confirmation-message"
                                                                 rows="3"
                                                                 placeholder="Enter Confirmation Message"
                                                             ></textarea>
                                                         </div>
                                                     ) : (
-                                                        <div className="form-group">
-                                                            <label htmlFor="redirect-url">
-                                                                Redirect URL
-                                                                <span class="mintmrm-tooltip">
-                                                                    <TooltipQuestionIcon />
-                                                                    <p>
-                                                                        Define
-                                                                        behaviour
-                                                                        of the
-                                                                        form
-                                                                        after
-                                                                        submission
-                                                                    </p>
-                                                                </span>
-                                                            </label>
-                                                            <input
-                                                                id= "redirect-url"
-                                                                type="text"
-                                                                name="redirect"
-                                                                placeholder="Enter Redirect URL"
-                                                            />
-                                                        </div>
+                                                        <>
+                                                            <div className="form-group">
+                                                                <label htmlFor="">
+                                                                    Redirect URL
+                                                                    <span class="mintmrm-tooltip">
+                                                                        <TooltipQuestionIcon />
+                                                                        <p>
+                                                                            Define
+                                                                            behaviour
+                                                                            of
+                                                                            the
+                                                                            form
+                                                                            after
+                                                                            submission
+                                                                        </p>
+                                                                    </span>
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    name="redirect"
+                                                                    placeholder="Enter Redirect URL"
+                                                                />
+                                                            </div>
+                                                            <div className="form-group">
+                                                                <label htmlFor="">
+                                                                    Redirect Page
+                                                                    <span class="mintmrm-tooltip">
+                                                                        <TooltipQuestionIcon />
+                                                                        <p>
+                                                                            Define
+                                                                            behaviour
+                                                                            of
+                                                                            the
+                                                                            form
+                                                                            after
+                                                                            submission
+                                                                        </p>
+                                                                    </span>
+                                                                </label>
+                                                                <button className="">Select Page</button>
+                                                            </div>
+                                                        </>
                                                     )}
                                                 </>
                                             ) : null}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div className="tab-footer">
-                                        <button
-                                            className="mintmrm-btn"
-                                            type="button"
-                                        >
-                                            Save Settings
-                                            <span className="mintmrm-loader"></span>
-                                        </button>
-                                    </div>
+                                <div className="tab-footer">
+                                    <button
+                                        className="mintmrm-btn"
+                                        type="button"
+                                    >
+                                        Save Settings
+                                        <span className="mintmrm-loader"></span>
+                                    </button>
                                 </div>
                             </div>
                             {/* end settings-tab-content */}

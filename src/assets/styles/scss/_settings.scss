@@ -1,5 +1,5 @@
 .mintmrm-settings-page {
-    padding-top: 40px;
+    padding: 40px 0;
 
     .mintmrm-settings {
         .conatct-heading {
@@ -139,6 +139,31 @@
             }
 
             .form-wrapper {
+                .form-header {
+                    display: flex;
+                    flex-flow: row wrap;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    h4 {
+                        font-size: 18px;
+                        line-height: 1;
+                        font-weight: 600;
+                        color: #2d3149;
+                    }
+
+                    .mintmrm-btn {
+                        padding: 10px 20px;
+                        display: flex;
+                        align-items: center;
+                        box-shadow: 0px 10px 16px #61677426;
+
+                        svg {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+
                 .form-group {
                     display: flex;
                     align-items: center;
@@ -190,6 +215,10 @@
                         width: calc(100% - 223px);
                     }
 
+                    #wp-tinymce-wrap {
+                        width: calc(100% - 223px);
+                    }
+
                     .mintmrm-switcher {
                         span,
                         label {
@@ -209,6 +238,12 @@
                     }
                     .mintmrm-radiobtn {
                         margin-right: 30px;
+                        label {
+                            font-weight: 500;
+                            font-size: 14px;
+                            line-height: 1.21;
+                            color: #344054;
+                        }
                         label::before {
                             width: 18px;
                             height: 18px;
@@ -219,12 +254,13 @@
                             height: 8px;
                         }
                     }
+
                     .drop-down-button {
                         margin-top: 12px;
                         width: 100%;
                         border: 1px solid #ebedf0;
                         border-radius: 6px;
-                        padding: 15px;
+                        padding: 15px 15px 10px;
                         background-color: transparent;
                         text-align: left;
                         font-weight: 400;
@@ -250,6 +286,52 @@
                         &.show::before {
                             top: 65%;
                             transform: rotate(225deg);
+                        }
+
+                        .single-list {
+                            border: 1px solid #e4e6eb;
+                            border-radius: 4px;
+                            font-size: 12px;
+                            line-height: 1;
+                            letter-spacing: -0.01em;
+                            color: #667085;
+                            display: inline-block;
+                            padding: 3px 22px 3px 6px;
+                            margin-right: 6px;
+                            margin-bottom: 5px;
+                            position: relative;
+                            vertical-align: middle;
+
+                            .close-list {
+                                background: transparent;
+                                padding: 1px 6px 2px;
+                                border-radius: 2px;
+                                font-size: 10px;
+                                cursor: pointer;
+                                position: absolute;
+                                top: 0;
+                                right: 0;
+                                height: 100%;
+                                border: none;
+
+                                &:before {
+                                    content: "";
+                                    position: absolute;
+                                    left: 0;
+                                    top: 0;
+                                    height: 100%;
+                                    width: 1px;
+                                    background: #e4e6eb;
+                                }
+                                svg {
+                                    width: 6px;
+                                    height: 6px;
+
+                                    path {
+                                        fill: #a7a8b3;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -329,27 +411,6 @@
 
                 &.active {
                     display: block;
-                }
-            }
-
-            .social-media-header {
-                display: flex;
-                flex-flow: row wrap;
-                align-items: center;
-                justify-content: space-between;
-
-                h4 {
-                    font-size: 18px;
-                    line-height: 1;
-                    font-weight: 600;
-                    color: #2d3149;
-                }
-
-                .mintmrm-btn {
-                    padding: 10px 19px;
-                    display: flex;
-                    align-items: center;
-                    box-shadow: 0px 10px 16px #61677426;
                 }
             }
 
@@ -496,6 +557,23 @@
                                 margin-bottom: 20px;
                                 margin-right: 0;
                             }
+                            .mintmrm-checkbox {
+                                display: block;
+                                margin-bottom: 20px;
+                            }
+
+                            .list-section {
+                                background: #f6f8fa;
+                                border-radius: 6px;
+                                padding: 20px;
+
+                                .drop-down-button {
+                                    background-color: #ffffff;
+                                    &::before {
+                                        right: 38px;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -520,10 +598,72 @@
             .tab-body {
                 padding: 30px;
             }
+
             .tab-header {
                 margin-bottom: 17px;
                 padding-bottom: 0;
                 border-bottom: none;
+            }
+        }
+
+        //-------custom-field-wrapper---------
+        .custom-field-wrapper {
+            margin-top: 30px;
+
+            .field-list-wrapper {
+                border: 1px solid #e4e6eb;
+                border-radius: 6px;
+            }
+
+            .single-custom-field {
+                display: flex;
+                flex-flow: row wrap;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 20px;
+                border-bottom: 1px solid #e4e6eb;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                .field-name {
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 1.3;
+                    color: #344054;
+                }
+
+                .field-action {
+                    padding: 6px;
+                    height: 30px;
+                    background: transparent;
+                    position: relative;
+
+                    .mintmrm-dropdown {
+                        width: 148px;
+                        top: 100%;
+                    }
+                }
+            }
+
+            .no-field {
+                border: 1px solid #e4e6eb;
+                border-radius: 6px;
+                padding: 30px;
+                height: 360px;
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                justify-content: center;
+
+                p {
+                    font-weight: 600;
+                    font-size: 18px;
+                    line-height: 1.3;
+                    color: #2d3149;
+                    margin-top: 18px;
+                }
             }
         }
     }

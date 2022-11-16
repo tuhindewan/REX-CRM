@@ -33,8 +33,8 @@ class AdminAssets {
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-    }
 
+    }
 
     /**
      * Load plugin main js file
@@ -46,6 +46,11 @@ class AdminAssets {
         if ( !$this->maybe_mrm_page($hook) ) {
             return false;
         }
+        /** Broadcasts */
+		wp_enqueue_editor();
+		wp_tinymce_inline_scripts();
+
+		/** Enqueue wp media */
         wp_enqueue_media();
         
         wp_enqueue_script(
