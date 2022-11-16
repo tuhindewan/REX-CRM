@@ -54,7 +54,9 @@ export default function DoubleOptin() {
                                                         onChange={
                                                             handleSwitcher
                                                         }
-                                                        defaultChecked={selectSwitch}
+                                                        defaultChecked={
+                                                            selectSwitch
+                                                        }
                                                     />
                                                     <label htmlFor="st"></label>
                                                 </span>
@@ -62,7 +64,7 @@ export default function DoubleOptin() {
                                             {selectSwitch ? (
                                                 <>
                                                     <div className="form-group">
-                                                        <label htmlFor="">
+                                                        <label htmlFor="email-subject">
                                                             Email Subject
                                                             <span class="mintmrm-tooltip">
                                                                 <TooltipQuestionIcon />
@@ -76,13 +78,14 @@ export default function DoubleOptin() {
                                                             </span>
                                                         </label>
                                                         <input
+                                                            id="email-subject"
                                                             type="text"
                                                             name="email-subject"
                                                             placeholder="Enter Email Subject"
                                                         />
                                                     </div>
                                                     <div className="form-group top-align">
-                                                        <label htmlFor="">
+                                                        <label htmlFor="email-body">
                                                             Email Body
                                                             <span class="mintmrm-tooltip">
                                                                 <TooltipQuestionIcon />
@@ -96,13 +99,14 @@ export default function DoubleOptin() {
                                                             </span>
                                                         </label>
                                                         <textarea
+                                                            id="email-body"
                                                             rows="4"
                                                             placeholder="Enter Email Body"
                                                         ></textarea>
                                                     </div>
                                                     <hr></hr>
                                                     <div className="form-group">
-                                                        <label htmlFor="">
+                                                        <label htmlFor="confirmation-type">
                                                             After Confirmation
                                                             Type
                                                             <span class="mintmrm-tooltip">
@@ -159,7 +163,7 @@ export default function DoubleOptin() {
                                                     {selectOption ===
                                                     "message" ? (
                                                         <div className="form-group top-align">
-                                                            <label htmlFor="">
+                                                            <label htmlFor="confirmation-message">
                                                                 Confirmation
                                                                 Message
                                                                 <span class="mintmrm-tooltip">
@@ -175,13 +179,14 @@ export default function DoubleOptin() {
                                                                 </span>
                                                             </label>
                                                             <textarea
+                                                                id="confirmation-message"
                                                                 rows="3"
                                                                 placeholder="Enter Confirmation Message"
                                                             ></textarea>
                                                         </div>
                                                     ) : (
                                                         <div className="form-group">
-                                                            <label htmlFor="">
+                                                            <label htmlFor="redirect-url">
                                                                 Redirect URL
                                                                 <span class="mintmrm-tooltip">
                                                                     <TooltipQuestionIcon />
@@ -196,6 +201,7 @@ export default function DoubleOptin() {
                                                                 </span>
                                                             </label>
                                                             <input
+                                                                id= "redirect-url"
                                                                 type="text"
                                                                 name="redirect"
                                                                 placeholder="Enter Redirect URL"
