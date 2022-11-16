@@ -9,8 +9,8 @@
 >
     <testsuites>
         <testsuite name="sample">
-<!--            <file>tests/settings/test-wc-route.php</file>-->
-<!--            <file>tests/settings/test-wc-controller.php</file>-->
+            <file>tests/settings/test-wc-route.php</file>
+            <file>tests/settings/test-wc-controller.php</file>
             <file>tests/settings/test-general-route.php</file>
             <file>tests/settings/test-general-controller.php</file>
         </testsuite>

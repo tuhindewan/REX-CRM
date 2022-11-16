@@ -63,7 +63,8 @@ class Test_WC_Controller extends WP_UnitTestCase {
      * @since 1.0.0
      */
     public function get() {
-        $response = self::$instance->get();
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/wc/' );
+        $response = self::$instance->get( $request );
         $data = $response->get_data();
 
         $this->assertTrue( is_object( $response ) );
