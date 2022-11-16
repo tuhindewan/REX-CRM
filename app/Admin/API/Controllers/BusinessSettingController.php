@@ -77,8 +77,7 @@ Class BusinessSettingController extends SettingBaseController{
 			"address"       => "",
 			"logo_url"      => "",
 			"socialMedia"        => [
-				"icon"      => "",
-				"url"       => ""
+
 			]
 		);
 		$settings = get_option( $this->option_key, $default );
