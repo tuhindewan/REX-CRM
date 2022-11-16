@@ -51,7 +51,9 @@ class Test_General_Controller extends WP_UnitTestCase {
 
         if( 'WP_REST_Response' === get_class( $response ) ) {
             $this->assertTrue( 200 === $response->get_status() );
-            $this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
+            $this->assertTrue( isset( $response->get_data()[ 'success' ] ) );
+            $this->assertTrue( isset( $response->get_data()[ 'message' ] ) );
+            $this->assertTrue( 'General settings have been successfully saved.' === $response->get_data()[ 'message' ] || 'No changes have been made.' === $response->get_data()[ 'message' ] );
         }
         elseif( 'WP_Error' === get_class( $response ) ) {
             $this->assertTrue( 400 === $response->get_error_code() );
@@ -66,20 +68,73 @@ class Test_General_Controller extends WP_UnitTestCase {
      * @since 1.0.0
      */
     public function get() {
-        $response = self::$instance->get();
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/general/' );
+        $response = self::$instance->get( $request );
         $data = $response->get_data();
 
         $this->assertTrue( is_object( $response ) );
         $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
         $this->assertTrue( 200 === $response->get_status() );
         $this->assertTrue( isset( $data[ 'unsubscriber_settings' ] ) );
-        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'confirmation_type' ] ) );
-        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'page_id' ] ) );
-        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'url' ] ) );
-        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ][ 'confirmation_message' ] ) );
         $this->assertTrue( isset( $data[ 'preference' ] ) );
         $this->assertTrue( isset( $data[ 'user_signup' ] ) );
         $this->assertTrue( isset( $data[ 'comment_form_subscription' ] ) );
-        $this->assertTrue( isset( $data[ 'success' ] ) && $data[ 'success' ] );
+        $this->assertTrue( isset( $data[ 'success' ] ) );
+
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/general/' );
+        $request->set_param( 'general_settings_key', 'unsubscriber_settings' );
+        $response = self::$instance->get( $request );
+        $data = $response->get_data();
+
+        $this->assertTrue( is_object( $response ) );
+        $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
+        $this->assertTrue( 200 === $response->get_status() );
+        $this->assertTrue( isset( $data[ 'unsubscriber_settings' ] ) );
+        $this->assertTrue( !isset( $data[ 'preference' ] ) );
+        $this->assertTrue( !isset( $data[ 'user_signup' ] ) );
+        $this->assertTrue( !isset( $data[ 'comment_form_subscription' ] ) );
+        $this->assertTrue( isset( $data[ 'success' ] ) );
+
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/general/' );
+        $request->set_param( 'general_settings_key', 'preference' );
+        $response = self::$instance->get( $request );
+        $data = $response->get_data();
+
+        $this->assertTrue( is_object( $response ) );
+        $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
+        $this->assertTrue( 200 === $response->get_status() );
+        $this->assertTrue( !isset( $data[ 'unsubscriber_settings' ] ) );
+        $this->assertTrue( isset( $data[ 'preference' ] ) );
+        $this->assertTrue( !isset( $data[ 'user_signup' ] ) );
+        $this->assertTrue( !isset( $data[ 'comment_form_subscription' ] ) );
+        $this->assertTrue( isset( $data[ 'success' ] ) );
+
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/general/' );
+        $request->set_param( 'general_settings_key', 'user_signup' );
+        $response = self::$instance->get( $request );
+        $data = $response->get_data();
+
+        $this->assertTrue( is_object( $response ) );
+        $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
+        $this->assertTrue( 200 === $response->get_status() );
+        $this->assertTrue( !isset( $data[ 'unsubscriber_settings' ] ) );
+        $this->assertTrue( !isset( $data[ 'preference' ] ) );
+        $this->assertTrue( isset( $data[ 'user_signup' ] ) );
+        $this->assertTrue( !isset( $data[ 'comment_form_subscription' ] ) );
+        $this->assertTrue( isset( $data[ 'success' ] ) );
+
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/general/' );
+        $request->set_param( 'general_settings_key', 'comment_form_subscription' );
+        $response = self::$instance->get( $request );
+        $data = $response->get_data();
+
+        $this->assertTrue( is_object( $response ) );
+        $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
+        $this->assertTrue( 200 === $response->get_status() );
+        $this->assertTrue( !isset( $data[ 'unsubscriber_settings' ] ) );
+        $this->assertTrue( !isset( $data[ 'preference' ] ) );
+        $this->assertTrue( !isset( $data[ 'user_signup' ] ) );
+        $this->assertTrue( isset( $data[ 'comment_form_subscription' ] ) );
+        $this->assertTrue( isset( $data[ 'success' ] ) );
     }
 }

@@ -46,7 +46,9 @@ class Test_WC_Controller extends WP_UnitTestCase {
 
         if( 'WP_REST_Response' === get_class( $response ) ) {
             $this->assertTrue( 200 === $response->get_status() );
-            $this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
+            $this->assertTrue( isset( $response->get_data()[ 'success' ] ) );
+            $this->assertTrue( isset( $response->get_data()[ 'message' ] ) );
+            $this->assertTrue( 'WooCommerce settings have been successfully saved.' === $response->get_data()[ 'message' ] || 'No changes have been made.' === $response->get_data()[ 'message' ] );
         }
         elseif( 'WP_Error' === get_class( $response ) ) {
             $this->assertTrue( 400 === $response->get_error_code() );
