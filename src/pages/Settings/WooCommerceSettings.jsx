@@ -7,6 +7,7 @@ import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../../components/AddItemDropdown";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import {ClearNotification} from "@demo/utils/admin-notification";
 export default function WooCommerceSettings() {
     const [selectSwitch, setSelectSwitch] = useState(true);
     const [lists, setLists] = useState([]);
@@ -81,6 +82,55 @@ export default function WooCommerceSettings() {
             setAssignTags(assignTags.filter((item) => item.id != id));
         }
     };
+
+    const saveSettings = async () => {
+        let res = null;
+        let body;
+
+        "lists" == endpoint
+            ? (body = {
+                lists: selected,
+            })
+            : (body = {
+                tags: selected,
+            });
+        try {
+            // create contact
+            setLoading(true);
+            res = await fetch(
+                `${window.MRM_Vars.api_base_url}mrm/v1/settings/wc`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    body: JSON.stringify(body),
+                }
+            );
+
+            /*const resJson = await res.json();
+            if (resJson.code == 201) {
+                setSearch("");
+                setQuery("");
+                setSelected([]);
+                props.setIsAssignTo(!props.isActive);
+                setNotificationType("success");
+                setShowNotification("block");
+                setMessage(resJson.message);
+                props.setRefresh(!props.refresh);
+            } else {
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage(resJson.message);
+            }
+            ClearNotification("none", setShowNotification);*/
+        } catch (e) {
+        } finally {
+            /*setLoading(false);
+            ClearNotification("none", setShowNotification);*/
+        }
+    };
+
     return (
         <div className="mintmrm-settings-page">
             <div className="mintmrm-container">
@@ -311,6 +361,7 @@ export default function WooCommerceSettings() {
                                     <button
                                         className="mintmrm-btn"
                                         type="button"
+                                        onClick={saveSettings}
                                     >
                                         Save Settings
                                         <span className="mintmrm-loader"></span>
