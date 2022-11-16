@@ -20,8 +20,8 @@ export default function DeletePopup(props) {
   
 
   return (
-    <div class= {deleteClass ? "mintmrm-delete-alert-wrapper" : "mintmrm-delete-alert-wrapper"} >
-      <div class="mintmrm-delete-confirmation">
+    <div className= {deleteClass ? "mintmrm-delete-alert-wrapper" : "mintmrm-delete-alert-wrapper"} >
+      <div className="mintmrm-delete-confirmation">
         <div className="delete-confirmation-header">
           <h3>{props.title}</h3>
           <div className="cross-icon" onClick={onCancel}>
@@ -33,16 +33,16 @@ export default function DeletePopup(props) {
           <p>{props.message}</p>
         </div>
 
-        <ul class="mintmrm-delete-confirm-btn">
+        <ul className="mintmrm-delete-confirm-btn">
           <li>
-            <button class="btn-default cancel" onClick={onCancel}>
+            <button className="btn-default cancel" onClick={onCancel}>
               Cancel
             </button>
           </li>
           <li>
             <button
               type="button"
-              class="btn-default delete product-trash"
+              className="btn-default delete product-trash"
               onClick={props.selected?.length > 0 ? onMultilpleDelete : onDelete}
             >
               Delete

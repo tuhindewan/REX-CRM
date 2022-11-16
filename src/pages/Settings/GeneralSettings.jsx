@@ -444,6 +444,7 @@ export default function GeneralSettings() {
                                                         ) : null}
                                                     </div>
                                                 </div>
+                                                <hr></hr>
                                                 <div className="form-group top-align">
                                                     <label htmlFor="">
                                                         Editable Primary Fields

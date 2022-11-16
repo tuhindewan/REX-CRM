@@ -29,7 +29,7 @@ class CustomFieldRoute{
      * @var string
      * @since 1.0.0
      */
-    protected $rest_base = 'custom-fields';
+    protected $rest_base = 'settings/custom-fields';
 
 
     /**
