@@ -136,7 +136,7 @@ export default function AddItemDropdown(props) {
         {filteredItems?.length == 0 && allowNewCreate && (
           <>
             <button className="mrm-custom-select-add-btn" onClick={addNewItem}>
-              {`+ Create new ${name} ${search}`}
+              {search ? `+ Create new ${name} "${search}"` : `+ Create new ${name} ${search}` }
             </button>
           </>
         )}
