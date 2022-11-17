@@ -4,7 +4,11 @@ import Search from "../../components/Icons/Search";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
-import { getOptinSettings, submitOptin } from "../../services/Setting";
+import {
+  getAllWpPages,
+  getOptinSettings,
+  submitOptin,
+} from "../../services/Setting";
 import { ClearNotification } from "../../utils/admin-notification";
 import SettingsNav from "./SettingsNav";
 
@@ -16,28 +20,7 @@ export default function DoubleOptin() {
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
   const [selectPage, setSelectpage] = useState(false);
-  const [pages, setpages] = useState([
-    {
-      title: "Privacy",
-      id: "0",
-    },
-    {
-      title: "Cart",
-      id: "1",
-    },
-    {
-      title: "Checkout",
-      id: "2",
-    },
-    {
-      title: "Shop",
-      id: "3",
-    },
-    {
-      title: "Blog",
-      id: "4",
-    },
-  ]);
+  const [pages, setpages] = useState([]);
   const selectPageRef = useRef(null);
   const [listening, setListening] = useState(false);
   const [errors, setErrors] = useState({});
@@ -52,9 +35,11 @@ export default function DoubleOptin() {
     )
   );
   const [selectPageOption, setSelectPageOption] = useState("");
+  const [pageId, setPageId] = useState();
 
-  const handleSelectOption = (title) => {
+  const handleSelectOption = (title, page_id) => {
     setSelectPageOption(title);
+    setPageId(page_id);
   };
 
   const handlePageSelect = () => {
@@ -68,6 +53,7 @@ export default function DoubleOptin() {
     confirmation_type: "message",
     confirmation_message: "Subscription Confirmed. Thank you.",
     url: "",
+    page_id: "",
   });
   const onChangeValue = (e) => {
     setSelectOption(e.target.value);
@@ -114,17 +100,6 @@ export default function DoubleOptin() {
           setIsValidate(true);
         }
         break;
-        if (value.length > 35) {
-          setErrors({
-            ...errors,
-            last_name: "Last name character limit exceeded 35 characters",
-          });
-          setIsValidate(false);
-        } else {
-          setErrors({});
-          setIsValidate(true);
-        }
-        break;
       default:
         break;
     }
@@ -139,6 +114,7 @@ export default function DoubleOptin() {
     optinSetting.confirmation_type = selectOption;
     optinSetting.email_body = body_content;
     optinSetting.confirmation_message = message_content;
+    optinSetting.page_id = pageId;
     const optin = {
       optin: optinSetting,
     };
@@ -194,6 +170,12 @@ export default function DoubleOptin() {
       setSelectSwitch(response.enable);
       setSelectOption(response.confirmation_type);
       setOptinSettings(response);
+    });
+  }, []);
+
+  useEffect(() => {
+    getAllWpPages().then((response) => {
+      setpages(response);
     });
   }, []);
 
@@ -442,16 +424,19 @@ export default function DoubleOptin() {
                                     />
                                   </span>
                                 </li>
-                                {pages.map((item, index) => {
+                                {pages.map((item) => {
                                   return (
                                     <li
                                       onClick={() =>
-                                        handleSelectOption(item.title)
+                                        handleSelectOption(
+                                          item.title.rendered,
+                                          item.id
+                                        )
                                       }
-                                      key={index}
+                                      key={item.id}
                                       className={"single-column"}
                                     >
-                                      {item.title}
+                                      {item.title.rendered}
                                     </li>
                                   );
                                 })}
