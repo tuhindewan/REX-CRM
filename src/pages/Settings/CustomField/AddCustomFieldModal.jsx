@@ -110,7 +110,7 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                             <div className="new-field-wrapper">
                                 <div className="form-group">
                                     <label>Label</label>
-                                    <input type="text" name="new-field-label" placeholder="Enter field Label" />
+                                    <input type="text" name="new-field-label" placeholder="Enter field Label" onChange={getFieldLabelValue} />
                                 </div>
 
                                 <div className="form-group">
@@ -121,7 +121,7 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                             <p> Must enter an email where will a reply will be received </p>
                                         </span>
                                     </label>
-                                    <input type="text" name="new-field-slug" placeholder="Enter custom field slug" />
+                                    <input type="text" name="new-field-slug" placeholder="Enter custom field slug" value={customFieldSlug} onChange={getFieldSlugValue} />
                                 </div>
 
                                 <div className="form-group field-options">
