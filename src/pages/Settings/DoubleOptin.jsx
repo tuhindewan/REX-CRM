@@ -269,22 +269,27 @@ export default function DoubleOptin() {
                               </span>
                             </label>
 
-                            <textarea
-                              id="tinymce"
-                              rows="4"
-                              placeholder="Enter Email Body"
-                            ></textarea>
-                            <p>
-                              Use{" "}
-                              <button
-                                onClick={() =>
-                                  copyToClipboard("{{subscribe_link}}")
-                                }
-                              >
-                                {"{{subscribe_link}}"}
-                              </button>{" "}
-                              in the email body to generate a subcribe link
-                            </p>
+                            <div className="wp-tynemc-editor">
+                              <textarea 
+                              id="tinymce" 
+                              rows="4" 
+                              placeholder="Enter Email Body" 
+                              ></textarea>
+
+                              <p className="hints">
+                                Use{" "}
+                                <button
+                                  onClick={() =>
+                                    copyToClipboard("{{subscribe_link}}")
+                                  }
+                                >
+                                  {"{{subscribe_link}}"}
+                                </button>{" "}
+                                in the email body to generate a subcribe link
+                              </p>
+                            </div>
+                            
+                            
                           </div>
                           <hr />
 
@@ -354,12 +359,17 @@ export default function DoubleOptin() {
                                 </p>
                               </span>
                             </label>
-                            <textarea
-                              id="confirmation-message"
-                              rows="3"
-                              placeholder="Enter Confirmation Message"
-                            ></textarea>
+
+                            <div className="wp-tynemc-editor">
+                              <textarea 
+                              id="confirmation-message" 
+                              rows="3" 
+                              placeholder="Enter Confirmation Message" 
+                              ></textarea>
+                            </div>
+                            
                           </div>
+
                           <div
                             className={
                               selectOption === "redirect"

@@ -66,7 +66,7 @@ export default function CustomFieldSettings() {
                                         <header className="tab-header">
                                             <h4 className="title">
                                                 <CustomFieldIcon />
-                                                Contact Custom Fields
+                                                Contact Custom Field Settings
                                             </h4>
                                         </header>
 
