@@ -6,6 +6,7 @@ import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import AddItemDropdown from "../../components/AddItemDropdown";
+import {getGeneralSettings} from "../../services/Setting";
 export default function GeneralSettings() {
     const [selectUnsubscribeOption, setSelectUnsubscribeOption] =
         useState("message");
@@ -18,8 +19,31 @@ export default function GeneralSettings() {
     const [assignLists, setAssignLists] = useState([]);
     const [refresh, setRefresh] = useState();
     const listMenuRef = useRef(null);
+    const [redirectUrl , setRedirectUrl] = useState('')
 
     const [listening, setListening] = useState(false);
+    // Get General setting data
+    const [confirmation_message, setConfirmation_message] = useState('')
+
+    useEffect(() => {
+        getGeneralSettings().then((response) => {
+            const unsubscriber_settings = response.unsubscriber_settings;
+            setRedirectUrl(unsubscriber_settings.url)
+            setSelectUnsubscribeOption(unsubscriber_settings.confirmation_type)
+            setConfirmation_message(unsubscriber_settings.confirmation_message)
+        });
+    }, []);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setConfirmation_message(value);
+    };
+
+    const handleChangeURL = (event) => {
+        const { name, value } = event.target;
+        setRedirectUrl(value)
+    };
+
 
     // Fetch lists
     useEffect(() => {
@@ -195,6 +219,9 @@ export default function GeneralSettings() {
                                                             id="confirmation-message"
                                                             rows="3"
                                                             placeholder="Enter Confirmation Message"
+                                                            name="confirmation_message"
+                                                            value={confirmation_message}
+                                                            onChange={handleChange}
                                                         ></textarea>
                                                     </div>
                                                 ) : (
@@ -213,10 +240,11 @@ export default function GeneralSettings() {
                                                             </span>
                                                         </label>
                                                         <input
-                                                            id="redirect-url"
                                                             type="text"
                                                             name="redirect"
                                                             placeholder="Enter Redirect URL"
+                                                            value={redirectUrl}
+                                                            onChange={handleChangeURL}
                                                         />
                                                     </div>
                                                 )}
