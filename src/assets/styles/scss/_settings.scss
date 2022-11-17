@@ -805,6 +805,20 @@
                             margin-left: 5px;
                         }
                     }
+
+                    //------field option style------
+                    .field-options {
+                        border: 1px solid #E4E6EB;
+                        border-radius: 6px;
+
+                        .option-header {
+                            display: flex;
+                            flex-flow: row wrap;
+                            align-items: center;
+                            justify-content: space-between;
+                            padding: 16px;
+                        }
+                    }
                 }
 
                 .modal-footer {

@@ -2,13 +2,39 @@ import React, { useRef, useState } from "react";
 
 import CrossIcon from "../../../components/Icons/CrossIcon";
 import TooltipQuestionIcon from "../../../components/Icons/TooltipQuestionIcon";
+import PlusIcon from "../../../components/Icons/Plus";
 
 export default function AddCustomFieldModal({addNewCustomField, closeCustomFieldModal}) {
     const [customFieldType, setCustomFieldType] = useState();
+    const [customFieldLabel, setCustomFieldLabel] = useState();
+    const [customFieldSlug, setCustomFieldSlug] = useState();
 
+    /**
+     * Make Slug when render text
+     * @param values
+     * @returns {string}
+     */
+    const makeSlug = (values) => {
+        const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
+        return slug;
+    };
+
+    //----get field type from selectbox-----
     const selectFieldType = (event) => {
         setCustomFieldType(event.target.value);
     }
+
+    //----get custom new label field value-----
+    const getFieldLabelValue = (event) => {
+        setCustomFieldLabel(event.target.value);
+        setCustomFieldSlug(makeSlug(event.target.value));
+    }
+
+    //----get custom new slug field value-----
+    const getFieldSlugValue = (event) => {
+        setCustomFieldSlug(makeSlug(event.target.value));
+    }
+    
 
     return (
         <>
@@ -43,7 +69,7 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                             <div className="new-field-wrapper">
                                 <div className="form-group">
                                     <label>Label</label>
-                                    <input type="text" name="new-field-label" placeholder="Enter field Label" />
+                                    <input type="text" name="new-field-label" placeholder="Enter field Label" onChange={getFieldLabelValue} />
                                 </div>
 
                                 <div className="form-group">
@@ -54,7 +80,7 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                             <p> Must enter an email where will a reply will be received </p>
                                         </span>
                                     </label>
-                                    <input type="text" name="new-field-slug" placeholder="Enter custom field slug" />
+                                    <input type="text" name="new-field-slug" placeholder="Enter custom field slug" value={customFieldSlug} onChange={getFieldSlugValue} />
                                 </div>
 
                                 <div className="form-group">
@@ -89,9 +115,14 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                     <input type="text" name="new-field-slug" placeholder="Enter custom field slug" />
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Options</label>
-                                    
+                                <div className="form-group field-options">
+                                    <div className="option-header">
+                                        <label>Add New Option</label>
+                                        <button className="mintmrm-btn">
+                                            <PlusIcon/>
+                                            New Option
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="form-group">
