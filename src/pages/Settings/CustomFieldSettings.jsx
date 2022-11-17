@@ -47,6 +47,7 @@ export default function CustomFieldSettings() {
   //----add new custom field-----
   const addNewCustomField = async () => {
     submitCustomFields(prepareData);
+    setPrepareData({});
 
     toggleRefresh();
 

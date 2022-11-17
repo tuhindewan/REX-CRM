@@ -13,8 +13,8 @@ export default function AddCustomFieldModal(props) {
   const [customFieldType, setCustomFieldType] = useState();
   const [customFieldLabel, setCustomFieldLabel] = useState();
   const [customFieldSlug, setCustomFieldSlug] = useState();
-  const [newDropdownOption, setNewDropdownOption] = useState([{}]);
-
+  const [newDropdownOption, setNewDropdownOption] = useState([]);
+  const [optionArray, setOptionsArray] = useState([]);
   /**
    * Make Slug when render text
    * @param values
@@ -46,11 +46,11 @@ export default function AddCustomFieldModal(props) {
       type: customFieldType,
       label: customFieldData.fieldLabel,
       placeholder: customFieldData.fieldPlaceholder,
-      options: customFieldData.fieldOptions,
+      options: optionArray,
       required: customFieldData.isRequired,
       checked: customFieldData.checkedStatus,
     });
-  }, [customFieldData, customFieldType]);
+  }, [customFieldData, customFieldType, optionArray]);
 
   //----get custom new label field value-----
   const getFieldLabelValue = (event) => {
@@ -73,6 +73,14 @@ export default function AddCustomFieldModal(props) {
         },
       ];
     });
+  };
+
+  const handleOptionChange = (option, e, idx) => {
+    setOptionsArray({...optionArray, [e.target.name]: e.target.value});
+  };
+
+  const handleOptionRemove = () => {
+    console.log("delete option");
   };
 
   return (
@@ -111,10 +119,10 @@ export default function AddCustomFieldModal(props) {
                 <option value="text">Text field</option>
                 <option value="textArea">Multiline text field</option>
                 <option value="number">Number field</option>
-                <option value="email-field">Email field</option>
-                <option value="select-field">Select dropdown</option>
-                <option value="radio-field">Radio</option>
-                <option value="checkbox-field">Checkbox</option>
+                {/* <option value="email-field">Email field</option> */}
+                <option value="selectField">Select dropdown</option>
+                <option value="radioField">Radio</option>
+                <option value="checkboxField">Checkbox</option>
               </select>
             </div>
 
@@ -176,16 +184,17 @@ export default function AddCustomFieldModal(props) {
               </div>
             )}
 
-            {(customFieldType === "select-field" ||
-              customFieldType === "radio-field" ||
-              customFieldType === "checkbox-field") && (
+            {(customFieldType === "selectField" ||
+              customFieldType === "radioField" ||
+              customFieldType === "checkboxField") && (
               <div className="new-field-wrapper">
                 <div className="form-group">
                   <label>Label</label>
                   <input
                     type="text"
-                    name="new-field-label"
+                    name="fieldLabel"
                     placeholder="Enter field Label"
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -194,13 +203,17 @@ export default function AddCustomFieldModal(props) {
                     Slug (Optional)
                     <span class="mintmrm-tooltip">
                       <TooltipQuestionIcon />
-                      <p> An unique identifier for a custom field </p>
+                      <p>
+                        {" "}
+                        Must enter an email where will a reply will be received{" "}
+                      </p>
                     </span>
                   </label>
                   <input
                     type="text"
-                    name="new-field-slug"
+                    name="newFieldSlug"
                     placeholder="Enter custom field slug"
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -228,11 +241,18 @@ export default function AddCustomFieldModal(props) {
                   </div>
 
                   <div className="option-body">
-                    {newDropdownOption.map((singleDropdownOption, idx) => {
+                    {newDropdownOption?.map((option, idx) => {
                       return (
                         <div className="single-option" key={idx}>
-                          <input type="text" name="" />
-                          <button className="delete-option">
+                          <input
+                            type="text"
+                            name={idx}
+                            onChange={(e) => handleOptionChange(option, e, idx)}
+                          />
+                          <button
+                            className="delete-option"
+                            onClick={handleOptionRemove}
+                          >
                             <CrossIcon />
                           </button>
                         </div>
@@ -241,12 +261,12 @@ export default function AddCustomFieldModal(props) {
                   </div>
                 </div>
 
-                <div className="form-group">
+                {/* <div className="form-group">
                   <span className="mintmrm-checkbox">
                     <input id="is-required" type="checkbox" />
                     <label for="is-required"> Mark as Required </label>
                   </span>
-                </div>
+                </div> */}
               </div>
             )}
           </div>

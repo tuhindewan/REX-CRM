@@ -1293,7 +1293,8 @@ export default function ContactDetails() {
                                   {field.type == "number" && (
                                     <InputNumber
                                       name={field.slug}
-                                      label={field.title}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
                                       handleChange={handleMetaChange}
                                       value={
                                         contactData?.meta_fields?.[field.slug]
@@ -1304,7 +1305,8 @@ export default function ContactDetails() {
                                   {field.type == "textArea" && (
                                     <InputTextArea
                                       name={field.slug}
-                                      label={field.title}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
                                       handleChange={handleMetaChange}
                                       value={
                                         contactData?.meta_fields?.[field.slug]
