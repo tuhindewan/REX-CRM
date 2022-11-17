@@ -9,10 +9,12 @@
 >
     <testsuites>
         <testsuite name="sample">
+            <!--<directory prefix="test-" suffix=".php">./tests/</directory>-->
             <file>tests/settings/test-wc-route.php</file>
             <file>tests/settings/test-wc-controller.php</file>
             <file>tests/settings/test-general-route.php</file>
             <file>tests/settings/test-general-controller.php</file>
+            <file>tests/settings/test-smtp-route.php</file>
             <file>tests/frontend/test-woocommerce-checkout-contact.php</file>
         </testsuite>
     </testsuites>

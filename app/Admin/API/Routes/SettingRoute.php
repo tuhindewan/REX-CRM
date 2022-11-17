@@ -7,6 +7,7 @@ use Mint\MRM\Admin\API\Controllers\WCSettingController;
 use Mint\MRM\Admin\API\Controllers\BusinessSettingController;
 use Mint\MRM\Admin\API\Controllers\EmailSettingController;
 use Mint\MRM\Admin\API\Controllers\OptinSettingController;
+use Mint\MRM\Admin\API\Controllers\SMTPSettingController;
 
 /**
  * @author [MRM Team]
@@ -71,6 +72,13 @@ class SettingRoute {
      * @since 1.0.0
      */
     protected $general_controller;
+
+    /**
+     * @desc SMTPSettingController class instance variable
+     * @var object
+     * @since 1.0.0
+     */
+    protected $smtp_controller;
 
     /**
      * Register API endpoints routes for tags module
@@ -240,6 +248,35 @@ class SettingRoute {
                 ],
                 'permission_callback' => [
                     $this->general_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
+
+        // SMTPSettingController class instance
+        $this->smtp_controller = SMTPSettingController::get_instance();
+
+        // API routes for WooCommerce settings
+        register_rest_route( $this->namespace, '/' . $this->rest_base . '/smtp/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->smtp_controller,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->smtp_controller,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->smtp_controller,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->smtp_controller,
                     'rest_permissions_check'
                 ] ,
             ],
