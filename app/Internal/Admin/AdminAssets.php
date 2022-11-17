@@ -81,6 +81,10 @@ class AdminAssets {
             MRM_VERSION,
             true
         );
+
+	    $active_plugings = get_option( 'active_plugins', [] );
+		$wc_active = in_array( 'woocommerce/woocommerce.php', $active_plugings ) || is_plugin_active_for_network( 'woocommerce/woocommerce.php' );
+
         wp_localize_script(
             MRM_PLUGIN_NAME,
             'MRM_Vars',
@@ -96,6 +100,7 @@ class AdminAssets {
                 'states'                => Constants::get_country_state(),
                 'lists'                 => ContactGroupModel::get_all_to_custom_select( 'lists' ),
                 'tags'                  => ContactGroupModel::get_all_to_custom_select( 'tags' ),
+	            'is_wc_active'          => $wc_active,
             )
         );
         
