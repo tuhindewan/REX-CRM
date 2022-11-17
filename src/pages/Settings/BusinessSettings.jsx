@@ -81,9 +81,10 @@ export default function BusinessSettings() {
     setBusinessAddress(event.target.value)
   }
   const [businessLogo , setBusinessLogo] = useState('');
+  const [buttonDisable , setButtonDisabled] = useState(false);
   const saveBusiness = async () =>{
     setsaveLoader(true);
-
+    setButtonDisabled(true)
     const post_data = {
       business_name: businessName,
       phone: phoneNumber,
@@ -102,11 +103,13 @@ export default function BusinessSettings() {
     const responseData = await res.json();
 
     if (true === responseData.success) {
+      setButtonDisabled(false)
       setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
       setsaveLoader(false);
     } else if (false === responseData.success) {
+      setButtonDisabled(false)
       setNotificationType("warning");
       setShowNotification("block");
       setMessage(responseData?.message);
@@ -261,7 +264,7 @@ export default function BusinessSettings() {
                 </div>
 
                 <div className="tab-footer">
-                  <button className="mintmrm-btn" type="button" onClick={saveBusiness}>
+                  <button className="mintmrm-btn" type="button"  onClick={saveBusiness}>
                     Save Settings
                     { saveLoader && 
                       <span className="mintmrm-loader"></span>

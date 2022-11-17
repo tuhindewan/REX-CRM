@@ -33,7 +33,16 @@ class AdminAssets {
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+/** Load font and size selector */
+		add_filter( 'mce_buttons', array( $this, 'my_mce_buttons_2' ), 999 );
+    }
 
+    function my_mce_buttons_2( $buttons ) {	
+        /**
+         * Add in a core button that's disabled by default
+         */
+        $buttons[] = 'wdm_mce_button';
+        return $buttons;
     }
 
     /**

@@ -39,9 +39,10 @@ class MRM_Common {
     public static function get_api_params_values( WP_REST_Request $request )
     {
         $query_params   =  $request->get_query_params();
+        $query_params   =  is_array( $query_params ) && !empty( $query_params ) ? self::get_sanitized_get_post( $query_params ) : $query_params;
         $request_params =  $request->get_params();
-        $params         =  array_replace( $query_params, $request_params );
-        return $params;
+        $request_params =  is_array( $request_params ) && !empty( $request_params ) ? self::get_sanitized_get_post( $request_params ) : $request_params;
+        return  array_replace( $query_params, $request_params );
     }
 
 

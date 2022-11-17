@@ -6,6 +6,7 @@ use Mint\MRM\Admin\API\Server;
 use Mint\MRM\Internal\Admin\AdminAssets;
 use Mint\MRM\Internal\Admin\FrontendAssets;
 use Mint\MRM\Internal\Admin\Page\PageController;
+use Mint\MRM\Internal\Admin\UserAssignContact;
 use Mint\MRM\Internal\Ajax\AjaxAction;
 use Mint\MRM\Internal\FormBuilder\FormBuilderHelper;
 use Mint\MRM\Internal\FormBuilder\GetMRM_Block_Manager;
@@ -46,6 +47,9 @@ class App {
         AjaxAction::get_instance();
 
         if( $this->is_request('frontend') ) {
+
+			// User assign contact form user in Sign up and comment
+	        UserAssignContact::get_instance();
             // Load assets
             FrontendAssets::get_instance();
             // Opt-in 

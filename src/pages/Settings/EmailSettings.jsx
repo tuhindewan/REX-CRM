@@ -39,6 +39,7 @@ export default function EmailSettings() {
   }, [refresh]);
 
   const handleSubmit = async () => {
+    setChangesOccured(false);
     setLoader(true);
     const res = await fetch(
       `${window.MRM_Vars.api_base_url}mrm/v1/settings/email`,

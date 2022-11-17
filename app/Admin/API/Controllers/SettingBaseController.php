@@ -36,11 +36,11 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Get an object
 	 * 
-	 * @param void
+	 * @param WP_REST_Request $request
 	 * 
 	 * @return WP_REST_Response
 	 */
-	public abstract function get();
+	public abstract function get( WP_REST_Request $request );
 
 
 	/**
