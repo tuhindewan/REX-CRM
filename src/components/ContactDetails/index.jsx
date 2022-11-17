@@ -662,7 +662,6 @@ export default function ContactDetails() {
 
   return (
     <>
-    {console.log(customFields)}
       <div className="mintmrm-contact-details">
         {showLoader ? (
           <LoadingIndicator type="table" />
@@ -1220,7 +1219,7 @@ export default function ContactDetails() {
                               className="form-group contact-input-field"
                               ref={timezoneRef}
                             >
-                              <label name="gender">Timezone</label>
+                              <label name="timezone">Timezone</label>
                               <button
                                 className="timezone-button"
                                 onClick={handleTimezoneShow}
