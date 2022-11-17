@@ -65,9 +65,10 @@ export default function GeneralSettings() {
     useEffect(() => {
         getGeneralSettings().then((response) => {
             console.log(response)
-            const unsubscriber_settings = response.unsubscriber_settings;
-            const preference_settings = response.preference;
+            const unsubscriber_settings     = response.unsubscriber_settings;
+            const preference_settings       = response.preference;
             const comment_form_subscription = response.comment_form_subscription;
+            const user_signup               = response.user_signup;
 
             if(Object.keys(unsubscriber_settings).length > 0){
                 setRedirectUrl(unsubscriber_settings.url)
@@ -89,11 +90,15 @@ export default function GeneralSettings() {
                 setAssignCommentLists(comment_form_subscription.lists)
                 setAssignTags(comment_form_subscription.tags)
             }
+            if(Object.keys(user_signup).length > 0){
+                setUserSelectSwitch(user_signup.enable)
+            }
         });
     }, []);
 
     //Handle Submit general setting
     const handleGeneralSubmit = () => {
+        setLoader(true)
         const settings = {
             unsubscriber_settings: {
                 confirmation_type: selectUnsubscribeOption,
@@ -115,6 +120,29 @@ export default function GeneralSettings() {
                 enable  : commentSelectSwitch,
                 lists   : assignCommentLists,
                 tags    : assignTags
+            },
+            user_signup : {
+                enable : userSelectSwitch,
+                list_mapping : [
+                    {
+                        role : 'administrator',
+                        list : ''
+                    }, {
+                        role : 'editor',
+                        list : ''
+                    }, {
+                        role : 'author',
+                        list : ''
+                    }, {
+                        role : 'contributor',
+                        list : ''
+                    },{
+                        role : 'subscriber',
+                        list : ''
+                    }
+                ]
+
+
             }
         }
         submitGeneralSetting(settings).then((response) => {
@@ -122,6 +150,7 @@ export default function GeneralSettings() {
                 setNotificationType("success");
                 setShowNotification("block");
                 setMessage(response?.message);
+                setLoader(false)
             } else {
                 setNotificationType("warning");
                 setShowNotification("block");
@@ -185,7 +214,7 @@ export default function GeneralSettings() {
     // );
     // Outside click events for preference page List checkbox dropdown
     useOutsideAlerter(listMenuRef, setIsActiveList);
-    useOutsideAlerter();
+    // useOutsideAlerter();
     useEffect(
         ListenForOutsideClicks(
             listening,
@@ -606,7 +635,7 @@ export default function GeneralSettings() {
                                                                                               list.title
                                                                                           }
 
-                                                                                          <button
+                                                                                          <div
                                                                                               className="close-list"
                                                                                               title="Delete"
                                                                                               onClick={(
@@ -619,7 +648,7 @@ export default function GeneralSettings() {
                                                                                               }
                                                                                           >
                                                                                               <CrossIcon />
-                                                                                          </button>
+                                                                                          </div>
                                                                                       </span>
                                                                                   );
                                                                               }
@@ -754,7 +783,7 @@ export default function GeneralSettings() {
                                                             onChange={
                                                                 handleUserSwitcher
                                                             }
-                                                            defaultChecked={
+                                                            checked={
                                                                 userSelectSwitch
                                                             }
                                                         />
@@ -813,7 +842,7 @@ export default function GeneralSettings() {
                                                                                       list.title
                                                                                   }
 
-                                                                                  <button
+                                                                                  <div
                                                                                       className="close-list"
                                                                                       title="Delete"
                                                                                       onClick={(
@@ -826,7 +855,7 @@ export default function GeneralSettings() {
                                                                                       }
                                                                                   >
                                                                                       <CrossIcon />
-                                                                                  </button>
+                                                                                  </div>
                                                                               </span>
                                                                           );
                                                                       }
@@ -900,7 +929,7 @@ export default function GeneralSettings() {
                                                                                       list.title
                                                                                   }
 
-                                                                                  <button
+                                                                                  <div
                                                                                       className="close-list"
                                                                                       title="Delete"
                                                                                       onClick={(
@@ -913,7 +942,7 @@ export default function GeneralSettings() {
                                                                                       }
                                                                                   >
                                                                                       <CrossIcon />
-                                                                                  </button>
+                                                                                  </div>
                                                                               </span>
                                                                           );
                                                                       }
@@ -985,7 +1014,7 @@ export default function GeneralSettings() {
                                                                                       list.title
                                                                                   }
 
-                                                                                  <button
+                                                                                  <div
                                                                                       className="close-list"
                                                                                       title="Delete"
                                                                                       onClick={(
@@ -998,7 +1027,7 @@ export default function GeneralSettings() {
                                                                                       }
                                                                                   >
                                                                                       <CrossIcon />
-                                                                                  </button>
+                                                                                  </div>
                                                                               </span>
                                                                           );
                                                                       }
@@ -1116,7 +1145,7 @@ export default function GeneralSettings() {
                                                                                   list.title
                                                                               }
 
-                                                                              <button
+                                                                              <div
                                                                                   className="close-list"
                                                                                   title="Delete"
                                                                                   onClick={(
@@ -1129,7 +1158,7 @@ export default function GeneralSettings() {
                                                                                   }
                                                                               >
                                                                                   <CrossIcon />
-                                                                              </button>
+                                                                              </div>
                                                                           </span>
                                                                       );
                                                                   }
@@ -1198,7 +1227,7 @@ export default function GeneralSettings() {
                                                                                   tag.title
                                                                               }
 
-                                                                              <button
+                                                                              <div
                                                                                   className="close-list"
                                                                                   title="Delete"
                                                                                   onClick={(
@@ -1211,7 +1240,7 @@ export default function GeneralSettings() {
                                                                                   }
                                                                               >
                                                                                   <CrossIcon />
-                                                                              </button>
+                                                                              </div>
                                                                           </span>
                                                                       );
                                                                   }
@@ -1250,7 +1279,9 @@ export default function GeneralSettings() {
                                         onClick={handleGeneralSubmit}
                                     >
                                         Save Settings
+                                        {loader &&
                                         <span className="mintmrm-loader"></span>
+                                        }
                                     </button>
                                 </div>
                             </div>
