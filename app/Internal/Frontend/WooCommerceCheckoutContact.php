@@ -63,21 +63,21 @@ class WooCommerceCheckoutContact {
                 $setting_tags  = isset( $this->setting_options[ 'tag' ] ) ? $this->setting_options[ 'tag' ] : [];
                 $setting_lists = isset( $this->setting_options[ 'list' ] ) ? $this->setting_options[ 'list' ] : [];
 
-                $tags = array_map( function( $tag_id ) {
+                /*$tags = array_map( function( $tag_id ) {
                     return [ 'id' => $tag_id ];
                 }, $setting_tags );
 
                 $lists = array_map( function( $list_id ) {
                     return [ 'id' => $list_id ];
-                }, $setting_lists );
+                }, $setting_lists );*/
 
                 $user_data = [
                     'email'      => $user_email,
                     'first_name' => $user_first_name,
                     'last_name'  => $user_last_name,
                     'status'     => [ 'subscribed' ],
-                    'lists'      => $lists,
-                    'tags'       => $tags,
+                    'lists'      => $setting_lists,
+                    'tags'       => $setting_tags,
                 ];
 
                 $contact    = new ContactData( $user_email, $user_data );

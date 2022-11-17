@@ -7,8 +7,10 @@ import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../../components/AddItemDropdown";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+
 export default function WooCommerceSettings() {
     const [selectSwitch, setSelectSwitch] = useState(true);
+    const [checkboxLabel, setCheckboxLabel] = useState('' );
     const [lists, setLists] = useState([]);
     const [tags, setTags] = useState([]);
     const [isActiveList, setIsActiveList] = useState(false);
@@ -16,6 +18,7 @@ export default function WooCommerceSettings() {
     const [assignLists, setAssignLists] = useState([]);
     const [assignTags, setAssignTags] = useState([]);
     const [refresh, setRefresh] = useState();
+    const [loading, setLoader] = useState( false );
     const listMenuRef = useRef(null);
     const tagMenuRef = useRef(null);
     const [listening, setListening] = useState(false);
@@ -79,6 +82,51 @@ export default function WooCommerceSettings() {
         // already in selected list so remove it from the array
         if (0 <= index) {
             setAssignTags(assignTags.filter((item) => item.id != id));
+        }
+    };
+
+    const saveSettings = async () => {
+        let response = null;
+        let tag = assignTags.map( ( tagObj ) => {
+            let tagArr = [];
+            tagArr[ 'id' ] = tagObj.id;
+            tagArr[ 'title' ] = tagObj.title;
+            return tagArr;
+        } );
+        let list = assignLists.map( ( listObj ) => {
+            let listArr = [];
+            listArr[ 'id' ] = listObj.id;
+            listArr[ 'title' ] = listObj.title;
+            return listArr;
+        } );
+        let wcSettingsData = {
+            'enable': selectSwitch,
+            'checkbox_label': checkboxLabel,
+            'lists': list,
+            'tags': tag,
+            'double_optin': true
+        };
+
+        try {
+            // create contact
+            setLoader(true );
+            response = await fetch(
+                `${window.MRM_Vars.api_base_url}mrm/v1/settings/wc`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                    body: JSON.stringify(wcSettingsData),
+                }
+            );
+
+            if ( 200 === response.status ) {
+                setLoader( false );
+            }
+
+        } catch (e) {
+        } finally {
         }
     };
     return (
@@ -145,6 +193,7 @@ export default function WooCommerceSettings() {
                                                         type="text"
                                                         name="checkbox-label"
                                                         placeholder="Enter Checkbox label Text"
+                                                        onChange={( event) => setCheckboxLabel( event.target.value ) }
                                                     />
                                                 </div>
                                                 <hr></hr>
@@ -311,9 +360,10 @@ export default function WooCommerceSettings() {
                                     <button
                                         className="mintmrm-btn"
                                         type="button"
+                                        onClick={saveSettings}
                                     >
                                         Save Settings
-                                        <span className="mintmrm-loader"></span>
+                                        <span className={loading ? 'mintmrm-loader' : ''}></span>
                                     </button>
                                 </div>
                             </div>
