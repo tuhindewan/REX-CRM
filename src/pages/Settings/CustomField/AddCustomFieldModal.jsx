@@ -44,13 +44,11 @@ export default function AddCustomFieldModal(props) {
       title: customFieldData.fieldName,
       slug: customFieldData.newFieldSlug,
       type: customFieldType,
-      meta: {
-        label: customFieldData.fieldLabel,
-        placeholder: customFieldData.fieldPlaceholder,
-        required: customFieldData.isRequired,
-        options: customFieldData.fieldOptions,
-        checked: customFieldData.checkedStatus,
-      },
+      label: customFieldData.fieldLabel,
+      placeholder: customFieldData.fieldPlaceholder,
+      options: customFieldData.fieldOptions,
+      required: customFieldData.isRequired,
+      checked: customFieldData.checkedStatus,
     });
   }, [customFieldData, customFieldType]);
 

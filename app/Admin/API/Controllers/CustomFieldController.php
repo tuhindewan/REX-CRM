@@ -76,12 +76,17 @@ class CustomFieldController extends BaseController {
         
         $placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
 
+        $label = isset( $params['label'] ) ? sanitize_text_field( $params['label'] ) : '';
+
         $meta = array();
         if ( ! empty( $options ) ) {
             $meta['options'] = $options;
         }
         if ( ! empty( $placeholder ) ) {
             $meta['placeholder'] = $placeholder;
+        }
+        if ( ! empty( $label ) ) {
+            $meta['label'] = $label;
         }
         
         $this->args = array(
@@ -191,7 +196,7 @@ class CustomFieldController extends BaseController {
         $field = CustomFieldModel::get( $params['field_id'] );
         
         if( !empty($field) && $field->meta ){
-            $field->options = maybe_unserialize( $field->meta );
+            $field->meta = maybe_unserialize( $field->meta );
         }
         
         if( isset( $field ) ) {

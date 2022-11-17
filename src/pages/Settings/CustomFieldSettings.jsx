@@ -7,11 +7,15 @@ import AddCustomFieldModal from "./CustomField/AddCustomFieldModal";
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
 import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 
-import { submitCustomFields, getCustomFields, deleteCustomField } from "../../services/CustomField";
+import {
+  submitCustomFields,
+  getCustomFields,
+  deleteCustomField,
+} from "../../services/CustomField";
 
 export default function CustomFieldSettings() {
   const [customFieldModal, setCustomFieldModal] = useState(false);
-  const [newCustomField, setNewCustomField] = useState({});
+  const [newCustomField, setNewCustomField] = useState([]);
   const [prepareData, setPrepareData] = useState({});
   const [refresh, setRefresh] = useState(false);
 
@@ -26,16 +30,15 @@ export default function CustomFieldSettings() {
   };
 
   const toggleRefresh = () => {
-    setRefresh (!refresh);
-  }
+    setRefresh(!refresh);
+  };
 
   useEffect(() => {
-    const getAllCustomField = async() => {
-        const res = await getCustomFields();
-        setNewCustomField(res);
-    }
+    const getAllCustomField = async () => {
+      const res = await getCustomFields();
+      setNewCustomField(res.data);
+    };
     getAllCustomField();
-    
   }, [refresh]);
 
   //----add new custom field-----
@@ -57,7 +60,6 @@ export default function CustomFieldSettings() {
 
   return (
     <>
-    {console.log(newCustomField)}
       <div className="mintmrm-settings-page">
         <div className="mintmrm-container">
           <div className="mintmrm-settings">
@@ -128,6 +130,7 @@ export default function CustomFieldSettings() {
                                   key={idx}
                                   index={idx}
                                   deleteCustomField={deleteCustomField}
+                                  customFieldData={singleCustomField}
                                 />
                               );
                             })}

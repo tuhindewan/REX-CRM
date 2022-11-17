@@ -6,7 +6,8 @@ import ThreeDotIcon from "../../../components/Icons/ThreeDotIcon";
 import CrossIcon from "../../../components/Icons/CrossIcon";
 
 
-export default function SingleCustomField({index, deleteCustomField}) {
+export default function SingleCustomField(props) {
+    const {customFieldData, index, deleteCustomField} = props;
 
     const [showModal, setShowModal] = useState(false);
     const [confirmationModal, setConfirmationModal] = useState(false);
@@ -56,7 +57,7 @@ export default function SingleCustomField({index, deleteCustomField}) {
             }
 
             <div className="single-custom-field">
-                <h5 className="field-name">Country</h5>
+                <h5 className="field-name">{customFieldData?.title}</h5>
 
                 <button className="field-action" onClick={() => showMoreOption(index)}>
                     <ThreeDotIcon />
