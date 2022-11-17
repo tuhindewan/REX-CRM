@@ -96,7 +96,7 @@ class EmailSettingController extends SettingBaseController {
         $serialize_email_settings = maybe_serialize($email_settings);
 
         //enque to wp option table
-        if(update_option('email_settings', $serialize_email_settings, 'yes')){
+        if(update_option('_mrm_email_settings', $serialize_email_settings, 'yes')){
             $success_data = array(
                 'success' => true,
                 'message' => 'Email settings has been saved successfully',
@@ -122,7 +122,7 @@ class EmailSettingController extends SettingBaseController {
      * @since 1.0.0 
      */
     public function get( WP_REST_Request $request ){
-        if (!get_option('email_settings')){
+        if (!get_option('_mrm_email_settings')){
             $email_settings_data_failed = array(
                 'code'    => 400,
                 'message' => 'Option key does not exist',
@@ -133,7 +133,7 @@ class EmailSettingController extends SettingBaseController {
         $email_settings_data = array(
             'code'    => 200,
             'message' => 'Query Successfull',
-            'data'    => maybe_unserialize(get_option('email_settings'))
+            'data'    => maybe_unserialize(get_option('_mrm_email_settings'))
         );
 
         return $email_settings_data;
