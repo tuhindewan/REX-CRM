@@ -597,7 +597,7 @@
                         }
                         .wp-user {
                             border-bottom: 1px solid #ebedf0;
-                            margin: -30px -24px 0;
+                            margin: -30px -24px 23px;
                             padding: 14px 24px;
                             span {
                                 display: inline-block;
@@ -607,6 +607,31 @@
                                 color: #9398a5;
                                 &:first-child {
                                     width: 223px;
+                                }
+                            }
+                        }
+
+                        &.user-signup-settings {
+                            & > label {
+                                font-weight: 500;
+                                font-size: 15px;
+                                line-height: 1.2;
+                                color: #344054;
+                            }
+                            .administrator,
+                            .tutor-instructor,
+                            .shop-manager {
+                                width: calc(100% - 223px);
+                                .drop-down-button {
+                                    &:first-child {
+                                        margin-top: 0;
+                                    }
+                                    &:before {
+                                        top: 45%;
+                                    }
+                                    &.show::before {
+                                        top: 50%;
+                                    }
                                 }
                             }
                         }

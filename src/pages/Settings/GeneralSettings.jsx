@@ -11,14 +11,35 @@ export default function GeneralSettings() {
         useState("message");
     const [selectPreferenceOption, setSelectPreferenceOption] =
         useState("no-contact-manage");
-    const [unsubscribeSelectSwitch, setUnsubscribeSelectSwitch] = useState(true);
+    const [unsubscribeSelectSwitch, setUnsubscribeSelectSwitch] =
+        useState(true);
     const [userSelectSwitch, setUserSelectSwitch] = useState(false);
     const [preferenceSelectSwitch, setPreferenceSelectSwitch] = useState(false);
+    const [commentSelectSwitch, setCommentSelectSwitch] = useState(false);
+
     const [lists, setLists] = useState([]);
+    const [administratorlists, setAdministratorLists] = useState([]);
+    const [tutorlists, setTutorLists] = useState([]);
+    const [shoplists, setShopLists] = useState([]);
     const [isActiveList, setIsActiveList] = useState(false);
+    const [isActiveAdministratorList, setIsActiveAdministratorList] =
+        useState(false);
+    const [isActiveTutorList, setIsActiveTutorList] = useState(false);
+    const [isActiveShopList, setIsActiveShopList] = useState(false);
     const [assignLists, setAssignLists] = useState([]);
+    const [assignAdministratorLists, setAssignAdministratorLists] = useState(
+        []
+    );
+    const [assignTutorLists, setAssignTutorLists] = useState([]);
+    const [assignShopLists, setAssignShopLists] = useState([]);
     const [refresh, setRefresh] = useState();
+    const [refreshAdministrator, setRefreshAdministrator] = useState();
+    const [refreshTutor, setRefreshTutor] = useState();
+    const [refreshShop, setRefreshShop] = useState();
     const listMenuRef = useRef(null);
+    const listAdministratorMenuRef = useRef(null);
+    const listTutorMenuRef = useRef(null);
+    const listShopMenuRef = useRef(null);
 
     const [listening, setListening] = useState(false);
 
@@ -31,6 +52,30 @@ export default function GeneralSettings() {
             });
         });
     }, [refresh]);
+    useEffect(() => {
+        // Get lists
+        getLists().then((results) => {
+            results.data.map(function () {
+                setAdministratorLists(results.data);
+            });
+        });
+    }, [refreshAdministrator]);
+    useEffect(() => {
+        // Get lists
+        getLists().then((results) => {
+            results.data.map(function () {
+                setTutorLists(results.data);
+            });
+        });
+    }, [refreshTutor]);
+    useEffect(() => {
+        // Get lists
+        getLists().then((results) => {
+            results.data.map(function () {
+                setShopLists(results.data);
+            });
+        });
+    }, [refreshShop]);
 
     useEffect(
         ListenForOutsideClicks(
@@ -40,8 +85,41 @@ export default function GeneralSettings() {
             setIsActiveList
         )
     );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            listAdministratorMenuRef,
+            setIsActiveAdministratorList
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            listTutorMenuRef,
+            setIsActiveTutorList
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            listShopMenuRef,
+            setIsActiveShopList
+        )
+    );
     const handleList = () => {
         setIsActiveList(!isActiveList);
+    };
+    const handleAdministratorList = () => {
+        setIsActiveAdministratorList(!isActiveAdministratorList);
+    };
+    const handleTutorList = () => {
+        setIsActiveTutorList(!isActiveTutorList);
+    };
+    const handleShopList = () => {
+        setIsActiveShopList(!isActiveShopList);
     };
     const deleteSelectedList = (e, id) => {
         const index = assignLists.findIndex((item) => item.id == id);
@@ -65,6 +143,9 @@ export default function GeneralSettings() {
     };
     const handlePreferenceSwitcher = () => {
         setPreferenceSelectSwitch(!preferenceSelectSwitch);
+    };
+    const handleCommentSwitcher = () => {
+        setCommentSelectSwitch(!commentSelectSwitch);
     };
     return (
         <div className="mintmrm-settings-page">
@@ -443,6 +524,8 @@ export default function GeneralSettings() {
                                                                     setRefresh={
                                                                         setRefresh
                                                                     }
+                                                                    prefix="lists"
+
                                                                 />
                                                             </div>
                                                         ) : null}
@@ -548,55 +631,308 @@ export default function GeneralSettings() {
                                                         Lists to be added
                                                     </span>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="confirmation-type">
+                                                <div
+                                                    className="form-group"
+                                                    ref={
+                                                        listAdministratorMenuRef
+                                                    }
+                                                >
+                                                    <label htmlFor="">
                                                         Administrator
                                                     </label>
-                                                    <button
-                                                        type="button"
-                                                        className={
-                                                            isActiveList
-                                                                ? "drop-down-button show"
-                                                                : "drop-down-button"
-                                                        }
-                                                        onClick={handleList}
-                                                    >
-                                                        {assignLists.length != 0
-                                                            ? assignLists?.map(
-                                                                  (list) => {
-                                                                      return (
-                                                                          <span
-                                                                              className="single-list"
-                                                                              key={
-                                                                                  list.id
-                                                                              }
-                                                                          >
-                                                                              {
-                                                                                  list.title
-                                                                              }
-
-                                                                              <button
-                                                                                  className="close-list"
-                                                                                  title="Delete"
-                                                                                  onClick={(
-                                                                                      e
-                                                                                  ) =>
-                                                                                      deleteSelectedList(
-                                                                                          e,
-                                                                                          list.id
-                                                                                      )
+                                                    <div className="administrator">
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                isActiveAdministratorList
+                                                                    ? "drop-down-button show"
+                                                                    : "drop-down-button"
+                                                            }
+                                                            onClick={
+                                                                handleAdministratorList
+                                                            }
+                                                        >
+                                                            {assignAdministratorLists.length !=
+                                                            0
+                                                                ? assignAdministratorLists?.map(
+                                                                      (
+                                                                          list
+                                                                      ) => {
+                                                                          return (
+                                                                              <span
+                                                                                  className="single-list"
+                                                                                  key={
+                                                                                      list.id
                                                                                   }
                                                                               >
-                                                                                  <CrossIcon />
-                                                                              </button>
-                                                                          </span>
-                                                                      );
-                                                                  }
-                                                              )
-                                                            : "Select Lists"}
-                                                    </button>
+                                                                                  {
+                                                                                      list.title
+                                                                                  }
+
+                                                                                  <button
+                                                                                      className="close-list"
+                                                                                      title="Delete"
+                                                                                      onClick={(
+                                                                                          e
+                                                                                      ) =>
+                                                                                          deleteSelectedList(
+                                                                                              e,
+                                                                                              list.id
+                                                                                          )
+                                                                                      }
+                                                                                  >
+                                                                                      <CrossIcon />
+                                                                                  </button>
+                                                                              </span>
+                                                                          );
+                                                                      }
+                                                                  )
+                                                                : "Select Lists"}
+                                                        </button>
+                                                        <AddItemDropdown
+                                                            isActive={
+                                                                isActiveAdministratorList
+                                                            }
+                                                            setIsActive={
+                                                                setIsActiveAdministratorList
+                                                            }
+                                                            selected={
+                                                                assignAdministratorLists
+                                                            }
+                                                            setSelected={
+                                                                setAssignAdministratorLists
+                                                            }
+                                                            endpoint="lists"
+                                                            items={
+                                                                administratorlists
+                                                            }
+                                                            allowMultiple={true}
+                                                            allowNewCreate={
+                                                                true
+                                                            }
+                                                            name="list"
+                                                            title="CHOOSE LIST"
+                                                            refresh={
+                                                                refreshAdministrator
+                                                            }
+                                                            setRefresh={
+                                                                setRefresh
+                                                            }
+                                                            prefix="administrator"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    className="form-group"
+                                                    ref={listTutorMenuRef}
+                                                >
+                                                    <label htmlFor="">
+                                                        Tutor Instructor
+                                                    </label>
+                                                    <div className="tutor-instructor">
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                isActiveTutorList
+                                                                    ? "drop-down-button show"
+                                                                    : "drop-down-button"
+                                                            }
+                                                            onClick={
+                                                                handleTutorList
+                                                            }
+                                                        >
+                                                            {assignTutorLists.length !=
+                                                            0
+                                                                ? assignTutorLists?.map(
+                                                                      (
+                                                                          list
+                                                                      ) => {
+                                                                          return (
+                                                                              <span
+                                                                                  className="single-list"
+                                                                                  key={
+                                                                                      list.id
+                                                                                  }
+                                                                              >
+                                                                                  {
+                                                                                      list.title
+                                                                                  }
+
+                                                                                  <button
+                                                                                      className="close-list"
+                                                                                      title="Delete"
+                                                                                      onClick={(
+                                                                                          e
+                                                                                      ) =>
+                                                                                          deleteSelectedList(
+                                                                                              e,
+                                                                                              list.id
+                                                                                          )
+                                                                                      }
+                                                                                  >
+                                                                                      <CrossIcon />
+                                                                                  </button>
+                                                                              </span>
+                                                                          );
+                                                                      }
+                                                                  )
+                                                                : "Select Lists"}
+                                                        </button>
+                                                        <AddItemDropdown
+                                                            isActive={
+                                                                isActiveTutorList
+                                                            }
+                                                            setIsActive={
+                                                                setIsActiveTutorList
+                                                            }
+                                                            selected={
+                                                                assignTutorLists
+                                                            }
+                                                            setSelected={
+                                                                setAssignTutorLists
+                                                            }
+                                                            endpoint="lists"
+                                                            items={tutorlists}
+                                                            allowMultiple={true}
+                                                            allowNewCreate={
+                                                                true
+                                                            }
+                                                            name="list"
+                                                            title="CHOOSE LIST"
+                                                            refresh={
+                                                                refreshTutor
+                                                            }
+                                                            setRefresh={
+                                                                setRefresh
+                                                            }
+                                                            prefix="tutor"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    className="form-group"
+                                                    ref={listShopMenuRef}
+                                                >
+                                                    <label htmlFor="">
+                                                        Shop manager
+                                                    </label>
+                                                    <div className="shop-manager">
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                isActiveShopList
+                                                                    ? "drop-down-button show"
+                                                                    : "drop-down-button"
+                                                            }
+                                                            onClick={
+                                                                handleShopList
+                                                            }
+                                                        >
+                                                            {assignShopLists.length !=
+                                                            0
+                                                                ? assignShopLists?.map(
+                                                                      (
+                                                                          list
+                                                                      ) => {
+                                                                          return (
+                                                                              <span
+                                                                                  className="single-list"
+                                                                                  key={
+                                                                                      list.id
+                                                                                  }
+                                                                              >
+                                                                                  {
+                                                                                      list.title
+                                                                                  }
+
+                                                                                  <button
+                                                                                      className="close-list"
+                                                                                      title="Delete"
+                                                                                      onClick={(
+                                                                                          e
+                                                                                      ) =>
+                                                                                          deleteSelectedList(
+                                                                                              e,
+                                                                                              list.id
+                                                                                          )
+                                                                                      }
+                                                                                  >
+                                                                                      <CrossIcon />
+                                                                                  </button>
+                                                                              </span>
+                                                                          );
+                                                                      }
+                                                                  )
+                                                                : "Select Lists"}
+                                                        </button>
+                                                        <AddItemDropdown
+                                                            isActive={
+                                                                isActiveShopList
+                                                            }
+                                                            setIsActive={
+                                                                setIsActiveShopList
+                                                            }
+                                                            selected={
+                                                                assignShopLists
+                                                            }
+                                                            setSelected={
+                                                                setAssignShopLists
+                                                            }
+                                                            endpoint="lists"
+                                                            items={shoplists}
+                                                            allowMultiple={true}
+                                                            allowNewCreate={
+                                                                true
+                                                            }
+                                                            name="list"
+                                                            title="CHOOSE LIST"
+                                                            refresh={
+                                                                refreshShop
+                                                            }
+                                                            setRefresh={
+                                                                setRefresh
+                                                            }
+                                                            prefix="shop"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div className="general-single-settings">
+                                            <div className="general-settings-header">
+                                                <div className="form-group">
+                                                    <label htmlFor="">
+                                                        Comment Form
+                                                        Subscription Settings
+                                                        <span class="mintmrm-tooltip">
+                                                            <TooltipQuestionIcon />
+                                                            <p>
+                                                                Define behaviour
+                                                                of the form
+                                                                after submission
+                                                            </p>
+                                                        </span>
+                                                    </label>
+                                                    <span className="mintmrm-switcher">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="comment-radio"
+                                                            id="comment-radio"
+                                                            value={
+                                                                commentSelectSwitch
+                                                            }
+                                                            onChange={
+                                                                handleCommentSwitcher
+                                                            }
+                                                            defaultChecked={
+                                                                commentSelectSwitch
+                                                            }
+                                                        />
+                                                        <label htmlFor="comment-radio"></label>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="general-settings-body"></div>
                                         </div>
                                     </div>
                                 </div>

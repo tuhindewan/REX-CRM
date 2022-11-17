@@ -223,6 +223,7 @@ export default function WooCommerceSettings() {
                                                         title="CHOOSE LIST"
                                                         refresh={refresh}
                                                         setRefresh={setRefresh}
+                                                        prefix="woocommerce"
                                                     />
                                                 </div>
                                                 <div
@@ -300,6 +301,7 @@ export default function WooCommerceSettings() {
                                                         title="CHOOSE TAG"
                                                         refresh={refresh}
                                                         setRefresh={setRefresh}
+                                                        prefix="woocommerce"
                                                     />
                                                 </div>
                                             </>

@@ -16,6 +16,7 @@ export default function AddItemDropdown(props) {
     title,
     refresh,
     setRefresh,
+    prefix
   } = props;
   const [search, setSearch] = useState("");
   const [message, setMessage] = useState("");
@@ -105,7 +106,7 @@ export default function AddItemDropdown(props) {
         <div className="option-section">
           {filteredItems?.length > 0 &&
             filteredItems.map((item, index) => {
-              let checked = checkIfSelected(item.id);
+              let checked = checkIfSelected(prefix + item.id);
               return (
                 <li
                   key={index}
@@ -119,13 +120,13 @@ export default function AddItemDropdown(props) {
                     <input
                       type="checkbox"
                       name={item.id}
-                      id={item.id}
+                      id={prefix + item.id}
                       value={item.title}
                       onChange={handleSelectOne}
                       checked={checked}
                     />
 
-                    <label for={item.id} className="mrm-custom-select-label">
+                    <label for={prefix +item.id} className="mrm-custom-select-label">
                       {item.title}
                     </label>
                   </div>
