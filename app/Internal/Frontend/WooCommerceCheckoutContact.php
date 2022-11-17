@@ -3,6 +3,7 @@
 namespace Mint\MRM\Internal\Frontend;
 
 use Mint\MRM\Admin\API\Controllers\ListController;
+use Mint\MRM\Admin\API\Controllers\MessageController;
 use Mint\MRM\Admin\API\Controllers\TagController;
 use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataStores\ContactData;
@@ -59,23 +60,18 @@ class WooCommerceCheckoutContact {
             if( $user_email && !ContactModel::is_contact_exist( $user_email ) ) {
                 $user_first_name = WC()->checkout()->get_value( 'billing_first_name' );
                 $user_last_name  = WC()->checkout()->get_value( 'billing_last_name' );
+                $double_optin    = get_option( '_mrm_optin_settings', [] );
+                $double_optin    = isset( $double_optin[ 'enable' ] ) && $double_optin[ 'enable' ];
+                $subscription_status = $double_optin ? 'pending' : 'subscribed';
 
-                $setting_tags  = isset( $this->setting_options[ 'tag' ] ) ? $this->setting_options[ 'tag' ] : [];
-                $setting_lists = isset( $this->setting_options[ 'list' ] ) ? $this->setting_options[ 'list' ] : [];
-
-                /*$tags = array_map( function( $tag_id ) {
-                    return [ 'id' => $tag_id ];
-                }, $setting_tags );
-
-                $lists = array_map( function( $list_id ) {
-                    return [ 'id' => $list_id ];
-                }, $setting_lists );*/
+                $setting_tags  = isset( $this->setting_options[ 'tags' ] ) ? $this->setting_options[ 'tags' ] : [];
+                $setting_lists = isset( $this->setting_options[ 'lists' ] ) ? $this->setting_options[ 'lists' ] : [];
 
                 $user_data = [
                     'email'      => $user_email,
                     'first_name' => $user_first_name,
                     'last_name'  => $user_last_name,
-                    'status'     => [ 'subscribed' ],
+                    'status'     => [ $subscription_status ],
                     'lists'      => $setting_lists,
                     'tags'       => $setting_tags,
                 ];
@@ -83,12 +79,16 @@ class WooCommerceCheckoutContact {
                 $contact    = new ContactData( $user_email, $user_data );
                 $contact_id = ContactModel::insert( $contact );
 
-                if( !empty( $tags ) ) {
-                    TagController::set_tags_to_contact( $tags, $contact_id );
+                if( !empty( $setting_tags ) ) {
+                    TagController::set_tags_to_contact( $setting_tags, $contact_id );
                 }
 
-                if( !empty( $lists ) ) {
-                    ListController::set_lists_to_contact( $lists, $contact_id );
+                if( !empty( $setting_lists ) ) {
+                    ListController::set_lists_to_contact( $setting_lists, $contact_id );
+                }
+
+                if ( $double_optin && $contact_id ) {
+                    MessageController::get_instance()->send_double_opt_in( $contact_id );
                 }
             }
         }

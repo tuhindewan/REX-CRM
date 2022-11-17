@@ -25,7 +25,6 @@ class WCSettingController extends SettingBaseController {
      */
     public function create_or_update( WP_REST_Request $request ) {
         $params = MRM_Common::get_api_params_values( $request );
-	    error_log(print_r($params, 1));
         $params = is_array( $params ) && !empty( $params ) ? $params : [
             'enable'         => false,
             'checkbox_label' => 'Please put a checkbox label.',
