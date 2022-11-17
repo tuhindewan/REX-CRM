@@ -11,17 +11,18 @@ export default function SingleCustomField({index, deleteCustomField}) {
     const [showModal, setShowModal] = useState(false);
     const [confirmationModal, setConfirmationModal] = useState(false);
 
-    const showMoreOption = (index) => {
+    const showMoreOption = () => {
         setShowModal(!showModal);
     }
     
     //----delete confirmation modal-----
     const deleteConfirmationAlert = (index) => {
-        setConfirmationModal(!confirmationModal);
+        console.log(index);
+        setConfirmationModal(true);
     };
     
     //----delete confirmation modal-----
-    const cancelConfirmationModal = (index) => {
+    const cancelConfirmationModal = () => {
         setConfirmationModal(false);
     };
 
@@ -65,7 +66,7 @@ export default function SingleCustomField({index, deleteCustomField}) {
                             <EditIcon/>
                             Edit
                         </li>
-                        <li onClick={deleteConfirmationAlert}>
+                        <li onClick={() => deleteConfirmationAlert(index)}>
                             <DeleteIcon/>
                             Delete
                         </li>

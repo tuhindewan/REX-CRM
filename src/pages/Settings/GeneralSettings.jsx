@@ -12,7 +12,8 @@ export default function GeneralSettings() {
         useState("message");
     const [selectPreferenceOption, setSelectPreferenceOption] =
         useState("no-contact-manage");
-    const [optinSelectSwitch, setOptinSelectSwitch] = useState(true);
+    const [unsubscribeSelectSwitch, setUnsubscribeSelectSwitch] = useState(true);
+    const [userSelectSwitch, setUserSelectSwitch] = useState(false);
     const [preferenceSelectSwitch, setPreferenceSelectSwitch] = useState(false);
     const [lists, setLists] = useState([]);
     const [isActiveList, setIsActiveList] = useState(false);
@@ -81,7 +82,10 @@ export default function GeneralSettings() {
         setSelectPreferenceOption(e.target.value);
     };
     const handleOptinSwitcher = () => {
-        setOptinSelectSwitch(!optinSelectSwitch);
+        setUnsubscribeSelectSwitch(!unsubscribeSelectSwitch);
+    };
+    const handleUserSwitcher = () => {
+        setUserSelectSwitch(!userSelectSwitch);
     };
     const handlePreferenceSwitcher = () => {
         setPreferenceSelectSwitch(!preferenceSelectSwitch);
@@ -124,25 +128,25 @@ export default function GeneralSettings() {
                                                     <span className="mintmrm-switcher">
                                                         <input
                                                             type="checkbox"
-                                                            name="optin-radio"
-                                                            id="optin-radio"
+                                                            name="unsubscribe-radio"
+                                                            id="unsubscribe-radio"
                                                             value={
-                                                                optinSelectSwitch
+                                                                unsubscribeSelectSwitch
                                                             }
                                                             onChange={
                                                                 handleOptinSwitcher
                                                             }
                                                             defaultChecked={
-                                                                optinSelectSwitch
+                                                                unsubscribeSelectSwitch
                                                             }
                                                         />
-                                                        <label htmlFor="optin-radio"></label>
+                                                        <label htmlFor="unsubscribe-radio"></label>
                                                     </span>
                                                 </div>
                                             </div>
                                             <div
                                                 className={
-                                                    optinSelectSwitch
+                                                    unsubscribeSelectSwitch
                                                         ? "general-settings-body show"
                                                         : "general-settings-body"
                                                 }
@@ -543,25 +547,25 @@ export default function GeneralSettings() {
                                                     <span className="mintmrm-switcher">
                                                         <input
                                                             type="checkbox"
-                                                            name="optin-radio"
-                                                            id="optin-radio"
+                                                            name="user-signup-radio"
+                                                            id="user-signup-radio"
                                                             value={
-                                                                optinSelectSwitch
+                                                                userSelectSwitch
                                                             }
                                                             onChange={
-                                                                handleOptinSwitcher
+                                                                handleUserSwitcher
                                                             }
                                                             defaultChecked={
-                                                                optinSelectSwitch
+                                                                userSelectSwitch
                                                             }
                                                         />
-                                                        <label htmlFor="optin-radio"></label>
+                                                        <label htmlFor="user-signup-radio"></label>
                                                     </span>
                                                 </div>
                                             </div>
                                             <div
                                                 className={
-                                                    optinSelectSwitch
+                                                    userSelectSwitch
                                                         ? "general-settings-body user-signup-settings show"
                                                         : "general-settings-body user-signup-settings"
                                                 }
