@@ -59,6 +59,10 @@
                                 background-color: #ffffff;
                                 &::before {
                                     right: 38px;
+                                    top: 58%;
+                                }
+                                &.show::before{
+                                    top: 60%;
                                 }
                             }
                         }
