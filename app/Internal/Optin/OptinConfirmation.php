@@ -63,12 +63,12 @@ class OptinConfirmation
 
 			$settings   = get_option( "_mrm_optin_settings", $default );
 			$confirmation_type = isset( $settings['confirmation_type'] ) ? $settings['confirmation_type'] : "";
-			error_log(print_r($settings, 1));
-			$contact_id = isset( $get['contact_id'] ) ? $get['contact_id'] : "";
-			$hash 		= isset( $get['hash'] ) ? $get['hash'] : "";
 
-			$contact = ContactModel::get( $contact_id );
-			
+			// Get contact information by unique hash
+			$hash 		= isset( $get['hash'] ) ? $get['hash'] : "";
+			$contact 	= ContactModel::get_by_hash( $hash );
+			$contact_id = isset( $contact['id'] ) ? $contact['id'] : "";
+
 			if( $hash == $contact['hash'] ){
 				$args = array(
 					'contact_id' => $contact_id,

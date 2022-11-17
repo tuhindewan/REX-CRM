@@ -253,14 +253,14 @@ class MessageController extends BaseController {
 
         $settings   = get_option( "_mrm_optin_settings", $default );
         $enable     = isset( $settings['enable'] ) ? $settings['enable'] : "";
-        error_log(print_r($enable, 1));
         if ( !$enable ) {
             return false;
         }
         if( $enable ){
             $to       = isset( $contact['email'] ) ? $contact['email'] : "";
             $hash     = isset( $contact['hash'] ) ? $contact['hash'] : "";
-            $subscribe_url = site_url('?mrm=1&route=confirmation&contact_id=' . $contact_id . '&hash=' . $hash);
+            
+            $subscribe_url = site_url('?mrm=1&route=confirmation&hash=' . $hash);
 
             $subject    = isset( $settings['email_subject'] ) ? $settings['email_subject'] : "";
             //Prepare email body
@@ -435,21 +435,5 @@ class MessageController extends BaseController {
             return false;
         }
         }
-    }
-
-
-    public static function getTemplateConfig()
-    {
-        return [
-            'content_width'        => 700,
-            'headings_font_family' => "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
-            'text_color'           => '#202020',
-            'link_color'           => '',
-            'headings_color'       => '#202020',
-            'body_bg_color'        => '#FAFAFA',
-            'content_bg_color'     => '#FFFFFF',
-            'footer_text_color'    => '#202020',
-            'content_font_family'  => "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
-        ];
     }
 }

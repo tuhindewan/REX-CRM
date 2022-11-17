@@ -83,7 +83,6 @@ class ContactModel{
         if( !empty( $args['meta_fields'] )){
             self::update_meta_fields($contact_id, $args);
         }
-        
         $args['updated_at'] = current_time('mysql');
         unset($args['meta_fields']);
         unset($args['contact_id']);
@@ -613,6 +612,23 @@ class ContactModel{
         global $wpdb;
         $table_name = $wpdb->prefix . ContactSchema::$table_name;
         return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name WHERE status= %s", [$status] ) ) );
+    }
+
+
+    /**
+     * Run SQL Query to get a single contact information by hash
+     * 
+     * @param mixed $hash Contact ID
+     * 
+     * @return object
+     * @since 1.0.0
+     */
+    public static function get_by_hash( $hash )
+    {
+        global $wpdb;
+        $contacts_table = $wpdb->prefix . ContactSchema::$table_name;
+
+        return $wpdb->get_row( $wpdb->prepare("SELECT * FROM $contacts_table WHERE hash = %s",array( $hash )), ARRAY_A );
     }
     
 }
