@@ -76,12 +76,17 @@ class CustomFieldController extends BaseController {
         
         $placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
 
+        $label = isset( $params['label'] ) ? sanitize_text_field( $params['label'] ) : '';
+
         $meta = array();
         if ( ! empty( $options ) ) {
             $meta['options'] = $options;
         }
         if ( ! empty( $placeholder ) ) {
             $meta['placeholder'] = $placeholder;
+        }
+        if ( ! empty( $label ) ) {
+            $meta['label'] = $label;
         }
         
         $this->args = array(
@@ -168,6 +173,13 @@ class CustomFieldController extends BaseController {
 
        $fields = CustomFieldModel::get_all();
 
+        $fields['data'] = array_map( function( $field ){
+            if( !empty($field) && $field['meta'] ){
+                $field['meta'] = maybe_unserialize( $field['meta'] );
+            }
+            return $field;
+        }, $fields['data'] );
+
        if(isset($fields)) {
            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
        }
@@ -190,8 +202,8 @@ class CustomFieldController extends BaseController {
     
         $field = CustomFieldModel::get( $params['field_id'] );
         
-        if( $field->meta ){
-            $field->options = maybe_unserialize( $field->meta );
+        if( !empty($field) && $field->meta ){
+            $field->meta = maybe_unserialize( $field->meta );
         }
         
         if( isset( $field ) ) {

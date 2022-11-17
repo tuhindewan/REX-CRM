@@ -28,6 +28,7 @@ import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
+import InputTextArea from "../InputTextArea";
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
@@ -1218,7 +1219,7 @@ export default function ContactDetails() {
                               className="form-group contact-input-field"
                               ref={timezoneRef}
                             >
-                              <label name="gender">Timezone</label>
+                              <label name="timezone">Timezone</label>
                               <button
                                 className="timezone-button"
                                 onClick={handleTimezoneShow}
@@ -1275,11 +1276,13 @@ export default function ContactDetails() {
                             {customFields.map((field) => {
                               return (
                                 <>
+                                {console.log(field)}
                                   {field.type == "text" && (
                                     <InputItem
                                       key={field.id}
                                       name={field.slug}
-                                      label={field.title}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
                                       handleChange={handleMetaChange}
                                       value={
                                         contactData?.meta_fields?.[field.slug]
@@ -1298,8 +1301,8 @@ export default function ContactDetails() {
                                     />
                                   )}
 
-                                  {field.type == "date" && (
-                                    <InputDate
+                                  {field.type == "textArea" && (
+                                    <InputTextArea
                                       name={field.slug}
                                       label={field.title}
                                       handleChange={handleMetaChange}
@@ -1308,6 +1311,8 @@ export default function ContactDetails() {
                                       }
                                     />
                                   )}
+
+                                  
                                 </>
                               );
                             })}
