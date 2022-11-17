@@ -75,6 +75,5 @@ class Test_WC_Controller extends WP_UnitTestCase {
         $this->assertTrue( isset( $data[ 'checkbox_label' ] ) );
         $this->assertTrue( isset( $data[ 'lists' ] ) );
         $this->assertTrue( isset( $data[ 'tags' ] ) );
-        $this->assertTrue( isset( $data[ 'double_optin' ] ) );
     }
 }
