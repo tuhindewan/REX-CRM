@@ -67,15 +67,16 @@ export default function GeneralSettings() {
             console.log(response)
             const unsubscriber_settings = response.unsubscriber_settings;
             const preference_settings = response.preference;
+            const comment_form_subscription = response.comment_form_subscription;
 
-            if(unsubscriber_settings.length > 0){
+            if(Object.keys(unsubscriber_settings).length > 0){
                 setRedirectUrl(unsubscriber_settings.url)
                 setSelectUnsubscribeOption(unsubscriber_settings.confirmation_type ? unsubscriber_settings.confirmation_type : 'message')
                 setConfirmation_message(unsubscriber_settings.confirmation_message)
             }
 
             //preference
-            if(preference_settings.length > 0){
+            if(Object.keys(preference_settings).length > 0){
                 setSelectPreferenceOption(preference_settings.preference ? preference_settings.preference : "no-contact-manage")
                 setEditableFirstname(preference_settings.primary_fields ? preference_settings.primary_fields.first_name : false )
                 setEditableLastname(preference_settings.primary_fields ? preference_settings.primary_fields.last_name : false)
@@ -83,7 +84,11 @@ export default function GeneralSettings() {
                 setEditableList(preference_settings.primary_fields ? preference_settings.primary_fields.list : false)
                 setAssignLists(preference_settings.lists)
             }
-
+            if(Object.keys(comment_form_subscription).length > 0){
+                setCommentSelectSwitch(comment_form_subscription.enable)
+                setAssignCommentLists(comment_form_subscription.lists)
+                setAssignTags(comment_form_subscription.tags)
+            }
         });
     }, []);
 
@@ -106,6 +111,11 @@ export default function GeneralSettings() {
                     list : editabList,
                 }
             },
+            comment_form_subscription:{
+                enable  : commentSelectSwitch,
+                lists   : assignCommentLists,
+                tags    : assignTags
+            }
         }
         submitGeneralSetting(settings).then((response) => {
             if (true === response.success) {
@@ -1052,9 +1062,7 @@ export default function GeneralSettings() {
                                                             onChange={
                                                                 handleCommentSwitcher
                                                             }
-                                                            defaultChecked={
-                                                                commentSelectSwitch
-                                                            }
+                                                            checked ={commentSelectSwitch}
                                                         />
                                                         <label htmlFor="comment-radio"></label>
                                                     </span>

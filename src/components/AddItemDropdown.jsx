@@ -42,7 +42,8 @@ export default function AddItemDropdown(props) {
   const handleSelectOne = (e) => {
     e.stopPropagation();
     let value = e.target.value ? e.target.value : e.target.dataset.customValue;
-    let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    // let id = e.target.id ? e.target.id : e.target.dataset.customId;
+    let id = e.target.dataset.customId;
     const index = selected?.findIndex((item) => item.id == id);
     if (allowMultiple) {
       if (index >= 0) {
@@ -106,7 +107,7 @@ export default function AddItemDropdown(props) {
         <div className="option-section">
           {filteredItems?.length > 0 &&
             filteredItems.map((item, index) => {
-              let checked = checkIfSelected(prefix + item.id);
+              let checked = checkIfSelected(item.id);
               return (
                 <li
                   key={index}
@@ -122,6 +123,7 @@ export default function AddItemDropdown(props) {
                       name={item.id}
                       id={prefix + item.id}
                       value={item.title}
+                      data-custom-id={item.id}
                       onChange={handleSelectOne}
                       checked={checked}
                     />
