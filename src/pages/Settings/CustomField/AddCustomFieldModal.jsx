@@ -44,7 +44,6 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
         })
     };
     
-    console.log(newDropdownOption.length);
 
     return (
         <>
