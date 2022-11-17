@@ -5,7 +5,8 @@
                 width: calc(100% - 223px);
 
                 .drop-down-button {
-                    padding: 15px;
+                    padding: 13px 15px;
+                    margin: 0;
 
                     &::before {
                         top: 50%;
