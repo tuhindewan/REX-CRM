@@ -61,7 +61,7 @@ class UserAssignContact {
 						$contact_id     = ContactModel::insert( $contact );
 						if ($contact_id){
 							$get_double_optin = get_option('_mrm_optin_settings');
-							$is_double_optin = isset($get_double_optin['optin']['enable']) ? $get_double_optin['optin']['enable'] : false;
+							$is_double_optin = isset($get_double_optin['enable']) ? $get_double_optin['enable'] : false;
 							if($is_double_optin){
 								MessageController::get_instance()->send_double_opt_in( $contact_id );
 							}
@@ -94,7 +94,8 @@ class UserAssignContact {
 					$contact_id     = ContactModel::insert( $contact );
 					if ($contact_id){
 						$get_double_optin = get_option('_mrm_optin_settings');
-						$is_double_optin = isset($get_double_optin['optin']['enable']) ? $get_double_optin['optin']['enable'] : false;
+						error_log(print_r($get_double_optin,1));
+						$is_double_optin = isset($get_double_optin['enable']) ? $get_double_optin['enable'] : false;
 						if($is_double_optin){
 							MessageController::get_instance()->send_double_opt_in( $contact_id );
 						}
