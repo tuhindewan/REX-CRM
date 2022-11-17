@@ -118,20 +118,19 @@ export default function DoubleOptin() {
     const optin = {
       optin: optinSetting,
     };
-    if (isValidate) {
-      submitOptin(optin).then((response) => {
-        if (true === response.success) {
-          setNotificationType("success");
-          setShowNotification("block");
-          setMessage(response?.message);
-        } else {
-          setNotificationType("warning");
-          setShowNotification("block");
-          setMessage(response?.message);
-        }
-      });
-    }
-    setLoader(false);
+    submitOptin(optin).then((response) => {
+      if (true === response.success) {
+        setNotificationType("success");
+        setShowNotification("block");
+        setMessage(response?.message);
+      } else {
+        setNotificationType("warning");
+        setShowNotification("block");
+        setMessage(response?.message);
+      }
+      setLoader(false);
+    });
+
     ClearNotification("none", setShowNotification);
   };
 
