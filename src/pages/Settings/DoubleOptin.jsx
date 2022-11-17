@@ -141,7 +141,7 @@ export default function DoubleOptin() {
       tinymce: {
         wpautop: true,
         plugins:
-          "charmap colorpicker compat3x directionality link hr image lists media tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview",
+          "charmap colorpicker compat3x directionality hr image lists media tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview",
         toolbar1:
           "bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | wp_adv ",
         toolbar2:
@@ -149,7 +149,6 @@ export default function DoubleOptin() {
       },
       quicktags: true,
       mediaButtons: true,
-      link_assume_external_targets: true,
     };
 
     let editorId = "tinymce";

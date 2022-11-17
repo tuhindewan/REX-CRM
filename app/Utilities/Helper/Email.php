@@ -16,7 +16,10 @@ class Email {
             return $existingHeader;
         }
 
-        $headers = [];
+        $headers = [
+            'MIME-Version: 1.0',
+			'Content-type: text/html;charset=UTF-8'
+        ];
         static $globalHeaders;
         if ($globalHeaders) {
             return $globalHeaders;
@@ -59,6 +62,7 @@ class Email {
      */
     public static function getMailTemplate($email_body = "", $domainLink, $contact_id, $hash)
     {
+        error_log(print_r($email_body, 1));
         return "
             <!DOCTYPE html>
             <html lang='en-US'>
