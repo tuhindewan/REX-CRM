@@ -1,6 +1,6 @@
 // Return all custom fields from the database
 export async function getCustomFields() {
-  return fetch(window.MRM_Vars.api_base_url + "mrm/v1/custom-fields/")
+  return fetch(window.MRM_Vars.api_base_url + "mrm/v1/settings/custom-fields/")
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -15,7 +15,7 @@ export async function getCustomFields() {
 
 // Custom fields submit post request
 export async function submitCustomFields(customFields) {
-  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/custom-fields`, {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/settings/custom-fields`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
@@ -31,7 +31,7 @@ export async function submitCustomFields(customFields) {
 // Custom fields delete request
 export async function deleteSingleCustomField(id) {
   return await fetch(
-    `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/${id}`,
+    `${window.MRM_Vars.api_base_url}mrm/v1/settings/custom-fields/${id}`,
     {
       method: "DELETE",
       headers: {
@@ -48,7 +48,7 @@ export async function deleteSingleCustomField(id) {
 // Custom fields update put request
 export async function updateCustomFields(customField) {
   return await fetch(
-    `${window.MRM_Vars.api_base_url}mrm/v1/custom-fields/${customField.id}`,
+    `${window.MRM_Vars.api_base_url}mrm/v1/settings/custom-fields/${customField.id}`,
     {
       method: "PUT",
       headers: {
