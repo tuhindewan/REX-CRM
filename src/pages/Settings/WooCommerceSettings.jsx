@@ -1,12 +1,14 @@
 import WooCommerceIcon from "../../components/Icons/WooCommerceIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import SettingsNav from "./SettingsNav";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import AddItemDropdown from "../../components/AddItemDropdown";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import { ClearNotification } from "../../utils/admin-notification";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
 
 export default function WooCommerceSettings() {
     const [selectSwitch, setSelectSwitch] = useState(true);
@@ -19,6 +21,9 @@ export default function WooCommerceSettings() {
     const [assignTags, setAssignTags] = useState([]);
     const [refresh, setRefresh] = useState();
     const [loading, setLoader] = useState( false );
+    const [showNotification, setShowNotification] = useState("none");
+    const [notificationType, setNotificationType] = useState("success");
+    const [message, setMessage] = useState("");
     const listMenuRef = useRef(null);
     const tagMenuRef = useRef(null);
     const [listening, setListening] = useState(false);
@@ -87,24 +92,11 @@ export default function WooCommerceSettings() {
 
     const saveSettings = async () => {
         let response = null;
-        let tag = assignTags.map( ( tagObj ) => {
-            let tagArr = [];
-            tagArr[ 'id' ] = tagObj.id;
-            tagArr[ 'title' ] = tagObj.title;
-            return tagArr;
-        } );
-        let list = assignLists.map( ( listObj ) => {
-            let listArr = [];
-            listArr[ 'id' ] = listObj.id;
-            listArr[ 'title' ] = listObj.title;
-            return listArr;
-        } );
         let wcSettingsData = {
             'enable': selectSwitch,
             'checkbox_label': checkboxLabel,
-            'lists': list,
-            'tags': tag,
-            'double_optin': true
+            'lists': assignLists,
+            'tags': assignTags
         };
 
         try {
@@ -120,15 +112,40 @@ export default function WooCommerceSettings() {
                     body: JSON.stringify(wcSettingsData),
                 }
             );
+            const responseData = await response.json();
 
             if ( 200 === response.status ) {
-                setLoader( false );
+                setNotificationType("success");
+                setShowNotification("block");
+                setMessage(responseData?.message);
+            } else if (false === responseData.success) {
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage(responseData?.message);
             }
-
+            ClearNotification("none", setShowNotification);
         } catch (e) {
         } finally {
+            setLoader( false );
         }
     };
+
+    useEffect(()=> {
+        const getWCData = async () => {
+            const response = await fetch(
+                `${window.MRM_Vars.api_base_url}mrm/v1/settings/wc`
+            );
+            const jsonResponse = await response.json();
+
+            if( true === jsonResponse.success ){
+                setSelectSwitch( jsonResponse.enable );
+                setCheckboxLabel( jsonResponse.checkbox_label );
+                setAssignLists( jsonResponse.lists );
+                setAssignTags( jsonResponse.tags );
+            }
+        };
+        getWCData()
+    },[] );
     return (
         <div className="mintmrm-settings-page">
             <div className="mintmrm-container">
@@ -165,11 +182,9 @@ export default function WooCommerceSettings() {
                                                     type="checkbox"
                                                     name="checkedB"
                                                     id="st"
-                                                    value={selectSwitch}
+                                                    checked={selectSwitch}
+                                                    defaultChecked={selectSwitch}
                                                     onChange={handleSwitcher}
-                                                    defaultChecked={
-                                                        selectSwitch
-                                                    }
                                                 />
                                                 <label htmlFor="st"></label>
                                             </span>
@@ -193,6 +208,7 @@ export default function WooCommerceSettings() {
                                                         type="text"
                                                         name="checkbox-label"
                                                         placeholder="Enter Checkbox label Text"
+                                                        value={checkboxLabel}
                                                         onChange={( event) => setCheckboxLabel( event.target.value ) }
                                                     />
                                                 </div>
@@ -371,6 +387,13 @@ export default function WooCommerceSettings() {
                         {/* end settings-tab-content */}
                     </div>
                 </div>
+                <SuccessfulNotification
+                    display={showNotification}
+                    setShowNotification={setShowNotification}
+                    message={message}
+                    notificationType={notificationType}
+                    setNotificationType={setNotificationType}
+                />
             </div>
         </div>
     );
