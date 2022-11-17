@@ -1046,9 +1046,11 @@ class ContactController extends BaseController {
         $params     = MRM_Common::get_api_params_values( $request );
         $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
         $success    = MessageController::get_instance()->send_double_opt_in( $contact_id  );
-        
-        if( 1 == $success) {
+        error_log(print_r($success, 1));
+        if( 1 == $success ) {
             return $this->get_success_response("Double Optin email has been sent", 200);
+        }else{
+            return $this->get_error_response( __( 'Double opt-in subscription process is disable', 'mrm' ), 400 );
         }
         return $this->get_error_response("Failed to send double optin email", 400);
     }

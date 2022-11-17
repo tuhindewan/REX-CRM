@@ -253,6 +253,10 @@ class MessageController extends BaseController {
 
         $settings   = get_option( "_mrm_optin_settings", $default );
         $enable     = isset( $settings['enable'] ) ? $settings['enable'] : "";
+        error_log(print_r($enable, 1));
+        if ( !$enable ) {
+            return false;
+        }
         if( $enable ){
             $to       = isset( $contact['email'] ) ? $contact['email'] : "";
             $hash     = isset( $contact['hash'] ) ? $contact['hash'] : "";
