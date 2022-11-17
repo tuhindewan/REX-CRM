@@ -76,7 +76,6 @@ export default function GeneralSettings() {
 
     useEffect(() => {
         getGeneralSettings().then((response) => {
-            console.log(response)
             const unsubscriber_settings     = response.unsubscriber_settings;
             const preference_settings       = response.preference;
             const comment_form_subscription = response.comment_form_subscription;

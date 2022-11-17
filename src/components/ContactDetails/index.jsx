@@ -662,7 +662,6 @@ export default function ContactDetails() {
 
   return (
     <>
-    {console.log(customFields)}
       <div className="mintmrm-contact-details">
         {showLoader ? (
           <LoadingIndicator type="table" />
