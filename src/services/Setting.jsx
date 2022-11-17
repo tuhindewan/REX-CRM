@@ -14,7 +14,7 @@ export async function submitOptin(optin) {
 }
 
 // GET request to get double opt-in settings
-export async function getOptinSettings(optin) {
+export async function getOptinSettings() {
   return await fetch(
     `${window.MRM_Vars.api_base_url}mrm/v1/settings/optin`
   ).then((response) => {
@@ -22,4 +22,15 @@ export async function getOptinSettings(optin) {
       return response.json();
     }
   });
+}
+
+// GET request to get all pages from native WP
+export async function getAllWpPages() {
+  return await fetch(`${window.MRM_Vars.api_base_url}wp/v2/pages`).then(
+    (response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    }
+  );
 }
