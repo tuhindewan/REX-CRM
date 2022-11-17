@@ -128,9 +128,9 @@ class MessageController extends BaseController {
 
     /**
      * Send a message to contact
-     * TODO: Here we have static values, it will be dynamic after finishig up the Settings module
+     * 
      * @param mixed $message
-     * @return bool|WP_REST_response
+     * @return bool
      * @since 1.0.0
      */
     public function send_message( $message )
@@ -141,14 +141,7 @@ class MessageController extends BaseController {
 
         $body    = $message->get_email_body();
 
-        $headers = array(
-			'MIME-Version: 1.0',
-			'Content-type: text/html;charset=UTF-8'
-		);
-		$from    = '';
-        $from = 'From: Mint CRM';
-        $headers[] = $from . ' <' . 'mrm@coderex.co'. '>';
-        $headers[] = 'Reply-To:  ' . 'mrm@coderex.co';
+        $headers = Email::getMailHeader();
 
         try {
             return wp_mail( $to, $subject, $body, $headers );
