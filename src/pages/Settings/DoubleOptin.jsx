@@ -260,22 +260,24 @@ export default function DoubleOptin() {
                                 </span>
                               </label>
 
-                              <textarea
-                                id="tinymce"
-                                rows="4"
-                                placeholder="Enter Email Body"
-                              ></textarea>
-                              <p>
-                                Use{" "}
-                                <button
-                                  onClick={() =>
-                                    copyToClipboard("{{subscribe_link}}")
-                                  }
-                                >
-                                  {"{{subscribe_link}}"}
-                                </button>{" "}
-                                in the email body to generate a subcribe link
-                              </p>
+                              <div className="input-custom-wrapper">
+                                <textarea
+                                  id="tinymce"
+                                  rows="4"
+                                  placeholder="Enter Email Body"
+                                ></textarea>
+                                <p>
+                                  Use{" "}
+                                  <button
+                                    onClick={() =>
+                                      copyToClipboard("{{subscribe_link}}")
+                                    }
+                                  >
+                                    {"{{subscribe_link}}"}
+                                  </button>{" "}
+                                  in the email body to generate a subcribe link
+                                </p>
+                              </div>
                             </div>
                             <hr />
 
@@ -347,11 +349,13 @@ export default function DoubleOptin() {
                                   </p>
                                 </span>
                               </label>
-                              <textarea
-                                id="confirmation-message"
-                                rows="3"
-                                placeholder="Enter Confirmation Message"
-                              ></textarea>
+                              <div className="input-custom-wrapper">
+                                <textarea
+                                  id="confirmation-message"
+                                  rows="3"
+                                  placeholder="Enter Confirmation Message"
+                                ></textarea>
+                              </div>
                             </div>
                             <div
                               className={
@@ -370,22 +374,24 @@ export default function DoubleOptin() {
                                   </p>
                                 </span>
                               </label>
-                              <input
-                                type="text"
-                                name="url"
-                                value={optinSetting.url}
-                                placeholder="Enter Redirect URL"
-                                onChange={handleChange}
-                              />
-                              <p
-                                className={
-                                  errors?.url
-                                    ? "error-message show"
-                                    : "error-message"
-                                }
-                              >
-                                {errors?.url}
-                              </p>
+                              <div className="input-custom-wrapper">
+                                <input
+                                  type="text"
+                                  name="url"
+                                  value={optinSetting.url}
+                                  placeholder="Enter Redirect URL"
+                                  onChange={handleChange}
+                                />
+                                <p
+                                  className={
+                                    errors?.url
+                                      ? "error-message show"
+                                      : "error-message"
+                                  }
+                                >
+                                  {errors?.url}
+                                </p>
+                              </div>
                             </div>
                             <div
                               className={
