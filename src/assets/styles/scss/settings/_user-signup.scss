@@ -23,8 +23,10 @@
             color: #344054;
         }
         .administrator,
-        .tutor-instructor,
-        .shop-manager {
+        .editor,
+        .author,
+        .contributor,
+        .subscriber {
             width: calc(100% - 223px);
             .drop-down-button {
                 &:first-child {

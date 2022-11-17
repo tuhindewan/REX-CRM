@@ -33,27 +33,36 @@ export default function GeneralSettings() {
     const [isActiveTag, setIsActiveTag] = useState(false);
     const [assignTags, setAssignTags] = useState([]);
     const [administratorLists, setAdministratorLists] = useState([]);
-    const [tutorLists, setTutorLists] = useState([]);
-    const [shopLists, setShopLists] = useState([]);
+    const [editorLists, setEditorLists] = useState([]);
+    const [authorLists, setAuthorLists] = useState([]);
+    const [contributorLists, setContributorLists] = useState([]);
+    const [subscriberLists, setSubscriberLists] = useState([]);
     const [isActiveList, setIsActiveList] = useState(false);
     const [isActiveCommentList, setIsActiveCommentList] = useState(false);
     const [isActiveAdministratorList, setIsActiveAdministratorList] =
         useState(false);
-    const [isActiveTutorList, setIsActiveTutorList] = useState(false);
-    const [isActiveShopList, setIsActiveShopList] = useState(false);
+    const [isActiveEditorList, setIsActiveEditorList] = useState(false);
+    const [isActiveAuthorList, setIsActiveAuthorList] = useState(false);
+    const [isActiveContributorList, setIsActiveContributorList] =
+        useState(false);
+    const [isActiveSubscriberList, setIsActiveSubscriberList] = useState(false);
     const [assignLists, setAssignLists] = useState([]);
     const [assignCommentLists, setAssignCommentLists] = useState([]);
     const [assignAdministratorLists, setAssignAdministratorLists] = useState(
         []
     );
-    const [assignTutorLists, setAssignTutorLists] = useState([]);
-    const [assignShopLists, setAssignShopLists] = useState([]);
+    const [assignEditorLists, setAssignEditorLists] = useState([]);
+    const [assignAuthorLists, setAssignAuthorLists] = useState([]);
+    const [assignContributorLists, setAssignContributorLists] = useState([]);
+    const [assignSubscriberLists, setAssignSubscriberLists] = useState([]);
     const [refresh, setRefresh] = useState();
     const listMenuRef = useRef(null);
     const listCommentMenuRef = useRef(null);
     const listAdministratorMenuRef = useRef(null);
-    const listTutorMenuRef = useRef(null);
-    const listShopMenuRef = useRef(null);
+    const listEditorMenuRef = useRef(null);
+    const listAuthorMenuRef = useRef(null);
+    const listContributorMenuRef = useRef(null);
+    const listSubscriberMenuRef = useRef(null);
     const tagMenuRef = useRef(null);
     const [redirectUrl, setRedirectUrl] = useState("");
     const [editableFirstname, setEditableFirstname] = useState(false);
@@ -67,26 +76,58 @@ export default function GeneralSettings() {
 
     useEffect(() => {
         getGeneralSettings().then((response) => {
-            console.log(response)
+            console.log(response);
             const unsubscriber_settings = response.unsubscriber_settings;
             const preference_settings = response.preference;
+            const comment_form_subscription =
+                response.comment_form_subscription;
 
-            if(unsubscriber_settings.length > 0){
-                setRedirectUrl(unsubscriber_settings.url)
-                setSelectUnsubscribeOption(unsubscriber_settings.confirmation_type ? unsubscriber_settings.confirmation_type : 'message')
-                setConfirmation_message(unsubscriber_settings.confirmation_message)
+            if (Object.keys(unsubscriber_settings).length > 0) {
+                setRedirectUrl(unsubscriber_settings.url);
+                setSelectUnsubscribeOption(
+                    unsubscriber_settings.confirmation_type
+                        ? unsubscriber_settings.confirmation_type
+                        : "message"
+                );
+                setConfirmation_message(
+                    unsubscriber_settings.confirmation_message
+                );
             }
 
             //preference
-            if(preference_settings.length > 0){
-                setSelectPreferenceOption(preference_settings.preference ? preference_settings.preference : "no-contact-manage")
-                setEditableFirstname(preference_settings.primary_fields ? preference_settings.primary_fields.first_name : false )
-                setEditableLastname(preference_settings.primary_fields ? preference_settings.primary_fields.last_name : false)
-                setEditableStatus(preference_settings.primary_fields ? preference_settings.primary_fields.status: false)
-                setEditableList(preference_settings.primary_fields ? preference_settings.primary_fields.list : false)
-                setAssignLists(preference_settings.lists)
+            if (Object.keys(preference_settings).length > 0) {
+                setSelectPreferenceOption(
+                    preference_settings.preference
+                        ? preference_settings.preference
+                        : "no-contact-manage"
+                );
+                setEditableFirstname(
+                    preference_settings.primary_fields
+                        ? preference_settings.primary_fields.first_name
+                        : false
+                );
+                setEditableLastname(
+                    preference_settings.primary_fields
+                        ? preference_settings.primary_fields.last_name
+                        : false
+                );
+                setEditableStatus(
+                    preference_settings.primary_fields
+                        ? preference_settings.primary_fields.status
+                        : false
+                );
+                setEditableList(
+                    preference_settings.primary_fields
+                        ? preference_settings.primary_fields.list
+                        : false
+                );
+                setAssignLists(preference_settings.lists);
             }
-
+            if (Object.keys(comment_form_subscription).length > 0) {
+                setCommentSelectSwitch(comment_form_subscription.enable);
+                setAssignCommentLists(comment_form_subscription.lists);
+                setAssignTags(comment_form_subscription.tags);
+            }
         });
     }, []);
 
@@ -108,6 +149,11 @@ export default function GeneralSettings() {
                     status: editableStatus,
                     list: editabList,
                 },
+            },
+            comment_form_subscription: {
+                enable: commentSelectSwitch,
+                lists: assignCommentLists,
+                tags: assignTags,
             },
         };
         submitGeneralSetting(settings).then((response) => {
@@ -158,8 +204,10 @@ export default function GeneralSettings() {
             results.data.map(function () {
                 setLists(results.data);
                 setAdministratorLists(results.data);
-                setTutorLists(results.data);
-                setShopLists(results.data);
+                setEditorLists(results.data);
+                setAuthorLists(results.data);
+                setContributorLists(results.data);
+                setSubscriberLists(results.data);
                 setCommentLists(results.data);
             });
         });
@@ -200,16 +248,32 @@ export default function GeneralSettings() {
         ListenForOutsideClicks(
             listening,
             setListening,
-            listTutorMenuRef,
-            setIsActiveTutorList
+            listEditorMenuRef,
+            setIsActiveEditorList
         )
     );
     useEffect(
         ListenForOutsideClicks(
             listening,
             setListening,
-            listShopMenuRef,
-            setIsActiveShopList
+            listAuthorMenuRef,
+            setIsActiveAuthorList
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            listContributorMenuRef,
+            setIsActiveContributorList
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            listSubscriberMenuRef,
+            setIsActiveSubscriberList
         )
     );
     useEffect(
@@ -237,11 +301,17 @@ export default function GeneralSettings() {
     const handleAdministratorList = () => {
         setIsActiveAdministratorList(!isActiveAdministratorList);
     };
-    const handleTutorList = () => {
-        setIsActiveTutorList(!isActiveTutorList);
+    const handleEditorList = () => {
+        setIsActiveEditorList(!isActiveEditorList);
     };
-    const handleShopList = () => {
-        setIsActiveShopList(!isActiveShopList);
+    const handleAuthorList = () => {
+        setIsActiveAuthorList(!isActiveAuthorList);
+    };
+    const handleContributorList = () => {
+        setIsActiveContributorList(!isActiveContributorList);
+    };
+    const handleSubscriberList = () => {
+        setIsActiveSubscriberList(!isActiveSubscriberList);
     };
     const handleCommentList = () => {
         setIsActiveCommentList(!isActiveCommentList);
@@ -266,22 +336,44 @@ export default function GeneralSettings() {
             );
         }
     };
-    const deleteSelectedTutorList = (e, id) => {
-        const index = assignTutorLists.findIndex((item) => item.id == id);
+    const deleteSelectedEditorList = (e, id) => {
+        const index = assignEditorLists.findIndex((item) => item.id == id);
 
         // already in selected list so remove it from the array
         if (0 <= index) {
-            setAssignTutorLists(
-                assignTutorLists.filter((item) => item.id != id)
+            setAssignEditorLists(
+                assignEditorLists.filter((item) => item.id != id)
             );
         }
     };
-    const deleteSelectedShopList = (e, id) => {
-        const index = assignShopLists.findIndex((item) => item.id == id);
+    const deleteSelectedAuthorList = (e, id) => {
+        const index = assignAuthorLists.findIndex((item) => item.id == id);
 
         // already in selected list so remove it from the array
         if (0 <= index) {
-            setAssignShopLists(assignShopLists.filter((item) => item.id != id));
+            setAssignAuthorLists(
+                assignAuthorLists.filter((item) => item.id != id)
+            );
+        }
+    };
+    const deleteSelectedContributorList = (e, id) => {
+        const index = assignContributorLists.findIndex((item) => item.id == id);
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignContributorLists(
+                assignContributorLists.filter((item) => item.id != id)
+            );
+        }
+    };
+    const deleteSelectedSubscriberList = (e, id) => {
+        const index = assignSubscriberLists.findIndex((item) => item.id == id);
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignSubscriberLists(
+                assignSubscriberLists.filter((item) => item.id != id)
+            );
         }
     };
     const deleteSelectedCommentList = (e, id) => {
@@ -606,7 +698,7 @@ export default function GeneralSettings() {
                                                                                               list.title
                                                                                           }
 
-                                                                                          <button
+                                                                                          <span
                                                                                               className="close-list"
                                                                                               title="Delete"
                                                                                               onClick={(
@@ -619,7 +711,7 @@ export default function GeneralSettings() {
                                                                                               }
                                                                                           >
                                                                                               <CrossIcon />
-                                                                                          </button>
+                                                                                          </span>
                                                                                       </span>
                                                                                   );
                                                                               }
@@ -829,7 +921,7 @@ export default function GeneralSettings() {
                                                                                       list.title
                                                                                   }
 
-                                                                                  <button
+                                                                                  <span
                                                                                       className="close-list"
                                                                                       title="Delete"
                                                                                       onClick={(
@@ -842,7 +934,7 @@ export default function GeneralSettings() {
                                                                                       }
                                                                                   >
                                                                                       <CrossIcon />
-                                                                                  </button>
+                                                                                  </span>
                                                                               </span>
                                                                           );
                                                                       }
@@ -882,26 +974,26 @@ export default function GeneralSettings() {
                                                 </div>
                                                 <div
                                                     className="form-group"
-                                                    ref={listTutorMenuRef}
+                                                    ref={listEditorMenuRef}
                                                 >
                                                     <label htmlFor="">
-                                                        Tutor Instructor
+                                                        Editor
                                                     </label>
-                                                    <div className="tutor-instructor">
+                                                    <div className="editor">
                                                         <button
                                                             type="button"
                                                             className={
-                                                                isActiveTutorList
+                                                                isActiveEditorList
                                                                     ? "drop-down-button show"
                                                                     : "drop-down-button"
                                                             }
                                                             onClick={
-                                                                handleTutorList
+                                                                handleEditorList
                                                             }
                                                         >
-                                                            {assignTutorLists.length !=
+                                                            {assignEditorLists.length !=
                                                             0
-                                                                ? assignTutorLists?.map(
+                                                                ? assignEditorLists?.map(
                                                                       (
                                                                           list
                                                                       ) => {
@@ -916,20 +1008,20 @@ export default function GeneralSettings() {
                                                                                       list.title
                                                                                   }
 
-                                                                                  <button
+                                                                                  <span
                                                                                       className="close-list"
                                                                                       title="Delete"
                                                                                       onClick={(
                                                                                           e
                                                                                       ) =>
-                                                                                          deleteSelectedTutorList(
+                                                                                          deleteSelectedEditorList(
                                                                                               e,
                                                                                               list.id
                                                                                           )
                                                                                       }
                                                                                   >
                                                                                       <CrossIcon />
-                                                                                  </button>
+                                                                                  </span>
                                                                               </span>
                                                                           );
                                                                       }
@@ -938,19 +1030,19 @@ export default function GeneralSettings() {
                                                         </button>
                                                         <AddItemDropdown
                                                             isActive={
-                                                                isActiveTutorList
+                                                                isActiveEditorList
                                                             }
                                                             setIsActive={
-                                                                setIsActiveTutorList
+                                                                setIsActiveEditorList
                                                             }
                                                             selected={
-                                                                assignTutorLists
+                                                                assignEditorLists
                                                             }
                                                             setSelected={
-                                                                setAssignTutorLists
+                                                                setAssignEditorLists
                                                             }
                                                             endpoint="lists"
-                                                            items={tutorLists}
+                                                            items={editorLists}
                                                             allowMultiple={true}
                                                             allowNewCreate={
                                                                 true
@@ -961,32 +1053,32 @@ export default function GeneralSettings() {
                                                             setRefresh={
                                                                 setRefresh
                                                             }
-                                                            prefix="tutor"
+                                                            prefix="editor"
                                                         />
                                                     </div>
                                                 </div>
                                                 <div
                                                     className="form-group"
-                                                    ref={listShopMenuRef}
+                                                    ref={listAuthorMenuRef}
                                                 >
                                                     <label htmlFor="">
-                                                        Shop manager
+                                                        Author
                                                     </label>
-                                                    <div className="shop-manager">
+                                                    <div className="author">
                                                         <button
                                                             type="button"
                                                             className={
-                                                                isActiveShopList
+                                                                isActiveAuthorList
                                                                     ? "drop-down-button show"
                                                                     : "drop-down-button"
                                                             }
                                                             onClick={
-                                                                handleShopList
+                                                                handleAuthorList
                                                             }
                                                         >
-                                                            {assignShopLists.length !=
+                                                            {assignAuthorLists.length !=
                                                             0
-                                                                ? assignShopLists?.map(
+                                                                ? assignAuthorLists?.map(
                                                                       (
                                                                           list
                                                                       ) => {
@@ -1001,20 +1093,20 @@ export default function GeneralSettings() {
                                                                                       list.title
                                                                                   }
 
-                                                                                  <button
+                                                                                  <span
                                                                                       className="close-list"
                                                                                       title="Delete"
                                                                                       onClick={(
                                                                                           e
                                                                                       ) =>
-                                                                                          deleteSelectedShopList(
+                                                                                          deleteSelectedAuthorList(
                                                                                               e,
                                                                                               list.id
                                                                                           )
                                                                                       }
                                                                                   >
                                                                                       <CrossIcon />
-                                                                                  </button>
+                                                                                  </span>
                                                                               </span>
                                                                           );
                                                                       }
@@ -1023,19 +1115,19 @@ export default function GeneralSettings() {
                                                         </button>
                                                         <AddItemDropdown
                                                             isActive={
-                                                                isActiveShopList
+                                                                isActiveAuthorList
                                                             }
                                                             setIsActive={
-                                                                setIsActiveShopList
+                                                                setIsActiveAuthorList
                                                             }
                                                             selected={
-                                                                assignShopLists
+                                                                assignAuthorLists
                                                             }
                                                             setSelected={
-                                                                setAssignShopLists
+                                                                setAssignAuthorLists
                                                             }
                                                             endpoint="lists"
-                                                            items={shopLists}
+                                                            items={authorLists}
                                                             allowMultiple={true}
                                                             allowNewCreate={
                                                                 true
@@ -1046,7 +1138,179 @@ export default function GeneralSettings() {
                                                             setRefresh={
                                                                 setRefresh
                                                             }
-                                                            prefix="shop"
+                                                            prefix="author"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    className="form-group"
+                                                    ref={listContributorMenuRef}
+                                                >
+                                                    <label htmlFor="">
+                                                        Contributor
+                                                    </label>
+                                                    <div className="contributor">
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                isActiveContributorList
+                                                                    ? "drop-down-button show"
+                                                                    : "drop-down-button"
+                                                            }
+                                                            onClick={
+                                                                handleContributorList
+                                                            }
+                                                        >
+                                                            {assignContributorLists.length !=
+                                                            0
+                                                                ? assignContributorLists?.map(
+                                                                      (
+                                                                          list
+                                                                      ) => {
+                                                                          return (
+                                                                              <span
+                                                                                  className="single-list"
+                                                                                  key={
+                                                                                      list.id
+                                                                                  }
+                                                                              >
+                                                                                  {
+                                                                                      list.title
+                                                                                  }
+
+                                                                                  <span
+                                                                                      className="close-list"
+                                                                                      title="Delete"
+                                                                                      onClick={(
+                                                                                          e
+                                                                                      ) =>
+                                                                                          deleteSelectedContributorList(
+                                                                                              e,
+                                                                                              list.id
+                                                                                          )
+                                                                                      }
+                                                                                  >
+                                                                                      <CrossIcon />
+                                                                                  </span>
+                                                                              </span>
+                                                                          );
+                                                                      }
+                                                                  )
+                                                                : "Select Lists"}
+                                                        </button>
+                                                        <AddItemDropdown
+                                                            isActive={
+                                                                isActiveContributorList
+                                                            }
+                                                            setIsActive={
+                                                                setIsActiveContributorList
+                                                            }
+                                                            selected={
+                                                                assignContributorLists
+                                                            }
+                                                            setSelected={
+                                                                setAssignContributorLists
+                                                            }
+                                                            endpoint="lists"
+                                                            items={
+                                                                contributorLists
+                                                            }
+                                                            allowMultiple={true}
+                                                            allowNewCreate={
+                                                                true
+                                                            }
+                                                            name="list"
+                                                            title="CHOOSE LIST"
+                                                            refresh={refresh}
+                                                            setRefresh={
+                                                                setRefresh
+                                                            }
+                                                            prefix="contributor"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    className="form-group"
+                                                    ref={listSubscriberMenuRef}
+                                                >
+                                                    <label htmlFor="">
+                                                        Subscriber
+                                                    </label>
+                                                    <div className="subscriber">
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                isActiveSubscriberList
+                                                                    ? "drop-down-button show"
+                                                                    : "drop-down-button"
+                                                            }
+                                                            onClick={
+                                                                handleSubscriberList
+                                                            }
+                                                        >
+                                                            {assignSubscriberLists.length !=
+                                                            0
+                                                                ? assignSubscriberLists?.map(
+                                                                      (
+                                                                          list
+                                                                      ) => {
+                                                                          return (
+                                                                              <span
+                                                                                  className="single-list"
+                                                                                  key={
+                                                                                      list.id
+                                                                                  }
+                                                                              >
+                                                                                  {
+                                                                                      list.title
+                                                                                  }
+
+                                                                                  <span
+                                                                                      className="close-list"
+                                                                                      title="Delete"
+                                                                                      onClick={(
+                                                                                          e
+                                                                                      ) =>
+                                                                                          deleteSelectedSubscriberList(
+                                                                                              e,
+                                                                                              list.id
+                                                                                          )
+                                                                                      }
+                                                                                  >
+                                                                                      <CrossIcon />
+                                                                                  </span>
+                                                                              </span>
+                                                                          );
+                                                                      }
+                                                                  )
+                                                                : "Select Lists"}
+                                                        </button>
+                                                        <AddItemDropdown
+                                                            isActive={
+                                                                isActiveSubscriberList
+                                                            }
+                                                            setIsActive={
+                                                                setIsActiveSubscriberList
+                                                            }
+                                                            selected={
+                                                                assignSubscriberLists
+                                                            }
+                                                            setSelected={
+                                                                setAssignSubscriberLists
+                                                            }
+                                                            endpoint="lists"
+                                                            items={subscriberLists}
+                                                            allowMultiple={true}
+                                                            allowNewCreate={
+                                                                true
+                                                            }
+                                                            name="list"
+                                                            title="CHOOSE LIST"
+                                                            refresh={refresh}
+                                                            setRefresh={
+                                                                setRefresh
+                                                            }
+                                                            prefix="subscriber"
                                                         />
                                                     </div>
                                                 </div>
@@ -1078,7 +1342,7 @@ export default function GeneralSettings() {
                                                             onChange={
                                                                 handleCommentSwitcher
                                                             }
-                                                            defaultChecked={
+                                                            checked={
                                                                 commentSelectSwitch
                                                             }
                                                         />
@@ -1134,7 +1398,7 @@ export default function GeneralSettings() {
                                                                                   list.title
                                                                               }
 
-                                                                              <button
+                                                                              <span
                                                                                   className="close-list"
                                                                                   title="Delete"
                                                                                   onClick={(
@@ -1147,7 +1411,7 @@ export default function GeneralSettings() {
                                                                                   }
                                                                               >
                                                                                   <CrossIcon />
-                                                                              </button>
+                                                                              </span>
                                                                           </span>
                                                                       );
                                                                   }
@@ -1216,7 +1480,7 @@ export default function GeneralSettings() {
                                                                                   tag.title
                                                                               }
 
-                                                                              <button
+                                                                              <span
                                                                                   className="close-list"
                                                                                   title="Delete"
                                                                                   onClick={(
@@ -1229,7 +1493,7 @@ export default function GeneralSettings() {
                                                                                   }
                                                                               >
                                                                                   <CrossIcon />
-                                                                              </button>
+                                                                              </span>
                                                                           </span>
                                                                       );
                                                                   }
