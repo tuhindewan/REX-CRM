@@ -450,6 +450,10 @@ export default function ContactDetails() {
     }));
   };
 
+  const handleOptionFields = (e) => {
+    console.log(e.target.value)
+  }
+
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
       .filter((option) => option.selected)
@@ -1328,7 +1332,7 @@ export default function ContactDetails() {
                                       label={field.meta.label}
                                       placeholder={field.meta.placeholder}
                                       selectOption={field.meta.options}
-                                      handleChange={handleMetaChange}
+                                      handleChange={handleOptionFields}
                                       value={
                                         contactData?.meta_fields?.[field.id]
                                       }
@@ -1341,7 +1345,7 @@ export default function ContactDetails() {
                                       label={field.meta.label}
                                       placeholder={field.meta.placeholder}
                                       selectOption={field.meta.options}
-                                      handleChange={handleMetaChange}
+                                      handleChange={handleOptionFields}
                                       value={
                                         contactData?.meta_fields?.[field.id]
                                       }
@@ -1354,7 +1358,7 @@ export default function ContactDetails() {
                                       label={field.meta.label}
                                       placeholder={field.meta.placeholder}
                                       selectOption={field.meta.options}
-                                      handleChange={handleMetaChange}
+                                      handleChange={handleOptionFields}
                                       value={
                                         contactData?.meta_fields?.[field.id]
                                       }

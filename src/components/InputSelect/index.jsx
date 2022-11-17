@@ -13,7 +13,7 @@ export default function InputSelect(props) {
           <select name={props.name} id={props.name}>
             {props.selectOption.map((option, index) => {
               return (
-                <option key={index} value={option.index}>
+                <option key={index} value={option}>
                   {option}
                 </option>
               );

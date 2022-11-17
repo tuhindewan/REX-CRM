@@ -14,8 +14,10 @@ export default function InputCheckbox(props) {
               <input
                 key={index}
                 type="checkbox"
-                id={option.label}
-                name={props.name}
+                id={option}
+                name={index}
+                onChange={props.handleChange}
+                value={index}
               />
               <label htmlFor={option}>
                 {option}

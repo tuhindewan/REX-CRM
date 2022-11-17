@@ -11,11 +11,13 @@ export default function InputRadio(props) {
         {props.selectOption.map((option, index) => {
           return (
             <div className="mrm-radio-group mintmrm-radiobtn">
-              <input
+            <input
                 key={index}
                 type="radio"
-                id={option.label}
+                id={option}
                 name={props.name}
+                onChange={props.handleChange}
+                value={index}
               />
               <label htmlFor={option}>
                 {option}
