@@ -25,7 +25,7 @@ export async function getOptinSettings(optin) {
 }
 //POST request to store general  setting
 export async function submitGeneralSetting(settings) {
-  return await fetch(`${window.MRM_Vars.api_base_url}/mrm/v1/settings/general/`, {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/settings/general`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
