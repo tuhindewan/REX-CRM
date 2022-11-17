@@ -444,6 +444,7 @@ export default function GeneralSettings() {
                                                         ) : null}
                                                     </div>
                                                 </div>
+                                                <hr></hr>
                                                 <div className="form-group top-align">
                                                     <label htmlFor="">
                                                         Editable Primary Fields
@@ -456,7 +457,7 @@ export default function GeneralSettings() {
                                                             </p>
                                                         </span>
                                                     </label>
-                                                    <div className="select-preference-wrapper">
+                                                    <div className="editable-primary-field">
                                                         <span className="mintmrm-checkbox">
                                                             <input
                                                                 id="first-name"
@@ -494,6 +495,102 @@ export default function GeneralSettings() {
                                                             </label>
                                                         </span>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="general-single-settings">
+                                            <div className="general-settings-header">
+                                                <div className="form-group">
+                                                    <label htmlFor="">
+                                                        User Signup Settings
+                                                        <span class="mintmrm-tooltip">
+                                                            <TooltipQuestionIcon />
+                                                            <p>
+                                                                Define behaviour
+                                                                of the form
+                                                                after submission
+                                                            </p>
+                                                        </span>
+                                                    </label>
+                                                    <span className="mintmrm-switcher">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="optin-radio"
+                                                            id="optin-radio"
+                                                            value={
+                                                                optinSelectSwitch
+                                                            }
+                                                            onChange={
+                                                                handleOptinSwitcher
+                                                            }
+                                                            defaultChecked={
+                                                                optinSelectSwitch
+                                                            }
+                                                        />
+                                                        <label htmlFor="optin-radio"></label>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                className={
+                                                    optinSelectSwitch
+                                                        ? "general-settings-body user-signup-settings show"
+                                                        : "general-settings-body user-signup-settings"
+                                                }
+                                            >
+                                                <div className="wp-user">
+                                                    <span>WP User Role</span>
+                                                    <span>
+                                                        Lists to be added
+                                                    </span>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="confirmation-type">
+                                                        Administrator
+                                                    </label>
+                                                    <button
+                                                        type="button"
+                                                        className={
+                                                            isActiveList
+                                                                ? "drop-down-button show"
+                                                                : "drop-down-button"
+                                                        }
+                                                        onClick={handleList}
+                                                    >
+                                                        {assignLists.length != 0
+                                                            ? assignLists?.map(
+                                                                  (list) => {
+                                                                      return (
+                                                                          <span
+                                                                              className="single-list"
+                                                                              key={
+                                                                                  list.id
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  list.title
+                                                                              }
+
+                                                                              <button
+                                                                                  className="close-list"
+                                                                                  title="Delete"
+                                                                                  onClick={(
+                                                                                      e
+                                                                                  ) =>
+                                                                                      deleteSelectedList(
+                                                                                          e,
+                                                                                          list.id
+                                                                                      )
+                                                                                  }
+                                                                              >
+                                                                                  <CrossIcon />
+                                                                              </button>
+                                                                          </span>
+                                                                      );
+                                                                  }
+                                                              )
+                                                            : "Select Lists"}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

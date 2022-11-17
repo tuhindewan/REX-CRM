@@ -1,11 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import SettingsNav from "./SettingsNav";
+import Search from "../../components/Icons/Search";
+import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function DoubleOptin() {
     const [selectOption, setSelectOption] = useState("message");
+    const [selectPageOption, setSelectPageOption] = useState("");
+    const [selectPage, setSelectpage] = useState(false);
     const [selectSwitch, setSelectSwitch] = useState(true);
+    const [pages, setpages] = useState([
+        {
+            title: "Privacy",
+            id: "0",
+        },
+        {
+            title: "Cart",
+            id: "1",
+        },
+        {
+            title: "Checkout",
+            id: "2",
+        },
+        {
+            title: "Shop",
+            id: "3",
+        },
+        {
+            title: "Blog",
+            id: "4",
+        },
+    ]);
+    const selectPageRef = useRef(null);
+    const [listening, setListening] = useState(false);
+
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            selectPageRef,
+            setSelectpage
+        )
+    );
+    const handleSelectOption = (title) => {
+        setSelectPageOption(title);
+    };
+
+    const handlePageSelect = () => {
+        setSelectpage(!selectPage);
+    };
+
     const onChangeValue = (e) => {
         setSelectOption(e.target.value);
     };
@@ -197,73 +242,144 @@ export default function DoubleOptin() {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    {selectOption ===
-                                                    "message" ? (
-                                                        <div className="form-group top-align">
-                                                            <label htmlFor="">
-                                                                Confirmation
-                                                                Message
-                                                                <span class="mintmrm-tooltip">
-                                                                    <TooltipQuestionIcon />
-                                                                    <p>
-                                                                        Define
-                                                                        behaviour
-                                                                        of the
-                                                                        form
-                                                                        after
-                                                                        submission
-                                                                    </p>
-                                                                </span>
-                                                            </label>
-                                                            <textarea
-                                                                rows="3"
-                                                                placeholder="Enter Confirmation Message"
-                                                            ></textarea>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "message"
+                                                                ? "form-group top-align confirmation-message-section show"
+                                                                : "form-group top-align confirmation-message-section"
+                                                        }
+                                                    >
+                                                        <label htmlFor="">
+                                                            Confirmation Message
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p>
+                                                                    Define
+                                                                    behaviour of
+                                                                    the form
+                                                                    after
+                                                                    submission
+                                                                </p>
+                                                            </span>
+                                                        </label>
+                                                        <textarea
+                                                            rows="3"
+                                                            placeholder="Enter Confirmation Message"
+                                                        ></textarea>
+                                                    </div>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "redirect"
+                                                                ? "form-group redirect-url-section show"
+                                                                : "form-group redirect-url-section"
+                                                        }
+                                                    >
+                                                        <label htmlFor="">
+                                                            Redirect URL
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p>
+                                                                    Define
+                                                                    behaviour of
+                                                                    the form
+                                                                    after
+                                                                    submission
+                                                                </p>
+                                                            </span>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="redirect"
+                                                            placeholder="Enter Redirect URL"
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "redirect-page"
+                                                                ? "form-group page-dropdown-section show"
+                                                                : "form-group page-dropdown-section"
+                                                        }
+                                                    >
+                                                        <label htmlFor="">
+                                                            Redirect Page
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p>
+                                                                    Define
+                                                                    behaviour of
+                                                                    the form
+                                                                    after
+                                                                    submission
+                                                                </p>
+                                                            </span>
+                                                        </label>
+                                                        <div
+                                                            className="redirect-page-button"
+                                                            ref={selectPageRef}
+                                                        >
+                                                            <button
+                                                                className={
+                                                                    selectPage
+                                                                        ? "drop-down-button show"
+                                                                        : "drop-down-button"
+                                                                }
+                                                                onClick={
+                                                                    handlePageSelect
+                                                                }
+                                                            >
+                                                                {selectPageOption
+                                                                    ? selectPageOption
+                                                                    : "Select Page"}
+                                                            </button>
+                                                            <ul
+                                                                className={
+                                                                    selectPage
+                                                                        ? "mintmrm-dropdown show"
+                                                                        : "mintmrm-dropdown"
+                                                                }
+                                                            >
+                                                                <li className="searchbar">
+                                                                    <span class="pos-relative">
+                                                                        <Search />
+                                                                        <input
+                                                                            type="search"
+                                                                            name="column-search"
+                                                                            placeholder="Search or create"
+                                                                        />
+                                                                    </span>
+                                                                </li>
+                                                                {pages.map(
+                                                                    (
+                                                                        item,
+                                                                        index
+                                                                    ) => {
+                                                                        return (
+                                                                            <li
+                                                                                onClick={() =>
+                                                                                    handleSelectOption(
+                                                                                        item.title
+                                                                                    )
+                                                                                }
+                                                                                key={
+                                                                                    index
+                                                                                }
+                                                                                className={
+                                                                                    "single-column"
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    item.title
+                                                                                }
+                                                                            </li>
+                                                                        );
+                                                                    }
+                                                                )}
+                                                            </ul>
                                                         </div>
-                                                    ) : (
-                                                        <>
-                                                            <div className="form-group">
-                                                                <label htmlFor="">
-                                                                    Redirect URL
-                                                                    <span class="mintmrm-tooltip">
-                                                                        <TooltipQuestionIcon />
-                                                                        <p>
-                                                                            Define
-                                                                            behaviour
-                                                                            of
-                                                                            the
-                                                                            form
-                                                                            after
-                                                                            submission
-                                                                        </p>
-                                                                    </span>
-                                                                </label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="redirect"
-                                                                    placeholder="Enter Redirect URL"
-                                                                />
-                                                            </div>
-                                                            <div className="form-group">
-                                                                <label htmlFor="">
-                                                                    Redirect Page
-                                                                    <span class="mintmrm-tooltip">
-                                                                        <TooltipQuestionIcon />
-                                                                        <p>
-                                                                            Define
-                                                                            behaviour
-                                                                            of
-                                                                            the
-                                                                            form
-                                                                            after
-                                                                            submission
-                                                                        </p>
-                                                                    </span>
-                                                                </label>
-                                                                <button className="">Select Page</button>
-                                                            </div>
-                                                        </>
-                                                    )}
+                                                    </div>
                                                 </>
                                             ) : null}
                                         </div>
