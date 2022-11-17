@@ -134,6 +134,7 @@
       opacity: 0.7;
       background: #c1bbbb;
       cursor: not-allowed;
+      color: #474747;
     }
 
     &.show-loader {
@@ -162,6 +163,10 @@
     font-weight: 500;
   }
 
+  //----margin----
+  .mintmrm-mb-16 {
+    margin-bottom: 16px;
+  }
 
   //------extendable classes--------
   .pos-relative {

@@ -284,7 +284,8 @@ export default function DoubleOptin() {
                                 </p>
                               </span>
                             </label>
-                            <div>
+
+                            <div className="input-custom-wrapper">
                               <span className="mintmrm-radiobtn">
                                 <input
                                   id="show-message"
