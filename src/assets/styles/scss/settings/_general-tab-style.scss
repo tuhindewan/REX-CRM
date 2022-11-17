@@ -44,6 +44,10 @@
                             display: block;
                             margin-bottom: 20px;
                             margin-right: 0;
+
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
                         }
 
                         .list-section {
