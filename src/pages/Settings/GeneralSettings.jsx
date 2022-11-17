@@ -11,7 +11,8 @@ export default function GeneralSettings() {
         useState("message");
     const [selectPreferenceOption, setSelectPreferenceOption] =
         useState("no-contact-manage");
-    const [optinSelectSwitch, setOptinSelectSwitch] = useState(true);
+    const [unsubscribeSelectSwitch, setUnsubscribeSelectSwitch] = useState(true);
+    const [userSelectSwitch, setUserSelectSwitch] = useState(false);
     const [preferenceSelectSwitch, setPreferenceSelectSwitch] = useState(false);
     const [lists, setLists] = useState([]);
     const [isActiveList, setIsActiveList] = useState(false);
@@ -57,7 +58,10 @@ export default function GeneralSettings() {
         setSelectPreferenceOption(e.target.value);
     };
     const handleOptinSwitcher = () => {
-        setOptinSelectSwitch(!optinSelectSwitch);
+        setUnsubscribeSelectSwitch(!unsubscribeSelectSwitch);
+    };
+    const handleUserSwitcher = () => {
+        setUserSelectSwitch(!userSelectSwitch);
     };
     const handlePreferenceSwitcher = () => {
         setPreferenceSelectSwitch(!preferenceSelectSwitch);
@@ -100,25 +104,25 @@ export default function GeneralSettings() {
                                                     <span className="mintmrm-switcher">
                                                         <input
                                                             type="checkbox"
-                                                            name="optin-radio"
-                                                            id="optin-radio"
+                                                            name="unsubscribe-radio"
+                                                            id="unsubscribe-radio"
                                                             value={
-                                                                optinSelectSwitch
+                                                                unsubscribeSelectSwitch
                                                             }
                                                             onChange={
                                                                 handleOptinSwitcher
                                                             }
                                                             defaultChecked={
-                                                                optinSelectSwitch
+                                                                unsubscribeSelectSwitch
                                                             }
                                                         />
-                                                        <label htmlFor="optin-radio"></label>
+                                                        <label htmlFor="unsubscribe-radio"></label>
                                                     </span>
                                                 </div>
                                             </div>
                                             <div
                                                 className={
-                                                    optinSelectSwitch
+                                                    unsubscribeSelectSwitch
                                                         ? "general-settings-body show"
                                                         : "general-settings-body"
                                                 }
@@ -495,6 +499,102 @@ export default function GeneralSettings() {
                                                             </label>
                                                         </span>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="general-single-settings">
+                                            <div className="general-settings-header">
+                                                <div className="form-group">
+                                                    <label htmlFor="">
+                                                        User Signup Settings
+                                                        <span class="mintmrm-tooltip">
+                                                            <TooltipQuestionIcon />
+                                                            <p>
+                                                                Define behaviour
+                                                                of the form
+                                                                after submission
+                                                            </p>
+                                                        </span>
+                                                    </label>
+                                                    <span className="mintmrm-switcher">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="user-signup-radio"
+                                                            id="user-signup-radio"
+                                                            value={
+                                                                userSelectSwitch
+                                                            }
+                                                            onChange={
+                                                                handleUserSwitcher
+                                                            }
+                                                            defaultChecked={
+                                                                userSelectSwitch
+                                                            }
+                                                        />
+                                                        <label htmlFor="user-signup-radio"></label>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                className={
+                                                    userSelectSwitch
+                                                        ? "general-settings-body user-signup-settings show"
+                                                        : "general-settings-body user-signup-settings"
+                                                }
+                                            >
+                                                <div className="wp-user">
+                                                    <span>WP User Role</span>
+                                                    <span>
+                                                        Lists to be added
+                                                    </span>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label htmlFor="confirmation-type">
+                                                        Administrator
+                                                    </label>
+                                                    <button
+                                                        type="button"
+                                                        className={
+                                                            isActiveList
+                                                                ? "drop-down-button show"
+                                                                : "drop-down-button"
+                                                        }
+                                                        onClick={handleList}
+                                                    >
+                                                        {assignLists.length != 0
+                                                            ? assignLists?.map(
+                                                                  (list) => {
+                                                                      return (
+                                                                          <span
+                                                                              className="single-list"
+                                                                              key={
+                                                                                  list.id
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  list.title
+                                                                              }
+
+                                                                              <button
+                                                                                  className="close-list"
+                                                                                  title="Delete"
+                                                                                  onClick={(
+                                                                                      e
+                                                                                  ) =>
+                                                                                      deleteSelectedList(
+                                                                                          e,
+                                                                                          list.id
+                                                                                      )
+                                                                                  }
+                                                                              >
+                                                                                  <CrossIcon />
+                                                                              </button>
+                                                                          </span>
+                                                                      );
+                                                                  }
+                                                              )
+                                                            : "Select Lists"}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

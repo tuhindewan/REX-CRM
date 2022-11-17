@@ -7,6 +7,7 @@ import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
 
 export default function DoubleOptin() {
     const [selectOption, setSelectOption] = useState("message");
+    const [selectPageOption, setSelectPageOption] = useState("");
     const [selectPage, setSelectpage] = useState(false);
     const [selectSwitch, setSelectSwitch] = useState(true);
     const [pages, setpages] = useState([
@@ -42,6 +43,9 @@ export default function DoubleOptin() {
             setSelectpage
         )
     );
+    const handleSelectOption = (title) => {
+        setSelectPageOption(title);
+    };
 
     const handlePageSelect = () => {
         setSelectpage(!selectPage);
@@ -72,7 +76,6 @@ export default function DoubleOptin() {
     }, []);
     return (
         <>
-            {console.log(pages)}
             <div className="mintmrm-settings-page">
                 <div className="mintmrm-container">
                     <div className="mintmrm-settings">
@@ -239,8 +242,14 @@ export default function DoubleOptin() {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className={selectOption ===
-                                                                        "message" ? "form-group top-align confirmation-message-section show" : "form-group top-align confirmation-message-section"}>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "message"
+                                                                ? "form-group top-align confirmation-message-section show"
+                                                                : "form-group top-align confirmation-message-section"
+                                                        }
+                                                    >
                                                         <label htmlFor="">
                                                             Confirmation Message
                                                             <span class="mintmrm-tooltip">
@@ -259,7 +268,14 @@ export default function DoubleOptin() {
                                                             placeholder="Enter Confirmation Message"
                                                         ></textarea>
                                                     </div>
-                                                    <div className={ selectOption ==="redirect" ? "form-group redirect-url-section show" : "form-group redirect-url-section"}>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "redirect"
+                                                                ? "form-group redirect-url-section show"
+                                                                : "form-group redirect-url-section"
+                                                        }
+                                                    >
                                                         <label htmlFor="">
                                                             Redirect URL
                                                             <span class="mintmrm-tooltip">
@@ -279,7 +295,14 @@ export default function DoubleOptin() {
                                                             placeholder="Enter Redirect URL"
                                                         />
                                                     </div>
-                                                    <div className={ selectOption ==="redirect-page" ? "form-group page-dropdown-section show" : "form-group page-dropdown-section"}>
+                                                    <div
+                                                        className={
+                                                            selectOption ===
+                                                            "redirect-page"
+                                                                ? "form-group page-dropdown-section show"
+                                                                : "form-group page-dropdown-section"
+                                                        }
+                                                    >
                                                         <label htmlFor="">
                                                             Redirect Page
                                                             <span class="mintmrm-tooltip">
@@ -307,7 +330,9 @@ export default function DoubleOptin() {
                                                                     handlePageSelect
                                                                 }
                                                             >
-                                                                Select Page
+                                                                {selectPageOption
+                                                                    ? selectPageOption
+                                                                    : "Select Page"}
                                                             </button>
                                                             <ul
                                                                 className={
@@ -333,6 +358,11 @@ export default function DoubleOptin() {
                                                                     ) => {
                                                                         return (
                                                                             <li
+                                                                                onClick={() =>
+                                                                                    handleSelectOption(
+                                                                                        item.title
+                                                                                    )
+                                                                                }
                                                                                 key={
                                                                                     index
                                                                                 }
@@ -340,31 +370,9 @@ export default function DoubleOptin() {
                                                                                     "single-column"
                                                                                 }
                                                                             >
-                                                                                <div class="mintmrm-checkbox">
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        name={
-                                                                                            item.id
-                                                                                        }
-                                                                                        id={
-                                                                                            item.id
-                                                                                        }
-                                                                                        value={
-                                                                                            item.title
-                                                                                        }
-                                                                                    />
-
-                                                                                    <label
-                                                                                        for={
-                                                                                            item.id
-                                                                                        }
-                                                                                        className="mrm-custom-select-label"
-                                                                                    >
-                                                                                        {
-                                                                                            item.title
-                                                                                        }
-                                                                                    </label>
-                                                                                </div>
+                                                                                {
+                                                                                    item.title
+                                                                                }
                                                                             </li>
                                                                         );
                                                                     }
