@@ -297,6 +297,7 @@ export default function DoubleOptin() {
                                 />
                                 <label for="show-message">Show Message</label>
                               </span>
+
                               <span className="mintmrm-radiobtn">
                                 <input
                                   id="redirect-url"
@@ -310,6 +311,7 @@ export default function DoubleOptin() {
                                   Redirect to an URL
                                 </label>
                               </span>
+
                               <span className="mintmrm-radiobtn">
                                 <input
                                   id="redirect-page"
@@ -325,6 +327,7 @@ export default function DoubleOptin() {
                               </span>
                             </div>
                           </div>
+                          
                           <div
                             className={
                               selectOption === "message"
