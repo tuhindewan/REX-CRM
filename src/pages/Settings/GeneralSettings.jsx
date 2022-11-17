@@ -1,5 +1,5 @@
 import SettingsNav from "./SettingsNav";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { getLists } from "../../services/List";
 import { getTags } from "../../services/Tag";
 import GeneralSettingIcon from "../../components/Icons/GeneralSettingIcon";
@@ -9,7 +9,14 @@ import ListenForOutsideClicks, {
 } from "../../components/ListenForOutsideClicks";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import AddItemDropdown from "../../components/AddItemDropdown";
+import {getGeneralSettings, submitGeneralSetting,} from "../../services/Setting";
+import SuccessfulNotification from "../../components/SuccessfulNotification";
+
 export default function GeneralSettings() {
+    const [loader, setLoader] = useState(false);
+    const [notificationType, setNotificationType] = useState("success");
+    const [showNotification, setShowNotification] = useState("none");
+    const [message, setMessage] = useState("");
     const [selectUnsubscribeOption, setSelectUnsubscribeOption] =
         useState("message");
     const [selectPreferenceOption, setSelectPreferenceOption] =
@@ -45,7 +52,93 @@ export default function GeneralSettings() {
     const listTutorMenuRef = useRef(null);
     const listShopMenuRef = useRef(null);
     const tagMenuRef = useRef(null);
+    const [redirectUrl , setRedirectUrl] = useState('')
+    const [editableFirstname  , setEditableFirstname] = useState(false)
+    const [editableLastname  , setEditableLastname] = useState(false)
+    const [editableStatus  , setEditableStatus] = useState(false)
+    const [editabList  , setEditableList] = useState(false)
+
     const [listening, setListening] = useState(false);
+    // Get General setting data
+    const [confirmation_message, setConfirmation_message] = useState('')
+
+    useEffect(() => {
+        getGeneralSettings().then((response) => {
+            const unsubscriber_settings = response.unsubscriber_settings;
+            const preference_settings = response.preference;
+            setRedirectUrl(unsubscriber_settings.url)
+            setSelectUnsubscribeOption(unsubscriber_settings.confirmation_type)
+            setConfirmation_message(unsubscriber_settings.confirmation_message)
+            //preference
+            setSelectPreferenceOption(preference_settings.preference)
+            setEditableFirstname(preference_settings.primary_fields.first_name)
+            setEditableLastname(preference_settings.primary_fields.last_name)
+            setEditableStatus(preference_settings.primary_fields.status)
+            setEditableList(preference_settings.primary_fields.list)
+            setAssignLists(preference_settings.lists)
+        });
+    }, []);
+
+    //Handle Submit general setting
+    const handleGeneralSubmit = () => {
+        const settings = {
+            unsubscriber_settings: {
+                confirmation_type: selectUnsubscribeOption,
+                url: redirectUrl,
+                confirmation_message: confirmation_message,
+            },
+            preference :{
+                enable : true,
+                preference: selectPreferenceOption,
+                lists : assignLists,
+                primary_fields:{
+                    first_name : editableFirstname,
+                    last_name : editableLastname,
+                    status : editableStatus,
+                    list : editabList,
+                }
+            },
+        }
+        submitGeneralSetting(settings).then((response) => {
+            // console.log('cliecked')
+            if (true === response.success) {
+                setNotificationType("success");
+                setShowNotification("block");
+                setMessage(response?.message);
+            } else {
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage(response?.message);
+            }
+        });
+    }
+
+    //Handle Confirmation message
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setConfirmation_message(value);
+    };
+    //Handle Confirmation Url
+    const handleChangeURL = (event) => {
+        const { name, value } = event.target;
+        setRedirectUrl(value)
+    };
+
+   // Handle Primary edit Field
+    const handleEditPrimaryFields = (event) => {
+        const { name, value , checked } = event.target;
+        if('first-name' == name){
+            setEditableFirstname(checked)
+        }if('last-name' == name){
+            setEditableLastname(checked)
+        }if('status' == name){
+            setEditableStatus(checked)
+        }if('lists' == name){
+            setEditableList(checked)
+        }
+    };
+
+
 
     // Fetch lists
     useEffect(() => {
@@ -322,6 +415,9 @@ export default function GeneralSettings() {
                                                             id="confirmation-message"
                                                             rows="3"
                                                             placeholder="Enter Confirmation Message"
+                                                            name="confirmation_message"
+                                                            value={confirmation_message}
+                                                            onChange={handleChange}
                                                         ></textarea>
                                                     </div>
                                                 ) : (
@@ -340,10 +436,11 @@ export default function GeneralSettings() {
                                                             </span>
                                                         </label>
                                                         <input
-                                                            id="redirect-url"
                                                             type="text"
                                                             name="redirect"
                                                             placeholder="Enter Redirect URL"
+                                                            value={redirectUrl}
+                                                            onChange={handleChangeURL}
                                                         />
                                                     </div>
                                                 )}
@@ -567,6 +664,9 @@ export default function GeneralSettings() {
                                                             <input
                                                                 id="first-name"
                                                                 type="checkbox"
+                                                                name="first-name"
+                                                                checked={editableFirstname}
+                                                                onChange={handleEditPrimaryFields}
                                                             />
                                                             <label for="first-name">
                                                                 First name
@@ -576,6 +676,9 @@ export default function GeneralSettings() {
                                                             <input
                                                                 id="last-name"
                                                                 type="checkbox"
+                                                                name="last-name"
+                                                                checked={editableLastname}
+                                                                onChange={handleEditPrimaryFields}
                                                             />
                                                             <label for="last-name">
                                                                 Last name
@@ -585,6 +688,9 @@ export default function GeneralSettings() {
                                                             <input
                                                                 id="status"
                                                                 type="checkbox"
+                                                                name="status"
+                                                                checked={editableStatus}
+                                                                onChange={handleEditPrimaryFields}
                                                             />
                                                             <label for="status">
                                                                 Status
@@ -594,6 +700,9 @@ export default function GeneralSettings() {
                                                             <input
                                                                 id="lists"
                                                                 type="checkbox"
+                                                                name="lists"
+                                                                checked={editabList}
+                                                                onChange={handleEditPrimaryFields}
                                                             />
                                                             <label for="lists">
                                                                 Lists
@@ -1123,6 +1232,7 @@ export default function GeneralSettings() {
                                     <button
                                         className="mintmrm-btn"
                                         type="button"
+                                        onClick={handleGeneralSubmit}
                                     >
                                         Save Settings
                                         <span className="mintmrm-loader"></span>
@@ -1134,6 +1244,13 @@ export default function GeneralSettings() {
                     </div>
                 </div>
             </div>
+            <SuccessfulNotification
+                display={showNotification}
+                setShowNotification={setShowNotification}
+                notificationType={notificationType}
+                setNotificationType={setNotificationType}
+                message={message}
+            />
         </div>
     );
 }
