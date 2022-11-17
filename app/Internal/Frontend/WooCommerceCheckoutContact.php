@@ -24,7 +24,7 @@ class WooCommerceCheckoutContact {
         $this->setting_options = get_option( '_mrm_woocommerce_settings', [] );
         $checkbox_enabled      = isset( $this->setting_options[ 'enable' ] ) ? $this->setting_options[ 'enable' ] : false;
         if( $checkbox_enabled ) {
-            add_action( 'woocommerce_review_order_before_submit', [ $this, 'add_consent_checkbox' ] );
+            add_action( 'woocommerce_checkout_after_terms_and_conditions', [ $this, 'add_consent_checkbox' ] );
             add_action( 'woocommerce_checkout_process', [ $this, 'register_user_as_contact' ] );
         }
     }
