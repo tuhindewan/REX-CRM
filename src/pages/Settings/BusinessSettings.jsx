@@ -7,6 +7,8 @@ import SingleSocialMedia from "./SingleSocialMedia";
 import SettingIcon from "../../components/Icons/SettingIcon";
 import UploadIcon from "../../components/Icons/UploadIcon";
 import PlusIcon from "../../components/Icons/Plus";
+import ProfilePhotoPlaceholderIcon from "../../components/Icons/ProfilePhotoPlaceholderIcon";
+
 import { ClearNotification } from "../../utils/admin-notification";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 
@@ -217,7 +219,12 @@ export default function BusinessSettings() {
                       <div className="photo-area">
                         <div className="preview-img">
                           <input type="hidden" id="preview-img-link" value="" />
-                          <img src={businessLogo} id="preview-img-src" alt="logo" />
+                          {businessLogo != '' && 
+                            <img src={businessLogo} id="preview-img-src" alt="logo" />
+                          }
+                          {businessLogo == '' && 
+                            <ProfilePhotoPlaceholderIcon/>
+                          }
                         </div>
 
                         <div className="upload-area">
