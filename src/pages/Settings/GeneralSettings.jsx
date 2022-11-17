@@ -1,9 +1,12 @@
 import SettingsNav from "./SettingsNav";
 import { useState, useRef, useEffect } from "react";
 import { getLists } from "../../services/List";
+import { getTags } from "../../services/Tag";
 import GeneralSettingIcon from "../../components/Icons/GeneralSettingIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import ListenForOutsideClicks, {
+    useOutsideAlerter,
+} from "../../components/ListenForOutsideClicks";
 import CrossIcon from "../../components/Icons/CrossIcon";
 import AddItemDropdown from "../../components/AddItemDropdown";
 export default function GeneralSettings() {
@@ -11,36 +14,37 @@ export default function GeneralSettings() {
         useState("message");
     const [selectPreferenceOption, setSelectPreferenceOption] =
         useState("no-contact-manage");
-    const [unsubscribeSelectSwitch, setUnsubscribeSelectSwitch] =
-        useState(true);
     const [userSelectSwitch, setUserSelectSwitch] = useState(false);
-    const [preferenceSelectSwitch, setPreferenceSelectSwitch] = useState(false);
     const [commentSelectSwitch, setCommentSelectSwitch] = useState(false);
 
     const [lists, setLists] = useState([]);
-    const [administratorlists, setAdministratorLists] = useState([]);
-    const [tutorlists, setTutorLists] = useState([]);
-    const [shoplists, setShopLists] = useState([]);
+    const [commentLists, setCommentLists] = useState([]);
+    const [tags, setTags] = useState([]);
+    const [isActiveTag, setIsActiveTag] = useState(false);
+    const [assignTags, setAssignTags] = useState([]);
+    const [administratorLists, setAdministratorLists] = useState([]);
+    const [tutorLists, setTutorLists] = useState([]);
+    const [shopLists, setShopLists] = useState([]);
     const [isActiveList, setIsActiveList] = useState(false);
+    const [isActiveCommentList, setIsActiveCommentList] = useState(false);
     const [isActiveAdministratorList, setIsActiveAdministratorList] =
         useState(false);
     const [isActiveTutorList, setIsActiveTutorList] = useState(false);
     const [isActiveShopList, setIsActiveShopList] = useState(false);
     const [assignLists, setAssignLists] = useState([]);
+    const [assignCommentLists, setAssignCommentLists] = useState([]);
     const [assignAdministratorLists, setAssignAdministratorLists] = useState(
         []
     );
     const [assignTutorLists, setAssignTutorLists] = useState([]);
     const [assignShopLists, setAssignShopLists] = useState([]);
     const [refresh, setRefresh] = useState();
-    const [refreshAdministrator, setRefreshAdministrator] = useState();
-    const [refreshTutor, setRefreshTutor] = useState();
-    const [refreshShop, setRefreshShop] = useState();
     const listMenuRef = useRef(null);
+    const listCommentMenuRef = useRef(null);
     const listAdministratorMenuRef = useRef(null);
     const listTutorMenuRef = useRef(null);
     const listShopMenuRef = useRef(null);
-
+    const tagMenuRef = useRef(null);
     const [listening, setListening] = useState(false);
 
     // Fetch lists
@@ -49,40 +53,35 @@ export default function GeneralSettings() {
         getLists().then((results) => {
             results.data.map(function () {
                 setLists(results.data);
+                setAdministratorLists(results.data);
+                setTutorLists(results.data);
+                setShopLists(results.data);
+                setCommentLists(results.data);
             });
+        });
+        // Get tags
+        getTags().then((results) => {
+            setTags(results.data);
         });
     }, [refresh]);
-    useEffect(() => {
-        // Get lists
-        getLists().then((results) => {
-            results.data.map(function () {
-                setAdministratorLists(results.data);
-            });
-        });
-    }, [refreshAdministrator]);
-    useEffect(() => {
-        // Get lists
-        getLists().then((results) => {
-            results.data.map(function () {
-                setTutorLists(results.data);
-            });
-        });
-    }, [refreshTutor]);
-    useEffect(() => {
-        // Get lists
-        getLists().then((results) => {
-            results.data.map(function () {
-                setShopLists(results.data);
-            });
-        });
-    }, [refreshShop]);
 
+    // useEffect(
+    //     ListenForOutsideClicks(
+    //         listening,
+    //         setListening,
+    //         listMenuRef,
+    //         setIsActiveList
+    //     )
+    // );
+    // Outside click events for preference page List checkbox dropdown
+    useOutsideAlerter(listMenuRef, setIsActiveList);
+    useOutsideAlerter();
     useEffect(
         ListenForOutsideClicks(
             listening,
             setListening,
-            listMenuRef,
-            setIsActiveList
+            tagMenuRef,
+            setIsActiveTag
         )
     );
     useEffect(
@@ -109,8 +108,27 @@ export default function GeneralSettings() {
             setIsActiveShopList
         )
     );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            tagMenuRef,
+            setIsActiveTag
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            listCommentMenuRef,
+            setIsActiveCommentList
+        )
+    );
     const handleList = () => {
         setIsActiveList(!isActiveList);
+    };
+    const handleTag = () => {
+        setIsActiveTag(!isActiveTag);
     };
     const handleAdministratorList = () => {
         setIsActiveAdministratorList(!isActiveAdministratorList);
@@ -121,6 +139,9 @@ export default function GeneralSettings() {
     const handleShopList = () => {
         setIsActiveShopList(!isActiveShopList);
     };
+    const handleCommentList = () => {
+        setIsActiveCommentList(!isActiveCommentList);
+    };
     const deleteSelectedList = (e, id) => {
         const index = assignLists.findIndex((item) => item.id == id);
 
@@ -129,21 +150,65 @@ export default function GeneralSettings() {
             setAssignLists(assignLists.filter((item) => item.id != id));
         }
     };
+    const deleteSelectedAdministratorList = (e, id) => {
+        const index = assignAdministratorLists.findIndex(
+            (item) => item.id == id
+        );
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignAdministratorLists(
+                assignAdministratorLists.filter((item) => item.id != id)
+            );
+        }
+    };
+    const deleteSelectedTutorList = (e, id) => {
+        const index = assignTutorLists.findIndex((item) => item.id == id);
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignTutorLists(
+                assignTutorLists.filter((item) => item.id != id)
+            );
+        }
+    };
+    const deleteSelectedShopList = (e, id) => {
+        const index = assignShopLists.findIndex((item) => item.id == id);
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignShopLists(assignShopLists.filter((item) => item.id != id));
+        }
+    };
+    const deleteSelectedCommentList = (e, id) => {
+        const index = assignCommentLists.findIndex((item) => item.id == id);
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignCommentLists(
+                assignCommentLists.filter((item) => item.id != id)
+            );
+        }
+    };
+    const deleteSelectedTag = (e, id) => {
+        const index = assignTags.findIndex((item) => item.id == id);
+
+        // already in selected list so remove it from the array
+        if (0 <= index) {
+            setAssignTags(assignTags.filter((item) => item.id != id));
+        }
+    };
     const onChangeUnsubscribeValue = (e) => {
         setSelectUnsubscribeOption(e.target.value);
     };
     const onChangePreferenceValue = (e) => {
         setSelectPreferenceOption(e.target.value);
     };
-    const handleOptinSwitcher = () => {
-        setUnsubscribeSelectSwitch(!unsubscribeSelectSwitch);
-    };
+
     const handleUserSwitcher = () => {
         setUserSelectSwitch(!userSelectSwitch);
     };
-    const handlePreferenceSwitcher = () => {
-        setPreferenceSelectSwitch(!preferenceSelectSwitch);
-    };
+
     const handleCommentSwitcher = () => {
         setCommentSelectSwitch(!commentSelectSwitch);
     };
@@ -182,32 +247,9 @@ export default function GeneralSettings() {
                                                             </p>
                                                         </span>
                                                     </label>
-                                                    <span className="mintmrm-switcher">
-                                                        <input
-                                                            type="checkbox"
-                                                            name="unsubscribe-radio"
-                                                            id="unsubscribe-radio"
-                                                            value={
-                                                                unsubscribeSelectSwitch
-                                                            }
-                                                            onChange={
-                                                                handleOptinSwitcher
-                                                            }
-                                                            defaultChecked={
-                                                                unsubscribeSelectSwitch
-                                                            }
-                                                        />
-                                                        <label htmlFor="unsubscribe-radio"></label>
-                                                    </span>
                                                 </div>
                                             </div>
-                                            <div
-                                                className={
-                                                    unsubscribeSelectSwitch
-                                                        ? "general-settings-body show"
-                                                        : "general-settings-body"
-                                                }
-                                            >
+                                            <div className="general-settings-body show">
                                                 <div className="form-group">
                                                     <label htmlFor="confirmation-type">
                                                         After Confirmation Type
@@ -321,32 +363,9 @@ export default function GeneralSettings() {
                                                             </p>
                                                         </span>
                                                     </label>
-                                                    <span className="mintmrm-switcher">
-                                                        <input
-                                                            type="checkbox"
-                                                            name="preference-radio"
-                                                            id="preference-radio"
-                                                            value={
-                                                                preferenceSelectSwitch
-                                                            }
-                                                            onChange={
-                                                                handlePreferenceSwitcher
-                                                            }
-                                                            defaultChecked={
-                                                                preferenceSelectSwitch
-                                                            }
-                                                        />
-                                                        <label htmlFor="preference-radio"></label>
-                                                    </span>
                                                 </div>
                                             </div>
-                                            <div
-                                                className={
-                                                    preferenceSelectSwitch
-                                                        ? "general-settings-body show"
-                                                        : "general-settings-body"
-                                                }
-                                            >
+                                            <div className="general-settings-body show">
                                                 <div className="form-group top-align">
                                                     <label htmlFor="">
                                                         Select Preference
@@ -525,7 +544,6 @@ export default function GeneralSettings() {
                                                                         setRefresh
                                                                     }
                                                                     prefix="lists"
-
                                                                 />
                                                             </div>
                                                         ) : null}
@@ -675,7 +693,7 @@ export default function GeneralSettings() {
                                                                                       onClick={(
                                                                                           e
                                                                                       ) =>
-                                                                                          deleteSelectedList(
+                                                                                          deleteSelectedAdministratorList(
                                                                                               e,
                                                                                               list.id
                                                                                           )
@@ -704,7 +722,7 @@ export default function GeneralSettings() {
                                                             }
                                                             endpoint="lists"
                                                             items={
-                                                                administratorlists
+                                                                administratorLists
                                                             }
                                                             allowMultiple={true}
                                                             allowNewCreate={
@@ -712,9 +730,7 @@ export default function GeneralSettings() {
                                                             }
                                                             name="list"
                                                             title="CHOOSE LIST"
-                                                            refresh={
-                                                                refreshAdministrator
-                                                            }
+                                                            refresh={refresh}
                                                             setRefresh={
                                                                 setRefresh
                                                             }
@@ -764,7 +780,7 @@ export default function GeneralSettings() {
                                                                                       onClick={(
                                                                                           e
                                                                                       ) =>
-                                                                                          deleteSelectedList(
+                                                                                          deleteSelectedTutorList(
                                                                                               e,
                                                                                               list.id
                                                                                           )
@@ -792,16 +808,14 @@ export default function GeneralSettings() {
                                                                 setAssignTutorLists
                                                             }
                                                             endpoint="lists"
-                                                            items={tutorlists}
+                                                            items={tutorLists}
                                                             allowMultiple={true}
                                                             allowNewCreate={
                                                                 true
                                                             }
                                                             name="list"
                                                             title="CHOOSE LIST"
-                                                            refresh={
-                                                                refreshTutor
-                                                            }
+                                                            refresh={refresh}
                                                             setRefresh={
                                                                 setRefresh
                                                             }
@@ -851,7 +865,7 @@ export default function GeneralSettings() {
                                                                                       onClick={(
                                                                                           e
                                                                                       ) =>
-                                                                                          deleteSelectedList(
+                                                                                          deleteSelectedShopList(
                                                                                               e,
                                                                                               list.id
                                                                                           )
@@ -879,16 +893,14 @@ export default function GeneralSettings() {
                                                                 setAssignShopLists
                                                             }
                                                             endpoint="lists"
-                                                            items={shoplists}
+                                                            items={shopLists}
                                                             allowMultiple={true}
                                                             allowNewCreate={
                                                                 true
                                                             }
                                                             name="list"
                                                             title="CHOOSE LIST"
-                                                            refresh={
-                                                                refreshShop
-                                                            }
+                                                            refresh={refresh}
                                                             setRefresh={
                                                                 setRefresh
                                                             }
@@ -932,7 +944,177 @@ export default function GeneralSettings() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="general-settings-body"></div>
+                                            <div
+                                                className={
+                                                    commentSelectSwitch
+                                                        ? "general-settings-body show"
+                                                        : "general-settings-body"
+                                                }
+                                            >
+                                                <div
+                                                    className="form-group"
+                                                    ref={listCommentMenuRef}
+                                                >
+                                                    <label>
+                                                        Assign List
+                                                        <span class="mintmrm-tooltip">
+                                                            <TooltipQuestionIcon />
+                                                            <p>
+                                                                Define behaviour
+                                                                of the form
+                                                                after submission
+                                                            </p>
+                                                        </span>
+                                                    </label>
+                                                    <button
+                                                        type="button"
+                                                        className={
+                                                            isActiveCommentList
+                                                                ? "drop-down-button show"
+                                                                : "drop-down-button"
+                                                        }
+                                                        onClick={
+                                                            handleCommentList
+                                                        }
+                                                    >
+                                                        {assignCommentLists.length !=
+                                                        0
+                                                            ? assignCommentLists?.map(
+                                                                  (list) => {
+                                                                      return (
+                                                                          <span
+                                                                              className="single-list"
+                                                                              key={
+                                                                                  list.id
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  list.title
+                                                                              }
+
+                                                                              <button
+                                                                                  className="close-list"
+                                                                                  title="Delete"
+                                                                                  onClick={(
+                                                                                      e
+                                                                                  ) =>
+                                                                                      deleteSelectedCommentList(
+                                                                                          e,
+                                                                                          list.id
+                                                                                      )
+                                                                                  }
+                                                                              >
+                                                                                  <CrossIcon />
+                                                                              </button>
+                                                                          </span>
+                                                                      );
+                                                                  }
+                                                              )
+                                                            : "Select Lists"}
+                                                    </button>
+                                                    <AddItemDropdown
+                                                        isActive={
+                                                            isActiveCommentList
+                                                        }
+                                                        setIsActive={
+                                                            setIsActiveCommentList
+                                                        }
+                                                        selected={
+                                                            assignCommentLists
+                                                        }
+                                                        setSelected={
+                                                            setAssignCommentLists
+                                                        }
+                                                        endpoint="lists"
+                                                        items={commentLists}
+                                                        allowMultiple={true}
+                                                        allowNewCreate={true}
+                                                        name="list"
+                                                        title="CHOOSE LIST"
+                                                        refresh={refresh}
+                                                        setRefresh={setRefresh}
+                                                        prefix="comment"
+                                                    />
+                                                </div>
+                                                <div
+                                                    className="form-group"
+                                                    ref={tagMenuRef}
+                                                >
+                                                    <label>
+                                                        Assign Tag
+                                                        <span class="mintmrm-tooltip">
+                                                            <TooltipQuestionIcon />
+                                                            <p>
+                                                                Define behaviour
+                                                                of the form
+                                                                after submission
+                                                            </p>
+                                                        </span>
+                                                    </label>
+                                                    <button
+                                                        type="button"
+                                                        className={
+                                                            isActiveTag
+                                                                ? "drop-down-button show"
+                                                                : "drop-down-button"
+                                                        }
+                                                        onClick={handleTag}
+                                                    >
+                                                        {assignTags.length != 0
+                                                            ? assignTags?.map(
+                                                                  (tag) => {
+                                                                      return (
+                                                                          <span
+                                                                              className="single-list"
+                                                                              key={
+                                                                                  tag.id
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  tag.title
+                                                                              }
+
+                                                                              <button
+                                                                                  className="close-list"
+                                                                                  title="Delete"
+                                                                                  onClick={(
+                                                                                      e
+                                                                                  ) =>
+                                                                                      deleteSelectedTag(
+                                                                                          e,
+                                                                                          tag.id
+                                                                                      )
+                                                                                  }
+                                                                              >
+                                                                                  <CrossIcon />
+                                                                              </button>
+                                                                          </span>
+                                                                      );
+                                                                  }
+                                                              )
+                                                            : "Select Tags"}
+                                                    </button>
+                                                    <AddItemDropdown
+                                                        isActive={isActiveTag}
+                                                        setIsActive={
+                                                            setIsActiveTag
+                                                        }
+                                                        selected={assignTags}
+                                                        setSelected={
+                                                            setAssignTags
+                                                        }
+                                                        endpoint="tags"
+                                                        items={tags}
+                                                        allowMultiple={true}
+                                                        allowNewCreate={true}
+                                                        name="tag"
+                                                        title="CHOOSE TAG"
+                                                        refresh={refresh}
+                                                        setRefresh={setRefresh}
+                                                        prefix="comment"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

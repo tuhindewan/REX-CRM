@@ -48,6 +48,18 @@ class OptinSettingController extends SettingBaseController {
         
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
+
+            $confirmation_type = isset( $setting_value['confirmation_type'] ) ? $setting_value['confirmation_type'] : "";
+            // URL validation
+            $url = isset( $setting_value['url'] ) ? $setting_value['url'] : "";
+            if( "redirect" == $confirmation_type && filter_var($url, FILTER_VALIDATE_URL) === FALSE ){
+                return $this->get_error_response(__( 'Redirect URL is not valid', 'mrm' ));
+            }
+
+            if( "redirect" == $confirmation_type && empty( $url ) )	{
+                return $this->get_error_response(__( 'Redirect URL is missing', 'mrm' ));
+            }
+
             update_option('_mrm_optin_settings',  $setting_value);
             return $this->get_success_response( __("Double opt-in settings have been successfully saved.", "mrm") );
         }
@@ -61,14 +73,14 @@ class OptinSettingController extends SettingBaseController {
      * @return WP_REST_Response
      * @since 1.0.0 
      */
-    public function get(){
+    public function get( WP_REST_Request $request ){
 
         $default = [
             "enable"                => true,
-            "email_subject"         => "",
-            "email_body"            => "",
-            "confirmation_type"     => "",
-            "confirmation_message"  => ""
+            "email_subject"         => "Please Confirm Subscription.",
+            "email_body"            => "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
+            "confirmation_type"     => "message",
+            "confirmation_message"  => "Subscription Confirmed. Thank you."
         ];
 
         $settings = get_option( $this->option_key, $default );

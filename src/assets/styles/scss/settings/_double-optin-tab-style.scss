@@ -1,0 +1,30 @@
+.mintmrm-settings-page {
+    .settings-tab-content {
+        .double-optin-tab-content {
+            .redirect-page-button {
+                width: calc(100% - 223px);
+
+                .drop-down-button {
+                    padding: 15px;
+
+                    &::before {
+                        top: 50%;
+                    }
+                    &.show::before {
+                        top: 55%;
+                    }
+                }
+            }
+
+            .confirmation-message-section,
+            .redirect-url-section,
+            .page-dropdown-section {
+                display: none;
+
+                &.show {
+                    display: flex;
+                }
+            }
+        }
+    }
+}
