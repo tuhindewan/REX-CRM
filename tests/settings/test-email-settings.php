@@ -183,7 +183,7 @@ class EmailSettings extends WP_UnitTestCase {
 
         $request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/email');
 
-        $response = $this->controller->get();
+        $response = $this->controller->get($request);
 
         $this->assertEquals(400, $response['code']);
         $this->assertEquals('Option key does not exist', $response['message']);
@@ -201,7 +201,7 @@ class EmailSettings extends WP_UnitTestCase {
 
         $response = $this->controller->create_or_update($post_request);
 
-        $check = $this->controller->get();
+        $check = $this->controller->get($post_request);
 
         $this->assertEquals(200, $check['code']);
         $this->assertEquals('Query Successfull', $check['message']);
