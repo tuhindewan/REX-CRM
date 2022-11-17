@@ -2,12 +2,12 @@ import React, { useRef, useState } from "react";
 
 import CrossIcon from "../../../components/Icons/CrossIcon";
 import TooltipQuestionIcon from "../../../components/Icons/TooltipQuestionIcon";
-import PlusIcon from "../../../components/Icons/Plus";
 
 export default function AddCustomFieldModal({addNewCustomField, closeCustomFieldModal}) {
     const [customFieldType, setCustomFieldType] = useState();
     const [customFieldLabel, setCustomFieldLabel] = useState();
     const [customFieldSlug, setCustomFieldSlug] = useState();
+    const [newDropdownOption, setNewDropdownOption] = useState([{}]);
 
     /**
      * Make Slug when render text
@@ -34,7 +34,17 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
     const getFieldSlugValue = (event) => {
         setCustomFieldSlug(makeSlug(event.target.value));
     }
+
+    //----add new option repeater-----
+    const addNewOption = () => {
+        setNewDropdownOption(prevState => {
+            return [...prevState, { 
+              label: ''
+            }];
+        })
+    };
     
+    console.log(newDropdownOption.length);
 
     return (
         <>
@@ -118,10 +128,24 @@ export default function AddCustomFieldModal({addNewCustomField, closeCustomField
                                 <div className="form-group field-options">
                                     <div className="option-header">
                                         <label>Add New Option</label>
-                                        <button className="mintmrm-btn">
-                                            <PlusIcon/>
+                                        <button className="mintmrm-btn" onClick={addNewOption}>
+                                            <svg width="13" height="13" fill="none" viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg"><path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.508 1v11M1 6.5h11"/></svg>
                                             New Option
                                         </button>
+                                    </div>
+
+                                    <div className="option-body">
+                                        {newDropdownOption.map((singleDropdownOption, idx) => {
+                                            return (
+                                                <div className="single-option" key={idx} >
+                                                    <input type="text" name="" />
+                                                    <button className="delete-option">
+                                                        <CrossIcon/>
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                        
                                     </div>
                                 </div>
 
