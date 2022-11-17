@@ -39,10 +39,6 @@ export default function AddCustomFieldModal(props) {
     setCustomFieldSlug(makeSlug(event.target.value));
   };
 
-  const handleSubmit = () => {
-    console.log(prepareData);
-  };
-
   useEffect(() => {
     setPrepareData({
       title: customFieldData.fieldName,

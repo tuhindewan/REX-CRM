@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import SettingsNav from "./SettingsNav";
 import SingleCustomField from "./CustomField/SingleCustomField";
@@ -7,12 +7,13 @@ import AddCustomFieldModal from "./CustomField/AddCustomFieldModal";
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
 import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 
-import { submitCustomFields } from "../../services/CustomField";
+import { submitCustomFields, getCustomFields, deleteCustomField } from "../../services/CustomField";
 
 export default function CustomFieldSettings() {
   const [customFieldModal, setCustomFieldModal] = useState(false);
   const [newCustomField, setNewCustomField] = useState([]);
   const [prepareData, setPrepareData] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
   //----show custom field modal-----
   const addCustomField = () => {
@@ -24,19 +25,25 @@ export default function CustomFieldSettings() {
     setCustomFieldModal(false);
   };
 
+  const toggleRefresh = () => {
+    setRefresh (!refresh);
+  }
+
+  useEffect(() => {
+    const getAllCustomField = async() => {
+        const res = await getCustomFields();
+        setNewCustomField(res);
+    }
+    getAllCustomField();
+    console.log(newCustomField);
+    
+  }, [refresh]);
+
   //----add new custom field-----
   const addNewCustomField = async () => {
-    setNewCustomField((prevState) => {
-      return [
-        ...prevState,
-        {
-          social_link: "",
-        },
-      ];
-    });
-
-    console.log(prepareData);
     submitCustomFields(prepareData);
+
+    toggleRefresh();
 
     setCustomFieldModal(false);
   };
