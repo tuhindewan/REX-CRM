@@ -250,7 +250,7 @@ export default function DoubleOptin() {
                               </span>
                             </label>
 
-                            <div className="wp-tynemc-editor">
+                            <div className="input-custom-wrapper">
                               <textarea 
                               id="tinymce" 
                               rows="4" 
@@ -341,7 +341,7 @@ export default function DoubleOptin() {
                               </span>
                             </label>
 
-                            <div className="wp-tynemc-editor">
+                            <div className="input-custom-wrapper">
                               <textarea 
                               id="confirmation-message" 
                               rows="3" 
@@ -367,22 +367,12 @@ export default function DoubleOptin() {
                                 </p>
                               </span>
                             </label>
-                            <input
-                              type="text"
-                              name="url"
-                              value={optinSetting.url}
-                              placeholder="Enter Redirect URL"
-                              onChange={handleChange}
-                            />
-                            <p
-                              className={
-                                errors?.url
-                                  ? "error-message show"
-                                  : "error-message"
-                              }
-                            >
-                              {errors?.url}
-                            </p>
+                            <div className="input-custom-wrapper">
+                              <input type="text" name="url" value={optinSetting.url} placeholder="Enter Redirect URL" onChange={handleChange} />
+                              <p className={ errors?.url ? "error-message show" : "error-message" } >
+                                {errors?.url}
+                              </p>
+                            </div>
                           </div>
                           <div
                             className={

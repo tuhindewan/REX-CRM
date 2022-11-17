@@ -99,6 +99,11 @@
                         }
                     }
 
+                    .error-message {
+                        padding: 0;
+                        margin-top: 2px;
+                    }
+
                     input[type="url"],
                     input[type="number"],
                     input[type="email"],
@@ -112,8 +117,17 @@
                         width: calc(100% - 223px);
                     }
 
-                    .wp-tynemc-editor {
+                    .input-custom-wrapper {
                         width: calc(100% - 223px);
+
+                        input[type="url"],
+                        input[type="number"],
+                        input[type="email"],
+                        input[type="text"],
+                        textarea,
+                        select {
+                            width: 100%;
+                        }
                     }
 
                     .mintmrm-switcher {
