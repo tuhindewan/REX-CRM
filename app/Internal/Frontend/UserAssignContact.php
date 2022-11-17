@@ -94,7 +94,6 @@ class UserAssignContact {
 					$contact_id     = ContactModel::insert( $contact );
 					if ($contact_id){
 						$get_double_optin = get_option('_mrm_optin_settings');
-						error_log(print_r($get_double_optin,1));
 						$is_double_optin = isset($get_double_optin['enable']) ? $get_double_optin['enable'] : false;
 						if($is_double_optin){
 							MessageController::get_instance()->send_double_opt_in( $contact_id );
