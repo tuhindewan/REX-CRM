@@ -173,6 +173,13 @@ class CustomFieldController extends BaseController {
 
        $fields = CustomFieldModel::get_all();
 
+        $fields['data'] = array_map( function( $field ){
+            if( !empty($field) && $field['meta'] ){
+                $field['meta'] = maybe_unserialize( $field['meta'] );
+            }
+            return $field;
+        }, $fields['data'] );
+
        if(isset($fields)) {
            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
        }

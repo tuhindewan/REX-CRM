@@ -10,7 +10,7 @@ import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 import {
   submitCustomFields,
   getCustomFields,
-  deleteCustomField,
+  deleteSingleCustomField,
 } from "../../services/CustomField";
 
 export default function CustomFieldSettings() {
@@ -18,6 +18,9 @@ export default function CustomFieldSettings() {
   const [newCustomField, setNewCustomField] = useState([]);
   const [prepareData, setPrepareData] = useState({});
   const [refresh, setRefresh] = useState(false);
+  const [selectedIdForDelete, setSelectedIdForDelete] = useState();
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   //----show custom field modal-----
   const addCustomField = () => {
@@ -51,12 +54,15 @@ export default function CustomFieldSettings() {
   };
 
   //----delete custom field-----
-  const deleteCustomField = (index) => {
-    // setNewCustomField([
-    //     ...newCustomField.slice(0, index),
-    //     ...newCustomField.slice(index + 1, newCustomField.length)
-    // ]);
-  };
+  useEffect(() => {
+    const handleDelete = async () => {
+      const res = await deleteSingleCustomField(selectedIdForDelete);
+      toggleRefresh();
+      setConfirmationModal(false);
+      setConfirmDelete(false);
+    };
+    if (confirmDelete) handleDelete();
+  }, [confirmDelete]);
 
   return (
     <>
@@ -129,8 +135,13 @@ export default function CustomFieldSettings() {
                                 <SingleCustomField
                                   key={idx}
                                   index={idx}
-                                  deleteCustomField={deleteCustomField}
                                   customFieldData={singleCustomField}
+                                  setSelectedIdForDelete={
+                                    setSelectedIdForDelete
+                                  }
+                                  confirmationModal={confirmationModal}
+                                  setConfirmationModal={setConfirmationModal}
+                                  setConfirmDelete={setConfirmDelete}
                                 />
                               );
                             })}

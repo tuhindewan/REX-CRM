@@ -1276,11 +1276,13 @@ export default function ContactDetails() {
                             {customFields.map((field) => {
                               return (
                                 <>
+                                {console.log(field)}
                                   {field.type == "text" && (
                                     <InputItem
                                       key={field.id}
                                       name={field.slug}
-                                      label={field.title}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
                                       handleChange={handleMetaChange}
                                       value={
                                         contactData?.meta_fields?.[field.slug]
