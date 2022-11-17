@@ -30,7 +30,7 @@
             width: calc(100% - 223px);
             .drop-down-button {
                 &:first-child {
-                    margin-top: 0;
+                    margin-top: 0 !important;
                 }
                 &:before {
                     top: 55% !important;
