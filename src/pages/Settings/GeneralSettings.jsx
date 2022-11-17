@@ -64,18 +64,26 @@ export default function GeneralSettings() {
 
     useEffect(() => {
         getGeneralSettings().then((response) => {
+            console.log(response)
             const unsubscriber_settings = response.unsubscriber_settings;
             const preference_settings = response.preference;
-            setRedirectUrl(unsubscriber_settings.url)
-            setSelectUnsubscribeOption(unsubscriber_settings.confirmation_type)
-            setConfirmation_message(unsubscriber_settings.confirmation_message)
+
+            if(unsubscriber_settings.length > 0){
+                setRedirectUrl(unsubscriber_settings.url)
+                setSelectUnsubscribeOption(unsubscriber_settings.confirmation_type ? unsubscriber_settings.confirmation_type : 'message')
+                setConfirmation_message(unsubscriber_settings.confirmation_message)
+            }
+
             //preference
-            setSelectPreferenceOption(preference_settings.preference)
-            setEditableFirstname(preference_settings.primary_fields.first_name)
-            setEditableLastname(preference_settings.primary_fields.last_name)
-            setEditableStatus(preference_settings.primary_fields.status)
-            setEditableList(preference_settings.primary_fields.list)
-            setAssignLists(preference_settings.lists)
+            if(preference_settings.length > 0){
+                setSelectPreferenceOption(preference_settings.preference ? preference_settings.preference : "no-contact-manage")
+                setEditableFirstname(preference_settings.primary_fields ? preference_settings.primary_fields.first_name : false )
+                setEditableLastname(preference_settings.primary_fields ? preference_settings.primary_fields.last_name : false)
+                setEditableStatus(preference_settings.primary_fields ? preference_settings.primary_fields.status: false)
+                setEditableList(preference_settings.primary_fields ? preference_settings.primary_fields.list : false)
+                setAssignLists(preference_settings.lists)
+            }
+
         });
     }, []);
 
@@ -100,7 +108,6 @@ export default function GeneralSettings() {
             },
         }
         submitGeneralSetting(settings).then((response) => {
-            // console.log('cliecked')
             if (true === response.success) {
                 setNotificationType("success");
                 setShowNotification("block");
