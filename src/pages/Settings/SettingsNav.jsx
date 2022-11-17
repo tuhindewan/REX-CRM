@@ -63,19 +63,21 @@ export default function SettingsNav() {
                         General Settings
                     </Link>
                 </li>
-                <li>
-                    <Link
-                        className={`mintmrm-btn outline ${
-                            location.pathname.includes("woocommerce")
-                                ? "active"
-                                : ""
-                        }`}
-                        to="/settings/woocommerce"
-                    >
-                        <WooCommerceIcon />
-                        WooCommerce settings
-                    </Link>
-                </li>
+                {window.MRM_Vars.is_wc_active &&
+                    <li>
+                        <Link
+                            className={`mintmrm-btn outline ${
+                                location.pathname.includes("woocommerce")
+                                    ? "active"
+                                    : ""
+                            }`}
+                            to="/settings/woocommerce"
+                        >
+                            <WooCommerceIcon/>
+                            WooCommerce settings
+                        </Link>
+                    </li>
+                }
                 <li>
                     <Link
                         className={`mintmrm-btn outline ${
