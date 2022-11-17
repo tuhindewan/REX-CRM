@@ -8,17 +8,17 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              http://rextheme.com/
+ * @link              https://mintemail.co
  * @since             1.0.0
- * @package           Mrm
+ * @package           MintEmail
  *
  * @wordpress-plugin
- * Plugin Name:       MRM Latest
- * Plugin URI:        https://rextheme.com/mrm/
+ * Plugin Name:       Mint Email
+ * Plugin URI:        https://mintemail.co
  * Description:       Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
- * Version:           1.0.0
- * Author:            RexTheme
- * Author URI:        http://rextheme.com/
+ * Version:           rc-1.0.0
+ * Author:            Mint Email Team
+ * Author URI:        https://mintemail.co
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       mrm
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'MRM_VERSION', '1.0.0' );
+define( 'MRM_VERSION', 'rc-1.0.0' );
 define( 'MRM_PLUGIN_NAME', 'mrm' );
 define( 'MRM_FILE', __FILE__ );
 define( 'MRM_DIR_PATH', plugin_dir_path( __FILE__ ) );
