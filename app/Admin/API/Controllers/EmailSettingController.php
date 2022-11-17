@@ -93,10 +93,8 @@ class EmailSettingController extends SettingBaseController {
             "reply_email"   => $reply_email
         );
 
-        $serialize_email_settings = maybe_serialize($email_settings);
-
         //enque to wp option table
-        if(update_option('_mrm_email_settings', $serialize_email_settings, 'yes')){
+        if(update_option('_mrm_email_settings', $email_settings, 'yes')){
             $success_data = array(
                 'success' => true,
                 'message' => 'Email settings has been saved successfully',
@@ -133,7 +131,7 @@ class EmailSettingController extends SettingBaseController {
         $email_settings_data = array(
             'code'    => 200,
             'message' => 'Query Successfull',
-            'data'    => maybe_unserialize(get_option('_mrm_email_settings'))
+            'data'    => get_option('_mrm_email_settings')
         );
 
         return $email_settings_data;
