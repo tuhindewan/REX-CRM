@@ -235,9 +235,20 @@ class MessageController extends BaseController {
      */
     public function send_double_opt_in( $contact_id)
     {
-        $contact    = ContactModel::get( $contact_id ) ;
+        $contact    = ContactModel::get( $contact_id );
+        $default    = [
+                        "enable"                => true,
+                        "email_subject"         => "Please Confirm Subscription.",
+                        "email_body"            => "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
+                        "confirmation_type"     => "message",
+                        "confirmation_message"  => "Subscription Confirmed. Thank you."
+                    ];
 
-        $to       = isset( $contact['email'] ) ? $contact['email'] : "";
+        $settings   = get_option( "_mrm_optin_settings", $default );
+        $enable     = isset( $settings['enable'] ) ? $settings['enable'] : "";
+        
+        if( $enable ){
+            $to       = isset( $contact['email'] ) ? $contact['email'] : "";
         $hash     = isset( $contact['hash'] ) ? $contact['hash'] : "";
 
         $subject = "Please Confirm Subscription";
@@ -418,6 +429,7 @@ class MessageController extends BaseController {
 
         } catch(\Exception $e) {
             return false;
+        }
         }
     }
 }

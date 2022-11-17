@@ -5,6 +5,7 @@
  * @package Mrm
  */
 
+use Mint\MRM\Admin\API\Controllers\CustomFieldController;
 use MRM\Common\MRM_Common;
 
 /**
@@ -69,7 +70,9 @@ class CustomFieldsControllerTest extends WP_UnitTestCase {
 	 * API endpoint reuqest check
 	 */
 	public function test_post_reuqest() {
-		$request = new \WP_REST_Request( 'POST', '/mrm/v1/custom-fields/');
+        $this->controller = CustomFieldController::get_instance();
+
+		$request = new \WP_REST_Request( 'POST', '/mrm/v1/settings/custom-fields/');
 
         $request->set_body_params(
             [
@@ -86,17 +89,116 @@ class CustomFieldsControllerTest extends WP_UnitTestCase {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
+
+        $response = $this->controller->create_or_update($request);
+
+        $this->assertEquals(201, $response->data['code']);
         
-        // email subject check
+        // custom field title check
         $this->assertArrayHasKey("title", $params);
 
         // email body check
-        $this->assertArrayHasKey("slug", $params);
+        $this->assertArrayHasKey("slug", $request);
 
         // email address check
         $this->assertArrayHasKey("type", $params);
+    }
 
-        
+    /**
+	 * API endpoint reuqest check with bad request
+	 */
+	public function test_post_bad_reuqest() {
+        $this->controller = CustomFieldController::get_instance();
+
+		$request = new \WP_REST_Request( 'POST', '/mrm/v1/settings/custom-fields/');
+
+        $request->set_body_params(
+            [
+                "title"             => "Code Rex",
+                "slug"              => "coderex",
+                "options"           => [
+                                        "Backend",
+                                        "Frontend",
+                                        "Design"
+                                    ]
+            ]
+        );
+
+        // Get values from API
+        $params = MRM_Common::get_api_params_values( $request );
+
+        $response = $this->controller->create_or_update($request);
+
+        $this->assertEquals("Type is mandatory", $response->errors['202']['0']);
+    }
+
+    /**
+	 * API endpoint reuqest check for get all fields
+	 */
+	public function test_get_all() {
+        $this->controller = CustomFieldController::get_instance();
+
+		$request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/custom-fields/');
+
+        $response = $this->controller->get_all($request);
+
+        $this->assertEquals(200, $response->data['code']);
+    }
+
+    /**
+	 * API endpoint reuqest check for get all fields
+	 */
+	public function test_delete_single() {
+        $this->controller = CustomFieldController::get_instance();
+
+        $field_id = rand(1,10);
+
+		$request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/custom-fields/');
+
+        $request->set_url_params([
+            'field_id' => $field_id
+        ]);
+
+        $response = $this->controller->delete_single($request);
+
+        $this->assertEquals(200, $response->data['code']);
+    }
+
+    /**
+	 * API endpoint reuqest check for get single field
+	 */
+	public function test_get_single() {
+        $this->controller = CustomFieldController::get_instance();
+
+        $field_id = rand(1,10);
+
+		$request = new \WP_REST_Request( 'GET', '/mrm/v1/settings/custom-fields/');
+
+        $request->set_url_params([
+            'field_id' => $field_id
+        ]);
+
+        $response = $this->controller->get_single($request);
+
+        $create_request = new \WP_REST_Request( 'POST', '/mrm/v1/settings/custom-fields/');
+
+        $create_request->set_body_params(
+            [
+                "id"                => 1,
+                "title"             => "Code Rex",
+                "slug"              => "coderex",
+                "type"              => "checkbox",
+                "options"           => [
+                                        "Backend",
+                                        "Frontend",
+                                        "Design"
+                                    ]
+            ]
+        );
+
+        $create = $this->controller->create_or_update($create_request);
+
+        $this->assertEquals("Failed to get data", $response->errors['400']['0']);
     }
 
 }
