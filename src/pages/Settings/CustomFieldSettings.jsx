@@ -5,7 +5,6 @@ import SingleCustomField from "./CustomField/SingleCustomField";
 import AddCustomFieldModal from "./CustomField/AddCustomFieldModal";
 
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
-import PlusIcon from "../../components/Icons/Plus";
 import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 
 import { submitCustomFields } from "../../services/CustomField";
@@ -36,6 +35,7 @@ export default function CustomFieldSettings() {
       ];
     });
 
+    console.log(prepareData);
     submitCustomFields(prepareData);
 
     setCustomFieldModal(false);
@@ -93,7 +93,21 @@ export default function CustomFieldSettings() {
                           title="Add Custom Field"
                           onClick={addCustomField}
                         >
-                          <PlusIcon />
+                          <svg
+                            width="13"
+                            height="13"
+                            fill="none"
+                            viewBox="0 0 13 13"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              stroke="#fff"
+                              stroke-linecap="round"
+                              stroke-linejoin="roun d"
+                              stroke-width="2"
+                              d="M6.508 1v11M1 6.5h11"
+                            />
+                          </svg>
                           Add Field
                         </button>
                       </div>

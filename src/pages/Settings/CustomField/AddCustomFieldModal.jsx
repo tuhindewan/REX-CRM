@@ -11,8 +11,22 @@ export default function AddCustomFieldModal(props) {
     setPrepareData,
   } = props;
   const [customFieldType, setCustomFieldType] = useState();
+  const [customFieldLabel, setCustomFieldLabel] = useState();
+  const [customFieldSlug, setCustomFieldSlug] = useState();
+  const [newDropdownOption, setNewDropdownOption] = useState([{}]);
+
+  /**
+   * Make Slug when render text
+   * @param values
+   * @returns {string}
+   */
+  const makeSlug = (values) => {
+    const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
+    return slug;
+  };
   const [customFieldData, setCustomFieldData] = useState([]);
 
+  //----get field type from selectbox-----
   const selectFieldType = (event) => {
     setCustomFieldType(event.target.value);
   };
@@ -22,6 +36,7 @@ export default function AddCustomFieldModal(props) {
       ...customFieldData,
       [event.target.name]: event.target.value,
     });
+    setCustomFieldSlug(makeSlug(event.target.value));
   };
 
   const handleSubmit = () => {
@@ -42,6 +57,29 @@ export default function AddCustomFieldModal(props) {
       },
     });
   }, [customFieldData, customFieldType]);
+
+  //----get custom new label field value-----
+  const getFieldLabelValue = (event) => {
+    setCustomFieldLabel(event.target.value);
+    setCustomFieldSlug(makeSlug(event.target.value));
+  };
+
+  //----get custom new slug field value-----
+  const getFieldSlugValue = (event) => {
+    setCustomFieldSlug(makeSlug(event.target.value));
+  };
+
+  //----add new option repeater-----
+  const addNewOption = () => {
+    setNewDropdownOption((prevState) => {
+      return [
+        ...prevState,
+        {
+          label: "",
+        },
+      ];
+    });
+  };
 
   return (
     <>
@@ -172,8 +210,41 @@ export default function AddCustomFieldModal(props) {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>Options</label>
+                <div className="form-group field-options">
+                  <div className="option-header">
+                    <label>Add New Option</label>
+                    <button className="mintmrm-btn" onClick={addNewOption}>
+                      <svg
+                        width="13"
+                        height="13"
+                        fill="none"
+                        viewBox="0 0 13 13"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke="#fff"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6.508 1v11M1 6.5h11"
+                        />
+                      </svg>
+                      New Option
+                    </button>
+                  </div>
+
+                  <div className="option-body">
+                    {newDropdownOption.map((singleDropdownOption, idx) => {
+                      return (
+                        <div className="single-option" key={idx}>
+                          <input type="text" name="" />
+                          <button className="delete-option">
+                            <CrossIcon />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className="form-group">
@@ -198,7 +269,6 @@ export default function AddCustomFieldModal(props) {
               type="button"
               className="mintmrm-btn"
               onClick={addNewCustomField}
-              onSubmit={handleSubmit}
             >
               Add
             </button>

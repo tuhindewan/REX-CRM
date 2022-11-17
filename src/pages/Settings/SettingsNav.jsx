@@ -47,7 +47,7 @@ export default function SettingsNav() {
                         to="/settings/optin"
                     >
                         <EmailPendingIcon />
-                        Double Op-tin Settings
+                        Double Opt-in Settings
                     </Link>
                 </li>
                 <li>
