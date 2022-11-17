@@ -36,6 +36,9 @@ class WooCommerceCheckoutContact {
      */
     public function add_consent_checkbox() {
         $label = isset( $this->setting_options[ 'checkbox_label' ] ) ? $this->setting_options[ 'checkbox_label' ] : 'Register me as a contact after checkout.';
+	    $user_email = is_user_logged_in() ? wp_get_current_user()->user_email : false;
+
+        if ( $user_email && !ContactModel::is_contact_exist( $user_email ) || !is_user_logged_in() ):
         ?>
         <div class="mintmrm-add-contact-consent-content">
             <input type="checkbox" id="mintmrm_add_contact_consent_checkbox"
@@ -44,6 +47,7 @@ class WooCommerceCheckoutContact {
                 _e( $label, 'mrm' ); ?> </label>
         </div>
         <?php
+        endif;
     }
 
     /**
@@ -55,7 +59,9 @@ class WooCommerceCheckoutContact {
         $consent_accepted = WC()->checkout()->get_value( 'mintmrm_add_contact_consent_checkbox' );
 
         if( $consent_accepted ) {
-            $user_email = WC()->checkout()->get_value( 'billing_email' );
+	        $user_email = is_user_logged_in() ? wp_get_current_user()->user_email : false;
+            $wc_user_id = $user_email ? wp_get_current_user()->ID : false;
+            $user_email = $user_email ?: WC()->checkout()->get_value( 'billing_email' );
 
             if( $user_email && !ContactModel::is_contact_exist( $user_email ) ) {
                 $user_first_name = WC()->checkout()->get_value( 'billing_first_name' );
@@ -87,10 +93,31 @@ class WooCommerceCheckoutContact {
                     ListController::set_lists_to_contact( $setting_lists, $contact_id );
                 }
 
+                $meta_data[ 'meta_fields' ] = [
+                        '_mrm_wc_customer_id' => $wc_user_id
+                ];
+	            ContactModel::update_meta_fields( $contact_id, $meta_data );
+
                 if ( $double_optin && $contact_id ) {
                     MessageController::get_instance()->send_double_opt_in( $contact_id );
                 }
+	            add_action( 'woocommerce_checkout_create_order', [ $this, 'add_consent_to_order_meta' ] );
             }
+        }
+    }
+
+	/**
+     * @desc Add subscription consent message in order meta
+	 * @param $order
+	 * @param $data
+	 * @return void
+     * @since 1.0.0
+	 */
+    public function add_consent_to_order_meta( $order ) {
+	    $consent_accepted = WC()->checkout()->get_value( 'mintmrm_add_contact_consent_checkbox' );
+
+        if ( $consent_accepted ) {
+	        $order->update_meta_data( '_mrm_newsletter_subscription', isset( $this->setting_options[ 'checkbox_label' ] ) ? $this->setting_options[ 'checkbox_label' ] : '' );
         }
     }
 }

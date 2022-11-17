@@ -15,6 +15,7 @@ use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
 use Mint\MRM\Internal\Optin\UnsubscribeConfirmation;
+use Mint\MRM\Internal\Admin\WooCommerceOrderDetails;
 
 class App {
 
@@ -58,6 +59,8 @@ class App {
         }
 
         CampaignsBackgroundProcess::get_instance()->init();
+
+	    WooCommerceOrderDetails::get_instance()->init();
     }
 
 

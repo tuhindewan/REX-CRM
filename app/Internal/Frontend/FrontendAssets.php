@@ -46,7 +46,6 @@ class FrontendAssets
      */
     public function enqueue_scripts($hook)
     {
-
         wp_enqueue_script(
             MRM_PLUGIN_NAME,
             MRM_DIR_URL . 'assets/frontend/js/frontend.js',
