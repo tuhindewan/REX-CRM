@@ -38,7 +38,7 @@ export default function SmtpSettings() {
                                         <header className="tab-header">
                                             <h4 className="title">
                                                 <SmtpIcon />
-                                                Smtp Settings
+                                                SMTP Settings
                                             </h4>
                                         </header>
 
