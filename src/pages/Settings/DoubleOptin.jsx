@@ -53,16 +53,8 @@ export default function DoubleOptin() {
   );
   const [selectPageOption, setSelectPageOption] = useState("");
 
-  useEffect(
-    ListenForOutsideClicks(
-      listening,
-      setListening,
-      selectPageRef,
-      setSelectpage
-    )
-  );
-  const handleSelectOption = (e) => {
-    setSelectPageOption(e.target.value);
+  const handleSelectOption = (title) => {
+    setSelectPageOption(title);
   };
 
   const handlePageSelect = () => {
@@ -75,7 +67,7 @@ export default function DoubleOptin() {
       "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
     confirmation_type: "message",
     confirmation_message: "Subscription Confirmed. Thank you.",
-    url:''
+    url: "",
   });
   const onChangeValue = (e) => {
     setSelectOption(e.target.value);
@@ -108,7 +100,9 @@ export default function DoubleOptin() {
     switch (name) {
       case "url":
         if (
-          !new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?').test(value)
+          !new RegExp(
+            "(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?"
+          ).test(value)
         ) {
           setErrors({
             ...errors,
@@ -120,16 +114,16 @@ export default function DoubleOptin() {
           setIsValidate(true);
         }
         break;
-          if (value.length > 35) {
-            setErrors({
-              ...errors,
-              last_name: "Last name character limit exceeded 35 characters",
-            });
-            setIsValidate(false);
-          }else {
-            setErrors({});
-            setIsValidate(true);
-          }
+        if (value.length > 35) {
+          setErrors({
+            ...errors,
+            last_name: "Last name character limit exceeded 35 characters",
+          });
+          setIsValidate(false);
+        } else {
+          setErrors({});
+          setIsValidate(true);
+        }
         break;
       default:
         break;
@@ -148,7 +142,7 @@ export default function DoubleOptin() {
     const optin = {
       optin: optinSetting,
     };
-    if(isValidate){
+    if (isValidate) {
       submitOptin(optin).then((response) => {
         if (true === response.success) {
           setNotificationType("success");
@@ -159,7 +153,6 @@ export default function DoubleOptin() {
           setShowNotification("block");
           setMessage(response?.message);
         }
-        
       });
     }
     setLoader(false);
@@ -179,7 +172,6 @@ export default function DoubleOptin() {
       },
       quicktags: true,
       mediaButtons: true,
-      
     };
 
     let editorId = "tinymce";
@@ -191,13 +183,14 @@ export default function DoubleOptin() {
       tinymce.remove("#" + "confirmation-message");
     }
     wp.editor.initialize("confirmation-message", tinyMceConfig);
-    
   }, [selectSwitch]);
 
   useEffect(() => {
     getOptinSettings().then((response) => {
       tinymce.get("tinymce").setContent(response.email_body);
-      tinymce.get("confirmation-message").setContent(response.confirmation_message);
+      tinymce
+        .get("confirmation-message")
+        .setContent(response.confirmation_message);
       setSelectSwitch(response.enable);
       setSelectOption(response.confirmation_type);
       setOptinSettings(response);
@@ -390,7 +383,13 @@ export default function DoubleOptin() {
                               placeholder="Enter Redirect URL"
                               onChange={handleChange}
                             />
-                            <p className={errors?.url ? "error-message show" : "error-message"}>
+                            <p
+                              className={
+                                errors?.url
+                                  ? "error-message show"
+                                  : "error-message"
+                              }
+                            >
                               {errors?.url}
                             </p>
                           </div>
@@ -422,7 +421,9 @@ export default function DoubleOptin() {
                                 }
                                 onClick={handlePageSelect}
                               >
-                                Select Page
+                                {selectPageOption
+                                  ? selectPageOption
+                                  : "Select Page"}
                               </button>
                               <ul
                                 className={
@@ -443,26 +444,14 @@ export default function DoubleOptin() {
                                 </li>
                                 {pages.map((item, index) => {
                                   return (
-                                    <li key={index} className={"single-column"}>
-                                      <div class="mintmrm-checkbox">
-                                        <input
-                                          type="checkbox"
-                                          name={item.id}
-                                          id={item.id}
-                                          value={item.title}
-                                          checked={
-                                            selectPageOption == item.title
-                                          }
-                                          onChange={handleSelectOption}
-                                        />
-
-                                        <label
-                                          for={item.id}
-                                          className="mrm-custom-select-label"
-                                        >
-                                          {item.title}
-                                        </label>
-                                      </div>
+                                    <li
+                                      onClick={() =>
+                                        handleSelectOption(item.title)
+                                      }
+                                      key={index}
+                                      className={"single-column"}
+                                    >
+                                      {item.title}
                                     </li>
                                   );
                                 })}
