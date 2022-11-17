@@ -2,6 +2,8 @@
 
 namespace Mint\MRM\Admin\API\Routes;
 
+use Mint\MRM\Admin\API\Controllers\GeneralSettingController;
+use Mint\MRM\Admin\API\Controllers\WCSettingController;
 use Mint\MRM\Admin\API\Controllers\BusinessSettingController;
 use Mint\MRM\Admin\API\Controllers\EmailSettingController;
 use Mint\MRM\Admin\API\Controllers\OptinSettingController;
@@ -32,6 +34,12 @@ class SettingRoute {
      */
     protected $rest_base = 'settings';
 
+    /**
+     * @desc WCSettingController class instance variable
+     * @var object
+     * @since 1.0.0
+     */
+    protected $wc_controller;
 
     /**
      * OptinSettingController class object
@@ -57,6 +65,12 @@ class SettingRoute {
      */
     protected $email_controller;
 
+    /**
+     * @desc GeneralSettingController class instance variable
+     * @var object
+     * @since 1.0.0
+     */
+    protected $general_controller;
 
     /**
      * Register API endpoints routes for tags module
@@ -66,8 +80,37 @@ class SettingRoute {
      */
     public function register_routes()
     {
-        $this->email_controller = EmailSettingController::get_instance();
+        // WCSettingController class instance
+        $this->wc_controller = WCSettingController::get_instance();
 
+        // API routes for WooCommerce settings
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/wc/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->wc_controller ,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->wc_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->wc_controller ,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->wc_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
+
+
+        $this->email_controller = EmailSettingController::get_instance();
         /**
          * Settings email endpoints
          * 
@@ -172,6 +215,34 @@ class SettingRoute {
             ] ,
         ]
     ]);
-    }
 
+        // GeneralSettingController class instance
+        $this->general_controller = GeneralSettingController::get_instance();
+
+        // API routes for WooCommerce settings
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/general' . '(?:/(?P<general_settings_key>[a-z-|_]+))?', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->general_controller ,
+                    'create_or_update'
+                ],
+                'permission_callback' => [
+                    $this->general_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+            [
+                'methods' => \WP_REST_Server::READABLE,
+                'callback' => [
+                    $this->general_controller ,
+                    'get'
+                ],
+                'permission_callback' => [
+                    $this->general_controller ,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
+    }
 }

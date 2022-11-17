@@ -11,7 +11,7 @@ import { submitCustomFields, getCustomFields, deleteCustomField } from "../../se
 
 export default function CustomFieldSettings() {
   const [customFieldModal, setCustomFieldModal] = useState(false);
-  const [newCustomField, setNewCustomField] = useState([]);
+  const [newCustomField, setNewCustomField] = useState({});
   const [prepareData, setPrepareData] = useState({});
   const [refresh, setRefresh] = useState(false);
 
@@ -35,7 +35,6 @@ export default function CustomFieldSettings() {
         setNewCustomField(res);
     }
     getAllCustomField();
-    console.log(newCustomField);
     
   }, [refresh]);
 
@@ -58,6 +57,7 @@ export default function CustomFieldSettings() {
 
   return (
     <>
+    {console.log(newCustomField)}
       <div className="mintmrm-settings-page">
         <div className="mintmrm-container">
           <div className="mintmrm-settings">
