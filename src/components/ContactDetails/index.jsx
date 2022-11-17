@@ -24,11 +24,16 @@ import NoActivityIcon from "../Icons/NoActivityIcon";
 import PlusIconSmall from "../Icons/PlusIconSmall";
 import Search from "../Icons/Search";
 import ThreeDotIcon from "../Icons/ThreeDotIcon";
+
 import InputDate from "../InputDate";
 import InputItem from "../InputItem/index";
 import InputNumber from "../InputNumber";
 import InoutPhone from "../InputPhone";
 import InputTextArea from "../InputTextArea";
+import InputSelect from "../InputSelect";
+import InputRadio from "../InputRadio";
+import InputCheckbox from "../InputCheckbox";
+
 import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import LoadingIndicator from "../LoadingIndicator";
 import NoteDrawer from "../NoteDrawer";
@@ -344,29 +349,29 @@ export default function ContactDetails() {
           setIsValidate(true);
         }
         break;
-        case "first_name":
-          if (value.length > 35) {
-            setErrors({
-              ...errors,
-              first_name: "First name character limit exceeded 35 characters",
-            });
-            setIsValidate(false);
-          }else {
-            setErrors({});
-            setIsValidate(true);
-          }
+      case "first_name":
+        if (value.length > 35) {
+          setErrors({
+            ...errors,
+            first_name: "First name character limit exceeded 35 characters",
+          });
+          setIsValidate(false);
+        } else {
+          setErrors({});
+          setIsValidate(true);
+        }
         break;
-        case "last_name":
-          if (value.length > 35) {
-            setErrors({
-              ...errors,
-              last_name: "Last name character limit exceeded 35 characters",
-            });
-            setIsValidate(false);
-          }else {
-            setErrors({});
-            setIsValidate(true);
-          }
+      case "last_name":
+        if (value.length > 35) {
+          setErrors({
+            ...errors,
+            last_name: "Last name character limit exceeded 35 characters",
+          });
+          setIsValidate(false);
+        } else {
+          setErrors({});
+          setIsValidate(true);
+        }
         break;
       default:
         break;
@@ -950,7 +955,11 @@ export default function ContactDetails() {
                           return (
                             <>
                               <li key={field.id}>
-                                <span className="title">{field.title}</span>
+                                <span className="title">
+                                  {field.meta.label
+                                    ? field.meta.label
+                                    : field.title}
+                                </span>
                                 <span className="title-value">
                                   {contactData?.meta_fields?.[field.slug]
                                     ? contactData?.meta_fields?.[field.slug]
@@ -1276,7 +1285,6 @@ export default function ContactDetails() {
                             {customFields.map((field) => {
                               return (
                                 <>
-                                {console.log(field)}
                                   {field.type == "text" && (
                                     <InputItem
                                       key={field.id}
@@ -1314,7 +1322,44 @@ export default function ContactDetails() {
                                     />
                                   )}
 
-                                  
+                                  {field.type == "selectField" && (
+                                    <InputSelect
+                                      name={field.id}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
+                                      selectOption={field.meta.options}
+                                      handleChange={handleMetaChange}
+                                      value={
+                                        contactData?.meta_fields?.[field.id]
+                                      }
+                                    />
+                                  )}
+
+                                  {field.type == "radioField" && (
+                                    <InputRadio
+                                      name={field.id}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
+                                      selectOption={field.meta.options}
+                                      handleChange={handleMetaChange}
+                                      value={
+                                        contactData?.meta_fields?.[field.id]
+                                      }
+                                    />
+                                  )}
+
+                                  {field.type == "checkboxField" && (
+                                    <InputCheckbox
+                                      name={field.id}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
+                                      selectOption={field.meta.options}
+                                      handleChange={handleMetaChange}
+                                      value={
+                                        contactData?.meta_fields?.[field.id]
+                                      }
+                                    />
+                                  )}
                                 </>
                               );
                             })}
