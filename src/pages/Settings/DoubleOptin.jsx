@@ -468,6 +468,7 @@ export default function DoubleOptin() {
                     className="mintmrm-btn"
                     type="button"
                     onClick={handleSubmit}
+                    disabled={loader ? true : false}
                   >
                     Save Settings
                     {loader && <span className="mintmrm-loader"></span>}
