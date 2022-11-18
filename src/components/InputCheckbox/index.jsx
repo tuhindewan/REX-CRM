@@ -15,9 +15,9 @@ export default function InputCheckbox(props) {
                 key={index}
                 type="checkbox"
                 id={option}
-                name={index}
+                name={props.name}
                 onChange={props.handleChange}
-                value={index}
+                value={option}
               />
               <label htmlFor={option}>
                 {option}

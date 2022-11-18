@@ -17,9 +17,10 @@ export default function InputRadio(props) {
                 id={option}
                 name={props.name}
                 onChange={props.handleChange}
-                value={index}
+                value={option}
+                checked={option === props.selectedValue}
               />
-              <label htmlFor={option}>
+              <label htmlFor={option} >
                 {option}
                 {props.required && <span className="required-mark">*</span>}
               </label>

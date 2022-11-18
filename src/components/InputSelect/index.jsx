@@ -10,10 +10,10 @@ export default function InputSelect(props) {
         </label>
 
         <div className="input-wrapper">
-          <select name={props.name} id={props.name}>
+          <select name={props.name} id={props.name} onChange={props.handleChange}>
             {props.selectOption.map((option, index) => {
               return (
-                <option key={index} value={option}>
+                <option key={index} value={option} >
                   {option}
                 </option>
               );
