@@ -198,7 +198,7 @@ export default function DoubleOptin() {
                                       </header>
 
                                       <div className="form-wrapper">
-                                          <div className="form-group">
+                                          <div className="form-group label-with-switcher">
                                               <label htmlFor="">
                                                   Double Opt-In
                                                   <span class="mintmrm-tooltip">

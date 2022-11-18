@@ -525,4 +525,8 @@
     .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button {
         position: relative;
     }
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.label-with-switcher{
+        flex-flow: row wrap;
+        justify-content: space-between;
+    }
 }
