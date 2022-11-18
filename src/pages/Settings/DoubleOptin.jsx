@@ -1,8 +1,10 @@
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import Search from "../../components/Icons/Search";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import LoadingIndicator from "../../components/LoadingIndicator";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import {
   getAllWpPages,
@@ -13,9 +15,11 @@ import { ClearNotification } from "../../utils/admin-notification";
 import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
+  _.noConflict();
   const [selectOption, setSelectOption] = useState("message");
   const [selectSwitch, setSelectSwitch] = useState(true);
   const [loader, setLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const [notificationType, setNotificationType] = useState("success");
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
@@ -109,6 +113,7 @@ export default function DoubleOptin() {
   const handleSubmit = async () => {
     setLoader(true);
     const body_content = tinymce.get("tinymce").getContent();
+    console.log(body_content);
     const message_content = tinymce.get("confirmation-message").getContent();
     optinSetting.enable = selectSwitch;
     optinSetting.confirmation_type = selectOption;
@@ -150,13 +155,10 @@ export default function DoubleOptin() {
     };
 
     let editorId = "tinymce";
-    if (tinymce.get(editorId)) {
-      tinymce.remove("#" + editorId);
-    }
+    wp.editor.remove(editorId);
     wp.editor.initialize(editorId, tinyMceConfig);
-    if (tinymce.get("confirmation-message")) {
-      tinymce.remove("#" + "confirmation-message");
-    }
+
+    wp.editor.remove("confirmation-message");
     wp.editor.initialize("confirmation-message", tinyMceConfig);
   }, [selectSwitch]);
 
@@ -197,254 +199,272 @@ export default function DoubleOptin() {
                       </h4>
                     </header>
 
-                    <div className="form-wrapper">
-                      <div className="form-group">
-                        <label htmlFor="">
-                          Double Opt-In
-                          <span class="mintmrm-tooltip">
-                            <TooltipQuestionIcon />
-                            <p>Define behaviour of the form after submission</p>
-                          </span>
-                        </label>
-                        <span className="mintmrm-switcher">
-                          <input
-                            type="checkbox"
-                            name="enable"
-                            id="st"
-                            value={selectSwitch}
-                            onChange={handleSwitcher}
-                            checked={selectSwitch}
-                          />
-                          <label htmlFor="st"></label>
-                        </span>
-                      </div>
-
-                      {selectSwitch ? (
-                        <>
-                          <div className="form-group">
-                            <label htmlFor="">
-                              Email Subject
-                              <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon />
-                                <p>
-                                  Define behaviour of the form after submission
-                                </p>
-                              </span>
-                            </label>
+                    {showLoader ? (
+                      <LoadingIndicator type="table" />
+                    ) : (
+                      <div className="form-wrapper">
+                        <div className="form-group">
+                          <label htmlFor="">
+                            Double Opt-In
+                            <span class="mintmrm-tooltip">
+                              <TooltipQuestionIcon />
+                              <p>
+                                Define behaviour of the form after submission
+                              </p>
+                            </span>
+                          </label>
+                          <span className="mintmrm-switcher">
                             <input
-                              type="text"
-                              name="email_subject"
-                              value={optinSetting.email_subject}
-                              placeholder="Enter Email Subject"
-                              onChange={handleChange}
+                              type="checkbox"
+                              name="enable"
+                              id="st"
+                              value={selectSwitch}
+                              onChange={handleSwitcher}
+                              checked={selectSwitch}
                             />
-                          </div>
-                          <div className="form-group top-align">
-                            <label htmlFor="">
-                              Email Body
-                              <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon />
+                            <label htmlFor="st"></label>
+                          </span>
+                        </div>
+
+                        {selectSwitch ? (
+                          <>
+                            <div className="form-group">
+                              <label htmlFor="">
+                                Email Subject
+                                <span class="mintmrm-tooltip">
+                                  <TooltipQuestionIcon />
+                                  <p>
+                                    Define behaviour of the form after
+                                    submission
+                                  </p>
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                name="email_subject"
+                                value={optinSetting.email_subject}
+                                placeholder="Enter Email Subject"
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div className="form-group top-align">
+                              <label htmlFor="">
+                                Email Body
+                                <span class="mintmrm-tooltip">
+                                  <TooltipQuestionIcon />
+                                  <p>
+                                    Define behaviour of the form after
+                                    submission
+                                  </p>
+                                </span>
+                              </label>
+
+                              <div className="input-custom-wrapper">
+                                <textarea
+                                  id="tinymce"
+                                  rows="4"
+                                  placeholder="Enter Email Body"
+                                ></textarea>
                                 <p>
-                                  Define behaviour of the form after submission
+                                  Use{" "}
+                                  <button
+                                    onClick={() =>
+                                      copyToClipboard("{{subscribe_link}}")
+                                    }
+                                  >
+                                    {"{{subscribe_link}}"}
+                                  </button>{" "}
+                                  in the email body to generate a subcribe link
                                 </p>
-                              </span>
-                            </label>
+                              </div>
+                            </div>
+                            <hr />
 
-                            <div className="input-custom-wrapper">
-                              <textarea 
-                              id="tinymce" 
-                              rows="4" 
-                              placeholder="Enter Email Body" 
-                              ></textarea>
-
-                              <p className="hints">
-                                Use{" "}
-                                <button
-                                  onClick={() =>
-                                    copyToClipboard("{{subscribe_link}}")
+                            <div className="form-group">
+                              <label htmlFor="">
+                                After Confirmation Type
+                                <span class="mintmrm-tooltip">
+                                  <TooltipQuestionIcon />
+                                  <p>
+                                    Define behaviour of the form after
+                                    submission
+                                  </p>
+                                </span>
+                              </label>
+                              <div>
+                                <span className="mintmrm-radiobtn">
+                                  <input
+                                    id="show-message"
+                                    type="radio"
+                                    name="message-redirect"
+                                    value="message"
+                                    checked={selectOption === "message"}
+                                    onChange={onChangeValue}
+                                  />
+                                  <label for="show-message">Show Message</label>
+                                </span>
+                                <span className="mintmrm-radiobtn">
+                                  <input
+                                    id="redirect-url"
+                                    type="radio"
+                                    name="message-redirect"
+                                    value="redirect"
+                                    checked={selectOption === "redirect"}
+                                    onChange={onChangeValue}
+                                  />
+                                  <label for="redirect-url">
+                                    Redirect to an URL
+                                  </label>
+                                </span>
+                                <span className="mintmrm-radiobtn">
+                                  <input
+                                    id="redirect-page"
+                                    type="radio"
+                                    name="message-redirect"
+                                    value="redirect-page"
+                                    checked={selectOption === "redirect-page"}
+                                    onChange={onChangeValue}
+                                  />
+                                  <label for="redirect-page">
+                                    Redirect to a page
+                                  </label>
+                                </span>
+                              </div>
+                            </div>
+                            <div
+                              className={
+                                selectOption === "message"
+                                  ? "form-group top-align confirmation-message-section show"
+                                  : "form-group top-align confirmation-message-section"
+                              }
+                            >
+                              <label htmlFor="">
+                                Confirmation Message
+                                <span class="mintmrm-tooltip">
+                                  <TooltipQuestionIcon />
+                                  <p>
+                                    Define behaviour of the form after
+                                    submission
+                                  </p>
+                                </span>
+                              </label>
+                              <div className="input-custom-wrapper">
+                                <textarea
+                                  id="confirmation-message"
+                                  rows="3"
+                                  placeholder="Enter Confirmation Message"
+                                ></textarea>
+                              </div>
+                            </div>
+                            <div
+                              className={
+                                selectOption === "redirect"
+                                  ? "form-group redirect-url-section show"
+                                  : "form-group redirect-url-section"
+                              }
+                            >
+                              <label htmlFor="">
+                                Redirect URL
+                                <span class="mintmrm-tooltip">
+                                  <TooltipQuestionIcon />
+                                  <p>
+                                    Define behaviour of the form after
+                                    submission
+                                  </p>
+                                </span>
+                              </label>
+                              <div className="input-custom-wrapper">
+                                <input
+                                  type="text"
+                                  name="url"
+                                  value={optinSetting.url}
+                                  placeholder="Enter Redirect URL"
+                                  onChange={handleChange}
+                                />
+                                <p
+                                  className={
+                                    errors?.url
+                                      ? "error-message show"
+                                      : "error-message"
                                   }
                                 >
-                                  {"{{subscribe_link}}"}
-                                </button>{" "}
-                                in the email body to generate a subcribe link
-                              </p>
-                            </div>
-                            
-                            
-                          </div>
-                          <hr />
-
-                          <div className="form-group">
-                            <label htmlFor="">
-                              After Confirmation Type
-                              <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon />
-                                <p>
-                                  Define behaviour of the form after submission
+                                  {errors?.url}
                                 </p>
-                              </span>
-                            </label>
-                            <div>
-                              <span className="mintmrm-radiobtn">
-                                <input
-                                  id="show-message"
-                                  type="radio"
-                                  name="message-redirect"
-                                  value="message"
-                                  checked={selectOption === "message"}
-                                  onChange={onChangeValue}
-                                />
-                                <label for="show-message">Show Message</label>
-                              </span>
-                              <span className="mintmrm-radiobtn">
-                                <input
-                                  id="redirect-url"
-                                  type="radio"
-                                  name="message-redirect"
-                                  value="redirect"
-                                  checked={selectOption === "redirect"}
-                                  onChange={onChangeValue}
-                                />
-                                <label for="redirect-url">
-                                  Redirect to an URL
-                                </label>
-                              </span>
-                              <span className="mintmrm-radiobtn">
-                                <input
-                                  id="redirect-page"
-                                  type="radio"
-                                  name="message-redirect"
-                                  value="redirect-page"
-                                  checked={selectOption === "redirect-page"}
-                                  onChange={onChangeValue}
-                                />
-                                <label for="redirect-page">
-                                  Redirect to a page
-                                </label>
-                              </span>
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            className={
-                              selectOption === "message"
-                                ? "form-group top-align confirmation-message-section show"
-                                : "form-group top-align confirmation-message-section"
-                            }
-                          >
-                            <label htmlFor="">
-                              Confirmation Message
-                              <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon />
-                                <p>
-                                  Define behaviour of the form after submission
-                                </p>
-                              </span>
-                            </label>
-
-                            <div className="input-custom-wrapper">
-                              <textarea 
-                              id="confirmation-message" 
-                              rows="3" 
-                              placeholder="Enter Confirmation Message" 
-                              ></textarea>
-                            </div>
-                            
-                          </div>
-
-                          <div
-                            className={
-                              selectOption === "redirect"
-                                ? "form-group redirect-url-section show"
-                                : "form-group redirect-url-section"
-                            }
-                          >
-                            <label htmlFor="">
-                              Redirect URL
-                              <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon />
-                                <p>
-                                  Define behaviour of the form after submission
-                                </p>
-                              </span>
-                            </label>
-                            <div className="input-custom-wrapper">
-                              <input type="text" name="url" value={optinSetting.url} placeholder="Enter Redirect URL" onChange={handleChange} />
-                              <p className={ errors?.url ? "error-message show" : "error-message" } >
-                                {errors?.url}
-                              </p>
-                            </div>
-                          </div>
-                          <div
-                            className={
-                              selectOption === "redirect-page"
-                                ? "form-group page-dropdown-section show"
-                                : "form-group page-dropdown-section"
-                            }
-                          >
-                            <label htmlFor="">
-                              Redirect Page
-                              <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon />
-                                <p>
-                                  Define behaviour of the form after submission
-                                </p>
-                              </span>
-                            </label>
                             <div
-                              className="redirect-page-button"
-                              ref={selectPageRef}
+                              className={
+                                selectOption === "redirect-page"
+                                  ? "form-group page-dropdown-section show"
+                                  : "form-group page-dropdown-section"
+                              }
                             >
-                              <button
-                                className={
-                                  selectPage
-                                    ? "drop-down-button show"
-                                    : "drop-down-button"
-                                }
-                                onClick={handlePageSelect}
+                              <label htmlFor="">
+                                Redirect Page
+                                <span class="mintmrm-tooltip">
+                                  <TooltipQuestionIcon />
+                                  <p>
+                                    Define behaviour of the form after
+                                    submission
+                                  </p>
+                                </span>
+                              </label>
+                              <div
+                                className="redirect-page-button"
+                                ref={selectPageRef}
                               >
-                                {selectPageOption
-                                  ? selectPageOption
-                                  : "Select Page"}
-                              </button>
-                              <ul
-                                className={
-                                  selectPage
-                                    ? "mintmrm-dropdown show"
-                                    : "mintmrm-dropdown"
-                                }
-                              >
-                                <li className="searchbar">
-                                  <span class="pos-relative">
-                                    <Search />
-                                    <input
-                                      type="search"
-                                      name="column-search"
-                                      placeholder="Search or create"
-                                    />
-                                  </span>
-                                </li>
-                                {pages.map((item) => {
-                                  return (
-                                    <li
-                                      onClick={() =>
-                                        handleSelectOption(
-                                          item.title.rendered,
-                                          item.id
-                                        )
-                                      }
-                                      key={item.id}
-                                      className={"single-column"}
-                                    >
-                                      {item.title.rendered}
-                                    </li>
-                                  );
-                                })}
-                              </ul>
+                                <button
+                                  className={
+                                    selectPage
+                                      ? "drop-down-button show"
+                                      : "drop-down-button"
+                                  }
+                                  onClick={handlePageSelect}
+                                >
+                                  {selectPageOption
+                                    ? selectPageOption
+                                    : "Select Page"}
+                                </button>
+                                <ul
+                                  className={
+                                    selectPage
+                                      ? "mintmrm-dropdown show"
+                                      : "mintmrm-dropdown"
+                                  }
+                                >
+                                  <li className="searchbar">
+                                    <span class="pos-relative">
+                                      <Search />
+                                      <input
+                                        type="search"
+                                        name="column-search"
+                                        placeholder="Search or create"
+                                      />
+                                    </span>
+                                  </li>
+                                  {pages.map((item) => {
+                                    return (
+                                      <li
+                                        onClick={() =>
+                                          handleSelectOption(
+                                            item.title.rendered,
+                                            item.id
+                                          )
+                                        }
+                                        key={item.id}
+                                        className={"single-column"}
+                                      >
+                                        {item.title.rendered}
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
+                          </>
+                        ) : null}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -453,6 +473,7 @@ export default function DoubleOptin() {
                     className="mintmrm-btn"
                     type="button"
                     onClick={handleSubmit}
+                    disabled={loader ? true : false}
                   >
                     Save Settings
                     {loader && <span className="mintmrm-loader"></span>}

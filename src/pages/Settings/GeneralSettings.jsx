@@ -128,7 +128,22 @@ export default function GeneralSettings() {
                 setAssignTags(comment_form_subscription.tags);
             }
             if(Object.keys(user_signup).length > 0){
-                setUserSelectSwitch(user_signup.enable)
+                setUserSelectSwitch(user_signup.enable);
+                if(user_signup.list_mapping.length  > 0){
+                    user_signup.list_mapping.map(function (value, index){
+                       if (value.role == 'administrator'){
+                            setAssignAdministratorLists(value.list)
+                       }if (value.role == 'editor'){
+                           setAssignEditorLists(value.list)
+                       }if (value.role == 'author'){
+                           setAssignAuthorLists(value.list)
+                       }if (value.role == 'contributor'){
+                           setAssignContributorLists(value.list)
+                       }if (value.role == 'subscriber'){
+                           setAssignSubscriberLists(value.list)
+                       }
+                    })
+                }
             }
         });
     }, []);
@@ -163,19 +178,19 @@ export default function GeneralSettings() {
                 list_mapping : [
                     {
                         role : 'administrator',
-                        list : ''
+                        list : assignAdministratorLists
                     }, {
                         role : 'editor',
-                        list : ''
+                        list : assignEditorLists
                     }, {
                         role : 'author',
-                        list : ''
+                        list : assignAuthorLists
                     }, {
                         role : 'contributor',
-                        list : ''
+                        list : assignContributorLists
                     },{
                         role : 'subscriber',
-                        list : ''
+                        list : assignSubscriberLists
                     }
                 ]
 
@@ -244,17 +259,8 @@ export default function GeneralSettings() {
         });
     }, [refresh]);
 
-    // useEffect(
-    //     ListenForOutsideClicks(
-    //         listening,
-    //         setListening,
-    //         listMenuRef,
-    //         setIsActiveList
-    //     )
-    // );
     // Outside click events for preference page List checkbox dropdown
     useOutsideAlerter(listMenuRef, setIsActiveList);
-    // useOutsideAlerter();
     useEffect(
         ListenForOutsideClicks(
             listening,

@@ -8,7 +8,7 @@ export default function InputItem(props) {
         {props.isRequired ? <span>*</span> : null}
       </label>
       <textarea
-        rows="3"
+        rows="4"
         type={props.type ? props.type : "text-area"}
         name={props.name}
         onChange={props.handleChange}

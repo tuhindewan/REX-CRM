@@ -1219,7 +1219,7 @@ export default function ContactDetails() {
                               className="form-group contact-input-field"
                               ref={timezoneRef}
                             >
-                              <label name="gender">Timezone</label>
+                              <label name="timezone">Timezone</label>
                               <button
                                 className="timezone-button"
                                 onClick={handleTimezoneShow}
@@ -1276,11 +1276,13 @@ export default function ContactDetails() {
                             {customFields.map((field) => {
                               return (
                                 <>
+                                {console.log(field)}
                                   {field.type == "text" && (
                                     <InputItem
                                       key={field.id}
                                       name={field.slug}
-                                      label={field.title}
+                                      label={field.meta.label}
+                                      placeholder={field.meta.placeholder}
                                       handleChange={handleMetaChange}
                                       value={
                                         contactData?.meta_fields?.[field.slug]
