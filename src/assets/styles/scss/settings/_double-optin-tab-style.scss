@@ -1,30 +1,33 @@
 .mintmrm-settings-page {
+  .mintmrm-settings-wrapper {
     .settings-tab-content {
-        .double-optin-tab-content {
-            .redirect-page-button {
-                width: calc(100% - 223px);
+      .double-optin-tab-content {
+        .redirect-page-button {
+          width: calc(100% - 223px);
 
-                .drop-down-button {
-                    padding: 15px;
+          .drop-down-button {
+            padding: 13px 15px;
+            margin: 0;
 
-                    &::before {
-                        top: 50%;
-                    }
-                    &.show::before {
-                        top: 55%;
-                    }
-                }
+            &::before {
+              top: 50%;
             }
-
-            .confirmation-message-section,
-            .redirect-url-section,
-            .page-dropdown-section {
-                display: none;
-
-                &.show {
-                    display: flex;
-                }
+            &.show::before {
+              top: 55%;
             }
+          }
         }
+
+        .confirmation-message-section,
+        .redirect-url-section,
+        .page-dropdown-section {
+          display: none;
+
+          &.show {
+            display: flex;
+          }
+        }
+      }
     }
+  }
 }

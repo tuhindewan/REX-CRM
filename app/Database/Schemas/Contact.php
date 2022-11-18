@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -17,27 +17,25 @@ use Mint\MRM\Interfaces\Schema;
 
 class ContactSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_contacts';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_contacts';
 
 
-    /**
-     * Get the schema of Contact table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+	/**
+	 * Get the schema of Contact table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `wp_user_id` BIGINT UNSIGNED NULL,
             `hash` VARCHAR(90) NULL,
@@ -55,5 +53,5 @@ class ContactSchema implements Schema {
              INDEX `contact_email_index` (`email` ASC),
              INDEX `contact_id_index` (`id` ASC)
          ) ";
-    }
+	}
 }

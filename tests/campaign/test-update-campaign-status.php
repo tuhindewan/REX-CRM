@@ -14,7 +14,7 @@ class UpdateCampaignStatusTest extends WP_UnitTestCase {
 	/**
     * mrm_campaigns table create for testing
     */
-    public function setUp() {
+    public function setUp():void {
         parent::setUp();
 
         // Database table create
@@ -51,7 +51,7 @@ class UpdateCampaignStatusTest extends WP_UnitTestCase {
     /**
     * Delete the server after the test.
     */
-    public function tearDown() {
+    public function tearDown():void {
         parent::tearDown();
 
         global $wp_rest_server;

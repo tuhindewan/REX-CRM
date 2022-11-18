@@ -73,8 +73,6 @@ jQuery(document).ready(function($){
 
     $(".mrm-form-close").on("click",function(){
         var cookies_time = MRM_Frontend_Vars.form_cookies_time;
-        console.log(cookies_time)
-        console.log('kjhkjh')
         setCookie('mrm_form_dismissed',true, cookies_time);
         $(this).parent().parent().hide()
 

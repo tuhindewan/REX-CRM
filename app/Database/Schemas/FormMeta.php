@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -14,30 +14,29 @@ use Mint\MRM\Interfaces\Schema;
  * @desc [Create wp_mrm_form_meta table into database]
  */
 
-class FormMetaSchema implements Schema{
+class FormMetaSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_form_meta';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_form_meta';
 
 
-    /**
-     * Get the schema of Form meta table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
-        $form_table = $wpdb-> prefix . FormSchema::$table_name;
+	/**
+	 * Get the schema of Form meta table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table      = $wpdb->prefix . self::$table_name;
+		$form_table = $wpdb->prefix . FormSchema::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `form_id` BIGINT UNSIGNED NOT NULL,
             `meta_key` VARCHAR(50) DEFAULT NULL,    
@@ -48,5 +47,5 @@ class FormMetaSchema implements Schema{
             REFERENCES `{$form_table}` (id)
             ON DELETE CASCADE
          ) ";
-    }
+	}
 }

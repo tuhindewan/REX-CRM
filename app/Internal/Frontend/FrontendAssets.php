@@ -3,151 +3,139 @@
 
 namespace Mint\MRM\Internal\Admin;
 
-
-class FrontendAssets
-{
-
-    /**
-     * Class instance.
-     *
-     * @var AdminAssets instance
-     */
-    protected static $instance = null;
-
-    /**
-     * Get class instance.
-     */
-    public static function get_instance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
+class FrontendAssets {
 
 
-    /**
-     * AdminAssets constructor.
-     *
-     * @since 1.0.0
-     */
-    public function __construct()
-    {
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
-    }
+	/**
+	 * Class instance.
+	 *
+	 * @var AdminAssets instance
+	 */
+	protected static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	public static function get_instance() {
+		if ( ! self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
 
 
-    /**
-     * Load plugin main js file
-     *
-     * @param $hook
-     * @since 1.0.0
-     */
-    public function enqueue_scripts($hook)
-    {
-
-        wp_enqueue_script(
-            MRM_PLUGIN_NAME,
-            MRM_DIR_URL . 'assets/frontend/js/frontend.js',
-            array( 'jquery' ),
-            MRM_VERSION,
-            true
-        );
-        wp_localize_script(
-            MRM_PLUGIN_NAME,
-            'MRM_Frontend_Vars',
-            array(
-                'ajaxurl'               => admin_url('admin-ajax.php'),
-                'mrm_form_nonce' 		=> wp_create_nonce('wp_mrm_submit_form'),
-                'form_cookies_time'     => apply_filters('mrm/set_form_cookies_time',$this->set_mrm_dissmiss_time())
-            )
-        );
-    }
-
-    public function set_mrm_dissmiss_time()
-    {
-        $time =  get_option('_mrm_form_dismissed', 7);
-        return $time;
-    }
+	/**
+	 * AdminAssets constructor.
+	 *
+	 * @since 1.0.0
+	 */
+	public function __construct() {
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+	}
 
 
-    /**
-     * Load plugin main css file
-     *
-     * @param $hook
-     * @since 1.0.0
-     */
-    public function enqueue_styles($hook)
-    {
+	/**
+	 * Load plugin main js file
+	 *
+	 * @param $hook
+	 * @since 1.0.0
+	 */
+	public function enqueue_scripts( $hook ) {
+		wp_enqueue_script(
+			MRM_PLUGIN_NAME,
+			MRM_DIR_URL . 'assets/frontend/js/frontend.js',
+			array( 'jquery' ),
+			MRM_VERSION,
+			true
+		);
+		wp_localize_script(
+			MRM_PLUGIN_NAME,
+			'MRM_Frontend_Vars',
+			array(
+				'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+				'mrm_form_nonce'    => wp_create_nonce( 'wp_mrm_submit_form' ),
+				'form_cookies_time' => apply_filters( 'mrm/set_form_cookies_time', $this->set_mrm_dissmiss_time() ),
+			)
+		);
+	}
 
-        wp_enqueue_style(
-            MRM_PLUGIN_NAME . '-select2',
-            MRM_DIR_URL . 'assets/frontend/css/frontend.css',
-        );
-    }
-
-
-    /**
-     * Get assets URL
-     *
-     * @param $file
-     * @param $ext
-     * @param string $type
-     * @return string
-     * @since 1.0.0
-     */
-    public static function get_url($file, $ext, $type = 'dist')
-    {
-        $suffix = '';
-        // Potentially enqueue minified JavaScript.
-        if ('js' === $ext) {
-            $script_debug = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG;
-            $suffix = self::should_use_minified_file($script_debug) ? '' : '.min';
-        }
-        return plugins_url(self::get_path($ext, $type) . $file . $suffix . '.' . $ext, MRM_FILE);
-    }
+	public function set_mrm_dissmiss_time() {
+		$time = get_option( '_mrm_form_dismissed', 7 );
+		return $time;
+	}
 
 
-    /**
-     * Get the Asset path
-     *
-     * @param $ext
-     * @param string $type
-     * @return mixed
-     * @since 1.0.0
-     */
-    public static function get_path($ext, $type = 'dist')
-    {
-        if ('external' === $type) {
-            return ('css' === $ext) ? MRM_ADMIN_EXTERNAL_CSS_FOLDER : MRM_ADMIN_EXTERNAL_JS_FOLDER;
-        }
-        return ('css' === $ext) ? MRM_ADMIN_DIST_CSS_FOLDER : MRM_ADMIN_DIST_JS_FOLDER;
-    }
+	/**
+	 * Load plugin main css file
+	 *
+	 * @param $hook
+	 * @since 1.0.0
+	 */
+	public function enqueue_styles( $hook ) {
+		wp_enqueue_style(
+			MRM_PLUGIN_NAME . '-select2',
+			MRM_DIR_URL . 'assets/frontend/css/frontend.css',
+		);
+	}
 
 
-    /**
-     * Determine if minified file is served
-     *
-     * @param $script_debug
-     * @return bool
-     * @since 1.0.0
-     */
-    public static function should_use_minified_file($script_debug)
-    {
-        return !$script_debug;
-    }
+	/**
+	 * Get assets URL
+	 *
+	 * @param $file
+	 * @param $ext
+	 * @param string $type
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public static function get_url( $file, $ext, $type = 'dist' ) {
+		$suffix = '';
+		// Potentially enqueue minified JavaScript.
+		if ( 'js' === $ext ) {
+			$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+			$suffix       = self::should_use_minified_file( $script_debug ) ? '' : '.min';
+		}
+		return plugins_url( self::get_path( $ext, $type ) . $file . $suffix . '.' . $ext, MRM_FILE );
+	}
 
 
-    /**
-     * Check if the current page is CRM page or not
-     *
-     * @param $hook
-     * @return bool
-     * @since 1.0.0
-     */
-    private function maybe_mrm_page($hook)
-    {
-        return 'toplevel_page_mrm-admin' === $hook;
-    }
+	/**
+	 * Get the Asset path
+	 *
+	 * @param $ext
+	 * @param string $type
+	 * @return mixed
+	 * @since 1.0.0
+	 */
+	public static function get_path( $ext, $type = 'dist' ) {
+		if ( 'external' === $type ) {
+			return ( 'css' === $ext ) ? MRM_ADMIN_EXTERNAL_CSS_FOLDER : MRM_ADMIN_EXTERNAL_JS_FOLDER;
+		}
+		return ( 'css' === $ext ) ? MRM_ADMIN_DIST_CSS_FOLDER : MRM_ADMIN_DIST_JS_FOLDER;
+	}
+
+
+	/**
+	 * Determine if minified file is served
+	 *
+	 * @param $script_debug
+	 * @return bool
+	 * @since 1.0.0
+	 */
+	public static function should_use_minified_file( $script_debug ) {
+		return ! $script_debug;
+	}
+
+
+	/**
+	 * Check if the current page is CRM page or not
+	 *
+	 * @param $hook
+	 * @return bool
+	 * @since 1.0.0
+	 */
+	private function maybe_mrm_page( $hook ) {
+		return 'toplevel_page_mrm-admin' === $hook;
+	}
 }

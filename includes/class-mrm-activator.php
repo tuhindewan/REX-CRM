@@ -29,10 +29,10 @@ class Mrm_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-        require_once MRM_DIR_PATH . 'app/Database/Upgrade.php';
+		require_once MRM_DIR_PATH . 'app/Database/Upgrade.php';
 
-        $upgrade = \Mint\MRM\DataBase\Upgrade::get_instance();
-        $upgrade->maybe_upgrade();
-    }
+		$upgrade = \Mint\MRM\DataBase\Upgrade::get_instance();
+		$upgrade->maybe_upgrade();
+	}
 
 }

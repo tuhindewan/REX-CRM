@@ -9,34 +9,33 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
 
-class FormSchema implements Schema{
+class FormSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_forms';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_forms';
 
 
-    /**
-     * Get the schema of Form table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
+	/**
+	 * Get the schema of Form table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             `title` VARCHAR(255),
             `form_body` longtext,
@@ -51,5 +50,5 @@ class FormSchema implements Schema{
     		INDEX `form_title_index` (`title` ASC),
             PRIMARY KEY (`id`)
          ) ";
-    }
+	}
 }

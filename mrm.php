@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -8,17 +7,17 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              http://rextheme.com/
+ * @link              https://mintemail.co
  * @since             1.0.0
- * @package           Mrm
+ * @package           MintEmail
  *
  * @wordpress-plugin
- * Plugin Name:       MRM Latest
- * Plugin URI:        https://rextheme.com/mrm/
+ * Plugin Name:       Mint Email
+ * Plugin URI:        https://mintemail.co
  * Description:       Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
- * Version:           1.0.0
- * Author:            RexTheme
- * Author URI:        http://rextheme.com/
+ * Version:           rc-1.0.0
+ * Author:            Mint Email Team
+ * Author URI:        https://mintemail.co
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       mrm
@@ -35,12 +34,12 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'MRM_VERSION', '1.0.0' );
+define( 'MRM_VERSION', 'rc-1.0.0' );
 define( 'MRM_PLUGIN_NAME', 'mrm' );
 define( 'MRM_FILE', __FILE__ );
 define( 'MRM_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MRM_IMPORT_DIR', WP_CONTENT_DIR . '/uploads/mrm/mrm-import' );
-define( 'MRM_DIR_URL', plugins_url('/', __FILE__) );
+define( 'MRM_DIR_URL', plugins_url( '/', __FILE__ ) );
 
 
 /**
@@ -88,28 +87,28 @@ run_mrm();
 
 if ( ! function_exists( 'mmempty' ) ) {
 
-    /**
-     * Determine if a value is empty
-     *
-     * @param $name Name of the prop
-     * @param null $array
-     * @return bool True if empty otherwise false
-     *
-     * @since 1.0.0
-     */
-    function mmempty( $name, $array = null ) {
-        if ( is_array( $name ) ) {
-            return empty( $name );
-        }
+	/**
+	 * Determine if a value is empty
+	 *
+	 * @param $name Name of the prop
+	 * @param null                  $array
+	 * @return bool True if empty otherwise false
+	 *
+	 * @since 1.0.0
+	 */
+	function mmempty( $name, $array = null ) {
+		if ( is_array( $name ) ) {
+			return empty( $name );
+		}
 
-        if ( ! $array ) {
-            $array = $_POST;
-        }
+		if ( ! $array ) {
+			$array = $_POST;
+		}
 
-        $val = mmarval( $array, $name );
+		$val = mmarval( $array, $name );
 
-        return empty( $val );
-    }
+		return empty( $val );
+	}
 }
 
 
@@ -117,28 +116,27 @@ if ( ! function_exists( 'mmempty' ) ) {
 
 if ( ! function_exists( 'mmarval' ) ) {
 
-    /**
-     * Get an specific property of an array
-     *
-     *
-     * @param $array Array of which the property value should be retrieved
-     * @param $prop Name of the property to be retrieved
-     * @param null $default Default value if no value is found with that name
-     * @return mixed|string|null
-     *
-     * @since 1.0.0
-     */
-    function mmarval( $array, $prop, $default = null ) {
-        if ( ! is_array( $array ) && ! ( is_object( $array ) && $array instanceof ArrayAccess ) ) {
-            return $default;
-        }
+	/**
+	 * Get an specific property of an array
+	 *
+	 * @param $array Array of which the property value should be retrieved
+	 * @param $prop Name of the property to be retrieved
+	 * @param null                                                        $default Default value if no value is found with that name
+	 * @return mixed|string|null
+	 *
+	 * @since 1.0.0
+	 */
+	function mmarval( $array, $prop, $default = null ) {
+		if ( ! is_array( $array ) && ! ( is_object( $array ) && $array instanceof ArrayAccess ) ) {
+			return $default;
+		}
 
-        if ( isset( $array[ $prop ] ) ) {
-            $value = $array[ $prop ];
-        } else {
-            $value = '';
-        }
+		if ( isset( $array[ $prop ] ) ) {
+			$value = $array[ $prop ];
+		} else {
+			$value = '';
+		}
 
-        return empty( $value ) && $default !== null ? $default : $value;
-    }
+		return empty( $value ) && $default !== null ? $default : $value;
+	}
 }

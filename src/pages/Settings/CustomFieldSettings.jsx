@@ -1,19 +1,22 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import SettingsNav from "./SettingsNav";
-import SingleCustomField from "./CustomField/SingleCustomField";
 import AddCustomFieldModal from "./CustomField/AddCustomFieldModal";
+import SingleCustomField from "./CustomField/SingleCustomField";
+import SettingsNav from "./SettingsNav";
 
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
 import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 
 import {
-  submitCustomFields,
-  getCustomFields,
   deleteSingleCustomField,
+  getCustomFields,
+  submitCustomFields,
 } from "../../services/CustomField";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 export default function CustomFieldSettings() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   const [customFieldModal, setCustomFieldModal] = useState(false);
   const [newCustomField, setNewCustomField] = useState([]);
   const [prepareData, setPrepareData] = useState({});

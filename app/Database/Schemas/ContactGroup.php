@@ -11,7 +11,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 
 use Mint\MRM\Interfaces\Schema;
@@ -19,27 +19,26 @@ use Mint\MRM\Interfaces\Schema;
 class ContactGroupSchema implements Schema {
 
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_contact_groups';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_contact_groups';
 
 
-    /**
-     * Get the schema of ContactGroup table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
-        
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+	/**
+	 * Get the schema of ContactGroup table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
+
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT(20) unsigned NOT NULL auto_increment,
             `title` VARCHAR(255) NOT NULL,
             `type` VARCHAR(192) NOT NULL COMMENT 'tags, lists, segments',
@@ -50,6 +49,5 @@ class ContactGroupSchema implements Schema {
            PRIMARY KEY (`id`),
            KEY `type` (`type`)
          ) ;";
-
-    }
+	}
 }

@@ -45,9 +45,24 @@ class OptinSettingController extends SettingBaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        error_log(print_r($params, 1));
+
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
+
+            $setting_value['email_body'] = isset( $setting_value['email_body'] ) ? html_entity_decode( $setting_value['email_body'] ) : "";
+            $setting_value['confirmation_message'] = isset( $setting_value['confirmation_message'] ) ? html_entity_decode( $setting_value['confirmation_message'] ) : "";
+
+            $confirmation_type = isset( $setting_value['confirmation_type'] ) ? $setting_value['confirmation_type'] : "";
+            // URL validation
+            $url = isset( $setting_value['url'] ) ? $setting_value['url'] : "";
+            if( "redirect" == $confirmation_type && filter_var($url, FILTER_VALIDATE_URL) === FALSE ){
+                return $this->get_error_response(__( 'Redirect URL is not valid', 'mrm' ));
+            }
+
+            if( "redirect" == $confirmation_type && empty( $url ) )	{
+                return $this->get_error_response(__( 'Redirect URL is missing', 'mrm' ));
+            }
+
             update_option('_mrm_optin_settings',  $setting_value);
             return $this->get_success_response( __("Double opt-in settings have been successfully saved.", "mrm") );
         }
@@ -71,8 +86,8 @@ class OptinSettingController extends SettingBaseController {
             "confirmation_message"  => "Subscription Confirmed. Thank you."
         ];
 
-        $settings = get_option( $this->option_key, $default );
-        $settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+        $settings  = get_option( $this->option_key, $default );
+        $settings  = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
         return $this->get_success_response_data( $settings );
     }
 

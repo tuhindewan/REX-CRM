@@ -15,7 +15,7 @@ use WP_User_Query;
 
 class MRM_Importer {
 
-    /**
+	/**
 	 * Create import from CSV file
 	 *
 	 * @param $file
@@ -25,10 +25,9 @@ class MRM_Importer {
 	 * @since 1.0.0
 	 */
 	public static function create_csv_from_import( $file, $delimiter = ',' ) {
-
 		$import_meta = array(
 			'import_type' => 'csv',
-			'delimiter'   => $delimiter
+			'delimiter'   => $delimiter,
 		);
 
 		/**
@@ -38,8 +37,8 @@ class MRM_Importer {
 			wp_mkdir_p( MRM_IMPORT_DIR );
 		}
 
-		$file_name = isset( $file['name'] ) ? $file['name'] : "";
-		$tmp_name = isset( $file['tmp_name'] ) ? $file['tmp_name'] : "";
+		$file_name = isset( $file['name'] ) ? $file['name'] : '';
+		$tmp_name  = isset( $file['tmp_name'] ) ? $file['tmp_name'] : '';
 
 		/**
 		 * Move the file to the directory
@@ -48,19 +47,18 @@ class MRM_Importer {
 		$new_file      = MRM_IMPORT_DIR . '/' . $new_file_name;
 		$move_new_file = @move_uploaded_file( $tmp_name, $new_file );
 
-		
 		if ( false === $move_new_file ) {
 			return __( 'Unable to upload CSV file', 'mrm' );
 		}
 
-		$import_meta['file'] = $new_file;
-        $import_meta['new_file_name'] = $new_file_name;
+		$import_meta['file']          = $new_file;
+		$import_meta['new_file_name'] = $new_file_name;
 
 		return $import_meta;
 	}
 
 
-    /**
+	/**
 	 * Preapre mapping headers from uploaded CSV and custom fields
 	 *
 	 * @param string $csv_file
@@ -77,7 +75,7 @@ class MRM_Importer {
 		 */
 		$headers = false !== $handle ? fgetcsv( $handle, 0, $delimiter ) : false;
 
-		if ( ! is_array( $headers ) && empty($headers) ) {
+		if ( ! is_array( $headers ) && empty( $headers ) ) {
 			$headers = array();
 		}
 
@@ -86,11 +84,11 @@ class MRM_Importer {
 		}
 
 		// /**
-		//  * Formatting CSV header for mapping
-		//  */
+		// * Formatting CSV header for mapping
+		// */
 
 		// foreach ( $headers as $index => $header ) {
-		// 	$headers[ $index ] = array( 'index' => $index, 'header' => $header );
+		// $headers[ $index ] = array( 'index' => $index, 'header' => $header );
 		// }
 
 		/**
@@ -105,7 +103,7 @@ class MRM_Importer {
 	}
 
 
-    /**
+	/**
 	 * Remove UTF8_bom
 	 *
 	 * @param string $string
@@ -121,91 +119,95 @@ class MRM_Importer {
 	}
 
 
-    /**
-	 * Returns all WordPress core user roles 
+	/**
+	 * Returns all WordPress core user roles
 	 *
-     * @param void
+	 * @param void
 	 * @return array
-     * @since 1.0.0
+	 * @since 1.0.0
 	 */
-	public static function get_wp_roles() 
-    {
+	public static function get_wp_roles() {
 		if ( ! function_exists( 'get_editable_roles' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/user.php';
 		}
 
-        // Get and formatting editable roles  
+		// Get and formatting editable roles
 		$editable_roles = get_editable_roles();
-        if ( ! is_array( $editable_roles ) || empty( $editable_roles ) ) {
+		if ( ! is_array( $editable_roles ) || empty( $editable_roles ) ) {
 			return __( 'WordPress user roles not found', 'mrm' );
 		}
-		foreach ($editable_roles as $role => $details) {
-			$sub['role'] = esc_attr($role);
-			$sub['name'] = translate_user_role($details['name']);
-			$roles[] = $sub;
+		foreach ( $editable_roles as $role => $details ) {
+			$sub['role'] = esc_attr( $role );
+			$sub['name'] = translate_user_role( $details['name'] );
+			$roles[]     = $sub;
 		}
-        return $roles;
+		return $roles;
 	}
 
 
-    /**
-     * Import WP users information from users and users metadata table
-     * 
-     * @param array $roles
-     * @return array
-     * @since 1.0.0
-     */
-    public static function get_wp_users( $roles = array() )
-    {
-        $users = get_users(
-            array('role__in'    => $roles,
-                'orderby' => 'ID',
-                'order'   => 'ASC'
-            )
-        );
+	/**
+	 * Import WP users information from users and users metadata table
+	 *
+	 * @param array $roles
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function get_wp_users( $roles = array() ) {
+		$users = get_users(
+			array(
+				'role__in' => $roles,
+				'orderby'  => 'ID',
+				'order'    => 'ASC',
+			)
+		);
 
-        return array_map( function($user ){
-            
-          $user->usermeta =  array_map(function($user_data){
-            return reset($user_data);
-          }, get_user_meta( $user->ID ) );
+		return array_map(
+			function( $user ) {
+				$user->usermeta = array_map(
+					function( $user_data ) {
+						return reset( $user_data );
+					},
+					get_user_meta( $user->ID )
+				);
 
-          return $user;
-        }, $users); 
+				return $user;
+			},
+			$users
+		);
+	}
 
-    }
 
+	/**
+	 * Import WC customers information from orders and metadata table
+	 *
+	 * @param void
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function get_wc_customers() {
+		$all_order_ids = wc_get_orders(
+			array(
+				'return'       => 'ids',
+				'numberposts'  => '-1',
+				'type'         => 'shop_order',
+				'parent'       => 0,
+				'date_created' => '<' . time(),
+				'status'       => wc_get_is_paid_statuses(),
+			)
+		);
 
-    /**
-     * Import WC customers information from orders and metadata table
-     * 
-     * @param void
-     * @return array
-     * @since 1.0.0
-     */
-    public static function get_wc_customers()
-    {
-        $all_order_ids = wc_get_orders( array(
-			'return'       => 'ids',
-			'numberposts'  => '-1',
-			'type'         => 'shop_order',
-			'parent'       => 0,
-			'date_created' => '<' . time(),
-			'status'       => wc_get_is_paid_statuses(),
-		) );
-        
-        $customers = array_map(function($all_order_id){
-
-                $orders = wc_get_order( $all_order_id );
-                return$orders->data['billing'];
-
-            }, $all_order_ids);
+		$customers = array_map(
+			function( $all_order_id ) {
+				$orders = wc_get_order( $all_order_id );
+				return $orders->data['billing'];
+			},
+			$all_order_ids
+		);
 		/**
 		 * Count orders
 		 */
 		$order_count = count( $all_order_ids );
 
-        return $customers;
-
-    }
+		return $customers;
+	}
 }

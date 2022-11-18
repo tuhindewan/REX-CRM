@@ -377,6 +377,7 @@ const CreateContact = (props) => {
                   title="CHOOSE LIST"
                   refresh={refresh}
                   setRefresh={setRefresh}
+                  prefix="create"
                 />
               </div>
               <div className="form-group tags-dropdown" ref={tagMenuRef}>
@@ -419,6 +420,7 @@ const CreateContact = (props) => {
                   title="CHOOSE TAG"
                   refresh={refresh}
                   setRefresh={setRefresh}
+                  prefix="create"
                 />
               </div>
             </div>

@@ -19,85 +19,83 @@ use MRM\Common\MRM_Common;
  * @desc [Handle List Module related API callbacks]
  */
 
-class GeneralController{
+class GeneralController {
 
-    use Singleton;
+	use Singleton;
 
-    /**
-     * Function used to handle paginated get and search requests
-     *
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_general_count( WP_REST_Request $request ){
-         // Get values from API
-         $params = MRM_Common::get_api_params_values( $request );
+	/**
+	 * Function used to handle paginated get and search requests
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get_general_count( WP_REST_Request $request ) {
+		 // Get values from API
+		 $params = MRM_Common::get_api_params_values( $request );
 
-         $lists = ContactGroupModel::get_all( 'lists' );
-         $tags = ContactGroupModel::get_all( 'tags' );
-         $segments = ContactGroupModel::get_all( 'segments' );
-         $contacts = ContactModel::get_all();
+		 $lists    = ContactGroupModel::get_all( 'lists' );
+		 $tags     = ContactGroupModel::get_all( 'tags' );
+		 $segments = ContactGroupModel::get_all( 'segments' );
+		 $contacts = ContactModel::get_all();
 
-         $data = array(
-            'total_contacts'       => isset($contacts['count'])  ? $contacts['count']     : 0,
-            'total_lists'          => isset($lists['count'])     ? $lists['count']        : 0,
-            'total_tags'           => isset($tags['count'])      ? $tags['count']         : 0,
-            'total_segments'       => isset($segments['count'])  ? $segments['count']     : 0
-         );
-         if(isset($lists) && isset($tags) && isset($contacts)) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $data);
-         }
-         return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+		 $data = array(
+			 'total_contacts' => isset( $contacts['count'] ) ? $contacts['count'] : 0,
+			 'total_lists'    => isset( $lists['count'] ) ? $lists['count'] : 0,
+			 'total_tags'     => isset( $tags['count'] ) ? $tags['count'] : 0,
+			 'total_segments' => isset( $segments['count'] ) ? $segments['count'] : 0,
+		 );
+		 if ( isset( $lists ) && isset( $tags ) && isset( $contacts ) ) {
+			 return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $data );
+		 }
+		 return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+	}
 
-    }
-
-    /**
-     * User accessability check for REST API
-     * 
-     * @return bool
-     * @since 1.0.0
-     */  
-	public function rest_permissions_check()
-	{
+	/**
+	 * User accessability check for REST API
+	 *
+	 * @return bool
+	 * @since 1.0.0
+	 */
+	public function rest_permissions_check() {
 		return true;
 	}
 
-    /**
-     * Prepare success response for REST API
-     * 
+	/**
+	 * Prepare success response for REST API
+	 *
 	 * @param $message
 	 * @param $code
 	 * @param $wp_error
-	 * 
-     * @return array
-     * @since 1.0.0
-     */  
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
 	public function get_success_response( $message = '', $code = 0, $data = null ) {
-		$response =  array(
+		$response = array(
 			'code'    => $code,
 			'message' => $message,
-			'data'  => $data,
+			'data'    => $data,
 		);
 
-		return rest_ensure_response($response);
+		return rest_ensure_response( $response );
 	}
 
 
 	/**
-     * Prepare error response for REST API
-     * 
+	 * Prepare error response for REST API
+	 *
 	 * @param $message
 	 * @param $code
 	 * @param $wp_error
-	 * 
-     * @return array
-     * @since 1.0.0
-     */  
-	public function get_error_response( $message = '', $code = 0, $wp_error = null  ) {
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function get_error_response( $message = '', $code = 0, $wp_error = null ) {
 		if ( 0 !== absint( $code ) ) {
 			$this->response_code = $code;
-		} else if ( empty( $code ) ) {
+		} elseif ( empty( $code ) ) {
 			$this->response_code = 500;
 		}
 
@@ -107,6 +105,13 @@ class GeneralController{
 			$data    = $wp_error->get_error_data();
 		}
 
-		return new \WP_Error( $this->response_code, $message, array( 'status' => $this->response_code, 'error_data' => $data ) );
+		return new \WP_Error(
+			$this->response_code,
+			$message,
+			array(
+				'status'     => $this->response_code,
+				'error_data' => $data,
+			)
+		);
 	}
 }
