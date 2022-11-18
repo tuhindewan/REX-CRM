@@ -206,7 +206,7 @@ export default function DoubleOptin() {
                       <LoadingIndicator type="table" />
                     ) : (
                       <div className="form-wrapper">
-                        <div className="form-group">
+                        <div className="form-group label-with-switcher">
                           <label htmlFor="">
                             Double Opt-In
                             <span class="mintmrm-tooltip">

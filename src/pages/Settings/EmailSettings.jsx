@@ -22,6 +22,7 @@ export default function EmailSettings() {
 
   const [refresh, setRefresh] = useState();
   const [loader, setLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -87,6 +88,7 @@ export default function EmailSettings() {
               <SettingsNav />
 
               <div className="settings-tab-content">
+                
                 <div className="single-tab-content email-tab-content">
                   <div className="tab-body">
                     <header className="tab-header">
@@ -229,6 +231,7 @@ export default function EmailSettings() {
                     )}
                   </div>
                 </div>
+                
               </div>
               {/* end settings-tab-content */}
             </div>
