@@ -92,7 +92,9 @@
     border: none;
     outline: none;
     box-shadow: none;
+    cursor: pointer;
   }
+  
   input[type="submit"],
   button[type="submit"],
   .mintmrm-btn {
@@ -128,6 +130,12 @@
       }
     }
 
+    &:disabled {
+      opacity: 0.7;
+      background: #c1bbbb;
+      cursor: not-allowed;
+    }
+
     &.show-loader {
       .mintmrm-loader {
         display: inline-block;
@@ -154,9 +162,6 @@
     font-weight: 500;
   }
 
-  button {
-    cursor: pointer;
-  }
 
   //------extendable classes--------
   .pos-relative {
@@ -258,7 +263,7 @@
   .top-align {
     align-items: flex-start;
 
-    label {
+    & > label {
       padding-top: 10px;
     }
   }

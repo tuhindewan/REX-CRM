@@ -32,7 +32,7 @@ class Test_BusinessSettingController extends WP_UnitTestCase {
 			"phone"         => "+8800178294804",
 			"address"       => "string",
 			"logo_url"      => "String",
-			"social"        => [
+			"socialMedia"        => [
 				"icon"      => "String",
 				"url"       => "String"
 			]
@@ -89,7 +89,7 @@ class Test_BusinessSettingController extends WP_UnitTestCase {
 			"phone"         => "+8800178294804",
 			"address"       => "string",
 			"logo_url"      => "String",
-			"social"        => [
+			"socialMedia"        => [
 				"icon"      => "String",
 				"url"       => "String"
 			]

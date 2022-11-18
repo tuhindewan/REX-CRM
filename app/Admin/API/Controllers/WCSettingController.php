@@ -29,14 +29,13 @@ class WCSettingController extends SettingBaseController {
             'enable'         => false,
             'checkbox_label' => 'Please put a checkbox label.',
             'lists'          => [],
-            'tags'           => [],
-            'double_optin'   => true
+            'tags'           => []
         ];
 
         if( update_option( '_mrm_woocommerce_settings', $params ) ) {
-            return $this->get_success_response( __( 'WooCommerce settings has been successfully saved.', 'mrm' ) );
+            return $this->get_success_response( __( 'WooCommerce settings have been successfully saved.', 'mrm' ) );
         }
-        return $this->get_error_response( __( 'No changes have been made.', 'mrm' ), 400 );
+        return $this->get_error_response( __( 'No changes have been made.', 'mrm' ) );
     }
 
     /**
@@ -44,7 +43,7 @@ class WCSettingController extends SettingBaseController {
      * @return array
      * @since 1.0.0
      */
-    public function get() {
+    public function get( WP_REST_Request $request ) {
         $default  = [
             'enable'         => false,
             'checkbox_label' => 'Please put a checkbox label.',

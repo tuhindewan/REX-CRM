@@ -6,14 +6,17 @@ use Mint\MRM\Admin\API\Server;
 use Mint\MRM\Internal\Admin\AdminAssets;
 use Mint\MRM\Internal\Admin\FrontendAssets;
 use Mint\MRM\Internal\Admin\Page\PageController;
+use Mint\MRM\Internal\Admin\UserAssignContact;
 use Mint\MRM\Internal\Ajax\AjaxAction;
 use Mint\MRM\Internal\FormBuilder\FormBuilderHelper;
 use Mint\MRM\Internal\FormBuilder\GetMRM_Block_Manager;
+use Mint\MRM\Internal\Frontend\WooCommerceCheckoutContact;
 use Mint\MRM\Internal\Optin\OptinConfirmation;
 use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
 use Mint\MRM\Internal\Optin\UnsubscribeConfirmation;
+use Mint\MRM\Internal\Admin\WooCommerceOrderDetails;
 
 class App {
 
@@ -46,15 +49,22 @@ class App {
         AjaxAction::get_instance();
 
         if( $this->is_request('frontend') ) {
+
+			// User assign contact form user in Sign up and comment
+	        UserAssignContact::get_instance();
             // Load assets
             FrontendAssets::get_instance();
             // Opt-in 
             OptinConfirmation::get_instance();
             // Unsubscription
             UnsubscribeConfirmation::get_instance();
+
+            WooCommerceCheckoutContact::get_instance()->init();
         }
 
         CampaignsBackgroundProcess::get_instance()->init();
+
+	    WooCommerceOrderDetails::get_instance()->init();
     }
 
 

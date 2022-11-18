@@ -33,8 +33,17 @@ class AdminAssets {
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+/** Load font and size selector */
+		add_filter( 'mce_buttons', array( $this, 'my_mce_buttons_2' ), 999 );
     }
 
+    function my_mce_buttons_2( $buttons ) {	
+        /**
+         * Add in a core button that's disabled by default
+         */
+        $buttons[] = 'wdm_mce_button';
+        return $buttons;
+    }
 
     /**
      * Load plugin main js file
@@ -46,6 +55,11 @@ class AdminAssets {
         if ( !$this->maybe_mrm_page($hook) ) {
             return false;
         }
+        /** Broadcasts */
+		wp_enqueue_editor();
+		wp_tinymce_inline_scripts();
+
+		/** Enqueue wp media */
         wp_enqueue_media();
         
         wp_enqueue_script(
@@ -76,6 +90,10 @@ class AdminAssets {
             MRM_VERSION,
             true
         );
+
+	    $active_plugings = get_option( 'active_plugins', [] );
+		$wc_active = in_array( 'woocommerce/woocommerce.php', $active_plugings ) || is_plugin_active_for_network( 'woocommerce/woocommerce.php' );
+
         wp_localize_script(
             MRM_PLUGIN_NAME,
             'MRM_Vars',
@@ -91,6 +109,7 @@ class AdminAssets {
                 'states'                => Constants::get_country_state(),
                 'lists'                 => ContactGroupModel::get_all_to_custom_select( 'lists' ),
                 'tags'                  => ContactGroupModel::get_all_to_custom_select( 'tags' ),
+	            'is_wc_active'          => $wc_active,
             )
         );
         

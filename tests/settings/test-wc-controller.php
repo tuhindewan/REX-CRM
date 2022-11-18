@@ -46,7 +46,9 @@ class Test_WC_Controller extends WP_UnitTestCase {
 
         if( 'WP_REST_Response' === get_class( $response ) ) {
             $this->assertTrue( 200 === $response->get_status() );
-            $this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
+            $this->assertTrue( isset( $response->get_data()[ 'success' ] ) );
+            $this->assertTrue( isset( $response->get_data()[ 'message' ] ) );
+            $this->assertTrue( 'WooCommerce settings have been successfully saved.' === $response->get_data()[ 'message' ] || 'No changes have been made.' === $response->get_data()[ 'message' ] );
         }
         elseif( 'WP_Error' === get_class( $response ) ) {
             $this->assertTrue( 400 === $response->get_error_code() );
@@ -61,19 +63,17 @@ class Test_WC_Controller extends WP_UnitTestCase {
      * @since 1.0.0
      */
     public function get() {
-        $body = [
-            'enable'         => false,
-            'checkbox_label' => 'Please put a checkbox label.',
-            'lists'          => [],
-            'tags'           => [],
-            'double_optin'   => true
-        ];
-        update_option( '_mrm_woocommerce_settings', $body );
-        $response = self::$instance->get();
+        $request = new WP_REST_Request( 'GET', '/mrm/v1/wc/' );
+        $response = self::$instance->get( $request );
+        $data = $response->get_data();
+
         $this->assertTrue( is_object( $response ) );
         $this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
         $this->assertTrue( 200 === $response->get_status() );
-        $this->assertTrue( isset( $response->get_data()[ 'success' ] ) && $response->get_data()[ 'success' ] );
+        $this->assertTrue( isset( $data[ 'success' ] ) && $data[ 'success' ] );
+        $this->assertTrue( isset( $data[ 'enable' ] ) );
+        $this->assertTrue( isset( $data[ 'checkbox_label' ] ) );
+        $this->assertTrue( isset( $data[ 'lists' ] ) );
+        $this->assertTrue( isset( $data[ 'tags' ] ) );
     }
-
 }

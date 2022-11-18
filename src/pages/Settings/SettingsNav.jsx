@@ -1,10 +1,12 @@
+import { Link, useLocation } from "react-router-dom";
+
 import SettingIcon from "../../components/Icons/SettingIcon";
-import EmailIcon from "../../components/Icons/EmailIcon";
 import EmailSettingsIcon from "../../components/Icons/EmailSettingsIcon";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import GeneralSettingIcon from "../../components/Icons/GeneralSettingIcon";
 import WooCommerceIcon from "../../components/Icons/WooCommerceIcon";
-import { Link, useLocation } from "react-router-dom";
+import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
+import SmtpIcon from "../../components/Icons/SmtpIcon";
 
 export default function SettingsNav() {
     const location = useLocation();
@@ -45,7 +47,7 @@ export default function SettingsNav() {
                         to="/settings/optin"
                     >
                         <EmailPendingIcon />
-                        Double Op-tin Settings
+                        Double Opt-in Settings
                     </Link>
                 </li>
                 <li>
@@ -61,17 +63,45 @@ export default function SettingsNav() {
                         General Settings
                     </Link>
                 </li>
+                {window.MRM_Vars.is_wc_active &&
+                    <li>
+                        <Link
+                            className={`mintmrm-btn outline ${
+                                location.pathname.includes("woocommerce")
+                                    ? "active"
+                                    : ""
+                            }`}
+                            to="/settings/woocommerce"
+                        >
+                            <WooCommerceIcon/>
+                            WooCommerce settings
+                        </Link>
+                    </li>
+                }
                 <li>
                     <Link
                         className={`mintmrm-btn outline ${
-                            location.pathname.includes("woocommerce")
+                            location.pathname.includes("custom-field")
                                 ? "active"
                                 : ""
                         }`}
-                        to="/settings/woocommerce"
+                        to="/settings/custom-field"
                     >
-                        <WooCommerceIcon />
-                        WooCommerce settings
+                        <CustomFieldIcon />
+                        Contact Custom Field
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        className={`mintmrm-btn outline ${
+                            location.pathname.includes("smtp")
+                                ? "active"
+                                : ""
+                        }`}
+                        to="/settings/smtp"
+                    >
+                        <SmtpIcon />
+                        Smtp
                     </Link>
                 </li>
             </ul>
