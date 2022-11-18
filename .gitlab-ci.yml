@@ -63,6 +63,7 @@ test:php7.4:
 
 phpcs:
   stage: phpcs
+  image: php:7.4
   script:
     - ./vendor/bin/phpcs
   rules:
