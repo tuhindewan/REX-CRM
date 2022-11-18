@@ -86,13 +86,12 @@ class MessageController extends BaseController {
             if( $message_id ) {
                 MessageModel::update( $message_id, 'status', 'sent' );
             }
-            return $this->get_success_response( __( 'Email has been sent successfully', 'mrm' ), 201 );
+            return $this->get_success_response( __( 'Email has been sent successfully.', 'mrm' ), 201 );
         }
         if( $message_id ) {
             MessageModel::update( $message_id, 'status', 'failed' );
         }
-        return $this->get_error_response(__( 'Email not sent', 'mrm' ), 200);
-
+        return $this->get_error_response(__( 'Email sending failed', 'mrm' ), 200);
     }
 
     /**

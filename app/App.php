@@ -7,6 +7,7 @@ use Mint\MRM\Internal\Admin\AdminAssets;
 use Mint\MRM\Internal\Admin\FrontendAssets;
 use Mint\MRM\Internal\Admin\Page\PageController;
 use Mint\MRM\Internal\Admin\UserAssignContact;
+use Mint\MRM\Internal\Admin\WPMail;
 use Mint\MRM\Internal\Ajax\AjaxAction;
 use Mint\MRM\Internal\FormBuilder\FormBuilderHelper;
 use Mint\MRM\Internal\FormBuilder\GetMRM_Block_Manager;
@@ -65,6 +66,8 @@ class App {
         CampaignsBackgroundProcess::get_instance()->init();
 
 	    WooCommerceOrderDetails::get_instance()->init();
+
+		WPMail::get_instance()->init();
     }
 
 

@@ -160,8 +160,8 @@ export default function SmtpSettings() {
                                             <div className="form-group">
                                                 <label htmlFor="sending-protocol">Sending Protocol</label>
                                                 <select name="sending-protocol" id="sending-protocol" onChange={getSendingProtocol} >
+                                                    <option value="web_server" selected={'web-server' === sendingProtocol}>Your web host / web server</option>
                                                     <option value="smtp" selected={'smtp' === sendingProtocol}>SMTP</option>
-                                                    <option value="web-server" selected={'web-server' === sendingProtocol}>Your web host / web server</option>
                                                     <option value="sendgrid" selected={'sendgrid' === sendingProtocol}>SendGrid</option>
                                                     <option value="amazonses" selected={'amazonses' === sendingProtocol}>Amazon SES</option>
                                                 </select>
