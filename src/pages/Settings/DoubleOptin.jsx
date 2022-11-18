@@ -175,7 +175,7 @@ export default function DoubleOptin() {
       setSelectOption(response.confirmation_type);
       setOptinSettings(response);
     });
-  }, []);
+  }, [selectSwitch]);
 
   useEffect(() => {
     getAllWpPages().then((response) => {
