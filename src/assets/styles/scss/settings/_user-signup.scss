@@ -22,13 +22,11 @@
             line-height: 1.2;
             color: #344054;
         }
-        .administrator,
-        .editor,
-        .author,
-        .contributor,
-        .subscriber {
+        .single-wp-dropdown {
             width: calc(100% - 223px);
             .drop-down-button {
+                padding: 13px 16px;
+
                 &:first-child {
                     margin-top: 0 !important;
                 }
@@ -40,5 +38,11 @@
                 }
             }
         }
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .general-settings-body.user-signup-settings .single-wp-dropdown {
+        width: calc(100% - 195px);
     }
 }

@@ -479,7 +479,7 @@ export default function GeneralSettings() {
                                                 </div>
                                             </div>
                                             <div className="general-settings-body show">
-                                                <div className="form-group">
+                                                <div className="form-group top-align">
                                                     <label htmlFor="confirmation-type">
                                                         After Confirmation Type
                                                         <span class="mintmrm-tooltip">
@@ -491,7 +491,7 @@ export default function GeneralSettings() {
                                                             </p>
                                                         </span>
                                                     </label>
-                                                    <div>
+                                                    <div className="input-custom-wrapper">
                                                         <span className="mintmrm-radiobtn">
                                                             <input
                                                                 id="show-message"
@@ -925,7 +925,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Administrator
                                                     </label>
-                                                    <div className="administrator">
+                                                    <div className="administrator single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1012,7 +1012,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Editor
                                                     </label>
-                                                    <div className="editor">
+                                                    <div className="editor single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1097,7 +1097,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Author
                                                     </label>
-                                                    <div className="author">
+                                                    <div className="author single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1182,7 +1182,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Contributor
                                                     </label>
-                                                    <div className="contributor">
+                                                    <div className="contributor single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1269,7 +1269,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Subscriber
                                                     </label>
-                                                    <div className="subscriber">
+                                                    <div className="subscriber single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1332,7 +1332,9 @@ export default function GeneralSettings() {
                                                                 setAssignSubscriberLists
                                                             }
                                                             endpoint="lists"
-                                                            items={subscriberLists}
+                                                            items={
+                                                                subscriberLists
+                                                            }
                                                             allowMultiple={true}
                                                             allowNewCreate={
                                                                 true
@@ -1565,9 +1567,9 @@ export default function GeneralSettings() {
                                         onClick={handleGeneralSubmit}
                                     >
                                         Save Settings
-                                        {loader &&
-                                        <span className="mintmrm-loader"></span>
-                                        }
+                                        {loader && (
+                                            <span className="mintmrm-loader"></span>
+                                        )}
                                     </button>
                                 </div>
                             </div>
