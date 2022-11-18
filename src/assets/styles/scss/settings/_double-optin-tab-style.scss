@@ -2,13 +2,8 @@
   .mintmrm-settings-wrapper {
     .settings-tab-content {
       .double-optin-tab-content {
-        .redirect-page-button {
-          width: calc(100% - 223px);
-
+        .input-custom-wrapper {
           .drop-down-button {
-            padding: 13px 15px;
-            margin: 0;
-
             &::before {
               top: 50%;
             }
@@ -17,7 +12,8 @@
             }
           }
         }
-
+      }
+      .form-wrapper {
         .confirmation-message-section,
         .redirect-url-section,
         .page-dropdown-section {
