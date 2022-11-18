@@ -12,9 +12,12 @@ import {
   submitOptin,
 } from "../../services/Setting";
 import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   _.noConflict();
   const [selectOption, setSelectOption] = useState("message");
   const [selectSwitch, setSelectSwitch] = useState(true);
@@ -203,7 +206,7 @@ export default function DoubleOptin() {
                       <LoadingIndicator type="table" />
                     ) : (
                       <div className="form-wrapper">
-                        <div className="form-group">
+                        <div className="form-group label-with-switcher">
                           <label htmlFor="">
                             Double Opt-In
                             <span class="mintmrm-tooltip">

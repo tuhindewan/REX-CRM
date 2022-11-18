@@ -184,9 +184,6 @@ export default function BusinessSettings() {
 
   return (
     <>
-        
-    
-      
       <div className="mintmrm-settings-page">
         <div className="mintmrm-container">
           <div className="mintmrm-settings">

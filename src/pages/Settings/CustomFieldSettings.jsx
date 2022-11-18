@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AddCustomFieldModal from "./CustomField/AddCustomFieldModal";
 import SingleCustomField from "./CustomField/SingleCustomField";
 import SettingsNav from "./SettingsNav";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
 import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
@@ -21,6 +22,7 @@ export default function CustomFieldSettings() {
   const [selectedIdForDelete, setSelectedIdForDelete] = useState();
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
 
   //----show custom field modal-----
   const addCustomField = () => {
@@ -75,6 +77,7 @@ export default function CustomFieldSettings() {
               <SettingsNav />
 
               <div className="settings-tab-content">
+                
                 <div className="single-tab-content custom-field-tab-content">
                   <div
                     className={
@@ -163,6 +166,7 @@ export default function CustomFieldSettings() {
                     </button>
                   </div>
                 </div>
+                
               </div>
               {/* end settings-tab-content */}
             </div>

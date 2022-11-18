@@ -3,6 +3,7 @@ import SettingsNav from "./SettingsNav";
 import EmailSettingsIcon from "../../components/Icons/EmailSettingsIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 export default function EmailSettings() {
   // Email Settings data if available
@@ -19,6 +20,7 @@ export default function EmailSettings() {
 
   const [refresh, setRefresh] = useState();
   const [loader, setLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
 
   // the data is fetched again whenver refresh is changed
   function toggleRefresh() {
@@ -84,6 +86,7 @@ export default function EmailSettings() {
               <SettingsNav />
 
               <div className="settings-tab-content">
+                
                 <div className="single-tab-content email-tab-content">
                   <div className="tab-body">
                     <header className="tab-header">
@@ -208,7 +211,7 @@ export default function EmailSettings() {
                       <button className="mintmrm-btn" type="button" onClick={handleSubmit} >
                           Save Settings
                           {loader && <span className="mintmrm-loader"></span> }
-                       </button>
+                      </button>
 
                     ) : (
                       <button
@@ -223,6 +226,7 @@ export default function EmailSettings() {
                     )}
                   </div>
                 </div>
+                
               </div>
               {/* end settings-tab-content */}
             </div>

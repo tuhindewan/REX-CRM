@@ -14,8 +14,10 @@ import {
     submitGeneralSetting,
 } from "../../services/Setting";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 export default function GeneralSettings() {
+    const [showLoader, setShowLoader] = useState(true);
     const [loader, setLoader] = useState(false);
     const [notificationType, setNotificationType] = useState("success");
     const [showNotification, setShowNotification] = useState("none");
@@ -91,6 +93,7 @@ export default function GeneralSettings() {
                 setConfirmation_message(
                     unsubscriber_settings.confirmation_message
                 );
+
             }
 
             //preference
@@ -451,6 +454,7 @@ export default function GeneralSettings() {
                         <SettingsNav />
 
                         <div className="settings-tab-content">
+                            
                             <div className="single-tab-content general-tab-content">
                                 <div className="tab-body">
                                     <header className="tab-header">
@@ -479,7 +483,7 @@ export default function GeneralSettings() {
                                                 </div>
                                             </div>
                                             <div className="general-settings-body show">
-                                                <div className="form-group">
+                                                <div className="form-group top-align">
                                                     <label htmlFor="confirmation-type">
                                                         After Confirmation Type
                                                         <span class="mintmrm-tooltip">
@@ -491,7 +495,7 @@ export default function GeneralSettings() {
                                                             </p>
                                                         </span>
                                                     </label>
-                                                    <div>
+                                                    <div className="input-custom-wrapper">
                                                         <span className="mintmrm-radiobtn">
                                                             <input
                                                                 id="show-message"
@@ -717,38 +721,38 @@ export default function GeneralSettings() {
                                                                     {assignLists.length !=
                                                                     0
                                                                         ? assignLists?.map(
-                                                                              (
-                                                                                  list
-                                                                              ) => {
-                                                                                  return (
-                                                                                      <span
-                                                                                          className="single-list"
-                                                                                          key={
-                                                                                              list.id
-                                                                                          }
-                                                                                      >
-                                                                                          {
-                                                                                              list.title
-                                                                                          }
+                                                                            (
+                                                                                list
+                                                                            ) => {
+                                                                                return (
+                                                                                    <span
+                                                                                        className="single-list"
+                                                                                        key={
+                                                                                            list.id
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            list.title
+                                                                                        }
 
-                                                                                          <span
-                                                                                              className="close-list"
-                                                                                              title="Delete"
-                                                                                              onClick={(
-                                                                                                  e
-                                                                                              ) =>
-                                                                                                  deleteSelectedList(
-                                                                                                      e,
-                                                                                                      list.id
-                                                                                                  )
-                                                                                              }
-                                                                                          >
-                                                                                              <CrossIcon />
-                                                                                          </span>
-                                                                                      </span>
-                                                                                  );
-                                                                              }
-                                                                          )
+                                                                                        <span
+                                                                                            className="close-list"
+                                                                                            title="Delete"
+                                                                                            onClick={(
+                                                                                                e
+                                                                                            ) =>
+                                                                                                deleteSelectedList(
+                                                                                                    e,
+                                                                                                    list.id
+                                                                                                )
+                                                                                            }
+                                                                                        >
+                                                                                            <CrossIcon />
+                                                                                        </span>
+                                                                                    </span>
+                                                                                );
+                                                                            }
+                                                                        )
                                                                         : "Select Lists"}
                                                                 </button>
                                                                 <AddItemDropdown
@@ -925,7 +929,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Administrator
                                                     </label>
-                                                    <div className="administrator">
+                                                    <div className="administrator single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -940,38 +944,38 @@ export default function GeneralSettings() {
                                                             {assignAdministratorLists.length !=
                                                             0
                                                                 ? assignAdministratorLists?.map(
-                                                                      (
-                                                                          list
-                                                                      ) => {
-                                                                          return (
-                                                                              <span
-                                                                                  className="single-list"
-                                                                                  key={
-                                                                                      list.id
-                                                                                  }
-                                                                              >
-                                                                                  {
-                                                                                      list.title
-                                                                                  }
+                                                                    (
+                                                                        list
+                                                                    ) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    list.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    list.title
+                                                                                }
 
-                                                                                  <span
-                                                                                      className="close-list"
-                                                                                      title="Delete"
-                                                                                      onClick={(
-                                                                                          e
-                                                                                      ) =>
-                                                                                          deleteSelectedAdministratorList(
-                                                                                              e,
-                                                                                              list.id
-                                                                                          )
-                                                                                      }
-                                                                                  >
-                                                                                      <CrossIcon />
-                                                                                  </span>
-                                                                              </span>
-                                                                          );
-                                                                      }
-                                                                  )
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedAdministratorList(
+                                                                                            e,
+                                                                                            list.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
                                                                 : "Select Lists"}
                                                         </button>
                                                         <AddItemDropdown
@@ -1012,7 +1016,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Editor
                                                     </label>
-                                                    <div className="editor">
+                                                    <div className="editor single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1027,38 +1031,38 @@ export default function GeneralSettings() {
                                                             {assignEditorLists.length !=
                                                             0
                                                                 ? assignEditorLists?.map(
-                                                                      (
-                                                                          list
-                                                                      ) => {
-                                                                          return (
-                                                                              <span
-                                                                                  className="single-list"
-                                                                                  key={
-                                                                                      list.id
-                                                                                  }
-                                                                              >
-                                                                                  {
-                                                                                      list.title
-                                                                                  }
+                                                                    (
+                                                                        list
+                                                                    ) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    list.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    list.title
+                                                                                }
 
-                                                                                  <span
-                                                                                      className="close-list"
-                                                                                      title="Delete"
-                                                                                      onClick={(
-                                                                                          e
-                                                                                      ) =>
-                                                                                          deleteSelectedEditorList(
-                                                                                              e,
-                                                                                              list.id
-                                                                                          )
-                                                                                      }
-                                                                                  >
-                                                                                      <CrossIcon />
-                                                                                  </span>
-                                                                              </span>
-                                                                          );
-                                                                      }
-                                                                  )
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedEditorList(
+                                                                                            e,
+                                                                                            list.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
                                                                 : "Select Lists"}
                                                         </button>
                                                         <AddItemDropdown
@@ -1097,7 +1101,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Author
                                                     </label>
-                                                    <div className="author">
+                                                    <div className="author single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1112,38 +1116,38 @@ export default function GeneralSettings() {
                                                             {assignAuthorLists.length !=
                                                             0
                                                                 ? assignAuthorLists?.map(
-                                                                      (
-                                                                          list
-                                                                      ) => {
-                                                                          return (
-                                                                              <span
-                                                                                  className="single-list"
-                                                                                  key={
-                                                                                      list.id
-                                                                                  }
-                                                                              >
-                                                                                  {
-                                                                                      list.title
-                                                                                  }
+                                                                    (
+                                                                        list
+                                                                    ) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    list.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    list.title
+                                                                                }
 
-                                                                                  <span
-                                                                                      className="close-list"
-                                                                                      title="Delete"
-                                                                                      onClick={(
-                                                                                          e
-                                                                                      ) =>
-                                                                                          deleteSelectedAuthorList(
-                                                                                              e,
-                                                                                              list.id
-                                                                                          )
-                                                                                      }
-                                                                                  >
-                                                                                      <CrossIcon />
-                                                                                  </span>
-                                                                              </span>
-                                                                          );
-                                                                      }
-                                                                  )
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedAuthorList(
+                                                                                            e,
+                                                                                            list.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
                                                                 : "Select Lists"}
                                                         </button>
                                                         <AddItemDropdown
@@ -1182,7 +1186,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Contributor
                                                     </label>
-                                                    <div className="contributor">
+                                                    <div className="contributor single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1197,38 +1201,38 @@ export default function GeneralSettings() {
                                                             {assignContributorLists.length !=
                                                             0
                                                                 ? assignContributorLists?.map(
-                                                                      (
-                                                                          list
-                                                                      ) => {
-                                                                          return (
-                                                                              <span
-                                                                                  className="single-list"
-                                                                                  key={
-                                                                                      list.id
-                                                                                  }
-                                                                              >
-                                                                                  {
-                                                                                      list.title
-                                                                                  }
+                                                                    (
+                                                                        list
+                                                                    ) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    list.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    list.title
+                                                                                }
 
-                                                                                  <span
-                                                                                      className="close-list"
-                                                                                      title="Delete"
-                                                                                      onClick={(
-                                                                                          e
-                                                                                      ) =>
-                                                                                          deleteSelectedContributorList(
-                                                                                              e,
-                                                                                              list.id
-                                                                                          )
-                                                                                      }
-                                                                                  >
-                                                                                      <CrossIcon />
-                                                                                  </span>
-                                                                              </span>
-                                                                          );
-                                                                      }
-                                                                  )
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedContributorList(
+                                                                                            e,
+                                                                                            list.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
                                                                 : "Select Lists"}
                                                         </button>
                                                         <AddItemDropdown
@@ -1269,7 +1273,7 @@ export default function GeneralSettings() {
                                                     <label htmlFor="">
                                                         Subscriber
                                                     </label>
-                                                    <div className="subscriber">
+                                                    <div className="subscriber single-wp-dropdown">
                                                         <button
                                                             type="button"
                                                             className={
@@ -1284,38 +1288,38 @@ export default function GeneralSettings() {
                                                             {assignSubscriberLists.length !=
                                                             0
                                                                 ? assignSubscriberLists?.map(
-                                                                      (
-                                                                          list
-                                                                      ) => {
-                                                                          return (
-                                                                              <span
-                                                                                  className="single-list"
-                                                                                  key={
-                                                                                      list.id
-                                                                                  }
-                                                                              >
-                                                                                  {
-                                                                                      list.title
-                                                                                  }
+                                                                    (
+                                                                        list
+                                                                    ) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    list.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    list.title
+                                                                                }
 
-                                                                                  <span
-                                                                                      className="close-list"
-                                                                                      title="Delete"
-                                                                                      onClick={(
-                                                                                          e
-                                                                                      ) =>
-                                                                                          deleteSelectedSubscriberList(
-                                                                                              e,
-                                                                                              list.id
-                                                                                          )
-                                                                                      }
-                                                                                  >
-                                                                                      <CrossIcon />
-                                                                                  </span>
-                                                                              </span>
-                                                                          );
-                                                                      }
-                                                                  )
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedSubscriberList(
+                                                                                            e,
+                                                                                            list.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
                                                                 : "Select Lists"}
                                                         </button>
                                                         <AddItemDropdown
@@ -1332,7 +1336,9 @@ export default function GeneralSettings() {
                                                                 setAssignSubscriberLists
                                                             }
                                                             endpoint="lists"
-                                                            items={subscriberLists}
+                                                            items={
+                                                                subscriberLists
+                                                            }
                                                             allowMultiple={true}
                                                             allowNewCreate={
                                                                 true
@@ -1419,36 +1425,36 @@ export default function GeneralSettings() {
                                                         {assignCommentLists.length !=
                                                         0
                                                             ? assignCommentLists?.map(
-                                                                  (list) => {
-                                                                      return (
-                                                                          <span
-                                                                              className="single-list"
-                                                                              key={
-                                                                                  list.id
-                                                                              }
-                                                                          >
-                                                                              {
-                                                                                  list.title
-                                                                              }
+                                                                (list) => {
+                                                                    return (
+                                                                        <span
+                                                                            className="single-list"
+                                                                            key={
+                                                                                list.id
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                list.title
+                                                                            }
 
-                                                                              <span
-                                                                                  className="close-list"
-                                                                                  title="Delete"
-                                                                                  onClick={(
-                                                                                      e
-                                                                                  ) =>
-                                                                                      deleteSelectedCommentList(
-                                                                                          e,
-                                                                                          list.id
-                                                                                      )
-                                                                                  }
-                                                                              >
-                                                                                  <CrossIcon />
-                                                                              </span>
-                                                                          </span>
-                                                                      );
-                                                                  }
-                                                              )
+                                                                            <span
+                                                                                className="close-list"
+                                                                                title="Delete"
+                                                                                onClick={(
+                                                                                    e
+                                                                                ) =>
+                                                                                    deleteSelectedCommentList(
+                                                                                        e,
+                                                                                        list.id
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <CrossIcon />
+                                                                            </span>
+                                                                        </span>
+                                                                    );
+                                                                }
+                                                            )
                                                             : "Select Lists"}
                                                     </button>
                                                     <AddItemDropdown
@@ -1501,36 +1507,36 @@ export default function GeneralSettings() {
                                                     >
                                                         {assignTags.length != 0
                                                             ? assignTags?.map(
-                                                                  (tag) => {
-                                                                      return (
-                                                                          <span
-                                                                              className="single-list"
-                                                                              key={
-                                                                                  tag.id
-                                                                              }
-                                                                          >
-                                                                              {
-                                                                                  tag.title
-                                                                              }
+                                                                (tag) => {
+                                                                    return (
+                                                                        <span
+                                                                            className="single-list"
+                                                                            key={
+                                                                                tag.id
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                tag.title
+                                                                            }
 
-                                                                              <span
-                                                                                  className="close-list"
-                                                                                  title="Delete"
-                                                                                  onClick={(
-                                                                                      e
-                                                                                  ) =>
-                                                                                      deleteSelectedTag(
-                                                                                          e,
-                                                                                          tag.id
-                                                                                      )
-                                                                                  }
-                                                                              >
-                                                                                  <CrossIcon />
-                                                                              </span>
-                                                                          </span>
-                                                                      );
-                                                                  }
-                                                              )
+                                                                            <span
+                                                                                className="close-list"
+                                                                                title="Delete"
+                                                                                onClick={(
+                                                                                    e
+                                                                                ) =>
+                                                                                    deleteSelectedTag(
+                                                                                        e,
+                                                                                        tag.id
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                <CrossIcon />
+                                                                            </span>
+                                                                        </span>
+                                                                    );
+                                                                }
+                                                            )
                                                             : "Select Tags"}
                                                     </button>
                                                     <AddItemDropdown
@@ -1565,12 +1571,13 @@ export default function GeneralSettings() {
                                         onClick={handleGeneralSubmit}
                                     >
                                         Save Settings
-                                        {loader &&
-                                        <span className="mintmrm-loader"></span>
-                                        }
+                                        {loader && (
+                                            <span className="mintmrm-loader"></span>
+                                        )}
                                     </button>
                                 </div>
                             </div>
+                            
                         </div>
                         {/* end settings-tab-content */}
                     </div>
