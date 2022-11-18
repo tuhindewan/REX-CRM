@@ -3,6 +3,7 @@ import _ from 'lodash'
 
 import UploadIcon from "../../components/Icons/UploadIcon";
 import CrossIcon from "../../components/Icons/CrossIcon";
+import SocialMediaPlaceholderIcon from "../../components/Icons/SocialMediaPlaceholderIcon";
 
 export default function SingleSocialMedia( props ) {
   _.noConflict()
@@ -34,7 +35,11 @@ export default function SingleSocialMedia( props ) {
     // Finally, open the modal on click
     frame.on('select', function () {
         var attachment = frame.state().get('selection').first().toJSON();
-        document.getElementById("social-logo-src"+index).src = attachment.url;
+
+        if( socialLogo ){
+          document.getElementById("social-logo-src"+index).src = attachment.url;
+        }
+        
         handleSocialIcon(data,attachment.url, index )
 
     });
@@ -42,26 +47,37 @@ export default function SingleSocialMedia( props ) {
     frame.open();
     return false;
   }
-    return (
-        <>
-            <div className="single-media">
-                <button type="button" className="remove-media" title="Delete" onClick={() => deleteSocialLogo(index)}>
-                    <CrossIcon/>
+
+  return (
+    <>
+    
+        <div className="single-media">
+            <button type="button" className="remove-media" title="Delete" onClick={() => deleteSocialLogo(index)}>
+                <CrossIcon/>
+            </button>
+
+            {console.log(icon)}
+
+            <div className="social-media-upload">
+                {icon != '' && 
+                  <img src={icon} alt="logo" id={"social-logo-src" + index} />
+                }
+
+                {icon == '' &&
+                  <SocialMediaPlaceholderIcon />
+                }
+                
+                <button type="button" className="upload-btn" onClick={() => addSocialLogo(index)}>
+                    <UploadIcon/>
                 </button>
-
-                <div className="social-media-upload">
-                    <img src={icon} alt="logo" id={"social-logo-src" + index} />
-                    <button type="button" className="upload-btn" onClick={() => addSocialLogo(index)}>
-                        <UploadIcon/>
-                    </button>
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="">Link</label>
-                    <input type="text" name={"social-url" + index} id={"social-url" + index} placeholder="https://" value={url} onChange={ (val) => handleSocialUrl(data,val, index) } />
-                </div>
             </div>
-        </>
+
+            <div className="form-group">
+                <label htmlFor="">Link</label>
+                <input type="text" name={"social-url" + index} id={"social-url" + index} placeholder="https://" value={url} onChange={ (val) => handleSocialUrl(data,val, index) } />
+            </div>
+        </div>
+      </>
     );
 }
 
