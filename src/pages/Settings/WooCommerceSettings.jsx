@@ -379,6 +379,7 @@ export default function WooCommerceSettings() {
                                         className="mintmrm-btn"
                                         type="button"
                                         onClick={saveSettings}
+                                        disabled={loading}
                                     >
                                         Save Settings
                                         <span className={loading ? 'mintmrm-loader' : ''}></span>
