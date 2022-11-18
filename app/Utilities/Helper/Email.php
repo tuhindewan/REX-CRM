@@ -62,7 +62,6 @@ class Email {
      */
     public static function getMailTemplate($email_body = "", $domainLink, $contact_id, $hash)
     {
-        error_log(print_r($email_body, 1));
         return "
             <!DOCTYPE html>
             <html lang='en-US'>

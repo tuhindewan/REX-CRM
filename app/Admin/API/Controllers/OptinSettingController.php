@@ -45,9 +45,12 @@ class OptinSettingController extends SettingBaseController {
 
         // Get values from API
         $params = MRM_Common::get_api_params_values( $request );
-        
+
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
+
+            $setting_value['email_body'] = isset( $setting_value['email_body'] ) ? html_entity_decode( $setting_value['email_body'] ) : "";
+            $setting_value['confirmation_message'] = isset( $setting_value['confirmation_message'] ) ? html_entity_decode( $setting_value['confirmation_message'] ) : "";
 
             $confirmation_type = isset( $setting_value['confirmation_type'] ) ? $setting_value['confirmation_type'] : "";
             // URL validation
@@ -83,8 +86,8 @@ class OptinSettingController extends SettingBaseController {
             "confirmation_message"  => "Subscription Confirmed. Thank you."
         ];
 
-        $settings = get_option( $this->option_key, $default );
-        $settings = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+        $settings  = get_option( $this->option_key, $default );
+        $settings  = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
         return $this->get_success_response_data( $settings );
     }
 

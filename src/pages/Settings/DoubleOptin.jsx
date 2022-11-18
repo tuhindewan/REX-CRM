@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import Search from "../../components/Icons/Search";
@@ -14,6 +15,7 @@ import { ClearNotification } from "../../utils/admin-notification";
 import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
+  _.noConflict();
   const [selectOption, setSelectOption] = useState("message");
   const [selectSwitch, setSelectSwitch] = useState(true);
   const [loader, setLoader] = useState(false);
@@ -111,6 +113,7 @@ export default function DoubleOptin() {
   const handleSubmit = async () => {
     setLoader(true);
     const body_content = tinymce.get("tinymce").getContent();
+    console.log(body_content);
     const message_content = tinymce.get("confirmation-message").getContent();
     optinSetting.enable = selectSwitch;
     optinSetting.confirmation_type = selectOption;
@@ -152,13 +155,10 @@ export default function DoubleOptin() {
     };
 
     let editorId = "tinymce";
-    if (tinymce.get(editorId)) {
-      tinymce.remove("#" + editorId);
-    }
+    wp.editor.remove(editorId);
     wp.editor.initialize(editorId, tinyMceConfig);
-    if (tinymce.get("confirmation-message")) {
-      tinymce.remove("#" + "confirmation-message");
-    }
+
+    wp.editor.remove("confirmation-message");
     wp.editor.initialize("confirmation-message", tinyMceConfig);
   }, [selectSwitch]);
 
