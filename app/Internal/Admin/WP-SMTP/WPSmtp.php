@@ -6,11 +6,11 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
- * @desc Modify Wordpress core mailing function wp_mail
+ * @desc Modify WordPress core mailing function wp_mail
  * @since 1.0.0
  */
 
-class WPMail {
+class WPSmtp {
 
 	use Singleton;
 

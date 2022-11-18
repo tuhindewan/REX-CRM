@@ -37,5 +37,8 @@
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
-  "prefer-stable" : true
+  "prefer-stable" : true,
+  "require": {
+    "sendgrid/sendgrid": "^8.0"
+  }
 }
