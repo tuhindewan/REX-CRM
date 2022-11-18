@@ -1,4 +1,5 @@
 <?php
+
 namespace Mint\MRM\Internal\Admin;
 
 use Mint\Mrm\Internal\Traits\Singleton;
