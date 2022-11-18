@@ -1,21 +1,24 @@
-import React, {useEffect, useRef, useState} from "react";
-import _ from 'lodash'
+import _ from "lodash";
+import React, { useEffect, useState } from "react";
 
 import SettingsNav from "./SettingsNav";
 import SingleSocialMedia from "./SingleSocialMedia";
 import LoadingIndicator from "../../components/LoadingIndicator";
 
-import SettingIcon from "../../components/Icons/SettingIcon";
-import UploadIcon from "../../components/Icons/UploadIcon";
 import PlusIcon from "../../components/Icons/Plus";
 import ProfilePhotoPlaceholderIcon from "../../components/Icons/ProfilePhotoPlaceholderIcon";
+import SettingIcon from "../../components/Icons/SettingIcon";
+import UploadIcon from "../../components/Icons/UploadIcon";
 
-import { ClearNotification } from "../../utils/admin-notification";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 export default function BusinessSettings() {
-  _.noConflict()
-  let frame
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
+  _.noConflict();
+  let frame;
   const [tabState, setTabState] = useState(1);
   const [socialMedia, setSocialMedia] = useState([]);
   const [saveLoader, setsaveLoader] = useState(false);
@@ -30,58 +33,63 @@ export default function BusinessSettings() {
     setTabState(index);
   };
 
-
   //------add social media-------
   const addSocialMedia = (value) => {
-    setSocialMedia(prevState => {
-      return [...prevState, {
-        icon: '',
-        url: ''
-      }];
-    })
+    setSocialMedia((prevState) => {
+      return [
+        ...prevState,
+        {
+          icon: "",
+          url: "",
+        },
+      ];
+    });
   };
-  const [businessName ,setBusinessName] = useState('');
-  const handleBusinessName = (event) =>{
-    setBusinessName(event.target.value)
-  }
-  const [phoneNumber ,setPhoneNumber] = useState('');
-  const handlePhoneNumber = (event) =>{
-    setPhoneNumber(event.target.value)
-  }
-  const [businessAddress ,setBusinessAddress] = useState('');
-  const handleBusinessAddress = (event) =>{
-    setBusinessAddress(event.target.value)
-  }
-  const [businessLogo , setBusinessLogo] = useState('');
-  const [buttonDisable , setButtonDisabled] = useState(false);
-  const saveBusiness = async () =>{
+  const [businessName, setBusinessName] = useState("");
+  const handleBusinessName = (event) => {
+    setBusinessName(event.target.value);
+  };
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const handlePhoneNumber = (event) => {
+    setPhoneNumber(event.target.value);
+  };
+  const [businessAddress, setBusinessAddress] = useState("");
+  const handleBusinessAddress = (event) => {
+    setBusinessAddress(event.target.value);
+  };
+  const [businessLogo, setBusinessLogo] = useState("");
+  const [buttonDisable, setButtonDisabled] = useState(false);
+  const saveBusiness = async () => {
     setsaveLoader(true);
-    setButtonDisabled(true)
+    setButtonDisabled(true);
     const post_data = {
       business_name: businessName,
       phone: phoneNumber,
       address: businessAddress,
       logo_url: businessLogo,
-      socialMedia
+      socialMedia,
     };
 
-    const res = await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/settings/business`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(post_data),
-    });
+    const res = await fetch(
+      `${window.MRM_Vars.api_base_url}mrm/v1/settings/business`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      }
+    );
     const responseData = await res.json();
 
     if (true === responseData.success) {
-      setButtonDisabled(false)
+      setButtonDisabled(false);
       setNotificationType("success");
       setShowNotification("block");
       setMessage(responseData?.message);
       setsaveLoader(false);
     } else if (false === responseData.success) {
-      setButtonDisabled(false)
+      setButtonDisabled(false);
       setNotificationType("warning");
       setShowNotification("block");
       setMessage(responseData?.message);
@@ -89,14 +97,14 @@ export default function BusinessSettings() {
     }
     ClearNotification("none", setShowNotification);
     return () => clearTimeout(timer);
-  }
+  };
 
-  useEffect(()=> {
+  useEffect(() => {
     const getBusinessData = async () => {
       setShowLoader(true);
 
       const res = await fetch(
-          `${window.MRM_Vars.api_base_url}mrm/v1/settings/business`
+        `${window.MRM_Vars.api_base_url}mrm/v1/settings/business`
       );
       const resJson = await res.json();
       if( resJson.success == true){
@@ -109,8 +117,8 @@ export default function BusinessSettings() {
         setShowLoader(false);
       }
     };
-    getBusinessData()
-  },[]);
+    getBusinessData();
+  }, []);
 
   
   //-------logo upload from wp media--------
@@ -155,32 +163,32 @@ export default function BusinessSettings() {
   const deleteSocialLogo = (index) => {
     setSocialMedia([
       ...socialMedia.slice(0, index),
-      ...socialMedia.slice(index + 1, socialMedia.length)
+      ...socialMedia.slice(index + 1, socialMedia.length),
     ]);
   };
 
-  const handleSocialUrl = (singleSocialMedia, val , index) => {
+  const handleSocialUrl = (singleSocialMedia, val, index) => {
     singleSocialMedia.icon = singleSocialMedia.icon;
     singleSocialMedia.url = val.target.value;
     const modifiedOption = socialMedia.map((value, thisIndex) => {
-        if (index === thisIndex) {
-            value = { ...socialMedia[index], ...singleSocialMedia };
-        }
-        return value;
+      if (index === thisIndex) {
+        value = { ...socialMedia[index], ...singleSocialMedia };
+      }
+      return value;
     });
     setSocialMedia(modifiedOption);
-  }
-  const handleSocialIcon = (singleSocialMedia, val , index) => {
+  };
+  const handleSocialIcon = (singleSocialMedia, val, index) => {
     singleSocialMedia.url = singleSocialMedia.url;
     singleSocialMedia.icon = val;
-      const modifiedOption = socialMedia.map((value, thisIndex) => {
-          if (index === thisIndex) {
-              value = { ...socialMedia[index], ...singleSocialMedia };
-          }
-          return value;
-      });
-      setSocialMedia(modifiedOption);
-  }
+    const modifiedOption = socialMedia.map((value, thisIndex) => {
+      if (index === thisIndex) {
+        value = { ...socialMedia[index], ...singleSocialMedia };
+      }
+      return value;
+    });
+    setSocialMedia(modifiedOption);
+  };
 
   return (
     <>
@@ -288,7 +296,7 @@ export default function BusinessSettings() {
                     </div>
 
                     <div className="tab-footer">
-                      <button className="mintmrm-btn" type="button"  onClick={saveBusiness}>
+                      <button className="mintmrm-btn" type="button"  onClick={saveBusiness} disabled={saveLoader ? true : false}>
                         Save Settings
                         { saveLoader && 
                           <span className="mintmrm-loader"></span>
@@ -317,4 +325,3 @@ export default function BusinessSettings() {
     </>
   );
 }
-

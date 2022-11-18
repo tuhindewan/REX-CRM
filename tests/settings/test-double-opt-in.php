@@ -87,18 +87,6 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Optin create or update POST request response test
-	 */
-	public function test_create_update_route() {
-		$request  = new WP_REST_Request( 'POST', '/mrm/v1/settings/optin' );
-		$response = $this->server->dispatch( $request );
-		$request->set_body_params(
-			array()
-		);
-		$this->assertEquals( 200, $response->get_status() );
-	}
-
-	/**
 	 * Optin setting post request api params key check
 	 */
 	public function test_create_or_update() {
