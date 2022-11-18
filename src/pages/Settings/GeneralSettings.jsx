@@ -13,9 +13,12 @@ import {
   submitGeneralSetting,
 } from "../../services/Setting";
 import { getTags } from "../../services/Tag";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import SettingsNav from "./SettingsNav";
 
 export default function GeneralSettings() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   const [loader, setLoader] = useState(false);
   const [notificationType, setNotificationType] = useState("success");
   const [showNotification, setShowNotification] = useState("none");

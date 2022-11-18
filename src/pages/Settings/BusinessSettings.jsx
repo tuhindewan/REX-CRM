@@ -11,8 +11,11 @@ import UploadIcon from "../../components/Icons/UploadIcon";
 
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 export default function BusinessSettings() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   _.noConflict();
   let frame;
   const [tabState, setTabState] = useState(1);

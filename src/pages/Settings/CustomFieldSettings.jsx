@@ -12,8 +12,11 @@ import {
   getCustomFields,
   submitCustomFields,
 } from "../../services/CustomField";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 export default function CustomFieldSettings() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   const [customFieldModal, setCustomFieldModal] = useState(false);
   const [newCustomField, setNewCustomField] = useState([]);
   const [prepareData, setPrepareData] = useState({});

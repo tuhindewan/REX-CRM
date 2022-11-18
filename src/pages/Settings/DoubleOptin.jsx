@@ -12,9 +12,12 @@ import {
   submitOptin,
 } from "../../services/Setting";
 import { ClearNotification } from "../../utils/admin-notification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import SettingsNav from "./SettingsNav";
 
 export default function DoubleOptin() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   _.noConflict();
   const [selectOption, setSelectOption] = useState("message");
   const [selectSwitch, setSelectSwitch] = useState(true);
