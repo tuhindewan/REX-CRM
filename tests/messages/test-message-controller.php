@@ -78,17 +78,6 @@ class MessageControllerTest extends WP_UnitTestCase {
         $wp_rest_server = null;
     }
 
-    
-    /**
-	 * API endpoint reuqest check
-	 */
-	public function tearDown() {
-		parent::tearDown();
-
-		global $wp_rest_server;
-		$wp_rest_server = null;
-	}
-
 
 	/**
 	 * API endpoint reuqest check
