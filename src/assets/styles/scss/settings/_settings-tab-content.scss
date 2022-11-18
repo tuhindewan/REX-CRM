@@ -519,4 +519,10 @@
     .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .upload-area {
         width: calc(100% - 138px);
     }
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper .mintmrm-radiobtn {
+        display: inline-block;
+    }
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button {
+        position: relative;
+    }
 }

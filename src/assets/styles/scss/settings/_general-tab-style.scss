@@ -19,6 +19,7 @@
 
                     .form-group > label {
                         width: calc(100% - 35px);
+                        margin: 0;
                     }
                 }
 
@@ -132,4 +133,10 @@
     // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper .list-section .drop-down-button::before{
     //     right: 34px;
     // }
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper, .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .editable-primary-field {
+        width: 100%;
+    }
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-header .form-group{
+        flex-flow: row wrap;
+    }
 }

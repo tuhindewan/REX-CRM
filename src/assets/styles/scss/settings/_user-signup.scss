@@ -46,3 +46,25 @@
         width: calc(100% - 195px);
     }
 }
+
+@media only screen and (max-width: 991px) {
+    .general-settings-body.user-signup-settings .single-wp-dropdown {
+        width: 100%;
+    }
+    .general-settings-body.user-signup-settings .single-wp-dropdown .drop-down-button:before {
+        top: 45% !important;
+    }
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button::before {
+    content: " ";
+        top: 45%;
+    }
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button.show::before {
+        top: 45%;
+    }
+    // .general-settings-body.user-signup-settings .single-wp-dropdown .drop-down-button:before {
+    //     top: 65% !important;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button.show::before {
+    //     top: 67% !important;
+    // }
+}
