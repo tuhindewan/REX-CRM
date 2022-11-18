@@ -10,7 +10,6 @@ use WP_REST_Request;
 Class BusinessSettingController extends SettingBaseController{
 
 
-
 	use Singleton;
 
 	/**
