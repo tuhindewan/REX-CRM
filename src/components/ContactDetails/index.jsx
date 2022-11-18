@@ -470,6 +470,7 @@ export default function ContactDetails() {
     }
 
     //setContactData([modifiedContact]);
+
     console.log(modifiedContact);
   };
 
@@ -1392,6 +1393,8 @@ export default function ContactDetails() {
                                     />
                                   )}
 
+                                  {console.log(field)}
+
                                   {field.type == "selectField" && (
                                     <InputSelect
                                       name={field.title}
@@ -1399,6 +1402,9 @@ export default function ContactDetails() {
                                       placeholder={field.meta.placeholder}
                                       selectOption={field.meta.options}
                                       handleChange={handleMetaChange}
+                                      selectedValue={
+                                        contactData?.meta_fields?.[field.title]
+                                      }
                                       value={
                                         contactData?.meta_fields?.[field.title]
                                       }
