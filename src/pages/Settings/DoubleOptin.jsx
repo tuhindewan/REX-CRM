@@ -283,7 +283,7 @@ export default function DoubleOptin() {
                             </div>
                             <hr />
 
-                            <div className="form-group">
+                            <div className="form-group top-align">
                               <label htmlFor="">
                                 After Confirmation Type
                                 <span class="mintmrm-tooltip">
@@ -294,7 +294,7 @@ export default function DoubleOptin() {
                                   </p>
                                 </span>
                               </label>
-                              <div>
+                              <div className="input-custom-wrapper">
                                 <span className="mintmrm-radiobtn">
                                   <input
                                     id="show-message"
@@ -412,56 +412,59 @@ export default function DoubleOptin() {
                                   </p>
                                 </span>
                               </label>
-                              <div
-                                className="redirect-page-button"
-                                ref={selectPageRef}
-                              >
-                                <button
-                                  className={
-                                    selectPage
-                                      ? "drop-down-button show"
-                                      : "drop-down-button"
-                                  }
-                                  onClick={handlePageSelect}
+
+                              <div className="input-custom-wrapper">
+                                <div
+                                  className="redirect-page-button"
+                                  ref={selectPageRef}
                                 >
-                                  {selectPageOption
-                                    ? selectPageOption
-                                    : "Select Page"}
-                                </button>
-                                <ul
-                                  className={
-                                    selectPage
-                                      ? "mintmrm-dropdown show"
-                                      : "mintmrm-dropdown"
-                                  }
-                                >
-                                  <li className="searchbar">
-                                    <span class="pos-relative">
-                                      <Search />
-                                      <input
-                                        type="search"
-                                        name="column-search"
-                                        placeholder="Search or create"
-                                      />
-                                    </span>
-                                  </li>
-                                  {pages.map((item) => {
-                                    return (
-                                      <li
-                                        onClick={() =>
-                                          handleSelectOption(
-                                            item.title.rendered,
-                                            item.id
-                                          )
-                                        }
-                                        key={item.id}
-                                        className={"single-column"}
-                                      >
-                                        {item.title.rendered}
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
+                                  <button
+                                    className={
+                                      selectPage
+                                        ? "drop-down-button show"
+                                        : "drop-down-button"
+                                    }
+                                    onClick={handlePageSelect}
+                                  >
+                                    {selectPageOption
+                                      ? selectPageOption
+                                      : "Select Page"}
+                                  </button>
+                                  <ul
+                                    className={
+                                      selectPage
+                                        ? "mintmrm-dropdown show"
+                                        : "mintmrm-dropdown"
+                                    }
+                                  >
+                                    <li className="searchbar">
+                                      <span class="pos-relative">
+                                        <Search />
+                                        <input
+                                          type="search"
+                                          name="column-search"
+                                          placeholder="Search or create"
+                                        />
+                                      </span>
+                                    </li>
+                                    {pages.map((item) => {
+                                      return (
+                                        <li
+                                          onClick={() =>
+                                            handleSelectOption(
+                                              item.title.rendered,
+                                              item.id
+                                            )
+                                          }
+                                          key={item.id}
+                                          className={"single-column"}
+                                        >
+                                          {item.title.rendered}
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </div>
                               </div>
                             </div>
                           </>
