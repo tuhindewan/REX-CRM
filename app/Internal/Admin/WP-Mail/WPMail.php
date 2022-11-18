@@ -57,34 +57,35 @@ class WPMail {
 	 * @since 1.0.0
 	 */
 	public function configure_smtp( $phpmailer ) {
-		$host     = isset( $this->smtp_settings[ 'host' ] ) ? $this->smtp_settings[ 'host' ] : false;
-		$port     = isset( $this->smtp_settings[ 'port' ] ) ? $this->smtp_settings[ 'port' ] : false;
-		$secure   = isset( $this->smtp_settings[ 'secure' ] ) && 'no' !== $this->smtp_settings[ 'secure' ] ? $this->smtp_settings[ 'secure' ] : false;
-		$login    = isset( $this->smtp_settings[ 'login' ] ) ? $this->smtp_settings[ 'login' ] : '';
-		$password = isset( $this->smtp_settings[ 'password' ] ) ? $this->smtp_settings[ 'password' ] : '';
+		if ( ($phpmailer instanceof PHPMailer) ) {
+			$host     = isset( $this->smtp_settings[ 'host' ] ) ? $this->smtp_settings[ 'host' ] : false;
+			$port     = isset( $this->smtp_settings[ 'port' ] ) ? $this->smtp_settings[ 'port' ] : false;
+			$secure   = isset( $this->smtp_settings[ 'secure' ] ) && 'no' !== $this->smtp_settings[ 'secure' ] ? $this->smtp_settings[ 'secure' ] : false;
+			$login    = isset( $this->smtp_settings[ 'login' ] ) ? $this->smtp_settings[ 'login' ] : '';
+			$password = isset( $this->smtp_settings[ 'password' ] ) ? $this->smtp_settings[ 'password' ] : '';
 
-		if ( $host && $port ) {
-			try {
-				$phpmailer->isSMTP();
-				$phpmailer->Host     = trim( $host );
-				$phpmailer->SMTPAuth = true;
-				$phpmailer->Username = trim( $login );
-				$phpmailer->Password = trim( $password );
-				$phpmailer->Port     = (int)trim( $port );
+			if ( $host && $port ) {
+				try {
+					$phpmailer->isSMTP();
+					$phpmailer->Host     = trim( $host );
+					$phpmailer->SMTPAuth = true;
+					$phpmailer->Username = trim( $login );
+					$phpmailer->Password = trim( $password );
+					$phpmailer->Port     = (int) trim( $port );
 
-				if ( 'tls' === $secure ) {
-					$phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-					$phpmailer->SMTPAutoTLS = true;
+					if ( 'tls' === $secure ) {
+						$phpmailer->SMTPSecure  = PHPMailer::ENCRYPTION_STARTTLS;
+						$phpmailer->SMTPAutoTLS = true;
+					} elseif ( 'ssl' === $secure ) {
+						$phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+					} else {
+						$phpmailer->SMTPSecure  = false;
+						$phpmailer->SMTPAutoTLS = false;
+					}
 				}
-				elseif ( 'ssl' === $secure ) {
-					$phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-				}
-				else {
-					$phpmailer->SMTPSecure = false;
-					$phpmailer->SMTPAutoTLS = false;
+				catch( Exception $e ) {
 				}
 			}
-			catch( Exception $e ) {}
 		}
 	}
 
