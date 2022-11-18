@@ -62,7 +62,7 @@ test:php7.4:
 
 
 phpcs:
-  stage: syntax
+  stage: phpcs
   script:
     - ./vendor/bin/phpcs
   rules:
