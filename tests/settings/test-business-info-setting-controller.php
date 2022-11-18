@@ -84,6 +84,7 @@ class Test_BusinessSettingController extends WP_UnitTestCase {
 	}
 
 	public function test_get(  ) {
+		$request = new WP_REST_Request( 'POST', '/mrm/v1/settings/business' );
 		$body = [
 			"business_name" => "",
 			"phone"         => "+8800178294804",
@@ -95,7 +96,8 @@ class Test_BusinessSettingController extends WP_UnitTestCase {
 			]
 		];
 		update_option( '_mrm_business_info_setting', $body );
-		$response = self::$instance->get();
+		$request->set_body( json_encode( $body ) );
+		$response = self::$instance->get($request);
 		$this->assertTrue( is_object( $response ) );
 		$this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
 		$this->assertTrue( 200 === $response->get_status() );

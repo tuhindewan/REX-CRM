@@ -86,7 +86,7 @@ export default function SettingsNav() {
                         to="/settings/custom-field"
                     >
                         <CustomFieldIcon />
-                        Contact Custom Field
+                        Contact Custom Fields
                     </Link>
                 </li>
                 <li>
@@ -99,7 +99,7 @@ export default function SettingsNav() {
                         to="/settings/smtp"
                     >
                         <SmtpIcon />
-                        Smtp
+                        SMTP
                     </Link>
                 </li>
             </ul>

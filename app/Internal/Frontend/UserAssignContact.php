@@ -65,7 +65,11 @@ class UserAssignContact {
 							if($is_double_optin){
 								MessageController::get_instance()->send_double_opt_in( $contact_id );
 							}
-							$ids = isset($lists['list']) ? $lists['list'] : [];
+							$list_data = isset($lists['list']) ? $lists['list'] : [];
+							$ids = [];
+							foreach ($list_data as $id){
+								$ids[] = $id;
+							}
 							TagController::set_tags_to_contact($ids,$contact_id);
 						}
 					}
@@ -83,7 +87,7 @@ class UserAssignContact {
 	 * @return void
 	 */
 	public function assign_comment_post_user_in_contact(  $comment_ID, $comment_approved, $commentdata ) {
-
+		
 		$get_options = get_option('_mrm_general_comment_form_subscription');
 		if (isset($get_options['enable']) && $get_options['enable']){
 			$user_email = isset($commentdata['comment_author_email']) ? $commentdata['comment_author_email'] : '';

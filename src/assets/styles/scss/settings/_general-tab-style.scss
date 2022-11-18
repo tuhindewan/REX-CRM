@@ -18,7 +18,7 @@
                     }
 
                     .form-group > label {
-                        width: 300px;
+                        width: calc(100% - 35px);
                     }
                 }
 
@@ -44,6 +44,10 @@
                             display: block;
                             margin-bottom: 20px;
                             margin-right: 0;
+
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
                         }
 
                         .list-section {
@@ -71,7 +75,7 @@
                     }
                     .wp-user {
                         border-bottom: 1px solid #ebedf0;
-                        margin: -30px -24px 0;
+                        margin: -30px -24px 23px;
                         padding: 14px 24px;
                         span {
                             display: inline-block;

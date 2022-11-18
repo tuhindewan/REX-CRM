@@ -38,7 +38,7 @@ export default function SmtpSettings() {
                                         <header className="tab-header">
                                             <h4 className="title">
                                                 <SmtpIcon />
-                                                Smtp Settings
+                                                SMTP Settings
                                             </h4>
                                         </header>
 
@@ -55,7 +55,7 @@ export default function SmtpSettings() {
 
                                             <hr />
 
-                                            {/* when sending protocol smtp selected */}
+                                            {/* when sending protocol "smtp" selected */}
                                             {'smtp' === sendingProtocol &&
                                                 <>
                                                     <div className="form-group top-align">
@@ -190,6 +190,234 @@ export default function SmtpSettings() {
                                                         </div>
                                                     </div>
 
+                                                </>
+                                            }
+
+                                            {/* when sending protocol "web-server" selected */}
+                                            {'web-server' === sendingProtocol &&
+                                                <>
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="sending-frequency">Sending Frequency</label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <select name="sending-frequency" id="sending-frequency">
+                                                                <option value="set-own-frequency">I'll set my own frequency</option>
+                                                                <option value="recommended">Recommended</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="spf-signature">
+                                                            SPF Signature (Highly recommended!)
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group send-test-email">
+                                                        <label htmlFor="test-email">
+                                                            Test the sending method
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper inline-field">
+                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
+                                                            <button className="mintmrm-btn outline" type="button">
+                                                                Send a test email
+                                                                <DoubleAngleRightIcon/>
+                                                                {/* <span className="mintmrm-loader"></span> */}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            }
+
+                                            {/* when sending protocol "sendgrid" selected */}
+                                            {'sendgrid' === sendingProtocol &&
+                                                <>
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="sending-frequency">
+                                                            Sending Frequency
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <select name="sending-frequency" id="sending-frequency">
+                                                                <option value="set-own-frequency">I'll set my own frequency</option>
+                                                                <option value="recommended">Recommended</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="api-key"> API Key </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <input type="text" name="api-key" id="api-key" />
+                                                        </div>
+                                                    </div>
+
+                                                    <hr />
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="spf-signature">
+                                                            SPF Signature (Highly recommended!)
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group send-test-email">
+                                                        <label htmlFor="test-email">
+                                                            Test the sending method
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper inline-field">
+                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
+                                                            <button className="mintmrm-btn outline" type="button">
+                                                                Send a test email
+                                                                <DoubleAngleRightIcon/>
+                                                                {/* <span className="mintmrm-loader"></span> */}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            }
+
+                                            {/* when sending protocol "amazonses" selected */}
+                                            {'amazonses' === sendingProtocol &&
+                                                <>
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="sending-frequency">
+                                                            Sending Frequency
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <select name="sending-frequency" id="sending-frequency">
+                                                                <option value="set-own-frequency">I'll set my own frequency</option>
+                                                                <option value="recommended">Recommended</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="region">
+                                                            Region
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <select name="region" id="region">
+                                                                <option value="af-south-1">Africa (Cape Town)</option>
+                                                                <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
+                                                                <option value="ap-southeast-3">Asia Pacific (Jakarta)</option>
+                                                                <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                                                                <option value="ap-northeast-3">Asia Pacific (Osaka)</option>
+                                                                <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                                                                <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+                                                                <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                                                                <option value="us-gov-east-1">AWS GovCloud (US-East)</option>
+                                                                <option value="us-gov-west-1">AWS GovCloud (US-West)</option>
+                                                                <option value="ca-central-1">Canada (Central)</option>
+                                                                <option value="eu-central-1">Europe (Frankfurt)</option>
+                                                                <option value="eu-west-1">Europe (Ireland)</option>
+                                                                <option value="eu-west-2">Europe (London)</option>
+                                                                <option value="eu-south-1">Europe (Milan)</option>
+                                                                <option value="eu-west-3">Europe (Paris)</option>
+                                                                <option value="eu-south-2">Europe (Spain)</option>
+                                                                <option value="eu-north-1">Europe (Stockholm)</option>
+                                                                <option value="eu-central-2">Europe (Zurich)</option>
+                                                                <option value="me-south-1">Middle East (Bahrain)</option>
+                                                                <option value="me-central-1">Middle East (UAE)</option>
+                                                                <option value="sa-east-1">MSouth America (São Paulo)</option>
+                                                                <option value="us-east-1">US East (N. Virginia)</option>
+                                                                <option value="us-east-2">US East (Ohio)</option>
+                                                                <option value="us-west-1">US West (N. California)</option>
+                                                                <option value="us-west-2">US West (Oregon)</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="access-key">Access Key</label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <input type="text" name="access-key" id="access-key" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="secret-key">Secret Key</label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <input type="password" name="secret-key" id="secret-key" />
+                                                        </div>
+                                                    </div>
+
+                                                    <hr />
+
+                                                    <div className="form-group top-align">
+                                                        <label htmlFor="spf-signature">
+                                                            SPF Signature (Highly recommended!)
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper">
+                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group send-test-email">
+                                                        <label htmlFor="test-email">
+                                                            Test the sending method
+                                                            <span class="mintmrm-tooltip">
+                                                                <TooltipQuestionIcon />
+                                                                <p> Define behaviour of the form after submission </p>
+                                                            </span>
+                                                        </label>
+
+                                                        <div className="input-custom-wrapper inline-field">
+                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
+                                                            <button className="mintmrm-btn outline" type="button">
+                                                                Send a test email
+                                                                <DoubleAngleRightIcon/>
+                                                                {/* <span className="mintmrm-loader"></span> */}
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </>
                                             }
 

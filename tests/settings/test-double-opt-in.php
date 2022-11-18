@@ -22,7 +22,7 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
 	/**
     * mrm_campaigns table create for testing
     */
-    public function setUp() {
+    public function setUp():void {
         parent::setUp();
 
         self::$instance  = \Mint\MRM\Admin\API\Controllers\OptinSettingController::get_instance();
@@ -62,7 +62,7 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
     /**
     * Delete the server after the test.
     */
-    public function tearDown() {
+    public function tearDown():void {
         parent::tearDown();
 
         global $wp_rest_server;
@@ -147,8 +147,9 @@ class DoubleOptinSettingTest extends WP_UnitTestCase {
                 "confirmation_message"  => "Your subscription to our list has been confirmed."
             ]
         ];
+	    $request = new WP_REST_Request( 'GET', '/mrm/v1/settings/optin' );
 		update_option( '_mrm_optin_settings', $body );
-		$response = self::$instance->get();
+		$response = self::$instance->get($request);
 		$this->assertTrue( is_object( $response ) );
 		$this->assertTrue( 'WP_REST_Response' === get_class( $response ) );
 		$this->assertTrue( 200 === $response->get_status() );
