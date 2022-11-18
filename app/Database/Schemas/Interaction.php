@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -14,30 +14,29 @@ use Mint\MRM\Interfaces\Schema;
  * @desc [Create wp_mrm_interactions table into database]
  */
 
-class InteractionSchema implements Schema{
+class InteractionSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_interactions';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_interactions';
 
 
 
-    /**
-     * Get the schema of Interaction table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
+	/**
+	 * Get the schema of Interaction table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             `contact_id` BIGINT(20) UNSIGNED NOT NULL,
             `hash` VARCHAR(60) NOT NULL,
@@ -55,5 +54,5 @@ class InteractionSchema implements Schema{
             PRIMARY KEY (`id`),
             KEY `contact_id` (`contact_id`)
          );";
-    }
+	}
 }

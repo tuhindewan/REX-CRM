@@ -13,23 +13,23 @@ class WooCommerceOrderDetails {
 	 * @since 1.0.0
 	 */
 	public function init() {
-		add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'render_subscription_consent_message' ] );
+		add_action( 'woocommerce_admin_order_data_after_order_details', array( $this, 'render_subscription_consent_message' ) );
 	}
 
 	/**
-     * @desc Add subscription consent message in order details page
+	 * @desc Add subscription consent message in order details page
 	 * @param $order
 	 * @return void
-     * @since 1.0.0
+	 * @since 1.0.0
 	 */
 	public function render_subscription_consent_message( $order ) {
 		$consent_message = get_post_meta( $order->get_id(), '_mrm_newsletter_subscription', true );
-		if ( $consent_message ):
-		?>
+		if ( $consent_message ) :
+			?>
 		<p class="form-field form-field-wide">
-            <p class="order_note"><strong><?php esc_html_e( 'Newsletter subscription:', 'mrm' ) ?></strong> <?php esc_html_e( $consent_message, 'mrm' );?></p>
+			<p class="order_note"><strong><?php esc_html_e( 'Newsletter subscription:', 'mrm' ); ?></strong> <?php esc_html_e( $consent_message, 'mrm' ); ?></p>
 		</p>
-        <?php
-        endif;
+			<?php
+		endif;
 	}
 }

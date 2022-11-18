@@ -12,30 +12,28 @@ namespace Mint\MRM\DataStores;
 
 class FieldGroup {
 
-    /**
-     * Group title
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $title;
+	/**
+	 * Group title
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $title;
 
 
-    public function __construct( $args )
-    {
-        $this->title = isset($args['title']) ? sanitize_text_field( $args['title'] ) : NULL;
-    }
+	public function __construct( $args ) {
+		$this->title = isset( $args['title'] ) ? sanitize_text_field( $args['title'] ) : null;
+	}
 
- 
-    /**
-     * Return title
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_title()
-    {
-        return $this->title;
-    }
+
+	/**
+	 * Return title
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_title() {
+		return $this->title;
+	}
 
 }

@@ -11,7 +11,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -19,28 +19,27 @@ use Mint\MRM\Interfaces\Schema;
 class CustomFieldSchema implements Schema {
 
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_custom_fields';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_custom_fields';
 
 
-    /**
-     * Create the table.
-     *
-     * @return void
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
+	/**
+	 * Create the table.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
 
-        $table = $wpdb->prefix . self::$table_name;
+		$table = $wpdb->prefix . self::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `title` VARCHAR(255) NOT NULL,
                 `slug` VARCHAR(255) NOT NULL,
@@ -50,5 +49,5 @@ class CustomFieldSchema implements Schema {
                 `created_at` TIMESTAMP,
                 `updated_at` TIMESTAMP
             ) ";
-    }
+	}
 }

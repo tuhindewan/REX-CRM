@@ -12,116 +12,110 @@ namespace Mint\MRM\DataStores;
 
 class WordkflowData {
 
-    /**
-     * Workflow Title
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $title;
-
-    
-
-    /**
-     * Workflow data
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $workflow_data;
-
-    /**
-     * Global State Data
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $global_state;
+	/**
+	 * Workflow Title
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $title;
 
 
-    /**
-     * Contact status
-     * 
-     * @var int
-     * @since 1.0.0
-     */
-    private $status;
 
-    /**
-     * Workflow data
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $last_step_id;
+	/**
+	 * Workflow data
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $workflow_data;
 
-
-    public function __construct($args)
-    {
-        $this->title            =  $args['title'];
-        $this->workflow_data    =  $args['workflow_data'];
-        $this->global_state     =  $args['global_state'];
-        $this->status           =  $args['status'];
-        $this->last_step_id     =  $args['last_step_id'];
-    }
-
-    /**
-     * Return workflow title
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_title()
-    {
-        return $this->title;
-    }
+	/**
+	 * Global State Data
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $global_state;
 
 
-    /**
-     * Return workflow data
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_workflow_data()
-    {
-        return $this->workflow_data;
-    }
+	/**
+	 * Contact status
+	 *
+	 * @var int
+	 * @since 1.0.0
+	 */
+	private $status;
 
-    /**
-     * Return golbal state data
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_global_state()
-    {
-        return $this->global_state;
-    }
-    
+	/**
+	 * Workflow data
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $last_step_id;
 
 
-    /**
-     * Return note status
-     * 
-     * @return int
-     * @since 1.0.0
-     */
-    public function get_status()
-    {
-        return $this->status;
-    }
+	public function __construct( $args ) {
+		$this->title         = $args['title'];
+		$this->workflow_data = $args['workflow_data'];
+		$this->global_state  = $args['global_state'];
+		$this->status        = $args['status'];
+		$this->last_step_id  = $args['last_step_id'];
+	}
 
-    /**
-     * Return last step id
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_last_step_id()
-    {
-        return $this->last_step_id;
-    }
-    
+	/**
+	 * Return workflow title
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_title() {
+		return $this->title;
+	}
+
+
+	/**
+	 * Return workflow data
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_workflow_data() {
+		return $this->workflow_data;
+	}
+
+	/**
+	 * Return golbal state data
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_global_state() {
+		return $this->global_state;
+	}
+
+
+
+	/**
+	 * Return note status
+	 *
+	 * @return int
+	 * @since 1.0.0
+	 */
+	public function get_status() {
+		return $this->status;
+	}
+
+	/**
+	 * Return last step id
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_last_step_id() {
+		return $this->last_step_id;
+	}
+
 
 }

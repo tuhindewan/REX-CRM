@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -14,28 +14,27 @@ use Mint\MRM\Interfaces\Schema;
  * @desc [Create wp_mrm_contact_meta table into database]
  */
 
-class ContactMetaSchema implements Schema{
+class ContactMetaSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_contact_meta';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_contact_meta';
 
 
-    /**
-     * Get the schema of Contact meta table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+	/**
+	 * Get the schema of Contact meta table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `contact_id` BIGINT UNSIGNED NOT NULL,
             `meta_key` VARCHAR(50) DEFAULT NULL,    
@@ -43,5 +42,5 @@ class ContactMetaSchema implements Schema{
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL
          ) ";
-    }
+	}
 }

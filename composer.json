@@ -4,8 +4,7 @@
   "scripts": {
     "test": "phpunit",
     "phpcs": "./vendor/bin/phpcs",
-    "phpcs:fix": "./vendor/bin/phpcbf",
-    "phpcs:i": "./vendor/bin/phpcs -i"
+    "phpcs:fix": "./vendor/bin/phpcbf"
   },
   "autoload": {
     "psr-4": {

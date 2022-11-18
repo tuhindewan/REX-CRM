@@ -12,11 +12,11 @@ namespace MRM\Activation\Handler;
 
 interface MRM_Activation_Handler {
 
-    /**
-     * Handle services after plugin activation
-     * 
-     * @return void
-     */
-    public static function handle();
-    
+	/**
+	 * Handle services after plugin activation
+	 *
+	 * @return void
+	 */
+	public static function handle();
+
 }

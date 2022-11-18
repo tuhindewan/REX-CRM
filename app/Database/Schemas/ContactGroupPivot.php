@@ -1,7 +1,7 @@
 <?php
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -15,29 +15,28 @@ use Mint\MRM\Interfaces\Schema;
 
 class ContactGroupPivotSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_contact_group_pivot';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_contact_group_pivot';
 
 
-    /**
-     * Get the schema of Contact group pivot table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table              = $wpdb->prefix . self::$table_name;
-        $contact_group_table    = $wpdb->prefix . ContactGroupSchema::$table_name;
-        $contact_table      = $wpdb->prefix . ContactSchema::$table_name;
+	/**
+	 * Get the schema of Contact group pivot table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table               = $wpdb->prefix . self::$table_name;
+		$contact_group_table = $wpdb->prefix . ContactGroupSchema::$table_name;
+		$contact_table       = $wpdb->prefix . ContactSchema::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `contact_id` BIGINT UNSIGNED NOT NULL,
             `group_id` BIGINT UNSIGNED NOT NULL COMMENT 'list_id or tag_id or segment_id',
@@ -52,5 +51,5 @@ class ContactGroupPivotSchema implements Schema {
             REFERENCES `{$contact_table}` (id)
             ON DELETE CASCADE
         ) ";
-    }
+	}
 }

@@ -8,6 +8,7 @@ cache:
 
 # Our stages
 stages:
+  - phpcs
   - test
 
 # before running the CI server setup
@@ -40,48 +41,29 @@ variables:
   WP_VERSION: latest
   WP_MULTISITE: "0"
 
-# We test PHP7
+# We test PHP 7
 test:php7:
   stage: test
   image: php:7
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors=never
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")
 
 
-# We test PHP7 with multisite
-test:php7:multisite:
-  stage: test
-  variables:
-    WP_VERSION: latest
-    WP_MULTISITE: "1"
-  image: php:7
-  script:
-    - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clove --colors=never
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
-
-# We test PHP7.4
+# We test PHP 7.4
 test:php7.4:
   stage: test
   image: php:7.4
   script:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors=never
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")
 
 
-# We test PHP7 with multisite
-test:php7.4:multisite:
-  stage: test
-  variables:
-    WP_VERSION: latest
-    WP_MULTISITE: "1"
-  image: php:7
+phpcs:
+  stage: syntax
   script:
-    - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clove --colors=never
+    - ./vendor/bin/phpcs
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
+    - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")

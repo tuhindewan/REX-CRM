@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -14,29 +14,28 @@ use Mint\MRM\Interfaces\Schema;
  * @desc [Create wp_mrm_contact_note table into database]
  */
 
-class ContactNoteSchema implements Schema{
+class ContactNoteSchema implements Schema {
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_contact_note';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_contact_note';
 
 
-    /**
-     * Get the schema of Contact note table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
+	/**
+	 * Get the schema of Contact note table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             `contact_id` BIGINT(20) UNSIGNED NOT NULL,
             `type` VARCHAR(255) NOT NULL,
@@ -50,5 +49,5 @@ class ContactNoteSchema implements Schema{
             PRIMARY KEY (`id`),
             KEY `contact_id` (`contact_id`)
          ) ";
-    }
+	}
 }

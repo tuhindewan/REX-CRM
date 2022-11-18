@@ -19,186 +19,176 @@ use MRM\Common\MRM_Common;
  */
 
 class CustomFieldController extends BaseController {
-    
-    use Singleton;
 
-    /**
-     * Field object arguments
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    public $args;
+	use Singleton;
 
-
-    /**
-     * Get and send response to create or update a custom field 
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function create_or_update( WP_REST_Request $request ){
-        
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-
-        // Filed title validation
-        $title = isset( $params['title'] ) ? sanitize_text_field($params['title']) : NULL;
-
-        if ( empty( $title ) ) {
-            return $this->get_error_response( __( 'Title is mandatory', 'mrm' ),  200);
-        }
-
-        $slug = sanitize_title( $title );
-        $primary_fields = Constants::$primary_fields;
-        $exist = CustomFieldModel::is_field_exist( $slug );
-
-        if ( $exist && !isset($params['field_id'])) {
-            return $this->get_error_response( __( 'Field is already available', 'mrm' ),  200);
-        }
-
-        if ( in_array( $slug, $primary_fields )) {
-            return $this->get_error_response( __( 'Field is already available', 'mrm' ),  200);
-        }
-
-        // Field type validation
-        $type = isset( $params['type'] ) ? sanitize_text_field($params['type']) : NULL;
-
-        if ( empty( $type ) ) {
-            return $this->get_error_response( __( 'Type is mandatory', 'mrm' ),  202);
-        }
+	/**
+	 * Field object arguments
+	 *
+	 * @var object
+	 * @since 1.0.0
+	 */
+	public $args;
 
 
-        if ( ! empty( $params['options'] ) ) {
-            $options = $params['options'];
-        }
-        
-        $placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
+	/**
+	 * Get and send response to create or update a custom field
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function create_or_update( WP_REST_Request $request ) {
 
-        $meta = array();
-        if ( ! empty( $options ) ) {
-            $meta['options'] = $options;
-        }
-        if ( ! empty( $placeholder ) ) {
-            $meta['placeholder'] = $placeholder;
-        }
-        
-        $this->args = array(
-            'title'    => $title,
-            'slug'     => $slug,
-            'type'     => $type,
-            'meta'     => $meta
-        );
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
 
-        $field = new CustomFieldData( $this->args );
+		// Filed title validation
+		$title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : null;
 
-        // Field object create and insert or update to database
-        try {
+		if ( empty( $title ) ) {
+			return $this->get_error_response( __( 'Title is mandatory', 'mrm' ), 200 );
+		}
 
-            if(isset( $params['field_id'] )){
-                $field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
+		$slug           = sanitize_title( $title );
+		$primary_fields = Constants::$primary_fields;
+		$exist          = CustomFieldModel::is_field_exist( $slug );
 
-                $success = CustomFieldModel::update( $field, $field_id );
-            }else{
+		if ( $exist && ! isset( $params['field_id'] ) ) {
+			return $this->get_error_response( __( 'Field is already available', 'mrm' ), 200 );
+		}
 
-                $success = CustomFieldModel::insert( $field );
-            }
+		if ( in_array( $slug, $primary_fields ) ) {
+			return $this->get_error_response( __( 'Field is already available', 'mrm' ), 200 );
+		}
 
-            if($success) {
-                return $this->get_success_response(__( 'Field has been saved successfully', 'mrm' ), 201);
-            }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
+		// Field type validation
+		$type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : null;
 
-        } catch(Exception $e) {
-            return $this->get_error_response(__( $e->getMessage(), 'mrm' ), 400);
-        }
+		if ( empty( $type ) ) {
+			return $this->get_error_response( __( 'Type is mandatory', 'mrm' ), 202 );
+		}
 
-    }
+		if ( ! empty( $params['options'] ) ) {
+			$options = $params['options'];
+		}
 
+		$placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
 
-    /**
-     * Request for deleting a single field 
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_single( WP_REST_Request $request ){
+		$meta = array();
+		if ( ! empty( $options ) ) {
+			$meta['options'] = $options;
+		}
+		if ( ! empty( $placeholder ) ) {
+			$meta['placeholder'] = $placeholder;
+		}
 
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+		$this->args = array(
+			'title' => $title,
+			'slug'  => $slug,
+			'type'  => $type,
+			'meta'  => $meta,
+		);
 
-        $field_id = isset( $params['field_id'] ) ? $params['field_id'] : "";
+		$field = new CustomFieldData( $this->args );
 
-        $success = CustomFieldModel::destroy( $field_id );
-        if( $success ) {
-            return $this->get_success_response( __( 'Field has been deleted successfully', 'mrm' ), 200 );
-        }
+		// Field object create and insert or update to database
+		try {
+			if ( isset( $params['field_id'] ) ) {
+				$field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
 
-        return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
+				$success = CustomFieldModel::update( $field, $field_id );
+			} else {
+				$success = CustomFieldModel::insert( $field );
+			}
 
-    }
-
-
-    /**
-     * TODO: complete this function in order to delete multilple fields
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_all( WP_REST_Request $request ){
-
-        
-    }
+			if ( $success ) {
+				return $this->get_success_response( __( 'Field has been saved successfully', 'mrm' ), 201 );
+			}
+			return $this->get_error_response( __( 'Failed to save', 'mrm' ), 400 );
+		} catch ( Exception $e ) {
+			return $this->get_error_response( __( $e->getMessage(), 'mrm' ), 400 );
+		}
+	}
 
 
-    /**
-     * Get all fields request
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_all( WP_REST_Request $request ){
+	/**
+	 * Request for deleting a single field
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function delete_single( WP_REST_Request $request ) {
 
-       // Get values from API
-       $params = MRM_Common::get_api_params_values( $request );
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
 
-       $fields = CustomFieldModel::get_all();
+		$field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
 
-       if(isset($fields)) {
-           return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $fields);
-       }
-       return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+		$success = CustomFieldModel::destroy( $field_id );
+		if ( $success ) {
+			return $this->get_success_response( __( 'Field has been deleted successfully', 'mrm' ), 200 );
+		}
 
-    }
+		return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
+	}
 
 
-    /**
-     * Function use to get single field 
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0 
-     */
-    public function get_single( WP_REST_Request $request ){
- 
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-    
-        $field = CustomFieldModel::get( $params['field_id'] );
-        
-        if( !empty($field) && $field->meta ){
-            $field->options = maybe_unserialize( $field->meta );
-        }
-        
-        if( isset( $field ) ) {
-            return $this->get_success_response(__( 'Query Successfull', 'mrm' ), 200, $field);
-        }
-        return $this->get_error_response(__( 'Failed to get data', 'mrm' ), 400);
+	/**
+	 * TODO: complete this function in order to delete multilple fields
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function delete_all( WP_REST_Request $request ) {
+	}
 
-    }
+
+	/**
+	 * Get all fields request
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get_all( WP_REST_Request $request ) {
+
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+
+		$fields = CustomFieldModel::get_all();
+
+		if ( isset( $fields ) ) {
+			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $fields );
+		}
+		return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+	}
+
+
+	/**
+	 * Function use to get single field
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get_single( WP_REST_Request $request ) {
+
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+
+		$field = CustomFieldModel::get( $params['field_id'] );
+
+		if ( ! empty( $field ) && $field->meta ) {
+			$field->options = maybe_unserialize( $field->meta );
+		}
+
+		if ( isset( $field ) ) {
+			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $field );
+		}
+		return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+	}
 
 }

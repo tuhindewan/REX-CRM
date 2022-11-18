@@ -2,7 +2,7 @@
 
 namespace Mint\MRM\DataBase\Tables;
 
-require_once MRM_DIR_PATH . "app/Interfaces/Schema.php";
+require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
@@ -14,31 +14,30 @@ use Mint\MRM\Interfaces\Schema;
  * @desc [Create wp_mrm_messages table into database]
  */
 
-class MessageSchema implements Schema{
+class MessageSchema implements Schema {
 
 
-    /**
-     * Table name
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    public static $table_name = 'mrm_messages';
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	public static $table_name = 'mrm_messages';
 
 
 
-    /**
-     * Get the schema of Messages table
-     *
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_sql()
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . self::$table_name;
+	/**
+	 * Get the schema of Messages table
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_sql() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::$table_name;
 
-        return "CREATE TABLE IF NOT EXISTS {$table} (
+		return "CREATE TABLE IF NOT EXISTS {$table} (
                 `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `campaign_id` BIGINT UNSIGNED NULL,
                 `message_type` VARCHAR(50) NULL DEFAULT 'email' COMMENT 'SMS, WHATSAPP etc will add in future',
@@ -58,5 +57,5 @@ class MessageSchema implements Schema{
                 INDEX `campaign_id_index` (`campaign_id` DESC),
                 INDEX `contact_id_index` (`contact_id` DESC)
              ) ";
-    }
+	}
 }

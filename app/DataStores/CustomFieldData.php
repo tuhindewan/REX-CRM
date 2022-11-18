@@ -12,97 +12,92 @@ namespace Mint\MRM\DataStores;
 
 class CustomFieldData {
 
-    /**
-     * Field title
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $title;
+	/**
+	 * Field title
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $title;
 
-    /**
-     * Field slug
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $slug;
+	/**
+	 * Field slug
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $slug;
 
-    /**
-     * Field type
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $type;
-
-
-    /**
-     * Field meta
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $meta;
+	/**
+	 * Field type
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $type;
 
 
-    public function __construct( $args )
-    {
-        $this->title    = $args['title'];
-        $this->slug     = $args['slug'];
-        $this->type     = $args['type'];
-        $this->meta     = $args['meta'];
-    }
-
- 
-    /**
-     * Return title
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_title()
-    {
-        return $this->title;
-    }
+	/**
+	 * Field meta
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $meta;
 
 
-    /**
-     * Return type
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_type()
-    {
-        return $this->type;
-    }
+	public function __construct( $args ) {
+		$this->title = $args['title'];
+		$this->slug  = $args['slug'];
+		$this->type  = $args['type'];
+		$this->meta  = $args['meta'];
+	}
 
 
-    /**
-     * Return slug
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_slug()
-    {
-        return $this->slug;
-    }
+	/**
+	 * Return title
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_title() {
+		return $this->title;
+	}
 
 
-    /**
-     * Return meta
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_meta()
-    {
-        if( !is_serialized( $this->meta ) ) {
-            return maybe_serialize($this->meta);
-        }
-        return $this->meta;
-    }
+	/**
+	 * Return type
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_type() {
+		return $this->type;
+	}
+
+
+	/**
+	 * Return slug
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_slug() {
+		return $this->slug;
+	}
+
+
+	/**
+	 * Return meta
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_meta() {
+		if ( ! is_serialized( $this->meta ) ) {
+			return maybe_serialize( $this->meta );
+		}
+		return $this->meta;
+	}
 
 }
