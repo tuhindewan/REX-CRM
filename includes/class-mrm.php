@@ -33,13 +33,13 @@ use Mint\MRM\Internal\Constants;
  */
 class Mrm {
 
-    /**
-     * The single instance of the class.
-     *
-     * @var WooCommerce
-     * @since 2.1
-     */
-    protected static $_instance = null;
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var WooCommerce
+	 * @since 2.1
+	 */
+	protected static $_instance = null;
 
 	/**
 	 * The unique identifier of this plugin.
@@ -60,68 +60,68 @@ class Mrm {
 	protected $version;
 
 
-    /**
-     * Plugin constants variables
-     *
-     * @var Constants
-     * @since 1.0.0
-     */
+	/**
+	 * Plugin constants variables
+	 *
+	 * @var Constants
+	 * @since 1.0.0
+	 */
 	protected $constants;
 
 
-    /**
-     *
-     *
-     * @var App
-     * @since 1.0.0
-     */
+	/**
+	 *
+	 *
+	 * @var App
+	 * @since 1.0.0
+	 */
 	protected $app;
 
-    /**
-     * Main MRM Instance.
-     *
-     * Ensures only one instance of MRM is loaded or can be loaded.
-     *
-     * @since 1.0.0
-     * @return MRM - Main instance.
-     */
-    public static function instance() {
-        if ( is_null( self::$_instance ) ) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+	/**
+	 * Main MRM Instance.
+	 *
+	 * Ensures only one instance of MRM is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 * @return MRM - Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 
 
-    /**
-     * Cloning is forbidden.
-     *
-     * @since 2.1
-     */
-    public function __clone() {
-        wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'woocommerce' ), '2.1' );
-    }
+	/**
+	 * Cloning is forbidden.
+	 *
+	 * @since 2.1
+	 */
+	public function __clone() {
+		wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'woocommerce' ), '2.1' );
+	}
 
-    /**
-     * Unserializing instances of this class is forbidden.
-     *
-     * @since 2.1
-     */
-    public function __wakeup() {
-        wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'woocommerce' ), '2.1' );
-    }
+	/**
+	 * Unserializing instances of this class is forbidden.
+	 *
+	 * @since 2.1
+	 */
+	public function __wakeup() {
+		wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'woocommerce' ), '2.1' );
+	}
 
-    /**
-     * Auto-load in-accessible properties on demand.
-     *
-     * @param mixed $key Key name.
-     * @return mixed
-     */
-    public function __get( $key ) {
-        if ( in_array( $key, array( 'payment_gateways', 'shipping', 'mailer', 'checkout' ), true ) ) {
-            return $this->$key();
-        }
-    }
+	/**
+	 * Auto-load in-accessible properties on demand.
+	 *
+	 * @param mixed $key Key name.
+	 * @return mixed
+	 */
+	public function __get( $key ) {
+		if ( in_array( $key, array( 'payment_gateways', 'shipping', 'mailer', 'checkout' ), true ) ) {
+			return $this->$key();
+		}
+	}
 
 
 	/**
@@ -142,29 +142,29 @@ class Mrm {
 		$this->plugin_name = 'mrm';
 
 		$this->load_dependencies();
-        $this->set_locale();
-        $this->define_constants();
-        $this->boot();
+		$this->set_locale();
+		$this->define_constants();
+		$this->boot();
 	}
 
 
 	private function define_constants() {
-        $this->constants = Constants::get_instance();
-        $this->constants->define_constants();
-    }
+		$this->constants = Constants::get_instance();
+		$this->constants->define_constants();
+	}
 
 
-    private function boot() {
-        /**
-         * Action to signal that MRM has finished loading.
-         *
-         * @since 3.6.0
-         */
-        do_action( 'mrm_loaded' );
+	private function boot() {
+		/**
+		 * Action to signal that MRM has finished loading.
+		 *
+		 * @since 3.6.0
+		 */
+		do_action( 'mrm_loaded' );
 
-        $this->app = App::get_instance();
-        $this->app->init();
-    }
+		$this->app = App::get_instance();
+		$this->app->init();
+	}
 
 	/**
 	 * Load the required dependencies for this plugin.
@@ -185,17 +185,16 @@ class Mrm {
 	private function load_dependencies() {
 
 		/**
-         * The class responsible for auto loading all files of the
-         * core plugin.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
+		 * The class responsible for auto loading all files of the
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
 
-        /**
-         * The class responsible for defining internationalization functionality
-         * of the plugin.
-         */
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-mrm-i18n.php';
-
+		/**
+		 * The class responsible for defining internationalization functionality
+		 * of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-mrm-i18n.php';
 	}
 
 	/**
@@ -208,11 +207,9 @@ class Mrm {
 	 * @access   private
 	 */
 	private function set_locale() {
-
 		$plugin_i18n = new Mrm_i18n();
 
-		add_action( 'plugins_loaded', array($plugin_i18n, 'load_plugin_textdomain') );
-
+		add_action( 'plugins_loaded', array( $plugin_i18n, 'load_plugin_textdomain' ) );
 	}
 
 

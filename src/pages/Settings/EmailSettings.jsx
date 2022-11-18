@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
-import SettingsNav from "./SettingsNav";
+import React, { useEffect, useState } from "react";
 import EmailSettingsIcon from "../../components/Icons/EmailSettingsIcon";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
+import SettingsNav from "./SettingsNav";
 
 export default function EmailSettings() {
+  // Admin active menu selection
+  AdminNavMenuClassChange("mrm-admin", "settings");
   // Email Settings data if available
   const [emailSettingsData, setEmailSettingsData] = useState({});
   const [getResponseCode, setGetResponseCode] = useState();
@@ -204,12 +207,15 @@ export default function EmailSettings() {
                   </div>
 
                   <div className="tab-footer">
-                    { changesOccured ? (
-                      <button className="mintmrm-btn" type="button" onClick={handleSubmit} >
-                          Save Settings
-                          {loader && <span className="mintmrm-loader"></span> }
-                       </button>
-
+                    {changesOccured ? (
+                      <button
+                        className="mintmrm-btn"
+                        type="button"
+                        onClick={handleSubmit}
+                      >
+                        Save Settings
+                        {loader && <span className="mintmrm-loader"></span>}
+                      </button>
                     ) : (
                       <button
                         className="mintmrm-btn"
@@ -218,7 +224,7 @@ export default function EmailSettings() {
                         disabled={true}
                       >
                         Save Settings
-                        {loader && <span className="mintmrm-loader"></span> }
+                        {loader && <span className="mintmrm-loader"></span>}
                       </button>
                     )}
                   </div>

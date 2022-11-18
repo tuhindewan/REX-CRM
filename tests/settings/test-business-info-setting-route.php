@@ -21,7 +21,7 @@ class BusinessInfoSetting extends WP_UnitTestCase {
 		parent::setUp();
 
 		global $wp_rest_server;
-		$this->server = $wp_rest_server = new WP_REST_Server;
+		$this->server = $wp_rest_server = new WP_REST_Server();
 		do_action( 'rest_api_init' );
 	}
 
@@ -39,27 +39,24 @@ class BusinessInfoSetting extends WP_UnitTestCase {
 	 * Business Info Create API route test.
 	 */
 	public function test_create_business_settings_api() {
-		$request = new WP_REST_Request( 'POST', '/mrm/v1/settings/business' );
+		$request  = new WP_REST_Request( 'POST', '/mrm/v1/settings/business' );
 		$response = $this->server->dispatch( $request );
 		$this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
-
 	}
 	/**
 	 * Business Info Create API route test.
 	 */
 	public function test_create_business_settings_wrong_api() {
-		$request = new WP_REST_Request( 'POST', '/mrm/v1/settings/business/nothing' );
+		$request  = new WP_REST_Request( 'POST', '/mrm/v1/settings/business/nothing' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 404, $response->get_status() );
-
-
 	}
 
 	/**
 	 *  Business Info get API test.
 	 */
 	public function test_get_business_settings_api() {
-		$request = new WP_REST_Request( 'GET', '/mrm/v1/settings/business' );
+		$request  = new WP_REST_Request( 'GET', '/mrm/v1/settings/business' );
 		$response = $this->server->dispatch( $request );
 		$this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
 	}
@@ -67,7 +64,7 @@ class BusinessInfoSetting extends WP_UnitTestCase {
 	 *  Business Info get API test.
 	 */
 	public function test_get_business_settings_api_wrong() {
-		$request = new WP_REST_Request( 'GET', '/mrm/v1/settings/business/nothing' );
+		$request  = new WP_REST_Request( 'GET', '/mrm/v1/settings/business/nothing' );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 404, $response->get_status() );
 	}

@@ -12,73 +12,69 @@ namespace Mint\MRM\DataStores;
 
 class TagData {
 
-    /**
-     * Tag title
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $title;
+	/**
+	 * Tag title
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $title;
 
-    /**
-     * Tag description
-     * 
-     * @var array
-     * @since 1.0.0
-     */
-    private $data;
+	/**
+	 * Tag description
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
+	private $data;
 
-    /**
-     * Tag slug
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $slug;
-
-
-    public function __construct( $args )
-    {
-        $this->title = isset($args['title']) ? $args['title'] : NULL;
-        $this->slug  = isset($args['slug'])  ? $args['slug']  : NULL;
-        $this->data  = isset($args['data'])  ? $args['data']  : NULL;
-    }
-
- 
-    /**
-     * Return tag title
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_title()
-    {
-        return $this->title;
-    }
+	/**
+	 * Tag slug
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $slug;
 
 
-    /**
-     * Return tag slug
-     * 
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_slug()
-    {
-        return $this->slug;
-    }
+	public function __construct( $args ) {
+		$this->title = isset( $args['title'] ) ? $args['title'] : null;
+		$this->slug  = isset( $args['slug'] ) ? $args['slug'] : null;
+		$this->data  = isset( $args['data'] ) ? $args['data'] : null;
+	}
 
 
-    /**
-     * Return tag data after serialization
-     * 
-     * @return longtext
-     * @since 1.0.0
-     */
-    public function get_data()
-    {
-        if( !is_serialized( $this->data ) ) {
-            return maybe_serialize( $this->data );
-        }
-    }
+	/**
+	 * Return tag title
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_title() {
+		return $this->title;
+	}
+
+
+	/**
+	 * Return tag slug
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_slug() {
+		return $this->slug;
+	}
+
+
+	/**
+	 * Return tag data after serialization
+	 *
+	 * @return longtext
+	 * @since 1.0.0
+	 */
+	public function get_data() {
+		if ( ! is_serialized( $this->data ) ) {
+			return maybe_serialize( $this->data );
+		}
+	}
 }

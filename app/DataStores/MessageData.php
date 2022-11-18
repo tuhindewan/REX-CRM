@@ -12,142 +12,135 @@ namespace Mint\MRM\DataStores;
 
 class MessageData {
 
-    /**
-     * Email address
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $email_address;
+	/**
+	 * Email address
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $email_address;
 
-    /**
-     * Email subject
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $email_subject;
+	/**
+	 * Email subject
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $email_subject;
 
-    /**
-     * Email body
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $email_body;
-
-
-    /**
-     * Message type
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $type;
+	/**
+	 * Email body
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $email_body;
 
 
-    /**
-     * Contact ID 
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $contact_id;
+	/**
+	 * Message type
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $type;
 
 
-    /**
-     * Sender ID 
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $sender_id;
+	/**
+	 * Contact ID
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $contact_id;
 
 
-    public function __construct( $args )
-    {
-        $this->email_address    = isset( $args['email_address'] ) ? $args['email_address'] : "";
-        $this->email_subject    = isset( $args['email_subject'] ) ? $args['email_subject'] : "";
-        $this->email_body       = isset( $args['email_body'] ) ? $args['email_body'] : "";
-        $this->contact_id       = isset( $args['contact_id'] ) ? $args['contact_id'] : "";
-        $this->sender_id        = isset( $args['sender_id'] ) ? $args['sender_id'] : "";
-    }
+	/**
+	 * Sender ID
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $sender_id;
 
 
-    /**
-     * Return message receiver email address
-     * 
-     * @param void
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_receiver_email()
-    {
-        return $this->email_address;
-    }
+	public function __construct( $args ) {
+		$this->email_address = isset( $args['email_address'] ) ? $args['email_address'] : '';
+		$this->email_subject = isset( $args['email_subject'] ) ? $args['email_subject'] : '';
+		$this->email_body    = isset( $args['email_body'] ) ? $args['email_body'] : '';
+		$this->contact_id    = isset( $args['contact_id'] ) ? $args['contact_id'] : '';
+		$this->sender_id     = isset( $args['sender_id'] ) ? $args['sender_id'] : '';
+	}
 
 
-    /**
-     * Return email subject
-     * 
-     * @param void
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_email_subject()
-    {
-        return $this->email_subject;
-    }
+	/**
+	 * Return message receiver email address
+	 *
+	 * @param void
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_receiver_email() {
+		return $this->email_address;
+	}
 
 
-    /**
-     * Return email body
-     * 
-     * @param void
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_email_body()
-    {
-        return $this->email_body;
-    }
+	/**
+	 * Return email subject
+	 *
+	 * @param void
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_email_subject() {
+		return $this->email_subject;
+	}
 
 
-    /**
-     * Return message type
-     * 
-     * @param void
-     * @return string
-     * @since 1.0.0
-     */
-    public function get_message_type()
-    {
-        return $this->type;
-    }
+	/**
+	 * Return email body
+	 *
+	 * @param void
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_email_body() {
+		return $this->email_body;
+	}
 
 
-    /**
-     * Return receiver ID
-     * 
-     * @param void
-     * @return int
-     * @since 1.0.0
-     */
-    public function get_receiver_id()
-    {
-        return $this->contact_id;
-    }
+	/**
+	 * Return message type
+	 *
+	 * @param void
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function get_message_type() {
+		return $this->type;
+	}
 
 
-    /**
-     * Return sender ID
-     * 
-     * @param void
-     * @return int
-     * @since 1.0.0
-     */
-    public function get_sender_id()
-    {
-        return $this->sender_id;
-    }
+	/**
+	 * Return receiver ID
+	 *
+	 * @param void
+	 * @return int
+	 * @since 1.0.0
+	 */
+	public function get_receiver_id() {
+		return $this->contact_id;
+	}
+
+
+	/**
+	 * Return sender ID
+	 *
+	 * @param void
+	 * @return int
+	 * @since 1.0.0
+	 */
+	public function get_sender_id() {
+		return $this->sender_id;
+	}
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import SettingsNav from "./SettingsNav";
 
@@ -8,9 +8,11 @@ import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
 import DoubleAngleRightIcon from "../../components/Icons/DoubleAngleRightIcon";
 import { ClearNotification } from "../../utils/admin-notification";
 import SuccessfulNotification from "../../components/SuccessfulNotification";
-
+import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 
 export default function SmtpSettings() {
+    // Admin active menu selection
+    AdminNavMenuClassChange("mrm-admin", "settings");
     const [sendingProtocol, setSendingProtocol] = useState('smtp' );
     const [sendingFrequency, setSendingFrequency] = useState('recommended' );
     const [frequencyInterval, setFrequencyInterval] = useState('5' );
@@ -23,6 +25,7 @@ export default function SmtpSettings() {
     const [showNotification, setShowNotification] = useState("none");
     const [notificationType, setNotificationType] = useState("success");
     const [message, setMessage] = useState("");
+
 
     //------get sending protocol-------
     const getSendingProtocol = (e) => {
@@ -144,7 +147,7 @@ export default function SmtpSettings() {
                         <h2 class="conatct-heading">Settings</h2>
 
                         <div className="mintmrm-settings-wrapper">
-                            <SettingsNav/>
+                            <SettingsNav />
 
                             <div className="settings-tab-content">
                                 <div className="single-tab-content smtp-tab-content">
@@ -158,22 +161,27 @@ export default function SmtpSettings() {
 
                                         <div className="form-wrapper">
                                             <div className="form-group">
-                                                <label htmlFor="sending-protocol">Sending Protocol</label>
+                                                <label htmlFor="sending-protocol">
+                                                    Sending Protocol
+                                                </label>
                                                 <select name="sending-protocol" id="sending-protocol" onChange={getSendingProtocol} >
                                                     <option value="web_server" selected={'web-server' === sendingProtocol}>Your web host / web server</option>
                                                     <option value="smtp" selected={'smtp' === sendingProtocol}>SMTP</option>
                                                     <option value="sendgrid" selected={'sendgrid' === sendingProtocol}>SendGrid</option>
                                                     <option value="amazonses" selected={'amazonses' === sendingProtocol}>Amazon SES</option>
                                                 </select>
+
                                             </div>
 
                                             <hr />
 
                                             {/* when sending protocol "smtp" selected */}
-                                            {'smtp' === sendingProtocol &&
+                                            {"smtp" === sendingProtocol && (
                                                 <>
                                                     <div className="form-group top-align">
-                                                        <label htmlFor="sending-frequency">Sending Frequency</label>
+                                                        <label htmlFor="sending-frequency">
+                                                            Sending Frequency
+                                                        </label>
 
                                                         <div className="input-custom-wrapper">
                                                             <select name="sending-frequency" id="sending-frequency" className="mintmrm-mb-16" onChange={getSendingFrequency} >
@@ -181,13 +189,17 @@ export default function SmtpSettings() {
                                                                 <option value="set-own-frequency" selected={'set-own-frequency' === sendingFrequency}>I'll set my own frequency</option>
                                                             </select>
 
-                                                            {'set-own-frequency' === sendingFrequency &&
+                                                            {"set-own-frequency" === sendingFrequency && (
                                                                 <div className="pos-relative has-icon mintmrm-mb-16">
-                                                                    <input type="number" name="frequency-number" min="0" />
+                                                                    <input
+                                                                        type="number"
+                                                                        name="frequency-number"
+                                                                        min="0"
+                                                                    />
                                                                     <EmailSettingsIcon />
                                                                 </div>
-                                                            }
-                                                            
+                                                            )}
+
                                                             <select name="sending-time" id="sending-time" onChange={getFrequencyInterval}>
                                                                 <option value="5" selected={'5' === frequencyInterval}>Every 5 minutes</option>
                                                                 <option value="10" selected={'10' === frequencyInterval}>Every 10 minutes</option>
@@ -201,13 +213,20 @@ export default function SmtpSettings() {
                                                         <label htmlFor="smtp-hostname">
                                                             SMTP Hostname
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="text" value={host} name="smtp-hostname" id="smtp-hostname" onChange={getHost}/>
+                                                            <input
+                                                                type="text"
+                                                                name="smtp-hostname"
+                                                                id="smtp-hostname"
+                                                            />
                                                         </div>
                                                     </div>
 
@@ -215,7 +234,11 @@ export default function SmtpSettings() {
                                                         <label htmlFor="smtp-port"> SMTP Port </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="text" value={port} name="smtp-port" id="smtp-port" onChange={getPort}/>
+                                                            <input
+                                                                type="text"
+                                                                name="smtp-port"
+                                                                id="smtp-port"
+                                                            />
                                                         </div>
                                                     </div>
 
@@ -223,7 +246,7 @@ export default function SmtpSettings() {
                                                         <label htmlFor="login"> Login</label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="text" value={login} name="login" id="login" onChange={getLogin}/>
+                                                            <input type="text" name="login" id="login" />
                                                         </div>
                                                     </div>
 
@@ -231,12 +254,18 @@ export default function SmtpSettings() {
                                                         <label htmlFor="password">Password</label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="password" value={password} name="password" id="password" onChange={getPassword}/>
+                                                            <input
+                                                                type="password"
+                                                                name="password"
+                                                                id="password"
+                                                            />
                                                         </div>
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label htmlFor="secure-connection">Secure Connection</label>
+                                                        <label htmlFor="secure-connection">
+                                                            Secure Connection
+                                                        </label>
 
                                                         <div className="input-custom-wrapper">
                                                             <select name="secure-connection" id="secure-connection" onChange={getSecured}>
@@ -253,21 +282,35 @@ export default function SmtpSettings() {
                                                         <label htmlFor="authentication">
                                                             Authentication
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <span className="mintmrm-radiobtn">
-                                                                <input id="authentication-yes" type="radio" name="authentication" value="yes" checked />
-                                                                <label for="authentication-yes">Yes</label>
-                                                            </span>
+                              <span className="mintmrm-radiobtn">
+                                <input
+                                    id="authentication-yes"
+                                    type="radio"
+                                    name="authentication"
+                                    value="yes"
+                                    checked
+                                />
+                                <label for="authentication-yes">Yes</label>
+                              </span>
 
                                                             <span className="mintmrm-radiobtn">
-                                                                <input id="authentication-no" type="radio" name="authentication" value="no" />
-                                                                <label for="authentication-no">No</label>
-                                                            </span>
+                                <input
+                                    id="authentication-no"
+                                    type="radio"
+                                    name="authentication"
+                                    value="no"
+                                />
+                                <label for="authentication-no">No</label>
+                              </span>
                                                         </div>
                                                     </div>
 
@@ -275,13 +318,19 @@ export default function SmtpSettings() {
                                                         <label htmlFor="spf-signature">
                                                             SPF Signature (Highly recommended!)
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                            <p className="normal-text">
+                                                                SPF is set up in your DNS. Read your host's
+                                                                support documentation for more information.
+                                                            </p>
                                                         </div>
                                                     </div>
 
@@ -289,33 +338,50 @@ export default function SmtpSettings() {
                                                         <label htmlFor="test-email">
                                                             Test the sending method
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper inline-field">
-                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
-                                                            <button className="mintmrm-btn outline" type="button">
+                                                            <input
+                                                                type="email"
+                                                                name="test-email"
+                                                                id="test-email"
+                                                                placeholder="admin@gmail.com"
+                                                            />
+                                                            <button
+                                                                className="mintmrm-btn outline"
+                                                                type="button"
+                                                            >
                                                                 Send a test email
-                                                                <DoubleAngleRightIcon/>
+                                                                <DoubleAngleRightIcon />
                                                                 {/* <span className="mintmrm-loader"></span> */}
                                                             </button>
                                                         </div>
                                                     </div>
-
                                                 </>
-                                            }
+                                            )}
 
                                             {/* when sending protocol "web-server" selected */}
-                                            {'web-server' === sendingProtocol &&
+                                            {"web-server" === sendingProtocol && (
                                                 <>
                                                     <div className="form-group top-align">
-                                                        <label htmlFor="sending-frequency">Sending Frequency</label>
+                                                        <label htmlFor="sending-frequency">
+                                                            Sending Frequency
+                                                        </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <select name="sending-frequency" id="sending-frequency">
-                                                                <option value="set-own-frequency">I'll set my own frequency</option>
+                                                            <select
+                                                                name="sending-frequency"
+                                                                id="sending-frequency"
+                                                            >
+                                                                <option value="set-own-frequency">
+                                                                    I'll set my own frequency
+                                                                </option>
                                                                 <option value="recommended">Recommended</option>
                                                             </select>
                                                         </div>
@@ -325,13 +391,19 @@ export default function SmtpSettings() {
                                                         <label htmlFor="spf-signature">
                                                             SPF Signature (Highly recommended!)
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                            <p className="normal-text">
+                                                                SPF is set up in your DNS. Read your host's
+                                                                support documentation for more information.
+                                                            </p>
                                                         </div>
                                                     </div>
 
@@ -339,38 +411,57 @@ export default function SmtpSettings() {
                                                         <label htmlFor="test-email">
                                                             Test the sending method
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper inline-field">
-                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
-                                                            <button className="mintmrm-btn outline" type="button">
+                                                            <input
+                                                                type="email"
+                                                                name="test-email"
+                                                                id="test-email"
+                                                                placeholder="admin@gmail.com"
+                                                            />
+                                                            <button
+                                                                className="mintmrm-btn outline"
+                                                                type="button"
+                                                            >
                                                                 Send a test email
-                                                                <DoubleAngleRightIcon/>
+                                                                <DoubleAngleRightIcon />
                                                                 {/* <span className="mintmrm-loader"></span> */}
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </>
-                                            }
+                                            )}
 
                                             {/* when sending protocol "sendgrid" selected */}
-                                            {'sendgrid' === sendingProtocol &&
+                                            {"sendgrid" === sendingProtocol && (
                                                 <>
                                                     <div className="form-group top-align">
                                                         <label htmlFor="sending-frequency">
                                                             Sending Frequency
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <select name="sending-frequency" id="sending-frequency">
-                                                                <option value="set-own-frequency">I'll set my own frequency</option>
+                                                            <select
+                                                                name="sending-frequency"
+                                                                id="sending-frequency"
+                                                            >
+                                                                <option value="set-own-frequency">
+                                                                    I'll set my own frequency
+                                                                </option>
                                                                 <option value="recommended">Recommended</option>
                                                             </select>
                                                         </div>
@@ -390,13 +481,19 @@ export default function SmtpSettings() {
                                                         <label htmlFor="spf-signature">
                                                             SPF Signature (Highly recommended!)
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                            <p className="normal-text">
+                                                                SPF is set up in your DNS. Read your host's
+                                                                support documentation for more information.
+                                                            </p>
                                                         </div>
                                                     </div>
 
@@ -404,38 +501,57 @@ export default function SmtpSettings() {
                                                         <label htmlFor="test-email">
                                                             Test the sending method
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper inline-field">
-                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
-                                                            <button className="mintmrm-btn outline" type="button">
+                                                            <input
+                                                                type="email"
+                                                                name="test-email"
+                                                                id="test-email"
+                                                                placeholder="admin@gmail.com"
+                                                            />
+                                                            <button
+                                                                className="mintmrm-btn outline"
+                                                                type="button"
+                                                            >
                                                                 Send a test email
-                                                                <DoubleAngleRightIcon/>
+                                                                <DoubleAngleRightIcon />
                                                                 {/* <span className="mintmrm-loader"></span> */}
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </>
-                                            }
+                                            )}
 
                                             {/* when sending protocol "amazonses" selected */}
-                                            {'amazonses' === sendingProtocol &&
+                                            {"amazonses" === sendingProtocol && (
                                                 <>
                                                     <div className="form-group top-align">
                                                         <label htmlFor="sending-frequency">
                                                             Sending Frequency
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <select name="sending-frequency" id="sending-frequency">
-                                                                <option value="set-own-frequency">I'll set my own frequency</option>
+                                                            <select
+                                                                name="sending-frequency"
+                                                                id="sending-frequency"
+                                                            >
+                                                                <option value="set-own-frequency">
+                                                                    I'll set my own frequency
+                                                                </option>
                                                                 <option value="recommended">Recommended</option>
                                                             </select>
                                                         </div>
@@ -445,39 +561,94 @@ export default function SmtpSettings() {
                                                         <label htmlFor="region">
                                                             Region
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
                                                             <select name="region" id="region">
-                                                                <option value="af-south-1">Africa (Cape Town)</option>
-                                                                <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
-                                                                <option value="ap-southeast-3">Asia Pacific (Jakarta)</option>
-                                                                <option value="ap-south-1">Asia Pacific (Mumbai)</option>
-                                                                <option value="ap-northeast-3">Asia Pacific (Osaka)</option>
-                                                                <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
-                                                                <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
-                                                                <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
-                                                                <option value="us-gov-east-1">AWS GovCloud (US-East)</option>
-                                                                <option value="us-gov-west-1">AWS GovCloud (US-West)</option>
-                                                                <option value="ca-central-1">Canada (Central)</option>
-                                                                <option value="eu-central-1">Europe (Frankfurt)</option>
-                                                                <option value="eu-west-1">Europe (Ireland)</option>
-                                                                <option value="eu-west-2">Europe (London)</option>
-                                                                <option value="eu-south-1">Europe (Milan)</option>
-                                                                <option value="eu-west-3">Europe (Paris)</option>
-                                                                <option value="eu-south-2">Europe (Spain)</option>
-                                                                <option value="eu-north-1">Europe (Stockholm)</option>
-                                                                <option value="eu-central-2">Europe (Zurich)</option>
-                                                                <option value="me-south-1">Middle East (Bahrain)</option>
-                                                                <option value="me-central-1">Middle East (UAE)</option>
-                                                                <option value="sa-east-1">MSouth America (São Paulo)</option>
-                                                                <option value="us-east-1">US East (N. Virginia)</option>
-                                                                <option value="us-east-2">US East (Ohio)</option>
-                                                                <option value="us-west-1">US West (N. California)</option>
-                                                                <option value="us-west-2">US West (Oregon)</option>
+                                                                <option value="af-south-1">
+                                                                    Africa (Cape Town)
+                                                                </option>
+                                                                <option value="ap-east-1">
+                                                                    Asia Pacific (Hong Kong)
+                                                                </option>
+                                                                <option value="ap-southeast-3">
+                                                                    Asia Pacific (Jakarta)
+                                                                </option>
+                                                                <option value="ap-south-1">
+                                                                    Asia Pacific (Mumbai)
+                                                                </option>
+                                                                <option value="ap-northeast-3">
+                                                                    Asia Pacific (Osaka)
+                                                                </option>
+                                                                <option value="ap-southeast-1">
+                                                                    Asia Pacific (Singapore)
+                                                                </option>
+                                                                <option value="ap-southeast-2">
+                                                                    Asia Pacific (Sydney)
+                                                                </option>
+                                                                <option value="ap-northeast-1">
+                                                                    Asia Pacific (Tokyo)
+                                                                </option>
+                                                                <option value="us-gov-east-1">
+                                                                    AWS GovCloud (US-East)
+                                                                </option>
+                                                                <option value="us-gov-west-1">
+                                                                    AWS GovCloud (US-West)
+                                                                </option>
+                                                                <option value="ca-central-1">
+                                                                    Canada (Central)
+                                                                </option>
+                                                                <option value="eu-central-1">
+                                                                    Europe (Frankfurt)
+                                                                </option>
+                                                                <option value="eu-west-1">
+                                                                    Europe (Ireland)
+                                                                </option>
+                                                                <option value="eu-west-2">
+                                                                    Europe (London)
+                                                                </option>
+                                                                <option value="eu-south-1">
+                                                                    Europe (Milan)
+                                                                </option>
+                                                                <option value="eu-west-3">
+                                                                    Europe (Paris)
+                                                                </option>
+                                                                <option value="eu-south-2">
+                                                                    Europe (Spain)
+                                                                </option>
+                                                                <option value="eu-north-1">
+                                                                    Europe (Stockholm)
+                                                                </option>
+                                                                <option value="eu-central-2">
+                                                                    Europe (Zurich)
+                                                                </option>
+                                                                <option value="me-south-1">
+                                                                    Middle East (Bahrain)
+                                                                </option>
+                                                                <option value="me-central-1">
+                                                                    Middle East (UAE)
+                                                                </option>
+                                                                <option value="sa-east-1">
+                                                                    MSouth America (São Paulo)
+                                                                </option>
+                                                                <option value="us-east-1">
+                                                                    US East (N. Virginia)
+                                                                </option>
+                                                                <option value="us-east-2">
+                                                                    US East (Ohio)
+                                                                </option>
+                                                                <option value="us-west-1">
+                                                                    US West (N. California)
+                                                                </option>
+                                                                <option value="us-west-2">
+                                                                    US West (Oregon)
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -486,7 +657,11 @@ export default function SmtpSettings() {
                                                         <label htmlFor="access-key">Access Key</label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="text" name="access-key" id="access-key" />
+                                                            <input
+                                                                type="text"
+                                                                name="access-key"
+                                                                id="access-key"
+                                                            />
                                                         </div>
                                                     </div>
 
@@ -494,7 +669,11 @@ export default function SmtpSettings() {
                                                         <label htmlFor="secret-key">Secret Key</label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="password" name="secret-key" id="secret-key" />
+                                                            <input
+                                                                type="password"
+                                                                name="secret-key"
+                                                                id="secret-key"
+                                                            />
                                                         </div>
                                                     </div>
 
@@ -504,13 +683,19 @@ export default function SmtpSettings() {
                                                         <label htmlFor="spf-signature">
                                                             SPF Signature (Highly recommended!)
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <p className="normal-text">SPF is set up in your DNS. Read your host's support documentation for more information.</p>
+                                                            <p className="normal-text">
+                                                                SPF is set up in your DNS. Read your host's
+                                                                support documentation for more information.
+                                                            </p>
                                                         </div>
                                                     </div>
 
@@ -518,39 +703,46 @@ export default function SmtpSettings() {
                                                         <label htmlFor="test-email">
                                                             Test the sending method
                                                             <span class="mintmrm-tooltip">
-                                                                <TooltipQuestionIcon />
-                                                                <p> Define behaviour of the form after submission </p>
-                                                            </span>
+                                <TooltipQuestionIcon />
+                                <p>
+                                  {" "}
+                                    Define behaviour of the form after submission{" "}
+                                </p>
+                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper inline-field">
-                                                            <input type="email" name="test-email" id="test-email" placeholder="admin@gmail.com" />
-                                                            <button className="mintmrm-btn outline" type="button">
+                                                            <input
+                                                                type="email"
+                                                                name="test-email"
+                                                                id="test-email"
+                                                                placeholder="admin@gmail.com"
+                                                            />
+                                                            <button
+                                                                className="mintmrm-btn outline"
+                                                                type="button"
+                                                            >
                                                                 Send a test email
-                                                                <DoubleAngleRightIcon/>
+                                                                <DoubleAngleRightIcon />
                                                                 {/* <span className="mintmrm-loader"></span> */}
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </>
-                                            }
-
+                                            )}
                                         </div>
                                     </div>
 
                                     <div className="tab-footer">
-                                        <button className="mintmrm-btn" type="button" onClick={saveSettings} disabled={loading}>
+                                        <button className="mintmrm-btn" type="button">
                                             Save Settings
-                                            <span className={loading ? "mintmrm-loader" : ""}></span>
+                                            <span className="mintmrm-loader"></span>
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                             {/* end settings-tab-content */}
-
                         </div>
-
                     </div>
                     <SuccessfulNotification
                         display={showNotification}
@@ -564,4 +756,3 @@ export default function SmtpSettings() {
         </>
     );
 }
-

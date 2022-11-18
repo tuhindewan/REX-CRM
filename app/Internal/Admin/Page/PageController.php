@@ -6,10 +6,10 @@ use Mint\Mrm\Internal\Traits\Singleton;
 
 class PageController {
 
-    use Singleton;
+	use Singleton;
 
-    public function __construct() {
-        // Init home screen
-        HomeScreen::get_instance();
-    }
+	public function __construct() {
+		// Init home screen
+		HomeScreen::get_instance();
+	}
 }

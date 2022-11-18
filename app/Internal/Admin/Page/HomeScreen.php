@@ -2,72 +2,70 @@
 
 namespace Mint\MRM\Internal\Admin\Page;
 
-
 use Mint\Mrm\Internal\Traits\Singleton;
 
 class HomeScreen {
 
-    use Singleton;
+	use Singleton;
 
-    const MENU_SLUG = 'mrm-admin';
+	const MENU_SLUG = 'mrm-admin';
 
-    public function __construct() {
-        add_action( 'admin_menu', array( $this, 'register_page' ) );
-    }
-
-
-    public function register_page() {
-
-        add_menu_page(
-            __( 'MRM', 'mrm'),
-            __( 'MRM', 'mrm'),
-            'manage_options',
-            self::MENU_SLUG,
-            array($this, 'load_wrapper'),
-            $this->getMenuIcon(),
-            2
-        );
-
-        add_submenu_page(
-            self::MENU_SLUG, 
-            __( 'Dashboard', 'mrm'), 
-            __( 'Dashboard', 'mrm'), 
-            'manage_options', 
-            self::MENU_SLUG,
-            array($this, 'load_wrapper')
-        );
-
-        add_submenu_page(
-            self::MENU_SLUG, 
-            __( 'Contacts', 'mrm'), 
-            __( 'Contacts', 'mrm'), 
-            'manage_options', 
-            'mrm-admin#/contacts/',
-            array($this, 'load_wrapper')
-        );
-        add_submenu_page(self::MENU_SLUG, __( 'Campaigns', 'mrm'), __( 'Campaigns', 'mrm'), 'manage_options', 'mrm-admin#/campaigns/', array($this, 'load_wrapper'));
-        add_submenu_page(self::MENU_SLUG, __( 'Forms', 'mrm'), __( 'Forms', 'mrm'), 'manage_options', 'mrm-admin#/forms/', array($this, 'load_wrapper'));
-        add_submenu_page(self::MENU_SLUG, __( 'Settings', 'mrm'), __( 'Settings', 'mrm'), 'manage_options', 'mrm-admin#/settings/business-info/', array($this, 'load_wrapper'));
-    }
+	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'register_page' ) );
+	}
 
 
-    public function load_wrapper() {
-        ?>
-        <div class="crm-app-wrapper" style="display: block; ">
-            <div id="crm-app"></div>
-            <div id="crm-portal"></div>
-        </div>
-        <?php
-    }
+	public function register_page() {
+		add_menu_page(
+			__( 'MRM', 'mrm' ),
+			__( 'MRM', 'mrm' ),
+			'manage_options',
+			self::MENU_SLUG,
+			array( $this, 'load_wrapper' ),
+			$this->getMenuIcon(),
+			2
+		);
 
-    /**
-     * Return SVG icon for menu
-     * 
-     * @return string
-     */
-    private function getMenuIcon()
-    {
-        return 'data:image/svg+xml;base64,' . base64_encode('<?xml version="1.0" standalone="no"?>
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Dashboard', 'mrm' ),
+			__( 'Dashboard', 'mrm' ),
+			'manage_options',
+			self::MENU_SLUG,
+			array( $this, 'load_wrapper' )
+		);
+
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Contacts', 'mrm' ),
+			__( 'Contacts', 'mrm' ),
+			'manage_options',
+			'mrm-admin#/contacts/',
+			array( $this, 'load_wrapper' )
+		);
+		add_submenu_page( self::MENU_SLUG, __( 'Campaigns', 'mrm' ), __( 'Campaigns', 'mrm' ), 'manage_options', 'mrm-admin#/campaigns/', array( $this, 'load_wrapper' ) );
+		add_submenu_page( self::MENU_SLUG, __( 'Forms', 'mrm' ), __( 'Forms', 'mrm' ), 'manage_options', 'mrm-admin#/forms/', array( $this, 'load_wrapper' ) );
+		add_submenu_page( self::MENU_SLUG, __( 'Settings', 'mrm' ), __( 'Settings', 'mrm' ), 'manage_options', 'mrm-admin#/settings/business-info/', array( $this, 'load_wrapper' ) );
+	}
+
+
+	public function load_wrapper() {
+		?>
+		<div class="crm-app-wrapper" style="display: block; ">
+			<div id="crm-app"></div>
+			<div id="crm-portal"></div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Return SVG icon for menu
+	 *
+	 * @return string
+	 */
+	private function getMenuIcon() {
+		return 'data:image/svg+xml;base64,' . base64_encode(
+			'<?xml version="1.0" standalone="no"?>
         <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
          "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
         <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +86,8 @@ class HomeScreen {
         <path d="M220 95 c0 -3 4 -13 9 -23 5 -9 12 -25 15 -35 9 -27 50 -18 54 11 2
         14 -3 24 -15 28 -10 3 -26 10 -35 15 -20 10 -28 11 -28 4z"/>
         </g>
-        </svg>');
-    }
-    
+        </svg>'
+		);
+	}
+
 }

@@ -14,60 +14,62 @@ use Mint\MRM\Admin\API\Controllers\MessageController;
 
 class SendEmailRoute {
 
-    /**
-     * Endpoint namespace.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    protected $namespace = 'mrm/v1';
+	/**
+	 * Endpoint namespace.
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $namespace = 'mrm/v1';
 
-    /**
-     * Route base.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    protected $rest_base = 'messages';
-
-
-    /**
-     * MRM_Email class object
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    protected $mailer;
+	/**
+	 * Route base.
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	protected $rest_base = 'messages';
 
 
-    /**
-     * Register API endpoints routes for send email module
-     * 
-     * @return void
-     * @since 1.0.0
-     */
-    public function register_routes()
-    {
-        $this->mailer = MessageController::get_instance();
+	/**
+	 * MRM_Email class object
+	 *
+	 * @var object
+	 * @since 1.0.0
+	 */
+	protected $mailer;
 
 
-        /**
-         * Send Email create endpoint
-         * Get Send Email endpoint
-         * 
-         * @return void
-         * @since 1.0.0
-        */  
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<contact_id>[\d]+)', [
-            [
-                'methods' => \WP_REST_Server::CREATABLE,
-                'callback' => [
-                    $this->mailer ,
-                    'create_or_update'
-                ]
-            ]
+	/**
+	 * Register API endpoints routes for send email module
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	public function register_routes() {
+		$this->mailer = MessageController::get_instance();
 
-        ]);
-    }
+		/**
+		 * Send Email create endpoint
+		 * Get Send Email endpoint
+		 *
+		 * @return void
+		 * @since 1.0.0
+		*/
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)',
+			array(
+				array(
+					'methods'  => \WP_REST_Server::CREATABLE,
+					'callback' => array(
+						$this->mailer,
+						'create_or_update',
+					),
+				),
+
+			)
+		);
+	}
 
 }

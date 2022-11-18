@@ -27,419 +27,412 @@ use Mint\MRM\DataBase\Models\MessageModel;
 
 class ContactController extends BaseController {
 
-    use Singleton;
-
-    
-    /**
-     * CSV data override to this file   
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $import_file_location;
-
-    /**
-     * Export data override to this file
-     * 
-     * @var string
-     * @since 1.0.0
-     */
-    private $export_file_location = __DIR__.'/../../../../../uploads/contacts.csv';
-
-    /**
-     * Contact object arguments
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    public $contact_args;
-
-    /**
-     * Create a new contact or update a existing contact
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function create_or_update( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-        // Email address validation
-        if( isset($params['email']) ){
-            $email = sanitize_text_field( $params['email'] );
-            if ( empty( $email ) ) {
-                return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ),  200);
-            }
-    
-            if ( !is_email( $email ) ) {
-                return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ),  200);
-            }
-            $exist = ContactModel::is_contact_exist( $email );
-            if($exist && !isset($params['contact_id'])){
-                return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ),  200);
-            }
-        }
-        
-
-        // Contact object create and insert or update to database
-        try {
-
-            if( isset( $params['contact_id']) ){
-
-                $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
-                // Existing contact email address check
-                $other_slugs = ContactModel::is_contact_exist( $email );
-                $update_slug = ContactModel::is_contact_exist_by_id( $email, $contact_id );
-                if ( $other_slugs && !$update_slug ) {                    
-                    return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200);
-                }
-                $contact_id = ContactModel::update( $params, $contact_id );
-
-            }else{
-                $contact    = new ContactData( $email, $params );
-                $contact_id = ContactModel::insert( $contact );
-                if( isset( $params['status'][0] ) && 'pending' == $params['status'][0] || empty($params['status'][0]) ){
-                    MessageController::get_instance()->send_double_opt_in( $contact_id );
-                }
-            }
-             
-            if(isset($params['tags'])){
-                TagController::set_tags_to_contact( $params['tags'], $contact_id );
-            }
-
-            if(isset($params['lists'])){
-                ListController::set_lists_to_contact( $params['lists'], $contact_id );
-            }
-
-            if($contact_id) {
-                return $this->get_success_response(__( 'Contact has been saved successfully', 'mrm' ), 201);
-            }
-            return $this->get_error_response(__( 'Failed to save', 'mrm' ), 400);
-
-        } catch(Exception $e) {
-                return $this->get_error_response(__( 'Contact is not valid', 'mrm' ), 400);
-        }
-    }
+	use Singleton;
 
 
-    /**
-     * Return a contact details
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_single( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params     = MRM_Common::get_api_params_values( $request );
-        $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
-        $contact    = ContactModel::get( $contact_id );
-        
-        // Get and merge tags and lists
-        if( $contact ) {
-            $contact    = TagController::get_tags_to_contact( $contact );
-            $contact    = ListController::get_lists_to_contact( $contact );
-            $contact    = NoteController::get_notes_to_contact( $contact );
-            $contact[ 'messages' ] = MessageModel::get_messages( $contact_id );
-            $contact[ 'activities' ] = isset( $contact[ 'notes' ], $contact[ 'messages' ] ) && is_array( $contact[ 'notes' ] ) && is_array( $contact[ 'messages' ] )
-                ? array_merge( $contact[ 'notes' ], $contact[ 'messages' ] ) : [];
+	/**
+	 * CSV data override to this file
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $import_file_location;
 
-            if( !empty( $contact[ 'activities' ] ) ) {
-                $created_time_column = array_column( $contact[ 'activities' ], 'created_time' );
-                array_multisort( $created_time_column, SORT_DESC, $contact[ 'activities' ] );
-            }
-        }
+	/**
+	 * Export data override to this file
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $export_file_location = __DIR__ . '/../../../../../uploads/contacts.csv';
 
-        if($contact && isset($contact['email'])) {
-            if (isset($contact['created_at'])){
-                $time = new \DateTimeImmutable($contact['created_at'], wp_timezone());
-                $created_time = $time->format("h:i a");
+	/**
+	 * Contact object arguments
+	 *
+	 * @var object
+	 * @since 1.0.0
+	 */
+	public $contact_args;
 
-                $contact['created_time'] = $created_time;
-            }
-                
-            if(isset($contact['created_by']) && !empty($contact['created_by']))$user_meta = get_userdata($contact['created_by']);
+	/**
+	 * Create a new contact or update a existing contact
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function create_or_update( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+		// Email address validation
+		if ( isset( $params['email'] ) ) {
+			$email = sanitize_text_field( $params['email'] );
+			if ( empty( $email ) ) {
+				return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ), 200 );
+			}
 
-            $contact ["added_by_login"] = !empty($user_meta->data->user_login) ? $user_meta->data->user_login : "External Source" ;
+			if ( ! is_email( $email ) ) {
+				return $this->get_error_response( __( 'Enter a valid email address', 'mrm' ), 200 );
+			}
+			$exist = ContactModel::is_contact_exist( $email );
+			if ( $exist && ! isset( $params['contact_id'] ) ) {
+				return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200 );
+			}
+		}
 
-            $avatar_url = add_query_arg( array(
-                's' => '100',
-                'd' => 'retro',
-            ), esc_url( 'https://www.gravatar.com/avatar/' . md5( $contact['email'] ) ));
+		// Contact object create and insert or update to database
+		try {
+			if ( isset( $params['contact_id'] ) ) {
+				$contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
+				// Existing contact email address check
+				$other_slugs = ContactModel::is_contact_exist( $email );
+				$update_slug = ContactModel::is_contact_exist_by_id( $email, $contact_id );
+				if ( $other_slugs && ! $update_slug ) {
+					return $this->get_error_response( __( 'Email address already assigned to another contact.', 'mrm' ), 200 );
+				}
+				$contact_id = ContactModel::update( $params, $contact_id );
+			} else {
+				$contact    = new ContactData( $email, $params );
+				$contact_id = ContactModel::insert( $contact );
+				if ( isset( $params['status'][0] ) && 'pending' == $params['status'][0] || empty( $params['status'][0] ) ) {
+					MessageController::get_instance()->send_double_opt_in( $contact_id );
+				}
+			}
 
-            $contact ["avatar_url"] = $avatar_url;
-            return $this->get_success_response("Query Successfull", 200, $contact);
-        }
-        return $this->get_error_response("Failed to Get Data", 400);
-    }
+			if ( isset( $params['tags'] ) ) {
+				TagController::set_tags_to_contact( $params['tags'], $contact_id );
+			}
 
+			if ( isset( $params['lists'] ) ) {
+				ListController::set_lists_to_contact( $params['lists'], $contact_id );
+			}
 
-    /**
-     * Return Contacts for list view
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_all( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-
-        $page       =  isset( $params['page'] ) ? $params['page'] : 1;
-        $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 10;
-        $offset     =  ($page - 1) * $perPage;
-
-        // Contact Search keyword
-        $search     = isset( $params['search'] ) ? $params['search'] : '';
-                
-        $contacts   = ContactModel::get_all( $offset, $perPage, $search );
-
-        // Merge tags and lists to contacts
-        $contacts['data'] = array_map( function( $contact ){
-            $contact = TagController::get_tags_to_contact( $contact );
-            $contact = ListController::get_lists_to_contact( $contact );
-            return $contact;
-        }, $contacts['data'] );
-
-        // Count contacts groups
-        $contacts['count_groups'] = [
-            'lists'     => ContactGroupModel::get_groups_count( "lists" ),
-            'tags'      => ContactGroupModel::get_groups_count( "tags" ),
-            'segments'  => ContactGroupModel::get_groups_count("segments"),
-            'contacts'  => absint( $contacts['total_count'] )
-        ];
-
-        // Count contacts based on status
-        $contacts['count_status'] = [
-            'subscribed'        => ContactModel::get_contacts_status_count( "subscribed" ),
-            'unsubscribed'      => ContactModel::get_contacts_status_count( "unsubscribed" ),
-            'pending'           => ContactModel::get_contacts_status_count( "pending" )
-        ];
-
-        $contacts['current_page'] = (int) $page;
-
-        if(isset($contacts)) {
-            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
-        }
-        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
-    }
-
-    
-    /**
-     * Delete a contact
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_single( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-
-        $success = ContactModel::destroy( $params['contact_id'] );
-
-        if($success) {
-            return $this->get_success_response( __( 'Contact has been deleted successfully', 'mrm' ), 200 );
-        } 
-        return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
-    }
+			if ( $contact_id ) {
+				return $this->get_success_response( __( 'Contact has been saved successfully', 'mrm' ), 201 );
+			}
+			return $this->get_error_response( __( 'Failed to save', 'mrm' ), 400 );
+		} catch ( Exception $e ) {
+				return $this->get_error_response( __( 'Contact is not valid', 'mrm' ), 400 );
+		}
+	}
 
 
-    /**
-     * Delete multiple contacts
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_all( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+	/**
+	 * Return a contact details
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get_single( WP_REST_Request $request ) {
+		// Get values from API
+		$params     = MRM_Common::get_api_params_values( $request );
+		$contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : '';
+		$contact    = ContactModel::get( $contact_id );
 
-        $success = ContactModel::destroy_all( $params['contact_ids'] );
+		// Get and merge tags and lists
+		if ( $contact ) {
+			$contact               = TagController::get_tags_to_contact( $contact );
+			$contact               = ListController::get_lists_to_contact( $contact );
+			$contact               = NoteController::get_notes_to_contact( $contact );
+			$contact['messages']   = MessageModel::get_messages( $contact_id );
+			$contact['activities'] = isset( $contact['notes'], $contact['messages'] ) && is_array( $contact['notes'] ) && is_array( $contact['messages'] )
+				? array_merge( $contact['notes'], $contact['messages'] ) : array();
 
-        if($success) {
-            return $this->get_success_response( __( 'Contacts has been deleted successfully', 'mrm' ), 200 );
-        }
-        return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+			if ( ! empty( $contact['activities'] ) ) {
+				$created_time_column = array_column( $contact['activities'], 'created_time' );
+				array_multisort( $created_time_column, SORT_DESC, $contact['activities'] );
+			}
+		}
 
-    }
+		if ( $contact && isset( $contact['email'] ) ) {
+			if ( isset( $contact['created_at'] ) ) {
+				$time         = new \DateTimeImmutable( $contact['created_at'], wp_timezone() );
+				$created_time = $time->format( 'h:i a' );
 
+				$contact['created_time'] = $created_time;
+			}
 
-    /**
-     * Remove tags, lists, and segments from a contact
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function delete_groups( WP_REST_Request $request ) 
-    {
-        $success = ContactPivotController::get_instance()->delete_groups( $request );
-        
-        if($success) {
-            return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
-        }
-        return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
-    }
+			if ( isset( $contact['created_by'] ) && ! empty( $contact['created_by'] ) ) {
+				$user_meta = get_userdata( $contact['created_by'] );
+			}
 
+			$contact ['added_by_login'] = ! empty( $user_meta->data->user_login ) ? $user_meta->data->user_login : 'External Source';
 
-    /**
-     * Set tags, lists, and segments to a contact
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function set_groups( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-        $isTag = false;
-        $isList = false;
+			$avatar_url = add_query_arg(
+				array(
+					's' => '100',
+					'd' => 'retro',
+				),
+				esc_url( 'https://www.gravatar.com/avatar/' . md5( $contact['email'] ) )
+			);
 
-        if( isset($params['tags'], $params['contact_id']) ){
-            if(empty($params['tags'])){
-                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
-            }
-            $success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
-            $isTag = true;
-        }
-
-        if( isset($params['lists'], $params['contact_id']) ){
-            if(empty($params['lists'])){
-                return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
-            }
-            $success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
-            $isList = true;
-        }
+			$contact ['avatar_url'] = $avatar_url;
+			return $this->get_success_response( 'Query Successfull', 200, $contact );
+		}
+		return $this->get_error_response( 'Failed to Get Data', 400 );
+	}
 
 
-        if($success &&  $isList && $isTag) {
-            return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 201 );
-        }else if ($success && $isTag){
-            return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 201 );
-        }else if ($success && $isList ){
-            return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 201 );
-        }
-        return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
-    }
+	/**
+	 * Return Contacts for list view
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get_all( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
 
-    /**
-     * Set tags, lists to multiple contacts
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function set_groups_to_multiple( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+		$page    = isset( $params['page'] ) ? $params['page'] : 1;
+		$perPage = isset( $params['per-page'] ) ? $params['per-page'] : 10;
+		$offset  = ( $page - 1 ) * $perPage;
 
-        $isTag = false;
-        $isList = false;
+		// Contact Search keyword
+		$search = isset( $params['search'] ) ? $params['search'] : '';
 
-        if( isset( $params['tags'] ) && isset( $params['contact_ids']) ){
-            $success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
-            $isTag = true;
-        }
+		$contacts = ContactModel::get_all( $offset, $perPage, $search );
 
-        if( isset( $params['lists'] ) && isset($params['contact_ids']) ){
-            $success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
-            $isList = true;
-        }
+		// Merge tags and lists to contacts
+		$contacts['data'] = array_map(
+			function( $contact ) {
+				$contact = TagController::get_tags_to_contact( $contact );
+				$contact = ListController::get_lists_to_contact( $contact );
+				return $contact;
+			},
+			$contacts['data']
+		);
 
-        if($success && $isList && $isTag) {
-            return $this->get_success_response( __( 'Tag and List has been added Successfully', 'mrm' ), 201 );
-        }else if ($success && $isTag){
-            return $this->get_success_response( __( 'Tag has been added Successfully', 'mrm' ), 201 );
-        }else if ($success && $isList){
-            return $this->get_success_response( __( 'List has been added Successfully', 'mrm' ), 201 );
-        }
-        return $this->get_error_response( __( 'Select an item first', 'mrm' ), 400 );
-    }
+		// Count contacts groups
+		$contacts['count_groups'] = array(
+			'lists'    => ContactGroupModel::get_groups_count( 'lists' ),
+			'tags'     => ContactGroupModel::get_groups_count( 'tags' ),
+			'segments' => ContactGroupModel::get_groups_count( 'segments' ),
+			'contacts' => absint( $contacts['total_count'] ),
+		);
+
+		// Count contacts based on status
+		$contacts['count_status'] = array(
+			'subscribed'   => ContactModel::get_contacts_status_count( 'subscribed' ),
+			'unsubscribed' => ContactModel::get_contacts_status_count( 'unsubscribed' ),
+			'pending'      => ContactModel::get_contacts_status_count( 'pending' ),
+		);
+
+		$contacts['current_page'] = (int) $page;
+
+		if ( isset( $contacts ) ) {
+			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $contacts );
+		}
+		return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+	}
 
 
-    /**
-     * Export contacts controller
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function export_contacts( WP_REST_Request $request ) {
-        try {
-            $body = $request->get_json_params();
-            $exportJson = json_decode(json_encode($body["export"]), true);
-            if(!isset($body) && empty($body["export"])) {
-                throw new Exception(__("Export Array with necessary field names is required.", "mrm"));
-            }
-            if(file_exists($this->export_file_location)) {
-                unlink($this->export_file_location);
-            } 
-            $csvWriter = Writer::createFromPath($this->export_file_location, 'w+');
-            // write csv header
-            $csvWriter->insertOne($exportJson);
-            $page = 1;
-            $limit = 25;
-            do {
-                $offset = ($page - 1) * $limit;
-                $data = ContactModel::get_all($offset, $limit);
-                $totalPages = $data['total_pages'];
-                $contactsBatchArray = $data['data'];
-                $contactsBatchFiltered = array_map(function($record) use($exportJson){
-                    $filtered = array();
-                    foreach($record as $key => $value) {
-                        if(in_array($key, $exportJson)) {
-                            $filtered[$key] = $value;
-                        }
-                    }
-                    return $filtered;
-                } , $contactsBatchArray);
-                $csvWriter->insertAll($contactsBatchFiltered);
+	/**
+	 * Delete a contact
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function delete_single( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
 
-            } while($page++ <= $totalPages);
-            
-        } catch(Exception $e) {
-            return $this->get_error_response(__($e->getMessage(), 'mrm'), 400);
-        }
-        return $this->get_success_response(__('Export Successful', 'mrm'), 200);
-    }
+		$success = ContactModel::destroy( $params['contact_id'] );
 
-    
-    /**
-     * Saves the uploaded import file in filesystem
-     * sends both csv file attrs and system contacts attrs as an array to user
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function import_contacts_get_attrs( WP_REST_Request $request ) 
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-        $params['files'] = $request->get_file_params();
+		if ( $success ) {
+			return $this->get_success_response( __( 'Contact has been deleted successfully', 'mrm' ), 200 );
+		}
+		return $this->get_error_response( __( 'Failed to delete', 'mrm' ), 400 );
+	}
 
-        $files  = isset( $params['files'] ) ? $params['files']: '';
 
-        $csv_mimes = MRM_Common::csv_mimes();
-        
-        $file_csv_type      = isset( $files['csv']['type'] ) ? $files['csv']['type'] : "";
-        $file_csv_tmp_name  = isset( $files['csv']['tmp_name'] ) ? $files['csv']['tmp_name'] : "";
-        $files_csv = isset( $files['csv'] ) ? $files['csv'] : "";
-        // CSV file upload validation
-        if ( empty( $files ) || 
-            ! is_array( $files_csv ) || 
-            ! is_uploaded_file( $file_csv_tmp_name ) || 
-            ! in_array( $file_csv_type, $csv_mimes ) 
-            ) {
+	/**
+	 * Delete multiple contacts
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function delete_all( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+
+		$success = ContactModel::destroy_all( $params['contact_ids'] );
+
+		if ( $success ) {
+			return $this->get_success_response( __( 'Contacts has been deleted successfully', 'mrm' ), 200 );
+		}
+		return $this->get_error_response( __( 'Failed to Delete', 'mrm' ), 400 );
+	}
+
+
+	/**
+	 * Remove tags, lists, and segments from a contact
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function delete_groups( WP_REST_Request $request ) {
+		$success = ContactPivotController::get_instance()->delete_groups( $request );
+
+		if ( $success ) {
+			return $this->get_success_response( __( 'Tag Removed Successfully', 'mrm' ), 200 );
+		}
+		return $this->get_error_response( __( 'Failed to Remove', 'mrm' ), 400 );
+	}
+
+
+	/**
+	 * Set tags, lists, and segments to a contact
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function set_groups( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+		$isTag  = false;
+		$isList = false;
+
+		if ( isset( $params['tags'], $params['contact_id'] ) ) {
+			if ( empty( $params['tags'] ) ) {
+				return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+			}
+			$success = TagController::set_tags_to_contact( $params['tags'], $params['contact_id'] );
+			$isTag   = true;
+		}
+
+		if ( isset( $params['lists'], $params['contact_id'] ) ) {
+			if ( empty( $params['lists'] ) ) {
+				return $this->get_error_response( __( 'Please select an item first', 'mrm' ), 400 );
+			}
+			$success = ListController::set_lists_to_contact( $params['lists'], $params['contact_id'] );
+			$isList  = true;
+		}
+
+		if ( $success && $isList && $isTag ) {
+			return $this->get_success_response( __( 'Tag and List added Successfully', 'mrm' ), 201 );
+		} elseif ( $success && $isTag ) {
+			return $this->get_success_response( __( 'Tag added Successfully', 'mrm' ), 201 );
+		} elseif ( $success && $isList ) {
+			return $this->get_success_response( __( 'List added Successfully', 'mrm' ), 201 );
+		}
+		return $this->get_error_response( __( 'Failed to add', 'mrm' ), 400 );
+	}
+
+	/**
+	 * Set tags, lists to multiple contacts
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function set_groups_to_multiple( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+
+		$isTag  = false;
+		$isList = false;
+
+		if ( isset( $params['tags'] ) && isset( $params['contact_ids'] ) ) {
+			$success = TagController::set_tags_to_multiple_contacts( $params['tags'], $params['contact_ids'] );
+			$isTag   = true;
+		}
+
+		if ( isset( $params['lists'] ) && isset( $params['contact_ids'] ) ) {
+			$success = ListController::set_lists_to_multiple_contacts( $params['lists'], $params['contact_ids'] );
+			$isList  = true;
+		}
+
+		if ( $success && $isList && $isTag ) {
+			return $this->get_success_response( __( 'Tag and List has been added Successfully', 'mrm' ), 201 );
+		} elseif ( $success && $isTag ) {
+			return $this->get_success_response( __( 'Tag has been added Successfully', 'mrm' ), 201 );
+		} elseif ( $success && $isList ) {
+			return $this->get_success_response( __( 'List has been added Successfully', 'mrm' ), 201 );
+		}
+		return $this->get_error_response( __( 'Select an item first', 'mrm' ), 400 );
+	}
+
+
+	/**
+	 * Export contacts controller
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function export_contacts( WP_REST_Request $request ) {
+		try {
+			$body       = $request->get_json_params();
+			$exportJson = json_decode( json_encode( $body['export'] ), true );
+			if ( ! isset( $body ) && empty( $body['export'] ) ) {
+				throw new Exception( __( 'Export Array with necessary field names is required.', 'mrm' ) );
+			}
+			if ( file_exists( $this->export_file_location ) ) {
+				unlink( $this->export_file_location );
+			}
+			$csvWriter = Writer::createFromPath( $this->export_file_location, 'w+' );
+			// write csv header
+			$csvWriter->insertOne( $exportJson );
+			$page  = 1;
+			$limit = 25;
+			do {
+				$offset                = ( $page - 1 ) * $limit;
+				$data                  = ContactModel::get_all( $offset, $limit );
+				$totalPages            = $data['total_pages'];
+				$contactsBatchArray    = $data['data'];
+				$contactsBatchFiltered = array_map(
+					function( $record ) use ( $exportJson ) {
+						$filtered = array();
+						foreach ( $record as $key => $value ) {
+							if ( in_array( $key, $exportJson ) ) {
+								$filtered[ $key ] = $value;
+							}
+						}
+						return $filtered;
+					},
+					$contactsBatchArray
+				);
+				$csvWriter->insertAll( $contactsBatchFiltered );
+			} while ( $page++ <= $totalPages );
+		} catch ( Exception $e ) {
+			return $this->get_error_response( __( $e->getMessage(), 'mrm' ), 400 );
+		}
+		return $this->get_success_response( __( 'Export Successful', 'mrm' ), 200 );
+	}
+
+
+	/**
+	 * Saves the uploaded import file in filesystem
+	 * sends both csv file attrs and system contacts attrs as an array to user
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function import_contacts_get_attrs( WP_REST_Request $request ) {
+		// Get values from API
+		$params          = MRM_Common::get_api_params_values( $request );
+		$params['files'] = $request->get_file_params();
+
+		$files = isset( $params['files'] ) ? $params['files'] : '';
+
+		$csv_mimes = MRM_Common::csv_mimes();
+
+		$file_csv_type     = isset( $files['csv']['type'] ) ? $files['csv']['type'] : '';
+		$file_csv_tmp_name = isset( $files['csv']['tmp_name'] ) ? $files['csv']['tmp_name'] : '';
+		$files_csv         = isset( $files['csv'] ) ? $files['csv'] : '';
+		// CSV file upload validation
+		if ( empty( $files ) ||
+			! is_array( $files_csv ) ||
+			! is_uploaded_file( $file_csv_tmp_name ) ||
+			! in_array( $file_csv_type, $csv_mimes )
+			) {
 			return $this->get_error_response( __( 'Please upload a CSV first', 'mrm' ) );
 		}
 
@@ -1046,9 +1039,10 @@ class ContactController extends BaseController {
         $params     = MRM_Common::get_api_params_values( $request );
         $contact_id = isset( $params['contact_id'] ) ? $params['contact_id'] : "";
         $success    = MessageController::get_instance()->send_double_opt_in( $contact_id  );
-        
-        if( 1 == $success) {
+        if( 1 == $success ) {
             return $this->get_success_response("Double Optin email has been sent", 200);
+        }else{
+            return $this->get_error_response( __( 'Double opt-in subscription process is disable', 'mrm' ), 400 );
         }
         return $this->get_error_response("Failed to send double optin email", 400);
     }
