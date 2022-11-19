@@ -522,9 +522,9 @@ export default function ContactDetails() {
     // }
   };
 
-  // useEffect(() => {
-  //   console.log(contactData);
-  // }, [contactData]);
+  useEffect(() => {
+    console.log(contactData);
+  }, [contactData]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -691,7 +691,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        [name]: genderButton,
+        ...prevState.meta_fields,
+        [name]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
   };
@@ -705,7 +709,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["country"]: countryButton,
+        ...prevState.meta_fields,
+        ["gender"]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
 
@@ -724,7 +732,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["state"]: countryStateButton,
+        ...prevState.meta_fields,
+        ["gender"]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
   };
@@ -736,7 +748,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["timezone"]: countryStateButton,
+        ...prevState.meta_fields,
+        ["gender"]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
   };
@@ -1455,6 +1471,9 @@ export default function ContactDetails() {
                                       label={field.meta.label}
                                       placeholder={field.meta.placeholder}
                                       selectOption={field.meta.options}
+                                      selectedValue={
+                                        contactData?.meta_fields?.[field.title]
+                                      }
                                       handleChange={handleChekcboxFields}
                                       value={
                                         contactData?.meta_fields?.[field.id]

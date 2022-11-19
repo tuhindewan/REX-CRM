@@ -9,6 +9,16 @@ export default function InputCheckbox(props) {
           {props.required && <span className="required-mark">*</span>}
         </label>
           {props.selectOption.map((option, index) => {
+            console.log(props.selectedValue)
+            let isChecked = false;
+            if(props.selectedValue){
+              props.selectedValue.map((sel, idx)=>{
+              if(sel === option){
+                isChecked=true;
+              }
+            })
+            }
+            
             return (
               <div className="mrm-radio-group mintmrm-checkbox">
                 <input
@@ -18,6 +28,7 @@ export default function InputCheckbox(props) {
                   name={props.name}
                   onChange={props.handleChange}
                   value={option}
+                  defaultChecked={isChecked}                
                 />
                 <label htmlFor={option}>
                   {option}

@@ -122,7 +122,7 @@ export default function AddCustomFieldModal(props) {
                 {/* <option value="email-field">Email field</option> */}
                 <option value="selectField">Select dropdown</option>
                 <option value="radioField">Radio</option>
-                {/* <option value="checkboxField">Checkbox</option> */}
+                <option value="checkboxField">Checkbox</option>
               </select>
             </div>
 

@@ -17,7 +17,10 @@ export default function InputSelect(props) {
           >
             {props.selectOption.map((option, index) => {
               return (
-                <option key={index} value={option} >
+                <option
+                  key={index}
+                  value={option}
+                >
                   {option}
                 </option>
               );
