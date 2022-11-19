@@ -9,7 +9,6 @@ export default function InputCheckbox(props) {
           {props.required && <span className="required-mark">*</span>}
         </label>
           {props.selectOption.map((option, index) => {
-            console.log(props.selectedValue)
             let isChecked = false;
             if(props.selectedValue){
               props.selectedValue.map((sel, idx)=>{

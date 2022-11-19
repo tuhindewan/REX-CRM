@@ -384,8 +384,6 @@ export default function ContactDetails() {
     contactData.meta_fields.country = countryButton;
     contactData.meta_fields.state = countryStateButton;
 
-    console.log(contactData);
-
     if (isValidate) {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
@@ -490,7 +488,6 @@ export default function ContactDetails() {
       contactData.meta_fields[name] = dataArray;
     }
 
-    console.log(contactData);
 
     //modifyContactData(name, value, id, checked);
 
@@ -521,10 +518,6 @@ export default function ContactDetails() {
     //   ]);
     // }
   };
-
-  useEffect(() => {
-    console.log(contactData);
-  }, [contactData]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -1055,7 +1048,7 @@ export default function ContactDetails() {
                                   </span>
                                   <span className="title-value">
                                     {contactData?.meta_fields?.[field.title]
-                                      ? contactData?.meta_fields?.[field.title]
+                                      ? contactData?.meta_fields?.[field.title]+" "
                                       : "-"}
                                   </span>
                                 </li>
