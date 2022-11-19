@@ -124,6 +124,7 @@ class ContactModel{
         $contacts_meta_table = $wpdb->prefix . ContactMetaSchema::$table_name;
 
         foreach( $args['meta_fields'] as $key => $value ){
+            $value = is_array($value) ? maybe_serialize($value) : $value;
             if( self::is_contact_meta_exist( $contact_id, $key ) ){
                 $wpdb->update( $contacts_meta_table, array(
                     'meta_value'    => $value
@@ -357,7 +358,7 @@ class ContactModel{
 
 		$new_meta['meta_fields'] = array();
 		foreach ( $meta_results as $result ) {
-			$new_meta['meta_fields'][ $result['meta_key'] ] = $result['meta_value'];
+			$new_meta['meta_fields'][ $result['meta_key'] ] = maybe_unserialize($result['meta_value']) ;
 		}
 
 		return $new_meta;

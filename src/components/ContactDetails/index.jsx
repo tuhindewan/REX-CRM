@@ -383,6 +383,9 @@ export default function ContactDetails() {
     contactData.meta_fields.timezone = selectedTimezone;
     contactData.meta_fields.country = countryButton;
     contactData.meta_fields.state = countryStateButton;
+
+    console.log(contactData);
+
     if (isValidate) {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
@@ -454,10 +457,12 @@ export default function ContactDetails() {
   const [selectedCheckboxItems, setSelectedCheckboxItems] = useState([]);
   const [checkboxName, setCheckboxName] = useState("");
 
-  const modifyContactData = (name, value, id, checked) => {
-    let modifiedContact = contactData;
+  const [modifiedContact, setModifiedContact] = useState([]);
 
-    if (modifiedContact.meta_fields[name] !== undefined) {
+  const modifyContactData = (name, value, id, checked) => {
+    setModifiedContact(contactData);
+
+    if (modifiedContact.meta_fields[name]) {
       if (checked) {
         modifiedContact.meta_fields[name].push(value);
       } else {
@@ -468,39 +473,58 @@ export default function ContactDetails() {
       let dataArray = [value];
       modifiedContact.meta_fields[name] = dataArray;
     }
-
-    //setContactData([modifiedContact]);
-
-    console.log(modifiedContact);
   };
 
   const handleChekcboxFields = (e) => {
     const { name, value, id, checked } = e.target;
 
-    modifyContactData(name, value, id, checked);
-
-    setCheckboxName(name);
-
-    const index = selectedCheckboxItems?.findIndex(
-      (item) => item.id == name + "-" + id
-    );
-
-    if (index >= 0) {
-      setSelectedCheckboxItems(
-        selectedCheckboxItems.filter((item) => item.id != name + "-" + id)
-      );
+    if (contactData.meta_fields[name]) {
+      if (checked) {
+        contactData.meta_fields[name].push(value);
+      } else {
+        let idx = contactData.meta_fields[name].indexOf(value);
+        contactData.meta_fields[name].splice(idx, 1);
+      }
     } else {
-      // add id to the array
-      setSelectedCheckboxItems([
-        ...selectedCheckboxItems,
-        { id: name + "-" + id, name: name, value: value },
-      ]);
+      let dataArray = [value];
+      contactData.meta_fields[name] = dataArray;
     }
+
+    console.log(contactData);
+
+    //modifyContactData(name, value, id, checked);
+
+    //console.log(modifiedContactData);
+
+    //setContactData(modifiedContactData);
+
+    // setContactData((prevState) => ([
+    //   ...prevState,
+    //   modifiedContactData,
+    // ]));
+
+    // setCheckboxName(name);
+
+    // const index = selectedCheckboxItems?.findIndex(
+    //   (item) => item.id == name + "-" + id
+    // );
+
+    // if (index >= 0) {
+    //   setSelectedCheckboxItems(
+    //     selectedCheckboxItems.filter((item) => item.id != name + "-" + id)
+    //   );
+    // } else {
+    //   // add id to the array
+    //   setSelectedCheckboxItems([
+    //     ...selectedCheckboxItems,
+    //     { id: name + "-" + id, name: name, value: value },
+    //   ]);
+    // }
   };
 
-  useEffect(() => {
-    console.log(contactData);
-  }, [contactData]);
+  // useEffect(() => {
+  //   console.log(contactData);
+  // }, [contactData]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -1392,8 +1416,6 @@ export default function ContactDetails() {
                                       }
                                     />
                                   )}
-
-                                  {console.log(field)}
 
                                   {field.type == "selectField" && (
                                     <InputSelect
