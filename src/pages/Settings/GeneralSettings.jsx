@@ -16,6 +16,7 @@ import {
 import { getTags } from "../../services/Tag";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import SettingsNav from "./SettingsNav";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 export default function GeneralSettings() {
   // Admin active menu selection
@@ -77,6 +78,7 @@ export default function GeneralSettings() {
   const [confirmation_message, setConfirmation_message] = useState("");
   const [errors, setErrors] = useState({});
   const [isValidate, setIsValidate] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
   const validate = (name, value) => {
     switch (name) {
       case "redirect":
@@ -121,8 +123,10 @@ export default function GeneralSettings() {
 },[selectUnsubscribeOption])
 
   useEffect(() => {
+    setShowLoader(true);
     getGeneralSettings().then((response) => {
       if(response.success){
+        setShowLoader(false);
         const unsubscriber_settings = response.unsubscriber_settings;
         const preference_settings = response.preference;
         const comment_form_subscription = response.comment_form_subscription;
@@ -175,8 +179,8 @@ export default function GeneralSettings() {
           setAssignTags(comment_form_subscription.tags);
         }
         if (Object.keys(user_signup).length > 0) {
-        setUserSelectSwitch(user_signup.enable);
-        if (user_signup.list_mapping.length > 0) {
+          setUserSelectSwitch(user_signup.enable);
+         if (user_signup.list_mapping.length > 0) {
           user_signup.list_mapping.map(function (value, index) {
             if (value.role == "administrator") {
               setAssignAdministratorLists(value.list);
@@ -195,7 +199,9 @@ export default function GeneralSettings() {
             }
           });
         }
-      }
+
+
+        }
       }
 
     });
@@ -509,6 +515,9 @@ export default function GeneralSettings() {
             <SettingsNav />
 
             <div className="settings-tab-content">
+              {showLoader ? (
+                  <LoadingIndicator type="table" />
+              ) : (
               <div className="single-tab-content general-tab-content">
                 <div className="tab-body">
                   <header className="tab-header">
@@ -1308,6 +1317,7 @@ export default function GeneralSettings() {
                   </button>
                 </div>
               </div>
+              )}
             </div>
             {/* end settings-tab-content */}
           </div>
