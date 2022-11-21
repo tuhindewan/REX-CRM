@@ -175,15 +175,24 @@ export default function DoubleOptin() {
 
   useEffect(() => {
     getOptinSettings().then((response) => {
+      setSelectSwitch(response.enable);
+      setSelectOption(response.confirmation_type);
+      setOptinSettings(response);
       tinymce.get("tinymce").setContent(response.email_body);
       tinymce
         .get("confirmation-message")
         .setContent(response.confirmation_message);
-      setSelectSwitch(response.enable);
-      setSelectOption(response.confirmation_type);
-      setOptinSettings(response);
     });
   }, []);
+
+  useEffect(() => {
+    getOptinSettings().then((response) => {
+      tinymce.get("tinymce").setContent(response.email_body);
+      tinymce
+        .get("confirmation-message")
+        .setContent(response.confirmation_message);
+    });
+  }, [selectSwitch]);
 
   useEffect(() => {
     getAllWpPages().then((response) => {
@@ -193,7 +202,6 @@ export default function DoubleOptin() {
 
   return (
     <>
-      {console.log(optinSetting)}
       <div className="mintmrm-settings-page">
         <div className="mintmrm-container">
           <div className="mintmrm-settings">
