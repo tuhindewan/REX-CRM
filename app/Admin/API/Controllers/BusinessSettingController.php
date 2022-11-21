@@ -38,6 +38,12 @@ class BusinessSettingController extends SettingBaseController {
 				$address       = isset( $params['address'] ) ? sanitize_text_field( $params['address'] ) : '';
 				$logo_url      = isset( $params['logo_url'] ) ? sanitize_text_field( $params['logo_url'] ) : '';
 				$social        = isset( $params['socialMedia'] ) ? $params['socialMedia'] : array();
+
+
+				if ( ctype_punct($business_name)){
+					return $this->get_error_response( __( 'Business name not only special characters ', 'mrm' ) );
+				}
+
 				if ( ! $this->phone_number_validation( $phone ) ) {
 					return $this->get_error_response( __( 'Phone number format is not correct', 'mrm' ) );
 				}
