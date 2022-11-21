@@ -28,6 +28,7 @@ const businessSettings = {
   ],
 };
 
+
 export type ICustomFooter = IBlockData<
   {
     "background-color": string;
@@ -46,7 +47,7 @@ export type ICustomFooter = IBlockData<
 >;
 
 export const FooterBlock = createCustomBlock<ICustomFooter>({
-  name: "Footer Block",
+  name: "Footer",
   type: CustomBlocksType.FOOTER_BLOCK,
   validParentType: [BasicType.PAGE, AdvancedType.WRAPPER, BasicType.WRAPPER],
   create: (payload) => {

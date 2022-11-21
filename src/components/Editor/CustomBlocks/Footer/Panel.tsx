@@ -2,23 +2,13 @@ import { useEditorProps, useFocusIdx } from "easy-email-editor";
 
 import {
   AttributesPanelWrapper,
-  ColorPickerField,
-  NumberField,
-  SelectField,
+  ColorPickerField
   TextField,
 } from "easy-email-extensions";
 import React from "react";
 
-const selectCategoryDropdownOptions =
-  window.MRM_Vars.editor_data_source.product_categories;
-
 export function Panel() {
   const { focusIdx } = useFocusIdx();
-  const { onChangeCategory } = useEditorProps();
-
-  const onFieldValueChange = (value) => {
-    onChangeCategory(value);
-  };
 
   return (
     <AttributesPanelWrapper style={{ padding: "20px" }}>
@@ -28,18 +18,6 @@ export function Panel() {
           name={`${focusIdx}.data.value.title`}
           inline
           alignment="center"
-        />
-        <SelectField
-          label="Select Category"
-          options={selectCategoryDropdownOptions}
-          name={`${focusIdx}.data.value.producttype`}
-          onFieldValueChange={onFieldValueChange}
-        />
-        <NumberField
-          label="Quantity"
-          inline
-          max={6}
-          name={`${focusIdx}.data.value.quantity`}
         />
         <TextField
           label="Button text"
