@@ -145,217 +145,283 @@ export default function WooCommerceSettings() {
     getWCData();
   }, []);
   return (
-    <div className="mintmrm-settings-page">
-      <div className="mintmrm-container">
-        <div className="mintmrm-settings">
-          <h2 class="conatct-heading">Settings</h2>
+      <div className="mintmrm-settings-page">
+          <div className="mintmrm-container">
+              <div className="mintmrm-settings">
+                  <h2 class="conatct-heading">Settings</h2>
 
-          <div className="mintmrm-settings-wrapper">
-            <SettingsNav />
+                  <div className="mintmrm-settings-wrapper">
+                      <SettingsNav />
 
-            <div className="settings-tab-content">
-              <div className="single-tab-content woocommerce-tab-content">
-                <div className="tab-body">
-                  <header className="tab-header">
-                    <h4 className="title">
-                      <WooCommerceIcon />
-                      WooCommerce Settings
-                    </h4>
-                  </header>
+                      <div className="settings-tab-content">
+                          <div className="single-tab-content woocommerce-tab-content">
+                              <div className="tab-body">
+                                  <header className="tab-header">
+                                      <h4 className="title">
+                                          <WooCommerceIcon />
+                                          WooCommerce Settings
+                                      </h4>
+                                  </header>
 
-                  <div className="form-wrapper">
-                    <div className="form-group">
-                      <label htmlFor="">
-                        Opt-in on Checkout
-                        <span class="mintmrm-tooltip">
-                          <TooltipQuestionIcon />
-                          <p>Define behaviour of the form after submission</p>
-                        </span>
-                      </label>
-                      <span className="mintmrm-switcher">
-                        <input
-                          type="checkbox"
-                          name="checkedB"
-                          id="st"
-                          checked={selectSwitch}
-                          defaultChecked={selectSwitch}
-                          onChange={handleSwitcher}
-                        />
-                        <label htmlFor="st"></label>
-                      </span>
-                    </div>
-                    {selectSwitch ? (
-                      <>
-                        <div className="form-group">
-                          <label htmlFor="woocommerce-switcher">
-                            Checkbox Label
-                            <span class="mintmrm-tooltip">
-                              <TooltipQuestionIcon />
-                              <p>
-                                Define behaviour of the form after submission
-                              </p>
-                            </span>
-                          </label>
-                          <input
-                            id="woocommerce-switcher"
-                            type="text"
-                            name="checkbox-label"
-                            placeholder="Enter Checkbox label Text"
-                            value={checkboxLabel}
-                            onChange={(event) =>
-                              setCheckboxLabel(event.target.value)
-                            }
-                          />
-                        </div>
-                        <hr/>
+                                  <div className="form-wrapper">
+                                      <div className="form-group">
+                                          <label htmlFor="">
+                                              Opt-in on Checkout
+                                              <span class="mintmrm-tooltip">
+                                                  <TooltipQuestionIcon />
+                                                  <p>
+                                                      Define behaviour of the
+                                                      form after submission
+                                                  </p>
+                                              </span>
+                                          </label>
+                                          <span className="mintmrm-switcher">
+                                              <input
+                                                  type="checkbox"
+                                                  name="checkedB"
+                                                  id="st"
+                                                  checked={selectSwitch}
+                                                  defaultChecked={selectSwitch}
+                                                  onChange={handleSwitcher}
+                                              />
+                                              <label htmlFor="st"></label>
+                                          </span>
+                                      </div>
+                                      {selectSwitch ? (
+                                          <>
+                                              <div className="form-group">
+                                                  <label htmlFor="woocommerce-switcher">
+                                                      Checkbox Label
+                                                      <span class="mintmrm-tooltip">
+                                                          <TooltipQuestionIcon />
+                                                          <p>
+                                                              Define behaviour
+                                                              of the form after
+                                                              submission
+                                                          </p>
+                                                      </span>
+                                                  </label>
+                                                  <input
+                                                      id="woocommerce-switcher"
+                                                      type="text"
+                                                      name="checkbox-label"
+                                                      maxLength={998}
+                                                      placeholder="Enter Checkbox label Text"
+                                                      value={checkboxLabel}
+                                                      onChange={(event) =>
+                                                          setCheckboxLabel(
+                                                              event.target.value
+                                                          )
+                                                      }
+                                                  />
+                                              </div>
+                                              <hr />
 
-                        <div className="form-group label-block" ref={listMenuRef}>
-                          <label>
-                            Assign List
-                            <span class="mintmrm-tooltip">
-                              <TooltipQuestionIcon />
-                              <p>
-                                Define behaviour of the form after submission
-                              </p>
-                            </span>
-                          </label>
-                          
-                          <div className="input-custom-wrapper">
-                            <button
-                              type="button"
-                              className={
-                                isActiveList
-                                  ? "drop-down-button show"
-                                  : "drop-down-button"
-                              }
-                              onClick={handleList}
-                            >
-                              {assignLists.length != 0
-                                ? assignLists?.map((list) => {
-                                    return (
-                                      <span className="single-list" key={list.id}>
-                                        {list.title}
+                                              <div
+                                                  className="form-group label-block"
+                                                  ref={listMenuRef}
+                                              >
+                                                  <label>
+                                                      Assign List
+                                                      <span class="mintmrm-tooltip">
+                                                          <TooltipQuestionIcon />
+                                                          <p>
+                                                              Define behaviour
+                                                              of the form after
+                                                              submission
+                                                          </p>
+                                                      </span>
+                                                  </label>
 
-                                        <span
-                                          className="close-list"
-                                          title="Delete"
-                                          onClick={(e) =>
-                                            deleteSelectedList(e, list.id)
+                                                  <div className="input-custom-wrapper">
+                                                      <button
+                                                          type="button"
+                                                          className={
+                                                              isActiveList
+                                                                  ? "drop-down-button show"
+                                                                  : "drop-down-button"
+                                                          }
+                                                          onClick={handleList}
+                                                      >
+                                                          {assignLists.length !=
+                                                          0
+                                                              ? assignLists?.map(
+                                                                    (list) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    list.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    list.title
+                                                                                }
+
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedList(
+                                                                                            e,
+                                                                                            list.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
+                                                              : "Select Lists"}
+                                                      </button>
+                                                      <AddItemDropdown
+                                                          isActive={
+                                                              isActiveList
+                                                          }
+                                                          setIsActive={
+                                                              setIsActiveList
+                                                          }
+                                                          selected={assignLists}
+                                                          setSelected={
+                                                              setAssignLists
+                                                          }
+                                                          endpoint="lists"
+                                                          items={lists}
+                                                          allowMultiple={true}
+                                                          allowNewCreate={true}
+                                                          name="list"
+                                                          title="CHOOSE LIST"
+                                                          refresh={refresh}
+                                                          setRefresh={
+                                                              setRefresh
+                                                          }
+                                                          prefix="woocommerce"
+                                                      />
+                                                  </div>
+                                              </div>
+
+                                              <div
+                                                  className="form-group label-block"
+                                                  ref={tagMenuRef}
+                                              >
+                                                  <label>
+                                                      Assign Tag
+                                                      <span class="mintmrm-tooltip">
+                                                          <TooltipQuestionIcon />
+                                                          <p>
+                                                              Define behaviour
+                                                              of the form after
+                                                              submission
+                                                          </p>
+                                                      </span>
+                                                  </label>
+
+                                                  <div className="input-custom-wrapper">
+                                                      <button
+                                                          type="button"
+                                                          className={
+                                                              isActiveTag
+                                                                  ? "drop-down-button show"
+                                                                  : "drop-down-button"
+                                                          }
+                                                          onClick={handleTag}
+                                                      >
+                                                          {assignTags.length !=
+                                                          0
+                                                              ? assignTags?.map(
+                                                                    (tag) => {
+                                                                        return (
+                                                                            <span
+                                                                                className="single-list"
+                                                                                key={
+                                                                                    tag.id
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    tag.title
+                                                                                }
+
+                                                                                <span
+                                                                                    className="close-list"
+                                                                                    title="Delete"
+                                                                                    onClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        deleteSelectedTag(
+                                                                                            e,
+                                                                                            tag.id
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <CrossIcon />
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    }
+                                                                )
+                                                              : "Select Tags"}
+                                                      </button>
+
+                                                      <AddItemDropdown
+                                                          isActive={isActiveTag}
+                                                          setIsActive={
+                                                              setIsActiveTag
+                                                          }
+                                                          selected={assignTags}
+                                                          setSelected={
+                                                              setAssignTags
+                                                          }
+                                                          endpoint="tags"
+                                                          items={tags}
+                                                          allowMultiple={true}
+                                                          allowNewCreate={true}
+                                                          name="tag"
+                                                          title="CHOOSE TAG"
+                                                          refresh={refresh}
+                                                          setRefresh={
+                                                              setRefresh
+                                                          }
+                                                          prefix="woocommerce"
+                                                      />
+                                                  </div>
+                                              </div>
+                                          </>
+                                      ) : null}
+                                  </div>
+                              </div>
+
+                              <div className="tab-footer">
+                                  <button
+                                      className="mintmrm-btn"
+                                      type="button"
+                                      onClick={saveSettings}
+                                      disabled={loading}
+                                  >
+                                      Save Settings
+                                      <span
+                                          className={
+                                              loading ? "mintmrm-loader" : ""
                                           }
-                                        >
-                                          <CrossIcon />
-                                        </span>
-                                      </span>
-                                    );
-                                  })
-                                : "Select Lists"}
-                            </button>
-                            <AddItemDropdown
-                              isActive={isActiveList}
-                              setIsActive={setIsActiveList}
-                              selected={assignLists}
-                              setSelected={setAssignLists}
-                              endpoint="lists"
-                              items={lists}
-                              allowMultiple={true}
-                              allowNewCreate={true}
-                              name="list"
-                              title="CHOOSE LIST"
-                              refresh={refresh}
-                              setRefresh={setRefresh}
-                              prefix="woocommerce"
-                            />
+                                      ></span>
+                                  </button>
+                              </div>
                           </div>
-                        </div>
-                        
-                        <div className="form-group label-block" ref={tagMenuRef}>
-                          <label>
-                            Assign Tag
-                            <span class="mintmrm-tooltip">
-                              <TooltipQuestionIcon />
-                              <p>
-                                Define behaviour of the form after submission
-                              </p>
-                            </span>
-                          </label>
-
-                          <div className="input-custom-wrapper">
-                            <button
-                              type="button"
-                              className={
-                                isActiveTag
-                                  ? "drop-down-button show"
-                                  : "drop-down-button"
-                              }
-                              onClick={handleTag}
-                            >
-                              {assignTags.length != 0
-                                ? assignTags?.map((tag) => {
-                                    return (
-                                      <span className="single-list" key={tag.id}>
-                                        {tag.title}
-
-                                        <span
-                                          className="close-list"
-                                          title="Delete"
-                                          onClick={(e) =>
-                                            deleteSelectedTag(e, tag.id)
-                                          }
-                                        >
-                                          <CrossIcon />
-                                        </span>
-                                      </span>
-                                    );
-                                  })
-                                : "Select Tags"}
-                            </button>
-
-                            <AddItemDropdown
-                              isActive={isActiveTag}
-                              setIsActive={setIsActiveTag}
-                              selected={assignTags}
-                              setSelected={setAssignTags}
-                              endpoint="tags"
-                              items={tags}
-                              allowMultiple={true}
-                              allowNewCreate={true}
-                              name="tag"
-                              title="CHOOSE TAG"
-                              refresh={refresh}
-                              setRefresh={setRefresh}
-                              prefix="woocommerce"
-                            />
-                          </div>
-                        </div>
-                      </>
-                    ) : null}
+                      </div>
+                      {/* end settings-tab-content */}
                   </div>
-                </div>
-
-                <div className="tab-footer">
-                  <button
-                    className="mintmrm-btn"
-                    type="button"
-                    onClick={saveSettings}
-                    disabled={loading}
-                  >
-                    Save Settings
-                    <span className={loading ? "mintmrm-loader" : ""}></span>
-                  </button>
-                </div>
               </div>
-            </div>
-            {/* end settings-tab-content */}
+              <SuccessfulNotification
+                  display={showNotification}
+                  setShowNotification={setShowNotification}
+                  message={message}
+                  notificationType={notificationType}
+                  setNotificationType={setNotificationType}
+              />
           </div>
-        </div>
-        <SuccessfulNotification
-          display={showNotification}
-          setShowNotification={setShowNotification}
-          message={message}
-          notificationType={notificationType}
-          setNotificationType={setNotificationType}
-        />
       </div>
-    </div>
   );
 }

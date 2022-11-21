@@ -262,6 +262,7 @@ export default function DoubleOptin() {
                               <input
                                 type="text"
                                 name="email_subject"
+                                maxLength={998}
                                 value={optinSetting.email_subject}
                                 placeholder="Enter Email Subject"
                                 onChange={handleChange}
