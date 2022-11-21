@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import AddItemDropdown from "../../components/AddItemDropdown";
 import CrossIcon from "../../components/Icons/CrossIcon";
@@ -9,7 +10,7 @@ import ListenForOutsideClicks, {
 import SuccessfulNotification from "../../components/SuccessfulNotification";
 import { getLists } from "../../services/List";
 import {
-  getGeneralSettings,
+  getGeneralSettings, getOptinSettings,
   submitGeneralSetting,
 } from "../../services/Setting";
 import { getTags } from "../../services/Tag";
@@ -19,6 +20,7 @@ import SettingsNav from "./SettingsNav";
 export default function GeneralSettings() {
   // Admin active menu selection
   AdminNavMenuClassChange("mrm-admin", "settings");
+  _.noConflict();
   const [loader, setLoader] = useState(false);
   const [notificationType, setNotificationType] = useState("success");
   const [showNotification, setShowNotification] = useState("none");
@@ -73,6 +75,51 @@ export default function GeneralSettings() {
   const [listening, setListening] = useState(false);
   // Get General setting data
   const [confirmation_message, setConfirmation_message] = useState("");
+  const [errors, setErrors] = useState({});
+  const [isValidate, setIsValidate] = useState(true);
+  const validate = (name, value) => {
+    console.log(name)
+    switch (name) {
+      case "redirect":
+        if (
+            !new RegExp(
+                "(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?"
+            ).test(value)
+        ) {
+          setErrors({
+            ...errors,
+            redirect: "Enter a valid URL",
+          });
+          setIsValidate(false);
+        } else {
+          setErrors({});
+          setIsValidate(true);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+  let tinyMceConfig = {
+    tinymce: {
+      wpautop: true,
+      plugins:
+          "charmap colorpicker compat3x directionality hr image lists media tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview",
+      toolbar1:
+          "bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | wp_adv ",
+      toolbar2:
+          "formatselect alignjustify forecolor | fontsizeselect | fontselect |pastetext removeformat charmap | outdent indent | undo redo | wp_help ",
+    },
+    quicktags: true,
+    mediaButtons: true,
+  };
+
+  let editorId = "confirmation-message";
+  wp.editor.remove(editorId);
+  wp.editor.initialize(editorId, tinyMceConfig);
+},[selectUnsubscribeOption])
 
   useEffect(() => {
     getGeneralSettings().then((response) => {
@@ -89,6 +136,9 @@ export default function GeneralSettings() {
             : "message"
         );
         setConfirmation_message(unsubscriber_settings.confirmation_message);
+        tinymce
+            .get("confirmation-message")
+            .setContent(unsubscriber_settings.confirmation_message);
       }
 
       //preference
@@ -150,14 +200,33 @@ export default function GeneralSettings() {
     });
   }, []);
 
+
+  useEffect(() => {
+    getGeneralSettings().then((response) => {
+      if (Object.keys(response.unsubscriber_settings).length > 0) {
+        tinymce
+            .get("confirmation-message")
+            .setContent(response.unsubscriber_settings.confirmation_message);
+      }
+    });
+
+  }, [selectUnsubscribeOption]);
+
   //Handle Submit general setting
   const handleGeneralSubmit = () => {
     setLoader(true);
+    let message_content = "";
+
+    if (selectUnsubscribeOption == 'message') {
+      message_content = tinymce.get("confirmation-message").getContent();
+    } else {
+      message_content = confirmation_message;
+    }
     const settings = {
       unsubscriber_settings: {
         confirmation_type: selectUnsubscribeOption,
         url: redirectUrl,
-        confirmation_message: confirmation_message,
+        confirmation_message: message_content,
       },
       preference: {
         enable: true,
@@ -223,6 +292,7 @@ export default function GeneralSettings() {
   //Handle Confirmation Url
   const handleChangeURL = (event) => {
     const { name, value } = event.target;
+    validate(name, value);
     setRedirectUrl(value);
   };
 
@@ -519,7 +589,7 @@ export default function GeneralSettings() {
                                 rows="3"
                                 placeholder="Enter Confirmation Message"
                                 name="confirmation_message"
-                                value={confirmation_message}
+                                // value={confirmation_message}
                                 onChange={handleChange}
                               ></textarea>
                             </div>
@@ -543,6 +613,7 @@ export default function GeneralSettings() {
                               value={redirectUrl}
                               onChange={handleChangeURL}
                             />
+                            {errors?.redirect}
                           </div>
                         )}
                       </div>
