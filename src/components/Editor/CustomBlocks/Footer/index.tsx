@@ -45,8 +45,8 @@ export type ICustomFooter = IBlockData<
   }
 >;
 
-export const CustomFooter = createCustomBlock<ICustomFooter>({
-  name: "Custom Footer",
+export const FooterBlock = createCustomBlock<ICustomFooter>({
+  name: "Footer Block",
   type: CustomBlocksType.FOOTER_BLOCK,
   validParentType: [BasicType.PAGE, AdvancedType.WRAPPER, BasicType.WRAPPER],
   create: (payload) => {

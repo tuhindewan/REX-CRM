@@ -35,6 +35,7 @@ import { copy } from "./utils/copy";
 import "./CustomBlocks";
 
 //----icon components----
+import { CustomBlocksType } from "./CustomBlocks/constant";
 import CrossIcon from "./Icon/CrossIcon";
 import DesktopIcon from "./Icon/DesktopIcon";
 import DoubleAngleLeftIcon from "./Icon/DoubleAngleLeftIcon";
@@ -71,6 +72,9 @@ const defaultCategories: ExtensionProps["categories"] = [
       },
       {
         type: AdvancedType.WRAPPER,
+      },
+      {
+        type: CustomBlocksType.FOOTER_BLOCK,
       },
     ],
   },
