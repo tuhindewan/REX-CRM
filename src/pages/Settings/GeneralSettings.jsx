@@ -78,7 +78,6 @@ export default function GeneralSettings() {
   const [errors, setErrors] = useState({});
   const [isValidate, setIsValidate] = useState(true);
   const validate = (name, value) => {
-    console.log(name)
     switch (name) {
       case "redirect":
         if (
