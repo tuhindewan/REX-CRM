@@ -228,11 +228,12 @@
           }
 
           .drop-down-button {
+            position: relative;
             margin-top: 12px;
             width: 100%;
             border: 1px solid #ebedf0;
             border-radius: 6px;
-            padding: 15px 16px;
+            padding: 13px 16px;
             background-color: transparent;
             text-align: left;
             font-weight: 400;
@@ -245,18 +246,18 @@
               display: block;
               position: absolute;
               border-style: solid;
-              border-color: #686f7f;
-              border-width: 0px 1px 1px 0px;
-              transform: rotate(45deg);
-              transition: border-width 150ms ease-in-out;
-              height: 5px;
-              right: 20px;
-              top: 60%;
-              width: 5px;
+              border-color: #a4a8b5;
+              border-width: 0px 2px 2px 0px;
+              transform: rotate(45deg) translateY(-50%);
+              transform-origin: center;
+              transition: all 0.3s ease;
+              height: 6px;
+              right: 21px;
+              top: calc(50% - 2px);
+              width: 6px;
               cursor: pointer;
             }
             &.show::before {
-              top: 65%;
               transform: rotate(225deg);
             }
 
@@ -276,7 +277,7 @@
 
               .close-list {
                 background: transparent;
-                padding: 1px 6px 2px;
+                padding: 3px 6px 2px;
                 border-radius: 2px;
                 font-size: 10px;
                 cursor: pointer;
@@ -306,6 +307,11 @@
               }
             }
           }
+
+          .mintmrm-dropdown {
+            top: calc(100% + 4px);
+          }
+
         }
 
         hr {

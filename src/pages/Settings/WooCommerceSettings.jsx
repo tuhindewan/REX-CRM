@@ -233,7 +233,7 @@ export default function WooCommerceSettings() {
                                     <span className="single-list" key={list.id}>
                                       {list.title}
 
-                                      <button
+                                      <span
                                         className="close-list"
                                         title="Delete"
                                         onClick={(e) =>
@@ -241,7 +241,7 @@ export default function WooCommerceSettings() {
                                         }
                                       >
                                         <CrossIcon />
-                                      </button>
+                                      </span>
                                     </span>
                                   );
                                 })
@@ -288,7 +288,7 @@ export default function WooCommerceSettings() {
                                     <span className="single-list" key={tag.id}>
                                       {tag.title}
 
-                                      <button
+                                      <span
                                         className="close-list"
                                         title="Delete"
                                         onClick={(e) =>
@@ -296,12 +296,13 @@ export default function WooCommerceSettings() {
                                         }
                                       >
                                         <CrossIcon />
-                                      </button>
+                                      </span>
                                     </span>
                                   );
                                 })
                               : "Select Tags"}
                           </button>
+
                           <AddItemDropdown
                             isActive={isActiveTag}
                             setIsActive={setIsActiveTag}

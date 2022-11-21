@@ -462,7 +462,7 @@ export default function GeneralSettings() {
                         </div>
                       </div>
                       <div className="general-settings-body show">
-                        <div className="form-group">
+                        <div className="form-group top-align">
                           <label htmlFor="confirmation-type">
                             After Confirmation Type
                             <span class="mintmrm-tooltip">
@@ -472,7 +472,8 @@ export default function GeneralSettings() {
                               </p>
                             </span>
                           </label>
-                          <div>
+
+                          <div className="input-custom-wrapper">
                             <span className="mintmrm-radiobtn">
                               <input
                                 id="show-message"
@@ -499,6 +500,7 @@ export default function GeneralSettings() {
                             </span>
                           </div>
                         </div>
+
                         {selectUnsubscribeOption === "message" ? (
                           <div className="form-group top-align">
                             <label htmlFor="confirmation-message">
@@ -510,14 +512,17 @@ export default function GeneralSettings() {
                                 </p>
                               </span>
                             </label>
-                            <textarea
-                              id="confirmation-message"
-                              rows="3"
-                              placeholder="Enter Confirmation Message"
-                              name="confirmation_message"
-                              value={confirmation_message}
-                              onChange={handleChange}
-                            ></textarea>
+
+                            <div className="input-custom-wrapper">
+                              <textarea
+                                id="confirmation-message"
+                                rows="3"
+                                placeholder="Enter Confirmation Message"
+                                name="confirmation_message"
+                                value={confirmation_message}
+                                onChange={handleChange}
+                              ></textarea>
+                            </div>
                           </div>
                         ) : (
                           <div className="form-group">
@@ -530,6 +535,7 @@ export default function GeneralSettings() {
                                 </p>
                               </span>
                             </label>
+
                             <input
                               type="text"
                               name="redirect"
@@ -541,6 +547,7 @@ export default function GeneralSettings() {
                         )}
                       </div>
                     </div>
+
                     <div className="general-single-settings">
                       <div className="general-settings-header">
                         <div className="form-group">
@@ -555,6 +562,7 @@ export default function GeneralSettings() {
                           </label>
                         </div>
                       </div>
+
                       <div className="general-settings-body show">
                         <div className="form-group top-align">
                           <label htmlFor="">
@@ -682,7 +690,7 @@ export default function GeneralSettings() {
                             ) : null}
                           </div>
                         </div>
-                        <hr></hr>
+                        <hr />
                         <div className="form-group top-align">
                           <label htmlFor="">
                             Editable Primary Fields
@@ -738,6 +746,7 @@ export default function GeneralSettings() {
                         </div>
                       </div>
                     </div>
+
                     <div className="general-single-settings">
                       <div className="general-settings-header">
                         <div className="form-group">
@@ -763,6 +772,7 @@ export default function GeneralSettings() {
                           </span>
                         </div>
                       </div>
+
                       <div
                         className={
                           userSelectSwitch
@@ -779,7 +789,7 @@ export default function GeneralSettings() {
                           ref={listAdministratorMenuRef}
                         >
                           <label htmlFor="">Administrator</label>
-                          <div className="administrator">
+                          <div className="administrator input-custom-wrapper">
                             <button
                               type="button"
                               className={
@@ -832,9 +842,10 @@ export default function GeneralSettings() {
                             />
                           </div>
                         </div>
+
                         <div className="form-group" ref={listEditorMenuRef}>
                           <label htmlFor="">Editor</label>
-                          <div className="editor">
+                          <div className="editor input-custom-wrapper">
                             <button
                               type="button"
                               className={
@@ -884,9 +895,10 @@ export default function GeneralSettings() {
                             />
                           </div>
                         </div>
+
                         <div className="form-group" ref={listAuthorMenuRef}>
                           <label htmlFor="">Author</label>
-                          <div className="author">
+                          <div className="author input-custom-wrapper">
                             <button
                               type="button"
                               className={
@@ -936,12 +948,13 @@ export default function GeneralSettings() {
                             />
                           </div>
                         </div>
+
                         <div
                           className="form-group"
                           ref={listContributorMenuRef}
                         >
                           <label htmlFor="">Contributor</label>
-                          <div className="contributor">
+                          <div className="contributor input-custom-wrapper">
                             <button
                               type="button"
                               className={
@@ -994,9 +1007,10 @@ export default function GeneralSettings() {
                             />
                           </div>
                         </div>
+
                         <div className="form-group" ref={listSubscriberMenuRef}>
                           <label htmlFor="">Subscriber</label>
-                          <div className="subscriber">
+                          <div className="subscriber input-custom-wrapper">
                             <button
                               type="button"
                               className={
@@ -1051,6 +1065,7 @@ export default function GeneralSettings() {
                         </div>
                       </div>
                     </div>
+                    
                     <div className="general-single-settings">
                       <div className="general-settings-header">
                         <div className="form-group">
