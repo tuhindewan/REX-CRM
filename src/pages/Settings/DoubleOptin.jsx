@@ -115,9 +115,17 @@ export default function DoubleOptin() {
   // Submit optin object and hit post request
   const handleSubmit = async () => {
     setLoader(true);
-    const body_content = tinymce.get("tinymce").getContent();
-    console.log(body_content);
-    const message_content = tinymce.get("confirmation-message").getContent();
+    let body_content = "";
+    let message_content = "";
+
+    if (selectSwitch) {
+      body_content = tinymce.get("tinymce").getContent();
+      message_content = tinymce.get("confirmation-message").getContent();
+    } else {
+      body_content = optinSetting.email_body;
+      message_content = optinSetting.confirmation_message;
+    }
+
     optinSetting.enable = selectSwitch;
     optinSetting.confirmation_type = selectOption;
     optinSetting.email_body = body_content;
@@ -175,7 +183,7 @@ export default function DoubleOptin() {
       setSelectOption(response.confirmation_type);
       setOptinSettings(response);
     });
-  }, [selectSwitch]);
+  }, []);
 
   useEffect(() => {
     getAllWpPages().then((response) => {
@@ -185,6 +193,7 @@ export default function DoubleOptin() {
 
   return (
     <>
+      {console.log(optinSetting)}
       <div className="mintmrm-settings-page">
         <div className="mintmrm-container">
           <div className="mintmrm-settings">
