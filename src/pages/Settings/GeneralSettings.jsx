@@ -502,7 +502,7 @@ export default function GeneralSettings() {
                         </div>
 
                         {selectUnsubscribeOption === "message" ? (
-                          <div className="form-group top-align">
+                          <div className="form-group top-align has-wysiwyg-editor">
                             <label htmlFor="confirmation-message">
                               Confirmation Message
                               <span class="mintmrm-tooltip">
@@ -1065,7 +1065,7 @@ export default function GeneralSettings() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="general-single-settings">
                       <div className="general-settings-header">
                         <div className="form-group">
@@ -1098,7 +1098,7 @@ export default function GeneralSettings() {
                             : "general-settings-body"
                         }
                       >
-                        <div className="form-group" ref={listCommentMenuRef}>
+                        <div className="form-group label-block" ref={listCommentMenuRef}>
                           <label>
                             Assign List
                             <span class="mintmrm-tooltip">
@@ -1153,7 +1153,8 @@ export default function GeneralSettings() {
                             prefix="comment"
                           />
                         </div>
-                        <div className="form-group" ref={tagMenuRef}>
+
+                        <div className="form-group label-block" ref={tagMenuRef}>
                           <label>
                             Assign Tag
                             <span class="mintmrm-tooltip">

@@ -250,7 +250,7 @@ export default function DoubleOptin() {
                                 onChange={handleChange}
                               />
                             </div>
-                            <div className="form-group top-align">
+                            <div className="form-group top-align has-wysiwyg-editor">
                               <label htmlFor="">
                                 Email Body
                                 <span class="mintmrm-tooltip">
@@ -337,8 +337,8 @@ export default function DoubleOptin() {
                             <div
                               className={
                                 selectOption === "message"
-                                  ? "form-group top-align confirmation-message-section show"
-                                  : "form-group top-align confirmation-message-section"
+                                  ? "form-group top-align has-wysiwyg-editor confirmation-message-section show"
+                                  : "form-group top-align has-wysiwyg-editor confirmation-message-section"
                               }
                             >
                               <label htmlFor="">
