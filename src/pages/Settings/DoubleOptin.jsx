@@ -115,9 +115,17 @@ export default function DoubleOptin() {
   // Submit optin object and hit post request
   const handleSubmit = async () => {
     setLoader(true);
-    const body_content = tinymce.get("tinymce").getContent();
-    console.log(body_content);
-    const message_content = tinymce.get("confirmation-message").getContent();
+    let body_content = "";
+    let message_content = "";
+
+    if (selectSwitch) {
+      body_content = tinymce.get("tinymce").getContent();
+      message_content = tinymce.get("confirmation-message").getContent();
+    } else {
+      body_content = optinSetting.email_body;
+      message_content = optinSetting.confirmation_message;
+    }
+
     optinSetting.enable = selectSwitch;
     optinSetting.confirmation_type = selectOption;
     optinSetting.email_body = body_content;
@@ -167,13 +175,22 @@ export default function DoubleOptin() {
 
   useEffect(() => {
     getOptinSettings().then((response) => {
+      setSelectSwitch(response.enable);
+      setSelectOption(response.confirmation_type);
+      setOptinSettings(response);
       tinymce.get("tinymce").setContent(response.email_body);
       tinymce
         .get("confirmation-message")
         .setContent(response.confirmation_message);
-      setSelectSwitch(response.enable);
-      setSelectOption(response.confirmation_type);
-      setOptinSettings(response);
+    });
+  }, []);
+
+  useEffect(() => {
+    getOptinSettings().then((response) => {
+      tinymce.get("tinymce").setContent(response.email_body);
+      tinymce
+        .get("confirmation-message")
+        .setContent(response.confirmation_message);
     });
   }, [selectSwitch]);
 
