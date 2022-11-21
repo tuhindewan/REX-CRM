@@ -28,6 +28,10 @@ class GeneralSettingController extends SettingBaseController {
 
 		if ( is_array( $params ) && ! empty( $params ) ) {
 			foreach ( $params as $key => $value ) {
+				if (isset($value['confirmation_type']) && 'message' === $value['confirmation_type']){
+					$value['confirmation_message'] = isset( $value['confirmation_message'] ) ? html_entity_decode( $value['confirmation_message'] ) : "";
+				}
+				error_log(print_r($value['confirmation_message'],1));
 				update_option( '_mrm_general_' . $key, $value );
 			}
 			return $this->get_success_response( __( 'General settings have been successfully saved.', 'mrm' ) );
