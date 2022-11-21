@@ -48,7 +48,12 @@ class WPSmtp {
 			$this->smtp_settings = isset( $this->smtp_configs[ 'settings' ] ) ? $this->smtp_configs[ 'settings' ] : [];
 		}
 
-		add_action( 'phpmailer_init', [ $this, 'configure_' . $this->smtp_method ] );
+		if ( 'smtp' === $this->smtp_method ) {
+			add_action( 'phpmailer_init', [ $this, 'configure_' . $this->smtp_method ] );
+		}
+		elseif ( 'sendgrid' === $this->smtp_method || 'amazonses' === $this->smtp_method ) {
+			add_filter( 'pre_wp_mail', [ $this, 'configure_' . $this->smtp_method ] );
+		}
 	}
 
 	/**
@@ -85,38 +90,47 @@ class WPSmtp {
 					}
 				}
 				catch( Exception $e ) {
+					print_r( $e->getMessage(),1 );
 				}
 			}
 		}
 	}
 
 	/**
-	 * @desc Configure Web server
-	 * @param $phpmailer
-	 * @return void
-	 * @since 1.0.0
-	 */
-	public function configure_web_server( $phpmailer ) {
-
-	}
-
-	/**
 	 * @desc Configure Sendgrid server
 	 * @param $phpmailer
-	 * @return void
+	 * @return true
 	 * @since 1.0.0
 	 */
 	public function configure_sendgrid( $phpmailer ) {
-
+		error_log(print_r($this->smtp_settings, 1));
+		/*$email = new \SendGrid\Mail\Mail();
+		$email->setFrom("test@example.com", "Example User");
+		$email->setSubject("Sending with Twilio SendGrid is Fun");
+		$email->addTo("test@example.com", "Example User");
+		$email->addContent("text/plain", "and easy to do anywhere, even with PHP");
+		$email->addContent(
+			"text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
+		);
+		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+		try {
+			$response = $sendgrid->send($email);
+			print $response->statusCode() . "\n";
+			print_r($response->headers());
+			print $response->body() . "\n";
+		} catch (Exception $e) {
+			echo 'Caught exception: '. $e->getMessage() ."\n";
+		}*/
+		return true;
 	}
 
 	/**
 	 * @desc Configure Amazon SES server
 	 * @param $phpmailer
-	 * @return void
+	 * @return true
 	 * @since 1.0.0
 	 */
 	public function configure_amazonses( $phpmailer ) {
-
+		return true;
 	}
 }
