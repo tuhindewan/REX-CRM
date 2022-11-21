@@ -779,7 +779,7 @@ export default function GeneralSettings() {
                           ref={listAdministratorMenuRef}
                         >
                           <label htmlFor="">Administrator</label>
-                          <div className="administrator">
+                          <div className="administrator single-wp-dropdown">
                             <button
                               type="button"
                               className={
@@ -834,7 +834,7 @@ export default function GeneralSettings() {
                         </div>
                         <div className="form-group" ref={listEditorMenuRef}>
                           <label htmlFor="">Editor</label>
-                          <div className="editor">
+                          <div className="editor single-wp-dropdown">
                             <button
                               type="button"
                               className={
@@ -886,7 +886,7 @@ export default function GeneralSettings() {
                         </div>
                         <div className="form-group" ref={listAuthorMenuRef}>
                           <label htmlFor="">Author</label>
-                          <div className="author">
+                          <div className="author single-wp-dropdown">
                             <button
                               type="button"
                               className={
@@ -941,7 +941,7 @@ export default function GeneralSettings() {
                           ref={listContributorMenuRef}
                         >
                           <label htmlFor="">Contributor</label>
-                          <div className="contributor">
+                          <div className="contributor single-wp-dropdown">
                             <button
                               type="button"
                               className={
@@ -996,7 +996,7 @@ export default function GeneralSettings() {
                         </div>
                         <div className="form-group" ref={listSubscriberMenuRef}>
                           <label htmlFor="">Subscriber</label>
-                          <div className="subscriber">
+                          <div className="subscriber single-wp-dropdown">
                             <button
                               type="button"
                               className={

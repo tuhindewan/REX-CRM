@@ -200,6 +200,7 @@ export default function WooCommerceSettings() {
                             id="woocommerce-switcher"
                             type="text"
                             name="checkbox-label"
+                            maxLength={998}
                             placeholder="Enter Checkbox label Text"
                             value={checkboxLabel}
                             onChange={(event) =>
