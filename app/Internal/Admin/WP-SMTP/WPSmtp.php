@@ -37,6 +37,62 @@ class WPSmtp {
 	protected $smtp_settings;
 
 	/**
+	 * @desc From email variable
+	 * @var $from_email
+	 * @since 1.0.0
+	 */
+	protected $from_email;
+
+	/**
+	 * @desc From email name variable
+	 * @var $from_email_name
+	 * @since 1.0.0
+	 */
+	protected $from_email_name;
+
+	/**
+	 * @desc To email variable
+	 * @var $to_email
+	 * @since 1.0.0
+	 */
+	protected $to_email;
+
+	/**
+	 * @desc To email name variable
+	 * @var $to_email_name
+	 * @since 1.0.0
+	 */
+	protected $to_email_name;
+
+	/**
+	 * @desc Email subject variable
+	 * @var $email_subject
+	 * @since 1.0.0
+	 */
+	protected $email_subject;
+
+	/**
+	 * @desc Email content variable
+	 * @var $email_content
+	 * @since 1.0.0
+	 */
+	protected $email_content;
+
+	/**
+	 * @desc Email headers variable
+	 * @var $email_headers
+	 * @since 1.0.0
+	 */
+	protected $email_headers;
+
+	/**
+	 * @desc Email attachments variable
+	 * @var $email_attachments
+	 * @since 1.0.0
+	 */
+	protected $email_attachments;
+
+	/**
 	 * @desc Initialize actions
 	 * @return void
 	 * @since 1.0.0
@@ -52,7 +108,7 @@ class WPSmtp {
 			add_action( 'phpmailer_init', [ $this, 'configure_' . $this->smtp_method ] );
 		}
 		elseif ( 'sendgrid' === $this->smtp_method || 'amazonses' === $this->smtp_method ) {
-			add_filter( 'pre_wp_mail', [ $this, 'configure_' . $this->smtp_method ] );
+			add_filter( 'pre_wp_mail', [ $this, 'configure_' . $this->smtp_method ], 10, 2 );
 		}
 	}
 
@@ -98,29 +154,34 @@ class WPSmtp {
 
 	/**
 	 * @desc Configure Sendgrid server
-	 * @param $phpmailer
-	 * @return true
+	 * @param $null
+	 * @param $attributes
+	 * @return bool
 	 * @since 1.0.0
 	 */
-	public function configure_sendgrid( $phpmailer ) {
-		error_log(print_r($this->smtp_settings, 1));
-		/*$email = new \SendGrid\Mail\Mail();
-		$email->setFrom("test@example.com", "Example User");
-		$email->setSubject("Sending with Twilio SendGrid is Fun");
-		$email->addTo("test@example.com", "Example User");
-		$email->addContent("text/plain", "and easy to do anywhere, even with PHP");
-		$email->addContent(
-			"text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
-		);
-		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
-		try {
-			$response = $sendgrid->send($email);
-			print $response->statusCode() . "\n";
-			print_r($response->headers());
-			print $response->body() . "\n";
-		} catch (Exception $e) {
-			echo 'Caught exception: '. $e->getMessage() ."\n";
-		}*/
+	public function configure_sendgrid( $null, $attributes ) {
+		$this->set_email_attributes( $attributes );
+		$sendgrid_api = isset( $this->smtp_settings[ 'api_key' ] ) && '' !== $this->smtp_settings[ 'api_key' ] ? $this->smtp_settings[ 'api_key' ] : false;
+
+		if ( $sendgrid_api && $this->to_email && $this->from_email && $this->email_content ) {
+			$email = new \SendGrid\Mail\Mail();
+			$email->setFrom( $this->from_email, $this->from_email_name );
+			$email->setSubject( $this->email_subject );
+			$email->addTo( $this->to_email, "" );
+			$email->addContent( $this->email_content );
+			$email->addHeaders( $this->email_headers );
+			$sendgrid = new \SendGrid( $sendgrid_api );
+
+			try {
+				$response = $sendgrid->send( $email );
+				print $response->statusCode() . "\n";
+				print_r( $response->headers() );
+				print $response->body() . "\n";
+			}
+			catch( Exception $e ) {
+				echo 'Caught exception: ' . $e->getMessage() . "\n";
+			}
+		}
 		return true;
 	}
 
@@ -132,5 +193,30 @@ class WPSmtp {
 	 */
 	public function configure_amazonses( $phpmailer ) {
 		return true;
+	}
+
+	/**
+	 * @desc Set the email variables
+	 * @param $attributes
+	 * @return void
+	 * @since 1.0.0
+	 */
+	private function set_email_attributes( $attributes ) {
+		$this->from_email        = isset( $attributes[ 'from' ] ) && '' !== $attributes[ 'from' ] ? sanitize_email( $attributes[ 'from' ] ) : sanitize_email( get_option( 'admin_email', false ) );
+		$this->to_email          = isset( $attributes[ 'to' ] ) && '' !== $attributes[ 'to' ] ? sanitize_email( $attributes[ 'to' ] ) : false;
+		$this->email_subject     = isset( $attributes[ 'subject' ] ) && '' !== $attributes[ 'subject' ] ? sanitize_text_field( $attributes[ 'subject' ] ) : '';
+		$this->email_content     = isset( $attributes[ 'message' ] ) && '' !== $attributes[ 'message' ] ? $attributes[ 'subject' ] : false;
+		$this->email_attachments = isset( $attributes[ 'attachments' ] ) && '' !== $attributes[ 'attachments' ] ? $attributes[ 'headers' ] : [];
+		$this->from_email_name   = $this->from_email ? get_user_by( 'email', $this->from_email )->display_name : '';
+
+		$this->email_headers = [];
+		if ( isset( $attributes[ 'headers' ] ) && '' !== $attributes[ 'headers' ] ) {
+			foreach ( $attributes[ 'headers' ] as $header ) {
+				$temp_header = explode( ': ', $header );
+				if ( isset( $temp_header[ 0 ], $temp_header[ 1 ] ) && 'MIME-Version' === $temp_header[ 0 ] || 'Content-type' === $temp_header[ 0 ] ) {
+					$this->email_headers[ $temp_header[ 0 ] ] = $temp_header[ 1 ];
+				}
+			}
+		}
 	}
 }
