@@ -207,8 +207,9 @@ export default function WooCommerceSettings() {
                             }
                           />
                         </div>
-                        <hr></hr>
-                        <div className="form-group" ref={listMenuRef}>
+                        <hr/>
+
+                        <div className="form-group label-block" ref={listMenuRef}>
                           <label>
                             Assign List
                             <span class="mintmrm-tooltip">
@@ -218,52 +219,56 @@ export default function WooCommerceSettings() {
                               </p>
                             </span>
                           </label>
-                          <button
-                            type="button"
-                            className={
-                              isActiveList
-                                ? "drop-down-button show"
-                                : "drop-down-button"
-                            }
-                            onClick={handleList}
-                          >
-                            {assignLists.length != 0
-                              ? assignLists?.map((list) => {
-                                  return (
-                                    <span className="single-list" key={list.id}>
-                                      {list.title}
+                          
+                          <div className="input-custom-wrapper">
+                            <button
+                              type="button"
+                              className={
+                                isActiveList
+                                  ? "drop-down-button show"
+                                  : "drop-down-button"
+                              }
+                              onClick={handleList}
+                            >
+                              {assignLists.length != 0
+                                ? assignLists?.map((list) => {
+                                    return (
+                                      <span className="single-list" key={list.id}>
+                                        {list.title}
 
-                                      <button
-                                        className="close-list"
-                                        title="Delete"
-                                        onClick={(e) =>
-                                          deleteSelectedList(e, list.id)
-                                        }
-                                      >
-                                        <CrossIcon />
-                                      </button>
-                                    </span>
-                                  );
-                                })
-                              : "Select Lists"}
-                          </button>
-                          <AddItemDropdown
-                            isActive={isActiveList}
-                            setIsActive={setIsActiveList}
-                            selected={assignLists}
-                            setSelected={setAssignLists}
-                            endpoint="lists"
-                            items={lists}
-                            allowMultiple={true}
-                            allowNewCreate={true}
-                            name="list"
-                            title="CHOOSE LIST"
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                            prefix="woocommerce"
-                          />
+                                        <span
+                                          className="close-list"
+                                          title="Delete"
+                                          onClick={(e) =>
+                                            deleteSelectedList(e, list.id)
+                                          }
+                                        >
+                                          <CrossIcon />
+                                        </span>
+                                      </span>
+                                    );
+                                  })
+                                : "Select Lists"}
+                            </button>
+                            <AddItemDropdown
+                              isActive={isActiveList}
+                              setIsActive={setIsActiveList}
+                              selected={assignLists}
+                              setSelected={setAssignLists}
+                              endpoint="lists"
+                              items={lists}
+                              allowMultiple={true}
+                              allowNewCreate={true}
+                              name="list"
+                              title="CHOOSE LIST"
+                              refresh={refresh}
+                              setRefresh={setRefresh}
+                              prefix="woocommerce"
+                            />
+                          </div>
                         </div>
-                        <div className="form-group" ref={tagMenuRef}>
+                        
+                        <div className="form-group label-block" ref={tagMenuRef}>
                           <label>
                             Assign Tag
                             <span class="mintmrm-tooltip">
@@ -273,50 +278,54 @@ export default function WooCommerceSettings() {
                               </p>
                             </span>
                           </label>
-                          <button
-                            type="button"
-                            className={
-                              isActiveTag
-                                ? "drop-down-button show"
-                                : "drop-down-button"
-                            }
-                            onClick={handleTag}
-                          >
-                            {assignTags.length != 0
-                              ? assignTags?.map((tag) => {
-                                  return (
-                                    <span className="single-list" key={tag.id}>
-                                      {tag.title}
 
-                                      <button
-                                        className="close-list"
-                                        title="Delete"
-                                        onClick={(e) =>
-                                          deleteSelectedTag(e, tag.id)
-                                        }
-                                      >
-                                        <CrossIcon />
-                                      </button>
-                                    </span>
-                                  );
-                                })
-                              : "Select Tags"}
-                          </button>
-                          <AddItemDropdown
-                            isActive={isActiveTag}
-                            setIsActive={setIsActiveTag}
-                            selected={assignTags}
-                            setSelected={setAssignTags}
-                            endpoint="tags"
-                            items={tags}
-                            allowMultiple={true}
-                            allowNewCreate={true}
-                            name="tag"
-                            title="CHOOSE TAG"
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                            prefix="woocommerce"
-                          />
+                          <div className="input-custom-wrapper">
+                            <button
+                              type="button"
+                              className={
+                                isActiveTag
+                                  ? "drop-down-button show"
+                                  : "drop-down-button"
+                              }
+                              onClick={handleTag}
+                            >
+                              {assignTags.length != 0
+                                ? assignTags?.map((tag) => {
+                                    return (
+                                      <span className="single-list" key={tag.id}>
+                                        {tag.title}
+
+                                        <span
+                                          className="close-list"
+                                          title="Delete"
+                                          onClick={(e) =>
+                                            deleteSelectedTag(e, tag.id)
+                                          }
+                                        >
+                                          <CrossIcon />
+                                        </span>
+                                      </span>
+                                    );
+                                  })
+                                : "Select Tags"}
+                            </button>
+
+                            <AddItemDropdown
+                              isActive={isActiveTag}
+                              setIsActive={setIsActiveTag}
+                              selected={assignTags}
+                              setSelected={setAssignTags}
+                              endpoint="tags"
+                              items={tags}
+                              allowMultiple={true}
+                              allowNewCreate={true}
+                              name="tag"
+                              title="CHOOSE TAG"
+                              refresh={refresh}
+                              setRefresh={setRefresh}
+                              prefix="woocommerce"
+                            />
+                          </div>
                         </div>
                       </>
                     ) : null}

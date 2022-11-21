@@ -100,3 +100,13 @@
         }
     }
 }
+
+@media only screen and (max-width: 1199px) {
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .social-media-wrapper {
+        gap: 20px;
+    }
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .social-media-wrapper .single-media {
+        padding: 20px;
+        width: 100%;
+    }
+}

@@ -55,16 +55,16 @@
                             background: #f6f8fa;
                             border-radius: 6px;
                             padding: 20px;
+                            display: block;
+
+                            & > label {
+                                width: 100%;
+                                padding: 0;
+                                margin-bottom: 5px;
+                            }
 
                             .drop-down-button {
                                 background-color: #ffffff;
-                                &::before {
-                                    right: 38px;
-                                    top: 58%;
-                                }
-                                &.show::before {
-                                    top: 60%;
-                                }
                             }
                         }
                     }
@@ -114,29 +114,30 @@
 }
 
 @media only screen and (max-width: 1199px) {
-    .mintmrm-settings-page
-        .settings-tab-content
-        .general-tab-content
-        .general-single-settings
-        .general-settings-body {
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-header {
+        padding: 17px 15px 15px;
+    }
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body {
+        padding: 20px 15px;
+
         .select-preference-wrapper,
         .editable-primary-field {
             width: calc(100% - 195px);
         }
     }
 
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .wp-user {
+        margin: -20px -15px 23px;
+        padding: 14px 15px;
+    }
+
 }
 @media only screen and (max-width: 991px) {
-    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper .list-section .drop-down-button{
-    //     padding: 13px 8px;
+    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper, 
+    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .editable-primary-field {
+    //     width: 100%;
     // }
-    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper .list-section .drop-down-button::before{
-    //     right: 34px;
+    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-header .form-group{
+    //     flex-flow: row wrap;
     // }
-    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper, .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .editable-primary-field {
-        width: 100%;
-    }
-    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-header .form-group{
-        flex-flow: row wrap;
-    }
 }

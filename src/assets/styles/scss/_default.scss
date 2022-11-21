@@ -163,10 +163,6 @@
     font-weight: 500;
   }
 
-  //----margin----
-  .mintmrm-mb-16 {
-    margin-bottom: 16px;
-  }
 
   //------extendable classes--------
   .pos-relative {
@@ -199,6 +195,25 @@
       color: #fff;
       line-height: 1;
       font-size: 13px;
+    }
+  }
+  
+  //----margin----
+  .mintmrm-mb-16 {
+    margin-bottom: 16px;
+  }
+
+  .label-block {
+    display: block;
+
+    & > label {
+      width: 100%;
+      padding: 0;
+      margin-bottom: 5px;
+    }
+
+    .input-custom-wrapper {
+      width: 100%;
     }
   }
 
