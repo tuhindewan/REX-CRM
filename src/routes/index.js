@@ -3,7 +3,7 @@ import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../pages/Dashboard";
 import ImportConfirmation from "../components/ImportConfirmation";
 import SelectFieldsMap from "../components/SelectFieldsMap";
 import WordPressFieldMap from "../components/WordPressFieldMap";
