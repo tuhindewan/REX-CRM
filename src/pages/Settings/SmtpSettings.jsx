@@ -242,7 +242,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group send-test-email">
+                          <div className="form-group send-test-email top-align">
                             <label htmlFor="test-email">
                               Test the sending method
                               <span class="mintmrm-tooltip">
@@ -277,7 +277,7 @@ export default function SmtpSettings() {
                       {/* when sending protocol "web-server" selected */}
                       {"web-server" === sendingProtocol && (
                         <>
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="sending-frequency">
                               Sending Frequency
                             </label>
@@ -315,7 +315,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group send-test-email">
+                          <div className="form-group send-test-email top-align">
                             <label htmlFor="test-email">
                               Test the sending method
                               <span class="mintmrm-tooltip">
@@ -350,7 +350,7 @@ export default function SmtpSettings() {
                       {/* when sending protocol "sendgrid" selected */}
                       {"sendgrid" === sendingProtocol && (
                         <>
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="sending-frequency">
                               Sending Frequency
                               <span class="mintmrm-tooltip">
@@ -375,7 +375,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="api-key"> API Key </label>
 
                             <div className="input-custom-wrapper">
@@ -405,7 +405,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group send-test-email">
+                          <div className="form-group send-test-email top-align">
                             <label htmlFor="test-email">
                               Test the sending method
                               <span class="mintmrm-tooltip">
@@ -440,7 +440,7 @@ export default function SmtpSettings() {
                       {/* when sending protocol "amazonses" selected */}
                       {"amazonses" === sendingProtocol && (
                         <>
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="sending-frequency">
                               Sending Frequency
                               <span class="mintmrm-tooltip">
@@ -465,7 +465,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="region">
                               Region
                               <span class="mintmrm-tooltip">
@@ -561,7 +561,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="access-key">Access Key</label>
 
                             <div className="input-custom-wrapper">
@@ -573,7 +573,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group top-align">
+                          <div className="form-group">
                             <label htmlFor="secret-key">Secret Key</label>
 
                             <div className="input-custom-wrapper">
@@ -607,7 +607,7 @@ export default function SmtpSettings() {
                             </div>
                           </div>
 
-                          <div className="form-group send-test-email">
+                          <div className="form-group send-test-email top-align">
                             <label htmlFor="test-email">
                               Test the sending method
                               <span class="mintmrm-tooltip">

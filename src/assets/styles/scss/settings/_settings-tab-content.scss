@@ -74,6 +74,14 @@
           flex-flow: row wrap;
           margin-bottom: 22px;
 
+          &.label-block {
+            display: block;
+
+            .input-custom-wrapper {
+              width: 100%;
+            }
+          }
+
           &:last-child {
             margin-bottom: 0;
           }
@@ -86,10 +94,12 @@
             width: 223px;
             padding-right: 10px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 9px;
 
             .mintmrm-tooltip {
+              top: 3px;
+
               svg {
                 rect {
                   fill: #686f7f;
@@ -228,11 +238,11 @@
           }
 
           .drop-down-button {
-            margin-top: 12px;
+            position: relative;
             width: 100%;
             border: 1px solid #ebedf0;
             border-radius: 6px;
-            padding: 15px 16px;
+            padding: 13px 16px;
             background-color: transparent;
             text-align: left;
             font-weight: 400;
@@ -245,18 +255,18 @@
               display: block;
               position: absolute;
               border-style: solid;
-              border-color: #686f7f;
-              border-width: 0px 1px 1px 0px;
-              transform: rotate(45deg);
-              transition: border-width 150ms ease-in-out;
-              height: 5px;
-              right: 20px;
-              top: 60%;
-              width: 5px;
+              border-color: #a4a8b5;
+              border-width: 0px 2px 2px 0px;
+              transform: rotate(45deg) translateY(-50%);
+              transform-origin: center;
+              transition: all 0.3s ease;
+              height: 6px;
+              right: 21px;
+              top: calc(50% - 2px);
+              width: 6px;
               cursor: pointer;
             }
             &.show::before {
-              top: 65%;
               transform: rotate(225deg);
             }
 
@@ -276,7 +286,7 @@
 
               .close-list {
                 background: transparent;
-                padding: 1px 6px 2px;
+                padding: 3px 6px 2px;
                 border-radius: 2px;
                 font-size: 10px;
                 cursor: pointer;
@@ -306,6 +316,11 @@
               }
             }
           }
+
+          .mintmrm-dropdown {
+            top: calc(100% + 4px);
+          }
+
         }
 
         hr {
@@ -445,88 +460,110 @@
         margin-bottom: 10px;
     }
 }
-@media only screen and (max-width: 1199px) {
-    .mintmrm-settings-page .mintmrm-settings-wrapper {
-        gap: 20px;
-        .settings-tab-content {
-            width: calc(100% - 289px);
-            .form-wrapper .form-group > label {
-                font-size: 14px;
-                width: 195px;
-            }
-            .form-wrapper {
-                .form-group {
-                    .input-custom-wrapper,
-                    input[type="url"],
-                    input[type="number"],
-                    input[type="email"],
-                    input[type="text"],
-                    textarea,
-                    select {
-                        width: calc(100% - 195px);
-                    }
-                    .mintmrm-radiobtn {
-                        display: block;
-                        margin-bottom: 15px;
-                        label {
-                            font-size: 13px;
-                        }
-                    }
-                    .mintmrm-checkbox {
-                        label {
-                            font-size: 13px;
-                        }
-                    }
-                }
-            }
 
-            .form-wrapper .photo-upload {
-                .photo-area {
-                    flex-flow: column wrap;
-                    align-items: center;
-                    width: calc(100% - 195px);
+
+@media only screen and (max-width: 1199px) {
+  .mintmrm-settings-page .mintmrm-settings-wrapper {
+      gap: 20px;
+
+      .settings-tab-content {
+        width: calc(100% - 291px);
+
+        .form-wrapper .form-group > label {
+          font-size: 14px;
+          width: 180px;
+          padding-right: 16px;
+        }
+
+        .form-wrapper {
+            .form-group {
+                .input-custom-wrapper,
+                input[type="url"],
+                input[type="number"],
+                input[type="email"],
+                input[type="text"],
+                textarea,
+                select {
+                    width: calc(100% - 180px);
                 }
-                .upload-area {
-                    width: 100%;
+
+                .mintmrm-radiobtn {
+                    display: block;
+                    margin-bottom: 15px;
+                    label {
+                        font-size: 13px;
+                    }
+                }
+                .mintmrm-checkbox {
+                    label {
+                        font-size: 13px;
+                    }
                 }
             }
         }
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .inline-field {
-        display: flex;
-        flex-flow: column wrap;
-        align-items: flex-start;
-        gap: 10px;
-    }
+
+        .form-wrapper .photo-upload {
+            .photo-area {
+                flex-flow: column wrap;
+                width: calc(100% - 195px);
+            }
+            .upload-area {
+                width: 100%;
+            }
+        }
+      }
+  }
+
+  .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.has-wysiwyg-editor {
+    display: block;
+  }
+  .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .inline-field {
+      display: flex;
+      flex-flow: column wrap;
+      align-items: flex-start;
+      gap: 10px;
+  }
+  .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .tab-body {
+    padding: 20px;
+  }
+
+  .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.has-wysiwyg-editor > label {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 0;
+  }
+  .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.has-wysiwyg-editor .input-custom-wrapper {
+    width: 100%;
+  }
     
 }
 
 @media only screen and (max-width: 991px) {
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group{
-        align-items: flex-start;
-        flex-flow: column wrap;
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group > label {
-        margin-bottom: 15px;
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=url], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=number], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=email], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=text], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group textarea, .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group select {
-        width: 100%;
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .photo-area {
-        flex-flow: row wrap;
-        width: 100%;
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .upload-area {
-        width: calc(100% - 138px);
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper .mintmrm-radiobtn {
-        display: inline-block;
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button {
-        position: relative;
-    }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.label-with-switcher{
-        flex-flow: row wrap;
-        justify-content: space-between;
-    }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group{
+    //     align-items: flex-start;
+    //     flex-flow: column wrap;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group > label {
+    //     margin-bottom: 15px;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=url], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=number], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=email], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=text], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group textarea, .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group select {
+    //     width: 100%;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .photo-area {
+    //     flex-flow: row wrap;
+    //     width: 100%;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .upload-area {
+    //     width: calc(100% - 138px);
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper .mintmrm-radiobtn {
+    //     display: inline-block;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button {
+    //     position: relative;
+    // }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.label-with-switcher{
+    //     flex-flow: row wrap;
+    //     justify-content: space-between;
+    // }
 }
