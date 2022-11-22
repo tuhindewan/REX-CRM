@@ -51,12 +51,12 @@ export default function CustomFieldSettings() {
 
   //----add new custom field-----
   const addNewCustomField = async () => {
-    submitCustomFields(prepareData);
-    setPrepareData({});
-
-    toggleRefresh();
-
-    setCustomFieldModal(false);
+    console.log(prepareData);
+    submitCustomFields(prepareData).then((response) => {
+      setPrepareData({});
+      toggleRefresh();
+      setCustomFieldModal(false);
+    });
   };
 
   //----delete custom field-----
@@ -81,7 +81,6 @@ export default function CustomFieldSettings() {
               <SettingsNav />
 
               <div className="settings-tab-content">
-                
                 <div className="single-tab-content custom-field-tab-content">
                   <div
                     className={
@@ -95,6 +94,8 @@ export default function CustomFieldSettings() {
                       closeCustomFieldModal={closeCustomFieldModal}
                       prepareData={prepareData}
                       setPrepareData={setPrepareData}
+                      refresh={refresh}
+                      setRefresh={setRefresh}
                     />
                   </div>
 
@@ -170,7 +171,6 @@ export default function CustomFieldSettings() {
                     </button>
                   </div>
                 </div>
-                
               </div>
               {/* end settings-tab-content */}
             </div>

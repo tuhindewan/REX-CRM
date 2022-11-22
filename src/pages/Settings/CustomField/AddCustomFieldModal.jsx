@@ -9,6 +9,8 @@ export default function AddCustomFieldModal(props) {
     closeCustomFieldModal,
     prepareData,
     setPrepareData,
+    refresh,
+    setRefresh,
   } = props;
   const [customFieldType, setCustomFieldType] = useState();
   const [customFieldLabel, setCustomFieldLabel] = useState();
@@ -26,10 +28,32 @@ export default function AddCustomFieldModal(props) {
   };
   const [customFieldData, setCustomFieldData] = useState([]);
 
+  const [addOption, setAddOption] = useState();
+
+  const [addCall, setAddCall] = useState(false);
+
   //----get field type from selectbox-----
   const selectFieldType = (event) => {
     setCustomFieldType(event.target.value);
   };
+
+  const [firstCall, setFirstCall] = useState(false);
+
+  const addFinalOption = () => {
+    setOptionsArray([...optionArray, addOption]);
+    setFirstCall(!firstCall);
+  };
+
+  useEffect(() => {
+    setPrepareData({ ...prepareData, ["options"]: optionArray });
+    setAddCall(!addCall);
+  }, [firstCall]);
+
+  useEffect(() => {
+    setOptionsArray([]);
+    setPrepareData({});
+    addNewCustomField();
+  }, [addCall]);
 
   const handleChange = (event) => {
     setCustomFieldData({
@@ -65,6 +89,9 @@ export default function AddCustomFieldModal(props) {
 
   //----add new option repeater-----
   const addNewOption = () => {
+    if (addOption) {
+      setOptionsArray([...optionArray, addOption]);
+    }
     setNewDropdownOption((prevState) => {
       return [
         ...prevState,
@@ -76,11 +103,14 @@ export default function AddCustomFieldModal(props) {
   };
 
   const handleOptionChange = (option, e, idx) => {
-    setOptionsArray({...optionArray, [e.target.name]: e.target.value});
+    setAddOption(e.target.value);
   };
 
-  const handleOptionRemove = () => {
-    console.log("delete option");
+  const handleOptionRemove = (idx) => {
+    setOptionsArray([
+      ...optionArray.slice(0, idx),
+      ...optionArray.slice(idx + 1, optionArray.length),
+    ]);
   };
 
   return (
@@ -251,7 +281,7 @@ export default function AddCustomFieldModal(props) {
                           />
                           <button
                             className="delete-option"
-                            onClick={handleOptionRemove}
+                            onClick={() => handleOptionRemove(idx)}
                           >
                             <CrossIcon />
                           </button>
@@ -282,7 +312,7 @@ export default function AddCustomFieldModal(props) {
             <button
               type="button"
               className="mintmrm-btn"
-              onClick={addNewCustomField}
+              onClick={addFinalOption}
             >
               Add
             </button>

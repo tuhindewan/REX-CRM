@@ -487,36 +487,6 @@ export default function ContactDetails() {
       let dataArray = [value];
       contactData.meta_fields[name] = dataArray;
     }
-
-
-    //modifyContactData(name, value, id, checked);
-
-    //console.log(modifiedContactData);
-
-    //setContactData(modifiedContactData);
-
-    // setContactData((prevState) => ([
-    //   ...prevState,
-    //   modifiedContactData,
-    // ]));
-
-    // setCheckboxName(name);
-
-    // const index = selectedCheckboxItems?.findIndex(
-    //   (item) => item.id == name + "-" + id
-    // );
-
-    // if (index >= 0) {
-    //   setSelectedCheckboxItems(
-    //     selectedCheckboxItems.filter((item) => item.id != name + "-" + id)
-    //   );
-    // } else {
-    //   // add id to the array
-    //   setSelectedCheckboxItems([
-    //     ...selectedCheckboxItems,
-    //     { id: name + "-" + id, name: name, value: value },
-    //   ]);
-    // }
   };
 
   const onSelect = (e, name) => {
@@ -1457,7 +1427,6 @@ export default function ContactDetails() {
                                       }
                                     />
                                   )}
-
                                   {field.type == "checkboxField" && (
                                     <InputCheckbox
                                       name={field.title}

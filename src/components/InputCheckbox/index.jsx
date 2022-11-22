@@ -23,13 +23,13 @@ export default function InputCheckbox(props) {
                 <input
                   key={index}
                   type="checkbox"
-                  id={option}
+                  id={props.name+'-'+option+'-'+index}
                   name={props.name}
                   onChange={props.handleChange}
                   value={option}
                   defaultChecked={isChecked}                
                 />
-                <label htmlFor={option}>
+                <label htmlFor={props.name+'-'+option+'-'+index}>
                   {option}
                   {props.required && <span className="required-mark">*</span>}
                 </label>
