@@ -98,7 +98,15 @@ class WPSmtp {
 	 * @since 1.0.0
 	 */
 	public function init() {
-		$this->smtp_configs = get_option( '_mrm_smtp_settings', [] );
+		$this->smtp_configs = get_option( '_mrm_smtp_settings', [
+			'method'   => 'web_server',
+			'settings' => [
+				'frequency' => [
+					'type' => 'recommended',
+					'interval' => '5'
+				],
+			],
+		] );
 		if ( is_array( $this->smtp_configs ) && !empty( is_array( $this->smtp_configs ) ) ) {
 			$this->smtp_method   = isset( $this->smtp_configs[ 'method' ] ) ? $this->smtp_configs[ 'method' ] : 'web-server';
 			$this->smtp_settings = isset( $this->smtp_configs[ 'settings' ] ) ? $this->smtp_configs[ 'settings' ] : [];
