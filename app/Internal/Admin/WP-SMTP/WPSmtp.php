@@ -5,7 +5,6 @@ namespace Mint\MRM\Internal\Admin;
 use Mint\Mrm\Internal\Traits\Singleton;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use Mint\MRM\Internal\Admin\MRMSecurity;
 
 /**
  * @desc Modify WordPress core mailing function wp_mail
@@ -175,15 +174,13 @@ class WPSmtp {
 
 			try {
 				$response = $sendgrid->send( $email );
-				print $response->statusCode() . "\n";
-				print_r( $response->headers() );
-				print $response->body() . "\n";
+				return 401 !== $response->statusCode();
 			}
 			catch( Exception $e ) {
 				echo 'Caught exception: ' . $e->getMessage() . "\n";
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -232,7 +229,7 @@ class WPSmtp {
 			$char_set       = 'UTF-8';
 
 			try {
-				$result    = $SesClient->sendEmail( [
+				$response    = $SesClient->sendEmail( [
 					'Destination'          => [
 						'ToAddresses' => $recipient_emails,
 					],
@@ -258,7 +255,7 @@ class WPSmtp {
 					// following line
 					'ConfigurationSetName' => $configuration_set,
 				] );
-				$messageId = $result[ 'MessageId' ];
+				$messageId = $response[ 'MessageId' ];
 				echo( "Email sent! Message ID: $messageId" . "\n" );
 			}
 			catch( \Aws\Exception\AwsException $e ) {
@@ -268,7 +265,6 @@ class WPSmtp {
 				echo "\n";
 			}
 		}
-
 		return true;
 	}
 
