@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
@@ -19,11 +22,32 @@ const Dashboard = () => {
     const [draftPercentage, setDraftPercentage] = useState(10);
     const [sentPercentage, setSentPercentage] = useState(24);
 
+    const [startDate, setStartDate] = useState(new Date());
+
     return (
         <div className="dashboard-page">
             <div className="mintmrm-container">
                 <div className="dashboard-header">
                     <h1 class="dashboard-heading">Dashboard</h1>
+
+                    <div className="filter-box">
+                        <div className="custom-date">
+                            <div className="date-from">
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd-mm-yyyy" />
+                            </div>
+
+                            <div className="date-to">
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd-mm-yyyy" />
+                            </div>
+                        </div>
+                        
+                        <select name="" id="">
+                            <option value="yearly">Yearly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div className="dashboard-card-wrapper">
@@ -62,10 +86,10 @@ const Dashboard = () => {
 
                             <div className="filter-box">
                                 <select name="" id="">
-                                    <option value="">Yearly</option>
-                                    <option value="">Monthly</option>
-                                    <option value="">Weekly</option>
-                                    <option value="">Custom</option>
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="custom">Custom</option>
                                 </select>
                             </div>
                         </header>

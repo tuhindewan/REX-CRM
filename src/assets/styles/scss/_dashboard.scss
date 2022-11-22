@@ -1,15 +1,84 @@
 .dashboard-page {
     padding-bottom: 100px;
-    
+    padding-top: 45px;
+
     .dashboard-header {
-        padding: 37px 20px 20px 20px;
         width: 100%;
+        margin-bottom: 24px;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: space-between;
 
         .dashboard-heading {
             font-weight: 600;
             font-size: 22px;
             line-height: 1;
             color: #2d3149;
+        }
+
+        .filter-box {
+            display: flex;
+            align-items: center;
+
+            select {
+                width: 100px;
+                padding: 10px;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 1;
+                color: #2D3149;
+            }
+        }
+
+        .custom-date {
+            display: flex;
+            border: 1px solid #ebedf0;
+            background: #fff;
+            border-radius: 6px;
+            margin-right: 10px;
+
+            input[type=text]{
+                color: #7a8b9a;
+                padding: 8px 13px 8px 6px;
+                border: none;
+                cursor: pointer;
+            }
+            
+            .date-to,
+            .date-from {
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding-left: 16px;
+                width: 165px;
+
+                &:before{
+                    content: "From: ";
+                    display: inline-block;
+                    font-size: 14px;
+                    color: #7a8b9a;
+                }
+            }
+
+            .date-from:after {
+                content: "";
+                position: absolute;
+                right: 3px;
+                top: 50%;
+                width: 11px;
+                height: 2px;
+                background: #7a8b9a;
+                transform: translateY(-50%);
+            }
+
+            .date-to {
+                width: 135px;
+
+                &:before{
+                    content: "To: ";
+                }
+            }
         }
     }
 
@@ -175,7 +244,7 @@
                 font-size: 14px;
                 line-height: 1;
                 color: #2D3149;
-                padding: 9px 10px;
+                padding: 10px;
             }
         }
       
