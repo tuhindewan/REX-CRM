@@ -1,6 +1,6 @@
 .dashboard-page {
     padding-bottom: 100px;
-    
+
     .dashboard-header {
         padding: 37px 20px 20px 20px;
         width: 100%;
@@ -32,7 +32,7 @@
             font-weight: 500;
             font-size: 14px;
             line-height: 1.3;
-            color: #9398A5;
+            color: #9398a5;
             position: relative;
             margin: 0 15px;
 
@@ -40,14 +40,14 @@
                 content: "";
                 width: 10px;
                 height: 10px;
-                background: #02C4FB;
+                background: #02c4fb;
                 display: inline-block;
                 border-radius: 50px;
                 margin-right: 10px;
             }
 
             &.sent:before {
-                background-color: #573BFF;
+                background-color: #573bff;
             }
         }
     }
@@ -66,7 +66,7 @@
         justify-content: center;
         font-size: 25px;
         font-weight: 600;
-        color: #2D3149;
+        color: #2d3149;
     }
 
     .dashboard-card-wrapper {
@@ -77,19 +77,22 @@
             border-radius: 10px;
             width: calc(25% - 15px);
             margin-right: 20px;
-            padding: 20px;
+            padding: 25px 25px 0;
             background: #ffffff;
             box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3);
 
             &:last-child {
                 margin-right: 0;
             }
+            &:hover {
+                box-shadow: 0px 20px 30px rgba(217, 220, 223, 0.4);
+            }
 
             .image-title {
                 display: flex;
                 flex-flow: row wrap;
                 align-items: center;
-                padding-bottom: 8px;
+                margin-bottom: 10px;
                 gap: 12px;
 
                 .card-icon {
@@ -113,6 +116,7 @@
                 display: flex;
                 align-items: flex-end;
                 gap: 6px;
+                margin-bottom: 20px;
 
                 .total-numbers {
                     font-weight: 600;
@@ -120,7 +124,7 @@
                     line-height: 1;
                     color: #181f38;
                 }
-                
+
                 .rate-amount {
                     font-weight: 500;
                     font-size: 14px;
@@ -142,6 +146,31 @@
             hr {
                 margin-left: -20px;
                 margin-right: -20px;
+            }
+            .add-links {
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 1;
+                padding: 18px 0;
+
+                a {
+                    display: flex;
+                    align-items: center;
+                    text-decoration: none;
+                    color: #2d3149;
+                    gap: 6px;
+
+                    &:hover {
+                        color: #573bff;
+
+                        svg {
+                            path {
+                                stroke: #573bff;
+                                transition: all 0.3s ease;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

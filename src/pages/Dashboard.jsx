@@ -4,10 +4,10 @@ import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
 import EmailSentProgressBar from "../components/Dashboard/EmailSentProgressBar";
 
-import ContactProfile from "../components/Icons/ContactProfile";
-import Pending from "../components/Icons/Pending";
-import Subscribe from "../components/Icons/Subscribe";
-import Unsubscribe from "../components/Icons/Unsubscribe";
+import TotalContactIcon from "../components/Icons/TotalContactIcon";
+import TotalCampaignIcon from "../components/Icons/TotalCampaignIcon";
+import TotalAutomationIcon from "../components/Icons/TotalAutomationIcon";
+import TotalFormIcon from "../components/Icons/TotalFormIcon";
 import DashboardOverview from "../components/Icons/DashboardOverview";
 import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomationPlaceholder";
 
@@ -28,32 +28,40 @@ const Dashboard = () => {
 
                 <div className="dashboard-card-wrapper">
                     <DashboardCard
-                        source={<ContactProfile />}
+                        source={<TotalContactIcon />}
                         cardTitle="Total Contacts"
                         totalAmount="580"
                         rate="increase"
                         rateAmount="+1.50"
+                        name="Contact"
+                        route="/contacts/create"
                     />
                     <DashboardCard
-                        source={<Subscribe />}
+                        source={<TotalCampaignIcon />}
                         cardTitle="Total Campaign"
                         totalAmount="63"
                         rate="decrease"
                         rateAmount="-0.47"
+                        name="Campaign"
+                        route="/campaigns/create"
                     />
                     <DashboardCard
-                        source={<Unsubscribe />}
+                        source={<TotalAutomationIcon />}
                         cardTitle="Total Automation"
                         totalAmount="5790"
                         rate="increase"
                         rateAmount="+0.75"
+                        name="Automation"
+                        route=""
                     />
                     <DashboardCard
-                        source={<Pending />}
-                        cardTitle="Total Form"
+                        source={<TotalFormIcon />}
+                        cardTitle="Forms"
                         totalAmount="580"
                         rate="decrease"
                         rateAmount="-0.47"
+                        name="Form"
+                        route="/form-builder/"
                     />
                 </div>
 
@@ -111,7 +119,7 @@ const Dashboard = () => {
                             </div>
                         </header>
                     </div>
-                    
+
                     <div className="single-stat-box box-col-8 automation">
                         <DashboardAutomationPlaceholder />
                     </div>
