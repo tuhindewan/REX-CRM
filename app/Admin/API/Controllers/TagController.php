@@ -240,6 +240,7 @@ class TagController extends BaseController {
 		);
 		return ContactPivotController::set_groups_to_contact( $pivot_ids );
 	}
+	
 
 	/**
 	 * Add tags to multiple contacts
