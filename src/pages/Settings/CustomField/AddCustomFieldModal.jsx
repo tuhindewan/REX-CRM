@@ -29,6 +29,7 @@ export default function AddCustomFieldModal(props) {
   const [customFieldData, setCustomFieldData] = useState([]);
 
   const [addOption, setAddOption] = useState();
+  const [isOptionChanged, setIsOptionChanged] = useState(true);
 
   const [addCall, setAddCall] = useState(false);
 
@@ -40,6 +41,9 @@ export default function AddCustomFieldModal(props) {
   const [firstCall, setFirstCall] = useState(false);
 
   const addFinalOption = () => {
+    if (addOption) {
+      setIsOptionChanged(false);
+    }
     setOptionsArray([...optionArray, addOption]);
     setFirstCall(!firstCall);
   };
@@ -52,6 +56,7 @@ export default function AddCustomFieldModal(props) {
   useEffect(() => {
     setOptionsArray([]);
     setPrepareData({});
+
     addNewCustomField();
   }, [addCall]);
 
@@ -89,32 +94,41 @@ export default function AddCustomFieldModal(props) {
 
   //----add new option repeater-----
   const addNewOption = () => {
-    if (addOption) {
-      setOptionsArray([...optionArray, addOption]);
-    }
-    setNewDropdownOption((prevState) => {
-      return [
-        ...prevState,
-        {
-          label: "",
-        },
-      ];
-    });
+    // if (addOption) {
+
+    setIsOptionChanged(false);
+
+    setOptionsArray([...optionArray, addOption]);
+
+    // }
+    // setNewDropdownOption((prevState) => {
+    //   return [
+    //     ...prevState,
+    //     {
+    //       label: addOption,
+    //     },
+    //   ];
+    // });
   };
 
   const handleOptionChange = (option, e, idx) => {
     setAddOption(e.target.value);
+    setIsOptionChanged(true);
   };
 
-  const handleOptionRemove = (idx) => {
+  const handleOptionRemove = (option, idx) => {
     setOptionsArray([
-      ...optionArray.slice(0, idx),
-      ...optionArray.slice(idx + 1, optionArray.length),
+      ...optionArray.slice(0, idx + 1),
+      ...optionArray.slice(idx + 2, optionArray.length),
     ]);
+    // const list = [...optionArray];
+    // list.splice(idx + 1, 1);
+    // setOptionsArray(list);
   };
 
   return (
     <>
+      {console.log(optionArray)}
       <div className="custom-field-modal-inner">
         <div className="modal-content-wrapper">
           <button
@@ -250,38 +264,64 @@ export default function AddCustomFieldModal(props) {
                 <div className="form-group field-options">
                   <div className="option-header">
                     <label>Add New Option</label>
-                    <button className="mintmrm-btn" onClick={addNewOption}>
-                      <svg
-                        width="13"
-                        height="13"
-                        fill="none"
-                        viewBox="0 0 13 13"
-                        xmlns="http://www.w3.org/2000/svg"
+                    {isOptionChanged ? (
+                      <button className="mintmrm-btn" onClick={addNewOption}>
+                        <svg
+                          width="13"
+                          height="13"
+                          fill="none"
+                          viewBox="0 0 13 13"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            stroke="#fff"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6.508 1v11M1 6.5h11"
+                          />
+                        </svg>
+                        New Option
+                      </button>
+                    ) : (
+                      <button
+                        className="mintmrm-btn"
+                        onClick={addNewOption}
+                        disabled={true}
                       >
-                        <path
-                          stroke="#fff"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M6.508 1v11M1 6.5h11"
-                        />
-                      </svg>
-                      New Option
-                    </button>
+                        <svg
+                          width="13"
+                          height="13"
+                          fill="none"
+                          viewBox="0 0 13 13"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            stroke="#fff"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6.508 1v11M1 6.5h11"
+                          />
+                        </svg>
+                        New Option
+                      </button>
+                    )}
                   </div>
 
                   <div className="option-body">
-                    {newDropdownOption?.map((option, idx) => {
+                    {optionArray?.map((option, idx) => {
                       return (
                         <div className="single-option" key={idx}>
                           <input
                             type="text"
                             name={idx}
+                            defaultValue={optionArray[idx + 1]}
                             onChange={(e) => handleOptionChange(option, e, idx)}
                           />
                           <button
                             className="delete-option"
-                            onClick={() => handleOptionRemove(idx)}
+                            onClick={() => handleOptionRemove(option, idx)}
                           >
                             <CrossIcon />
                           </button>

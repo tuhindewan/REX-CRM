@@ -51,7 +51,6 @@ export default function CustomFieldSettings() {
 
   //----add new custom field-----
   const addNewCustomField = async () => {
-    console.log(prepareData);
     submitCustomFields(prepareData).then((response) => {
       setPrepareData({});
       toggleRefresh();
@@ -164,12 +163,7 @@ export default function CustomFieldSettings() {
                     </div>
                   </div>
 
-                  <div className="tab-footer">
-                    <button className="mintmrm-btn" type="button">
-                      Save Settings
-                      <span className="mintmrm-loader"></span>
-                    </button>
-                  </div>
+                  
                 </div>
               </div>
               {/* end settings-tab-content */}
