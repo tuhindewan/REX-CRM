@@ -281,5 +281,20 @@ class SettingRoute {
                 ] ,
             ],
         ]);
+
+        // API routes for WooCommerce settings
+        register_rest_route( $this->namespace, '/' . $this->rest_base . '/send-test-email/', [
+            [
+                'methods' => \WP_REST_Server::CREATABLE,
+                'callback' => [
+                    $this->smtp_controller,
+                    'send_test_email'
+                ],
+                'permission_callback' => [
+                    $this->smtp_controller,
+                    'rest_permissions_check'
+                ] ,
+            ],
+        ]);
     }
 }

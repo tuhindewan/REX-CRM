@@ -106,14 +106,15 @@ export default function SmtpSettings() {
     // save all smtp settings data
     const saveSettings = async () => {
         let response = null;
-        let settings;
+        let settings = {
+            'frequency': {
+                'type': sendingFrequency,
+                'interval': frequencyInterval
+            }
+        };
 
         if ('smtp' === sendingProtocol) {
             settings = {
-                'frequency': {
-                    'type': sendingFrequency,
-                    'interval': frequencyInterval
-                },
                 'host': host,
                 'port': port,
                 'secure': secured,
@@ -124,19 +125,11 @@ export default function SmtpSettings() {
         }
         else if ('sendgrid' === sendingProtocol) {
             settings = {
-                'frequency': {
-                    'type': sendingFrequency,
-                    'interval': frequencyInterval
-                },
                 'api_key': sendgridAPI
             }
         }
         else if ('amazonses' === sendingProtocol) {
             settings = {
-                'frequency': {
-                    'type': sendingFrequency,
-                    'interval': frequencyInterval
-                },
                 'region': amazonSESRegion,
                 'access_key': amazonSESAccessKey,
                 'secret_key': amazonSESSecretKey
@@ -206,16 +199,6 @@ export default function SmtpSettings() {
         getSMTPData()
     }, []);
 
-    const setSMTPSettings = (settings) => {
-        console.log(settings)
-        setHost(settings.host);
-        setPort(settings.port);
-        setSecured(settings.secure);
-        setLogin(settings.login);
-        setPassword(settings.password);
-        setSMTPAuthentication(settings.authentication);
-    }
-
     const setSendgridSettings = (settings) => {
         setSendgridAPI(settings.api_key);
     }
@@ -224,6 +207,32 @@ export default function SmtpSettings() {
         setAmazonSESRegion(settings.region);
         setAmazonSESAccessKey(settings.access_key);
         setAmazonSESSecretKey(settings.secret_key);
+    }
+
+    const sendTestEmail = async () => {
+        const response = await fetch(
+            `${window.MRM_Vars.api_base_url}mrm/v1/settings/send-test-email`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify({'testEmail':testEmail}),
+            }
+        );
+        const jsonResponse = await response.json();
+
+        if (jsonResponse.success) {
+            setNotificationType("success");
+            setShowNotification("block");
+            setMessage(jsonResponse?.message);
+        }
+        else {
+            setNotificationType("warning");
+            setShowNotification("block");
+            setMessage(jsonResponse?.message);
+        }
+        ClearNotification("none", setShowNotification);
     }
 
     return (
@@ -668,6 +677,7 @@ export default function SmtpSettings() {
                                                     <button
                                                         className="mintmrm-btn outline"
                                                         type="button"
+                                                        onClick={sendTestEmail}
                                                     >
                                                         Send a test email
                                                         <DoubleAngleRightIcon/>

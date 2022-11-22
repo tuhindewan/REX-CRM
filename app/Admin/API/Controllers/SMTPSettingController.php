@@ -4,6 +4,7 @@ namespace Mint\MRM\Admin\API\Controllers;
 
 use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
+use PHPMailer\PHPMailer\Exception;
 use WP_REST_Request;
 use Mint\MRM\Internal\Admin\MRMSecurity;
 
@@ -103,5 +104,21 @@ class SMTPSettingController extends SettingBaseController {
 			}
 		}
 		return $params;
+	}
+
+	public function send_test_email( WP_REST_Request $request ) {
+		$params = MRM_Common::get_api_params_values( $request );
+		$to_email = isset( $params['testEmail'] ) ? $params['testEmail'] : false;
+		if ( $to_email ) {
+			try {
+				return wp_mail( $to_email, 'Test Subject!', 'This is a test email!' ) ?
+					$this->get_success_response( __( 'Email has been sent successfully!', 'mrm' ) )
+					: $this->get_error_response( __( 'Email could not be sent.', 'mrm' ) );
+			}
+			catch( \Exception $e ) {
+				return $this->get_error_response( __( $e->getMessage(), 'mrm' ) );
+			}
+		}
+		return $this->get_error_response( __( 'Please provide an email address!', 'mrm' ) );
 	}
 }
