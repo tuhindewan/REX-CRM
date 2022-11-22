@@ -23,6 +23,10 @@ class AjaxAction {
 
 		add_action( 'wp_ajax_mrm_submit_form', array( $this, 'mrm_submit_form' ) );
 		add_action( 'wp_ajax_nopriv_mrm_submit_form', array( $this, 'mrm_submit_form' ) );
+
+
+		add_action( 'wp_ajax_mrm_preference_update_by_user', array( $this, 'mrm_preference_update_by_user' ) );
+		add_action( 'wp_ajax_nopriv_mrm_preference_update_by_user', array( $this, 'mrm_preference_update_by_user' ) );
 	}
 
 
@@ -173,6 +177,23 @@ class AjaxAction {
 				echo json_encode( $response, true );
 				die();
 			}
+		}
+		echo json_encode( $response, true );
+		die();
+	}
+
+
+	public function mrm_preference_update_by_user(  ) {
+		check_ajax_referer( 'wp_mrm_preference_form_nonce', 'security' );
+		$params   = $_POST;
+		$response = array(
+			'status'  => 'failed',
+			'message' => 'Form is not valid',
+		);
+		if ( isset( $params['action'] ) && 'mrm_preference_update_by_user' == $params['action'] ) {
+			$postData = isset( $_POST['post_data'] ) ? $_POST['post_data'] : '';
+			parse_str( $postData, $post_data );
+			error_log(print_r($post_data,1));
 		}
 		echo json_encode( $response, true );
 		die();

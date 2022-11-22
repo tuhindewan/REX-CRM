@@ -52,6 +52,24 @@ jQuery(document).ready(function($){
         })
     })
 
+
+    $(".mrm-preferance-form-wrapper form").on('submit',function(e){
+        e.preventDefault();
+        var postData =   jQuery("#mrm-preference-form").serialize();
+        jQuery(".response").html('')
+        // $(".mrm-submit-button").addClass("show-loader");
+        jQuery.ajax({
+            type : "post",
+            dataType : "json",
+            url : MRM_Frontend_Vars.ajaxurl,
+            data : {action: "mrm_preference_update_by_user" , post_data : postData, security : MRM_Frontend_Vars.mrm_preference_form_nonce},
+            success: function(response) {
+
+            }
+        })
+
+    })
+
     /**
      * Set cokokie
      * @param name

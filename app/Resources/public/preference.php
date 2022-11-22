@@ -19,7 +19,13 @@
     <div class="mrm_title">
         <h3>Mint Mail Preference Page</h3>
     </div>
-    <div class="mrm_form_wrapper">
+    <div class="mrm-preferance-form-wrapper">
+        <form method="post" id="mrm-preference-form">
+	        <?php echo $get_no_contact_manage; ?>
+	        <?php echo $get_assign_list; ?>
+	        <?php echo $get_all_manage; ?>
+        </form>
+        <div class="response"></div>
 
     </div>
 </div>
