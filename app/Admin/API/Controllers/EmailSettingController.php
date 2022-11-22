@@ -6,6 +6,7 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\Utilites\Helper\Email;
 
 /**
  * @author [MRM Team]
@@ -121,20 +122,11 @@ class EmailSettingController extends SettingBaseController {
      */
     public function get( WP_REST_Request $request ){
 
-        // Get site title and admin email from native WP
-        $name           = get_bloginfo( 'name' );
-        $admin_email    = get_bloginfo( 'admin_email' );
-
-        // Set default value for email settings
-        $default = [
-            "from_name"     => $name,
-            "from_email"    => $admin_email,
-            "reply_name"    => $name,
-            "reply_email"   => $admin_email
-        ];
-
-        $settings  = get_option( '_mrm_email_settings', $default );
-        $settings  = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+        // Get default value for email settings
+        $default    = Email::defaultEmailSettings();
+        
+        $settings   = get_option( '_mrm_email_settings', $default );
+        $settings   = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
         return $this->get_success_response_data( $settings );
     }
 

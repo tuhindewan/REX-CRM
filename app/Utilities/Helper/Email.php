@@ -26,7 +26,8 @@ class Email {
         }
 
         // Get email settings from the options table
-        $globalEmailSettings = get_option( "_mrm_email_settings" );
+        $default_header = self::defaultEmailSettings();
+        $globalEmailSettings = get_option( "_mrm_email_settings", $default_header );
         
         // Prepare sender information
         $fromName  = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['from_name'] : "";
@@ -50,6 +51,29 @@ class Email {
 
         $globalHeaders = $headers;
         return $globalHeaders;
+    }
+
+
+    /**
+     * Return default email settings or header information
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function defaultEmailSettings()
+    {
+        // Get site title and admin email from native WP
+        $name           = get_bloginfo( 'name' );
+        $admin_email    = get_bloginfo( 'admin_email' );
+
+        // Return default value for email settings
+        return [
+            "from_name"     => $name,
+            "from_email"    => $admin_email,
+            "reply_name"    => $name,
+            "reply_email"   => $admin_email
+        ];
     }
 
 
