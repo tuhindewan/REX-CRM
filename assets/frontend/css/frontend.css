@@ -446,6 +446,11 @@
 .mintmrm-add-contact-consent-content {
   display: flex;
   margin-bottom: 5rem;
+  align-items: center;
+  gap: 5px;
+}
+.mintmrm-add-contact-consent-content label {
+  margin-bottom: 0 !important;
 }
 
 /*# sourceMappingURL=frontend.css.map */
