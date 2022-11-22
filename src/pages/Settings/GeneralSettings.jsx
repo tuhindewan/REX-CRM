@@ -120,7 +120,7 @@ export default function GeneralSettings() {
   let editorId = "confirmation-message";
   wp.editor.remove(editorId);
   wp.editor.initialize(editorId, tinyMceConfig);
-},[selectUnsubscribeOption])
+})
 
   useEffect(() => {
     setShowLoader(true);
