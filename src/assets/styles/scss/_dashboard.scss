@@ -2,6 +2,7 @@
     .dashboard-header {
         padding: 37px 20px 20px 20px;
         width: 100%;
+
         .dashboard-heading {
             font-weight: 600;
             font-size: 22px;
@@ -9,9 +10,19 @@
             color: #2d3149;
         }
     }
-    .dashboard-info-wrapper {
+
+    hr {
+        border-top: none;
+        border-bottom: 1px solid #e4e6eb;
+    }
+    .dashboard-divider {
+        margin: 30px 0;
+    }
+
+    .dashboard-card-wrapper {
         display: flex;
         flex-wrap: wrap;
+
         .single-card {
             border-radius: 10px;
             width: calc(25% - 15px);
@@ -19,9 +30,11 @@
             padding: 20px;
             background: #ffffff;
             box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3);
+
             &:last-child {
                 margin-right: 0;
             }
+
             .image-title {
                 display: flex;
                 flex-flow: row wrap;
@@ -38,6 +51,7 @@
                     width: 38px;
                     align-items: center;
                 }
+
                 p {
                     font-weight: 500;
                     font-size: 14px;
@@ -45,17 +59,137 @@
                     color: #9398a5;
                 }
             }
-            .total-numbers {
-                font-weight: 600;
-                font-size: 30px;
-                line-height: 38px;
-                color: #181f38;
+            .total-rate {
+                display: flex;
+                align-items: flex-end;
+                gap: 6px;
+
+                .total-numbers {
+                    font-weight: 600;
+                    font-size: 30px;
+                    line-height: 1;
+                    color: #181f38;
+                }
+                .rate-amount {
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 1.43;
+                    display: flex;
+                    align-items: center;
+                    gap: 2px;
+                    &.increase-rate {
+                        color: #12b76a;
+                    }
+                    &.decrease-rate {
+                        color: #f04438;
+                    }
+                }
             }
-            hr{
-                border-top: none;
-                border-bottom: 1px solid #E4E6EB;
+
+            hr {
                 margin-left: -20px;
                 margin-right: -20px;
+            }
+        }
+    }
+
+    //--------dashboard-content-wrapper---------
+    .dashboard-content-wrapper {
+        display: flex;
+        flex-flow: row wrap;
+        gap: 20px;
+
+        .single-stat-box {
+            background: #ffffff;
+            box-shadow: 0px 1px 1px #b6b9bf4d;
+            border-radius: 10px;
+            padding: 24px;
+        }
+
+        .box-col-8 {
+            width: calc((100% / 3) * 2 - 10px);
+        }
+        .box-col-4 {
+            width: calc((100% / 3) * 1 - 10px);
+        }
+
+        .box-header {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 55px;
+
+            .header-title {
+                font-weight: 600;
+                font-size: 18px;
+                line-height: 1;
+                color: #2d3149;
+                text-transform: capitalize;
+                width: 150px;
+            }
+        }
+
+        .filter-box {
+            width: calc(100% - 150px);
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            justify-content: flex-end;
+
+            select {
+                width: 100px;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 1;
+                color: #2d3149;
+                padding: 9px 10px;
+            }
+        }
+
+        .email-campaign-stats {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 0 auto;
+
+            .email-draft-progressbar {
+                width: 100%;
+                height: 100%;
+            }
+            .email-sent-progressbar {
+                width: 130px;
+                height: 130px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .circle-background,
+            .circle-progress {
+                fill: none;
+            }
+
+            .circle-background {
+                stroke: #e8edf2;
+            }
+
+            .circle-progress {
+                stroke: #02c4fb;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                transition: all 0.3s linear;
+            }
+
+            .sent-circle-progress {
+                stroke: #573bff;
+            }
+
+            .circle-text {
+                font-size: 3em;
+                font-weight: 700;
+                fill: #02c4fb;
             }
         }
     }
