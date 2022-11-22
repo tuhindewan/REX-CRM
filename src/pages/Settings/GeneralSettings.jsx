@@ -138,10 +138,11 @@ export default function GeneralSettings() {
                   ? unsubscriber_settings.confirmation_type
                   : "message"
           );
-          setConfirmation_message(unsubscriber_settings.confirmation_message);
           tinymce
               .get("confirmation-message")
-              .setContent(unsubscriber_settings.confirmation_message);
+              .setContent(response.unsubscriber_settings.confirmation_message);
+          setConfirmation_message(unsubscriber_settings.confirmation_message);
+
         }
 
         //preference
@@ -214,6 +215,7 @@ export default function GeneralSettings() {
         tinymce
             .get("confirmation-message")
             .setContent(response.unsubscriber_settings.confirmation_message);
+
       }
     });
 
