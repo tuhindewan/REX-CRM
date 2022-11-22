@@ -6,6 +6,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
 import EmailSentProgressBar from "../components/Dashboard/EmailSentProgressBar";
+// import PieChart from "../components/Dashboard/PieChart";
 
 import ContactProfile from "../components/Icons/ContactProfile";
 import Pending from "../components/Icons/Pending";
@@ -33,11 +34,11 @@ const Dashboard = () => {
                     <div className="filter-box">
                         <div className="custom-date">
                             <div className="date-from">
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd-mm-yyyy" />
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                             </div>
 
                             <div className="date-to">
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd-mm-yyyy" />
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                             </div>
                         </div>
                         
@@ -118,9 +119,11 @@ const Dashboard = () => {
                                 </select>
                             </div>
                         </header>
+
+                        {/* <PieChart /> */}
                     </div>
                     
-                    <div className="single-stat-box box-col-8 automation">
+                    <div className="single-stat-box box-col-8 automation coming-soon-overlay">
                         <DashboardAutomationPlaceholder />
                     </div>
                 </div>
@@ -129,6 +132,7 @@ const Dashboard = () => {
             </div>
         </div>
     );
+    
 };
 
 export default Dashboard;

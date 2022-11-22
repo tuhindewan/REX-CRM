@@ -6,6 +6,7 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\Utilites\Helper\Email;
 
 /**
  * @author [MRM Team]
@@ -120,21 +121,13 @@ class EmailSettingController extends SettingBaseController {
      * @since 1.0.0 
      */
     public function get( WP_REST_Request $request ){
-        if (!get_option('_mrm_email_settings')){
-            $email_settings_data_failed = array(
-                'code'    => 400,
-                'message' => 'Option key does not exist',
-                'data'    => null
-            );
-            return $email_settings_data_failed ;
-        }
-        $email_settings_data = array(
-            'code'    => 200,
-            'message' => 'Query Successfull',
-            'data'    => get_option('_mrm_email_settings')
-        );
 
-        return $email_settings_data;
+        // Get default value for email settings
+        $default    = Email::defaultEmailSettings();
+        
+        $settings   = get_option( '_mrm_email_settings', $default );
+        $settings   = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+        return $this->get_success_response_data( $settings );
     }
 
 }
