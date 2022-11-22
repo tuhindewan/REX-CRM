@@ -38,8 +38,48 @@ class BusinessSettingController extends SettingBaseController {
 				$address       = isset( $params['address'] ) ? sanitize_text_field( $params['address'] ) : '';
 				$logo_url      = isset( $params['logo_url'] ) ? sanitize_text_field( $params['logo_url'] ) : '';
 				$social        = isset( $params['socialMedia'] ) ? $params['socialMedia'] : array();
+
+
+				if ( ctype_punct($business_name)){
+					return $this->get_error_response( __( 'Business name not only special characters ', 'mrm' ) );
+				}
+				if ( ctype_punct($address)){
+					return $this->get_error_response( __( 'Address name not only special characters ', 'mrm' ) );
+				}
+
 				if ( ! $this->phone_number_validation( $phone ) ) {
 					return $this->get_error_response( __( 'Phone number format is not correct', 'mrm' ) );
+				}
+				$image_mime = array(
+					'jpg|jpeg|jpe'                 => 'image/jpeg',
+					'gif'                          => 'image/gif',
+					'png'                          => 'image/png',
+					'bmp'                          => 'image/bmp',
+					'tiff|tif'                     => 'image/tiff',
+					'webp'                         => 'image/webp',
+					'ico'                          => 'image/x-icon',
+					'heic'                         => 'image/heic',
+				);
+				$logo_mimes  = wp_check_filetype($logo_url);
+				if(isset($logo_mimes['type'])){
+					if(!in_array($logo_mimes['type'],$image_mime)){
+						return $this->get_error_response( __( 'Image type '.$logo_mimes['ext'].'  is not supported', 'mrm' ) );
+					}
+				}
+				foreach ($social as $Social_file){
+					if(isset($Social_file['icon']) && !empty($Social_file['icon'])){
+						$_mimes  = wp_check_filetype($Social_file['icon']);
+						if(isset($_mimes['type'])){
+							if(!in_array($_mimes['type'],$image_mime)){
+								return $this->get_error_response( __( ' Social media image type '.$_mimes['ext'].'  is not supported', 'mrm' ) );
+							}
+						}
+					}
+					if(isset($Social_file['url']) && !empty($Social_file['url'])){
+						if (filter_var($Social_file['url'], FILTER_VALIDATE_URL) === FALSE) {
+							return $this->get_error_response( __( ' URL is not valid', 'mrm' ) );
+						}
+					}
 				}
 				$business_options = array(
 					'business_name' => $business_name,
@@ -48,7 +88,6 @@ class BusinessSettingController extends SettingBaseController {
 					'logo_url'      => $logo_url,
 					'socialMedia'   => $social,
 				);
-
 				update_option( $this->option_key, $business_options );
 				return $this->get_success_response( __( 'Business information settings has been successfully saved.', 'mrm' ) );
 			}

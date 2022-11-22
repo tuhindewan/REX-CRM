@@ -19,6 +19,7 @@
 
                     .form-group > label {
                         width: calc(100% - 35px);
+                        margin: 0;
                     }
                 }
 
@@ -54,12 +55,16 @@
                             background: #f6f8fa;
                             border-radius: 6px;
                             padding: 20px;
+                            display: block;
+
+                            & > label {
+                                width: 100%;
+                                padding: 0;
+                                margin-bottom: 5px;
+                            }
 
                             .drop-down-button {
                                 background-color: #ffffff;
-                                &::before {
-                                    right: 38px;
-                                }
                             }
                         }
                     }
@@ -75,14 +80,14 @@
                     }
                     .wp-user {
                         border-bottom: 1px solid #ebedf0;
-                        margin: -30px -24px 0;
+                        margin: -30px -24px 23px;
                         padding: 14px 24px;
                         span {
                             display: inline-block;
                             font-weight: 500;
                             font-size: 14px;
                             line-height: 1.21;
-                            color: #9398a5;
+                            color: #2d3149;
                             &:first-child {
                                 width: 223px;
                             }
@@ -106,4 +111,33 @@
             }
         }
     }
+}
+
+@media only screen and (max-width: 1199px) {
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-header {
+        padding: 17px 15px 15px;
+    }
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body {
+        padding: 20px 15px;
+
+        .select-preference-wrapper,
+        .editable-primary-field {
+            width: calc(100% - 195px);
+        }
+    }
+
+    .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .wp-user {
+        margin: -20px -15px 23px;
+        padding: 14px 15px;
+    }
+
+}
+@media only screen and (max-width: 991px) {
+    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .select-preference-wrapper, 
+    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-body .editable-primary-field {
+    //     width: 100%;
+    // }
+    // .mintmrm-settings-page .settings-tab-content .general-tab-content .general-single-settings .general-settings-header .form-group{
+    //     flex-flow: row wrap;
+    // }
 }

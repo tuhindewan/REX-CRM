@@ -100,6 +100,10 @@
                         input {
                             border-color: #e4e6eb;
                             padding: 14px 15px;
+
+                            &:focus {
+                                border-color: $primary-color;
+                            }
                         }
 
                         .mintmrm-tooltip {
