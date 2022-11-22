@@ -1,15 +1,126 @@
 .dashboard-page {
     padding-bottom: 100px;
+    padding-top: 45px;
 
     .dashboard-header {
-        padding: 37px 20px 20px 20px;
         width: 100%;
+        margin-bottom: 24px;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: space-between;
 
         .dashboard-heading {
             font-weight: 600;
             font-size: 22px;
             line-height: 1;
             color: #2d3149;
+        }
+
+        .filter-box {
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            .drop-down-button {
+                position: relative;
+                border: 1px solid #dee1e8;
+                border-radius: 6px;
+                padding: 11px 38px 11px 12px;
+                background-color: transparent;
+                text-align: left;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 1;
+                color: #2d3149;
+
+                &::before {
+                    content: " ";
+                    display: block;
+                    position: absolute;
+                    border-style: solid;
+                    border-color: #a4a8b5;
+                    border-width: 0px 2px 2px 0px;
+                    transform: rotate(45deg) translateY(-50%);
+                    transform-origin: center;
+                    transition: all 0.3s ease;
+                    height: 6px;
+                    right: 18px;
+                    top: calc(50% - 3px);
+                    width: 6px;
+                    cursor: pointer;
+                }
+
+                &.show::before {
+                    transform: rotate(225deg);
+                }
+            }
+            ul.mintmrm-dropdown{
+                width: 200px;
+            }
+
+            // select {
+            //     width: 100px;
+            //     padding: 10px;
+            //     font-weight: 600;
+            //     font-size: 14px;
+            //     line-height: 1;
+            //     color: #2d3149;
+            // }
+        }
+
+        .custom-date {
+            display: none;
+            border: 1px solid #ebedf0;
+            background: #fff;
+            border-radius: 6px;
+            margin-right: 10px;
+
+            &.show{
+                display: flex;
+            }
+
+            input[type="text"] {
+                color: #7a8b9a;
+                padding: 8px 13px 8px 6px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .date-to,
+            .date-from {
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding-left: 16px;
+                width: 165px;
+
+                &:before {
+                    content: "From: ";
+                    display: inline-block;
+                    font-size: 14px;
+                    color: #7a8b9a;
+                }
+            }
+
+            .date-from:after {
+                content: "";
+                position: absolute;
+                right: 3px;
+                top: 50%;
+                width: 11px;
+                height: 2px;
+                background: #7a8b9a;
+                transform: translateY(-50%);
+            }
+
+            .date-to {
+                width: 135px;
+
+                &:before {
+                    content: "To: ";
+                }
+            }
         }
     }
 
@@ -72,18 +183,15 @@
     .dashboard-card-wrapper {
         display: flex;
         flex-wrap: wrap;
+        gap: 20px;
 
         .single-card {
             border-radius: 10px;
             width: calc(25% - 15px);
-            margin-right: 20px;
             padding: 25px 25px 0;
             background: #ffffff;
             box-shadow: 0px 1px 1px rgba(182, 185, 191, 0.3);
 
-            &:last-child {
-                margin-right: 0;
-            }
             &:hover {
                 box-shadow: 0px 20px 30px rgba(217, 220, 223, 0.4);
             }
@@ -110,6 +218,7 @@
                     font-size: 14px;
                     line-height: 1.42;
                     color: #9398a5;
+                    width: calc(100% - 50px);
                 }
             }
             .total-rate {
@@ -187,6 +296,9 @@
             border-radius: 10px;
             padding: 24px;
             position: relative;
+            svg {
+                max-width: 100%;
+            }
         }
 
         .box-col-8 {
@@ -226,7 +338,7 @@
                 font-size: 14px;
                 line-height: 1;
                 color: #2d3149;
-                padding: 9px 10px;
+                padding: 10px;
             }
         }
 
@@ -276,5 +388,17 @@
                 fill: #02c4fb;
             }
         }
+    }
+}
+@media only screen and (max-width: 991px) {
+    .dashboard-page .dashboard-card-wrapper .single-card {
+        padding: 18px 18px 0;
+    }
+    .dashboard-page
+        .dashboard-card-wrapper
+        .single-card
+        .total-rate
+        .total-numbers {
+        font-size: 27px;
     }
 }

@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import { useGlobalStore } from "../hooks/useGlobalStore";
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
@@ -10,6 +13,7 @@ import TotalAutomationIcon from "../components/Icons/TotalAutomationIcon";
 import TotalFormIcon from "../components/Icons/TotalFormIcon";
 import DashboardOverview from "../components/Icons/DashboardOverview";
 import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomationPlaceholder";
+import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 
 const Dashboard = () => {
     useGlobalStore.setState({
@@ -18,12 +22,103 @@ const Dashboard = () => {
 
     const [draftPercentage, setDraftPercentage] = useState(10);
     const [sentPercentage, setSentPercentage] = useState(24);
+    const [dateFilter, setDateFilter] = useState("Monthly");
+    const [filterDropdown, setFilterDropdown] = useState(false);
+    const [isCustomRange, setIsCustomRange] = useState(false);
+    const [listening, setListening] = useState(false);
+    const [filterItems, setFilterItems] = useState([
+        { tile: "Weekly", id: "weekly" },
+        { tile: "Monthly", id: "monthly" },
+        { tile: "Yearly", id: "yearly" },
+        { tile: "Custom Range", id: "custom-range" },
+    ]);
+    const filterRef = useRef(null);
+    const [startDate, setStartDate] = useState(new Date());
+
+    const handleFilter = () => {
+        setFilterDropdown(!filterDropdown);
+    };
+
+    const handleSelect = (title, id) => {
+        setDateFilter(title);
+        id == "custom-range" ? setIsCustomRange(true) : setIsCustomRange(false);
+    };
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            filterRef,
+            setFilterDropdown
+        )
+    );
 
     return (
         <div className="dashboard-page">
             <div className="mintmrm-container">
                 <div className="dashboard-header">
                     <h1 class="dashboard-heading">Dashboard</h1>
+
+                    <div className="filter-box">
+                        <div
+                            className={
+                                isCustomRange
+                                    ? "custom-date show"
+                                    : "custom-date"
+                            }
+                        >
+                            <div className="date-from">
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="dd-mm-yyyy"
+                                />
+                            </div>
+
+                            <div className="date-to">
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="dd-mm-yyyy"
+                                />
+                            </div>
+                        </div>
+
+                        {/* <select name="" id="">
+                            <option value="yearly">Yearly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="custom">Custom</option>
+                        </select> */}
+                        <div ref={filterRef}>
+                            <button
+                                className={
+                                    filterDropdown
+                                        ? "drop-down-button show"
+                                        : "drop-down-button"
+                                }
+                                onClick={handleFilter}
+                            >
+                                {dateFilter}
+                            </button>
+                            <ul
+                                className={
+                                    filterDropdown
+                                        ? "mintmrm-dropdown show"
+                                        : "mintmrm-dropdown"
+                                }
+                            >
+                                {filterItems.map((item, index) => (
+                                    <li
+                                        onClick={() =>
+                                            handleSelect(item.tile, item.id)
+                                        }
+                                    >
+                                        {item.tile}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="dashboard-card-wrapper">
@@ -38,7 +133,7 @@ const Dashboard = () => {
                     />
                     <DashboardCard
                         source={<TotalCampaignIcon />}
-                        cardTitle="Total Campaign"
+                        cardTitle="Total Campaigns"
                         totalAmount="63"
                         rate="decrease"
                         rateAmount="-0.47"
@@ -78,10 +173,10 @@ const Dashboard = () => {
 
                             <div className="filter-box">
                                 <select name="" id="">
-                                    <option value="">Yearly</option>
-                                    <option value="">Monthly</option>
-                                    <option value="">Weekly</option>
-                                    <option value="">Custom</option>
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="custom">Custom</option>
                                 </select>
                             </div>
                         </header>
