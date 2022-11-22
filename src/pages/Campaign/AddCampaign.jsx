@@ -244,10 +244,10 @@ export default function AddCampaign(props) {
       } else if ("preview" === name) {
         setPrevCursorPosition(e.target.selectionStart);
       }
-      if (name == "subject" || name == "preview") {
+      if ("subject" == name || "preview" == name) {
         if (value.length > 200) return copy;
       }
-      if (name == "senderEmail") {
+      if ("senderEmail" == name) {
         validateSenderEmail(e, copy[selectedEmailIndex][name], value);
       }
       copy[selectedEmailIndex][name] = value;
@@ -397,7 +397,7 @@ export default function AddCampaign(props) {
       prevData.length
     );
     const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
-    setPrevCursorPosition(prevCursorPosition + placeholder.length);
+    setPrevCursorPosition(parseInt(prevCursorPosition) + placeholder.length);
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
