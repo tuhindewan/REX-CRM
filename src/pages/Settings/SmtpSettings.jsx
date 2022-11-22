@@ -453,7 +453,7 @@ export default function SmtpSettings() {
                                                         <label htmlFor="api-key"> API Key </label>
 
                                                         <div className="input-custom-wrapper">
-                                                            <input type="text" name="api-key" id="api-key"
+                                                            <input type="password" name="api-key" id="api-key"
                                                                    value={sendgridAPI} onChange={getSendgridAPI}/>
                                                         </div>
                                                     </div>
