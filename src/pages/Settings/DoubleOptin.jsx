@@ -191,6 +191,7 @@ export default function DoubleOptin() {
       setSelectSwitch(response.enable);
       setSelectOption(response.confirmation_type);
       setOptinSettings(response);
+      setSelectPageOption(response.page_title)
       tinymce.get("tinymce").setContent(response.email_body);
       tinymce
         .get("confirmation-message")

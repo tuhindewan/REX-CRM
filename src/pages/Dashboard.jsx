@@ -9,6 +9,7 @@ import Pending from "../components/Icons/Pending";
 import Subscribe from "../components/Icons/Subscribe";
 import Unsubscribe from "../components/Icons/Unsubscribe";
 import DashboardOverview from "../components/Icons/DashboardOverview";
+import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomationPlaceholder";
 
 const Dashboard = () => {
     useGlobalStore.setState({
@@ -59,11 +60,11 @@ const Dashboard = () => {
                 <hr className="dashboard-divider" />
 
                 <div className="dashboard-content-wrapper">
-                    <div className="single-stat-box box-col-8">
+                    <div className="single-stat-box box-col-8 analytics coming-soon-overlay">
                         <DashboardOverview />
                     </div>
 
-                    <div className="single-stat-box box-col-4">
+                    <div className="single-stat-box box-col-4 email-campaign">
                         <header className="box-header">
                             <h4 className="header-title">Email Campaigns</h4>
 
@@ -96,9 +97,24 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="single-stat-box box-col-4">chart-3</div>
+                    <div className="single-stat-box box-col-4 contact">
+                        <header className="box-header">
+                            <h4 className="header-title">Contact</h4>
 
-                    <div className="single-stat-box box-col-8">chart-4</div>
+                            <div className="filter-box">
+                                <select name="" id="">
+                                    <option value="">Yearly</option>
+                                    <option value="">Monthly</option>
+                                    <option value="">Weekly</option>
+                                    <option value="">Custom</option>
+                                </select>
+                            </div>
+                        </header>
+                    </div>
+                    
+                    <div className="single-stat-box box-col-8 automation">
+                        <DashboardAutomationPlaceholder />
+                    </div>
                 </div>
             </div>
         </div>
