@@ -43,7 +43,6 @@ class MessageController extends BaseController {
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
-		error_log(print_r('herer-1', 1));
 		// Get values from API
 		$params     = MRM_Common::get_api_params_values( $request );
 		$this->args = array(
@@ -56,57 +55,39 @@ class MessageController extends BaseController {
 
 		// Email address valiation
 		if ( empty( $this->args['email_address'] ) ) {
-			error_log(print_r('herer-2', 1));
 			return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ), 200 );
 		}
 
 		// Email subject validation
 		if ( empty( $this->args['email_subject'] ) ) {
-			error_log(print_r('herer-3', 1));
 			return $this->get_error_response( __( 'Email subject is mandatory', 'mrm' ), 200 );
 		}
 
 		// Email body validation
 		if ( empty( $this->args['email_body'] ) ) {
-			error_log(print_r('herer-4', 1));
 			return $this->get_error_response( __( 'Email body is mandatory', 'mrm' ), 200 );
 		}
 
 		// Prepare message data
 		$message = new MessageData( $this->args );
-		error_log(print_r('herer-5', 1));
 
 		MessageModel::insert( $message );
-		error_log(print_r('herer-6', 1));
 
 		$sent = $this->send_message( $message );
-		error_log(print_r('herer-7', 1));
 
 		$messages   = isset( $params['contact_id'] ) ? MessageModel::get_messages( $params['contact_id'] ) : array();
-		error_log(print_r('herer-8', 1));
 		$messages   = end( $messages );
-		error_log(print_r('herer-9', 1));
 		$message_id = is_array( $messages ) && isset( $messages['id'] ) ? $messages['id'] : false;
-		error_log(print_r('herer10', 1));
-		error_log(print_r($sent, 1));
 
 		if ( $sent ) {
-			error_log(print_r('herer11', 1));
 			if ( $message_id ) {
-				error_log(print_r('herer12', 1));
 				MessageModel::update( $message_id, 'status', 'sent' );
-				error_log(print_r('herer13', 1));
 			}
-			error_log(print_r('herer14', 1));
 			return $this->get_success_response( __( 'Email has been sent successfully', 'mrm' ), 201 );
 		}
-		error_log(print_r('herer15', 1));
 		if ( $message_id ) {
-			error_log(print_r('herer16', 1));
 			MessageModel::update( $message_id, 'status', 'failed' );
-			error_log(print_r('herer17', 1));
 		}
-		error_log(print_r('herer', 1));
 		return $this->get_error_response( __( 'Email not sent', 'mrm' ), 200 );
 	}
 
