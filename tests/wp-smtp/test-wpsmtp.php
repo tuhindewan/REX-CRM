@@ -15,13 +15,6 @@ class Test_WP_SMTP extends WP_UnitTestCase {
 	private static $instance;
 
 	/**
-	 * @desc Reflection variable for Mint\MRM\Internal\Admin\WPSmtp class
-	 * @var $reflector
-	 * @since 1.0.0
-	 */
-	private static $reflector;
-
-	/**
 	 * @desc Setup initial dependencies
 	 * @return void
 	 * @since 1.0.0
