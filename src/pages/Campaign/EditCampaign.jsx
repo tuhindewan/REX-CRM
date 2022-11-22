@@ -32,8 +32,8 @@ const defaultEmailData = {
   delay_count: 0,
   delay_value: "",
   email_preview_text: "",
-  sender_name: "",
-  sender_email: "",
+  sender_name: MRM_Vars.email_settings.from_name,
+  sender_email: MRM_Vars.email_settings.from_email,
   toError: null,
   senderEmailError: null,
 };
@@ -124,12 +124,12 @@ export default function EditCampaign(props) {
     setIsValid(true);
     const { name, value } = event.target;
 
-    if( value?.length > 150 ) {
+    if (value?.length > 150) {
       setErrors({
         ...errors,
         title: "Campaign title character limit exceeded 150 characters",
       });
-    }else{
+    } else {
       setErrors({
         ...errors,
         title: "",
@@ -655,14 +655,14 @@ export default function EditCampaign(props) {
                           disabled={isReadonly}
                         />
                         <p
-                        className={
-                          errors?.title
-                            ? "error-message show"
-                            : "error-message"
-                        }
-                      >
-                        {errors?.title}
-                      </p>
+                          className={
+                            errors?.title
+                              ? "error-message show"
+                              : "error-message"
+                          }
+                        >
+                          {errors?.title}
+                        </p>
                       </div>
                       <div className="email-to input-item">
                         <div className="select-options" ref={menuRef}>
@@ -974,7 +974,11 @@ export default function EditCampaign(props) {
                         disabled={isReadonly}
                       />
 
-                      <p className={ errors?.email ? "error-message show" : "error-message" } >
+                      <p
+                        className={
+                          errors?.email ? "error-message show" : "error-message"
+                        }
+                      >
                         {errors?.email}
                       </p>
                     </div>
@@ -982,8 +986,8 @@ export default function EditCampaign(props) {
 
                   <div className="email-design input-item">
                     <label>Design</label>
-                    <div className="add-template-section" >
-                      <div className="add-template-area" onClick={openTemplate} >
+                    <div className="add-template-section">
+                      <div className="add-template-area" onClick={openTemplate}>
                         <TemplateIcon />
                         <Link to="">Select a Template</Link>
                       </div>
