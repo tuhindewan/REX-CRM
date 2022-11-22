@@ -16,6 +16,7 @@ import {
 import { getTags } from "../../services/Tag";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import SettingsNav from "./SettingsNav";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 export default function GeneralSettings() {
   // Admin active menu selection
@@ -77,8 +78,8 @@ export default function GeneralSettings() {
   const [confirmation_message, setConfirmation_message] = useState("");
   const [errors, setErrors] = useState({});
   const [isValidate, setIsValidate] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
   const validate = (name, value) => {
-    console.log(name)
     switch (name) {
       case "redirect":
         if (
@@ -119,65 +120,67 @@ export default function GeneralSettings() {
   let editorId = "confirmation-message";
   wp.editor.remove(editorId);
   wp.editor.initialize(editorId, tinyMceConfig);
-},[selectUnsubscribeOption])
+})
 
   useEffect(() => {
+    setShowLoader(true);
     getGeneralSettings().then((response) => {
-      const unsubscriber_settings = response.unsubscriber_settings;
-      const preference_settings = response.preference;
-      const comment_form_subscription = response.comment_form_subscription;
-      const user_signup = response.user_signup;
+      if(response.success){
+        setShowLoader(false);
+        const unsubscriber_settings = response.unsubscriber_settings;
+        const preference_settings = response.preference;
+        const comment_form_subscription = response.comment_form_subscription;
+        const user_signup = response.user_signup;
+        if (Object.keys(unsubscriber_settings).length > 0) {
+          setRedirectUrl(unsubscriber_settings.url);
+          setSelectUnsubscribeOption(
+              unsubscriber_settings.confirmation_type
+                  ? unsubscriber_settings.confirmation_type
+                  : "message"
+          );
+          setConfirmation_message(unsubscriber_settings.confirmation_message);
+          tinymce
+              .get("confirmation-message")
+              .setContent(unsubscriber_settings.confirmation_message);
+        }
 
-      if (Object.keys(unsubscriber_settings).length > 0) {
-        setRedirectUrl(unsubscriber_settings.url);
-        setSelectUnsubscribeOption(
-          unsubscriber_settings.confirmation_type
-            ? unsubscriber_settings.confirmation_type
-            : "message"
-        );
-        setConfirmation_message(unsubscriber_settings.confirmation_message);
-        tinymce
-            .get("confirmation-message")
-            .setContent(unsubscriber_settings.confirmation_message);
-      }
-
-      //preference
-      if (Object.keys(preference_settings).length > 0) {
-        setSelectPreferenceOption(
-          preference_settings.preference
-            ? preference_settings.preference
-            : "no-contact-manage"
-        );
-        setEditableFirstname(
-          preference_settings.primary_fields
-            ? preference_settings.primary_fields.first_name
-            : false
-        );
-        setEditableLastname(
-          preference_settings.primary_fields
-            ? preference_settings.primary_fields.last_name
-            : false
-        );
-        setEditableStatus(
-          preference_settings.primary_fields
-            ? preference_settings.primary_fields.status
-            : false
-        );
-        setEditableList(
-          preference_settings.primary_fields
-            ? preference_settings.primary_fields.list
-            : false
-        );
-        setAssignLists(preference_settings.lists);
-      }
-      if (Object.keys(comment_form_subscription).length > 0) {
-        setCommentSelectSwitch(comment_form_subscription.enable);
-        setAssignCommentLists(comment_form_subscription.lists);
-        setAssignTags(comment_form_subscription.tags);
-      }
-      if (Object.keys(user_signup).length > 0) {
-        setUserSelectSwitch(user_signup.enable);
-        if (user_signup.list_mapping.length > 0) {
+        //preference
+        if (Object.keys(preference_settings).length > 0) {
+          setSelectPreferenceOption(
+              preference_settings.preference
+                  ? preference_settings.preference
+                  : "no-contact-manage"
+          );
+          setEditableFirstname(
+              preference_settings.primary_fields
+                  ? preference_settings.primary_fields.first_name
+                  : false
+          );
+          setEditableLastname(
+              preference_settings.primary_fields
+                  ? preference_settings.primary_fields.last_name
+                  : false
+          );
+          setEditableStatus(
+              preference_settings.primary_fields
+                  ? preference_settings.primary_fields.status
+                  : false
+          );
+          setEditableList(
+              preference_settings.primary_fields
+                  ? preference_settings.primary_fields.list
+                  : false
+          );
+          setAssignLists(preference_settings.lists);
+        }
+        if (Object.keys(comment_form_subscription).length > 0) {
+          setCommentSelectSwitch(comment_form_subscription.enable);
+          setAssignCommentLists(comment_form_subscription.lists);
+          setAssignTags(comment_form_subscription.tags);
+        }
+        if (Object.keys(user_signup).length > 0) {
+          setUserSelectSwitch(user_signup.enable);
+         if (user_signup.list_mapping.length > 0) {
           user_signup.list_mapping.map(function (value, index) {
             if (value.role == "administrator") {
               setAssignAdministratorLists(value.list);
@@ -196,7 +199,11 @@ export default function GeneralSettings() {
             }
           });
         }
+
+
+        }
       }
+
     });
   }, []);
 
@@ -280,6 +287,7 @@ export default function GeneralSettings() {
         setNotificationType("warning");
         setShowNotification("block");
         setMessage(response?.message);
+        setLoader(false);
       }
     });
   };
@@ -507,6 +515,9 @@ export default function GeneralSettings() {
             <SettingsNav />
 
             <div className="settings-tab-content">
+              {showLoader ? (
+                  <LoadingIndicator type="table" />
+              ) : (
               <div className="single-tab-content general-tab-content">
                 <div className="tab-body">
                   <header className="tab-header">
@@ -613,7 +624,16 @@ export default function GeneralSettings() {
                               value={redirectUrl}
                               onChange={handleChangeURL}
                             />
+                            <p
+                                className={
+                                  errors?.redirect
+                                      ? "error-message show"
+                                      : "error-message"
+                                }
+                            >
+
                             {errors?.redirect}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -1297,6 +1317,7 @@ export default function GeneralSettings() {
                   </button>
                 </div>
               </div>
+              )}
             </div>
             {/* end settings-tab-content */}
           </div>
