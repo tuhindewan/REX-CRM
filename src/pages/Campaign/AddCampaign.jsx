@@ -26,8 +26,8 @@ const defaultCampaignData = {
   delay_count: 0,
   delay_value: "",
   preview: "",
-  senderName: "",
-  senderEmail: "",
+  senderName: MRM_Vars.email_settings.from_name,
+  senderEmail: MRM_Vars.email_settings.from_email,
   toError: null,
   senderEmailError: null,
 };
@@ -59,8 +59,8 @@ export default function AddCampaign(props) {
   const [notificationType, setNotificationType] = useState("success");
   const [showNotification, setShowNotification] = useState("none");
   const [message, setMessage] = useState("");
-  const [subjectCursorPosition, setSubjectCursorPosition] = useState(0 );
-  const [prevCursorPosition, setPrevCursorPosition] = useState(0 );
+  const [subjectCursorPosition, setSubjectCursorPosition] = useState(0);
+  const [prevCursorPosition, setPrevCursorPosition] = useState(0);
 
   const menuRef = useRef(null);
   const [listening, setListening] = useState(false);
@@ -74,12 +74,22 @@ export default function AddCampaign(props) {
   // Outside click events for bulk action dropdown
   const subjSettingsIconRef = useRef(null);
   useEffect(
-      ListenForOutsideClicks( listening, setListening, subjSettingsIconRef, setSubjectPersonalization )
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      subjSettingsIconRef,
+      setSubjectPersonalization
+    )
   );
   // Outside click events for bulk action dropdown
   const prevSettingsIconRef = useRef(null);
   useEffect(
-      ListenForOutsideClicks( listening, setListening, prevSettingsIconRef, setPreviewPersonalization )
+    ListenForOutsideClicks(
+      listening,
+      setListening,
+      prevSettingsIconRef,
+      setPreviewPersonalization
+    )
   );
 
   const [listAdder, setListAdder] = useState({
@@ -119,12 +129,12 @@ export default function AddCampaign(props) {
   const handleTitleChange = async (event) => {
     const { name, value } = event.target;
 
-    if( value.length > 150 ) {
+    if (value.length > 150) {
       setErrors({
         ...errors,
         title: "Campaign title character limit exceeded 150 characters",
       });
-    }else{
+    } else {
       setErrors({
         ...errors,
         title: "",
@@ -170,7 +180,7 @@ export default function AddCampaign(props) {
     };
 
     setErrors({});
-    
+
     submitCampaign(campaign).then((response) => {
       if (201 === response.code) {
         // Navigate to campaigns list with success message
@@ -229,13 +239,12 @@ export default function AddCampaign(props) {
       const name = e.target.name;
       const value = e.target.value;
       const copy = [...prevEmailData];
-      if ( 'subject' === name ) {
-        setSubjectCursorPosition( e.target.selectionStart );
+      if ("subject" === name) {
+        setSubjectCursorPosition(e.target.selectionStart);
+      } else if ("preview" === name) {
+        setPrevCursorPosition(e.target.selectionStart);
       }
-      else if( 'preview' === name ) {
-        setPrevCursorPosition( e.target.selectionStart );
-      }
-        if (name == "subject" || name == "preview") {
+      if (name == "subject" || name == "preview") {
         if (value.length > 200) return copy;
       }
       if (name == "senderEmail") {
@@ -360,10 +369,13 @@ export default function AddCampaign(props) {
   // Set email subject text custom tag/placeholder
   const handleSubjectPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.subject;
-    const prevDataFirstHalf = prevData.substring( 0, subjectCursorPosition );
-    const prevDataSecondHalf = prevData.substring( subjectCursorPosition, prevData.length );
+    const prevDataFirstHalf = prevData.substring(0, subjectCursorPosition);
+    const prevDataSecondHalf = prevData.substring(
+      subjectCursorPosition,
+      prevData.length
+    );
     const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
-    setSubjectCursorPosition( subjectCursorPosition + placeholder.length );
+    setSubjectCursorPosition(subjectCursorPosition + placeholder.length);
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -379,10 +391,13 @@ export default function AddCampaign(props) {
   // Set email preview text custom tag/placeholder
   const handlePreviewPlaceholder = async (placeholder) => {
     const prevData = emailData[selectedEmailIndex]?.preview;
-    const prevDataFirstHalf = prevData.substring( 0, prevCursorPosition );
-    const prevDataSecondHalf = prevData.substring( prevCursorPosition, prevData.length );
+    const prevDataFirstHalf = prevData.substring(0, prevCursorPosition);
+    const prevDataSecondHalf = prevData.substring(
+      prevCursorPosition,
+      prevData.length
+    );
     const newData = prevDataFirstHalf + placeholder + prevDataSecondHalf;
-    setPrevCursorPosition( prevCursorPosition + placeholder.length );
+    setPrevCursorPosition(prevCursorPosition + placeholder.length);
 
     setEmailData((prevEmailData) => {
       const copy = [...prevEmailData];
@@ -470,9 +485,7 @@ export default function AddCampaign(props) {
                       />
                       <p
                         className={
-                          errors?.title
-                            ? "error-message show"
-                            : "error-message"
+                          errors?.title ? "error-message show" : "error-message"
                         }
                       >
                         {errors?.title}
@@ -573,8 +586,8 @@ export default function AddCampaign(props) {
                     name="subject"
                     value={emailData[selectedEmailIndex]?.subject}
                     onChange={handleEmailFieldsChange}
-                    onClick={function ( e ) {
-                      setSubjectCursorPosition( e.target.selectionStart )
+                    onClick={function (e) {
+                      setSubjectCursorPosition(e.target.selectionStart);
                     }}
                     placeholder="Be Specific and concise to spark interest"
                   />
@@ -656,8 +669,8 @@ export default function AddCampaign(props) {
                     name="preview"
                     value={emailData[selectedEmailIndex]?.preview}
                     onChange={handleEmailFieldsChange}
-                    onClick={function ( e ) {
-                      setPrevCursorPosition( e.target.selectionStart )
+                    onClick={function (e) {
+                      setPrevCursorPosition(e.target.selectionStart);
                     }}
                     placeholder="Write a summary of your email to display after the subject line"
                   />
