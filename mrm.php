@@ -15,7 +15,7 @@
  * Plugin Name:       Mint Email
  * Plugin URI:        https://mintemail.co
  * Description:       Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
- * Version:           rc-1.0.0
+ * Version:           rc-1.0.1
  * Author:            Mint Email Team
  * Author URI:        https://mintemail.co
  * License:           GPL-2.0+
