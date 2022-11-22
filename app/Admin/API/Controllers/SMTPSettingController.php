@@ -106,6 +106,13 @@ class SMTPSettingController extends SettingBaseController {
 		return $params;
 	}
 
+	/**
+	 * @desc Callback function for send-test-email api route
+	 * @param WP_REST_Request $request
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
 	public function send_test_email( WP_REST_Request $request ) {
 		$params = MRM_Common::get_api_params_values( $request );
 		$to_email = isset( $params['testEmail'] ) ? $params['testEmail'] : false;

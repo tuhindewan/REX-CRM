@@ -106,14 +106,47 @@ export default function SmtpSettings() {
     // save all smtp settings data
     const saveSettings = async () => {
         let response = null;
-        let settings = {
-            'frequency': {
-                'type': sendingFrequency,
-                'interval': frequencyInterval
-            }
-        };
+        let settings;
 
         if ('smtp' === sendingProtocol) {
+
+            if ( '' === host ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `SMTP Hostname` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
+            else if ( '' === port ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `SMTP Port` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
+            else if ( '' === login ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `Login` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
+            else if ( '' === password ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `Password` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
+
             settings = {
                 'host': host,
                 'port': port,
@@ -135,6 +168,11 @@ export default function SmtpSettings() {
                 'secret_key': amazonSESSecretKey
             }
         }
+
+        settings[ 'frequency' ] = {
+            'type': sendingFrequency,
+            'interval': frequencyInterval
+        };
 
         let smtpSettingsData = {
             'method': sendingProtocol,
