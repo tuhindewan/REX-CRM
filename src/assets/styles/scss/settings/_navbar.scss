@@ -20,6 +20,11 @@
                 align-items: center;
                 padding: 18px 20px;
                 margin-bottom: 16px;
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 1.19;
+                text-align: left;
+
                 svg {
                     margin-right: 9px;
                     path {
@@ -27,9 +32,6 @@
                     }
                 }
                 &.outline {
-                    font-weight: 600;
-                    font-size: 16px;
-                    line-height: 1.19;
                     color: #2d3149;
                 }
                 &.active,
@@ -44,5 +46,22 @@
                 }
             }
         }
+    }
+}
+@media only screen and (max-width: 1199px) {
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-navbar {
+        width: 270px;
+        padding: 20px;
+
+        .mintmrm-btn {
+            padding: 15px;
+            font-size: 14px;
+        }
+    }
+}
+@media only screen and (max-width: 991px) {
+    .mintmrm-settings-page .mintmrm-settings-wrapper .settings-navbar {
+        width: 200px;
+        padding: 20px;
     }
 }

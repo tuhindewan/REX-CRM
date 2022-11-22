@@ -28,6 +28,16 @@ class GeneralSettingController extends SettingBaseController {
 
 		if ( is_array( $params ) && ! empty( $params ) ) {
 			foreach ( $params as $key => $value ) {
+				if (isset($value['confirmation_type']) && 'message' === $value['confirmation_type']){
+					$value['confirmation_message'] = isset( $value['confirmation_message'] ) ? html_entity_decode( $value['confirmation_message'] ) : "";
+				}
+				if (isset($value['confirmation_type']) && 'redirect' === $value['confirmation_type']){
+					if(isset($value['url']) && !empty($value['url'])){
+						if (filter_var($value['url'], FILTER_VALIDATE_URL) === FALSE) {
+							return $this->get_error_response( __( ' URL is not valid', 'mrm' ) );
+						}
+					}
+				}
 				update_option( '_mrm_general_' . $key, $value );
 			}
 			return $this->get_success_response( __( 'General settings have been successfully saved.', 'mrm' ) );

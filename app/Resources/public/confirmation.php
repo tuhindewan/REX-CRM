@@ -13,19 +13,15 @@
 
 <body>
 <div class="mrm_wrapper" style="margin: 0 auto;
-	max-width: 600px;
-	padding: 0px 0px 1px;background: #eddfdf;
-	text-align: center;">
-	<div class="mrm_title">
-		<h3>Mint CRM</h3>
-	</div>
-	<div class="mrm_form_wrapper">
-		<?php
-		$server     = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : '';
-		$protocol   = strpos( strtolower( $server ), 'https' ) === false ? 'http' : 'https';
-		$domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
-		?>
-		<h2>Subscription Confirmed</h2><p>Your subscription to our list has been confirmed.</p><p>Thank you for subscribing!</p><p>&nbsp;</p><p>Mint CRM</p><p>Dhaka, Bangladesh - 1362</p><p>&nbsp;</p><p><a style="color: #ffffff; background-color: #404040; font-size: 16px; border-radius: 5px; text-decoration: none; font-weight: normal; font-style: normal; padding: 0.8rem 1rem; border-color: #0072ff;" href="<?php echo home_url(); ?>">Continue to our Website</a></p>    </div>
+    max-width: 600px;
+    padding: 0px 0px 1px;background: #eddfdf;
+    text-align: center;">
+    <div class="mrm_title">
+        <h3>Mint Mail</h3>
+    </div>
+    <div class="mrm_form_wrapper">
+    <?php echo $confirmation_message; ?> 
+    </div>
 </div>
 <?php
 	wp_footer();
