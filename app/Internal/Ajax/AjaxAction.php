@@ -2,6 +2,7 @@
 
 namespace Mint\MRM\Internal\Ajax;
 
+use Mint\MRM\Admin\API\Controllers\ListController;
 use Mint\MRM\Admin\API\Controllers\MessageController;
 use Mint\MRM\Admin\API\Controllers\TagController;
 use Mint\MRM\DataBase\Models\ContactModel;
@@ -193,7 +194,31 @@ class AjaxAction {
 		if ( isset( $params['action'] ) && 'mrm_preference_update_by_user' == $params['action'] ) {
 			$postData = isset( $_POST['post_data'] ) ? $_POST['post_data'] : '';
 			parse_str( $postData, $post_data );
-			error_log(print_r($post_data,1));
+			$pref_data= array();
+			if(!empty($post_data)){
+				foreach ($post_data as $key => $value){
+					if ( 'last_name' === $key ) {
+						$pref_data['last_name'] = $value;
+					} elseif ( 'first_name' === $key ) {
+						$pref_data['first_name'] = $value;
+					} elseif ( 'status' === $key ) {
+						$pref_data['status'] = $value;
+					}
+				}
+			}
+			$list_ids = [];
+			if(!empty($post_data['mrm_list'])){
+				$list_ids = $post_data['mrm_list'];
+			}
+			$contact_id = 0;
+			if(!empty($post_data['contact_hash'])){
+				$contact = ContactModel::get_by_hash($post_data['contact_hash']);
+				$contact_id = $contact['id'];
+			}
+			ContactModel::update($pref_data ,$contact_id);
+			$vat = TagController::set_tags_to_contact( $list_ids, $contact_id );
+			error_log(print_r($vat,1));
+
 		}
 		echo json_encode( $response, true );
 		die();

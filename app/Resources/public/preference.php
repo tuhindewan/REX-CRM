@@ -21,6 +21,7 @@
     </div>
     <div class="mrm-preferance-form-wrapper">
         <form method="post" id="mrm-preference-form">
+            <input type="hidden" name="contact_hash" value="<?php echo $_GET['hash']; ?>">
 	        <?php echo $get_no_contact_manage; ?>
 	        <?php echo $get_assign_list; ?>
 	        <?php echo $get_all_manage; ?>
