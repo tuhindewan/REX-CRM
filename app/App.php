@@ -6,6 +6,7 @@ use Mint\MRM\Admin\API\Server;
 use Mint\MRM\Internal\Admin\AdminAssets;
 use Mint\MRM\Internal\Admin\FrontendAssets;
 use Mint\MRM\Internal\Admin\Page\PageController;
+use Mint\MRM\Internal\Admin\PreferencePageSetting;
 use Mint\MRM\Internal\Admin\UserAssignContact;
 use Mint\MRM\Internal\Ajax\AjaxAction;
 use Mint\MRM\Internal\FormBuilder\FormBuilderHelper;
@@ -59,6 +60,8 @@ class App {
 			UnsubscribeConfirmation::get_instance();
 
 			WooCommerceCheckoutContact::get_instance()->init();
+
+			PreferencePageSetting::get_instance();
 		}
 
 		CampaignsBackgroundProcess::get_instance()->init();
