@@ -96,6 +96,10 @@ class OptinSettingController extends SettingBaseController {
         ];
 
         $settings  = get_option( $this->option_key, $default );
+		if (isset($settings['page_id'])){
+			$get_page_title = get_the_title( $settings['page_id'] );
+			$settings['page_title'] = $get_page_title;
+		}
         $settings  = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
         return $this->get_success_response_data( $settings );
     }
