@@ -329,12 +329,12 @@ export default function SmtpSettings() {
                                                         <label htmlFor="smtp-hostname">
                                                             SMTP Hostname
                                                             <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon/>
-                                <p>
-                                  {" "}
-                                    Define behaviour of the form after submission{" "}
-                                </p>
-                              </span>
+                                                        <TooltipQuestionIcon/>
+                                                            <p>
+                                                              {" "}
+                                                                Define behaviour of the form after submission{" "}
+                                                            </p>
+                                                          </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
@@ -409,38 +409,38 @@ export default function SmtpSettings() {
                                                         <label htmlFor="authentication">
                                                             Authentication
                                                             <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon/>
-                                <p>
-                                  {" "}
-                                    Define behaviour of the form after submission{" "}
-                                </p>
-                              </span>
+                                                                <TooltipQuestionIcon/>
+                                                                <p>
+                                                                  {" "}
+                                                                    Define behaviour of the form after submission{" "}
+                                                                </p>
+                                                          </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
-                              <span className="mintmrm-radiobtn">
-                                <input
-                                    id="authentication-yes"
-                                    type="radio"
-                                    name="authentication"
-                                    value="yes"
-                                    checked={"yes" === smtpAuthentication}
-                                    onClick={getSMTPAuthentication}
-                                />
-                                <label for="authentication-yes">Yes</label>
-                              </span>
+                                                            <span className="mintmrm-radiobtn">
+                                                                <input
+                                                                    id="authentication-yes"
+                                                                    type="radio"
+                                                                    name="authentication"
+                                                                    value="yes"
+                                                                    checked={"yes" === smtpAuthentication}
+                                                                    onClick={getSMTPAuthentication}
+                                                                />
+                                                                <label for="authentication-yes">Yes</label>
+                                                            </span>
 
                                                             <span className="mintmrm-radiobtn">
-                                <input
-                                    id="authentication-no"
-                                    type="radio"
-                                    name="authentication"
-                                    value="no"
-                                    checked={"no" === smtpAuthentication}
-                                    onClick={getSMTPAuthentication}
-                                />
-                                <label for="authentication-no">No</label>
-                              </span>
+                                                                <input
+                                                                    id="authentication-no"
+                                                                    type="radio"
+                                                                    name="authentication"
+                                                                    value="no"
+                                                                    checked={"no" === smtpAuthentication}
+                                                                    onClick={getSMTPAuthentication}
+                                                                />
+                                                                <label for="authentication-no">No</label>
+                                                              </span>
                                                         </div>
                                                     </div>
                                                 </>
@@ -469,12 +469,13 @@ export default function SmtpSettings() {
                                                         <label htmlFor="region">
                                                             Region
                                                             <span class="mintmrm-tooltip">
-                                <TooltipQuestionIcon/>
-                                <p>
-                                  {" "}
-                                    Define behaviour of the form after submission{" "}
-                                </p>
-                              </span>
+                                                                <TooltipQuestionIcon/>
+
+                                                                <p>
+                                                                  {" "}
+                                                                    Define behaviour of the form after submission{" "}
+                                                                </p>
+                                                              </span>
                                                         </label>
 
                                                         <div className="input-custom-wrapper">
@@ -625,12 +626,13 @@ export default function SmtpSettings() {
                                                 <label htmlFor="spf-signature">
                                                     SPF Signature (Highly recommended!)
                                                     <span className="mintmrm-tooltip">
-                                <TooltipQuestionIcon/>
-                                <p>
-                                  {" "}
-                                    Define behaviour of the form after submission{" "}
-                                </p>
-                              </span>
+                                                    <TooltipQuestionIcon/>
+
+                                                    <p>
+                                                      {" "}
+                                                        Define behaviour of the form after submission{" "}
+                                                    </p>
+                                                  </span>
                                                 </label>
 
                                                 <div className="input-custom-wrapper">
@@ -645,12 +647,13 @@ export default function SmtpSettings() {
                                                 <label htmlFor="test-email">
                                                     Test the sending method
                                                     <span className="mintmrm-tooltip">
-                                <TooltipQuestionIcon/>
-                                <p>
-                                  {" "}
-                                    Define behaviour of the form after submission{" "}
-                                </p>
-                              </span>
+                                                        <TooltipQuestionIcon/>
+
+                                                        <p>
+                                                          {" "}
+                                                            Define behaviour of the form after submission{" "}
+                                                        </p>
+                                                      </span>
                                                 </label>
 
                                                 <div className="input-custom-wrapper inline-field">

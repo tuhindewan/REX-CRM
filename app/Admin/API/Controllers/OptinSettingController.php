@@ -48,11 +48,20 @@ class OptinSettingController extends SettingBaseController {
 
         if( array_key_exists( 'optin', $params ) ){
             $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
-
             $setting_value['email_body'] = isset( $setting_value['email_body'] ) ? html_entity_decode( $setting_value['email_body'] ) : "";
             $setting_value['confirmation_message'] = isset( $setting_value['confirmation_message'] ) ? html_entity_decode( $setting_value['confirmation_message'] ) : "";
 
             $confirmation_type = isset( $setting_value['confirmation_type'] ) ? $setting_value['confirmation_type'] : "";
+
+            // Email body and confirmation message validation
+            if( "message" == $confirmation_type && empty( $setting_value['email_body'] ) ){
+                return $this->get_error_response(__( 'Email body is empty', 'mrm' ));
+            }
+
+            if( "message" == $confirmation_type && empty( $setting_value['confirmation_message'] ) ){
+                return $this->get_error_response(__( 'Confirmation message is empty', 'mrm' ));
+            }
+
             // URL validation
             $url = isset( $setting_value['url'] ) ? $setting_value['url'] : "";
             if( "redirect" == $confirmation_type && filter_var($url, FILTER_VALIDATE_URL) === FALSE ){

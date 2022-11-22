@@ -72,31 +72,38 @@
 
 @media only screen and (max-width: 1299px) {
     .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group > label {
-        width: 223px;
+        width: 180px;
     }
-    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=url], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=number], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=email], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=text], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group textarea, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group select {
-        width: calc(100% - 223px);
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group .input-custom-wrapper, 
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=url], 
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=number], 
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=email], 
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=text], 
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group textarea, 
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group select {
+        width: calc(100% - 180px);
     }
-    .mintmrm-settings-page {
-    .mintmrm-settings-wrapper {
-        .smtp-tab-content {
-            .form-wrapper {
-                .form-group .input-custom-wrapper .mintmrm-radiobtn{
-                    display: inline-block;
-                }
-            }}}}
+
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group .input-custom-wrapper .mintmrm-radiobtn {
+        display: inline-block;
+    }
+
+    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group.send-test-email .input-custom-wrapper input[type="email"]{
+        width: 100%;
+    }
+            
 }
 
 
 @media only screen and (max-width: 1199px) {
-    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .send-test-email .input-custom-wrapper input[type=email] {
-            width: 100%;
-    }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .send-test-email .input-custom-wrapper input[type=email] {
+    //         width: 100%;
+    // }
 }
 @media only screen and (max-width: 991px) {
-    .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=url], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=number], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=email], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=text], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group textarea, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group select {
-        width: 100%;
-    }
+    // .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=url], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=number], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=email], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group input[type=text], .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group textarea, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group select {
+    //     width: 100%;
+    // }
     // .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .smtp-tab-content .form-group.label-with-switcher .input-custom-wrapper{
     //         width: calc(100% - 223px);
     // }
