@@ -153,7 +153,7 @@ class WPSmtp {
 	}
 
 	/**
-	 * @desc Configure Sendgrid server
+	 * @desc Configure Sendgrid API
 	 * @param $null
 	 * @param $attributes
 	 * @return bool
@@ -186,12 +186,87 @@ class WPSmtp {
 	}
 
 	/**
-	 * @desc Configure Amazon SES server
-	 * @param $phpmailer
-	 * @return true
+	 * @desc Configure Amazon SES API
+	 * @param $null
+	 * @param $attributes
+	 * @return bool
 	 * @since 1.0.0
 	 */
-	public function configure_amazonses( $phpmailer ) {
+	public function configure_amazonses( $null, $attributes ) {
+		$this->set_email_attributes( $attributes );
+		$region     = isset( $this->smtp_settings[ 'region' ] ) && '' !== $this->smtp_settings[ 'region' ] ? $this->smtp_settings[ 'region' ] : false;
+		$access_key = isset( $this->smtp_settings[ 'access_key' ] ) && '' !== $this->smtp_settings[ 'access_key' ] ? $this->smtp_settings[ 'access_key' ] : false;
+		$secret_key = isset( $this->smtp_settings[ 'secret_key' ] ) && '' !== $this->smtp_settings[ 'secret_key' ] ? $this->smtp_settings[ 'secret_key' ] : false;
+
+		if ( $region && $access_key && $secret_key && $this->to_email && $this->from_email && $this->email_content ) {
+			// Create an SesClient. Change the value of the region parameter if you're
+			// using an AWS Region other than US West (Oregon). Change the value of the
+			// profile parameter if you want to use a profile in your credentials file
+			// other than the default.
+			$SesClient = new \Aws\Ses\SesClient( [
+				'version'     => 'latest',
+				'region'      => $region,
+				'credentials' => [
+					'key'    => $access_key,
+					'secret' => $secret_key
+				]
+			] );
+
+			// Replace sender@example.com with your "From" address.
+			// This address must be verified with Amazon SES.
+			$sender_email = $this->from_email;
+
+			// Replace these sample addresses with the addresses of your recipients. If
+			// your account is still in the sandbox, these addresses must be verified.
+			$recipient_emails = [ $this->to_email ];
+
+			// Specify a configuration set. If you do not want to use a configuration
+			// set, comment the following variable, and the
+			// 'ConfigurationSetName' => $configuration_set argument below.
+			$configuration_set = $this->email_headers;
+
+			$subject        = $this->email_subject;
+			$plaintext_body = $this->email_content;
+			$html_body      = $this->email_content;
+			$char_set       = 'UTF-8';
+
+			try {
+				$result    = $SesClient->sendEmail( [
+					'Destination'          => [
+						'ToAddresses' => $recipient_emails,
+					],
+					'ReplyToAddresses'     => [ $sender_email ],
+					'Source'               => $sender_email,
+					'Message'              => [
+						'Body'    => [
+							'Html' => [
+								'Charset' => $char_set,
+								'Data'    => $html_body,
+							],
+							'Text' => [
+								'Charset' => $char_set,
+								'Data'    => $plaintext_body,
+							],
+						],
+						'Subject' => [
+							'Charset' => $char_set,
+							'Data'    => $subject,
+						],
+					],
+					// If you aren't using a configuration set, comment or delete the
+					// following line
+					'ConfigurationSetName' => $configuration_set,
+				] );
+				$messageId = $result[ 'MessageId' ];
+				echo( "Email sent! Message ID: $messageId" . "\n" );
+			}
+			catch( \Aws\Exception\AwsException $e ) {
+				// output error message if fails
+				echo $e->getMessage();
+				echo( "The email was not sent. Error message: " . $e->getAwsErrorMessage() . "\n" );
+				echo "\n";
+			}
+		}
 		return true;
 	}
 
