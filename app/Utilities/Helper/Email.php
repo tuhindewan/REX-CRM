@@ -202,6 +202,7 @@ class Email {
                             </tr>
                         </table>
                         <a href='". $domainLink ."/?mrm=1&amp;route=unsubscribe&amp;contact_id=".$contact_id."&amp;hash=".$hash."'>Unsubcribe</a>
+                        <a href='". $domainLink ."/?mrm=1&amp;route=preference&amp;hash=".$hash."'>Manage Preference</a>
                     </center>
                 </body>
             </html>
