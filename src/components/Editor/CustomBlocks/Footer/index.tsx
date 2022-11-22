@@ -14,21 +14,6 @@ import { CustomBlocksType } from "../constant";
 
 const { Column, Section, Wrapper, Text, Button, Image, Group } = components;
 
-const businessSettings = {
-  business_name: "Md. Saiduzzaman Tohin",
-  phone: "01303454560",
-  address: 'House 06, Hossain lane, Road 1, Momenbagh, <a href="">Konapara</a>',
-  logo_url: "http://rex-crm.com/wp-content/uploads/2022/11/download-1.png",
-  success: true,
-  socialMedia: [
-    {
-      icon: "http://rex-crm.com/wp-content/uploads/2022/08/pennant-1.jpg",
-      url: "https://www.facebook.com/",
-    },
-  ],
-};
-
-
 export type ICustomFooter = IBlockData<
   {
     "background-color": string;
@@ -42,7 +27,6 @@ export type ICustomFooter = IBlockData<
     title: string;
     buttonText: string;
     quantity: number;
-    businessSettings: object;
   }
 >;
 
@@ -58,7 +42,6 @@ export const FooterBlock = createCustomBlock<ICustomFooter>({
           title: "You might also like",
           buttonText: "Buy now",
           quantity: 3,
-          businessSettings: businessSettings,
         },
       },
       attributes: {
@@ -88,6 +71,7 @@ export const FooterBlock = createCustomBlock<ICustomFooter>({
     const { title, buttonText, quantity } = data.data.value;
     const attributes = data.attributes;
     const perWidth = quantity <= 3 ? "" : "100%";
+    const businessSettings = dataSource.business_settings;
     return (
       <Wrapper
         // add class name when testing preview

@@ -52,10 +52,19 @@ export async function submitGeneralSetting(settings) {
 //GET Request to get general setting
 export async function getGeneralSettings() {
   return await fetch(
-      `${window.MRM_Vars.api_base_url}mrm/v1/settings/general/`
+    `${window.MRM_Vars.api_base_url}mrm/v1/settings/general/`
   ).then((response) => {
     if (response.ok) {
       return response.json();
     }
   });
+}
+
+//GET Request to get bussiness settings
+export async function getBusinessSettings() {
+  return await fetch(`${window.MRM_Vars.api_base_url}mrm/v1/settings/business/`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
 }

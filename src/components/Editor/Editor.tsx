@@ -35,6 +35,7 @@ import { copy } from "./utils/copy";
 import "./CustomBlocks";
 
 //----icon components----
+import { getBusinessSettings } from "../../services/Setting";
 import { CustomBlocksType } from "./CustomBlocks/constant";
 import CrossIcon from "./Icon/CrossIcon";
 import DesktopIcon from "./Icon/DesktopIcon";
@@ -187,6 +188,7 @@ export default function Editor(props) {
 
   const [dataSource, setDataSource] = useState({
     productsList: [],
+    business_settings: {},
   });
 
   let navigate = useNavigate();
@@ -470,6 +472,13 @@ export default function Editor(props) {
       });
     });
   };
+
+  getBusinessSettings().then((response) => {
+    setDataSource({
+      ...dataSource,
+      business_settings: response,
+    });
+  });
 
   //-----show more option click function-------
   const showMoreOption = () => {
