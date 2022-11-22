@@ -120,21 +120,22 @@ class EmailSettingController extends SettingBaseController {
      * @since 1.0.0 
      */
     public function get( WP_REST_Request $request ){
-        if (!get_option('_mrm_email_settings')){
-            $email_settings_data_failed = array(
-                'code'    => 400,
-                'message' => 'Option key does not exist',
-                'data'    => null
-            );
-            return $email_settings_data_failed ;
-        }
-        $email_settings_data = array(
-            'code'    => 200,
-            'message' => 'Query Successfull',
-            'data'    => get_option('_mrm_email_settings')
-        );
 
-        return $email_settings_data;
+        // Get site title and admin email from native WP
+        $name           = get_bloginfo( 'name' );
+        $admin_email    = get_bloginfo( 'admin_email' );
+
+        // Set default value for email settings
+        $default = [
+            "from_name"     => $name,
+            "from_email"    => $admin_email,
+            "reply_name"    => $name,
+            "reply_email"   => $admin_email
+        ];
+
+        $settings  = get_option( '_mrm_email_settings', $default );
+        $settings  = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
+        return $this->get_success_response_data( $settings );
     }
 
 }
