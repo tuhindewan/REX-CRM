@@ -13,10 +13,12 @@ const Dashboard = () => {
     hideGlobalNav: true,
   });
 
-  const [percentage, setPercentage] = useState(0);
+  const [draftPercentage, setDraftPercentage] = useState(10);
+  const [sentPercentage, setSentPercentage] = useState(24);
 
   const handleChangeEvent = (event) => {
-    setPercentage(event.target.value);
+    setDraftPercentage(event.target.value);
+    setSentPercentage(event.target.value);
   }
 
   return (
@@ -44,8 +46,8 @@ const Dashboard = () => {
         </div>
 
         <div className="email-campaign-stats">
-          <EmailDraftProgressBar strokeWidth="10" sqSize="200" percentage={percentage}/>
-          <EmailSentProgressBar strokeWidth="10" sqSize="120" percentage={percentage}/>
+          <EmailDraftProgressBar strokeWidth="10" sqSize="200" percentage={draftPercentage}/>
+          <EmailSentProgressBar strokeWidth="10" sqSize="130" percentage={sentPercentage}/>
         </div>
 
         <div>

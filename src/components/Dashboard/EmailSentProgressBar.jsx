@@ -12,7 +12,7 @@ export default function EmailSentProgressBar({strokeWidth, sqSize, percentage })
             <div className="email-sent-progressbar">
                 <svg width={sqSize} height={sqSize} viewBox={viewBox} >
                     <circle
-                        className="circle-background"
+                        className="circle-background sent-circle-background"
                         cx={sqSize / 2}
                         cy={sqSize / 2}
                         r={radius}
@@ -20,7 +20,7 @@ export default function EmailSentProgressBar({strokeWidth, sqSize, percentage })
                     />
 
                     <circle
-                    className="circle-progress"
+                    className="circle-progress sent-circle-progress"
                     cx={sqSize / 2}
                     cy={sqSize / 2}
                     r={radius}
