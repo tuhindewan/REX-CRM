@@ -5,6 +5,7 @@ namespace Mint\MRM\Internal\Admin;
 use Mint\Mrm\Internal\Traits\Singleton;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use Mint\MRM\Internal\Admin\MRMSecurity;
 
 /**
  * @desc Modify WordPress core mailing function wp_mail
@@ -124,7 +125,7 @@ class WPSmtp {
 			$port     = isset( $this->smtp_settings[ 'port' ] ) ? $this->smtp_settings[ 'port' ] : false;
 			$secure   = isset( $this->smtp_settings[ 'secure' ] ) && 'no' !== $this->smtp_settings[ 'secure' ] ? $this->smtp_settings[ 'secure' ] : false;
 			$login    = isset( $this->smtp_settings[ 'login' ] ) ? $this->smtp_settings[ 'login' ] : '';
-			$password = isset( $this->smtp_settings[ 'password' ] ) ? $this->smtp_settings[ 'password' ] : '';
+			$password = isset( $this->smtp_settings[ 'password' ] ) ? MRMSecurity::get_instance()->decrypt( $this->smtp_settings[ 'password' ] ) : '';
 
 			if ( $host && $port ) {
 				try {
@@ -161,7 +162,7 @@ class WPSmtp {
 	 */
 	public function configure_sendgrid( $null, $attributes ) {
 		$this->set_email_attributes( $attributes );
-		$sendgrid_api = isset( $this->smtp_settings[ 'api_key' ] ) && '' !== $this->smtp_settings[ 'api_key' ] ? $this->smtp_settings[ 'api_key' ] : false;
+		$sendgrid_api = isset( $this->smtp_settings[ 'api_key' ] ) && '' !== $this->smtp_settings[ 'api_key' ] ? MRMSecurity::get_instance()->decrypt( $this->smtp_settings[ 'api_key' ] ) : false;
 
 		if ( $sendgrid_api && $this->to_email && $this->from_email && $this->email_content ) {
 			$email = new \SendGrid\Mail\Mail();
@@ -196,7 +197,7 @@ class WPSmtp {
 		$this->set_email_attributes( $attributes );
 		$region     = isset( $this->smtp_settings[ 'region' ] ) && '' !== $this->smtp_settings[ 'region' ] ? $this->smtp_settings[ 'region' ] : false;
 		$access_key = isset( $this->smtp_settings[ 'access_key' ] ) && '' !== $this->smtp_settings[ 'access_key' ] ? $this->smtp_settings[ 'access_key' ] : false;
-		$secret_key = isset( $this->smtp_settings[ 'secret_key' ] ) && '' !== $this->smtp_settings[ 'secret_key' ] ? $this->smtp_settings[ 'secret_key' ] : false;
+		$secret_key = isset( $this->smtp_settings[ 'secret_key' ] ) && '' !== $this->smtp_settings[ 'secret_key' ] ? MRMSecurity::get_instance()->decrypt( $this->smtp_settings[ 'secret_key' ] ) : false;
 
 		if ( $region && $access_key && $secret_key && $this->to_email && $this->from_email && $this->email_content ) {
 			// Create an SesClient. Change the value of the region parameter if you're
@@ -267,6 +268,7 @@ class WPSmtp {
 				echo "\n";
 			}
 		}
+
 		return true;
 	}
 

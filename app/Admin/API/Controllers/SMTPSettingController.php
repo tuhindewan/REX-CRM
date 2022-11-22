@@ -73,14 +73,33 @@ class SMTPSettingController extends SettingBaseController {
 	 */
 	private function encrypt_keys( $params ) {
 		if ( isset( $params[ 'method' ] ) ) {
+			$default  = [
+				'method'   => 'web_server',
+				'settings' => [
+					'frequency' => [
+						'type' => 'recommended',
+						'interval' => '5'
+					],
+				],
+			];
+			$prev_params = get_option( '_mrm_smtp_settings', $default );
 			if ( 'smtp' === $params[ 'method' ] && isset( $params[ 'settings' ][ 'password' ] ) ) {
-				$params[ 'settings' ][ 'password' ] = MRMSecurity::get_instance()->encrypt( $params[ 'settings' ][ 'password' ] );
+				if ( isset( $prev_params[ 'method' ] ) && ( 'smtp' !== $prev_params[ 'method' ] || $params[ 'settings' ][ 'password' ] !== $prev_params[ 'settings' ][ 'password' ] ) ) {
+					$params[ 'settings' ][ 'password' ] = MRMSecurity::get_instance()
+					                                                 ->encrypt( $params[ 'settings' ][ 'password' ] );
+				}
 			}
 			elseif ( 'sendgrid' === $params[ 'method' ] && isset( $params[ 'settings' ][ 'api_key' ] ) ) {
-				$params[ 'settings' ][ 'api_key' ] = MRMSecurity::get_instance()->encrypt( $params[ 'settings' ][ 'api_key' ] );
+				if ( isset( $prev_params[ 'method' ] ) && ( 'sendgrid' !== $prev_params[ 'method' ] || $params[ 'settings' ][ 'api_key' ] !== $prev_params[ 'settings' ][ 'api_key' ] ) ) {
+					$params[ 'settings' ][ 'api_key' ] = MRMSecurity::get_instance()
+					                                                ->encrypt( $params[ 'settings' ][ 'api_key' ] );
+				}
 			}
 			elseif ( 'amazonses' === $params[ 'method' ] && isset( $params[ 'settings' ][ 'secret_key' ] ) ) {
-				$params[ 'settings' ][ 'secret_key' ] = MRMSecurity::get_instance()->encrypt( $params[ 'settings' ][ 'secret_key' ] );
+				if ( isset( $prev_params[ 'method' ] ) && ( 'amazonses' !== $prev_params[ 'method' ] || $params[ 'settings' ][ 'secret_key' ] !== $prev_params[ 'settings' ][ 'secret_key' ] ) ) {
+					$params[ 'settings' ][ 'secret_key' ] = MRMSecurity::get_instance()
+					                                                   ->encrypt( $params[ 'settings' ][ 'secret_key' ] );
+				}
 			}
 		}
 		return $params;

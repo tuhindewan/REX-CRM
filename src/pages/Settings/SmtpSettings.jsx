@@ -23,7 +23,7 @@ export default function SmtpSettings() {
     const [password, setPassword] = useState('');
     const [smtpAuthentication, setSMTPAuthentication] = useState('yes');
     const [sendgridAPI, setSendgridAPI] = useState('');
-    const [amazonSESRegion, setAmazonSESRegion] = useState('');
+    const [amazonSESRegion, setAmazonSESRegion] = useState('us-west-2');
     const [amazonSESAccessKey, setAmazonSESAccessKey] = useState('');
     const [amazonSESSecretKey, setAmazonSESSecretKey] = useState('');
     const [testEmail, setTestEmail] = useState('');
