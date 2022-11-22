@@ -15,90 +15,89 @@ use WP_REST_Request;
  */
 
 class OptinSettingController extends SettingBaseController {
-    
-    use Singleton;
 
-    /**
-     * Setiings object arguments
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    public $args;
+	use Singleton;
 
-    /**
-     * Optin setiings key
-     * 
-     * @var object
-     * @since 1.0.0
-     */
-    private $option_key = "_mrm_optin_settings";
+	/**
+	 * Setiings object arguments
+	 *
+	 * @var object
+	 * @since 1.0.0
+	 */
+	public $args;
 
-    /**
-     * Get and send response to create a new settings
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function create_or_update( WP_REST_Request $request ){
+	/**
+	 * Optin setiings key
+	 *
+	 * @var object
+	 * @since 1.0.0
+	 */
+	private $option_key = '_mrm_optin_settings';
 
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
+	/**
+	 * Get and send response to create a new settings
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function create_or_update( WP_REST_Request $request ) {
 
-        if( array_key_exists( 'optin', $params ) ){
-            $setting_value = isset( $params['optin'] ) ? $params['optin'] : [];
-            $setting_value['email_body'] = isset( $setting_value['email_body'] ) ? html_entity_decode( $setting_value['email_body'] ) : "";
-            $setting_value['confirmation_message'] = isset( $setting_value['confirmation_message'] ) ? html_entity_decode( $setting_value['confirmation_message'] ) : "";
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
 
-            $confirmation_type = isset( $setting_value['confirmation_type'] ) ? $setting_value['confirmation_type'] : "";
+		if ( array_key_exists( 'optin', $params ) ) {
+			$setting_value                         = isset( $params['optin'] ) ? $params['optin'] : array();
+			$setting_value['email_body']           = isset( $setting_value['email_body'] ) ? html_entity_decode( $setting_value['email_body'] ) : '';
+			$setting_value['confirmation_message'] = isset( $setting_value['confirmation_message'] ) ? html_entity_decode( $setting_value['confirmation_message'] ) : '';
 
-            // Email body and confirmation message validation
-            if( "message" == $confirmation_type && empty( $setting_value['email_body'] ) ){
-                return $this->get_error_response(__( 'Email body is empty', 'mrm' ));
-            }
+			$confirmation_type = isset( $setting_value['confirmation_type'] ) ? $setting_value['confirmation_type'] : '';
 
-            if( "message" == $confirmation_type && empty( $setting_value['confirmation_message'] ) ){
-                return $this->get_error_response(__( 'Confirmation message is empty', 'mrm' ));
-            }
+			// Email body and confirmation message validation
+			if ( 'message' == $confirmation_type && empty( $setting_value['email_body'] ) ) {
+				return $this->get_error_response( __( 'Email body is empty', 'mrm' ) );
+			}
 
-            // URL validation
-            $url = isset( $setting_value['url'] ) ? $setting_value['url'] : "";
-            if( "redirect" == $confirmation_type && filter_var($url, FILTER_VALIDATE_URL) === FALSE ){
-                return $this->get_error_response(__( 'Redirect URL is not valid', 'mrm' ));
-            }
+			if ( 'message' == $confirmation_type && empty( $setting_value['confirmation_message'] ) ) {
+				return $this->get_error_response( __( 'Confirmation message is empty', 'mrm' ) );
+			}
 
-            if( "redirect" == $confirmation_type && empty( $url ) )	{
-                return $this->get_error_response(__( 'Redirect URL is missing', 'mrm' ));
-            }
+			// URL validation
+			$url = isset( $setting_value['url'] ) ? $setting_value['url'] : '';
+			if ( 'redirect' == $confirmation_type && filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
+				return $this->get_error_response( __( 'Redirect URL is not valid', 'mrm' ) );
+			}
 
-            update_option('_mrm_optin_settings',  $setting_value);
-            return $this->get_success_response( __("Double opt-in settings have been successfully saved.", "mrm") );
-        }
-    }
+			if ( 'redirect' == $confirmation_type && empty( $url ) ) {
+				return $this->get_error_response( __( 'Redirect URL is missing', 'mrm' ) );
+			}
+
+			update_option( '_mrm_optin_settings', $setting_value );
+			return $this->get_success_response( __( 'Double opt-in settings have been successfully saved.', 'mrm' ) );
+		}
+	}
 
 
-    /**
-     * Function used to handle a single get request
-     * 
-     * @param WP_REST_Request
-     * @return WP_REST_Response
-     * @since 1.0.0 
-     */
-    public function get( WP_REST_Request $request ){
+	/**
+	 * Function used to handle a single get request
+	 *
+	 * @param WP_REST_Request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get( WP_REST_Request $request ) {
+		$default = array(
+			'enable'               => true,
+			'email_subject'        => 'Please Confirm Subscription.',
+			'email_body'           => 'Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.',
+			'confirmation_type'    => 'message',
+			'confirmation_message' => 'Subscription Confirmed. Thank you.',
+		);
 
-        $default = [
-            "enable"                => true,
-            "email_subject"         => "Please Confirm Subscription.",
-            "email_body"            => "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
-            "confirmation_type"     => "message",
-            "confirmation_message"  => "Subscription Confirmed. Thank you."
-        ];
-
-        $settings  = get_option( $this->option_key, $default );
-        $settings  = is_array( $settings ) && !empty( $settings ) ? $settings : $default;
-        return $this->get_success_response_data( $settings );
-    }
+		$settings = get_option( $this->option_key, $default );
+		$settings = is_array( $settings ) && ! empty( $settings ) ? $settings : $default;
+		return $this->get_success_response_data( $settings );
+	}
 
 
 

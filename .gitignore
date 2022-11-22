@@ -12,6 +12,7 @@
 *.tgz
 *.map
 wpf.code-workspace
+output.csv
 
 # Logs and databases #
 ######################
