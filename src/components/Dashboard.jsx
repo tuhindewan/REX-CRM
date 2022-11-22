@@ -16,11 +16,6 @@ const Dashboard = () => {
   const [draftPercentage, setDraftPercentage] = useState(10);
   const [sentPercentage, setSentPercentage] = useState(24);
 
-  const handleChangeEvent = (event) => {
-    setDraftPercentage(event.target.value);
-    setSentPercentage(event.target.value);
-  }
-
   return (
     <div className="contact-list-page">
       <div className="mintmrm-container">
@@ -49,18 +44,6 @@ const Dashboard = () => {
           <EmailDraftProgressBar strokeWidth="10" sqSize="200" percentage={draftPercentage}/>
           <EmailSentProgressBar strokeWidth="10" sqSize="130" percentage={sentPercentage}/>
         </div>
-
-        <div>
-          <input 
-            id="progressInput" 
-            type="range" 
-            min="0" 
-            max="100" 
-            step="1"
-            onChange={handleChangeEvent}/>
-        </div>
-
-
       </div>
     </div>
   );
