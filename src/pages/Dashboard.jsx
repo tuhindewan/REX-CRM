@@ -6,6 +6,7 @@ import { useGlobalStore } from "../hooks/useGlobalStore";
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
 import EmailSentProgressBar from "../components/Dashboard/EmailSentProgressBar";
+// import PieChart from "../components/Dashboard/PieChart";
 
 import TotalContactIcon from "../components/Icons/TotalContactIcon";
 import TotalCampaignIcon from "../components/Icons/TotalCampaignIcon";
@@ -68,19 +69,11 @@ const Dashboard = () => {
                             }
                         >
                             <div className="date-from">
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="dd-mm-yyyy"
-                                />
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                             </div>
 
                             <div className="date-to">
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="dd-mm-yyyy"
-                                />
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                             </div>
                         </div>
 
@@ -214,15 +207,18 @@ const Dashboard = () => {
                                 </select>
                             </div>
                         </header>
-                    </div>
 
-                    <div className="single-stat-box box-col-8 automation">
+                        {/* <PieChart /> */}
+                    </div>
+                    
+                    <div className="single-stat-box box-col-8 automation coming-soon-overlay">
                         <DashboardAutomationPlaceholder />
                     </div>
                 </div>
             </div>
         </div>
     );
+    
 };
 
 export default Dashboard;
