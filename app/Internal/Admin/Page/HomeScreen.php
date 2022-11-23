@@ -1,20 +1,47 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/Admin
+ */
 
 namespace Mint\MRM\Internal\Admin\Page;
 
 use Mint\Mrm\Internal\Traits\Singleton;
 
+/**
+ * [Register plugin menus]
+ *
+ * @desc Register plugin menus
+ * @package /app/Internal/Admin
+ * @since 1.0.0
+ */
 class HomeScreen {
 
 	use Singleton;
 
 	const MENU_SLUG = 'mrm-admin';
 
+	/**
+	 * [Initialize class functionalities]
+	 *
+	 * @desc Initialize class functionalities
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 	}
 
-
+	/**
+	 * [Register menus]
+	 *
+	 * @desc Register menus
+	 * @since 1.0.0
+	 */
 	public function register_page() {
 		add_menu_page(
 			__( 'MRM', 'mrm' ),
@@ -22,7 +49,7 @@ class HomeScreen {
 			'manage_options',
 			self::MENU_SLUG,
 			array( $this, 'load_wrapper' ),
-			$this->getMenuIcon(),
+			$this->get_menu_icon(),
 			2
 		);
 
@@ -43,12 +70,48 @@ class HomeScreen {
 			'mrm-admin#/contacts/',
 			array( $this, 'load_wrapper' )
 		);
-		add_submenu_page( self::MENU_SLUG, __( 'Campaigns', 'mrm' ), __( 'Campaigns', 'mrm' ), 'manage_options', 'mrm-admin#/campaigns/', array( $this, 'load_wrapper' ) );
-		add_submenu_page( self::MENU_SLUG, __( 'Forms', 'mrm' ), __( 'Forms', 'mrm' ), 'manage_options', 'mrm-admin#/forms/', array( $this, 'load_wrapper' ) );
-		add_submenu_page( self::MENU_SLUG, __( 'Settings', 'mrm' ), __( 'Settings', 'mrm' ), 'manage_options', 'mrm-admin#/settings/business-info/', array( $this, 'load_wrapper' ) );
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Campaigns', 'mrm' ),
+			__( 'Campaigns', 'mrm' ),
+			'manage_options',
+			'mrm-admin#/campaigns/',
+			array(
+				$this,
+				'load_wrapper',
+			)
+		);
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Forms', 'mrm' ),
+			__( 'Forms', 'mrm' ),
+			'manage_options',
+			'mrm-admin#/forms/',
+			array(
+				$this,
+				'load_wrapper',
+			)
+		);
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Settings', 'mrm' ),
+			__( 'Settings', 'mrm' ),
+			'manage_options',
+			'mrm-admin#/settings/business-info/',
+			array(
+				$this,
+				'load_wrapper',
+			)
+		);
 	}
 
-
+	/**
+	 * [Loads plugin default wrapper]
+	 *
+	 * @desc Loads plugin default wrapper
+	 * @return void
+	 * @since 1.0.0
+	 */
 	public function load_wrapper() {
 		?>
 		<div class="crm-app-wrapper" style="display: block; ">
@@ -59,12 +122,14 @@ class HomeScreen {
 	}
 
 	/**
-	 * Return SVG icon for menu
+	 * Gets the SVG icon for menu
 	 *
+	 * @desc Gets the SVG icon for menu
 	 * @return string
+	 * @since 1.0.0
 	 */
-	private function getMenuIcon() {
-		return 'data:image/svg+xml;base64,' . base64_encode(
+	private function get_menu_icon() {
+		return 'data:image/svg+xml;base64,' . base64_encode(        //phpcs:ignore
 			'<?xml version="1.0" standalone="no"?>
         <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
          "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">

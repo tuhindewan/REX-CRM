@@ -1,15 +1,23 @@
 <?php
-
-namespace Mint\MRM\DataStores;
-
 /**
+ * Mail Mint
+ *
  * @author [MRM Team]
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Manage representation of Tag object]
+ * @package /app/DataStores
  */
 
+namespace Mint\MRM\DataStores;
+
+/**
+ * [Manage tag data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
+ */
 class TagData {
 
 	/**
@@ -36,11 +44,17 @@ class TagData {
 	 */
 	private $slug;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param array $args Custom field data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $args ) {
-		$this->title = isset( $args['title'] ) ? $args['title'] : null;
-		$this->slug  = isset( $args['slug'] ) ? $args['slug'] : null;
-		$this->data  = isset( $args['data'] ) ? $args['data'] : null;
+		$this->title = isset( $args[ 'title' ] ) ? $args[ 'title' ] : null;
+		$this->slug  = isset( $args[ 'slug' ] ) ? $args[ 'slug' ] : null;
+		$this->data  = isset( $args[ 'data' ] ) ? $args[ 'data' ] : null;
 	}
 
 
@@ -76,5 +90,7 @@ class TagData {
 		if ( ! is_serialized( $this->data ) ) {
 			return maybe_serialize( $this->data );
 		}
+
+		return $this->data;
 	}
 }

@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
@@ -6,13 +15,12 @@ use Mint\MRM\Admin\API\Controllers\CustomFieldController;
 use WP_REST_Server;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Manage Custom Fields related API]
+ * [Manage Custom Fields related API]
+ *
+ * @desc Manage Custom Fields related API
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class CustomFieldRoute {
 
 	/**

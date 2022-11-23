@@ -1,17 +1,25 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\TagController;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Manage Tag Module related API callbacks]
+ * [Manage Tag Module related API callbacks]
+ *
+ * @desc Manage Tag Module related API callbacks
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class TagRoute {
 
 	/**
@@ -150,7 +158,7 @@ class TagRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<tag_id>[\d]+)' . '/contacts',
+			'/' . $this->rest_base . '/(?P<tag_id>[\d]+)threeDotRef/contacts',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -168,7 +176,7 @@ class TagRoute {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . 'select-tags' . '/',
+			'/threeDotRefselect-tagsthreeDotRef/',
 			array(
 
 				array(

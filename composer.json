@@ -3,7 +3,7 @@
   "description": "WordPress plugin development using React JS as frontend library",
   "scripts": {
     "test": "phpunit",
-    "phpcs": "./vendor/bin/phpcs",
+    "phpcs": "./vendor/bin/phpcs --report=csv > output.csv",
     "phpcs:fix": "./vendor/bin/phpcbf"
   },
   "autoload": {
