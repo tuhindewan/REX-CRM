@@ -10,7 +10,8 @@ export default function DashboardCard(props) {
                 <span className="card-icon">{props.source}</span>
                 <p>{props.cardTitle}</p>
             </div>
-            <div className="total-rate">
+            <span className="mintmrm-loader"></span>
+            <div className="total-rate show">
                 <h3 className="total-numbers">{props.totalAmount}</h3>
                 {props.rate == "increase" ? (
                     <span className="rate-amount increase-rate">

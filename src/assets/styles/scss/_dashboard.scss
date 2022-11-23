@@ -229,10 +229,12 @@
                 }
             }
             .total-rate {
-                display: flex;
+                display: none;
                 align-items: flex-end;
                 gap: 6px;
-                margin-bottom: 20px;
+                &.show {
+                    display: flex;
+                }
 
                 .total-numbers {
                     font-weight: 600;
@@ -260,8 +262,7 @@
             }
 
             hr {
-                margin-left: -20px;
-                margin-right: -20px;
+                margin: 20px -20px 0 -20px;
             }
             .add-links {
                 font-weight: 600;
@@ -287,6 +288,10 @@
                         }
                     }
                 }
+            }
+            .mintmrm-loader {
+                width: 30px;
+                height: 30px;
             }
         }
     }
