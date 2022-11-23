@@ -76,12 +76,6 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        {/* <select name="" id="">
-                            <option value="yearly">Yearly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="custom">Custom</option>
-                        </select> */}
                         <div ref={filterRef}>
                             <button
                                 className={

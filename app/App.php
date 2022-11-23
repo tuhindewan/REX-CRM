@@ -12,6 +12,7 @@ use Mint\MRM\Internal\FormBuilder\FormBuilderHelper;
 use Mint\MRM\Internal\FormBuilder\GetMRM_Block_Manager;
 use Mint\MRM\Internal\Frontend\WooCommerceCheckoutContact;
 use Mint\MRM\Internal\Optin\OptinConfirmation;
+use Mint\MRM\Internal\Templates\TemplateHandler;
 use Mint\MRM\Internal\ShortCode\ShortCode;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
@@ -57,6 +58,8 @@ class App {
 			OptinConfirmation::get_instance();
 			// Unsubscription
 			UnsubscribeConfirmation::get_instance();
+
+			TemplateHandler::get_instance();
 
 			WooCommerceCheckoutContact::get_instance()->init();
 		}
