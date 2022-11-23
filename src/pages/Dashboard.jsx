@@ -42,6 +42,7 @@ const Dashboard = () => {
     const handleSelect = (title, id) => {
         setDateFilter(title);
         id == "custom-range" ? setIsCustomRange(true) : setIsCustomRange(false);
+        setFilterDropdown(false);
     };
     useEffect(
         ListenForOutsideClicks(
