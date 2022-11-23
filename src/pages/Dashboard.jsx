@@ -372,6 +372,10 @@ const Dashboard = () => {
                             </div>
                         </header>
 
+                        <div id="pie-chart">
+                            
+                        </div>
+
                         {/* <PieChart /> */}
                     </div>
 
