@@ -12,8 +12,41 @@ import TotalAutomationIcon from "../components/Icons/TotalAutomationIcon";
 import TotalFormIcon from "../components/Icons/TotalFormIcon";
 import DashboardOverview from "../components/Icons/DashboardOverview";
 import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomationPlaceholder";
+// import PieChart from "@demo/components/Dashboard/PieChart";
 
 const Dashboard = () => {
+    const canvasRef = useRef(null);
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        const results = [
+            { mood: "Angry", total: 1499, shade: "#02C4FB" },
+            { mood: "Happy", total: 478, shade: "#EC5956" },
+            { mood: "Melancholic", total: 332, shade: "#573BFF" },
+            { mood: "Gloomy", total: 195, shade: "#12B76A" },
+        ];
+
+        let sum = 0;
+        let totalNumberOfPeople = results.reduce(
+            (sum, { total }) => sum + total,
+            0
+        );
+        let currentAngle = 0;
+
+        for (let moodValue of results) {
+            //calculating the angle the slice (portion) will take in the chart
+            let portionAngle =
+                (moodValue.total / totalNumberOfPeople) * 2 * Math.PI;
+            //drawing an arc and a line to the center to differentiate the slice from the rest
+            ctx.beginPath();
+            ctx.arc(100, 100, 100, currentAngle, currentAngle + portionAngle);
+            currentAngle += portionAngle;
+            ctx.lineTo(100, 100);
+            //filling the slices with the corresponding mood's color
+            ctx.fillStyle = moodValue.shade;
+            ctx.fill();
+        }
+    }, []);
 
     const [draftPercentage, setDraftPercentage] = useState(10);
     const [sentPercentage, setSentPercentage] = useState(24);
@@ -76,8 +109,6 @@ const Dashboard = () => {
                     <div className="single-stat-box box-col-4 email-campaign">
                         <header className="box-header">
                             <h4 className="header-title">Email Campaigns</h4>
-
-                            
                         </header>
 
                         <div className="email-campaign-stats">
@@ -102,12 +133,14 @@ const Dashboard = () => {
                     <div className="single-stat-box box-col-4 contact">
                         <header className="box-header">
                             <h4 className="header-title">Contact</h4>
-
-                            
                         </header>
 
-                        <div id="pie-chart">
-                            
+                        <div id="pie-container">
+                            <canvas
+                                width="210"
+                                height="210"
+                                ref={canvasRef}
+                            ></canvas>
                         </div>
 
                         {/* <PieChart /> */}
