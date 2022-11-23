@@ -4,6 +4,7 @@
   "scripts": {
     "test": "phpunit",
     "phpcs": "./vendor/bin/phpcs",
+    "phpcs:report": "./vendor/bin/phpcs --report=csv > output.csv",
     "phpcs:fix": "./vendor/bin/phpcbf"
   },
   "autoload": {
