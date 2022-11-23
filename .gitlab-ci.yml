@@ -8,7 +8,7 @@ cache:
 
 # Our stages
 stages:
-  - phpcs
+  # - phpcs
   - test
 
 # before running the CI server setup
