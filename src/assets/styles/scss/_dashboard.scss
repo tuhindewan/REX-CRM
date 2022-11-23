@@ -111,6 +111,17 @@
         }
         ul.mintmrm-dropdown {
             width: 200px;
+            li {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 1;
+                transition: all 0.3s ease;
+            }
+            li:hover {
+                font-weight: 600;
+                color: #2d3149;
+                background: #f6f8fa;
+            }
         }
     }
 
