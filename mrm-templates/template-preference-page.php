@@ -8,7 +8,9 @@ get_header();
 ?>
 
 <main class="mintmrm-main">
-    <h1>hello Preference Page</h1>
+    <section class="mintmrm-container">
+        <?php the_content(); ?>
+    </section>
 </main>
 
 

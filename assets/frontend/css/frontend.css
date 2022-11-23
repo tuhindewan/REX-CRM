@@ -274,6 +274,20 @@
   padding-right: 80px;
 }
 
+.mintmrm-main {
+  padding: 50px 0;
+}
+.mintmrm-main .mintmrm-container {
+  max-width: 1230px;
+  padding: 0 15px;
+  margin: 0 auto;
+  min-height: 62vh;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
 /*
 ---------------form animations------------------
 1. Fade In animation
@@ -331,7 +345,7 @@
   flex-flow: column;
   align-items: center;
   justify-content: center;
-  background: rgba(51, 51, 51, 0.3411764706);
+  background: #33333357;
   padding: 5px 15px;
   box-sizing: border-box;
 }
@@ -446,6 +460,10 @@
 .mintmrm-add-contact-consent-content {
   display: flex;
   margin-bottom: 5rem;
+  align-items: center;
+}
+.mintmrm-add-contact-consent-content label {
+  margin-bottom: 0;
 }
 
 /*# sourceMappingURL=frontend.css.map */

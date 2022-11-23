@@ -24,8 +24,13 @@ class Email {
 			return $globalHeaders;
 		}
 
-		// Get email settings from the options table
-		$globalEmailSettings = get_option( '_mrm_email_settings' );
+        // Get email settings from the options table
+        $default_header = self::defaultEmailSettings();
+        $globalEmailSettings = get_option( "_mrm_email_settings", $default_header );
+        
+        // Prepare sender information
+        $fromName  = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['from_name'] : "";
+        $fromEmail = isset( $globalEmailSettings['from_email'] ) ? $globalEmailSettings['from_email'] : "";
 
 		// Prepare sender information
 		$fromName  = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['from_name'] : '';
@@ -51,16 +56,39 @@ class Email {
 		return $globalHeaders;
 	}
 
+    /**
+     * Return default email settings or header information
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function defaultEmailSettings()
+    {
+        // Get site title and admin email from native WP
+        $name           = get_bloginfo( 'name' );
+        $admin_email    = get_bloginfo( 'admin_email' );
 
-	/**
-	 * Prepare email header information
-	 *
-	 * @param array $existingHeader
-	 * @return array
-	 * @since 1.0.0
-	 */
-	public static function getMailTemplate( $email_body = '', $domainLink, $contact_id, $hash ) {
-		return "
+        // Return default value for email settings
+        return [
+            "from_name"     => $name,
+            "from_email"    => $admin_email,
+            "reply_name"    => $name,
+            "reply_email"   => $admin_email
+        ];
+    }
+
+
+    /**
+     * Prepare email header information
+     * 
+     * @param array $existingHeader
+     * @return array
+     * @since 1.0.0
+     */
+    public static function getMailTemplate($email_body = "", $domainLink, $contact_id, $hash)
+    {
+        return "
             <!DOCTYPE html>
             <html lang='en-US'>
                 <head>
@@ -199,7 +227,8 @@ class Email {
                                 </td>
                             </tr>
                         </table>
-                        <a href='" . $domainLink . '/?mrm=1&amp;route=unsubscribe&amp;contact_id=' . $contact_id . '&amp;hash=' . $hash . "'>Unsubcribe</a>
+                        <a href='". $domainLink ."/?mrm=1&amp;route=unsubscribe&amp;contact_id=".$contact_id."&amp;hash=".$hash."'>Unsubcribe</a>
+                        <a href='". $domainLink ."/?mrm=1&amp;route=preference&amp;hash=".$hash."'>Manage Preference</a>
                     </center>
                 </body>
             </html>
