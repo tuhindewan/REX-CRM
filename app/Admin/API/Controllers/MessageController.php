@@ -120,155 +120,145 @@ class MessageController extends BaseController {
 
 
 
-    /**
-     * Send a message to contact
-     * 
-     * @param mixed $message
-     * @return bool
-     * @since 1.0.0
-     */
-    public function send_message( $message )
-    {
-        $to      = $message->get_receiver_email();
+	/**
+	 * Send a message to contact
+	 *
+	 * @param mixed $message
+	 * @return bool
+	 * @since 1.0.0
+	 */
+	public function send_message( $message ) {
+		$to = $message->get_receiver_email();
 
 		$subject = $message->get_email_subject();
 
 		$body = $message->get_email_body();
 
-        $headers = Email::getMailHeader();
+		$headers = Email::getMailHeader();
 
-        try {
-            return wp_mail( $to, $subject, $body, $headers );
-        } catch(\Exception $e) {
-            return false;
-        }
-    }
-
-
-    /**
-     * Get all emails from the database to a contact or entire users
-     * 
-     * @param WP_REST_Request $request
-     * @return WP_REST_Response
-     * @since 1.0.0
-     */
-    public function get_all( WP_REST_Request $request )
-    {
-        // Get values from API
-        $params = MRM_Common::get_api_params_values( $request );
-
-        $page       =  isset( $params['page'] ) ? $params['page'] : 1;
-        $perPage    =  isset( $params['per-page'] ) ? $params['per-page'] : 25;
-        $offset     =  ($page - 1) * $perPage;
-
-        // Contact Search keyword
-        $search     = isset( $params['search'] )        ? sanitize_text_field( $params['search'] )     : '';
-        $contact_id = isset( $params['contact_id'] )    ? sanitize_text_field( $params['contact_id'] ) : NULL;
-
-        $emails = MessageModel::get_emails_to_contact( $offset, $perPage, $search, $contact_id );
-        if(isset($emails)) {
-            return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $emails );
-        }
-        return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
-
-    }
+		try {
+			return wp_mail( $to, $subject, $body, $headers );
+		} catch ( \Exception $e ) {
+			return false;
+		}
+	}
 
 
-    /**
-     * TODO: use this function to get single email
-     * 
-     * @param WP_REST_Request $request
-     * 
-     * @return [type]
-     */
-    public function get_single(WP_REST_Request $request)
-    {
-        
-    }
+	/**
+	 * Get all emails from the database to a contact or entire users
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
+	public function get_all( WP_REST_Request $request ) {
+		// Get values from API
+		$params = MRM_Common::get_api_params_values( $request );
+
+		$page    = isset( $params['page'] ) ? $params['page'] : 1;
+		$perPage = isset( $params['per-page'] ) ? $params['per-page'] : 25;
+		$offset  = ( $page - 1 ) * $perPage;
+
+		// Contact Search keyword
+		$search     = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
+		$contact_id = isset( $params['contact_id'] ) ? sanitize_text_field( $params['contact_id'] ) : null;
+
+		$emails = MessageModel::get_emails_to_contact( $offset, $perPage, $search, $contact_id );
+		if ( isset( $emails ) ) {
+			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $emails );
+		}
+		return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+	}
 
 
-    /**
-     * TODO: use this function to delete multiple emails
-     * 
-     * @param WP_REST_Request $request
-     * 
-     * @return [type]
-     */
-    public function delete_all(WP_REST_Request $request)
-    {
-        
-    }
+	/**
+	 * TODO: use this function to get single email
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return [type]
+	 */
+	public function get_single( WP_REST_Request $request ) {
+	}
 
 
-    /**
-     * TODO: use this function to delete single email
-     * 
-     * @param WP_REST_Request $request
-     * 
-     * @return [type]
-     */
-    public function delete_single(WP_REST_Request $request)
-    {
-        
-    }
+	/**
+	 * TODO: use this function to delete multiple emails
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return [type]
+	 */
+	public function delete_all( WP_REST_Request $request ) {
+	}
 
 
-    /**
-     * Send double optin email
-     * 
-     * @param mixed $contact_id
-     * 
-     * @return bool
-     * @since 1.0.0
-     */
-    public function send_double_opt_in( $contact_id)
-    {
-        $contact    = ContactModel::get( $contact_id );
+	/**
+	 * TODO: use this function to delete single email
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return [type]
+	 */
+	public function delete_single( WP_REST_Request $request ) {
+	}
 
-        // Contact status check and validation
-        $status     = isset( $contact['status'] ) ? $contact['status'] : "";
-        if ($status == 'subscribed') {
-            return $this->get_error_response( __( 'Contact Already Subscribed', 'mrm' ), 400 );
-        }
 
-        $default    = [
-                        "enable"                => true,
-                        "email_subject"         => "Please Confirm Subscription.",
-                        "email_body"            => "Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.",
-                        "confirmation_type"     => "message",
-                        "confirmation_message"  => "Subscription Confirmed. Thank you."
-                    ];
+	/**
+	 * Send double optin email
+	 *
+	 * @param mixed $contact_id
+	 *
+	 * @return bool
+	 * @since 1.0.0
+	 */
+	public function send_double_opt_in( $contact_id ) {
+		 $contact = ContactModel::get( $contact_id );
 
-        $settings   = get_option( "_mrm_optin_settings", $default );
-        $enable     = isset( $settings['enable'] ) ? $settings['enable'] : "";
-        if ( !$enable ) {
-            return false;
-        }
-        if( $enable ){
-            $to       = isset( $contact['email'] ) ? $contact['email'] : "";
-            $hash     = isset( $contact['hash'] ) ? $contact['hash'] : "";
-            
-            $subscribe_url = site_url('?mrm=1&route=confirmation&hash=' . $hash);
+		// Contact status check and validation
+		$status = isset( $contact['status'] ) ? $contact['status'] : '';
+		if ( $status == 'subscribed' ) {
+			return $this->get_error_response( __( 'Contact Already Subscribed', 'mrm' ), 400 );
+		}
 
-            $subject    = isset( $settings['email_subject'] ) ? $settings['email_subject'] : "";
-            //Prepare email body
-            $email_body = isset( $settings['email_body'] ) ? $settings['email_body'] : "";
-            $email_body = str_replace("http://", "", $email_body);
-            $email_body = str_replace('{{subscribe_link}}', $subscribe_url, $email_body);
-            
-            $server = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : "";
-            $protocol = strpos(strtolower( $server ), 'https') === FALSE ? 'http' : 'https';
-            $domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
+		$default = array(
+			'enable'               => true,
+			'email_subject'        => 'Please Confirm Subscription.',
+			'email_body'           => 'Please Confirm Subscription. {{subscribe_link}}. <br> If you receive this email by mistake, simply delete it.',
+			'confirmation_type'    => 'message',
+			'confirmation_message' => 'Subscription Confirmed. Thank you.',
+		);
 
-            $body = Email::getMailTemplate( $email_body, $domainLink, $contact_id, $hash );
+		$settings = get_option( '_mrm_optin_settings', $default );
+		$enable   = isset( $settings['enable'] ) ? $settings['enable'] : '';
+		if ( ! $enable ) {
+			return false;
+		}
+		if ( $enable ) {
+			$to   = isset( $contact['email'] ) ? $contact['email'] : '';
+			$hash = isset( $contact['hash'] ) ? $contact['hash'] : '';
 
-            $headers = Email::getMailHeader();
-        
-            try {
-                return wp_mail( $to, $subject, $body, $headers );
-            } catch(\Exception $e) {
-                return false;
-            }
-        }
-    }
+			$subscribe_url = site_url( '?mrm=1&route=confirmation&hash=' . $hash );
+
+			$subject = isset( $settings['email_subject'] ) ? $settings['email_subject'] : '';
+			// Prepare email body
+			$email_body = isset( $settings['email_body'] ) ? $settings['email_body'] : '';
+			$email_body = str_replace( 'http://', '', $email_body );
+			$email_body = str_replace( '{{subscribe_link}}', $subscribe_url, $email_body );
+
+			$server     = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : '';
+			$protocol   = strpos( strtolower( $server ), 'https' ) === false ? 'http' : 'https';
+			$domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
+
+			$body = Email::getMailTemplate( $email_body, $domainLink, $contact_id, $hash );
+
+			$headers = Email::getMailHeader();
+
+			try {
+				return wp_mail( $to, $subject, $body, $headers );
+			} catch ( \Exception $e ) {
+				return false;
+			}
+		}
+	}
 }
