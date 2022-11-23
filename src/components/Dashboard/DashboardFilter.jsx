@@ -19,8 +19,15 @@ const DashboardFilter = () => {
     ]);
 
     //------datepicker-----
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+
+    today = mm + '/' + dd + '/' + yyyy;
+
+    const [startDate, setStartDate] = useState(new Date().format('MMM D, YYYY'));
+    const [endDate, setEndDate] = useState(new Date().format('MMM D, YYYY'));
 
     const onChange = (dates) => {
         const [start, end] = dates;
@@ -74,6 +81,7 @@ const DashboardFilter = () => {
 
                 <div className="datepicker-dropdown">
                     <DatePicker
+                        dateFormat="dd M, yyyy"
                         selected={startDate}
                         onChange={onChange}
                         startDate={startDate}
