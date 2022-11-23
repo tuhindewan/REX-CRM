@@ -123,7 +123,7 @@ export default function EmailSettings() {
                           onInput={handleChange}
                         />
                       </div>
-                      <hr></hr>
+                      <hr />
                       <div className="form-group">
                         <label htmlFor="">
                           Reply-to Name

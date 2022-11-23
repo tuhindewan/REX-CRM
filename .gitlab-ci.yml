@@ -62,8 +62,10 @@ test:php7.4:
 
 
 phpcs:
-  stage: syntax
+  stage: phpcs
+  image: php:7.4
   script:
     - ./vendor/bin/phpcs
   rules:
     - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")
+
