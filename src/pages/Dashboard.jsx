@@ -24,7 +24,11 @@ const Dashboard = () => {
     const [draftPercentage, setDraftPercentage] = useState(10);
     const [sentPercentage, setSentPercentage] = useState(24);
     const [dateFilter, setDateFilter] = useState("Monthly");
+    const [dateCampaignFilter, setDateCampaignFilter] = useState("Monthly");
+    const [dateContactFilter, setDateContactFilter] = useState("Monthly");
     const [filterDropdown, setFilterDropdown] = useState(false);
+    const [filterCampaignDropdown, setFilterCampaignDropdown] = useState(false);
+    const [filterContactDropdown, setFilterContactDropdown] = useState(false);
     const [isCustomRange, setIsCustomRange] = useState(false);
     const [listening, setListening] = useState(false);
     const [filterItems, setFilterItems] = useState([
@@ -34,10 +38,18 @@ const Dashboard = () => {
         { tile: "Custom Range", id: "custom-range" },
     ]);
     const filterRef = useRef(null);
+    const filterCampaignRef = useRef(null);
+    const filterContactRef = useRef(null);
     const [startDate, setStartDate] = useState(new Date());
 
     const handleFilter = () => {
         setFilterDropdown(!filterDropdown);
+    };
+    const handleCampaignFilter = () => {
+        setFilterCampaignDropdown(!filterCampaignDropdown);
+    };
+    const handleContactFilter = () => {
+        setFilterContactDropdown(!filterContactDropdown);
     };
 
     const handleSelect = (title, id) => {
@@ -45,12 +57,36 @@ const Dashboard = () => {
         id == "custom-range" ? setIsCustomRange(true) : setIsCustomRange(false);
         setFilterDropdown(false);
     };
+    const handleCampaignSelect = (title, id) => {
+        setDateCampaignFilter(title);
+        setFilterCampaignDropdown(false);
+    };
+    const handleContactSelect = (title, id) => {
+        setDateContactFilter(title);
+        setFilterContactDropdown(false);
+    };
     useEffect(
         ListenForOutsideClicks(
             listening,
             setListening,
             filterRef,
             setFilterDropdown
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            filterCampaignRef,
+            setFilterCampaignDropdown
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            filterContactRef,
+            setFilterContactDropdown
         )
     );
 
@@ -69,20 +105,19 @@ const Dashboard = () => {
                             }
                         >
                             <div className="date-from">
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                />
                             </div>
 
                             <div className="date-to">
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                />
                             </div>
                         </div>
-
-                        {/* <select name="" id="">
-                            <option value="yearly">Yearly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="custom">Custom</option>
-                        </select> */}
                         <div ref={filterRef}>
                             <button
                                 className={
@@ -101,7 +136,7 @@ const Dashboard = () => {
                                         : "mintmrm-dropdown"
                                 }
                             >
-                                {filterItems.map((item, index) => (
+                                {filterItems.map((item) => (
                                     <li
                                         onClick={() =>
                                             handleSelect(item.tile, item.id)
@@ -166,12 +201,38 @@ const Dashboard = () => {
                             <h4 className="header-title">Email Campaigns</h4>
 
                             <div className="filter-box">
-                                <select name="" id="">
-                                    <option value="yearly">Yearly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="custom">Custom</option>
-                                </select>
+                                <div ref={filterCampaignRef}>
+                                    <button
+                                        className={
+                                            filterCampaignDropdown
+                                                ? "drop-down-button show"
+                                                : "drop-down-button"
+                                        }
+                                        onClick={handleCampaignFilter}
+                                    >
+                                        {dateCampaignFilter}
+                                    </button>
+                                    <ul
+                                        className={
+                                            filterCampaignDropdown
+                                                ? "mintmrm-dropdown show"
+                                                : "mintmrm-dropdown"
+                                        }
+                                    >
+                                        {filterItems.map((item) => (
+                                            <li
+                                                onClick={() =>
+                                                    handleCampaignSelect(
+                                                        item.tile,
+                                                        item.id
+                                                    )
+                                                }
+                                            >
+                                                {item.tile}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </header>
 
@@ -199,18 +260,44 @@ const Dashboard = () => {
                             <h4 className="header-title">Contact</h4>
 
                             <div className="filter-box">
-                                <select name="" id="">
-                                    <option value="">Yearly</option>
-                                    <option value="">Monthly</option>
-                                    <option value="">Weekly</option>
-                                    <option value="">Custom</option>
-                                </select>
+                                <div ref={filterContactRef}>
+                                    <button
+                                        className={
+                                            filterContactDropdown
+                                                ? "drop-down-button show"
+                                                : "drop-down-button"
+                                        }
+                                        onClick={handleContactFilter}
+                                    >
+                                        {dateContactFilter}
+                                    </button>
+                                    <ul
+                                        className={
+                                            filterContactDropdown
+                                                ? "mintmrm-dropdown show"
+                                                : "mintmrm-dropdown"
+                                        }
+                                    >
+                                        {filterItems.map((item, index) => (
+                                            <li
+                                                onClick={() =>
+                                                    handleContactSelect(
+                                                        item.tile,
+                                                        item.id
+                                                    )
+                                                }
+                                            >
+                                                {item.tile}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </header>
 
                         {/* <PieChart /> */}
                     </div>
-                    
+
                     <div className="single-stat-box box-col-8 automation coming-soon-overlay">
                         <DashboardAutomationPlaceholder />
                     </div>
@@ -218,7 +305,6 @@ const Dashboard = () => {
             </div>
         </div>
     );
-    
 };
 
 export default Dashboard;
