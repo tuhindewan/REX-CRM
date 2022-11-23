@@ -331,7 +331,7 @@
   flex-flow: column;
   align-items: center;
   justify-content: center;
-  background: rgba(51, 51, 51, 0.3411764706);
+  background: #33333357;
   padding: 5px 15px;
   box-sizing: border-box;
 }
@@ -446,6 +446,10 @@
 .mintmrm-add-contact-consent-content {
   display: flex;
   margin-bottom: 5rem;
+  align-items: center;
+}
+.mintmrm-add-contact-consent-content label {
+  margin-bottom: 0;
 }
 
 /*# sourceMappingURL=frontend.css.map */
