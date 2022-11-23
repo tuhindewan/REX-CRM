@@ -45,6 +45,12 @@ const Dashboard = () => {
     const dateFromRef = useRef(null);
     const dateToRef = useRef(null);
     const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(null);
+    const onChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+    };
 
     const handleFilter = () => {
         setFilterDropdown(!filterDropdown);
@@ -168,23 +174,26 @@ const Dashboard = () => {
                                 className="date-from"
                                 onClick={handleFromdropdown}
                             >
-                                <ul
+                                <div
                                     className={
                                         dateFromDropdown
                                             ? "mintmrm-dropdown show"
                                             : "mintmrm-dropdown"
                                     }
                                 >
+                                    <DatePicker
+                                        selected={startDate}
+                                        onChange={onChange}
+                                        startDate={startDate}
+                                        endDate={endDate}
+                                        selectsRange
+                                        inline
+                                    />
                                     <hr />
                                     <button className="mintmrm-btn">
                                         Filter
                                     </button>
-                                </ul>
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="MMM d, yyyy "
-                                />
+                                </div>
                             </div>
 
                             <div
@@ -192,23 +201,27 @@ const Dashboard = () => {
                                 className="date-to"
                                 onClick={handleTodropdown}
                             >
-                                <ul
+                                <div
                                     className={
                                         dateToDropdown
                                             ? "mintmrm-dropdown show"
                                             : "mintmrm-dropdown"
                                     }
                                 >
+                                    <DatePicker
+                                        selected={startDate}
+                                        onChange={onChange}
+                                        startDate={startDate}
+                                        endDate={endDate}
+                                        selectsRange
+                                        inline
+                                    />
+
                                     <hr />
                                     <button className="mintmrm-btn">
                                         Filter
                                     </button>
-                                </ul>
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="MMM d, yyyy "
-                                />
+                                </div>
                             </div>
                         </div>
                     </div>
