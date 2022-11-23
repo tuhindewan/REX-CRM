@@ -1,0 +1,14 @@
+.react-datepicker-wrapper {
+}
+.react-datepicker__tab-loop {
+    .react-datepicker-popper {
+        .react-datepicker {
+            .react-datepicker__triangle {
+                &::before,
+                &::after {
+                    display: none;
+                }
+            }
+        }
+    }
+}

@@ -30,6 +30,8 @@ const Dashboard = () => {
     const [filterCampaignDropdown, setFilterCampaignDropdown] = useState(false);
     const [filterContactDropdown, setFilterContactDropdown] = useState(false);
     const [isCustomRange, setIsCustomRange] = useState(false);
+    const [dateFromDropdown, setDateFromDropdown] = useState(false);
+    const [dateToDropdown, setDateToDropdown] = useState(false);
     const [listening, setListening] = useState(false);
     const [filterItems, setFilterItems] = useState([
         { tile: "Weekly", id: "weekly" },
@@ -40,10 +42,13 @@ const Dashboard = () => {
     const filterRef = useRef(null);
     const filterCampaignRef = useRef(null);
     const filterContactRef = useRef(null);
+    const dateFromRef = useRef(null);
+    const dateToRef = useRef(null);
     const [startDate, setStartDate] = useState(new Date());
 
     const handleFilter = () => {
         setFilterDropdown(!filterDropdown);
+        setDateFromDropdown(false);
     };
     const handleCampaignFilter = () => {
         setFilterCampaignDropdown(!filterCampaignDropdown);
@@ -55,6 +60,9 @@ const Dashboard = () => {
     const handleSelect = (title, id) => {
         setDateFilter(title);
         id == "custom-range" ? setIsCustomRange(true) : setIsCustomRange(false);
+        id == "custom-range"
+            ? setDateFromDropdown(true)
+            : setDateFromDropdown(false);
         setFilterDropdown(false);
     };
     const handleCampaignSelect = (title, id) => {
@@ -64,6 +72,13 @@ const Dashboard = () => {
     const handleContactSelect = (title, id) => {
         setDateContactFilter(title);
         setFilterContactDropdown(false);
+    };
+    const handleFromdropdown = () => {
+        setDateFromDropdown(!dateFromDropdown);
+    };
+    const handleTodropdown = () => {
+        setDateToDropdown(!dateToDropdown);
+        setDateFromDropdown(false);
     };
     useEffect(
         ListenForOutsideClicks(
@@ -89,6 +104,22 @@ const Dashboard = () => {
             setFilterContactDropdown
         )
     );
+    // useEffect(
+    //     ListenForOutsideClicks(
+    //         listening,
+    //         setListening,
+    //         dateFromRef,
+    //         setDateFromDropdown
+    //     )
+    // );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            dateToRef,
+            setDateToDropdown
+        )
+    );
 
     return (
         <div className="dashboard-page">
@@ -97,27 +128,6 @@ const Dashboard = () => {
                     <h1 class="dashboard-heading">Dashboard</h1>
 
                     <div className="filter-box">
-                        <div
-                            className={
-                                isCustomRange
-                                    ? "custom-date show"
-                                    : "custom-date"
-                            }
-                        >
-                            <div className="date-from">
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                />
-                            </div>
-
-                            <div className="date-to">
-                                <DatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                />
-                            </div>
-                        </div>
                         <div ref={filterRef}>
                             <button
                                 className={
@@ -146,6 +156,60 @@ const Dashboard = () => {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+                        <div
+                            className={
+                                isCustomRange
+                                    ? "custom-date show"
+                                    : "custom-date"
+                            }
+                        >
+                            <div
+                                className="date-from"
+                                onClick={handleFromdropdown}
+                            >
+                                <ul
+                                    className={
+                                        dateFromDropdown
+                                            ? "mintmrm-dropdown show"
+                                            : "mintmrm-dropdown"
+                                    }
+                                >
+                                    <hr />
+                                    <button className="mintmrm-btn">
+                                        Filter
+                                    </button>
+                                </ul>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="MMM d, yyyy "
+                                />
+                            </div>
+
+                            <div
+                                ref={dateToRef}
+                                className="date-to"
+                                onClick={handleTodropdown}
+                            >
+                                <ul
+                                    className={
+                                        dateToDropdown
+                                            ? "mintmrm-dropdown show"
+                                            : "mintmrm-dropdown"
+                                    }
+                                >
+                                    <hr />
+                                    <button className="mintmrm-btn">
+                                        Filter
+                                    </button>
+                                </ul>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="MMM d, yyyy "
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
