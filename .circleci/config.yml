@@ -29,7 +29,7 @@ commands:
 executors:
   php_mysql_executor:
     docker:
-      - image: cimg/php:7.4.26
+      - image: phpdockerio/php73-fpm
       - image: mysql:5.7.27
         environment:
           MYSQL_ROOT_PASSWORD: somewordpress
