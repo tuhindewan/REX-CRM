@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/Ajax
+ */
 
 namespace Mint\MRM\Internal\Ajax;
 
@@ -13,15 +22,22 @@ use Mint\MRM\DataStores\CustomFieldData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 
+/**
+ * [Manages Ajax submit in mrm form ]
+ *
+ * @desc Manages ajax submit in mrm
+ * @package /app/Internal/Ajax
+ * @since 1.0.0
+ */
 class AjaxAction {
 
 	use Singleton;
 
-
+	/**
+	 * Call Class Constructor
+	 * Call Wp ajax Hook
+	 */
 	private function __construct() {
-		add_action( 'wp_ajax_set_form', array( $this, 'save_form' ) );
-		add_action( 'wp_ajax_nopriv_set_form', array( $this, 'save_form' ) );
-
 		add_action( 'wp_ajax_mrm_submit_form', array( $this, 'mrm_submit_form' ) );
 		add_action( 'wp_ajax_nopriv_mrm_submit_form', array( $this, 'mrm_submit_form' ) );
 
@@ -29,34 +45,12 @@ class AjaxAction {
 		add_action( 'wp_ajax_mrm_preference_update_by_user', array( $this, 'mrm_preference_update_by_user' ) );
 		add_action( 'wp_ajax_nopriv_mrm_preference_update_by_user', array( $this, 'mrm_preference_update_by_user' ) );
 	}
-
-
-
-	public function save_form() {
-		$first_name            = $_POST['first_name'];
-		$email                 = $_POST['email'];
-		$last_name             = $_POST['last_name'];
-		$request['first_name'] = $first_name;
-		$request['email']      = $email;
-		$request['last_name']  = $last_name;
-		$request['status']     = 'pending';
-		$request['source']     = 'form';
-		$contact               = new ContactData( $email, $request );
-		ContactModel::insert( $contact );
-		$admin = get_option( 'admin_email' );
-		// wp_mail($email,$name,$message);  main sent to admin and the user
-		if ( $contact ) {
-			echo 'mail sent';
-		} else {
-			echo 'mail not sent';
-		}
-		die();
-	}
-
 	/**
-	 * MRM Form Submit
+	 * Form Submit by Ajax
+	 *
+	 * @return void
+	 * @since 1.0.0
 	 */
-
 	public function mrm_submit_form() {
 		check_ajax_referer( 'wp_mrm_submit_form', 'security' );
 		$params   = $_POST;
@@ -64,9 +58,9 @@ class AjaxAction {
 			'status'  => 'failed',
 			'message' => 'Form is not valid',
 		);
-		if ( isset( $params['action'] ) && 'mrm_submit_form' == $params['action'] ) {
-			$postData = isset( $_POST['post_data'] ) ? $_POST['post_data'] : '';
-			parse_str( $postData, $post_data );
+		if ( isset( $params['action'] ) && 'mrm_submit_form' === $params['action'] ) {
+			$get_post_data = isset( $_POST['post_data'] ) ? wp_unslash( $_POST['post_data'] ) : ''; //phpcs:ignore
+			parse_str( $get_post_data, $post_data );
 			$form_data                = array();
 			$form_data['meta_fields'] = array();
 			if ( $post_data ) {
@@ -89,7 +83,7 @@ class AjaxAction {
 			if ( ! $form_email ) {
 				$response['status']  = 'success';
 				$response['message'] = __( 'Email Field Not found', 'mrm' );
-				echo json_encode( $response, true );
+				echo wp_json_encode( $response, true );
 				die();
 			}
 			$parms       = array(
@@ -101,13 +95,13 @@ class AjaxAction {
 			if ( $exist_email ) {
 				$response['status']  = 'success';
 				$response['message'] = __( 'Email address already assigned to another contact.', 'mrm' );
-				echo json_encode( $response, true );
+				echo wp_json_encode( $response, true );
 				die();
 			}
-			do_action( 'mrm/before_form_submit', $contact );
+			do_action( 'mrm_before_form_submit', $contact );
 			$contact_id = ContactModel::insert( $contact );
 			if ( $contact_id ) {
-				$cookie_time = apply_filters( 'mrm/set_form_cookies_time', get_option( '_mrm_form_dismissed', 7 ) );
+				$cookie_time = apply_filters( 'mrm_set_form_cookies_time', get_option( '_mrm_form_dismissed', 7 ) );
 				$today       = strtotime( 'today UTC' );
 				$cookie_time = strtotime( '+' . $cookie_time . 'day', $today );
 
@@ -117,9 +111,9 @@ class AjaxAction {
 					'expire' => $cookie_time,
 				);
 				if ( ! isset( $_COOKIE[ $cookie_name ] ) ) {
-					setcookie( $cookie_name, json_encode( $cookie_value ), $cookie_time, '/' );
+					setcookie( $cookie_name, wp_json_encode( $cookie_value ), $cookie_time, '/' );
 				}
-				do_action( 'mrm/after_form_submit', $contact_id, $contact );
+				do_action( 'mrm_after_form_submit', $contact_id, $contact );
 				/**
 				 * Send Double Optin Email
 				 */
@@ -137,7 +131,7 @@ class AjaxAction {
 				 * Assign Tag and List for contact
 				 */
 				$get_group_id = FormModel::get( $form_id );
-				$group_ids    = isset( $get_group_id['group_ids'] ) ? unserialize( $get_group_id['group_ids'] ) : array();
+				$group_ids    = isset( $get_group_id['group_ids'] ) ? unserialize( $get_group_id['group_ids'] ) : array(); //phpcs:ignore
 				$group_tag    = isset( $group_ids['tags'] ) ? $group_ids['tags'] : array();
 				$group_list   = isset( $group_ids['lists'] ) ? $group_ids['lists'] : array();
 				$group_data   = array_merge( $group_tag, $group_list );
@@ -161,25 +155,25 @@ class AjaxAction {
 					$same_page                         = $confirmation_type->same_page;
 					$response['confirmation_type']     = 'same_page';
 					$response['after_form_submission'] = $same_page->after_form_submission;
-					$response['message']               = __( $same_page->message_to_show, 'mrm' );
+					$response['message']               = $same_page->message_to_show;
 				}if ( ! empty( $confirmation_type->to_a_page ) ) {
 					$to_a_page                     = $confirmation_type->to_a_page;
 					$response['confirmation_type'] = 'to_a_page';
 					$response['redirect_page']     = get_permalink( $to_a_page->page );
-					$response['message']           = __( $to_a_page->redirection_message, 'mrm' );
+					$response['message']           = $to_a_page->redirection_message;
 				}
 				if ( ! empty( $confirmation_type->to_a_custom_url ) ) {
 					$to_a_custom_url               = $confirmation_type->to_a_custom_url;
 					$response['confirmation_type'] = 'to_a_custom_url';
 					$response['custom_url']        = $to_a_custom_url->custom_url;
-					$response['message']           = __( $to_a_custom_url->custom_redirection_message, 'mrm' );
+					$response['message']           = $to_a_custom_url->custom_redirection_message;
 				}
 				$response['status'] = 'success';
-				echo json_encode( $response, true );
+				echo wp_json_encode( $response, true );
 				die();
 			}
 		}
-		echo json_encode( $response, true );
+		echo wp_json_encode( $response, true );
 		die();
 	}
 

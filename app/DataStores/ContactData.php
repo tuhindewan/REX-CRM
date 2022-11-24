@@ -1,16 +1,23 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/DataStores
+ */
 
 namespace Mint\MRM\DataStores;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-10 15:39:54
- * @modify date 2022-08-10 15:39:54
- * @desc [Responsible for maintaining a contact object]
+ * [Manage contact data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
  */
-
-
 class ContactData {
 
 	/**
@@ -175,27 +182,34 @@ class ContactData {
 	 */
 	private $wp_user_id;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param string $email Contact email.
+	 * @param array  $args Contact data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $email, $args = array() ) {
 		$this->email          = $email;
-		$this->first_name     = isset( $args['first_name'] ) ? sanitize_text_field( $args['first_name'] ) : '';
-		$this->last_name      = isset( $args['last_name'] ) ? sanitize_text_field( $args['last_name'] ) : '';
-		$this->phone          = isset( $args['phone'] ) ? sanitize_text_field( $args['phone'] ) : '';
-		$this->status         = isset( $args['status'][0] ) && ! empty( $args['status'][0] ) ? $args['status'][0] : 'pending';
-		$this->source         = isset( $args['source'] ) ? sanitize_text_field( $args['source'] ) : '';
-		$this->date_of_birth  = isset( $args['date_of_birth'] ) ? sanitize_text_field( $args['date_of_birth'] ) : '';
-		$this->timezone       = isset( $args['timezone'] ) ? sanitize_text_field( $args['timezone'] ) : '';
-		$this->address_line_1 = isset( $args['address_line_1'] ) ? sanitize_text_field( $args['address_line_1'] ) : '';
-		$this->address_line_2 = isset( $args['address_line_2'] ) ? sanitize_text_field( $args['address_line_2'] ) : '';
-		$this->city           = isset( $args['city'] ) ? sanitize_text_field( $args['city'] ) : '';
-		$this->state          = isset( $args['state'] ) ? sanitize_text_field( $args['state'] ) : '';
-		$this->country        = isset( $args['country'] ) ? sanitize_text_field( $args['country'] ) : '';
-		$this->postal_code    = isset( $args['postal_code'] ) ? sanitize_text_field( $args['postal_code'] ) : '';
-		$this->company_name   = isset( $args['company_name'] ) ? sanitize_text_field( $args['company_name'] ) : '';
-		$this->contact_id     = isset( $args['contact_id'] ) ? sanitize_text_field( $args['contact_id'] ) : '';
-		$this->meta_fields    = isset( $args['meta_fields'] ) ? $args['meta_fields'] : array();
-		$this->created_by     = isset( $args['created_by'] ) ? sanitize_text_field( $args['created_by'] ) : '';
-		$this->wp_user_id     = isset( $args['wp_user_id'] ) ? sanitize_text_field( $args['wp_user_id'] ) : '';
+		$this->first_name     = isset( $args[ 'first_name' ] ) ? sanitize_text_field( $args[ 'first_name' ] ) : '';
+		$this->last_name      = isset( $args[ 'last_name' ] ) ? sanitize_text_field( $args[ 'last_name' ] ) : '';
+		$this->phone          = isset( $args[ 'phone' ] ) ? sanitize_text_field( $args[ 'phone' ] ) : '';
+		$this->status         = isset( $args[ 'status' ][ 0 ] ) && ! empty( $args[ 'status' ][ 0 ] ) ? $args[ 'status' ][ 0 ] : 'pending';
+		$this->source         = isset( $args[ 'source' ] ) ? sanitize_text_field( $args[ 'source' ] ) : '';
+		$this->date_of_birth  = isset( $args[ 'date_of_birth' ] ) ? sanitize_text_field( $args[ 'date_of_birth' ] ) : '';
+		$this->timezone       = isset( $args[ 'timezone' ] ) ? sanitize_text_field( $args[ 'timezone' ] ) : '';
+		$this->address_line_1 = isset( $args[ 'address_line_1' ] ) ? sanitize_text_field( $args[ 'address_line_1' ] ) : '';
+		$this->address_line_2 = isset( $args[ 'address_line_2' ] ) ? sanitize_text_field( $args[ 'address_line_2' ] ) : '';
+		$this->city           = isset( $args[ 'city' ] ) ? sanitize_text_field( $args[ 'city' ] ) : '';
+		$this->state          = isset( $args[ 'state' ] ) ? sanitize_text_field( $args[ 'state' ] ) : '';
+		$this->country        = isset( $args[ 'country' ] ) ? sanitize_text_field( $args[ 'country' ] ) : '';
+		$this->postal_code    = isset( $args[ 'postal_code' ] ) ? sanitize_text_field( $args[ 'postal_code' ] ) : '';
+		$this->company_name   = isset( $args[ 'company_name' ] ) ? sanitize_text_field( $args[ 'company_name' ] ) : '';
+		$this->contact_id     = isset( $args[ 'contact_id' ] ) ? sanitize_text_field( $args[ 'contact_id' ] ) : '';
+		$this->meta_fields    = isset( $args[ 'meta_fields' ] ) ? $args[ 'meta_fields' ] : array();
+		$this->created_by     = isset( $args[ 'created_by' ] ) ? sanitize_text_field( $args[ 'created_by' ] ) : '';
+		$this->wp_user_id     = isset( $args[ 'wp_user_id' ] ) ? sanitize_text_field( $args[ 'wp_user_id' ] ) : '';
 	}
 
 
@@ -370,9 +384,13 @@ class ContactData {
 	 */
 	public function get_contact_owner() {
 		if ( is_user_logged_in() ) {
-			return $this->contact_owner = get_current_user_id();
+			$this->contact_owner = get_current_user_id();
+
+			return $this->contact_owner;
 		}
-		return $this->contact_owner = 1;
+		$this->contact_owner = 1;
+
+		return $this->contact_owner;
 	}
 
 

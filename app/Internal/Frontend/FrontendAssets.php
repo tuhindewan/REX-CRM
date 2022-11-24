@@ -1,31 +1,31 @@
 <?php
-
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/Frontend
+ */
 
 namespace Mint\MRM\Internal\Admin;
 
+use Mint\Mrm\Internal\Traits\Singleton;
+
+/**
+ * [Manages plugin's frontend assets]
+ *
+ * @desc Manages plugin's frontend assets
+ * @package /app/Internal/Frontend
+ * @since 1.0.0
+ */
 class FrontendAssets {
 
+	use Singleton;
 
 	/**
-	 * Class instance.
-	 *
-	 * @var AdminAssets instance
-	 */
-	protected static $instance = null;
-
-	/**
-	 * Get class instance.
-	 */
-	public static function get_instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
-
-
-	/**
-	 * AdminAssets constructor.
+	 * Initializes class functionalities
 	 *
 	 * @since 1.0.0
 	 */
@@ -38,7 +38,8 @@ class FrontendAssets {
 	/**
 	 * Load plugin main js file
 	 *
-	 * @param $hook
+	 * @param string $hook Hook suffix of current admin page.
+	 *
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts( $hook ) {
@@ -55,28 +56,35 @@ class FrontendAssets {
 			array(
 				'ajaxurl'           => admin_url( 'admin-ajax.php' ),
 				'mrm_form_nonce'    => wp_create_nonce( 'wp_mrm_submit_form' ),
-				'mrm_preference_form_nonce'    => wp_create_nonce( 'wp_mrm_preference_form_nonce' ),
-				'form_cookies_time' => apply_filters( 'mrm/set_form_cookies_time', $this->set_mrm_dissmiss_time() ),
+				'form_cookies_time' => apply_filters( 'mrm_set_form_cookies_time', $this->set_mrm_dissmiss_time() ),
 			)
 		);
 	}
 
+	/**
+	 * Gets form dismissal time from wp_options table
+	 *
+	 * @return false|mixed|void
+	 * @since 1.0.0
+	 */
 	public function set_mrm_dissmiss_time() {
-		$time = get_option( '_mrm_form_dismissed', 7 );
-		return $time;
+		return get_option( '_mrm_form_dismissed', 7 );
 	}
 
 
 	/**
 	 * Load plugin main css file
 	 *
-	 * @param $hook
+	 * @param string $hook Hook suffix of current admin page.
+	 *
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles( $hook ) {
 		wp_enqueue_style(
 			MRM_PLUGIN_NAME . '-select2',
 			MRM_DIR_URL . 'assets/frontend/css/frontend.css',
+			array(),
+			MRM_VERSION
 		);
 	}
 
@@ -84,9 +92,10 @@ class FrontendAssets {
 	/**
 	 * Get assets URL
 	 *
-	 * @param $file
-	 * @param $ext
-	 * @param string $type
+	 * @param string $file File name.
+	 * @param string $ext File extension.
+	 * @param string $type File type.
+	 *
 	 * @return string
 	 * @since 1.0.0
 	 */
@@ -97,6 +106,7 @@ class FrontendAssets {
 			$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
 			$suffix       = self::should_use_minified_file( $script_debug ) ? '' : '.min';
 		}
+
 		return plugins_url( self::get_path( $ext, $type ) . $file . $suffix . '.' . $ext, MRM_FILE );
 	}
 
@@ -104,8 +114,9 @@ class FrontendAssets {
 	/**
 	 * Get the Asset path
 	 *
-	 * @param $ext
-	 * @param string $type
+	 * @param string $ext File extension.
+	 * @param string $type File type.
+	 *
 	 * @return mixed
 	 * @since 1.0.0
 	 */
@@ -113,6 +124,7 @@ class FrontendAssets {
 		if ( 'external' === $type ) {
 			return ( 'css' === $ext ) ? MRM_ADMIN_EXTERNAL_CSS_FOLDER : MRM_ADMIN_EXTERNAL_JS_FOLDER;
 		}
+
 		return ( 'css' === $ext ) ? MRM_ADMIN_DIST_CSS_FOLDER : MRM_ADMIN_DIST_JS_FOLDER;
 	}
 
@@ -120,7 +132,8 @@ class FrontendAssets {
 	/**
 	 * Determine if minified file is served
 	 *
-	 * @param $script_debug
+	 * @param bool $script_debug Constant variable SCRIPT_DEBUG.
+	 *
 	 * @return bool
 	 * @since 1.0.0
 	 */
@@ -132,7 +145,8 @@ class FrontendAssets {
 	/**
 	 * Check if the current page is CRM page or not
 	 *
-	 * @param $hook
+	 * @param string $hook Hook suffix of current admin page.
+	 *
 	 * @return bool
 	 * @since 1.0.0
 	 */

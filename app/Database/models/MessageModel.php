@@ -1,4 +1,14 @@
 <?php
+/**
+ * Manage message related databse operation.
+ *
+ * @package Mint\MRM\DataBase\Models
+ * @namespace Mint\MRM\DataBase\Models
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ */
 
 namespace Mint\MRM\DataBase\Models;
 
@@ -7,13 +17,15 @@ use MRM\Common\MRM_Common;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-17 15:27:55
- * @modify date 2022-08-17 15:27:55
- * @desc [Manage message related databse operation ]
+ * MessageModel class
+ *
+ * Manage message related databse operation.
+ *
+ * @package Mint\MRM\DataBase\Models
+ * @namespace Mint\MRM\DataBase\Models
+ *
+ * @version 1.0.0
  */
-
 class MessageModel {
 
 	use Singleton;
@@ -21,9 +33,8 @@ class MessageModel {
 	/**
 	 * SQL query to create a new message
 	 *
-	 * @param $message          MRM_Message object
-	 * @param $interaction_id   Interaction ID
-	 * @return void
+	 * @param mixed $message MRM_Message object.
+	 * @return bool
 	 * @since 1.0.0
 	 */
 	public static function insert( $message ) {
@@ -40,17 +51,17 @@ class MessageModel {
 				'sender_id'     => $message->get_sender_id(),
 				'created_at'    => current_time( 'mysql' ),
 			)
-		);
+		); // db call ok. ; no-cache ok.
 	}
 
 
 	/**
 	 * SQL query to get all emails relate to a contact or all users
 	 *
-	 * @param mixed $offset
-	 * @param mixed $limit
-	 * @param mixed $search
-	 * @param mixed $contact_id
+	 * @param mixed $offset offset.
+	 * @param mixed $limit limit.
+	 * @param mixed $search search.
+	 * @param mixed $contact_id contact id.
 	 * @return bool\array
 	 * @since 1.0.0
 	 */
@@ -60,8 +71,9 @@ class MessageModel {
 		$search_terms          = null;
 		$contact_emails_search = null;
 
-		// Search email by address, or subject
+		// Search email by address, or subject.
 		if ( ! empty( $search ) ) {
+			$search       = $wpdb->esc_like( $search );
 			$search_terms = "WHERE email_address LIKE '%" . $search . "%' OR email_subject LIKE '%" . $search . "%'";
 		}
 
@@ -73,41 +85,58 @@ class MessageModel {
 			$search_terms = "WHERE email_address LIKE '%" . $search . "%' OR email_subject LIKE '%" . $search . "%' AND contact_id = '%" . $contact_id . "%'";
 		}
 
-		// Prepare sql results for list view
+		// Prepare sql results for list view.
 		try {
-			$select_query  = "SELECT * FROM {$table_name} {$search_terms} ORDER BY id DESC LIMIT {$offset}, {$limit}";
-			$query_results = $wpdb->get_results( $select_query );
-			$results       = json_decode( json_encode( $query_results ), true );
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
+			$select_query = $wpdb->prepare( "SELECT * FROM {$table_name} %s ORDER BY id DESC LIMIT %d, %d", array( $search_terms, $offset, $limit ) );
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared 
+			$query_results = $wpdb->get_results( $select_query ); // db call ok. no-cache ok.
+			// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared 
+			$results = json_decode( wp_json_encode( $query_results ), true );
 
-			$count_query = "SELECT COUNT(*) as total FROM {$table_name} {$search_terms}";
-			$count_data  = $wpdb->get_results( $count_query );
-			$count_array = json_decode( json_encode( $count_data ), true );
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
+			$count_query = $wpdb->prepare( "SELECT COUNT(*) as total FROM {$table_name} %s", $search_terms );
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared 
+			$count_data = $wpdb->get_results( $count_query ); // db call ok. no-cache ok.
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared 
+			$count_array = json_decode( wp_json_encode( $count_data ), true );
 
-			$count      = (int) $count_array['0']['total'];
-			$totalPages = ceil( $count / $limit );
+			$count       = (int) $count_array['0']['total'];
+			$total_pages = ceil( $count / $limit );
 
 			return array(
 				'data'        => $results,
-				'total_pages' => $totalPages,
+				'total_pages' => $total_pages,
 			);
 		} catch ( \Exception $e ) {
 			return null;
 		}
 	}
 
+	/**
+	 * SQL query to get all emails relate to a contact
+	 *
+	 * @param mixed $contact_id contact id.
+	 * @return bool\array
+	 * @since 1.0.0
+	 */
 	public static function get_messages( $contact_id ) {
 		global $wpdb;
 		$message_table_name = $wpdb->prefix . MessageSchema::$table_name;
-		$sql                = $wpdb->prepare( "SELECT * FROM {$message_table_name} WHERE `contact_id` = %d", $contact_id );
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
+		$sql = $wpdb->prepare( "SELECT * FROM {$message_table_name} WHERE `contact_id` = %d", $contact_id );
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared 
 
 		try {
-			$messages = $wpdb->get_results( $sql, ARRAY_A );
+			$messages = $wpdb->get_results( $sql, ARRAY_A ); // db call ok. no-cache ok.
 			$index    = 0;
 
 			foreach ( $messages as $message ) {
 				if ( isset( $message['created_at'] ) ) {
 					$messages[ $index ]['created_time'] = $message['created_at'];
-					$messages[ $index ]['created_at']   = human_time_diff( strtotime( $message['created_at'] ), current_time( 'timestamp' ) );
+					$messages[ $index ]['created_at']   = human_time_diff( strtotime( $message['created_at'] ), time() );
 					$index++;
 				}
 			}
@@ -117,9 +146,18 @@ class MessageModel {
 		}
 	}
 
+	/**
+	 * SQL query to update emails
+	 *
+	 * @param int $message_id message id.
+	 * @param int $key key.
+	 * @param int $value value.
+	 * @return void
+	 * @since 1.0.0
+	 */
 	public static function update( $message_id, $key, $value ) {
 		global $wpdb;
 		$msg_table_name = $wpdb->prefix . MessageSchema::$table_name;
-		$wpdb->update( $msg_table_name, array( $key => $value ), array( 'id' => $message_id ) );
+		$wpdb->update( $msg_table_name, array( $key => $value ), array( 'id' => $message_id ) ); // db call ok. no-cache ok.
 	}
 }

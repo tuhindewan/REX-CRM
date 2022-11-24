@@ -1,14 +1,40 @@
 <?php
+/**
+ * Check if this is a new installation for MRM plugin,
+ * or upgrade the existing one or do nothing if versions are up to date
+ *
+ * @package Mint\MRM\DataBase\
+ * @namespace Mint\MRM\DataBase\
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ */
 
 namespace Mint\MRM\DataBase;
 
 use Mint\Mrm\Internal\Traits\Singleton;
-
+/**
+ * Upgrade class
+ *
+ * Check if this is a new installation for MRM plugin,
+ * or upgrade the existing one or do nothing if versions are up to date
+ *
+ * @package Mint\MRM\DataBase\Models
+ * @namespace Mint\MRM\DataBase\Models
+ *
+ * @version 1.0.0
+ */
 class Upgrade {
 
 	use Singleton;
 
-
+	/**
+	 * Version
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
 	private $version = null;
 
 
@@ -21,7 +47,7 @@ class Upgrade {
 	public function maybe_upgrade() {
 		if ( $this->requires_install() ) {
 
-			// Fresh install
+			// Fresh install.
 			$this->install();
 
 			if ( ! get_option( 'mrm_version' ) ) {
@@ -42,7 +68,7 @@ class Upgrade {
 		update_option( 'mrm_db_version', MRM_VERSION, false );
 		update_option( 'mrm_version', MRM_VERSION, false );
 
-		// Installing schema
+		// Installing schema.
 		$this->upgrade_schema();
 
 		/**
@@ -95,8 +121,8 @@ class Upgrade {
 	 */
 	private function requires_install() {
 		return true;
-		$versions = $this->get_versions();
-		return mmempty( 'current_version', $versions );
+		$versions = $this->get_versions(); //phpcs:ignore
+		return mmempty( 'current_version', $versions ); //phpcs:ignore
 	}
 
 

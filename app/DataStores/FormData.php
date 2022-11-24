@@ -1,15 +1,23 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/DataStores
+ */
 
 namespace Mint\MRM\DataStores;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-07-10 11:03:17
- * @modify date 2022-07-10 11:03:17
- * @desc [Manage representation of a single Form]
+ * [Manage form data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
  */
-
 class FormData {
 
 	/**
@@ -78,16 +86,22 @@ class FormData {
 	 */
 	private $meta_fields;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param array $args Custom field data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $args ) {
-		$this->title         = isset( $args['title'] ) ? $args['title'] : null;
-		$this->form_body     = isset( $args['form_body'] ) ? $args['form_body'] : null;
-		$this->form_position = isset( $args['form_position'] ) ? $args['form_position'] : null;
-		$this->status        = isset( $args['status'] ) ? $args['status'] : 'draft';
-		$this->template_id   = isset( $args['template_id'] ) ? $args['template_id'] : null;
-		$this->created_by    = isset( $args['created_by'] ) ? $args['created_by'] : null;
-		$this->group_ids     = isset( $args['group_ids'] ) ? $args['group_ids'] : array();
-		$this->meta_fields   = isset( $args['meta_fields'] ) ? $args['meta_fields'] : array();
+		$this->title         = isset( $args[ 'title' ] ) ? $args[ 'title' ] : null;
+		$this->form_body     = isset( $args[ 'form_body' ] ) ? $args[ 'form_body' ] : null;
+		$this->form_position = isset( $args[ 'form_position' ] ) ? $args[ 'form_position' ] : null;
+		$this->status        = isset( $args[ 'status' ] ) ? $args[ 'status' ] : 'draft';
+		$this->template_id   = isset( $args[ 'template_id' ] ) ? $args[ 'template_id' ] : null;
+		$this->created_by    = isset( $args[ 'created_by' ] ) ? $args[ 'created_by' ] : null;
+		$this->group_ids     = isset( $args[ 'group_ids' ] ) ? $args[ 'group_ids' ] : array();
+		$this->meta_fields   = isset( $args[ 'meta_fields' ] ) ? $args[ 'meta_fields' ] : array();
 	}
 
 

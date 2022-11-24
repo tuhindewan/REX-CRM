@@ -1,10 +1,29 @@
 <?php
-
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/FomrBuilder/blocks/
+ */
 
 use Mint\MRM\DataBase\Models\FormModel;
+/**
+ * [MRMForm_MRMSubscribeForm].
+ *
+ * @desc Manages Subscribe form  Block in mrm
+ * @package /app/Internal/Ajax
+ * @since 1.0.0
+ */
+class MRMFormMRMSubscribeForm extends GetMRMAbstractBlock {
 
-class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
-
+	/**
+	 * Default data.
+	 *
+	 * @var string
+	 */
 	protected $defaults = array();
 
 	/**
@@ -14,29 +33,39 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 	 */
 	protected $block_name = 'mrm-subscribe-form';
 
+	/**
+	 * Call  Construct function
+	 * Call ajax Hook for visiable form
+	 *
+	 * @param string $block_name Get block name .
+	 */
 	public function __construct( $block_name = '' ) {
 		parent::__construct( $block_name );
 		add_action( 'wp_ajax_show_form_markup', array( $this, 'show_form_markup' ) );
 	}
-
+	/**
+	 * Show Form Markup for mrm contact
+	 *
+	 * @return void
+	 */
 	public function show_form_markup() {
-		if ( isset( $_POST['post_id'] ) && ! empty( $_POST['post_id'] ) ) {
-			$form_id = $_POST['post_id'];
+		if ( isset( $_POST['post_id'] ) && ! empty( $_POST['post_id'] ) ) { //phpcs:ignore
+			$form_id = wp_unslash( $_POST['post_id'] ); //phpcs:ignore
 
 			$get_form_data_by_id = FormModel::get( $form_id );
 			$form_status         = isset( $get_form_data_by_id['status'] ) ? $get_form_data_by_id['status'] : 0;
 			if ( ! $form_status ) {
-				echo __( 'This form is not active. Please check' );
+				echo esc_html( 'This form is not active. Please check' );
 				die();
 			}
 			ob_start();
 			$output  = '';
 			$output .= $get_form_data_by_id['form_body'];
 			$output .= ob_get_clean();
-			echo $output;
+			echo $output; //phpcs:ignore
 			die();
 		}
-		echo __( 'Please Select a Form ', 'mrm' );
+		echo esc_html( 'Please Select a Form ' );
 		die();
 	}
 	/**
@@ -56,10 +85,10 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 
 
 	/**
-	 * get generated dynamic styles from $attributes
+	 * Get generated dynamic styles from $attributes
 	 *
-	 * @param $attributes
-	 * @param $post
+	 * @param string $attributes Get atttributes for css.
+	 * @param object $post  Get post data.
 	 * @return array|string
 	 */
 	protected function get_generated_dynamic_styles( $attributes, $post ) {
@@ -95,11 +124,12 @@ class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
 	/**
 	 * Extra data passed through from server to client for block.
 	 *
-	 * @param array $attributes  Any attributes that currently are available from the block.
+	 * @param array $attributes  get Attributes .
+	 * Any attributes that currently are available from the block.
 	 *                           Note, this will be empty in the editor context when the block is
 	 *                           not in the post content on editor load.
 	 */
-	protected function enqueue_data( array $attributes = array() ) {
+	protected function enqueue_data( $attributes = array() ) { //phpcs:ignore
 		parent::enqueue_data( $attributes );
 	}
 

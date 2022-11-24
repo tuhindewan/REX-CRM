@@ -1,15 +1,23 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/DataStores
+ */
 
 namespace Mint\MRM\DataStores;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-17 2:03:17
- * @modify date 2022-08-17 2:03:17
- * @desc [Handle representation of a single workflow]
+ * [Manage tag data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
  */
-
 class WordkflowData {
 
 	/**
@@ -19,7 +27,6 @@ class WordkflowData {
 	 * @since 1.0.0
 	 */
 	private $title;
-
 
 
 	/**
@@ -55,13 +62,19 @@ class WordkflowData {
 	 */
 	private $last_step_id;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param array $args Custom field data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $args ) {
-		$this->title         = $args['title'];
-		$this->workflow_data = $args['workflow_data'];
-		$this->global_state  = $args['global_state'];
-		$this->status        = $args['status'];
-		$this->last_step_id  = $args['last_step_id'];
+		$this->title         = $args[ 'title' ];
+		$this->workflow_data = $args[ 'workflow_data' ];
+		$this->global_state  = $args[ 'global_state' ];
+		$this->status        = $args[ 'status' ];
+		$this->last_step_id  = $args[ 'last_step_id' ];
 	}
 
 	/**
@@ -96,7 +109,6 @@ class WordkflowData {
 	}
 
 
-
 	/**
 	 * Return note status
 	 *
@@ -116,6 +128,4 @@ class WordkflowData {
 	public function get_last_step_id() {
 		return $this->last_step_id;
 	}
-
-
 }

@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/Cron
+ */
 
 namespace Mint\MRM\Internal\Cron;
 
@@ -10,54 +19,69 @@ use Mint\MRM\Admin\API\Controllers\CampaignController;
 use Mint\MRM\DataBase\Tables\CampaignScheduledEmailsSchema;
 use Mint\MRM\Utilites\Helper\ContactData;
 
+/**
+ * [Manage plugin's Cron functionalities]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Internal/Cron
+ * @since 1.0.0
+ */
 class CampaignsBackgroundProcess {
 
 	use Singleton;
 
 	/**
-	 * @desc A private variable to save scheduling emails process [background]
+	 * A private variable to save scheduling emails process [background]
 	 * initialization time
+	 *
 	 * @since 1.0.0
 	 * @var float $process_creation_time
 	 */
 
-	private float $email_schedule_creation_time;
+	private $email_schedule_creation_time;
+
 	/**
-	 * @desc A private variable to save sending emails process [background]
+	 * A private variable to save sending emails process [background]
 	 * initialization time
+	 *
 	 * @since 1.0.0
 	 * @var float $email_sending_process_creation_time
 	 */
-	private float $email_sending_process_creation_time;
+	private $email_sending_process_creation_time;
 
 	/**
-	 * @desc Initialize cron functionalities
+	 * Initialize cron functionalities
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
 	public function init() {
-		add_filter( 'cron_schedules', array( $this, 'add_five_mins_cron_hook' ) );
+		add_filter( 'cron_schedules', array( $this, 'add_five_mins_cron_hook' ) ); //phpcs:ignore
 		add_action( 'admin_init', array( $this, 'register_cron_schedules' ) );
 		add_action( 'mrm_schedule_emails', array( $this, 'process_scheduled_campaign_emails' ) );
 		add_action( 'mrm_send_recipient_emails', array( $this, 'send_recipient_emails' ) );
 	}
 
 	/**
-	 * @desc Add five minutes cron in core schedules
-	 * @param $schedules
-	 * @return mixed
+	 * Add five minutes cron in core schedules
+	 *
+	 * @param array $schedules Array of cron schedules.
+	 *
+	 * @return array
 	 * @since 1.0.0
 	 */
-	public function add_five_mins_cron_hook( $schedules ) {
-		 $schedules['every_five_minutes'] = array(
-			 'interval' => 300,
-			 'display'  => __( 'Every 5 Minutes' ),
-		 );
-		 return $schedules;
+	public function add_five_mins_cron_hook( array $schedules ) {
+		$schedules[ 'every_five_minutes' ] = array(
+			'interval' => 300,
+			'display'  => __( 'Every 5 Minutes', 'mrm' ),
+		);
+
+		return $schedules;
 	}
 
 	/**
-	 * @desc Register email scheduler on every five minutes
+	 * Register email scheduler on every five minutes
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -72,8 +96,9 @@ class CampaignsBackgroundProcess {
 
 
 	/**
-	 * @desc Configure campaign emails and insert
+	 * Configure campaign emails and insert
 	 * the recipient emails to mrm_campaign_scheduled_emails table
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -92,45 +117,43 @@ class CampaignsBackgroundProcess {
 				$campaign_emails = CampaignModel::get_campaign_email_for_background( $campaign_id );
 				if ( is_array( $campaign_emails ) && ! empty( $campaign_emails ) ) {
 					foreach ( $campaign_emails as $campaign_email ) {
-						$campaign_email_id = isset( $campaign_email['id'] ) ? $campaign_email['id'] : '';
+						$campaign_email_id = isset( $campaign_email[ 'id' ] ) ? $campaign_email[ 'id' ] : '';
 
 						$offset            = get_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, 0 );
 						$per_batch         = 10;
 						$recipients_emails = CampaignController::get_reciepents_email( $campaign_id, $offset, $per_batch );
-						$delay_count       = isset( $campaign_email['delay_count'] ) ? $campaign_email['delay_count'] : 0;
-						$delay_val         = isset( $campaign_email['delay_value'] ) ? $campaign_email['delay_value'] : '';
+						$delay_count       = isset( $campaign_email[ 'delay_count' ] ) ? $campaign_email[ 'delay_count' ] : 0;
+						$delay_val         = isset( $campaign_email[ 'delay_value' ] ) ? $campaign_email[ 'delay_value' ] : '';
 						$delay_val         = str_replace( 's', '', $delay_val );
 						if ( is_array( $recipients_emails ) && ! empty( $recipients_emails ) ) {
 							foreach ( $recipients_emails as $email ) {
-								if ( isset( $email['id'], $email['email'] ) && $email['id'] && $email['email'] ) {
+								if ( isset( $email[ 'id' ], $email[ 'email' ] ) && $email[ 'id' ] && $email[ 'email' ] ) {
 									$mysql_format = 'Y-m-d H:i:s';
-									$scheduled_at = date( $mysql_format, strtotime( '+' . $delay_count . ' ' . $delay_val ) );
-									$updated_at   = date( $mysql_format );
+									$scheduled_at = date( $mysql_format, strtotime( '+' . $delay_count . ' ' . $delay_val ) ); //phpcs:ignore
+									$updated_at   = date( $mysql_format ); //phpcs:ignore
 
-									$wpdb->insert(
+									$wpdb->insert( //phpcs:ignore
 										$campaign_scheduled_emails_table,
 										array(
 											'campaign_id'  => $campaign_id,
 											'email_id'     => $campaign_email_id,
-											'contact_id'   => $email['id'],
-											'email'        => $email['email'],
+											'contact_id'   => $email[ 'id' ],
+											'email'        => $email[ 'email' ],
 											'status'       => 'scheduled',
 											'scheduled_at' => $scheduled_at,
-											// 'updated_at' => $updated_at
 										)
 									);
-									update_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, ++$offset );
+									update_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id, ++ $offset );
 
-									$last_recipient_id = $email['id'];
+									$last_recipient_id = $email[ 'id' ];
 								}
 								if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
 									break;
 								}
 							}
 							CampaignModel::update_campaign_email_meta( $campaign_email_id, '_last_recipient_id', $last_recipient_id );
-						} else {
-							// delete_option( 'mrm_campaign_email_recipients_scheduling_offset_' . $campaign_id . '_' . $campaign_email_id );
 						}
+
 						if ( $this->time_exceeded( $schedule_email_status ) || $this->memory_exceeded() ) {
 							break;
 						}
@@ -148,7 +171,8 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Send emails and handle time/memory limits
+	 * Send emails and handle time/memory limits
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -163,11 +187,11 @@ class CampaignsBackgroundProcess {
 
 			if ( is_array( $recipient_emails ) && ! empty( $recipient_emails ) ) {
 				foreach ( $recipient_emails as $recipient ) {
-					$recipient_email    = isset( $recipient['email'] ) ? sanitize_email( $recipient['email'] ) : '';
-					$email_scheduled_id = isset( $recipient['id'] ) ? (int) $recipient['id'] : '';
-					$scheduled_email_id = isset( $recipient['email_id'] ) ? (int) $recipient['email_id'] : '';
-					$campaign_id        = isset( $recipient['campaign_id'] ) ? (int) $recipient['campaign_id'] : '';
-					$contact_id         = isset( $recipient['contact_id'] ) ? (int) $recipient['contact_id'] : '';
+					$recipient_email    = isset( $recipient[ 'email' ] ) ? sanitize_email( $recipient[ 'email' ] ) : '';
+					$email_scheduled_id = isset( $recipient[ 'id' ] ) ? (int) $recipient[ 'id' ] : '';
+					$scheduled_email_id = isset( $recipient[ 'email_id' ] ) ? (int) $recipient[ 'email_id' ] : '';
+					$campaign_id        = isset( $recipient[ 'campaign_id' ] ) ? (int) $recipient[ 'campaign_id' ] : '';
+					$contact_id         = isset( $recipient[ 'contact_id' ] ) ? (int) $recipient[ 'contact_id' ] : '';
 
 					$headers = array(
 						'MIME-Version: 1.0',
@@ -176,7 +200,7 @@ class CampaignsBackgroundProcess {
 
 					$email_builder = CampaignEmailBuilderModel::get( $scheduled_email_id );
 					$email         = CampaignModel::get_campaign_email_by_id( $campaign_id, $scheduled_email_id );
-					$email_body    = isset( $email_builder['email_body'] ) ? $email_builder['email_body'] : '';
+					$email_body    = isset( $email_builder[ 'email_body' ] ) ? $email_builder[ 'email_body' ] : '';
 					$sender_email  = isset( $email->sender_email ) ? $email->sender_email : '';
 					$sender_name   = isset( $email->sender_name ) ? $email->sender_name : '';
 					$email_subject = isset( $email->email_subject ) ? self::update_dynamic_placeholders( $email->email_subject, $contact_id ) : '';
@@ -194,7 +218,7 @@ class CampaignsBackgroundProcess {
 						self::update_scheduled_emails_status( $email_scheduled_id, 'failed' );
 					}
 					$meta_value = CampaignModel::get_campaign_email_meta( $scheduled_email_id, '_last_recipient_id' );
-					if ( $contact_id == $meta_value ) {
+					if ( (int) $contact_id === (int) $meta_value ) {
 						CampaignModel::update_campaign_email_status( $campaign_id, $scheduled_email_id, 'sent' );
 					}
 					if ( $this->time_exceeded( $sending_emails_status ) || $this->memory_exceeded() ) {
@@ -208,16 +232,18 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Update email status in mrm_campaign_scheduled_emails table
-	 * @param int    $email_scheduled_id
-	 * @param string $status
+	 * Update email status in mrm_campaign_scheduled_emails table
+	 *
+	 * @param int    $email_scheduled_id Email id that was scheduled in mrm_campaign_scheduled_emails table.
+	 * @param string $status Updated status.
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
 	private static function update_scheduled_emails_status( int $email_scheduled_id, string $status ) {
 		global $wpdb;
 		$campaign_email_scheduled_table = $wpdb->prefix . CampaignScheduledEmailsSchema::$campaign_scheduled_emails_table;
-		$wpdb->update(
+		$wpdb->update( //phpcs:ignore
 			$campaign_email_scheduled_table,
 			array(
 				'status'     => $status,
@@ -228,9 +254,11 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Get recipient emails from mrm_campaign_scheduled_emails table batch wise
-	 * @param int $offset
-	 * @param int $per_batch
+	 * Get recipient emails from mrm_campaign_scheduled_emails table batch wise
+	 *
+	 * @param int $offset MySQL offset variable to skip data while fetching.
+	 * @param int $per_batch Number of data needed to fetch in data fetch.
+	 *
 	 * @return array|object|\stdClass[]|null
 	 * @since 1.0.0
 	 */
@@ -241,13 +269,17 @@ class CampaignsBackgroundProcess {
 		$sql_query                     .= 'WHERE `status` = %s ';
 		$sql_query                     .= 'AND `scheduled_at` <= %s ';
 		$sql_query                     .= 'LIMIT %d, %d';
-		$sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql', true ), $offset, $per_batch );
-		return $wpdb->get_results( $sql_query, ARRAY_A );
+		$sql_query                      = $wpdb->prepare( $sql_query, 'scheduled', current_time( 'mysql', true ), $offset, $per_batch ); //phpcs:ignore
+
+		return $wpdb->get_results( $sql_query, ARRAY_A ); //phpcs:ignore
 	}
 
 	/**
-	 * @desc Check process status if
+	 * Check process status if
 	 * its already running (locked) or not
+	 *
+	 * @param string $process_name Name of the background process.
+	 *
 	 * @return bool
 	 * @since 1.0.0
 	 */
@@ -256,17 +288,23 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Lock the process before starting
+	 * Lock the process before starting
+	 *
+	 * @param string $process_name Name of the background process.
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
 	private function lock_process( string $process_name ) {
-		 update_option( $process_name, 'locked' );
+		update_option( $process_name, 'locked' );
 	}
 
 	/**
-	 * @desc Unlock the process after
+	 * Unlock the process after
 	 * finishing all tasks
+	 *
+	 * @param string $process_name Name of the background process.
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -275,7 +313,10 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Check if process time limits already exceeded
+	 * Check if process time limits already exceeded
+	 *
+	 * @param string $process_name Name of the background process.
+	 *
 	 * @return mixed|null
 	 * @since 1.0.0
 	 */
@@ -289,8 +330,11 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Calculate and get current process
+	 * Calculate and get current process
 	 * execution time by this time
+	 *
+	 * @param string $process_name Name of the background process.
+	 *
 	 * @return float|int|mixed
 	 * @since 1.0.0
 	 */
@@ -307,8 +351,8 @@ class CampaignsBackgroundProcess {
 		if ( function_exists( 'getrusage' ) && apply_filters( 'ebp_cpu_execution_time', defined( 'PANTHEON_ENVIRONMENT' ) ) ) {
 			$resource_usages = getrusage();
 
-			if ( isset( $resource_usages['ru_stime.tv_usec'], $resource_usages['ru_stime.tv_usec'] ) ) {
-				$execution_time = $resource_usages['ru_stime.tv_sec'] + ( $resource_usages['ru_stime.tv_usec'] / 1000000 );
+			if ( isset( $resource_usages[ 'ru_stime.tv_usec' ], $resource_usages[ 'ru_stime.tv_usec' ] ) ) {
+				$execution_time = $resource_usages[ 'ru_stime.tv_sec' ] + ( $resource_usages[ 'ru_stime.tv_usec' ] / 1000000 );
 			}
 		}
 
@@ -316,8 +360,9 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Check if current process exceeded
+	 * Check if current process exceeded
 	 * available memory limits
+	 *
 	 * @return mixed|null
 	 * @since 1.0.0
 	 */
@@ -331,7 +376,8 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Get php memory limits
+	 * Get php memory limits
+	 *
 	 * @return int|mixed
 	 * @since 1.0.0
 	 */
@@ -339,23 +385,26 @@ class CampaignsBackgroundProcess {
 		if ( function_exists( 'ini_get' ) ) {
 			$memory_limit = ini_get( 'memory_limit' );
 		} else {
-			$memory_limit = '128M'; // Sensible default, and minimum required by WooCommerce
+			$memory_limit = '128M'; // Sensible default, and minimum required by WooCommerce.
 		}
 
-		if ( ! $memory_limit || -1 === $memory_limit || '-1' === $memory_limit ) {
+		if ( ! $memory_limit || - 1 === $memory_limit || '-1' === $memory_limit ) {
 			// Unlimited, set to 32GB.
 			$memory_limit = '32G';
 		}
+
 		return $this->convert_hr_to_bytes( $memory_limit );
 	}
 
 	/**
-	 * @desc Converts a shorthand byte value to an integer byte value
-	 * @param $value
+	 * Converts a shorthand byte value to an integer byte value
+	 *
+	 * @param string $value Shorthand byte value.
+	 *
 	 * @return int|mixed
 	 * @since 1.0.0
 	 */
-	private function convert_hr_to_bytes( $value ) {
+	private function convert_hr_to_bytes( string $value ) {
 		if ( function_exists( 'wp_convert_hr_to_bytes' ) ) {
 			return wp_convert_hr_to_bytes( $value );
 		}
@@ -376,11 +425,12 @@ class CampaignsBackgroundProcess {
 	}
 
 	/**
-	 * @desc Replace custom placeholders from email subject
-	 * @param string $email_subject
-	 * @param int    $contact_id
+	 * Replace custom placeholders from email subject
+	 *
+	 * @param string $data String value of email subject/preview/body text.
+	 * @param int    $contact_id MRM contact id.
+	 *
 	 * @return array|string|string[]
-	 * @since 1.0.0
 	 */
 	private function update_dynamic_placeholders( string $data, int $contact_id ) {
 		$data = str_replace( '{{first_name}}', ContactData::get_info( $contact_id, 'first_name' ), $data );
@@ -391,6 +441,7 @@ class CampaignsBackgroundProcess {
 		$data = str_replace( '{{country}}', ContactData::get_meta( $contact_id, 'country' ), $data );
 		$data = str_replace( '{{company}}', ContactData::get_meta( $contact_id, 'company' ), $data );
 		$data = str_replace( '{{designation}}', ContactData::get_meta( $contact_id, 'designation' ), $data );
+
 		return $data;
 	}
 }

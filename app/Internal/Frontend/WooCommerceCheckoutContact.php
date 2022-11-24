@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/Frontend
+ */
 
 namespace Mint\MRM\Internal\Frontend;
 
@@ -9,20 +18,34 @@ use Mint\MRM\DataBase\Models\ContactModel;
 use Mint\MRM\DataStores\ContactData;
 use Mint\Mrm\Internal\Traits\Singleton;
 
+/**
+ * [Manages assigning WC user in mrm contact from WC checkout]
+ *
+ * @desc Manages assigning WC user in mrm contact from WC checkout
+ * @package /app/Internal/Frontend
+ * @since 1.0.0
+ */
 class WooCommerceCheckoutContact {
 
 	use Singleton;
 
+	/**
+	 * WooCommerce settings from wp_options table
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
 	protected $setting_options;
 
 	/**
-	 * @desc Initialize actions
+	 * Initialize actions
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
 	public function init() {
 		$this->setting_options = get_option( '_mrm_woocommerce_settings', array() );
-		$checkbox_enabled      = isset( $this->setting_options['enable'] ) ? $this->setting_options['enable'] : false;
+		$checkbox_enabled      = isset( $this->setting_options[ 'enable' ] ) ? $this->setting_options[ 'enable' ] : false;
 		if ( $checkbox_enabled ) {
 			add_action( 'woocommerce_checkout_after_terms_and_conditions', array( $this, 'add_consent_checkbox' ) );
 			add_action( 'woocommerce_checkout_process', array( $this, 'register_user_as_contact' ) );
@@ -30,31 +53,32 @@ class WooCommerceCheckoutContact {
 	}
 
 	/**
-	 * @desc Add consent checkbox to add contact after checkout [before checkout button]
+	 * Add consent checkbox to add contact after checkout [before checkout button]
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
 	public function add_consent_checkbox() {
-		$label      = isset( $this->setting_options['checkbox_label'] ) ? $this->setting_options['checkbox_label'] : 'Register me as a contact after checkout.';
+		$label      = isset( $this->setting_options[ 'checkbox_label' ] ) ? $this->setting_options[ 'checkbox_label' ] : 'Register me as a contact after checkout.';
 		$user_email = is_user_logged_in() ? wp_get_current_user()->user_email : false;
 
 		if ( $user_email && ! ContactModel::is_contact_exist( $user_email ) || ! is_user_logged_in() ) :
 			?>
-		<div class="mintmrm-add-contact-consent-content">
-			<input type="checkbox" id="mintmrm_add_contact_consent_checkbox"
-				   name="mintmrm_add_contact_consent_checkbox">
-			<label for="mintmrm_add_contact_consent_checkbox"> 
-			<?php
-				_e( $label, 'mrm' );
-			?>
-				 </label>
-		</div>
+			<div class="mintmrm-add-contact-consent-content">
+				<input type="checkbox" id="mintmrm_add_contact_consent_checkbox" name="mintmrm_add_contact_consent_checkbox">
+				<label for="mintmrm_add_contact_consent_checkbox">
+					<?php
+					esc_html_e( $label, 'mrm' ); //phpcs:ignore
+					?>
+				</label>
+			</div>
 			<?php
 		endif;
 	}
 
 	/**
-	 * @desc Register current user as Mint MRM contact
+	 * Register current user as Mint MRM contact
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -70,11 +94,11 @@ class WooCommerceCheckoutContact {
 				$user_first_name     = WC()->checkout()->get_value( 'billing_first_name' );
 				$user_last_name      = WC()->checkout()->get_value( 'billing_last_name' );
 				$double_optin        = get_option( '_mrm_optin_settings', array() );
-				$double_optin        = isset( $double_optin['enable'] ) && $double_optin['enable'];
+				$double_optin        = isset( $double_optin[ 'enable' ] ) && $double_optin[ 'enable' ];
 				$subscription_status = $double_optin ? 'pending' : 'subscribed';
 
-				$setting_tags  = isset( $this->setting_options['tags'] ) ? $this->setting_options['tags'] : array();
-				$setting_lists = isset( $this->setting_options['lists'] ) ? $this->setting_options['lists'] : array();
+				$setting_tags  = isset( $this->setting_options[ 'tags' ] ) ? $this->setting_options[ 'tags' ] : array();
+				$setting_lists = isset( $this->setting_options[ 'lists' ] ) ? $this->setting_options[ 'lists' ] : array();
 
 				$user_data = array(
 					'email'      => $user_email,
@@ -96,7 +120,7 @@ class WooCommerceCheckoutContact {
 					ListController::set_lists_to_contact( $setting_lists, $contact_id );
 				}
 
-				$meta_data['meta_fields'] = array(
+				$meta_data[ 'meta_fields' ] = array(
 					'_mrm_wc_customer_id' => $wc_user_id,
 				);
 				ContactModel::update_meta_fields( $contact_id, $meta_data );
@@ -110,9 +134,10 @@ class WooCommerceCheckoutContact {
 	}
 
 	/**
-	 * @desc Add subscription consent message in order meta
-	 * @param $order
-	 * @param $data
+	 * Add subscription consent message in order meta
+	 *
+	 * @param \WC_Order $order WooCommerce order object.
+	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
@@ -120,7 +145,7 @@ class WooCommerceCheckoutContact {
 		$consent_accepted = WC()->checkout()->get_value( 'mintmrm_add_contact_consent_checkbox' );
 
 		if ( $consent_accepted ) {
-			$order->update_meta_data( '_mrm_newsletter_subscription', isset( $this->setting_options['checkbox_label'] ) ? $this->setting_options['checkbox_label'] : '' );
+			$order->update_meta_data( '_mrm_newsletter_subscription', isset( $this->setting_options[ 'checkbox_label' ] ) ? $this->setting_options[ 'checkbox_label' ] : '' );
 		}
 	}
 }

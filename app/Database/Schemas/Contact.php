@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Datanase/Schemas
+ */
 
 namespace Mint\MRM\DataBase\Tables;
 
@@ -6,15 +15,13 @@ require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
-
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-10 10:20:03
- * @modify date 2022-08-10 10:20:03
- * @desc [Create wp_mrm_contacts table into database]
+ * [Manage contact schema]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Datanase/Schemas
+ * @since 1.0.0
  */
-
 class ContactSchema implements Schema {
 
 	/**
@@ -35,6 +42,7 @@ class ContactSchema implements Schema {
 	public function get_sql() {
 		global $wpdb;
 		$table = $wpdb->prefix . self::$table_name;
+
 		return "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `wp_user_id` BIGINT UNSIGNED NULL,

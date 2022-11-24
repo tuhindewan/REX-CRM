@@ -1,7 +1,22 @@
 <?php
+/**
+ * REST API Product Controller
+ *
+ * Handles requests to the products endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
+/**
+ * This is the main class that controls the products feature.
+ *
+ * @package Mint\MRM\Admin\API\Controllers
+ */
 class ProductController extends \WP_REST_Controller {
 
 	/**
@@ -35,7 +50,7 @@ class ProductController extends \WP_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( ! current_user_can( 'read' ) ) {
-			return new \WP_Error( 'rest_forbidden', esc_html__( 'You cannot view the category resource.' ), array( 'status' => $this->authorization_status_code() ) );
+			return new \WP_Error( 'rest_forbidden', esc_html__( 'You cannot view the category resource.', 'mrm' ), array( 'status' => $this->authorization_status_code() ) );
 		}
 		return true;
 	}
@@ -52,7 +67,6 @@ class ProductController extends \WP_REST_Controller {
 				array(
 					'methods'  => \WP_REST_Server::READABLE,
 					'callback' => array( $this, 'get_products' ),
-			// 'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
 				'schema' => null,
 
@@ -62,6 +76,13 @@ class ProductController extends \WP_REST_Controller {
 
 
 
+	/**
+	 * Get all products
+	 *
+	 * @param mixed $request Request object used to generate the response.
+	 * @return WP_REST_Response
+	 * @since 1.0.0
+	 */
 	public function get_products( $request ) {
 		$registered = $this->get_collection_params();
 		$args       = array();
@@ -146,8 +167,8 @@ class ProductController extends \WP_REST_Controller {
 	/**
 	 * Prepares the 'tax_query' for a collection of posts.
 	 *
-	 * @param array            $args
-	 * @param \WP_REST_Request $request
+	 * @param array            $args List of arguments.
+	 * @param \WP_REST_Request $request Request object used to generate the response.
 	 * @return array
 	 *
 	 * @since 1.0.0
@@ -156,7 +177,9 @@ class ProductController extends \WP_REST_Controller {
 		$relation = $request['tax_relation'];
 
 		if ( $relation ) {
+			// phpcs:disable
 			$args['tax_query'] = array( 'relation' => $relation );
+			// phpcs:enable
 		}
 
 		$taxonomies = wp_list_filter(

@@ -1,16 +1,23 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/DataStores
+ */
 
 namespace Mint\MRM\DataStores;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-10 15:39:54
- * @modify date 2022-08-10 15:39:54
- * @desc [Responsible for maintaining a segment object]
+ * [Manage segment data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
  */
-
-
 class SegmentData {
 
 	/**
@@ -38,11 +45,17 @@ class SegmentData {
 	 */
 	private $slug;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param array $args Custom field data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $args ) {
-		$this->title = isset( $args['title'] ) ? $args['title'] : null;
-		$this->slug  = isset( $args['slug'] ) ? $args['slug'] : null;
-		$this->data  = isset( $args['data'] ) ? $args['data'] : null;
+		$this->title = isset( $args[ 'title' ] ) ? $args[ 'title' ] : null;
+		$this->slug  = isset( $args[ 'slug' ] ) ? $args[ 'slug' ] : null;
+		$this->data  = isset( $args[ 'data' ] ) ? $args[ 'data' ] : null;
 	}
 
 
