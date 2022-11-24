@@ -75,7 +75,7 @@ workflows:
   version: 2
   phpcs-and-unit-test:
     jobs:
-      - phpcs:
+      - phpcs
       - phpunit:
           requires:
             - phpcs
