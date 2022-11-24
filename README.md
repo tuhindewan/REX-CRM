@@ -1,5 +1,7 @@
 # MRM
 
+[![buddy pipeline](https://app.buddy.works/coderexco/mrm/pipelines/pipeline/425158/badge.svg?token=cfd232326529e2521b6007efbc6b046077d450febcbd49f563e05879a6104e0a "buddy pipeline")](https://app.buddy.works/coderexco/mrm/pipelines/pipeline/425158)
+
 Advanced WordPress CRM to easily collect leads, run email campaigns, set up automation, and many more.
 
 
