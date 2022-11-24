@@ -85,7 +85,7 @@ class CustomFieldController extends BaseController {
 		}
 
 		$placeholder = isset( $params['placeholder'] ) ? sanitize_text_field( $params['placeholder'] ) : '';
-		$label = isset( $params['label'] ) ? sanitize_text_field( $params['label'] ) : '';
+		$label       = isset( $params['label'] ) ? sanitize_text_field( $params['label'] ) : '';
 
 		$meta = array();
 		if ( ! empty( $options ) ) {
