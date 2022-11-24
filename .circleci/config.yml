@@ -46,6 +46,7 @@ jobs:
   phpcs:
     executor: php_mysql_executor
     steps:
+      - init_env
       - run_phpcs
   phpunit:
     executor: php_mysql_executor
@@ -60,3 +61,6 @@ workflows:
   phpcs-and-unit-test:
     jobs:
       - phpcs
+      - phpunit:
+          requires:
+            - phpcs
