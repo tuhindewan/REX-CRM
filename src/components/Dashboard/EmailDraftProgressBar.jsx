@@ -11,13 +11,16 @@ export default function EmailDraftProgressBar({strokeWidth, sqSize, percentage }
         <>
             <div className="email-draft-progressbar">
                 <svg width={sqSize} height={sqSize} viewBox={viewBox} >
+                
                     <circle
                         className="circle-background"
                         cx={sqSize / 2}
                         cy={sqSize / 2}
                         r={radius}
                         strokeWidth={`${strokeWidth}px`} 
-                    />
+                    >
+                        <title>I'm a Tooltip</title>
+                    </circle>
 
                     <circle
                     className="circle-progress"
@@ -30,11 +33,14 @@ export default function EmailDraftProgressBar({strokeWidth, sqSize, percentage }
                     style={{
                         strokeDasharray: dashArray,
                         strokeDashoffset: dashOffset
-                    }} />
+                    }} >
+                        <title>I'm a Tooltip</title>
+                    </circle>
                     
                     {/* <text className="circle-text" x="50%" y="50%" dy=".3em" textAnchor="middle">
                         {`${percentage}%`}
                     </text> */}
+                    
                 </svg>
             </div>
         </>
