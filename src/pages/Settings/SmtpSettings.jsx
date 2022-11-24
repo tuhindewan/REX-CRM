@@ -109,7 +109,6 @@ export default function SmtpSettings() {
         let settings;
 
         if ('smtp' === sendingProtocol) {
-
             if ( '' === host ) {
                 setLoader(true);
                 setNotificationType("warning");
@@ -128,7 +127,7 @@ export default function SmtpSettings() {
                 setLoader(false);
                 return;
             }
-            else if ( '' === login ) {
+            else if ( '' === login && 'yes' === smtpAuthentication ) {
                 setLoader(true);
                 setNotificationType("warning");
                 setShowNotification("block");
@@ -137,7 +136,7 @@ export default function SmtpSettings() {
                 setLoader(false);
                 return;
             }
-            else if ( '' === password ) {
+            else if ( '' === password && 'yes' === smtpAuthentication ) {
                 setLoader(true);
                 setNotificationType("warning");
                 setShowNotification("block");
@@ -236,6 +235,15 @@ export default function SmtpSettings() {
         };
         getSMTPData()
     }, []);
+
+    const setSMTPSettings = (settings) => {
+        setHost(settings.host);
+        setPort(settings.port);
+        setSecured(settings.secure);
+        setLogin(settings.login);
+        setPassword(settings.password);
+        setSMTPAuthentication(settings.authentication);
+    }
 
     const setSendgridSettings = (settings) => {
         setSendgridAPI(settings.api_key);
