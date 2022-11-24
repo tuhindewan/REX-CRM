@@ -102,7 +102,7 @@ class AjaxAction {
 			do_action( 'mrm/before_form_submit', $contact );
 			$contact_id = ContactModel::insert( $contact );
 			if ( $contact_id ) {
-				$cookie_time = apply_filters( 'mrm/set_form_cookies_time', get_option( '_mrm_form_dismissed', 7 ) );
+				$cookie_time = apply_filters( 'mrm_set_form_cookies_time', get_option( '_mrm_form_dismissed', 7 ) );
 				$today       = strtotime( 'today UTC' );
 				$cookie_time = strtotime( '+' . $cookie_time . 'day', $today );
 

@@ -3,7 +3,7 @@
 	<description>Generally-applicable sniffs for WordPress plugins.</description>
 
 	<!-- What to scan -->
-	<file>./app/Database/Schemas/</file>
+	<file>./app/Internal/Frontend/</file>
 	<!--<file>.</file>-->
 
 	<!-- Exclude the Composer Vendor directory. -->

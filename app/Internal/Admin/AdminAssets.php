@@ -16,9 +16,9 @@ use Mint\MRM\Internal\Constants;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
- * [Manage plugin's assets]
+ * [Manage plugin's admin assets]
  *
- * @desc Manage plugin's assets
+ * @desc Manage plugin's admin assets
  * @package /app/Internal/Admin
  * @since 1.0.0
  */
