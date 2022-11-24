@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Campaign Controller
+ *
+ * Handles requests to the campaign endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -13,13 +23,14 @@ use Mint\MRM\DataBase\Models\CampaignModel as ModelsCampaign;
 use Mint\MRM\DataBase\Models\ContactModel;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing Campaign API callbacks]
+ * This is the main class that controls the campaign feature. Its responsibilities are:
+ *
+ * - Create or update a custom field
+ * - Delete single or multiple campaign
+ * - Retrieve single or multiple campaign
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class CampaignController extends BaseController {
 
 	use Singleton;
@@ -46,15 +57,15 @@ class CampaignController extends BaseController {
 	/**
 	 * Get and send response to create or update a campaign
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return \WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
-		// Assign Untitled as value if title is empty
+		// Assign Untitled as value if title is empty.
 		if ( isset( $params['title'] ) && empty( $params['title'] ) ) {
 			$params['title'] = 'Untitled';
 		}
@@ -64,35 +75,37 @@ class CampaignController extends BaseController {
 
 		$emails = isset( $params['emails'] ) ? $params['emails'] : array();
 
-		// Email subject validation
+		// Email subject validation.
 		if ( isset( $params['status'] ) ) {
 			foreach ( $emails as $index => $email ) {
 				$sender_email = isset( $email['sender_email'] ) ? $email['sender_email'] : '';
 				if ( isset( $sender_email ) && empty( $sender_email ) ) {
-					return $this->get_error_response( __( 'Sender email is missing on email ' . ( $index + 1 ), 'mrm' ), 200 );
+					/* translators: %d email index */
+					return $this->get_error_response( sprintf( __( 'Sender email is missing on email %d', 'mrm' ), ( $index + 1 ) ), 200 );
 				}
 				if ( ! is_email( $sender_email ) ) {
-					return $this->get_error_response( __( 'Sender Email Address is not valid on email ' . ( $index + 1 ), 'mrm' ), 203 );
+					/* translators: %d email index */
+					return $this->get_error_response( sprintf( __( 'Sender Email Address is not valid on email %d', 'mrm' ), ( $index + 1 ) ), 203 );
 				}
 			}
 		}
 
 		try {
-			// Update a campaign if campaign_id present on API request
+			// Update a campaign if campaign_id present on API request.
 			if ( isset( $params['campaign_id'] ) ) {
 				$campaign_id = $params['campaign_id'];
 
 				$this->campaign_data = ModelsCampaign::update( $params, $campaign_id );
 
 				if ( $this->campaign_data ) {
-					// Update campaign recipients into meta table
+					// Update campaign recipients into meta table.
 					$recipients = isset( $params['recipients'] ) ? maybe_serialize( $params['recipients'] ) : '';
 					ModelsCampaign::update_campaign_recipients( $recipients, $campaign_id );
 
-					// Update emails list
+					// Update emails list.
 					$emails = isset( $params['emails'] ) ? $params['emails'] : array();
 
-					// set send_time key for all email of campaign
+					// set send_time key for all email of campaign.
 					$emails = array_map(
 						function( $email ) {
 							$email['send_time'] = 0;
@@ -102,7 +115,7 @@ class CampaignController extends BaseController {
 					);
 
 					foreach ( $emails as $index => $email ) {
-						// counting the sending time for each email
+						// counting the sending time for each email.
 						$delay = isset( $email['delay'] ) ? $email['delay'] : 0;
 
 						if ( 0 === $index ) {
@@ -116,12 +129,12 @@ class CampaignController extends BaseController {
 
 						$data['campaign'] = $this->campaign_data;
 
-						if ( isset( $data['campaign']['status'] ) && 'active' == $data['campaign']['status'] ) {
+						if ( isset( $data['campaign']['status'] ) && 'active' === $data['campaign']['status'] ) {
 							$email['scheduled_at'] = current_time( 'mysql' );
 							$email['status']       = 'scheduled';
 						}
 
-						if ( isset( $data['campaign']['status'] ) && 'draft' == $data['campaign']['status'] ) {
+						if ( isset( $data['campaign']['status'] ) && 'draft' === $data['campaign']['status'] ) {
 							$email['scheduled_at'] = null;
 							$email['status']       = 'draft';
 						}
@@ -130,18 +143,18 @@ class CampaignController extends BaseController {
 					}
 				}
 			} else {
-				// Insert campaign information
+				// Insert campaign information.
 				$this->campaign_data = ModelsCampaign::insert( $params );
 				$campaign_id         = isset( $this->campaign_data['id'] ) ? $this->campaign_data['id'] : '';
 				if ( $campaign_id ) {
-					// Insert campaign recipients information
+					// Insert campaign recipients information.
 					$recipients = isset( $params['recipients'] ) ? maybe_serialize( $params['recipients'] ) : '';
 					ModelsCampaign::insert_campaign_recipients( $recipients, $campaign_id );
 
-					// Insert campaign emails information
+					// Insert campaign emails information.
 					$emails = isset( $params['emails'] ) ? $params['emails'] : array();
 
-					// set send_time key for all email of campaign
+					// set send_time key for all email of campaign.
 					$emails = array_map(
 						function( $email ) {
 							$email['send_time'] = 0;
@@ -151,7 +164,7 @@ class CampaignController extends BaseController {
 					);
 
 					foreach ( $emails as $index => $email ) {
-						// counting the sending time for each email
+						// counting the sending time for each email.
 						$delay = isset( $email['delay'] ) ? $email['delay'] : 0;
 
 						if ( 0 === $index ) {
@@ -165,12 +178,12 @@ class CampaignController extends BaseController {
 
 						$data['campaign'] = $this->campaign_data;
 
-						if ( isset( $data['campaign']['status'] ) && 'active' == $data['campaign']['status'] ) {
+						if ( isset( $data['campaign']['status'] ) && 'active' === $data['campaign']['status'] ) {
 							$email['scheduled_at'] = current_time( 'mysql' );
 							$email['status']       = 'scheduled';
 						}
 
-						if ( isset( $data['campaign']['status'] ) && 'draft' == $data['campaign']['status'] ) {
+						if ( isset( $data['campaign']['status'] ) && 'draft' === $data['campaign']['status'] ) {
 							$email['scheduled_at'] = null;
 							$email['status']       = 'draft';
 						}
@@ -179,25 +192,26 @@ class CampaignController extends BaseController {
 				}
 			}
 
-			// Send renponses back to the frontend
+			// Send renponses back to the frontend.
 			if ( $this->campaign_data ) {
 				$data['campaign'] = $this->campaign_data;
-				if ( isset( $data['campaign']['status'] ) && 'active' == $data['campaign']['status'] ) {
+				if ( isset( $data['campaign']['status'] ) && 'active' === $data['campaign']['status'] ) {
 					return $this->get_success_response( __( 'Campaign has been started successfully', 'mrm' ), 201, $data );
 				}
 				return $this->get_success_response( __( 'Campaign has been saved successfully', 'mrm' ), 201, $data );
 			}
 			return $this->get_error_response( __( 'Failed to save', 'mrm' ), 400 );
 		} catch ( Exception $e ) {
-			return $this->get_error_response( __( $e->getMessage(), 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Failed to save campaign', 'mrm' ), 400 );
 		}
 	}
 
 	/**
 	 * Get and send response to send campaign email
 	 *
-	 * @param int $campaign_id
-	 * @return WP_REST_Response
+	 * @param int   $campaign_id Campaign ID to get contacts email.
+	 * @param mixed $params Campaign parameters.
+	 * @return void
 	 * @since 1.0.0
 	 */
 	public static function send_campaign_email( $campaign_id, $params ) {
@@ -232,7 +246,7 @@ class CampaignController extends BaseController {
 				$contacts
 			);
 
-			do_action( 'mrm/send_campaign_email', $messages );
+			do_action( 'mrm_send_campaign_email', $messages );
 		}
 	}
 
@@ -240,13 +254,13 @@ class CampaignController extends BaseController {
 	/**
 	 * Request for deleting a single campaign to Campaign Model by Campaign ID
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params      = MRM_Common::get_api_params_values( $request );
 		$campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : '';
 		$success     = ModelsCampaign::destroy( $campaign_id );
@@ -261,12 +275,12 @@ class CampaignController extends BaseController {
 	/**
 	 * Request for deleting a email from a campaign
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_campaign_email( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : '';
@@ -283,12 +297,12 @@ class CampaignController extends BaseController {
 	/**
 	 * Request for deleting multiple campaigns to Campaign Model by Campaign ID
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_all( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$campaign_ids = isset( $params['campaign_ids'] ) ? $params['campaign_ids'] : array();
@@ -306,38 +320,38 @@ class CampaignController extends BaseController {
 	/**
 	 * Get all campaign request to Campaign Model
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		$page    = isset( $params['page'] ) ? $params['page'] : 1;
-		$perPage = isset( $params['per-page'] ) ? $params['per-page'] : 10;
-		$offset  = ( $page - 1 ) * $perPage;
+		$page     = isset( $params['page'] ) ? $params['page'] : 1;
+		$per_page = isset( $params['per-page'] ) ? $params['per-page'] : 10;
+		$offset   = ( $page - 1 ) * $per_page;
 
 		$order_by   = isset( $params['order-by'] ) ? strtolower( $params['order-by'] ) : 'id';
 		$order_type = isset( $params['order-type'] ) ? strtolower( $params['order-type'] ) : 'desc';
 
-		// valid order by fields and types
+		// valid order by fields and types.
 		$allowed_order_by_fields = array( 'title', 'created_at' );
 		$allowed_order_by_types  = array( 'asc', 'desc' );
 
-		// validate order by fields or use default otherwise
-		$order_by   = in_array( $order_by, $allowed_order_by_fields ) ? $order_by : 'id';
-		$order_type = in_array( $order_type, $allowed_order_by_types ) ? $order_type : 'desc';
+		// validate order by fields or use default otherwise.
+		$order_by   = in_array( $order_by, $allowed_order_by_fields, true ) ? $order_by : 'id';
+		$order_type = in_array( $order_type, $allowed_order_by_types, true ) ? $order_type : 'desc';
 
-		// Contact Search keyword
+		// Contact Search keyword.
 		$search = isset( $params['search'] ) ? $params['search'] : '';
 
-		$campaigns = ModelsCampaign::get_all( $offset, $perPage, $search, $order_by, $order_type );
+		$campaigns = ModelsCampaign::get_all( $offset, $per_page, $search, $order_by, $order_type );
 
 		$campaigns['current_page'] = (int) $page;
 
-		// Prepare human_time_diff for every campaign
+		// Prepare human_time_diff for every campaign.
 		if ( isset( $campaigns['data'] ) ) {
 			$campaigns['data'] = array_map(
 				function( $campaign ) {
@@ -360,17 +374,17 @@ class CampaignController extends BaseController {
 	/**
 	 * Function use to get single campaign
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_single( WP_REST_Request $request ) {
 
-		// Get values from REST API JSON
+		// Get values from REST API JSON.
 		$params      = MRM_Common::get_api_params_values( $request );
 		$campaign_id = isset( $params['campaign_id'] ) ? $params['campaign_id'] : '';
 		$campaign    = ModelsCampaign::get( $campaign_id );
-		// Prepare campaign data for response
+		// Prepare campaign data for response.
 		$campaign['meta']['recipients'] = maybe_unserialize( $campaign['meta_value'] );
 		$recipients_emails              = self::get_reciepents_email( $campaign_id );
 		$campaign['total_recipients']   = count( $recipients_emails );
@@ -386,8 +400,8 @@ class CampaignController extends BaseController {
 	/**
 	 * Function use to schedule the action for campaign emails
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param mixed $messages Message object used to generate the response.
+	 * @return void
 	 * @since 1.0.0
 	 */
 	public function process_campaign_email( $messages ) {
@@ -408,8 +422,8 @@ class CampaignController extends BaseController {
 	/**
 	 * Function use send campaign email to a recipients
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param mixed $data $request Data object used to generate the response.
+	 * @return void
 	 * @since 1.0.0
 	 */
 	public function process_campaign_email_send( $data ) {
@@ -423,7 +437,7 @@ class CampaignController extends BaseController {
 	/**
 	 * Function use to send email
 	 *
-	 * @param array $campaign
+	 * @param array $campaign Single campaign object.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
@@ -471,7 +485,9 @@ class CampaignController extends BaseController {
 	/**
 	 * Function use to get recipients
 	 *
-	 * @param WP_REST_Request
+	 * @param int $campaign_id Campaign ID to get campaign information.
+	 * @param int $offset Offset for retrive rows from database table.
+	 * @param int $per_batch Batch number for email sending.
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -479,7 +495,7 @@ class CampaignController extends BaseController {
 		$all_receipents = ModelsCampaign::get_campaign_meta( $campaign_id );
 
 		if ( isset( $all_receipents['recipients']['lists'], $all_receipents['recipients']['tags'] ) ) {
-			 $group_ids = array_merge( $all_receipents['recipients']['lists'], $all_receipents['recipients']['tags'] );
+			$group_ids = array_merge( $all_receipents['recipients']['lists'], $all_receipents['recipients']['tags'] );
 		} else {
 			isset( $all_receipents['recipients']['lists'] ) ? $group_ids  = $all_receipents['recipients']['lists'] :
 			( isset( $all_receipents['recipients']['tags'] ) ? $group_ids = $all_receipents['recipients']['tags'] :
@@ -495,13 +511,13 @@ class CampaignController extends BaseController {
 	/**
 	 * Update a campaign's status
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function status_update( WP_REST_Request $request ) {
-		// Get params from status update API request
+		// Get params from status update API request.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$status      = isset( $params['status'] ) ? $params['status'] : '';

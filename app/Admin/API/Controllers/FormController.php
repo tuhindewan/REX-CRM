@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Form Controller
+ *
+ * Handles requests to the forms endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -10,13 +20,14 @@ use WP_REST_Request;
 use MRM\Common\MRM_Common;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-07-10 11:03:17
- * @modify date 2022-07-10 11:03:17
- * @desc [Handle Form Module related API callbacks]
+ * This is the main class that controls the forms feature. Its responsibilities are:
+ *
+ * - Create or update a form
+ * - Delete single or multiple forms
+ * - Retrieve single or multiple forms
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class FormController extends BaseController {
 
 	use Singleton;
@@ -41,17 +52,17 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle create  or update requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
 	 * @return WP_REST_RESPONSE
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
 
-		// Get values from the API request
+		// Get values from the API request.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		// Form title validation
+		// Form title validation.
 		$title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : null;
 		if ( empty( $title ) ) {
 			return $this->get_error_response( __( 'Form name is mandatory', 'mrm' ), 200 );
@@ -61,13 +72,7 @@ class FormController extends BaseController {
 			return $this->get_error_response( __( 'Form title character limit exceeded 150 characters', 'mrm' ), 200 );
 		}
 
-		// group Ids validation
-		// $group_ids = isset( $params['group_ids'] ) ? $params['group_ids'] : [];
-		// if (empty($group_ids['lists']) && empty($group_ids['tags'])){
-		// return $this->get_error_response( __( 'It is mandatory to select at least one group', 'mrm' ), 200);
-		// }
-
-		// Form object create and insert or update to database
+		// Form object create and insert or update to database.
 		$this->args = array(
 			'title'         => $title,
 			'form_body'     => isset( $params['form_body'] ) ? $params['form_body'] : '',
@@ -100,36 +105,36 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle paginated get and search requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		$page    = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
-		$perPage = isset( $params['per-page'] ) ? absint( $params['per-page'] ) : 25;
-		$offset  = ( $page - 1 ) * $perPage;
+		$page     = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
+		$per_page = isset( $params['per-page'] ) ? absint( $params['per-page'] ) : 25;
+		$offset   = ( $page - 1 ) * $per_page;
 
 		$order_by   = isset( $params['order-by'] ) ? strtolower( $params['order-by'] ) : 'id';
 		$order_type = isset( $params['order-type'] ) ? strtolower( $params['order-type'] ) : 'desc';
 
-		// valid order by fields and types
+		// valid order by fields and types.
 		$allowed_order_by_fields = array( 'title', 'created_at' );
 		$allowed_order_by_types  = array( 'asc', 'desc' );
 
-		// validate order by fields or use default otherwise
-		$order_by   = in_array( $order_by, $allowed_order_by_fields ) ? $order_by : 'id';
-		$order_type = in_array( $order_type, $allowed_order_by_types ) ? $order_type : 'desc';
+		// validate order by fields or use default otherwise.
+		$order_by   = in_array( $order_by, $allowed_order_by_fields, true ) ? $order_by : 'id';
+		$order_type = in_array( $order_type, $allowed_order_by_types, true ) ? $order_type : 'desc';
 
-		// Form Search keyword
+		// Form Search keyword.
 		$search = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 
-		$forms = FormModel::get_all( $offset, $perPage, $search, $order_by, $order_type );
+		$forms = FormModel::get_all( $offset, $per_page, $search, $order_by, $order_type );
 
-		// Prepare human_time_diff for every form
+		// Prepare human_time_diff for every form.
 		if ( isset( $forms['data'] ) ) {
 			$forms['data'] = array_map(
 				function( $form ) {
@@ -152,13 +157,13 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle paginated get all forms only title and id
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all_id_title( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$forms = FormModel::get_all_id_title();
@@ -188,18 +193,18 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle a single get request
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$form = FormModel::get( $params['form_id'] );
 
-		$form['group_ids'] = unserialize( $form['group_ids'] );
+		$form['group_ids'] = maybe_unserialize( $form['group_ids'] );
 
 		if ( isset( $form['created_at'] ) ) {
 			$form['created_ago'] = human_time_diff( strtotime( $form['created_at'] ), time() );
@@ -215,12 +220,12 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle delete single form requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_single( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		if ( isset( $params['form_id'] ) ) {
@@ -237,12 +242,12 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle delete requests
 	 *
-	 * @param WP_RESR_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_all( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		if ( isset( $params['form_ids'] ) ) {
@@ -259,17 +264,17 @@ class FormController extends BaseController {
 	/**
 	 * Function used to handle update status requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
 	 * @return WP_REST_RESPONSE
 	 * @since 1.0.0
 	 */
 	public function form_status_update( WP_REST_Request $request ) {
 
-		// Get values from the API request
+		// Get values from the API request.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		// Form object create and insert or update to database
+		// Form object create and insert or update to database.
 		$this->args = array(
 			'status' => isset( $params['status'] ) ? $params['status'] : '',
 		);
@@ -291,13 +296,13 @@ class FormController extends BaseController {
 	/**
 	 * Function used to get settings of a single form
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_form_settings( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$form = FormModel::get_form_settings( $params['form_id'] );
@@ -312,18 +317,18 @@ class FormController extends BaseController {
 	/**
 	 * Function used to get title status and group form a single form
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_title_group( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$form = FormModel::get_title_group( $params['form_id'] );
 
-		$form[0]['group_ids'] = isset( $form[0]['group_ids'] ) ? unserialize( $form[0]['group_ids'] ) : array();
+		$form[0]['group_ids'] = isset( $form[0]['group_ids'] ) ? maybe_unserialize( $form[0]['group_ids'] ) : array();
 
 		if ( isset( $form ) ) {
 			return $this->get_success_response( __( 'Query Successful.', 'mrm' ), 200, $form );
@@ -334,13 +339,13 @@ class FormController extends BaseController {
 	/**
 	 * Function used to get body of a single form
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_form_body( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$form = FormModel::get_form_body( $params['form_id'] );
@@ -356,22 +361,22 @@ class FormController extends BaseController {
 	/**
 	 * Function used to get all form templates
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_form_templates( WP_REST_Request $request ) {
-		// Get values from API request
+		// Get values from API request.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$force_update = isset( $params['force_update'] ) ? $params['force_update'] : '';
 
 		$cache_key = 'mrm_form_templates_data_' . MRM_VERSION;
 
-		// Get form templates transient data
-		$templates_data = apply_filters( 'mrm/form_templates_data', get_transient( $cache_key ) );
+		// Get form templates transient data.
+		$templates_data = apply_filters( 'mrm_form_templates_data', get_transient( $cache_key ) );
 
-		// Set transient for form templates
+		// Set transient for form templates.
 		if ( $force_update || false === $templates_data ) {
 			$timeout = ( $force_update ) ? 40 : 55;
 
@@ -383,7 +388,7 @@ class FormController extends BaseController {
 				)
 			);
 
-			if ( isset( $response['success'] ) && true == $response['success'] ) {
+			if ( isset( $response['success'] ) && true === $response['success'] ) {
 				if ( isset( $response['data'] ) && ! empty( $response['data'] ) ) {
 					set_transient( $cache_key, $response['data']['data'], 24 * HOUR_IN_SECONDS );
 				}
@@ -396,8 +401,8 @@ class FormController extends BaseController {
 	/**
 	 * Function used to call remote url and prepare response
 	 *
-	 * @param $url
-	 * @param $args
+	 * @param string $url Template URL.
+	 * @param mixed  $args List of arguments.
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -421,7 +426,6 @@ class FormController extends BaseController {
 	/**
 	 * Function used to get remote API url for form templates
 	 *
-	 * @param void
 	 * @return string
 	 * @since 1.0.0
 	 */

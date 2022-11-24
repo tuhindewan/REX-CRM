@@ -1,17 +1,24 @@
 <?php
+/**
+ * REST API Setting Base Controller
+ *
+ * Core base controller for managing and interacting with REST API items.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Abstract class for Settings REST API controller]
+ * This is the core class that defines abstract function for child controllers
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 abstract class SettingBaseController extends \WP_REST_Controller {
 
 	/**
@@ -26,7 +33,7 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Create or update an object
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -36,7 +43,7 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Get an object
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -46,7 +53,7 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Prepare success response for REST API
 	 *
-	 * @param $message
+	 * @param string $message Response success message.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -64,7 +71,7 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Prepare success response with data for REST API
 	 *
-	 * @param $settings
+	 * @param array $settings Array of settings information.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -78,9 +85,7 @@ abstract class SettingBaseController extends \WP_REST_Controller {
 	/**
 	 * Prepare error response for REST API
 	 *
-	 * @param $message
-	 * @param $code
-	 * @param $wp_error
+	 * @param string $message Response error message.
 	 *
 	 * @return array
 	 * @since 1.0.0

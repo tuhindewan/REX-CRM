@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API List Controller
+ *
+ * Handles requests to the lists endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -11,13 +21,15 @@ use WP_REST_Request;
 use MRM\Common\MRM_Common;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Handle List Module related API callbacks]
+ * This is the main class that controls the lists feature. Its responsibilities are:
+ *
+ * - Create or update a list
+ * - Delete single or multiple lists
+ * - Retrieve single or multiple lists
+ * - Assign or removes lists from the contact
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class ListController extends BaseController {
 
 	use Singleton;
@@ -34,17 +46,17 @@ class ListController extends BaseController {
 	/**
 	 * Function used to handle create  or update requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
 	 * @return WP_REST_RESPONSE
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
 
-		// Get values from the API request
+		// Get values from the API request.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		// List title validation
+		// List title validation.
 		$title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : null;
 		if ( empty( $title ) ) {
 			return $this->get_error_response( __( 'List name is mandatory', 'mrm' ), 200 );
@@ -54,14 +66,14 @@ class ListController extends BaseController {
 			return $this->get_error_response( __( 'List name is to long', 'mrm' ), 200 );
 		}
 
-		// List avaiability check
+		// List avaiability check.
 		$slug  = sanitize_title( $title );
 		$exist = ContactGroupModel::is_group_exist( $slug, 'lists' );
 		if ( $exist && ! isset( $params['list_id'] ) ) {
 			return $this->get_error_response( __( 'List is already available', 'mrm' ), 200 );
 		}
 
-		// List object create and insert or update to database
+		// List object create and insert or update to database.
 		$this->args = array(
 			'title' => $title,
 			'slug'  => $slug,
@@ -72,7 +84,7 @@ class ListController extends BaseController {
 			$list = new ListData( $this->args );
 
 			if ( isset( $params['list_id'] ) ) {
-				// Check slugs for removing the duplication of same name
+				// Check slugs for removing the duplication of same name.
 				$other_slugs = ContactGroupModel::is_group_exist( $slug, 'lists' );
 				$update_slug = ContactGroupModel::is_group_exist_by_id( $slug, 'lists', $params['list_id'] );
 				if ( $other_slugs && ! $update_slug ) {
@@ -97,35 +109,35 @@ class ListController extends BaseController {
 	/**
 	 * Function used to handle paginated get and search requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		$page    = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
-		$perPage = isset( $params['per-page'] ) ? absint( $params['per-page'] ) : 25;
-		$offset  = ( $page - 1 ) * $perPage;
+		$page     = isset( $params['page'] ) ? absint( $params['page'] ) : 1;
+		$per_page = isset( $params['per-page'] ) ? absint( $params['per-page'] ) : 25;
+		$offset   = ( $page - 1 ) * $per_page;
 
 		$order_by   = isset( $params['order-by'] ) ? strtolower( $params['order-by'] ) : 'id';
 		$order_type = isset( $params['order-type'] ) ? strtolower( $params['order-type'] ) : 'desc';
 
-		// valid order by fields and types
+		// valid order by fields and types.
 		$allowed_order_by_fields = array( 'title', 'created_at' );
 		$allowed_order_by_types  = array( 'asc', 'desc' );
 
-		// validate order by fields or use default otherwise
-		$order_by   = in_array( $order_by, $allowed_order_by_fields ) ? $order_by : 'id';
-		$order_type = in_array( $order_type, $allowed_order_by_types ) ? $order_type : 'desc';
+		// validate order by fields or use default otherwise.
+		$order_by   = in_array( $order_by, $allowed_order_by_fields, true ) ? $order_by : 'id';
+		$order_type = in_array( $order_type, $allowed_order_by_types, true ) ? $order_type : 'desc';
 
-		// List Search keyword
+		// List Search keyword.
 		$search = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 
-		$groups = ContactGroupModel::get_all( 'lists', $offset, $perPage, $search, $order_by, $order_type );
-		// Count contacts groups
+		$groups = ContactGroupModel::get_all( 'lists', $offset, $per_page, $search, $order_by, $order_type );
+		// Count contacts groups.
 		$groups['count_groups'] = array(
 			'lists'    => absint( $groups['total_count'] ),
 			'tags'     => ContactGroupModel::get_groups_count( 'tags' ),
@@ -142,13 +154,13 @@ class ListController extends BaseController {
 	/**
 	 * Function used to handle a single get request
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$group = ContactGroupModel::get( $params['list_id'] );
@@ -163,12 +175,12 @@ class ListController extends BaseController {
 	/**
 	 * Function used to handle delete requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_single( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$success = ContactGroupModel::destroy( $params['list_id'] );
@@ -183,12 +195,12 @@ class ListController extends BaseController {
 	/**
 	 * Function used to handle delete requests
 	 *
-	 * @param WP_RESR_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_all( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$success = ContactGroupModel::destroy_all( $params['list_ids'] );
@@ -203,8 +215,8 @@ class ListController extends BaseController {
 	/**
 	 * Add lists to new contact
 	 *
-	 * @param array $lists
-	 * @param int   $contact_id
+	 * @param array $lists List of lists.
+	 * @param int   $contact_id Contact ID.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -225,8 +237,8 @@ class ListController extends BaseController {
 	/**
 	 * Add lists to multiple contacts
 	 *
-	 * @param array $lists
-	 * @param int   $contact_id
+	 * @param array $lists List of lists.
+	 * @param mixed $contact_ids Contact IDs.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -257,7 +269,7 @@ class ListController extends BaseController {
 	/**
 	 * Return lists which are assigned to a contact
 	 *
-	 * @param mixed $contact
+	 * @param mixed $contact Single contact object.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -285,7 +297,6 @@ class ListController extends BaseController {
 	/**
 	 * Function used to return all list to custom select dropdown
 	 *
-	 * @param void
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */

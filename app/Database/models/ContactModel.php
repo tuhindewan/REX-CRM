@@ -35,7 +35,11 @@ class ContactModel {
 	 * @since 1.0.0
 	 */
 	public static function insert( ContactData $contact ) {
+<<<<<<< HEAD
 		 global $wpdb;
+=======
+		global $wpdb;
+>>>>>>> phpcs-tuhin-fix
 		$contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
 		try {
@@ -158,7 +162,11 @@ class ContactModel {
 	 * @since 1.0.0
 	 */
 	public static function is_contact_exist( $email ) {
+<<<<<<< HEAD
 		 global $wpdb;
+=======
+		global $wpdb;
+>>>>>>> phpcs-tuhin-fix
 		$contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
 		$select_query = $wpdb->prepare( "SELECT * FROM $contacts_table WHERE email = %s", array( $email ) );
@@ -201,7 +209,11 @@ class ContactModel {
 	 * @since 1.0.0
 	 */
 	public static function destroy( $id ) {
+<<<<<<< HEAD
 		 global $wpdb;
+=======
+		global $wpdb;
+>>>>>>> phpcs-tuhin-fix
 		$contacts_table            = $wpdb->prefix . ContactSchema::$table_name;
 		$contact_meta_table        = $wpdb->prefix . ContactMetaSchema::$table_name;
 		$contact_note_table        = $wpdb->prefix . ContactNoteSchema::$table_name;
@@ -553,7 +565,11 @@ class ContactModel {
 	 * @since 1.0.0
 	 */
 	public static function get_total_count( $contact_id ) {
+<<<<<<< HEAD
 		 global $wpdb;
+=======
+		global $wpdb;
+>>>>>>> phpcs-tuhin-fix
 		$table_name = $wpdb->prefix . ContactSchema::$table_name;
 
 		$select_query       = $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name" );

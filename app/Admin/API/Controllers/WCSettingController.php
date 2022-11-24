@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API WCSetting Controller
+ *
+ * Handles requests to the WooCommerce settings endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -7,20 +17,22 @@ use MRM\Common\MRM_Common;
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing double WooCommerce settings API callbacks]
+ * This is the main class that controls the WooCommerce setting feature. Its responsibilities are:
+ *
+ * - Create or update WooCommerce settings
+ * - Retrieve WooCommerce settings from options table
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
 class WCSettingController extends SettingBaseController {
 
 	use Singleton;
 
 	/**
-	 * @desc Update WooCommerce global settings into wp_option table
-	 * @param WP_REST_Request $request
-	 * @return array|\WP_Error
+	 * Update WooCommerce global settings into wp_option table
+	 *
+	 * @param WP_REST_Request $request Request object used to generate the response.
+	 * @return WP_REST_Response|WP_Error
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
@@ -39,8 +51,10 @@ class WCSettingController extends SettingBaseController {
 	}
 
 	/**
-	 * @desc Get WooCommerce global settings from wp_option table
-	 * @return array
+	 * Get WooCommerce global settings from wp_option table
+	 *
+	 * @param WP_REST_Request $request Request object used to generate the response.
+	 * @return WP_REST_Response|WP_Error
 	 * @since 1.0.0
 	 */
 	public function get( WP_REST_Request $request ) {

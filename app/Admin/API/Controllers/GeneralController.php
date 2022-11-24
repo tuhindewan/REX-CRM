@@ -1,24 +1,28 @@
 <?php
+/**
+ * General Controller Class
+ *
+ * Handles requests to the field groups endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
-use Exception;
 use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\MRM\DataBase\Models\ContactModel;
-use Mint\MRM\DataStores\ListData;
-use Mint\MRM\DataStores\TagData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use WP_REST_Request;
 use MRM\Common\MRM_Common;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Handle List Module related API callbacks]
+ * This is the main class that controls contact groups count.
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class GeneralController {
 
 	use Singleton;
@@ -26,29 +30,29 @@ class GeneralController {
 	/**
 	 * Function used to handle paginated get and search requests
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_general_count( WP_REST_Request $request ) {
-		 // Get values from API
-		 $params = MRM_Common::get_api_params_values( $request );
+		// Get values from API.
+		$params = MRM_Common::get_api_params_values( $request );
 
-		 $lists    = ContactGroupModel::get_all( 'lists' );
-		 $tags     = ContactGroupModel::get_all( 'tags' );
-		 $segments = ContactGroupModel::get_all( 'segments' );
-		 $contacts = ContactModel::get_all();
+		$lists    = ContactGroupModel::get_all( 'lists' );
+		$tags     = ContactGroupModel::get_all( 'tags' );
+		$segments = ContactGroupModel::get_all( 'segments' );
+		$contacts = ContactModel::get_all();
 
-		 $data = array(
-			 'total_contacts' => isset( $contacts['count'] ) ? $contacts['count'] : 0,
-			 'total_lists'    => isset( $lists['count'] ) ? $lists['count'] : 0,
-			 'total_tags'     => isset( $tags['count'] ) ? $tags['count'] : 0,
-			 'total_segments' => isset( $segments['count'] ) ? $segments['count'] : 0,
-		 );
-		 if ( isset( $lists ) && isset( $tags ) && isset( $contacts ) ) {
-			 return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $data );
-		 }
-		 return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
+		$data = array(
+			'total_contacts' => isset( $contacts['count'] ) ? $contacts['count'] : 0,
+			'total_lists'    => isset( $lists['count'] ) ? $lists['count'] : 0,
+			'total_tags'     => isset( $tags['count'] ) ? $tags['count'] : 0,
+			'total_segments' => isset( $segments['count'] ) ? $segments['count'] : 0,
+		);
+		if ( isset( $lists ) && isset( $tags ) && isset( $contacts ) ) {
+			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $data );
+		}
+		return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
 	}
 
 	/**
@@ -64,9 +68,9 @@ class GeneralController {
 	/**
 	 * Prepare success response for REST API
 	 *
-	 * @param $message
-	 * @param $code
-	 * @param $wp_error
+	 * @param string $message Response success message.
+	 * @param int    $code Response success code.
+	 * @param mixed  $data Response success data.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -85,9 +89,9 @@ class GeneralController {
 	/**
 	 * Prepare error response for REST API
 	 *
-	 * @param $message
-	 * @param $code
-	 * @param $wp_error
+	 * @param string $message Response success message.
+	 * @param int    $code Response success code.
+	 * @param mixed  $wp_error Response success wp_error.
 	 *
 	 * @return array
 	 * @since 1.0.0

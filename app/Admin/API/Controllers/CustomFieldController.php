@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Custom Field Controller
+ *
+ * Handles requests to the custom-fields endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -11,13 +21,14 @@ use Mint\MRM\DataStores\CustomFieldData;
 use MRM\Common\MRM_Common;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing Custom Fields API callbacks]
+ * This is the main class that controls the custom fields feature. Its responsibilities are:
+ *
+ * - Create or update a custom field
+ * - Delete single or multiple custom fields
+ * - Retrieve single or multiple custom fields
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class CustomFieldController extends BaseController {
 
 	use Singleton;
@@ -34,16 +45,16 @@ class CustomFieldController extends BaseController {
 	/**
 	 * Get and send response to create or update a custom field
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $request Request object used to generate the response.
+	 * @return WP_Error|WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		// Filed title validation
+		// Filed title validation.
 		$title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : null;
 
 		if ( empty( $title ) ) {
@@ -58,11 +69,11 @@ class CustomFieldController extends BaseController {
 			return $this->get_error_response( __( 'Field is already available', 'mrm' ), 200 );
 		}
 
-		if ( in_array( $slug, $primary_fields ) ) {
+		if ( in_array( $slug, $primary_fields, true ) ) {
 			return $this->get_error_response( __( 'Field is already available', 'mrm' ), 200 );
 		}
 
-		// Field type validation
+		// Field type validation.
 		$type = isset( $params['type'] ) ? sanitize_text_field( $params['type'] ) : null;
 
 		if ( empty( $type ) ) {
@@ -92,7 +103,7 @@ class CustomFieldController extends BaseController {
 
 		$field = new CustomFieldData( $this->args );
 
-		// Field object create and insert or update to database
+		// Field object create and insert or update to database.
 		try {
 			if ( isset( $params['field_id'] ) ) {
 				$field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
@@ -107,7 +118,7 @@ class CustomFieldController extends BaseController {
 			}
 			return $this->get_error_response( __( 'Failed to save', 'mrm' ), 400 );
 		} catch ( Exception $e ) {
-			return $this->get_error_response( __( $e->getMessage(), 'mrm' ), 400 );
+			return $this->get_error_response( __( 'Custom Field is not valid', 'mrm' ), 400 );
 		}
 	}
 
@@ -115,13 +126,13 @@ class CustomFieldController extends BaseController {
 	/**
 	 * Request for deleting a single field
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $request Request object used to generate the response.
+	 * @return WP_Error|WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$field_id = isset( $params['field_id'] ) ? $params['field_id'] : '';
@@ -138,8 +149,7 @@ class CustomFieldController extends BaseController {
 	/**
 	 * TODO: complete this function in order to delete multilple fields
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @since 1.0.0
 	 */
 	public function delete_all( WP_REST_Request $request ) {
@@ -149,13 +159,13 @@ class CustomFieldController extends BaseController {
 	/**
 	 * Get all fields request
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $request Request object used to generate the response.
+	 * @return WP_Error|WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$fields = CustomFieldModel::get_all();
@@ -163,7 +173,7 @@ class CustomFieldController extends BaseController {
 		$fields['data'] = array_map(
 			function( $field ) {
 				if ( ! empty( $field ) && $field['meta'] ) {
-					  $field['meta'] = maybe_unserialize( $field['meta'] );
+					$field['meta'] = maybe_unserialize( $field['meta'] );
 				}
 				return $field;
 			},
@@ -180,13 +190,13 @@ class CustomFieldController extends BaseController {
 	/**
 	 * Function use to get single field
 	 *
-	 * @param WP_REST_Request
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $request Request object used to generate the response.
+	 * @return WP_Error|WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$field = CustomFieldModel::get( $params['field_id'] );
@@ -200,5 +210,4 @@ class CustomFieldController extends BaseController {
 		}
 		return $this->get_error_response( __( 'Failed to get data', 'mrm' ), 400 );
 	}
-
 }
