@@ -20,7 +20,7 @@ commands:
             apt-get install -y php-xdebug
             apt-get install -y python-pip
             pip install --upgrade --user awscli
-            bash __dev__/bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
+            bash bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
             composer install
             composer --global config process-timeout 2000
   run_phpunit:
