@@ -143,7 +143,7 @@ class MessageController extends BaseController {
 
 		$body = $message->get_email_body();
 
-		$headers = Email::getMailHeader();
+		$headers = Email::get_mail_header();
 
 		try {
 			return wp_mail( $to, $subject, $body, $headers );
@@ -261,9 +261,9 @@ class MessageController extends BaseController {
 			$protocol        = strpos( strtolower( $server ), 'https' ) === false ? 'http' : 'https';
 			$domain_link     = $protocol . '://' . $senitize_server['HTTP_HOST'];
 
-			$body = Email::getMailTemplate( $email_body, $domain_link, $contact_id, $hash );
+			$body = Email::get_mail_template( $email_body, $domain_link, $contact_id, $hash );
 
-			$headers = Email::getMailHeader();
+			$headers = Email::get_mail_header();
 
 			try {
 				return wp_mail( $to, $subject, $body, $headers );
