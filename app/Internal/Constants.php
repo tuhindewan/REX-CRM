@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app
+ */
 
 namespace Mint\MRM\Internal;
 
@@ -7,19 +16,19 @@ use DateTimeZone;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Shared global constants for use in other classes]
+ * [Manage Constant data in mrm  ]
+ *
+ * @desc Manage Constant data in mrm
+ * @package /app/Internal/Ajax
+ * @since 1.0.0
  */
-
 class Constants {
 
 	use Singleton;
-
 	/**
 	 * Contact attrs available for mapping
+	 *
+	 * @var string[]
 	 */
 	public static $contacts_attrs = array(
 		'first_name',
@@ -35,9 +44,10 @@ class Constants {
 		'country',
 		'phone',
 	);
-
 	/**
 	 * Contact list columns available for hide/show
+	 *
+	 * @var string[]
 	 */
 	public static $contact_list_columns = array(
 		array(
@@ -76,31 +86,12 @@ class Constants {
 			'id'    => 'addresses',
 			'value' => 'Address',
 		),
-		// [
-		// "id"    => "address_line_2",
-		// "value" => "Address Line 2"
-		// ],
-		// [
-		// "id"    => "postal_code",
-		// "value" => "Postal Code"
-		// ],
-		// [
-		// "id"    => "city",
-		// "value" => "City"
-		// ],
-		// [
-		// "id"    => "state",
-		// "value" => "State"
-		// ],
-		// [
-		// "id"    => "country",
-		// "value" => "Country"
-		// ]
 	);
-
-	/*
-	* maichimp api key for testing
-	*/
+	/**
+	 * Get mailchip key
+	 *
+	 * @var string
+	 */
 	public static $mailchimp_key = '11b321614d43814ca7d8406041bb3839-us8';
 
 
@@ -116,13 +107,11 @@ class Constants {
 		$this->define( 'MRM_ADMIN_EXTERNAL_JS_FOLDER', 'assets/admin/js/' );
 		$this->define( 'MRM_ADMIN_EXTERNAL_CSS_FOLDER', 'assets/admin/css/' );
 	}
-
-
 	/**
-	 * Define constant variable if not define
+	 * Define constant variable if not define .
 	 *
-	 * @param $name
-	 * @param $value
+	 * @param string $name path name .
+	 * @param string $value path value .
 	 * @since 1.0.0
 	 */
 	protected function define( $name, $value ) {
@@ -178,8 +167,11 @@ class Constants {
 		}
 		return $timezone_list;
 	}
-
-
+	/**
+	 * Get Country name
+	 *
+	 * @return array[]
+	 */
 	public static function get_country_name() {
 		return array(
 			array(
