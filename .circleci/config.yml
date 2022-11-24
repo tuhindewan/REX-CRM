@@ -56,9 +56,6 @@ jobs:
 # Orchestrate our job run sequence
 workflows:
   version: 2
-  coding_standard:
-    jobs:
-      - phpcs
   phpcs_unit_test:
     jobs:
       - phpcs
