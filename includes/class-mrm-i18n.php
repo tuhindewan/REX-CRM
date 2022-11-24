@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -24,7 +23,7 @@
  * @subpackage Mrm/includes
  * @author     RexTheme <support@rextheme.com>
  */
-class Mrm_i18n {
+class Mrm_i18n { //phpcs:ignore
 
 
 	/**

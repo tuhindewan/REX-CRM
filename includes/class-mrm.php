@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * The file that defines the core plugin class
  *
@@ -39,7 +37,7 @@ class Mrm {
 	 * @var WooCommerce
 	 * @since 2.1
 	 */
-	protected static $_instance = null;
+	protected static $instance = null;
 
 	/**
 	 * The unique identifier of this plugin.
@@ -70,7 +68,7 @@ class Mrm {
 
 
 	/**
-	 *
+	 * Main app variable.
 	 *
 	 * @var App
 	 * @since 1.0.0
@@ -86,10 +84,10 @@ class Mrm {
 	 * @return MRM - Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 
@@ -99,7 +97,7 @@ class Mrm {
 	 * @since 2.1
 	 */
 	public function __clone() {
-		wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'woocommerce' ), '2.1' );
+		wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'mrm' ), '2.1' );
 	}
 
 	/**
@@ -108,7 +106,7 @@ class Mrm {
 	 * @since 2.1
 	 */
 	public function __wakeup() {
-		wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'woocommerce' ), '2.1' );
+		wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'mrm' ), '2.1' );
 	}
 
 	/**
@@ -147,19 +145,22 @@ class Mrm {
 		$this->boot();
 	}
 
-
+	/**
+	 * Defined constants.
+	 *
+	 * @since 1.0.0
+	 */
 	private function define_constants() {
 		$this->constants = Constants::get_instance();
 		$this->constants->define_constants();
 	}
 
-
+	/**
+	 * Action to signal that MRM has finished loading.
+	 *
+	 * @since 1.0.0
+	 */
 	private function boot() {
-		/**
-		 * Action to signal that MRM has finished loading.
-		 *
-		 * @since 3.6.0
-		 */
 		do_action( 'mrm_loaded' );
 
 		$this->app = App::get_instance();

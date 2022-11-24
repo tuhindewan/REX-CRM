@@ -1,4 +1,14 @@
 <?php
+/**
+ * Manage Contact Module database related operations.
+ *
+ * @package Mint\MRM\DataBase\Models
+ * @namespace Mint\MRM\DataBase\Models
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ */
 
 namespace Mint\MRM\DataBase\Models;
 
@@ -13,13 +23,15 @@ use MRM\Data\MRM_Contact;
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Manage Contact Module database related operations]
+ * ContactModel class
+ *
+ * Manage Contact Module database related operations.
+ *
+ * @package Mint\MRM\DataBase\Models
+ * @namespace Mint\MRM\DataBase\Models
+ *
+ * @version 1.0.0
  */
-
 class ContactModel {
 
 
@@ -29,13 +41,13 @@ class ContactModel {
 	/**
 	 * Insert contact information to database
 	 *
-	 * @param ContactData $contact
+	 * @param ContactData $contact contact.
 	 *
 	 * @return bool|int
 	 * @since 1.0.0
 	 */
 	public static function insert( ContactData $contact ) {
-		 global $wpdb;
+		global $wpdb;
 		$contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
 		try {
@@ -52,7 +64,7 @@ class ContactModel {
 					'wp_user_id' => $contact->get_wp_user_id(),
 					'created_at' => current_time( 'mysql' ),
 				)
-			);
+			); // db call ok. ; no-cache ok.
 
 			$insert_id = $wpdb->insert_id;
 			if ( ! empty( $contact->get_meta_fields() ) ) {
@@ -70,8 +82,8 @@ class ContactModel {
 	/**
 	 * Update a contact information
 	 *
-	 * @param mixed $contact_id     Contact ID
-	 * @param mixed $args           Entity and value to update
+	 * @param mixed $args Entity and value to update.
+	 * @param mixed $contact_id Contact ID.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -100,21 +112,20 @@ class ContactModel {
 				$contacts_table,
 				$args,
 				array( 'ID' => $contact_id )
-			);
+			); // db call ok. ; no-cache ok.
 		} catch ( \Exception $e ) {
 			return false;
 		}
 		return true;
 	}
 
-
 	/**
 	 * Update a contact information
 	 *
-	 * @param mixed $contact_id     Contact ID
-	 * @param mixed $fields         Entity and value to update
+	 * @param mixed $contact_id     Contact ID.
+	 * @param mixed $args           Entity and value to update.
 	 *
-	 * @return bool
+	 * @return bool|void
 	 * @since 1.0.0
 	 */
 	public static function update_meta_fields( $contact_id, $args ) {
@@ -123,6 +134,8 @@ class ContactModel {
 
 		foreach ( $args['meta_fields'] as $key => $value ) {
 			if ( self::is_contact_meta_exist( $contact_id, $key ) ) {
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$wpdb->update(
 					$contacts_meta_table,
 					array(
@@ -132,7 +145,7 @@ class ContactModel {
 						'meta_key'   => $key,
 						'contact_id' => $contact_id,
 					)
-				);
+				); // db call ok. ; no-cache ok.
 			} else {
 				$wpdb->insert(
 					$contacts_meta_table,
@@ -141,9 +154,9 @@ class ContactModel {
 						'meta_key'   => $key,
 						'meta_value' => $value,
 					)
-				);
-
-				// $wpdb->query( 'SET foreign_key_checks=0' );
+				); // db call ok. ; no-cache ok.
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			}
 		}
 	}
@@ -152,17 +165,20 @@ class ContactModel {
 	/**
 	 * Check existing contact through an email address
 	 *
-	 * @param string $email
+	 * @param string $email email.
 	 *
 	 * @return bool
 	 * @since 1.0.0
 	 */
 	public static function is_contact_exist( $email ) {
-		 global $wpdb;
+		global $wpdb;
 		$contacts_table = $wpdb->prefix . ContactSchema::$table_name;
-
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$select_query = $wpdb->prepare( "SELECT * FROM $contacts_table WHERE email = %s", array( $email ) );
-		$results      = $wpdb->get_results( $select_query );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $select_query ); // db call ok. ; no-cache ok.
+
 		if ( $results ) {
 			return true;
 		}
@@ -173,8 +189,8 @@ class ContactModel {
 	/**
 	 * Check existing contact through an email address and contact ID
 	 *
-	 * @param string $email
-	 * @param int    $contact_id
+	 * @param string $email email.
+	 * @param int    $contact_id contact id.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -184,7 +200,7 @@ class ContactModel {
 		$contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
 		$select_query = $wpdb->prepare( "SELECT * FROM $contacts_table WHERE email = %s AND id = %d", array( $email, $contact_id ) );
-		$results      = $wpdb->get_results( $select_query );
+		$results      = $wpdb->get_results( $select_query ); // db call ok. ; no-cache ok.
 		if ( $results ) {
 			return true;
 		}
@@ -195,23 +211,23 @@ class ContactModel {
 	/**
 	 * Delete a contact
 	 *
-	 * @param mixed $id contact id
+	 * @param mixed $id contact id.
 	 *
 	 * @return bool
 	 * @since 1.0.0
 	 */
 	public static function destroy( $id ) {
-		 global $wpdb;
+		global $wpdb;
 		$contacts_table            = $wpdb->prefix . ContactSchema::$table_name;
 		$contact_meta_table        = $wpdb->prefix . ContactMetaSchema::$table_name;
 		$contact_note_table        = $wpdb->prefix . ContactNoteSchema::$table_name;
 		$contact_group_pivot_table = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
 		try {
-			$wpdb->delete( $contacts_table, array( 'id' => $id ) );
-			$wpdb->delete( $contact_meta_table, array( 'contact_id' => $id ) );
-			$wpdb->delete( $contact_note_table, array( 'contact_id' => $id ) );
-			$wpdb->delete( $contact_group_pivot_table, array( 'contact_id' => $id ) );
+			$wpdb->delete( $contacts_table, array( 'id' => $id ) ); // db call ok. ; no-cache ok.
+			$wpdb->delete( $contact_meta_table, array( 'contact_id' => $id ) ); // db call ok. ; no-cache ok.
+			$wpdb->delete( $contact_note_table, array( 'contact_id' => $id ) ); // db call ok. ; no-cache ok.
+			$wpdb->delete( $contact_group_pivot_table, array( 'contact_id' => $id ) ); // db call ok. ; no-cache ok.
 			return true;
 		} catch ( \Exception $e ) {
 			return false;
@@ -222,7 +238,7 @@ class ContactModel {
 	/**
 	 * Delete multiple contacts
 	 *
-	 * @param array $contact_ids contact id
+	 * @param array $contact_ids contact id.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -237,10 +253,10 @@ class ContactModel {
 		try {
 			$contact_ids = implode( ',', array_map( 'intval', $contact_ids ) );
 
-			$wpdb->query( "DELETE FROM $contacts_table WHERE id IN($contact_ids)" );
-			$wpdb->query( "DELETE FROM $contact_meta_table WHERE contact_id IN($contact_ids)" );
-			$wpdb->query( "DELETE FROM $contact_note_table WHERE contact_id IN($contact_ids)" );
-			$wpdb->query( "DELETE FROM $contact_group_pivot_table WHERE contact_id IN($contact_ids)" );
+			$wpdb->query( "DELETE FROM $contacts_table WHERE id IN($contact_ids)" ); // db call ok. ; no-cache ok.
+			$wpdb->query( "DELETE FROM $contact_meta_table WHERE contact_id IN($contact_ids)" ); // db call ok. ; no-cache ok.
+			$wpdb->query( "DELETE FROM $contact_note_table WHERE contact_id IN($contact_ids)" ); // db call ok. ; no-cache ok.
+			$wpdb->query( "DELETE FROM $contact_group_pivot_table WHERE contact_id IN($contact_ids)" ); // db call ok. ; no-cache ok.
 			return true;
 		} catch ( \Exception $e ) {
 			return false;
@@ -251,10 +267,9 @@ class ContactModel {
 	/**
 	 * Run SQL query to get or search contacts from database
 	 *
-	 * @param int    $offset
-	 * @param int    $limit
-	 * @param string $search
-	 * @param array  $filters
+	 * @param int    $offset offset.
+	 * @param int    $limit limit.
+	 * @param string $search search.
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -263,7 +278,7 @@ class ContactModel {
 		$contact_table = $wpdb->prefix . ContactSchema::$table_name;
 		$search_terms  = null;
 
-		// Search contacts by email, first name or last name
+		// Search contacts by email, first name or last name.
 		if ( ! empty( $search ) ) {
 			$search       = $wpdb->esc_like( $search );
 			$search_terms = "WHERE (`hash` LIKE '%%$search%%' 
@@ -274,8 +289,8 @@ class ContactModel {
              OR `stage` LIKE '%%$search%%')";
 		}
 
-		// Prepare sql results for list view
-		$query_results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A );
+		// Prepare sql results for list view.
+		$query_results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $contact_table $search_terms ORDER BY id DESC  LIMIT %d, %d", array( $offset, $limit ) ), ARRAY_A ); // db call ok. ; no-cache ok.
 		$results       = array();
 
 		foreach ( $query_results as $query_result ) {
@@ -284,7 +299,7 @@ class ContactModel {
 			$results[] = array_merge( $query_result, $new_meta );
 		}
 
-		$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) );
+		$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) as total FROM $contact_table $search_terms" ) ); // db call ok. ; no-cache ok.
 
 		return array(
 			'data'        => $results,
@@ -297,7 +312,7 @@ class ContactModel {
 	/**
 	 * Run SQL Query to get a single contact information
 	 *
-	 * @param mixed $id Contact ID
+	 * @param mixed $id Contact ID.
 	 *
 	 * @return object
 	 * @since 1.0.0
@@ -308,7 +323,7 @@ class ContactModel {
 
 		try {
 			$contacts_query   = $wpdb->prepare( "SELECT * FROM $contacts_table WHERE id = %d", array( $id ) );
-			$contacts_results = json_decode( json_encode( $wpdb->get_results( $contacts_query ) ), true );
+			$contacts_results = json_decode( wp_json_encode( $wpdb->get_results( $contacts_query ) ), true ); // db call ok. ; no-cache ok.
 
 			$new_meta = self::get_meta( $id );
 
@@ -322,7 +337,7 @@ class ContactModel {
 	/**
 	 * Run SQL Query to get a single contact email only
 	 *
-	 * @param mixed $ids Contact IDs
+	 * @param mixed $ids Contact IDs.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -338,14 +353,14 @@ class ContactModel {
 		$sql = $wpdb->prepare( "SELECT `id`, `email` FROM {$contacts_table} WHERE `id` IN( %s ) AND `status` = %s", $ids, 'subscribed' );
 		$sql = str_replace( '( \'', '( ', $sql );
 		$sql = str_replace( '\' )', ' )', $sql );
-		return $wpdb->get_results( $sql, ARRAY_A );
+		return $wpdb->get_results( $sql, ARRAY_A ); // db call ok. ; no-cache ok.
 	}
 
 
 	/**
 	 * Returns contact meta data
 	 *
-	 * @param int $id   Contact ID
+	 * @param int $id   Contact ID.
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -354,11 +369,13 @@ class ContactModel {
 		$contacts_meta_table = $wpdb->prefix . ContactMetaSchema::$table_name;
 
 		$meta_query   = $wpdb->prepare( "SELECT meta_key, meta_value FROM $contacts_meta_table  WHERE contact_id = %d", array( $id ) );
-		$meta_results = json_decode( json_encode( $wpdb->get_results( $meta_query ) ), true );
+		$meta_results = json_decode( wp_json_encode( $wpdb->get_results( $meta_query ) ), true ); // db call ok. ; no-cache ok.
 
 		$new_meta['meta_fields'] = array();
 		foreach ( $meta_results as $result ) {
+			// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			$new_meta['meta_fields'][ $result['meta_key'] ] = $result['meta_value'];
+			// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		}
 
 		return $new_meta;
@@ -368,7 +385,8 @@ class ContactModel {
 	/**
 	 * Check existing contact through an email address
 	 *
-	 * @param string $email
+	 * @param string $contact_id contact id.
+	 * @param string $key meta key.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -379,7 +397,7 @@ class ContactModel {
 
 		try {
 			$select_query = $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = %d AND meta_key=%s", array( $contact_id, $key ) );
-			$results      = $wpdb->get_results( $select_query );
+			$results      = $wpdb->get_results( $select_query ); // db call ok. ; no-cache ok.
 			if ( ! empty( $results ) ) {
 				return true;
 			}
@@ -392,7 +410,8 @@ class ContactModel {
 	/**
 	 * Check existing contact through an email address
 	 *
-	 * @param string $email
+	 * @param string $contact_id contact id.
+	 * @param string $meta_key meta key.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -403,7 +422,7 @@ class ContactModel {
 
 		try {
 			$select_query = $wpdb->prepare( "SELECT * FROM $table_name WHERE contact_id = %d AND meta_key=%s", array( $contact_id, $meta_key ) );
-			$results      = $wpdb->get_results( $select_query );
+			$results      = $wpdb->get_results( $select_query ); // db call ok. ; no-cache ok.
 			if ( ! empty( $results ) ) {
 				return true;
 			}
@@ -416,11 +435,12 @@ class ContactModel {
 	/**
 	 * Run SQL Query to get filtered Contacts
 	 *
-	 * @param int    $offset
-	 * @param int    $limit
-	 * @param string $search
-	 * @param mixed  $status
-	 * @param mixed  $group_ids
+	 * @param mixed  $status status.
+	 * @param mixed  $tags_ids tags ids.
+	 * @param mixed  $lists_ids lists ids.
+	 * @param int    $limit limit.
+	 * @param int    $offset offset.
+	 * @param string $search search.
 	 *
 	 * @return array|bool
 	 * @since 1.0.0
@@ -430,13 +450,12 @@ class ContactModel {
 		$contact_table = $wpdb->prefix . ContactSchema::$table_name;
 		$pivot_table   = $wpdb->prefix . ContactGroupPivotSchema::$table_name;
 
-		// Prepare sql results for list view
+		// Prepare sql results for list view.
 		try {
 			$tags     = implode( ',', array_map( 'intval', $tags_ids ) );
 			$lists    = implode( ',', array_map( 'intval', $lists_ids ) );
 			$statuses = implode( '","', $status );
 
-			// $no_groupId = "$pivot_table.group_id IN ($ids) ";
 			$status_arr = 'status IN ("' . $statuses . '")';
 
 			$and = 'AND';
@@ -444,25 +463,25 @@ class ContactModel {
 			$contact_filter_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists)
             AND $status_arr )";
 
-			if ( count( $tags_ids ) == 0 && count( $lists_ids ) == 0 && count( $status ) == 0 ) {
+			if ( count( $tags_ids ) === 0 && count( $lists_ids ) === 0 && count( $status ) === 0 ) {
 				$and                  = '';
 				$contact_filter_query = '';
-			} elseif ( count( $tags_ids ) == 0 && count( $lists_ids ) == 0 && count( $status ) != 0 ) {
+			} elseif ( count( $tags_ids ) === 0 && count( $lists_ids ) === 0 && count( $status ) !== 0 ) {
 				$contact_filter_query = "( $status_arr )";
-			} elseif ( count( $tags_ids ) == 0 && count( $lists_ids ) != 0 && count( $status ) == 0 ) {
+			} elseif ( count( $tags_ids ) === 0 && count( $lists_ids ) !== 0 && count( $status ) === 0 ) {
 				$contact_filter_query = " (tt1.group_id IN ($lists))";
-			} elseif ( count( $tags_ids ) == 0 && count( $lists_ids ) != 0 && count( $status ) != 0 ) {
+			} elseif ( count( $tags_ids ) === 0 && count( $lists_ids ) !== 0 && count( $status ) !== 0 ) {
 				$contact_filter_query = " (tt1.group_id IN ($lists) AND $status_arr)";
-			} elseif ( count( $tags_ids ) != 0 && count( $lists_ids ) == 0 && count( $status ) == 0 ) {
+			} elseif ( count( $tags_ids ) !== 0 && count( $lists_ids ) === 0 && count( $status ) === 0 ) {
 				$contact_filter_query = " ($pivot_table.group_id IN ($tags))";
-			} elseif ( count( $tags_ids ) != 0 && count( $lists_ids ) == 0 && count( $status ) != 0 ) {
+			} elseif ( count( $tags_ids ) !== 0 && count( $lists_ids ) === 0 && count( $status ) !== 0 ) {
 				$contact_filter_query = "( $pivot_table.group_id IN ($tags) AND $status_arr )";
-			} elseif ( count( $tags_ids ) != 0 && count( $lists_ids ) != 0 && count( $status ) == 0 ) {
+			} elseif ( count( $tags_ids ) !== 0 && count( $lists_ids ) !== 0 && count( $status ) === 0 ) {
 				$contact_filter_query = "( $pivot_table.group_id IN ($tags) AND  tt1.group_id IN ($lists))";
 			}
 
 			$search = $wpdb->esc_like( $search );
-
+			// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery
 			$select_query = $wpdb->prepare(
 				"SELECT * FROM $contact_table
             LEFT JOIN $pivot_table ON ($contact_table.id = $pivot_table.contact_id)  
@@ -472,11 +491,10 @@ class ContactModel {
                  OR `source` LIKE '%%$search%%' OR `status` LIKE '%%$search%%' OR 
                  `stage` LIKE '%%$search%%') $and $contact_filter_query
                  GROUP BY $contact_table.id
-                LIMIT $offset, $limit
-            "
+                LIMIT $offset, $limit"
 			);
 
-			$query_results = $wpdb->get_results( $select_query );
+			$query_results = $wpdb->get_results( $select_query ); // db call ok. ; no-cache ok.
 
 			$count_query = $wpdb->prepare(
 				"SELECT COUNT(*) AS total FROM $contact_table
@@ -490,15 +508,16 @@ class ContactModel {
                 GROUP BY $contact_table.id
             "
 			);
+			// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.LikeWildcardsInQuery
 
-			$count_result = $wpdb->get_results( $count_query );
+			$count_result = $wpdb->get_results( $count_query ); // db call ok. ; no-cache ok.
 
 			$count = (int) count( $count_result );
 
 			$total_pages = ceil( $count / $limit );
 
 			return array(
-				'data'        => json_decode( json_encode( $query_results ), true ),
+				'data'        => json_decode( wp_json_encode( $query_results ), true ),
 				'total_pages' => $total_pages,
 				'count'       => $count,
 			);
@@ -511,7 +530,6 @@ class ContactModel {
 	/**
 	 * Return custiom fields for mapping
 	 *
-	 * @param void
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -535,7 +553,7 @@ class ContactModel {
                                                                                                                     'timezone'
                                                                                                                     )"
 		);
-		$results      = json_decode( json_encode( $wpdb->get_results( $select_query ) ), true );
+		$results      = json_decode( wp_json_encode( $wpdb->get_results( $select_query ) ), true ); // db call ok. ; no-cache ok.
 
 		$custom_fields = array_map(
 			function( $result ) {
@@ -549,11 +567,12 @@ class ContactModel {
 	/**
 	 * Get Total Number of contacts
 	 *
+	 * @param int $contact_id contact id.
 	 * @return bool
 	 * @since 1.0.0
 	 */
 	public static function get_total_count( $contact_id ) {
-		 global $wpdb;
+		global $wpdb;
 		$table_name = $wpdb->prefix . ContactSchema::$table_name;
 
 		$select_query       = $wpdb->prepare( "SELECT COUNT(*) as total FROM $table_name" );
@@ -561,10 +580,10 @@ class ContactModel {
 		$total_unsubscribed = $wpdb->prepare( "SELECT COUNT(*) as unsubscribed FROM $table_name WHERE status='unsubscribed'" );
 		$total_pending      = $wpdb->prepare( "SELECT COUNT(*) as pending FROM $table_name WHERE status='pending'" );
 
-		$contacts     = json_decode( json_encode( $wpdb->get_results( $select_query ) ), true );
-		$subscribed   = json_decode( json_encode( $wpdb->get_results( $total_subscribed ) ), true );
-		$unsubscribed = json_decode( json_encode( $wpdb->get_results( $total_unsubscribed ) ), true );
-		$pending      = json_decode( json_encode( $wpdb->get_results( $total_pending ) ), true );
+		$contacts     = json_decode( wp_json_encode( $wpdb->get_results( $select_query ) ), true ); // db call ok. ; no-cache ok.
+		$subscribed   = json_decode( wp_json_encode( $wpdb->get_results( $total_subscribed ) ), true ); // db call ok. ; no-cache ok.
+		$unsubscribed = json_decode( wp_json_encode( $wpdb->get_results( $total_unsubscribed ) ), true ); // db call ok. ; no-cache ok.
+		$pending      = json_decode( wp_json_encode( $wpdb->get_results( $total_pending ) ), true ); // db call ok. ; no-cache ok.
 
 		$results = array(
 			'total_contacts'     => $contacts[0]['total'],
@@ -589,27 +608,28 @@ class ContactModel {
 	public static function get_contacts_count() {
 		global $wpdb;
 		$table_name = $wpdb->prefix . ContactSchema::$table_name;
-		return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name" ) ) );
+		return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name" ) ) ); // db call ok. ; no-cache ok.
 	}
 
 
 	/**
 	 * Return total number of contacts based on status
 	 *
+	 * @param string $status status.
 	 * @return int
 	 * @since 1.0.0
 	 */
 	public static function get_contacts_status_count( $status ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . ContactSchema::$table_name;
-		return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name WHERE status= %s", array( $status ) ) ) );
+		return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table_name WHERE status= %s", array( $status ) ) ) ); // db call ok. ; no-cache ok.
 	}
 
 
 	/**
 	 * Run SQL Query to get a single contact information by hash
 	 *
-	 * @param mixed $hash Contact ID
+	 * @param mixed $hash Contact ID.
 	 *
 	 * @return object
 	 * @since 1.0.0
@@ -618,7 +638,9 @@ class ContactModel {
 		global $wpdb;
 		$contacts_table = $wpdb->prefix . ContactSchema::$table_name;
 
-		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $contacts_table WHERE hash = %s", array( $hash ) ), ARRAY_A );
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $contacts_table WHERE hash = %s", array( $hash ) ), ARRAY_A ); // db call ok. ; no-cache ok.
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 }
