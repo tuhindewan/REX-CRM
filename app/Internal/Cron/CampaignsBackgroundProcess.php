@@ -21,14 +21,14 @@ class CampaignsBackgroundProcess {
 	 * @var float $process_creation_time
 	 */
 
-	private float $email_schedule_creation_time;
+	private $email_schedule_creation_time;
 	/**
 	 * @desc A private variable to save sending emails process [background]
 	 * initialization time
 	 * @since 1.0.0
 	 * @var float $email_sending_process_creation_time
 	 */
-	private float $email_sending_process_creation_time;
+	private $email_sending_process_creation_time;
 
 	/**
 	 * @desc Initialize cron functionalities
