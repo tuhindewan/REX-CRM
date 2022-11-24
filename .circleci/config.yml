@@ -13,20 +13,19 @@ commands:
       - run:
           name: Configuration
           command: |
-            apt-get update
-            apt install php7.3-common php7.3-mysql php7.3-xml php7.3-xmlrpc php7.3-curl php7.3-gd php7.3-imagick php7.3-cli php7.3-dev php7.3-imap php7.3-mbstring php7.3-opcache php7.3-soap php7.3-zip php7.3-intl -y
-            apt-get install -y mysql-client
-            apt-get install -y subversion
-            apt-get install -y php-xdebug
-            apt-get install -y python-pip
-            pip install --upgrade --user awscli
+            apt-get update -yqq
+            apt install git libpq-dev libzip-dev zip -yqq
+            apt-get -yqqf install vim wget zip unzip subversion default-mysql-client libmcrypt-dev default-libmysqlclient-dev --fix-missing
+            docker-php-ext-install mysqli pdo_mysql
+            curl -sS https://getcomposer.org/installer | php
+            php composer.phar install
             bash bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
-            composer install
-            composer --global config process-timeout 2000
   run_phpunit:
+    docker:
+      - image: circleci/php:7.2
     steps:
       - run:
-          name: Export reports
+          name: Run WP Phpunit
           command: composer run test
 
 executors:
