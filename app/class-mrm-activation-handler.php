@@ -1,14 +1,16 @@
 <?php
-namespace MRM\Activation\Handler;
-
 /**
+ * Handle all the processes after plugin has been activated
+ *
+ * @package Mint\MRM\DataStores
+ * @namespace Mint\MRM\DataStores
  * @author [MRM Team]
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Handle all the processes after plugin has been activated]
  */
 
+namespace MRM\Activation\Handler;
 
 interface MRM_Activation_Handler {
 
