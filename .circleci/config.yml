@@ -20,6 +20,11 @@ commands:
             curl -sS https://getcomposer.org/installer | php
             php composer.phar install
             bash bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
+  run_phpcs:
+    steps:
+      - run:
+          name: WP Coding standard check
+          command: composer run phpcs
   run_phpunit:
     steps:
       - run:
@@ -38,7 +43,10 @@ executors:
           MYSQL_PASSWORD: wordpress
 
 jobs:
-  phpunit_test_reports_with_s3:
+  phpcs:
+    steps:
+      - run_phpcs
+  phpunit:
     executor: php_mysql_executor
     steps:
       - init_env
@@ -47,6 +55,13 @@ jobs:
 
 # Orchestrate our job run sequence
 workflows:
-  build_and_test:
+  version: 2
+  coding_standard:
     jobs:
-      - phpunit_test_reports_with_s3
+      - phpcs
+  phpcs_unit_test:
+    jobs:
+      - phpcs
+      - phpunit:
+          requires:
+            - phpcs
