@@ -74,7 +74,15 @@ workflows:
   version: 2
   phpcs-and-unit-test:
     jobs:
-      - phpcs
+      - phpcs:
+          filters:
+            branches:
+              only: circle-ci
+              pull_request: true
       - phpunit:
+          filters:
+            branches:
+              only: circle-ci
+              pull_request: true
           requires:
             - phpcs
