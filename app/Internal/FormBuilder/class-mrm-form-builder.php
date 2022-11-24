@@ -28,7 +28,7 @@ class FormBuilderHelper {
 	 * @internal
 	 */
 	public function __construct() {
-		new GetMRM_Block_Manager();
+		new GetMRMBlockManager();
 		new MRMSubscribeForm();
 		add_action( 'admin_enqueue_scripts', array( $this, 'mrm_block_editor_init' ) );
 	}

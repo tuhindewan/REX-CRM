@@ -17,7 +17,7 @@ namespace Mint\MRM\Internal\FormBuilder;
  * @since 5.0.0
  * @internal
  */
-final class GetMRM_Block_Manager {
+final class GetMRMBlockManager {
 
 	/**
 	 * Instance
@@ -27,7 +27,7 @@ final class GetMRM_Block_Manager {
 	 * @access private
 	 * @static
 	 *
-	 * @var GetMRM_Block_Manager The single instance of the class.
+	 * @var GetMRMBlockManager The single instance of the class.
 	 */
 	private static $instance = null;
 
@@ -37,7 +37,7 @@ final class GetMRM_Block_Manager {
 	 *
 	 * Ensures only one instance of the class is loaded or can be loaded.
 	 *
-	 * @return GetMRM_Block_Manager An instance of the class.
+	 * @return GetMRMBlockManager An instance of the class.
 	 * @since 1.0.0
 	 *
 	 * @access public
@@ -74,7 +74,7 @@ final class GetMRM_Block_Manager {
 		$block_types = $this->get_block_types();
 
 		foreach ( $block_types as $block_type ) {
-			$block_type_class    = 'MRMForm_' . $block_type;
+			$block_type_class    = 'MRMForm' . $block_type;
 			$block_type_instance = new $block_type_class();
 		}
 	}
