@@ -18,6 +18,7 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
 use Mint\MRM\Internal\Optin\UnsubscribeConfirmation;
 use Mint\MRM\Internal\Admin\WooCommerceOrderDetails;
+use Mint\MRM\Internal\Templates\TemplateHandler;
 
 class App {
 
@@ -58,7 +59,7 @@ class App {
 			OptinConfirmation::get_instance();
 			// Unsubscription
 			UnsubscribeConfirmation::get_instance();
-
+			
 			WooCommerceCheckoutContact::get_instance()->init();
 
 			PreferencePageSetting::get_instance();
@@ -67,6 +68,8 @@ class App {
 		CampaignsBackgroundProcess::get_instance()->init();
 
 		WooCommerceOrderDetails::get_instance()->init();
+		
+		TemplateHandler::get_instance()->init();
 	}
 
 

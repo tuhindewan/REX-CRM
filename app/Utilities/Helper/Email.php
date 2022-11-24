@@ -3,53 +3,79 @@ namespace Mint\MRM\Utilites\Helper;
 
 class Email {
 
-    /**
-     * Prepare email header information
-     * 
-     * @param array $existingHeader
-     * @return array
-     * @since 1.0.0
-     */
-    public static function getMailHeader($existingHeader = [])
-    {
-        if (!empty($existingHeader['From'])) {
-            return $existingHeader;
-        }
+	/**
+	 * Prepare email header information
+	 *
+	 * @param array $existingHeader
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function getMailHeader( $existingHeader = array() ) {
+		if ( ! empty( $existingHeader['From'] ) ) {
+			return $existingHeader;
+		}
 
-        $headers = [
-            'MIME-Version: 1.0',
-			'Content-type: text/html;charset=UTF-8'
-        ];
-        static $globalHeaders;
-        if ($globalHeaders) {
-            return $globalHeaders;
-        }
+		$headers = array(
+			'MIME-Version: 1.0',
+			'Content-type: text/html;charset=UTF-8',
+		);
+		static $globalHeaders;
+		if ( $globalHeaders ) {
+			return $globalHeaders;
+		}
 
         // Get email settings from the options table
-        $globalEmailSettings = get_option( "_mrm_email_settings" );
+        $default_header = self::defaultEmailSettings();
+        $globalEmailSettings = get_option( "_mrm_email_settings", $default_header );
         
         // Prepare sender information
         $fromName  = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['from_name'] : "";
         $fromEmail = isset( $globalEmailSettings['from_email'] ) ? $globalEmailSettings['from_email'] : "";
 
-        if ($fromName && $fromEmail) {
-            $headers[] = 'From: ' .$fromName . ' <' . $fromEmail . '>';
-        } else if ($fromEmail) {
-            $headers[] = $fromEmail;
-        }
+		// Prepare sender information
+		$fromName  = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['from_name'] : '';
+		$fromEmail = isset( $globalEmailSettings['from_email'] ) ? $globalEmailSettings['from_email'] : '';
 
-        // Prepare replay to information
-        $replyName  = isset( $globalEmailSettings['reply_name'] ) ? $globalEmailSettings['reply_name'] : "";
-        $replyEmail = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['reply_email'] : "";
+		if ( $fromName && $fromEmail ) {
+			$headers[] = 'From: ' . $fromName . ' <' . $fromEmail . '>';
+		} elseif ( $fromEmail ) {
+			$headers[] = $fromEmail;
+		}
 
-        if ($replyName && $replyEmail) {
-            $headers[] ='Reply-To: ' . $replyName . ' <' . $replyEmail . '>';
-        } else if ($replyEmail) {
-            $headers[] = $replyEmail;
-        }
+		// Prepare replay to information
+		$replyName  = isset( $globalEmailSettings['reply_name'] ) ? $globalEmailSettings['reply_name'] : '';
+		$replyEmail = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['reply_email'] : '';
 
-        $globalHeaders = $headers;
-        return $globalHeaders;
+		if ( $replyName && $replyEmail ) {
+			$headers[] = 'Reply-To: ' . $replyName . ' <' . $replyEmail . '>';
+		} elseif ( $replyEmail ) {
+			$headers[] = $replyEmail;
+		}
+
+		$globalHeaders = $headers;
+		return $globalHeaders;
+	}
+
+    /**
+     * Return default email settings or header information
+     * 
+     * @param void
+     * @return array
+     * @since 1.0.0
+     */
+    public static function defaultEmailSettings()
+    {
+        // Get site title and admin email from native WP
+        $name           = get_bloginfo( 'name' );
+        $admin_email    = get_bloginfo( 'admin_email' );
+
+        // Return default value for email settings
+        return [
+            "from_name"     => $name,
+            "from_email"    => $admin_email,
+            "reply_name"    => $name,
+            "reply_email"   => $admin_email
+        ];
     }
 
 
@@ -171,7 +197,7 @@ class Email {
                                                                         <table align='left' border='0' cellpadding='0' cellspacing='0' width='100%' class='fcTextContentContainer' style='border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; max-width: 100%; min-width: 100%; color: inherit;'>
                                                                             <tbody class='mcnTextBlockOuter'>
                                                                             <tr>
-                                                                                <td class='fc_email_body' align='left' valign='top' style='mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 20px; padding-right: 20px; padding-bottom: 10px; padding-left: 20px; word-break: break-word; font-size: 16px; line-height: 180%; text-align: left;'>" .$email_body. "</td>
+                                                                                <td class='fc_email_body' align='left' valign='top' style='mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 20px; padding-right: 20px; padding-bottom: 10px; padding-left: 20px; word-break: break-word; font-size: 16px; line-height: 180%; text-align: left;'>" . $email_body . "</td>
                                                                             </tr>
                                                                             </tbody>
                                                                         </table>
@@ -207,6 +233,6 @@ class Email {
                 </body>
             </html>
         ";
-    }
-    
+	}
+
 }

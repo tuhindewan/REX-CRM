@@ -4,6 +4,7 @@ namespace Mint\MRM\Internal\Admin;
 
 use Mint\MRM\DataBase\Models\ContactGroupModel;
 use Mint\MRM\Internal\Constants;
+use Mint\MRM\Utilites\Helper\Email;
 
 class AdminAssets {
 
@@ -109,6 +110,7 @@ class AdminAssets {
 				'states'             => Constants::get_country_state(),
 				'lists'              => ContactGroupModel::get_all_to_custom_select( 'lists' ),
 				'tags'               => ContactGroupModel::get_all_to_custom_select( 'tags' ),
+				'email_settings'	 => get_option( '_mrm_email_settings', Email::defaultEmailSettings() ),
 				'is_wc_active'       => $wc_active,
 			)
 		);
@@ -249,4 +251,6 @@ class AdminAssets {
 		}
 		return $wc_categories;
 	}
+
+
 }
