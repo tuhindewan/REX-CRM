@@ -11,7 +11,21 @@ commands:
             apt install -y git
       - checkout
       - run:
-          name: Configuration
+          name: Initialize environment
+          command: |
+            apt-get update -yqq
+            curl -sS https://getcomposer.org/installer | php
+            php composer.phar install
+  init_wp_env:
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apt-get update
+            apt install -y git
+      - checkout
+      - run:
+          name: Initialize WP environment
           command: |
             apt-get update -yqq
             apt install git libpq-dev libzip-dev zip -yqq
@@ -51,7 +65,7 @@ jobs:
   phpunit:
     executor: php_mysql_executor
     steps:
-      - init_env
+      - init_wp_env
       - run_phpunit
 
 
