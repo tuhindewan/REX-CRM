@@ -1,17 +1,5 @@
 version: 2.1
-description: Mint Email Continuous Integration
-
-
-executors:
-  php_mysql_executor:
-    docker:
-      - image: phpdockerio/php73-fpm
-      - image: mysql:5.7.27
-        environment:
-          MYSQL_ROOT_PASSWORD: mysql
-          MYSQL_DATABASE: wordpress_tests
-          MYSQL_USER: root
-          MYSQL_PASSWORD: mysql
+description: Generate reports from phpunit-test wordpress
 
 commands:
   init_env:
@@ -30,25 +18,31 @@ commands:
             apt-get install -y mysql-client
             apt-get install -y subversion
             apt-get install -y php-xdebug
-            bash bin/install-wp-tests.sh wordpress_test root mysql mysql "127.0.0.1" latest true
+            apt-get install -y python-pip
+            pip install --upgrade --user awscli
+            bash __dev__/bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
             composer install
             composer --global config process-timeout 2000
   run_phpunit:
     steps:
       - run:
-          name: Run WP PHPUnit
+          name: Export reports
           command: composer run test
 
+executors:
+  php_mysql_executor:
+    docker:
+      - image: phpdockerio/php73-fpm
+      - image: mysql:5.7.27
+        environment:
+          MYSQL_ROOT_PASSWORD: somewordpress
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
 
 jobs:
-  phpunit_test:
+  phpunit_test_reports_with_s3:
     executor: php_mysql_executor
     steps:
       - init_env
       - run_phpunit
-
-workflows:
-  version: 2
-  test:
-    jobs:
-      - phpunit_test
