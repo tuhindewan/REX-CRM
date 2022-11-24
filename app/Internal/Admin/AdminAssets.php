@@ -112,6 +112,7 @@ class AdminAssets {
 				'tags'               => ContactGroupModel::get_all_to_custom_select( 'tags' ),
 				'email_settings'	 => get_option( '_mrm_email_settings', Email::defaultEmailSettings() ),
 				'is_wc_active'       => $wc_active,
+				'start_of_week'       => get_option('start_of_week', 1),
 			)
 		);
 	}

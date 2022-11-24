@@ -57,6 +57,7 @@ const FilterWithDateRange = () => {
     ];
 
     const now = new Date();
+    let start_of_week =  window.MRM_Vars.start_of_week;
 
     const [startDate, setStartDate] = useState(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6));
     const [endDate, setEndDate] = useState(new Date());
@@ -68,13 +69,13 @@ const FilterWithDateRange = () => {
         let last_week_day = startDate.getDate();
         let last_week_month = monthShortNames[startDate.getMonth()];
         let last_week_year = startDate.getFullYear();
-        setStartDateLabel(last_week_day +' '+ last_week_month +', ' + last_week_year);
+        setStartDateLabel(last_week_month +' '+ last_week_day +', ' + last_week_year);
 
         if( endDate != null ) {
             let current_day = endDate.getDate();
             let current_month = monthShortNames[endDate.getMonth()];
             let current_year = endDate.getFullYear();
-            setEndDateLabel(current_day +' '+ current_month +', ' + current_year);
+            setEndDateLabel(current_month +' '+ current_day +', ' + current_year);
         }
 
     }
@@ -105,10 +106,6 @@ const FilterWithDateRange = () => {
         setEndDate(end);
 
         setDateLabels();
-
-        if (end != null) {
-            setShowCalendar(false);
-        }
     };
 
     return (
@@ -161,13 +158,13 @@ const FilterWithDateRange = () => {
                         }
                     >
                         <DatePicker
-                            dateFormat="yyyy/MM/dd"
                             selected={endDate}
                             onChange={onDateChange}
                             startDate={startDate}
                             endDate={endDate}
                             selectsRange
                             inline
+                            calendarStartDay={start_of_week}
                         />
                         <button className="mintmrm-btn">
                             Filter
