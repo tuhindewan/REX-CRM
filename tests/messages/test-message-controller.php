@@ -162,5 +162,4 @@ class MessageControllerTest extends WP_UnitTestCase {
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 200, $response->get_status() || 400, $response->get_status() );
 	}
-
 }
