@@ -184,1003 +184,1003 @@ class Constants {
 		return array(
 			array(
 				'code'  => 'AF',
-				'title' => __( 'Afghanistan', 'mint-crm' ),
+				'title' => __( 'Afghanistan', 'mrm' ),
 			),
 			array(
 				'code'  => 'AX',
-				'title' => __( 'Åland Islands', 'mint-crm' ),
+				'title' => __( 'Åland Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'AL',
-				'title' => __( 'Albania', 'mint-crm' ),
+				'title' => __( 'Albania', 'mrm' ),
 			),
 			array(
 				'code'  => 'DZ',
-				'title' => __( 'Algeria', 'mint-crm' ),
+				'title' => __( 'Algeria', 'mrm' ),
 			),
 			array(
 				'code'  => 'AS',
-				'title' => __( 'American Samoa', 'mint-crm' ),
+				'title' => __( 'American Samoa', 'mrm' ),
 			),
 			array(
 				'code'  => 'AD',
-				'title' => __( 'Andorra', 'mint-crm' ),
+				'title' => __( 'Andorra', 'mrm' ),
 			),
 			array(
 				'code'  => 'AO',
-				'title' => __( 'Angola', 'mint-crm' ),
+				'title' => __( 'Angola', 'mrm' ),
 			),
 			array(
 				'code'  => 'AI',
-				'title' => __( 'Anguilla', 'mint-crm' ),
+				'title' => __( 'Anguilla', 'mrm' ),
 			),
 			array(
 				'code'  => 'AQ',
-				'title' => __( 'Antarctica', 'mint-crm' ),
+				'title' => __( 'Antarctica', 'mrm' ),
 			),
 			array(
 				'code'  => 'AG',
-				'title' => __( 'Antigua and Barbuda', 'mint-crm' ),
+				'title' => __( 'Antigua and Barbuda', 'mrm' ),
 			),
 			array(
 				'code'  => 'AR',
-				'title' => __( 'Argentina', 'mint-crm' ),
+				'title' => __( 'Argentina', 'mrm' ),
 			),
 			array(
 				'code'  => 'AM',
-				'title' => __( 'Armenia', 'mint-crm' ),
+				'title' => __( 'Armenia', 'mrm' ),
 			),
 			array(
 				'code'  => 'AW',
-				'title' => __( 'Aruba', 'mint-crm' ),
+				'title' => __( 'Aruba', 'mrm' ),
 			),
 			array(
 				'code'  => 'AU',
-				'title' => __( 'Australia', 'mint-crm' ),
+				'title' => __( 'Australia', 'mrm' ),
 			),
 			array(
 				'code'  => 'AT',
-				'title' => __( 'Austria', 'mint-crm' ),
+				'title' => __( 'Austria', 'mrm' ),
 			),
 			array(
 				'code'  => 'AZ',
-				'title' => __( 'Azerbaijan', 'mint-crm' ),
+				'title' => __( 'Azerbaijan', 'mrm' ),
 			),
 			array(
 				'code'  => 'BS',
-				'title' => __( 'Bahamas', 'mint-crm' ),
+				'title' => __( 'Bahamas', 'mrm' ),
 			),
 			array(
 				'code'  => 'BH',
-				'title' => __( 'Bahrain', 'mint-crm' ),
+				'title' => __( 'Bahrain', 'mrm' ),
 			),
 			array(
 				'code'  => 'BD',
-				'title' => __( 'Bangladesh', 'mint-crm' ),
+				'title' => __( 'Bangladesh', 'mrm' ),
 			),
 			array(
 				'code'  => 'BB',
-				'title' => __( 'Barbados', 'mint-crm' ),
+				'title' => __( 'Barbados', 'mrm' ),
 			),
 			array(
 				'code'  => 'BY',
-				'title' => __( 'Belarus', 'mint-crm' ),
+				'title' => __( 'Belarus', 'mrm' ),
 			),
 			array(
 				'code'  => 'BE',
-				'title' => __( 'Belgium', 'mint-crm' ),
+				'title' => __( 'Belgium', 'mrm' ),
 			),
 			array(
 				'code'  => 'PW',
-				'title' => __( 'Belau', 'mint-crm' ),
+				'title' => __( 'Belau', 'mrm' ),
 			),
 			array(
 				'code'  => 'BZ',
-				'title' => __( 'Belize', 'mint-crm' ),
+				'title' => __( 'Belize', 'mrm' ),
 			),
 			array(
 				'code'  => 'BJ',
-				'title' => __( 'Benin', 'mint-crm' ),
+				'title' => __( 'Benin', 'mrm' ),
 			),
 			array(
 				'code'  => 'BM',
-				'title' => __( 'Bermuda', 'mint-crm' ),
+				'title' => __( 'Bermuda', 'mrm' ),
 			),
 			array(
 				'code'  => 'BT',
-				'title' => __( 'Bhutan', 'mint-crm' ),
+				'title' => __( 'Bhutan', 'mrm' ),
 			),
 			array(
 				'code'  => 'BO',
-				'title' => __( 'Bolivia', 'mint-crm' ),
+				'title' => __( 'Bolivia', 'mrm' ),
 			),
 			array(
 				'code'  => 'BQ',
-				'title' => __( 'Bonaire, Saint Eustatius and Saba', 'mint-crm' ),
+				'title' => __( 'Bonaire, Saint Eustatius and Saba', 'mrm' ),
 			),
 			array(
 				'code'  => 'BA',
-				'title' => __( 'Bosnia and Herzegovina', 'mint-crm' ),
+				'title' => __( 'Bosnia and Herzegovina', 'mrm' ),
 			),
 			array(
 				'code'  => 'BW',
-				'title' => __( 'Botswana', 'mint-crm' ),
+				'title' => __( 'Botswana', 'mrm' ),
 			),
 			array(
 				'code'  => 'BV',
-				'title' => __( 'Bouvet Island', 'mint-crm' ),
+				'title' => __( 'Bouvet Island', 'mrm' ),
 			),
 			array(
 				'code'  => 'BR',
-				'title' => __( 'Brazil', 'mint-crm' ),
+				'title' => __( 'Brazil', 'mrm' ),
 			),
 			array(
 				'code'  => 'IO',
-				'title' => __( 'British Indian Ocean Territory', 'mint-crm' ),
+				'title' => __( 'British Indian Ocean Territory', 'mrm' ),
 			),
 			array(
 				'code'  => 'BN',
-				'title' => __( 'Brunei', 'mint-crm' ),
+				'title' => __( 'Brunei', 'mrm' ),
 			),
 			array(
 				'code'  => 'BG',
-				'title' => __( 'Bulgaria', 'mint-crm' ),
+				'title' => __( 'Bulgaria', 'mrm' ),
 			),
 			array(
 				'code'  => 'BF',
-				'title' => __( 'Burkina Faso', 'mint-crm' ),
+				'title' => __( 'Burkina Faso', 'mrm' ),
 			),
 			array(
 				'code'  => 'BI',
-				'title' => __( 'Burundi', 'mint-crm' ),
+				'title' => __( 'Burundi', 'mrm' ),
 			),
 			array(
 				'code'  => 'KH',
-				'title' => __( 'Cambodia', 'mint-crm' ),
+				'title' => __( 'Cambodia', 'mrm' ),
 			),
 			array(
 				'code'  => 'CM',
-				'title' => __( 'Cameroon', 'mint-crm' ),
+				'title' => __( 'Cameroon', 'mrm' ),
 			),
 			array(
 				'code'  => 'CA',
-				'title' => __( 'Canada', 'mint-crm' ),
+				'title' => __( 'Canada', 'mrm' ),
 			),
 			array(
 				'code'  => 'CV',
-				'title' => __( 'Cape Verde', 'mint-crm' ),
+				'title' => __( 'Cape Verde', 'mrm' ),
 			),
 			array(
 				'code'  => 'KY',
-				'title' => __( 'Cayman Islands', 'mint-crm' ),
+				'title' => __( 'Cayman Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'CF',
-				'title' => __( 'Central African Republic', 'mint-crm' ),
+				'title' => __( 'Central African Republic', 'mrm' ),
 			),
 			array(
 				'code'  => 'TD',
-				'title' => __( 'Chad', 'mint-crm' ),
+				'title' => __( 'Chad', 'mrm' ),
 			),
 			array(
 				'code'  => 'CL',
-				'title' => __( 'Chile', 'mint-crm' ),
+				'title' => __( 'Chile', 'mrm' ),
 			),
 			array(
 				'code'  => 'CN',
-				'title' => __( 'China', 'mint-crm' ),
+				'title' => __( 'China', 'mrm' ),
 			),
 			array(
 				'code'  => 'CX',
-				'title' => __( 'Christmas Island', 'mint-crm' ),
+				'title' => __( 'Christmas Island', 'mrm' ),
 			),
 			array(
 				'code'  => 'CC',
-				'title' => __( 'Cocos (Keeling) Islands', 'mint-crm' ),
+				'title' => __( 'Cocos (Keeling) Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'CO',
-				'title' => __( 'Colombia', 'mint-crm' ),
+				'title' => __( 'Colombia', 'mrm' ),
 			),
 			array(
 				'code'  => 'KM',
-				'title' => __( 'Comoros', 'mint-crm' ),
+				'title' => __( 'Comoros', 'mrm' ),
 			),
 			array(
 				'code'  => 'CG',
-				'title' => __( 'Congo (Brazzaville)', 'mint-crm' ),
+				'title' => __( 'Congo (Brazzaville)', 'mrm' ),
 			),
 			array(
 				'code'  => 'CD',
-				'title' => __( 'Congo (Kinshasa)', 'mint-crm' ),
+				'title' => __( 'Congo (Kinshasa)', 'mrm' ),
 			),
 			array(
 				'code'  => 'CK',
-				'title' => __( 'Cook Islands', 'mint-crm' ),
+				'title' => __( 'Cook Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'CR',
-				'title' => __( 'Costa Rica', 'mint-crm' ),
+				'title' => __( 'Costa Rica', 'mrm' ),
 			),
 			array(
 				'code'  => 'HR',
-				'title' => __( 'Croatia', 'mint-crm' ),
+				'title' => __( 'Croatia', 'mrm' ),
 			),
 			array(
 				'code'  => 'CU',
-				'title' => __( 'Cuba', 'mint-crm' ),
+				'title' => __( 'Cuba', 'mrm' ),
 			),
 			array(
 				'code'  => 'CW',
-				'title' => __( 'Cura&ccedil;ao', 'mint-crm' ),
+				'title' => __( 'Cura&ccedil;ao', 'mrm' ),
 			),
 			array(
 				'code'  => 'CY',
-				'title' => __( 'Cyprus', 'mint-crm' ),
+				'title' => __( 'Cyprus', 'mrm' ),
 			),
 			array(
 				'code'  => 'CZ',
-				'title' => __( 'Czechia (Czech Republic)', 'mint-crm' ),
+				'title' => __( 'Czechia (Czech Republic)', 'mrm' ),
 			),
 			array(
 				'code'  => 'DK',
-				'title' => __( 'Denmark', 'mint-crm' ),
+				'title' => __( 'Denmark', 'mrm' ),
 			),
 			array(
 				'code'  => 'DJ',
-				'title' => __( 'Djibouti', 'mint-crm' ),
+				'title' => __( 'Djibouti', 'mrm' ),
 			),
 			array(
 				'code'  => 'DM',
-				'title' => __( 'Dominica', 'mint-crm' ),
+				'title' => __( 'Dominica', 'mrm' ),
 			),
 			array(
 				'code'  => 'DO',
-				'title' => __( 'Dominican Republic', 'mint-crm' ),
+				'title' => __( 'Dominican Republic', 'mrm' ),
 			),
 			array(
 				'code'  => 'EC',
-				'title' => __( 'Ecuador', 'mint-crm' ),
+				'title' => __( 'Ecuador', 'mrm' ),
 			),
 			array(
 				'code'  => 'EG',
-				'title' => __( 'Egypt', 'mint-crm' ),
+				'title' => __( 'Egypt', 'mrm' ),
 			),
 			array(
 				'code'  => 'SV',
-				'title' => __( 'El Salvador', 'mint-crm' ),
+				'title' => __( 'El Salvador', 'mrm' ),
 			),
 			array(
 				'code'  => 'GQ',
-				'title' => __( 'Equatorial Guinea', 'mint-crm' ),
+				'title' => __( 'Equatorial Guinea', 'mrm' ),
 			),
 			array(
 				'code'  => 'ER',
-				'title' => __( 'Eritrea', 'mint-crm' ),
+				'title' => __( 'Eritrea', 'mrm' ),
 			),
 			array(
 				'code'  => 'EE',
-				'title' => __( 'Estonia', 'mint-crm' ),
+				'title' => __( 'Estonia', 'mrm' ),
 			),
 			array(
 				'code'  => 'ET',
-				'title' => __( 'Ethiopia', 'mint-crm' ),
+				'title' => __( 'Ethiopia', 'mrm' ),
 			),
 			array(
 				'code'  => 'FK',
-				'title' => __( 'Falkland Islands', 'mint-crm' ),
+				'title' => __( 'Falkland Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'FO',
-				'title' => __( 'Faroe Islands', 'mint-crm' ),
+				'title' => __( 'Faroe Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'FJ',
-				'title' => __( 'Fiji', 'mint-crm' ),
+				'title' => __( 'Fiji', 'mrm' ),
 			),
 			array(
 				'code'  => 'FI',
-				'title' => __( 'Finland', 'mint-crm' ),
+				'title' => __( 'Finland', 'mrm' ),
 			),
 			array(
 				'code'  => 'FR',
-				'title' => __( 'France', 'mint-crm' ),
+				'title' => __( 'France', 'mrm' ),
 			),
 			array(
 				'code'  => 'GF',
-				'title' => __( 'French Guiana', 'mint-crm' ),
+				'title' => __( 'French Guiana', 'mrm' ),
 			),
 			array(
 				'code'  => 'PF',
-				'title' => __( 'French Polynesia', 'mint-crm' ),
+				'title' => __( 'French Polynesia', 'mrm' ),
 			),
 			array(
 				'code'  => 'TF',
-				'title' => __( 'French Southern Territories', 'mint-crm' ),
+				'title' => __( 'French Southern Territories', 'mrm' ),
 			),
 			array(
 				'code'  => 'GA',
-				'title' => __( 'Gabon', 'mint-crm' ),
+				'title' => __( 'Gabon', 'mrm' ),
 			),
 			array(
 				'code'  => 'GM',
-				'title' => __( 'Gambia', 'mint-crm' ),
+				'title' => __( 'Gambia', 'mrm' ),
 			),
 			array(
 				'code'  => 'GE',
-				'title' => __( 'Georgia', 'mint-crm' ),
+				'title' => __( 'Georgia', 'mrm' ),
 			),
 			array(
 				'code'  => 'DE',
-				'title' => __( 'Germany', 'mint-crm' ),
+				'title' => __( 'Germany', 'mrm' ),
 			),
 			array(
 				'code'  => 'GH',
-				'title' => __( 'Ghana', 'mint-crm' ),
+				'title' => __( 'Ghana', 'mrm' ),
 			),
 			array(
 				'code'  => 'GI',
-				'title' => __( 'Gibraltar', 'mint-crm' ),
+				'title' => __( 'Gibraltar', 'mrm' ),
 			),
 			array(
 				'code'  => 'GR',
-				'title' => __( 'Greece', 'mint-crm' ),
+				'title' => __( 'Greece', 'mrm' ),
 			),
 			array(
 				'code'  => 'GL',
-				'title' => __( 'Greenland', 'mint-crm' ),
+				'title' => __( 'Greenland', 'mrm' ),
 			),
 			array(
 				'code'  => 'GD',
-				'title' => __( 'Grenada', 'mint-crm' ),
+				'title' => __( 'Grenada', 'mrm' ),
 			),
 			array(
 				'code'  => 'GP',
-				'title' => __( 'Guadeloupe', 'mint-crm' ),
+				'title' => __( 'Guadeloupe', 'mrm' ),
 			),
 			array(
 				'code'  => 'GU',
-				'title' => __( 'Guam', 'mint-crm' ),
+				'title' => __( 'Guam', 'mrm' ),
 			),
 			array(
 				'code'  => 'GT',
-				'title' => __( 'Guatemala', 'mint-crm' ),
+				'title' => __( 'Guatemala', 'mrm' ),
 			),
 			array(
 				'code'  => 'GG',
-				'title' => __( 'Guernsey', 'mint-crm' ),
+				'title' => __( 'Guernsey', 'mrm' ),
 			),
 			array(
 				'code'  => 'GN',
-				'title' => __( 'Guinea', 'mint-crm' ),
+				'title' => __( 'Guinea', 'mrm' ),
 			),
 			array(
 				'code'  => 'GW',
-				'title' => __( 'Guinea-Bissau', 'mint-crm' ),
+				'title' => __( 'Guinea-Bissau', 'mrm' ),
 			),
 			array(
 				'code'  => 'GY',
-				'title' => __( 'Guyana', 'mint-crm' ),
+				'title' => __( 'Guyana', 'mrm' ),
 			),
 			array(
 				'code'  => 'HT',
-				'title' => __( 'Haiti', 'mint-crm' ),
+				'title' => __( 'Haiti', 'mrm' ),
 			),
 			array(
 				'code'  => 'HM',
-				'title' => __( 'Heard Island and McDonald Islands', 'mint-crm' ),
+				'title' => __( 'Heard Island and McDonald Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'HN',
-				'title' => __( 'Honduras', 'mint-crm' ),
+				'title' => __( 'Honduras', 'mrm' ),
 			),
 			array(
 				'code'  => 'HK',
-				'title' => __( 'Hong Kong', 'mint-crm' ),
+				'title' => __( 'Hong Kong', 'mrm' ),
 			),
 			array(
 				'code'  => 'HU',
-				'title' => __( 'Hungary', 'mint-crm' ),
+				'title' => __( 'Hungary', 'mrm' ),
 			),
 			array(
 				'code'  => 'IS',
-				'title' => __( 'Iceland', 'mint-crm' ),
+				'title' => __( 'Iceland', 'mrm' ),
 			),
 			array(
 				'code'  => 'IN',
-				'title' => __( 'India', 'mint-crm' ),
+				'title' => __( 'India', 'mrm' ),
 			),
 			array(
 				'code'  => 'ID',
-				'title' => __( 'Indonesia', 'mint-crm' ),
+				'title' => __( 'Indonesia', 'mrm' ),
 			),
 			array(
 				'code'  => 'IR',
-				'title' => __( 'Iran', 'mint-crm' ),
+				'title' => __( 'Iran', 'mrm' ),
 			),
 			array(
 				'code'  => 'IQ',
-				'title' => __( 'Iraq', 'mint-crm' ),
+				'title' => __( 'Iraq', 'mrm' ),
 			),
 			array(
 				'code'  => 'IE',
-				'title' => __( 'Ireland', 'mint-crm' ),
+				'title' => __( 'Ireland', 'mrm' ),
 			),
 			array(
 				'code'  => 'IM',
-				'title' => __( 'Isle of Man', 'mint-crm' ),
+				'title' => __( 'Isle of Man', 'mrm' ),
 			),
 			array(
 				'code'  => 'IL',
-				'title' => __( 'Israel', 'mint-crm' ),
+				'title' => __( 'Israel', 'mrm' ),
 			),
 			array(
 				'code'  => 'IT',
-				'title' => __( 'Italy', 'mint-crm' ),
+				'title' => __( 'Italy', 'mrm' ),
 			),
 			array(
 				'code'  => 'CI',
-				'title' => __( 'Ivory Coast', 'mint-crm' ),
+				'title' => __( 'Ivory Coast', 'mrm' ),
 			),
 			array(
 				'code'  => 'JM',
-				'title' => __( 'Jamaica', 'mint-crm' ),
+				'title' => __( 'Jamaica', 'mrm' ),
 			),
 			array(
 				'code'  => 'JP',
-				'title' => __( 'Japan', 'mint-crm' ),
+				'title' => __( 'Japan', 'mrm' ),
 			),
 			array(
 				'code'  => 'JE',
-				'title' => __( 'Jersey', 'mint-crm' ),
+				'title' => __( 'Jersey', 'mrm' ),
 			),
 			array(
 				'code'  => 'JO',
-				'title' => __( 'Jordan', 'mint-crm' ),
+				'title' => __( 'Jordan', 'mrm' ),
 			),
 			array(
 				'code'  => 'KZ',
-				'title' => __( 'Kazakhstan', 'mint-crm' ),
+				'title' => __( 'Kazakhstan', 'mrm' ),
 			),
 			array(
 				'code'  => 'KE',
-				'title' => __( 'Kenya', 'mint-crm' ),
+				'title' => __( 'Kenya', 'mrm' ),
 			),
 			array(
 				'code'  => 'KI',
-				'title' => __( 'Kiribati', 'mint-crm' ),
+				'title' => __( 'Kiribati', 'mrm' ),
 			),
 			array(
 				'code'  => 'KW',
-				'title' => __( 'Kuwait', 'mint-crm' ),
+				'title' => __( 'Kuwait', 'mrm' ),
 			),
 			array(
 				'code'  => 'XK',
-				'title' => __( 'Kosovo', 'mint-crm' ),
+				'title' => __( 'Kosovo', 'mrm' ),
 			),
 			array(
 				'code'  => 'KG',
-				'title' => __( 'Kyrgyzstan', 'mint-crm' ),
+				'title' => __( 'Kyrgyzstan', 'mrm' ),
 			),
 			array(
 				'code'  => 'LA',
-				'title' => __( 'Laos', 'mint-crm' ),
+				'title' => __( 'Laos', 'mrm' ),
 			),
 			array(
 				'code'  => 'LV',
-				'title' => __( 'Latvia', 'mint-crm' ),
+				'title' => __( 'Latvia', 'mrm' ),
 			),
 			array(
 				'code'  => 'LB',
-				'title' => __( 'Lebanon', 'mint-crm' ),
+				'title' => __( 'Lebanon', 'mrm' ),
 			),
 			array(
 				'code'  => 'LS',
-				'title' => __( 'Lesotho', 'mint-crm' ),
+				'title' => __( 'Lesotho', 'mrm' ),
 			),
 			array(
 				'code'  => 'LR',
-				'title' => __( 'Liberia', 'mint-crm' ),
+				'title' => __( 'Liberia', 'mrm' ),
 			),
 			array(
 				'code'  => 'LY',
-				'title' => __( 'Libya', 'mint-crm' ),
+				'title' => __( 'Libya', 'mrm' ),
 			),
 			array(
 				'code'  => 'LI',
-				'title' => __( 'Liechtenstein', 'mint-crm' ),
+				'title' => __( 'Liechtenstein', 'mrm' ),
 			),
 			array(
 				'code'  => 'LT',
-				'title' => __( 'Lithuania', 'mint-crm' ),
+				'title' => __( 'Lithuania', 'mrm' ),
 			),
 			array(
 				'code'  => 'LU',
-				'title' => __( 'Luxembourg', 'mint-crm' ),
+				'title' => __( 'Luxembourg', 'mrm' ),
 			),
 			array(
 				'code'  => 'MO',
-				'title' => __( 'Macao', 'mint-crm' ),
+				'title' => __( 'Macao', 'mrm' ),
 			),
 			array(
 				'code'  => 'MK',
-				'title' => __( 'North Macedonia', 'mint-crm' ),
+				'title' => __( 'North Macedonia', 'mrm' ),
 			),
 			array(
 				'code'  => 'MG',
-				'title' => __( 'Madagascar', 'mint-crm' ),
+				'title' => __( 'Madagascar', 'mrm' ),
 			),
 			array(
 				'code'  => 'MW',
-				'title' => __( 'Malawi', 'mint-crm' ),
+				'title' => __( 'Malawi', 'mrm' ),
 			),
 			array(
 				'code'  => 'MY',
-				'title' => __( 'Malaysia', 'mint-crm' ),
+				'title' => __( 'Malaysia', 'mrm' ),
 			),
 			array(
 				'code'  => 'MV',
-				'title' => __( 'Maldives', 'mint-crm' ),
+				'title' => __( 'Maldives', 'mrm' ),
 			),
 			array(
 				'code'  => 'ML',
-				'title' => __( 'Mali', 'mint-crm' ),
+				'title' => __( 'Mali', 'mrm' ),
 			),
 			array(
 				'code'  => 'MT',
-				'title' => __( 'Malta', 'mint-crm' ),
+				'title' => __( 'Malta', 'mrm' ),
 			),
 			array(
 				'code'  => 'MH',
-				'title' => __( 'Marshall Islands', 'mint-crm' ),
+				'title' => __( 'Marshall Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'MQ',
-				'title' => __( 'Martinique', 'mint-crm' ),
+				'title' => __( 'Martinique', 'mrm' ),
 			),
 			array(
 				'code'  => 'MR',
-				'title' => __( 'Mauritania', 'mint-crm' ),
+				'title' => __( 'Mauritania', 'mrm' ),
 			),
 			array(
 				'code'  => 'MU',
-				'title' => __( 'Mauritius', 'mint-crm' ),
+				'title' => __( 'Mauritius', 'mrm' ),
 			),
 			array(
 				'code'  => 'YT',
-				'title' => __( 'Mayotte', 'mint-crm' ),
+				'title' => __( 'Mayotte', 'mrm' ),
 			),
 			array(
 				'code'  => 'MX',
-				'title' => __( 'Mexico', 'mint-crm' ),
+				'title' => __( 'Mexico', 'mrm' ),
 			),
 			array(
 				'code'  => 'FM',
-				'title' => __( 'Micronesia', 'mint-crm' ),
+				'title' => __( 'Micronesia', 'mrm' ),
 			),
 			array(
 				'code'  => 'MD',
-				'title' => __( 'Moldova', 'mint-crm' ),
+				'title' => __( 'Moldova', 'mrm' ),
 			),
 			array(
 				'code'  => 'MC',
-				'title' => __( 'Monaco', 'mint-crm' ),
+				'title' => __( 'Monaco', 'mrm' ),
 			),
 			array(
 				'code'  => 'MN',
-				'title' => __( 'Mongolia', 'mint-crm' ),
+				'title' => __( 'Mongolia', 'mrm' ),
 			),
 			array(
 				'code'  => 'ME',
-				'title' => __( 'Montenegro', 'mint-crm' ),
+				'title' => __( 'Montenegro', 'mrm' ),
 			),
 			array(
 				'code'  => 'MS',
-				'title' => __( 'Montserrat', 'mint-crm' ),
+				'title' => __( 'Montserrat', 'mrm' ),
 			),
 			array(
 				'code'  => 'MA',
-				'title' => __( 'Morocco', 'mint-crm' ),
+				'title' => __( 'Morocco', 'mrm' ),
 			),
 			array(
 				'code'  => 'MZ',
-				'title' => __( 'Mozambique', 'mint-crm' ),
+				'title' => __( 'Mozambique', 'mrm' ),
 			),
 			array(
 				'code'  => 'MM',
-				'title' => __( 'Myanmar', 'mint-crm' ),
+				'title' => __( 'Myanmar', 'mrm' ),
 			),
 			array(
 				'code'  => 'NA',
-				'title' => __( 'Namibia', 'mint-crm' ),
+				'title' => __( 'Namibia', 'mrm' ),
 			),
 			array(
 				'code'  => 'NR',
-				'title' => __( 'Nauru', 'mint-crm' ),
+				'title' => __( 'Nauru', 'mrm' ),
 			),
 			array(
 				'code'  => 'NP',
-				'title' => __( 'Nepal', 'mint-crm' ),
+				'title' => __( 'Nepal', 'mrm' ),
 			),
 			array(
 				'code'  => 'NL',
-				'title' => __( 'Netherlands', 'mint-crm' ),
+				'title' => __( 'Netherlands', 'mrm' ),
 			),
 			array(
 				'code'  => 'NC',
-				'title' => __( 'New Caledonia', 'mint-crm' ),
+				'title' => __( 'New Caledonia', 'mrm' ),
 			),
 			array(
 				'code'  => 'NZ',
-				'title' => __( 'New Zealand', 'mint-crm' ),
+				'title' => __( 'New Zealand', 'mrm' ),
 			),
 			array(
 				'code'  => 'NI',
-				'title' => __( 'Nicaragua', 'mint-crm' ),
+				'title' => __( 'Nicaragua', 'mrm' ),
 			),
 			array(
 				'code'  => 'NE',
-				'title' => __( 'Niger', 'mint-crm' ),
+				'title' => __( 'Niger', 'mrm' ),
 			),
 			array(
 				'code'  => 'NG',
-				'title' => __( 'Nigeria', 'mint-crm' ),
+				'title' => __( 'Nigeria', 'mrm' ),
 			),
 			array(
 				'code'  => 'NU',
-				'title' => __( 'Niue', 'mint-crm' ),
+				'title' => __( 'Niue', 'mrm' ),
 			),
 			array(
 				'code'  => 'NF',
-				'title' => __( 'Norfolk Island', 'mint-crm' ),
+				'title' => __( 'Norfolk Island', 'mrm' ),
 			),
 			array(
 				'code'  => 'MP',
-				'title' => __( 'Northern Mariana Islands', 'mint-crm' ),
+				'title' => __( 'Northern Mariana Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'KP',
-				'title' => __( 'North Korea', 'mint-crm' ),
+				'title' => __( 'North Korea', 'mrm' ),
 			),
 			array(
 				'code'  => 'NO',
-				'title' => __( 'Norway', 'mint-crm' ),
+				'title' => __( 'Norway', 'mrm' ),
 			),
 			array(
 				'code'  => 'OM',
-				'title' => __( 'Oman', 'mint-crm' ),
+				'title' => __( 'Oman', 'mrm' ),
 			),
 			array(
 				'code'  => 'PK',
-				'title' => __( 'Pakistan', 'mint-crm' ),
+				'title' => __( 'Pakistan', 'mrm' ),
 			),
 			array(
 				'code'  => 'PS',
-				'title' => __( 'Palestinian Territory', 'mint-crm' ),
+				'title' => __( 'Palestinian Territory', 'mrm' ),
 			),
 			array(
 				'code'  => 'PA',
-				'title' => __( 'Panama', 'mint-crm' ),
+				'title' => __( 'Panama', 'mrm' ),
 			),
 			array(
 				'code'  => 'PG',
-				'title' => __( 'Papua New Guinea', 'mint-crm' ),
+				'title' => __( 'Papua New Guinea', 'mrm' ),
 			),
 			array(
 				'code'  => 'PY',
-				'title' => __( 'Paraguay', 'mint-crm' ),
+				'title' => __( 'Paraguay', 'mrm' ),
 			),
 			array(
 				'code'  => 'PE',
-				'title' => __( 'Peru', 'mint-crm' ),
+				'title' => __( 'Peru', 'mrm' ),
 			),
 			array(
 				'code'  => 'PH',
-				'title' => __( 'Philippines', 'mint-crm' ),
+				'title' => __( 'Philippines', 'mrm' ),
 			),
 			array(
 				'code'  => 'PN',
-				'title' => __( 'Pitcairn', 'mint-crm' ),
+				'title' => __( 'Pitcairn', 'mrm' ),
 			),
 			array(
 				'code'  => 'PL',
-				'title' => __( 'Poland', 'mint-crm' ),
+				'title' => __( 'Poland', 'mrm' ),
 			),
 			array(
 				'code'  => 'PT',
-				'title' => __( 'Portugal', 'mint-crm' ),
+				'title' => __( 'Portugal', 'mrm' ),
 			),
 			array(
 				'code'  => 'PR',
-				'title' => __( 'Puerto Rico', 'mint-crm' ),
+				'title' => __( 'Puerto Rico', 'mrm' ),
 			),
 			array(
 				'code'  => 'QA',
-				'title' => __( 'Qatar', 'mint-crm' ),
+				'title' => __( 'Qatar', 'mrm' ),
 			),
 			array(
 				'code'  => 'RE',
-				'title' => __( 'Reunion', 'mint-crm' ),
+				'title' => __( 'Reunion', 'mrm' ),
 			),
 			array(
 				'code'  => 'RO',
-				'title' => __( 'Romania', 'mint-crm' ),
+				'title' => __( 'Romania', 'mrm' ),
 			),
 			array(
 				'code'  => 'RU',
-				'title' => __( 'Russia', 'mint-crm' ),
+				'title' => __( 'Russia', 'mrm' ),
 			),
 			array(
 				'code'  => 'RW',
-				'title' => __( 'Rwanda', 'mint-crm' ),
+				'title' => __( 'Rwanda', 'mrm' ),
 			),
 			array(
 				'code'  => 'BL',
-				'title' => __( 'Saint Barth&eacute;lemy', 'mint-crm' ),
+				'title' => __( 'Saint Barth&eacute;lemy', 'mrm' ),
 			),
 			array(
 				'code'  => 'SH',
-				'title' => __( 'Saint Helena', 'mint-crm' ),
+				'title' => __( 'Saint Helena', 'mrm' ),
 			),
 			array(
 				'code'  => 'KN',
-				'title' => __( 'Saint Kitts and Nevis', 'mint-crm' ),
+				'title' => __( 'Saint Kitts and Nevis', 'mrm' ),
 			),
 			array(
 				'code'  => 'LC',
-				'title' => __( 'Saint Lucia', 'mint-crm' ),
+				'title' => __( 'Saint Lucia', 'mrm' ),
 			),
 			array(
 				'code'  => 'MF',
-				'title' => __( 'Saint Martin (French part)', 'mint-crm' ),
+				'title' => __( 'Saint Martin (French part)', 'mrm' ),
 			),
 			array(
 				'code'  => 'SX',
-				'title' => __( 'Saint Martin (Dutch part)', 'mint-crm' ),
+				'title' => __( 'Saint Martin (Dutch part)', 'mrm' ),
 			),
 			array(
 				'code'  => 'PM',
-				'title' => __( 'Saint Pierre and Miquelon', 'mint-crm' ),
+				'title' => __( 'Saint Pierre and Miquelon', 'mrm' ),
 			),
 			array(
 				'code'  => 'VC',
-				'title' => __( 'Saint Vincent and the Grenadines', 'mint-crm' ),
+				'title' => __( 'Saint Vincent and the Grenadines', 'mrm' ),
 			),
 			array(
 				'code'  => 'SM',
-				'title' => __( 'San Marino', 'mint-crm' ),
+				'title' => __( 'San Marino', 'mrm' ),
 			),
 			array(
 				'code'  => 'ST',
-				'title' => __( 'S&atilde;o Tom&eacute; and Pr&iacute;ncipe', 'mint-crm' ),
+				'title' => __( 'S&atilde;o Tom&eacute; and Pr&iacute;ncipe', 'mrm' ),
 			),
 			array(
 				'code'  => 'SA',
-				'title' => __( 'Saudi Arabia', 'mint-crm' ),
+				'title' => __( 'Saudi Arabia', 'mrm' ),
 			),
 			array(
 				'code'  => 'SN',
-				'title' => __( 'Senegal', 'mint-crm' ),
+				'title' => __( 'Senegal', 'mrm' ),
 			),
 			array(
 				'code'  => 'RS',
-				'title' => __( 'Serbia', 'mint-crm' ),
+				'title' => __( 'Serbia', 'mrm' ),
 			),
 			array(
 				'code'  => 'SC',
-				'title' => __( 'Seychelles', 'mint-crm' ),
+				'title' => __( 'Seychelles', 'mrm' ),
 			),
 			array(
 				'code'  => 'SL',
-				'title' => __( 'Sierra Leone', 'mint-crm' ),
+				'title' => __( 'Sierra Leone', 'mrm' ),
 			),
 			array(
 				'code'  => 'SG',
-				'title' => __( 'Singapore', 'mint-crm' ),
+				'title' => __( 'Singapore', 'mrm' ),
 			),
 			array(
 				'code'  => 'SK',
-				'title' => __( 'Slovakia', 'mint-crm' ),
+				'title' => __( 'Slovakia', 'mrm' ),
 			),
 			array(
 				'code'  => 'SI',
-				'title' => __( 'Slovenia', 'mint-crm' ),
+				'title' => __( 'Slovenia', 'mrm' ),
 			),
 			array(
 				'code'  => 'SB',
-				'title' => __( 'Solomon Islands', 'mint-crm' ),
+				'title' => __( 'Solomon Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'SO',
-				'title' => __( 'Somalia', 'mint-crm' ),
+				'title' => __( 'Somalia', 'mrm' ),
 			),
 			array(
 				'code'  => 'ZA',
-				'title' => __( 'South Africa', 'mint-crm' ),
+				'title' => __( 'South Africa', 'mrm' ),
 			),
 			array(
 				'code'  => 'GS',
-				'title' => __( 'South Georgia/Sandwich Islands', 'mint-crm' ),
+				'title' => __( 'South Georgia/Sandwich Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'KR',
-				'title' => __( 'South Korea', 'mint-crm' ),
+				'title' => __( 'South Korea', 'mrm' ),
 			),
 			array(
 				'code'  => 'SS',
-				'title' => __( 'South Sudan', 'mint-crm' ),
+				'title' => __( 'South Sudan', 'mrm' ),
 			),
 			array(
 				'code'  => 'ES',
-				'title' => __( 'Spain', 'mint-crm' ),
+				'title' => __( 'Spain', 'mrm' ),
 			),
 			array(
 				'code'  => 'LK',
-				'title' => __( 'Sri Lanka', 'mint-crm' ),
+				'title' => __( 'Sri Lanka', 'mrm' ),
 			),
 			array(
 				'code'  => 'SD',
-				'title' => __( 'Sudan', 'mint-crm' ),
+				'title' => __( 'Sudan', 'mrm' ),
 			),
 			array(
 				'code'  => 'SR',
-				'title' => __( 'Suriname', 'mint-crm' ),
+				'title' => __( 'Suriname', 'mrm' ),
 			),
 			array(
 				'code'  => 'SJ',
-				'title' => __( 'Svalbard and Jan Mayen', 'mint-crm' ),
+				'title' => __( 'Svalbard and Jan Mayen', 'mrm' ),
 			),
 			array(
 				'code'  => 'SZ',
-				'title' => __( 'Swaziland', 'mint-crm' ),
+				'title' => __( 'Swaziland', 'mrm' ),
 			),
 			array(
 				'code'  => 'SE',
-				'title' => __( 'Sweden', 'mint-crm' ),
+				'title' => __( 'Sweden', 'mrm' ),
 			),
 			array(
 				'code'  => 'CH',
-				'title' => __( 'Switzerland', 'mint-crm' ),
+				'title' => __( 'Switzerland', 'mrm' ),
 			),
 			array(
 				'code'  => 'SY',
-				'title' => __( 'Syria', 'mint-crm' ),
+				'title' => __( 'Syria', 'mrm' ),
 			),
 			array(
 				'code'  => 'TW',
-				'title' => __( 'Taiwan', 'mint-crm' ),
+				'title' => __( 'Taiwan', 'mrm' ),
 			),
 			array(
 				'code'  => 'TJ',
-				'title' => __( 'Tajikistan', 'mint-crm' ),
+				'title' => __( 'Tajikistan', 'mrm' ),
 			),
 			array(
 				'code'  => 'TZ',
-				'title' => __( 'Tanzania', 'mint-crm' ),
+				'title' => __( 'Tanzania', 'mrm' ),
 			),
 			array(
 				'code'  => 'TH',
-				'title' => __( 'Thailand', 'mint-crm' ),
+				'title' => __( 'Thailand', 'mrm' ),
 			),
 			array(
 				'code'  => 'TL',
-				'title' => __( 'Timor-Leste', 'mint-crm' ),
+				'title' => __( 'Timor-Leste', 'mrm' ),
 			),
 			array(
 				'code'  => 'TG',
-				'title' => __( 'Togo', 'mint-crm' ),
+				'title' => __( 'Togo', 'mrm' ),
 			),
 			array(
 				'code'  => 'TK',
-				'title' => __( 'Tokelau', 'mint-crm' ),
+				'title' => __( 'Tokelau', 'mrm' ),
 			),
 			array(
 				'code'  => 'TO',
-				'title' => __( 'Tonga', 'mint-crm' ),
+				'title' => __( 'Tonga', 'mrm' ),
 			),
 			array(
 				'code'  => 'TT',
-				'title' => __( 'Trinidad and Tobago', 'mint-crm' ),
+				'title' => __( 'Trinidad and Tobago', 'mrm' ),
 			),
 			array(
 				'code'  => 'TN',
-				'title' => __( 'Tunisia', 'mint-crm' ),
+				'title' => __( 'Tunisia', 'mrm' ),
 			),
 			array(
 				'code'  => 'TR',
-				'title' => __( 'Turkey', 'mint-crm' ),
+				'title' => __( 'Turkey', 'mrm' ),
 			),
 			array(
 				'code'  => 'TM',
-				'title' => __( 'Turkmenistan', 'mint-crm' ),
+				'title' => __( 'Turkmenistan', 'mrm' ),
 			),
 			array(
 				'code'  => 'TC',
-				'title' => __( 'Turks and Caicos Islands', 'mint-crm' ),
+				'title' => __( 'Turks and Caicos Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'TV',
-				'title' => __( 'Tuvalu', 'mint-crm' ),
+				'title' => __( 'Tuvalu', 'mrm' ),
 			),
 			array(
 				'code'  => 'UG',
-				'title' => __( 'Uganda', 'mint-crm' ),
+				'title' => __( 'Uganda', 'mrm' ),
 			),
 			array(
 				'code'  => 'UA',
-				'title' => __( 'Ukraine', 'mint-crm' ),
+				'title' => __( 'Ukraine', 'mrm' ),
 			),
 			array(
 				'code'  => 'AE',
-				'title' => __( 'United Arab Emirates', 'mint-crm' ),
+				'title' => __( 'United Arab Emirates', 'mrm' ),
 			),
 			array(
 				'code'  => 'GB',
-				'title' => __( 'United Kingdom (UK)', 'mint-crm' ),
+				'title' => __( 'United Kingdom (UK)', 'mrm' ),
 			),
 			array(
 				'code'  => 'US',
-				'title' => __( 'United States (US)', 'mint-crm' ),
+				'title' => __( 'United States (US)', 'mrm' ),
 			),
 			array(
 				'code'  => 'UM',
-				'title' => __( 'United States (US) Minor Outlying Islands', 'mint-crm' ),
+				'title' => __( 'United States (US) Minor Outlying Islands', 'mrm' ),
 			),
 			array(
 				'code'  => 'UY',
-				'title' => __( 'Uruguay', 'mint-crm' ),
+				'title' => __( 'Uruguay', 'mrm' ),
 			),
 			array(
 				'code'  => 'UZ',
-				'title' => __( 'Uzbekistan', 'mint-crm' ),
+				'title' => __( 'Uzbekistan', 'mrm' ),
 			),
 			array(
 				'code'  => 'VU',
-				'title' => __( 'Vanuatu', 'mint-crm' ),
+				'title' => __( 'Vanuatu', 'mrm' ),
 			),
 			array(
 				'code'  => 'VA',
-				'title' => __( 'Vatican', 'mint-crm' ),
+				'title' => __( 'Vatican', 'mrm' ),
 			),
 			array(
 				'code'  => 'VE',
-				'title' => __( 'Venezuela', 'mint-crm' ),
+				'title' => __( 'Venezuela', 'mrm' ),
 			),
 			array(
 				'code'  => 'VN',
-				'title' => __( 'Vietnam', 'mint-crm' ),
+				'title' => __( 'Vietnam', 'mrm' ),
 			),
 			array(
 				'code'  => 'VG',
-				'title' => __( 'Virgin Islands (British)', 'mint-crm' ),
+				'title' => __( 'Virgin Islands (British)', 'mrm' ),
 			),
 			array(
 				'code'  => 'VI',
-				'title' => __( 'Virgin Islands (US)', 'mint-crm' ),
+				'title' => __( 'Virgin Islands (US)', 'mrm' ),
 			),
 			array(
 				'code'  => 'WF',
-				'title' => __( 'Wallis and Futuna', 'mint-crm' ),
+				'title' => __( 'Wallis and Futuna', 'mrm' ),
 			),
 			array(
 				'code'  => 'EH',
-				'title' => __( 'Western Sahara', 'mint-crm' ),
+				'title' => __( 'Western Sahara', 'mrm' ),
 			),
 			array(
 				'code'  => 'WS',
-				'title' => __( 'Samoa', 'mint-crm' ),
+				'title' => __( 'Samoa', 'mrm' ),
 			),
 			array(
 				'code'  => 'YE',
-				'title' => __( 'Yemen', 'mint-crm' ),
+				'title' => __( 'Yemen', 'mrm' ),
 			),
 			array(
 				'code'  => 'ZM',
-				'title' => __( 'Zambia', 'mint-crm' ),
+				'title' => __( 'Zambia', 'mrm' ),
 			),
 			array(
 				'code'  => 'ZW',
-				'title' => __( 'Zimbabwe', 'mint-crm' ),
+				'title' => __( 'Zimbabwe', 'mrm' ),
 			),
 		);
 	}
