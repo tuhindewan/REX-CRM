@@ -20,10 +20,9 @@ const Dashboard = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         const results = [
-            { mood: "Angry", total: 1499, shade: "#02C4FB" },
-            { mood: "Happy", total: 478, shade: "#EC5956" },
-            { mood: "Melancholic", total: 332, shade: "#573BFF" },
-            { mood: "Gloomy", total: 195, shade: "#12B76A" },
+            { mood: "Subscribed", total: 1600, shade: "#573BFF" },
+            { mood: "Pending", total: 200, shade: "#02C4FB" },
+            { mood: "Unsubscribed", total: 500, shade: "#EC5956" },
         ];
 
         let sum = 0;
@@ -136,11 +135,18 @@ const Dashboard = () => {
                         </header>
 
                         <div id="pie-container">
+                            <span className="mintmrm-loader"></span>
                             <canvas
                                 width="210"
                                 height="210"
                                 ref={canvasRef}
+                                className="pie-chart-canvas show"
                             ></canvas>
+                        </div>
+                        <div className="stat-indicator">
+                            <span className="subscribed">Subscribed</span>
+                            <span className="unsubscribed">Unsubscribed</span>
+                            <span className="pending">Pending</span>
                         </div>
 
                         {/* <PieChart /> */}
