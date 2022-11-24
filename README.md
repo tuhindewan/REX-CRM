@@ -15,7 +15,7 @@ To get up and running within the Mint Email, you will need to make sure that you
 * [Docker](https://docs.docker.com/desktop/install/mac-install/)
 * [Local by Flywheel](https://localwp.com/) - At Code Rex, we use local as our development server.
 
-Once you've installed all of the prerequisites, you can run the following commands to get everything working.
+Once you've installed all of the prerequisites, you can run the following commands to get everything working. You should run this command from your project directory.
 
 
 ```bash
@@ -34,6 +34,7 @@ Make sure you have docker installed on your system. All the test is wriiten in t
 
 ```bash
 docker-compose up -d
+docker-compose exec wp install-wp-tests
 ```
 
 Run test:

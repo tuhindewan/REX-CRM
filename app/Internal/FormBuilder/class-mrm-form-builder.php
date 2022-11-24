@@ -1,17 +1,43 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/FomrBuilder
+ */
 
 namespace Mint\MRM\Internal\FormBuilder;
 
 use MRM\Common\MRM_Common;
 use WP_REST_Request;
-
+/**
+ * MRM Form Builder Helper class.
+ *
+ * @since 5.0.0
+ * @internal
+ */
 class FormBuilderHelper {
+	/**
+	 * Call construct
+	 * Call All class for form builder
+	 *
+	 * @since 5.0.0
+	 * @internal
+	 */
 	public function __construct() {
 		new GetMRM_Block_Manager();
-		new MRM_Subscribe_form();
+		new MRMSubscribeForm();
 		add_action( 'admin_enqueue_scripts', array( $this, 'mrm_block_editor_init' ) );
 	}
-
+	/**
+	 * Run For builder in specified page
+	 *
+	 * @param string $hook get Cusrrent page .
+	 * @return void
+	 */
 	public function mrm_block_editor_init( $hook ) {
 		global $current_screen;
 
@@ -25,14 +51,10 @@ class FormBuilderHelper {
 		$script_path       = 'build/index.js';
 		$script_asset_path = dirname( __FILE__ ) . '/build/index.asset.php';
 
-		$script_asset = file_exists( $script_asset_path )
-		   ? require $script_asset_path
-		   : array(
-			   'dependencies' => array(),
-		   );
+		$script_asset = file_exists( $script_asset_path ) ? require $script_asset_path : array('dependencies' => array() ); //phpcs:ignore
 		$script_url   = plugins_url( $script_path, __FILE__ );
 		$version      = isset( $script_asset['version'] ) ? $script_asset['version'] : '';
-		wp_enqueue_script( $script_handle, $script_url, $script_asset['dependencies'], $version );
+		wp_enqueue_script( $script_handle, $script_url, $script_asset['dependencies'], $version ); //phpcs:ignore
 
 		$settings = $this->get_block_editor_settings();
 		wp_add_inline_script( $script_handle, 'window.getmrmsetting = ' . wp_json_encode( $settings ) . ';' );
@@ -45,13 +67,15 @@ class FormBuilderHelper {
 		wp_enqueue_script( 'wp-format-library' );
 		wp_enqueue_style( 'wp-format-library' );
 
-		wp_enqueue_style(
-			'mrm-form-builder-styles', // Handle.
-			plugins_url( 'build/index.css', __FILE__ ), // Block editor CSS.
-			array( 'wp-edit-blocks' ) // Dependency to include the CSS after it.
+		wp_enqueue_style('mrm-form-builder-styles', //phpcs:ignore
+			plugins_url( 'build/index.css', __FILE__ ), //phpcs:ignore
+			array( 'wp-edit-blocks' ) //phpcs:ignore
 		);
 	}
 
+	/**
+	 * Get Block editor Setting
+	 */
 	public function get_block_editor_settings() {
 		$theme_color               = $this->get_palette_theme_color();
 		$allowed_blocks_for_editor = array(
@@ -72,15 +96,15 @@ class FormBuilderHelper {
 			'mrmformfield/mrm-custom-field',
 		);
 
-		$allowed_blocks = apply_filters( 'mrm/add_form_builder_blocks_support', $allowed_blocks_for_editor );
+		$allowed_blocks = apply_filters( 'mrm_add_form_builder_blocks_support', $allowed_blocks_for_editor );
 
-		$settings = array(
-			'disableCustomColors'                    => get_theme_support( 'disable-custom-colors' ),
-			'disableCustomFontSizes'                 => get_theme_support( 'disable-custom-font-sizes' ),
-			'allowedBlockTypes'                      => $allowed_blocks,
-			'isRTL'                                  => is_rtl(),
-			'__experimentalBlockPatterns'            => array(),
-			'__experimentalFeatures'                 => array(
+		$settings      = array(
+			'disableCustomColors'         => get_theme_support( 'disable-custom-colors' ),
+			'disableCustomFontSizes'      => get_theme_support( 'disable-custom-font-sizes' ),
+			'allowedBlockTypes'           => $allowed_blocks,
+			'isRTL'                       => is_rtl(),
+			'__experimentalBlockPatterns' => array(),
+			'__experimentalFeatures'      => array(
 				'appearanceTools' => true,
 				'border'          => array(
 					'color'  => false,
@@ -115,12 +139,11 @@ class FormBuilderHelper {
 					'fontSize'       => true,
 				),
 			),
-			// '__experimentalSetIsInserterOpened' => true,
-							'disableCustomGradients' => true,
-			'enableCustomLineHeight'                 => get_theme_support( 'custom-line-height' ),
-			'enableCustomSpacing'                    => get_theme_support( 'custom-spacing' ),
-			'enableCustomUnits'                      => false,
-			'keepCaretInsideBlock'                   => true,
+			'disableCustomGradients'      => true,
+			'enableCustomLineHeight'      => get_theme_support( 'custom-line-height' ),
+			'enableCustomSpacing'         => get_theme_support( 'custom-spacing' ),
+			'enableCustomUnits'           => false,
+			'keepCaretInsideBlock'        => true,
 		);
 		$color_palette = current( (array) get_theme_support( 'editor-color-palette' ) );
 		if ( false !== $color_palette ) {
@@ -138,7 +161,9 @@ class FormBuilderHelper {
 		return $settings;
 	}
 
-
+	/**
+	 * Get Block editor Setting
+	 */
 	public static function get_palette_theme_color() {
 		static $color;
 		if ( ! $color ) {
@@ -236,7 +261,7 @@ class FormBuilderHelper {
 			}
 
 			$color = apply_filters(
-				'mrm/theme_plate_color',
+				'mrm_theme_plate_color',
 				array(
 					'colors'     => (array) $color_palette,
 					'font_sizes' => (array) $font_sizes,

@@ -8,7 +8,6 @@ cache:
 
 # Our stages
 stages:
-  - phpcs
   - test
 
 # before running the CI server setup
@@ -59,13 +58,3 @@ test:php7.4:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors=never
   rules:
     - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")
-
-
-phpcs:
-  stage: phpcs
-  image: php:7.4
-  script:
-    - ./vendor/bin/phpcs
-  rules:
-    - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")
-
