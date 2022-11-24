@@ -184,7 +184,7 @@ class FormRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/update-statusthreeDotRef/(?P<form_id>[\d]+)',
+			'/' . $this->rest_base . '/update-status/(?P<form_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -208,7 +208,7 @@ class FormRoute {
 		 */
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/get-form-settingsthreeDotRef/(?P<form_id>[\d]+)',
+			'/' . $this->rest_base . '/get-form-settings/(?P<form_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -232,7 +232,7 @@ class FormRoute {
 		 */
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/get-title-groupthreeDotRef/(?P<form_id>[\d]+)',
+			'/' . $this->rest_base . '/get-title-group/(?P<form_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -256,7 +256,7 @@ class FormRoute {
 		 */
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/get-form-bodythreeDotRef/(?P<form_id>[\d]+)',
+			'/' . $this->rest_base . '/get-form-body/(?P<form_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,

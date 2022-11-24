@@ -67,7 +67,7 @@ class NoteRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/contactthreeDotRef/(?P<contact_id>[\d]+)threeDotRef/' . $this->rest_base . '/',
+			'/contact/(?P<contact_id>[\d]+)/' . $this->rest_base . '/',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -104,7 +104,7 @@ class NoteRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/contactthreeDotRef/(?P<contact_id>[\d]+)threeDotRef/' . $this->rest_base . '/(?P<note_id>[\d]+)',
+			'/contact/(?P<contact_id>[\d]+)/' . $this->rest_base . '/(?P<note_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,

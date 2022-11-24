@@ -158,7 +158,7 @@ class TagRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<tag_id>[\d]+)threeDotRef/contacts',
+			'/' . $this->rest_base . '/(?P<tag_id>[\d]+)/contacts',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -176,7 +176,7 @@ class TagRoute {
 
 		register_rest_route(
 			$this->namespace,
-			'/threeDotRefselect-tagsthreeDotRef/',
+			'/select-tags/',
 			array(
 
 				array(

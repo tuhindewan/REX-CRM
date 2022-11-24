@@ -161,7 +161,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/groups',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)/groups',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
@@ -487,7 +487,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/send-message',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)/send-message',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -511,7 +511,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/send-double-opt-in',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)/send-double-opt-in',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -535,7 +535,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/get-emails',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)/get-emails',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -559,7 +559,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/emails',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)/emails',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,

@@ -157,7 +157,7 @@ class CampaignRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)threeDotRef/status-update',
+			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)/status-update',
 			array(
 
 				array(
@@ -182,7 +182,7 @@ class CampaignRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)threeDotRef/emailthreeDotRef/(?P<email_id>[\d]+)',
+			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)/email/(?P<email_id>[\d]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,

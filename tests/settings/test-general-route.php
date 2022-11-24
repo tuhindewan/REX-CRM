@@ -47,6 +47,7 @@ class Test_General_Route extends WP_UnitTestCase {
 		$request  = new WP_REST_Request( 'POST', '/mrm/v1/settings/general' );
 		$response = $this->server->dispatch( $request );
 		$this->assertTrue( is_object( $response ) && 'WP_REST_Response' === get_class( $response ) );
+		error_log(print_r($response->get_status(), 1));
 		$this->assertTrue( 200 === $response->get_status() || 400 === $response->get_status() );
 	}
 
