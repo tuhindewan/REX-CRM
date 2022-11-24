@@ -251,4 +251,6 @@ class AdminAssets {
 		}
 		return $wc_categories;
 	}
+
+
 }

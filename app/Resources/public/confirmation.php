@@ -13,15 +13,15 @@
 
 <body>
 <div class="mrm_wrapper" style="margin: 0 auto;
-    max-width: 600px;
-    padding: 0px 0px 1px;background: #eddfdf;
-    text-align: center;">
-    <div class="mrm_title">
-        <h3>Mint Mail</h3>
-    </div>
-    <div class="mrm_form_wrapper">
-    <?php echo $confirmation_message; ?> 
-    </div>
+	max-width: 600px;
+	padding: 0px 0px 1px;background: #eddfdf;
+	text-align: center;">
+	<div class="mrm_title">
+		<h3>Mint Mail</h3>
+	</div>
+	<div class="mrm_form_wrapper">
+	<?php echo $confirmation_message; ?> 
+	</div>
 </div>
 <?php
 	wp_footer();

@@ -7,8 +7,8 @@ import CalendarIcon from "../Icons/CalendarIcon";
 const DashboardFilter = () => {
 
     const [dateFilter, setDateFilter] = useState("Monthly");
-    const [dateFromDropdown, setDateFromDropdown] = useState(false);
-    const [isCustomRange, setIsCustomRange] = useState(false);
+    const [showDateRange, setShowDateRange] = useState(false);
+    const [showCalendar, setShowCalendar] = useState(false);
     const [filterDropdown, setFilterDropdown] = useState(false);
 
     const [filterItems, setFilterItems] = useState([
@@ -18,22 +18,31 @@ const DashboardFilter = () => {
         { title: "Custom Range", id: "custom-range" },
     ]);
 
-    //------datepicker-----
-    let today = new Date();
-    let dd = String(today.getDate()).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = today.getFullYear();
+    //------start initial date formate-----
+    const monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    // let new_date = new Date();
+    
 
-    today = mm + '/' + dd + '/' + yyyy;
+    let current_day = new Date().getDate();
+    let current_month = monthShortNames[new Date().getMonth()];
+    let current_year = new Date().getFullYear();
 
-    const [startDate, setStartDate] = useState(new Date().format('MMM D, YYYY'));
-    const [endDate, setEndDate] = useState(new Date().format('MMM D, YYYY'));
+    const [endDate, setEndDate] = useState(new Date());
 
-    const onChange = (dates) => {
-        const [start, end] = dates;
-        setStartDate(start);
-        setEndDate(end);
-    };
+    let last_week_date = new Date().setDate(new Date().getDate() - 6);
+
+    const [startDate, setStartDate] = useState(new Date());
+
+    let last_week_day = new Date().getDate();
+    let last_week_month = monthShortNames[new Date().getMonth()];
+    let last_week_year = new Date().getFullYear();
+    // console.log(last_week_month);
+    
+    
+
+    //let test_date = current_day +' '+ current_month +', ' + current_year;
+    // const [endDate, setEndDate] = useState(test_date);
+    //------end initial date formate------
 
     const handleFilter = () => {
         setFilterDropdown(!filterDropdown);
@@ -41,14 +50,37 @@ const DashboardFilter = () => {
    
     const handleSelect = (title, id) => {
         setDateFilter(title);
-        id == "custom-range" ? setIsCustomRange(true) : setIsCustomRange(false);
-        id == "custom-range" ? setDateFromDropdown(true) : setDateFromDropdown(false);
+        id == "custom-range" ? setShowDateRange(true) : setShowDateRange(false);
+        id == "custom-range" ? setShowCalendar(true) : setShowCalendar(false);
         setFilterDropdown(false);
     };
 
-    console.log(startDate);
-    console.log(endDate);
+    const showRangeCalendar = () => {
+        setShowCalendar(!showCalendar);
+    };
+    
+    const onDateChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
 
+        // let last_week_day = start.getDate();
+        // let last_week_month = monthShortNames[start.getMonth()];
+        // let last_week_year = start.getFullYear();
+
+        //setStartDate(last_week_month +' '+ last_week_day +', ' + last_week_year);
+
+        // let current_day = end.getDate();
+        // let current_month = monthShortNames[end.getMonth()];
+        // let current_year = end.getFullYear();
+
+        //setEndDate(current_month +' '+ current_day +', ' + current_year);
+
+        if( end != null){
+            setShowCalendar(false);
+        }
+
+    };
     
     return (
         <div className="filter-box">
@@ -66,35 +98,34 @@ const DashboardFilter = () => {
                 </ul>
             </div>
 
-            <div className="custom-date" >
-                <div className="selected-date">
-                    <span className="start-date">10 Nov, 2022</span>
-                    <span className="end-date">10 Nov, 2022</span>
-                    <span className="date-icon">
-                        <CalendarIcon />
-                    </span>
+            {showDateRange &&
+                <div className="custom-date">
+                    <div className="selected-date" onClick={showRangeCalendar}>
+                        <span className="start-date">Nov 20, 2022</span>
+                        <span className="end-date">Nov 20, 2022</span>
+                        <span className="date-icon">
+                            <CalendarIcon />
+                        </span>
+                    </div>
+
+                    <div className={ showCalendar ? "datepicker-dropdown show" : "datepicker-dropdown" }>
+                        <DatePicker
+                            dateFormat="yyyy/MM/dd"
+                            selected={endDate}
+                            onChange={onDateChange}
+                            startDate={startDate}
+                            endDate={endDate}
+                            selectsRange
+                            inline
+                        />
+                        <button className="mintmrm-btn">
+                            Filter
+                            {/* <span className="mintmrm-loader"></span> */}
+                        </button>
+                    </div>
                 </div>
+            }
 
-                {/* <div className="date-to" >
-                    
-                </div> */}
-
-                <div className="datepicker-dropdown">
-                    <DatePicker
-                        dateFormat="dd M, yyyy"
-                        selected={startDate}
-                        onChange={onChange}
-                        startDate={startDate}
-                        endDate={endDate}
-                        selectsRange
-                        inline
-                    />
-                    <button className="mintmrm-btn">
-                        Filter
-                    </button>
-                </div>
-
-            </div>
         </div>
     );
 };

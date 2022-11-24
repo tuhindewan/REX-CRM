@@ -23,6 +23,10 @@
         align-items: center;
         position: relative;
 
+        .selecbox {
+            position: relative;
+        }
+
         .drop-down-button {
             position: relative;
             border: 1px solid #dee1e8;
@@ -56,6 +60,10 @@
             &.show::before {
                 transform: rotate(225deg);
             }
+        }
+        ul.mintmrm-dropdown {
+            top: calc(100% + 6px);
+            width: 100%;
         }
        
     }
