@@ -43,9 +43,6 @@ const Dashboard = () => {
             //filling the slices with the corresponding mood's color
             ctx.fillStyle = moodValue.shade;
             ctx.fill();
-
-            console.log(results);
-
             
         }
     }, []);

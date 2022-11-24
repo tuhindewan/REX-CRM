@@ -55,25 +55,33 @@ const FilterWithDateRange = () => {
         "Nov",
         "Dec",
     ];
-    // let new_date = new Date();
 
-    let current_day = new Date().getDate();
-    let current_month = monthShortNames[new Date().getMonth()];
-    let current_year = new Date().getFullYear();
+    const now = new Date();
 
+    const [startDate, setStartDate] = useState(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6));
     const [endDate, setEndDate] = useState(new Date());
 
-    let last_week_date = new Date().setDate(new Date().getDate() - 6);
+    const [startDateLabel, setStartDateLabel] = useState('');
+    const [endDateLabel, setEndDateLabel] = useState('');
 
-    const [startDate, setStartDate] = useState(new Date());
+    const setDateLabels = () => {
+        let last_week_day = startDate.getDate();
+        let last_week_month = monthShortNames[startDate.getMonth()];
+        let last_week_year = startDate.getFullYear();
+        setStartDateLabel(last_week_day +' '+ last_week_month +', ' + last_week_year);
 
-    let last_week_day = new Date().getDate();
-    let last_week_month = monthShortNames[new Date().getMonth()];
-    let last_week_year = new Date().getFullYear();
-    // console.log(last_week_month);
+        if( endDate != null ) {
+            let current_day = endDate.getDate();
+            let current_month = monthShortNames[endDate.getMonth()];
+            let current_year = endDate.getFullYear();
+            setEndDateLabel(current_day +' '+ current_month +', ' + current_year);
+        }
 
-    //let test_date = current_day +' '+ current_month +', ' + current_year;
-    // const [endDate, setEndDate] = useState(test_date);
+    }
+
+    useEffect(
+        () => setDateLabels()
+    );
     //------end initial date formate------
 
     const handleFilter = () => {
@@ -96,17 +104,7 @@ const FilterWithDateRange = () => {
         setStartDate(start);
         setEndDate(end);
 
-        // let last_week_day = start.getDate();
-        // let last_week_month = monthShortNames[start.getMonth()];
-        // let last_week_year = start.getFullYear();
-
-        //setStartDate(last_week_month +' '+ last_week_day +', ' + last_week_year);
-
-        // let current_day = end.getDate();
-        // let current_month = monthShortNames[end.getMonth()];
-        // let current_year = end.getFullYear();
-
-        //setEndDate(current_month +' '+ current_day +', ' + current_year);
+        setDateLabels();
 
         if (end != null) {
             setShowCalendar(false);
@@ -148,8 +146,8 @@ const FilterWithDateRange = () => {
             {showDateRange && (
                 <div className="custom-date">
                     <div className="selected-date" onClick={showRangeCalendar}>
-                        <span className="start-date">Nov 20, 2022</span>
-                        <span className="end-date">Nov 20, 2022</span>
+                        <span className="start-date">{startDateLabel}</span>
+                        <span className="end-date">{endDateLabel}</span>
                         <span className="date-icon">
                             <CalendarIcon />
                         </span>
