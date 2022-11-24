@@ -93,6 +93,10 @@
             display: flex;
             align-items: center;
 
+            &:last-child {
+                margin-right: 0;
+            }
+
             &:before {
                 content: "";
                 width: 10px;
@@ -227,6 +231,10 @@
                     color: #2d3149;
                     gap: 6px;
 
+                    svg {
+                        width: 12px;
+                    }
+
                     &:hover {
                         color: #573bff;
 
@@ -258,8 +266,16 @@
             border-radius: 10px;
             padding: 24px;
             position: relative;
+
             svg {
                 max-width: 100%;
+            }
+
+            &.contact,
+            &.email-campaign {
+                .filter-box .drop-down-button {
+                    width: 105px;
+                }
             }
         }
 
@@ -286,6 +302,7 @@
                 width: 150px;
             }
         }
+
         #pie-container {
             display: flex;
             justify-content: center;
@@ -431,15 +448,12 @@
         }
     }
 }
+
 @media only screen and (max-width: 991px) {
     .dashboard-page .dashboard-card-wrapper .single-card {
         padding: 18px 18px 0;
     }
-    .dashboard-page
-        .dashboard-card-wrapper
-        .single-card
-        .total-rate
-        .total-numbers {
+    .dashboard-page .dashboard-card-wrapper .single-card .total-rate .total-numbers {
         font-size: 27px;
     }
 }
@@ -463,5 +477,11 @@
     .dashboard-page .dashboard-content-wrapper .automation {
         width: 100%;
         order: 3;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .dashboard-page {
+        padding-bottom: 60px;
     }
 }
