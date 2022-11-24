@@ -44,6 +44,7 @@ executors:
 
 jobs:
   phpcs:
+    executor: php_mysql_executor
     steps:
       - run_phpcs
   phpunit:
