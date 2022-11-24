@@ -156,11 +156,38 @@ export default function SmtpSettings() {
             }
         }
         else if ('sendgrid' === sendingProtocol) {
+            if ( '' === sendgridAPI ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `API Key` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
             settings = {
                 'api_key': sendgridAPI
             }
         }
         else if ('amazonses' === sendingProtocol) {
+            if ( '' === amazonSESAccessKey ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `Access Key` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
+            else if ( '' === amazonSESSecretKey ) {
+                setLoader(true);
+                setNotificationType("warning");
+                setShowNotification("block");
+                setMessage('Please set the `Secret Key` field.');
+                ClearNotification("none", setShowNotification);
+                setLoader(false);
+                return;
+            }
             settings = {
                 'region': amazonSESRegion,
                 'access_key': amazonSESAccessKey,
