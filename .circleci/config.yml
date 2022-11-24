@@ -1,17 +1,54 @@
 version: 2.1
+description: Mint Email Continuous Integration
+
+
+executors:
+  php_mysql_executor:
+    docker:
+      - image: phpdockerio/php73-fpm
+      - image: mysql:5.7.27
+        environment:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_DATABASE: wordpress_tests
+          MYSQL_USER: root
+          MYSQL_PASSWORD: mysql
+
+commands:
+  init_env:
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apt-get update
+            apt install -y git
+      - checkout
+      - run:
+          name: Configuration
+          command: |
+            apt-get update
+            apt install php7.3-common php7.3-mysql php7.3-xml php7.3-xmlrpc php7.3-curl php7.3-gd php7.3-imagick php7.3-cli php7.3-dev php7.3-imap php7.3-mbstring php7.3-opcache php7.3-soap php7.3-zip php7.3-intl -y
+            apt-get install -y mysql-client
+            apt-get install -y subversion
+            apt-get install -y php-xdebug
+            bash bin/install-wp-tests.sh wordpress_test root mysql mysql "127.0.0.1" latest true
+            composer install
+            composer --global config process-timeout 2000
+  run_phpunit:
+    steps:
+      - run:
+          name: Run WP PHPUnit
+          command: composer run test
+
 
 jobs:
-  hello-job:
-    docker:
-      - image: cimg/node:17.2.0 # the primary container, where your job's commands are run
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+  phpunit_test:
+    executor: php_mysql_executor
     steps:
-      - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+      - init_env
+      - run_phpunit
 
 workflows:
-  my-workflow:
+  version: 2
+  test:
     jobs:
-      - hello-job
+      - phpunit_test
