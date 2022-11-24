@@ -21,8 +21,6 @@ commands:
             php composer.phar install
             bash bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
   run_phpunit:
-    docker:
-      - image: circleci/php:7.2
     steps:
       - run:
           name: Run WP Phpunit
@@ -31,7 +29,7 @@ commands:
 executors:
   php_mysql_executor:
     docker:
-      - image: phpdockerio/php73-fpm
+      - image: cimg/php:7.4.26
       - image: mysql:5.7.27
         environment:
           MYSQL_ROOT_PASSWORD: somewordpress
