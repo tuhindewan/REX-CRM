@@ -46,3 +46,10 @@ jobs:
     steps:
       - init_env
       - run_phpunit
+
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - phpunit_test_reports_with_s3
