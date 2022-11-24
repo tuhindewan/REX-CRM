@@ -59,6 +59,3 @@ workflows:
   phpcs-and-unit-test:
     jobs:
       - phpcs
-      - phpunit:
-          requires:
-            - phpcs
