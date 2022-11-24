@@ -7,8 +7,7 @@ import ListenForOutsideClicks, {
 import CalendarIcon from "../Icons/CalendarIcon";
 
 const FilterWithDateRange = () => {
-    const calenderRef = useRef(null);
-    const customRangeRef = useRef(null);
+    const customFilterRef = useRef(null);
     const filterRef = useRef(null);
     const [listening, setListening] = useState(false);
     const [dateFilter, setDateFilter] = useState("Monthly");
@@ -24,29 +23,20 @@ const FilterWithDateRange = () => {
         { title: "Custom Range", id: "custom-range" },
     ]);
 
-    // useEffect(
-    //     ListenForOutsideClicks(
-    //         listening,
-    //         setListening,
-    //         calenderRef,
-    //         setShowCalendar
-    //     )
-    // );
-    useOutsideAlerter(calenderRef, setShowCalendar);
-    useEffect(
-        ListenForOutsideClicks(
-            listening,
-            setListening,
-            customRangeRef,
-            setShowCustomCalendar
-        )
-    );
     useEffect(
         ListenForOutsideClicks(
             listening,
             setListening,
             filterRef,
             setFilterDropdown
+        )
+    );
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            customFilterRef,
+            setShowCalendar
         )
     );
 
@@ -93,9 +83,7 @@ const FilterWithDateRange = () => {
     const handleSelect = (title, id) => {
         setDateFilter(title);
         id == "custom-range" ? setShowDateRange(true) : setShowDateRange(false);
-        id == "custom-range"
-            ? setShowCustomCalendar(true)
-            : setShowCustomCalendar(false);
+        id == "custom-range" ? setShowCalendar(true) : setShowCalendar(false);
         setFilterDropdown(false);
     };
 
@@ -126,7 +114,7 @@ const FilterWithDateRange = () => {
     };
 
     return (
-        <div className="filter-box">
+        <div className="filter-box" ref={customFilterRef}>
             <div className="selecbox" ref={filterRef}>
                 <button
                     className={
@@ -148,11 +136,6 @@ const FilterWithDateRange = () => {
                 >
                     {filterItems.map((item, index) => (
                         <li
-                            ref={
-                                item.id == "custom-range"
-                                    ? customRangeRef
-                                    : null
-                            }
                             key={index}
                             onClick={() => handleSelect(item.title, item.id)}
                         >
@@ -163,7 +146,7 @@ const FilterWithDateRange = () => {
             </div>
 
             {showDateRange && (
-                <div className="custom-date" ref={calenderRef}>
+                <div className="custom-date">
                     <div className="selected-date" onClick={showRangeCalendar}>
                         <span className="start-date">Nov 20, 2022</span>
                         <span className="end-date">Nov 20, 2022</span>
@@ -174,7 +157,7 @@ const FilterWithDateRange = () => {
 
                     <div
                         className={
-                            showCalendar || showCustomCalendar
+                            showCalendar
                                 ? "datepicker-dropdown show"
                                 : "datepicker-dropdown"
                         }
