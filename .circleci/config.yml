@@ -15,8 +15,8 @@ commands:
           command: |
             apt-get update -yqq
             apt install git libpq-dev libzip-dev zip -yqq
-            apt-get -yqqf install vim wget zip unzip subversion default-mysql-client libmcrypt-dev default-libmysqlclient-dev --fix-missing
-            docker-php-ext-install mysqli pdo_mysql
+            apt-get -yqqf install vim wget zip unzip subversion default-mysql-client libmcrypt-dev default-libmysqlclient-dev php7.3-mysql --fix-missing
+            apt-get install -y mysql-client
             curl -sS https://getcomposer.org/installer | php
             php composer.phar install
             bash bin/install-wp-tests.sh wordpress wordpress wordpress "127.0.0.1" latest true
