@@ -86,13 +86,12 @@ run_mrm();
 
 
 if ( ! function_exists( 'mmempty' ) ) {
-
 	/**
 	 * Determine if a value is empty
 	 *
-	 * @param $name Name of the prop
-	 * @param null                  $array
-	 * @return bool True if empty otherwise false
+	 * @param string $name Name of the prop .
+	 * @param null   $array array .
+	 * @return bool True if empty otherwise false.
 	 *
 	 * @since 1.0.0
 	 */
@@ -102,7 +101,7 @@ if ( ! function_exists( 'mmempty' ) ) {
 		}
 
 		if ( ! $array ) {
-			$array = $_POST;
+			$array = $_POST; //phpcs:ignore
 		}
 
 		$val = mmarval( $array, $name );
@@ -119,9 +118,9 @@ if ( ! function_exists( 'mmarval' ) ) {
 	/**
 	 * Get an specific property of an array
 	 *
-	 * @param $array Array of which the property value should be retrieved
-	 * @param $prop Name of the property to be retrieved
-	 * @param null                                                        $default Default value if no value is found with that name
+	 * @param array  $array Array of which the property value should be retrieved.
+	 * @param string $prop Name of the property to be retrieved.
+	 * @param null   $default Default value if no value is found with that name .
 	 * @return mixed|string|null
 	 *
 	 * @since 1.0.0
@@ -136,7 +135,6 @@ if ( ! function_exists( 'mmarval' ) ) {
 		} else {
 			$value = '';
 		}
-
-		return empty( $value ) && $default !== null ? $default : $value;
+		return empty( $value ) && null !== $default ? $default : $value;
 	}
 }

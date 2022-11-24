@@ -16,7 +16,7 @@ use WP_REST_Request;
 /**
  * MRM Form Builder Helper class.
  *
- * @since 5.0.0
+ * @since 1.0.0
  * @internal
  */
 class FormBuilderHelper {
