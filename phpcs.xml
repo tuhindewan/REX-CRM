@@ -4,7 +4,6 @@
 
 	<!-- What to scan -->
 	<file>.</file>
-	<!--<file>.</file>-->
 
 	<!-- Exclude the Composer Vendor directory. -->
 	<exclude-pattern>/vendor/*</exclude-pattern>
