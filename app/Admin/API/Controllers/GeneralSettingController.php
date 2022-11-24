@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API General Setting Controller
+ *
+ * Handles requests to the general setting endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -7,19 +17,21 @@ use MRM\Common\MRM_Common;
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing double General settings API callbacks]
+ * This is the main class that controls the general setting feature. Its responsibilities are:
+ *
+ * - Create or update general settings
+ * - Retrieve general settings from options table
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
 class GeneralSettingController extends SettingBaseController {
 
 	use Singleton;
 
 	/**
-	 * @desc Update General global settings into wp_options table
-	 * @param WP_REST_Request $request
+	 * Update General global settings into wp_options table
+	 *
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return array|WP_REST_Response
 	 * @since 1.0.0
 	 */
@@ -28,12 +40,12 @@ class GeneralSettingController extends SettingBaseController {
 
 		if ( is_array( $params ) && ! empty( $params ) ) {
 			foreach ( $params as $key => $value ) {
-				if (isset($value['confirmation_type']) && 'message' === $value['confirmation_type']){
-					$value['confirmation_message'] = isset( $value['confirmation_message'] ) ? html_entity_decode( $value['confirmation_message'] ) : "";
+				if ( isset( $value['confirmation_type'] ) && 'message' === $value['confirmation_type'] ) {
+					$value['confirmation_message'] = isset( $value['confirmation_message'] ) ? html_entity_decode( $value['confirmation_message'] ) : '';
 				}
-				if (isset($value['confirmation_type']) && 'redirect' === $value['confirmation_type']){
-					if(isset($value['url']) && !empty($value['url'])){
-						if (filter_var($value['url'], FILTER_VALIDATE_URL) === FALSE) {
+				if ( isset( $value['confirmation_type'] ) && 'redirect' === $value['confirmation_type'] ) {
+					if ( isset( $value['url'] ) && ! empty( $value['url'] ) ) {
+						if ( filter_var( $value['url'], FILTER_VALIDATE_URL ) === false ) {
 							return $this->get_error_response( __( ' URL is not valid', 'mrm' ) );
 						}
 					}
@@ -46,8 +58,9 @@ class GeneralSettingController extends SettingBaseController {
 	}
 
 	/**
-	 * @desc Get General global settings from wp_option table
-	 * @param WP_REST_Request $request
+	 * Get General global settings from wp_option table
+	 *
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return array|WP_REST_Response
 	 * @since 1.0.0
 	 */

@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Business Setting Controller
+ *
+ * Handles requests to the business setting endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -6,7 +16,14 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 use WP_REST_Request;
 
-
+/**
+ * This is the main class that controls the business setting feature. Its responsibilities are:
+ *
+ * - Create or update business settings
+ * - Retrieve business settings from options table
+ *
+ * @package Mint\MRM\Admin\API\Controllers
+ */
 class BusinessSettingController extends SettingBaseController {
 
 
@@ -20,14 +37,20 @@ class BusinessSettingController extends SettingBaseController {
 	 */
 	public $args;
 
+	/**
+	 * Business settings key for options table
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
 	protected $option_key = '_mrm_business_info_setting';
 
 	/**
 	 * Get and send response to create a new settings
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return array|WP_REST_Response|\WP_Error
+	 * @return WP_REST_Response|\WP_Error
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
 		$params = MRM_Common::get_api_params_values( $request );
@@ -39,11 +62,10 @@ class BusinessSettingController extends SettingBaseController {
 				$logo_url      = isset( $params['logo_url'] ) ? sanitize_text_field( $params['logo_url'] ) : '';
 				$social        = isset( $params['socialMedia'] ) ? $params['socialMedia'] : array();
 
-
-				if ( ctype_punct($business_name)){
+				if ( ctype_punct( $business_name ) ) {
 					return $this->get_error_response( __( 'Business name not only special characters ', 'mrm' ) );
 				}
-				if ( ctype_punct($address)){
+				if ( ctype_punct( $address ) ) {
 					return $this->get_error_response( __( 'Address name not only special characters ', 'mrm' ) );
 				}
 
@@ -51,33 +73,35 @@ class BusinessSettingController extends SettingBaseController {
 					return $this->get_error_response( __( 'Phone number format is not correct', 'mrm' ) );
 				}
 				$image_mime = array(
-					'jpg|jpeg|jpe'                 => 'image/jpeg',
-					'gif'                          => 'image/gif',
-					'png'                          => 'image/png',
-					'bmp'                          => 'image/bmp',
-					'tiff|tif'                     => 'image/tiff',
-					'webp'                         => 'image/webp',
-					'ico'                          => 'image/x-icon',
-					'heic'                         => 'image/heic',
+					'jpg|jpeg|jpe' => 'image/jpeg',
+					'gif'          => 'image/gif',
+					'png'          => 'image/png',
+					'bmp'          => 'image/bmp',
+					'tiff|tif'     => 'image/tiff',
+					'webp'         => 'image/webp',
+					'ico'          => 'image/x-icon',
+					'heic'         => 'image/heic',
 				);
-				$logo_mimes  = wp_check_filetype($logo_url);
-				if(isset($logo_mimes['type'])){
-					if(!in_array($logo_mimes['type'],$image_mime)){
-						return $this->get_error_response( __( 'Image type '.$logo_mimes['ext'].'  is not supported', 'mrm' ) );
+				$logo_mimes = wp_check_filetype( $logo_url );
+				if ( isset( $logo_mimes['type'] ) ) {
+					if ( ! in_array( $logo_mimes['type'], $image_mime, true ) ) {
+						/* translators: %s logo mimes */
+						return $this->get_error_response( sprintf( __( 'Image type %s is not supported', 'mrm' ), $logo_mimes['ext'] ) );
 					}
 				}
-				foreach ($social as $Social_file){
-					if(isset($Social_file['icon']) && !empty($Social_file['icon'])){
-						$_mimes  = wp_check_filetype($Social_file['icon']);
-						if(isset($_mimes['type'])){
-							if(!in_array($_mimes['type'],$image_mime)){
-								return $this->get_error_response( __( ' Social media image type '.$_mimes['ext'].'  is not supported', 'mrm' ) );
+				foreach ( $social as $social_file ) {
+					if ( isset( $social_file['icon'] ) && ! empty( $social_file['icon'] ) ) {
+						$_mimes = wp_check_filetype( $social_file['icon'] );
+						if ( isset( $_mimes['type'] ) ) {
+							if ( ! in_array( $_mimes['type'], $image_mime, true ) ) {
+								/* translators: %s mimes type */
+								return $this->get_error_response( sprintf( __( 'Social media image type %s is not supported', 'mrm' ), $_mimes['ext'] ) );
 							}
 						}
 					}
-					if(isset($Social_file['url']) && !empty($Social_file['url'])){
-						if (filter_var($Social_file['url'], FILTER_VALIDATE_URL) === FALSE) {
-							return $this->get_error_response( __( ' URL is not valid', 'mrm' ) );
+					if ( isset( $social_file['url'] ) && ! empty( $social_file['url'] ) ) {
+						if ( filter_var( $social_file['url'], FILTER_VALIDATE_URL ) === false ) {
+							return $this->get_error_response( sprintf( __( 'URL is not valid', 'mrm' ) ) );
 						}
 					}
 				}
@@ -100,7 +124,7 @@ class BusinessSettingController extends SettingBaseController {
 	/**
 	 * Function used to handle a single get request
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
@@ -117,6 +141,13 @@ class BusinessSettingController extends SettingBaseController {
 		return $this->get_success_response_data( $settings );
 	}
 
+	/**
+	 * Function used to validate a phone number
+	 *
+	 * @param mixed $number phone number to validate.
+	 * @return bool
+	 * @since 1.0.0
+	 */
 	public function phone_number_validation( $number ) {
 		$phone_number_validation_regex = '/^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$/';
 		return preg_match( $phone_number_validation_regex, $number );

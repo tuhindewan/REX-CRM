@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Tag Controller
+ *
+ * Handles requests to the tags endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -11,13 +21,15 @@ use Mint\MRM\DataBase\Models\ContactModel;
 use MRM\Common\MRM_Common;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing Tags Module API callbacks]
+ * This is the main class that controls the tags feature. Its responsibilities are:
+ *
+ * - Create or update a tag
+ * - Delete single or multiple tags
+ * - Retrieve single or multiple tags
+ * - Assign or removes tags and lists from the contact
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class TagController extends BaseController {
 
 	use Singleton;
@@ -33,16 +45,16 @@ class TagController extends BaseController {
 	/**
 	 * Get and send response to create a new tag
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		// Tag title validation
+		// Tag title validation.
 		$title = isset( $params['title'] ) ? sanitize_text_field( $params['title'] ) : null;
 
 		if ( empty( $title ) ) {
@@ -54,13 +66,13 @@ class TagController extends BaseController {
 		}
 
 		$slug = sanitize_title( $title );
-		// Tag avaiability check
+		// Tag avaiability check.
 		$exist = ContactGroupModel::is_group_exist( $slug, 'tags' );
 		if ( $exist && ! isset( $params['tag_id'] ) ) {
 			return $this->get_error_response( __( 'Tag is already available', 'mrm' ), 200 );
 		}
 
-		// Tag object create and insert or update to database
+		// Tag object create and insert or update to database.
 		$this->args = array(
 			'title' => $title,
 			'slug'  => $slug,
@@ -71,7 +83,7 @@ class TagController extends BaseController {
 			$tag = new TagData( $this->args );
 
 			if ( isset( $params['tag_id'] ) ) {
-				// Check slugs for removing the duplication of same name
+				// Check slugs for removing the duplication of same name.
 				$other_slugs = ContactGroupModel::is_group_exist( $slug, 'tags' );
 				$update_slug = ContactGroupModel::is_group_exist_by_id( $slug, 'tags', $params['tag_id'] );
 				if ( $other_slugs && ! $update_slug ) {
@@ -95,13 +107,13 @@ class TagController extends BaseController {
 	/**
 	 * Delete request for tags
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$success = ContactGroupModel::destroy( $params['tag_id'] );
@@ -116,13 +128,13 @@ class TagController extends BaseController {
 	/**
 	 * Delete multiple tags
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function delete_all( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$success = ContactGroupModel::destroy_all( $params['tag_ids'] );
@@ -137,34 +149,34 @@ class TagController extends BaseController {
 	/**
 	 * Get all tags request for tags
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		$page    = isset( $params['page'] ) ? $params['page'] : 1;
-		$perPage = isset( $params['per-page'] ) ? $params['per-page'] : 25;
-		$offset  = ( $page - 1 ) * $perPage;
-		// Tag Search keyword
+		$page     = isset( $params['page'] ) ? $params['page'] : 1;
+		$per_page = isset( $params['per-page'] ) ? $params['per-page'] : 25;
+		$offset   = ( $page - 1 ) * $per_page;
+		// Tag Search keyword.
 		$search = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 
 		$order_by   = isset( $params['order-by'] ) ? strtolower( $params['order-by'] ) : 'id';
 		$order_type = isset( $params['order-type'] ) ? strtolower( $params['order-type'] ) : 'desc';
 
-		// valid order by fields and types
+		// valid order by fields and types.
 		$allowed_order_by_fields = array( 'title', 'created_at' );
 		$allowed_order_by_types  = array( 'asc', 'desc' );
 
-		// validate order by fields or use default otherwise
-		$order_by   = in_array( $order_by, $allowed_order_by_fields ) ? $order_by : 'id';
-		$order_type = in_array( $order_type, $allowed_order_by_types ) ? $order_type : 'desc';
+		// validate order by fields or use default otherwise.
+		$order_by   = in_array( $order_by, $allowed_order_by_fields, true ) ? $order_by : 'id';
+		$order_type = in_array( $order_type, $allowed_order_by_types, true ) ? $order_type : 'desc';
 
-		$groups = ContactGroupModel::get_all( 'tags', $offset, $perPage, $search, $order_by, $order_type );
-		// Count contacts groups
+		$groups = ContactGroupModel::get_all( 'tags', $offset, $per_page, $search, $order_by, $order_type );
+		// Count contacts groups.
 		$groups['count_groups'] = array(
 			'lists'    => ContactGroupModel::get_groups_count( 'lists' ),
 			'tags'     => absint( $groups['total_count'] ),
@@ -181,13 +193,13 @@ class TagController extends BaseController {
 	/**
 	 * Function used to handle a single get request
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_single( WP_REST_Request $request ) {
 
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$group = ContactGroupModel::get( $params['tag_id'] );
@@ -202,12 +214,12 @@ class TagController extends BaseController {
 	/**
 	 * Get all contacts related to specific tag
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_contacts( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
 		$contacts = ContactPivotController::get_contacts_to_group( $params['tag_id'] );
@@ -222,8 +234,8 @@ class TagController extends BaseController {
 	/**
 	 * Add tags to new contact
 	 *
-	 * @param array $tags
-	 * @param int   $contact_id
+	 * @param array $tags List of tags.
+	 * @param int   $contact_id Contact Id.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -240,13 +252,14 @@ class TagController extends BaseController {
 		);
 		return ContactPivotController::set_groups_to_contact( $pivot_ids );
 	}
-	
+
+
 
 	/**
 	 * Add tags to multiple contacts
 	 *
-	 * @param array $tags
-	 * @param int   $contact_id
+	 * @param array $tags List of tags.
+	 * @param mixed $contact_ids Contact Id.
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -276,7 +289,7 @@ class TagController extends BaseController {
 	/**
 	 * Return tags which are assigned to a contact
 	 *
-	 * @param mixed $contact
+	 * @param mixed $contact Single contact object.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -304,7 +317,6 @@ class TagController extends BaseController {
 	/**
 	 * Function used to return all tags to custom select dropdown
 	 *
-	 * @param void
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
