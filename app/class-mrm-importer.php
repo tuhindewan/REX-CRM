@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app
+ */
 
 namespace MRM\Helpers\Importer;
 
@@ -6,20 +15,18 @@ use Mint\MRM\Constants;
 use WP_User_Query;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-19 10:36:13
- * @modify date 2022-08-19 10:36:13
- * @desc [Helper class for manage Import functionalities]
+ * Helper class for manage Import functionalities
+ *
+ * @package /app
+ * @since 1.0.0
  */
-
 class MRM_Importer {
 
 	/**
 	 * Create import from CSV file
 	 *
-	 * @param $file
-	 * @param string $delimiter
+	 * @param array|object $file File array/object.
+	 * @param string       $delimiter CSV delimiter.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -37,38 +44,38 @@ class MRM_Importer {
 			wp_mkdir_p( MRM_IMPORT_DIR );
 		}
 
-		$file_name = isset( $file['name'] ) ? $file['name'] : '';
-		$tmp_name  = isset( $file['tmp_name'] ) ? $file['tmp_name'] : '';
+		$file_name = isset( $file[ 'name' ] ) ? $file[ 'name' ] : '';
+		$tmp_name  = isset( $file[ 'tmp_name' ] ) ? $file[ 'tmp_name' ] : '';
 
 		/**
 		 * Move the file to the directory
 		 */
-		$new_file_name = md5( rand() . time() ) . '-' . $file_name;
+		$new_file_name = md5( wp_rand() . time() ) . '-' . $file_name;
 		$new_file      = MRM_IMPORT_DIR . '/' . $new_file_name;
-		$move_new_file = @move_uploaded_file( $tmp_name, $new_file );
+		$move_new_file = @move_uploaded_file( $tmp_name, $new_file ); //phpcs:ignore
 
 		if ( false === $move_new_file ) {
 			return __( 'Unable to upload CSV file', 'mrm' );
 		}
 
-		$import_meta['file']          = $new_file;
-		$import_meta['new_file_name'] = $new_file_name;
+		$import_meta[ 'file' ]          = $new_file;
+		$import_meta[ 'new_file_name' ] = $new_file_name;
 
 		return $import_meta;
 	}
 
 
 	/**
-	 * Preapre mapping headers from uploaded CSV and custom fields
+	 * Prepare mapping headers from uploaded CSV and custom fields
 	 *
-	 * @param string $csv_file
-	 * @param string $delimiter
+	 * @param string $csv_file CSV file path.
+	 * @param string $delimiter CSV delimiter.
 	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
 	public static function prepare_mapping_options_from_csv( $csv_file, $delimiter ) {
-		$handle = fopen( $csv_file, 'r' );
+		$handle = fopen( $csv_file, 'r' ); //phpcs:ignore
 
 		/**
 		 * Fetching CSV header
@@ -79,17 +86,9 @@ class MRM_Importer {
 			$headers = array();
 		}
 
-		if ( isset( $headers[0] ) ) {
-			$headers[0] = self::remove_utf8_bom( $headers[0] );
+		if ( isset( $headers[ 0 ] ) ) {
+			$headers[ 0 ] = self::remove_utf8_bom( $headers[ 0 ] );
 		}
-
-		// /**
-		// * Formatting CSV header for mapping
-		// */
-
-		// foreach ( $headers as $index => $header ) {
-		// $headers[ $index ] = array( 'index' => $index, 'header' => $header );
-		// }
 
 		/**
 		 * Get existing contact fields
@@ -106,7 +105,7 @@ class MRM_Importer {
 	/**
 	 * Remove UTF8_bom
 	 *
-	 * @param string $string
+	 * @param string $string String.
 	 *
 	 * @return string
 	 */
@@ -122,7 +121,6 @@ class MRM_Importer {
 	/**
 	 * Returns all WordPress core user roles
 	 *
-	 * @param void
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -131,16 +129,17 @@ class MRM_Importer {
 			require_once ABSPATH . 'wp-admin/includes/user.php';
 		}
 
-		// Get and formatting editable roles
+		// Get and formatting editable roles.
 		$editable_roles = get_editable_roles();
 		if ( ! is_array( $editable_roles ) || empty( $editable_roles ) ) {
 			return __( 'WordPress user roles not found', 'mrm' );
 		}
 		foreach ( $editable_roles as $role => $details ) {
-			$sub['role'] = esc_attr( $role );
-			$sub['name'] = translate_user_role( $details['name'] );
-			$roles[]     = $sub;
+			$sub[ 'role' ] = esc_attr( $role );
+			$sub[ 'name' ] = translate_user_role( $details[ 'name' ] );
+			$roles[]       = $sub;
 		}
+
 		return $roles;
 	}
 
@@ -148,7 +147,8 @@ class MRM_Importer {
 	/**
 	 * Import WP users information from users and users metadata table
 	 *
-	 * @param array $roles
+	 * @param array $roles WP user roles.
+	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -180,7 +180,6 @@ class MRM_Importer {
 	/**
 	 * Import WC customers information from orders and metadata table
 	 *
-	 * @param void
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -199,7 +198,8 @@ class MRM_Importer {
 		$customers = array_map(
 			function( $all_order_id ) {
 				$orders = wc_get_order( $all_order_id );
-				return $orders->data['billing'];
+
+				return $orders->data[ 'billing' ];
 			},
 			$all_order_ids
 		);

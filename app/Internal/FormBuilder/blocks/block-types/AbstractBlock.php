@@ -16,7 +16,7 @@
  * @package /app/Internal/Ajax
  * @since 1.0.0
  */
-abstract class GetMRM_AbstractBlock {
+abstract class GetMRMAbstractBlock {
 
 
 	/**

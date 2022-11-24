@@ -246,7 +246,7 @@ class SettingRoute {
 		// API routes for WooCommerce settings.
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/generalthreeDotRef(?:/(?P<general_settings_key>[a-z-|_]+))?',
+			'/' . $this->rest_base . '/general(?:/(?P<general_settings_key>[a-z-|_]+))?',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,

@@ -1,4 +1,13 @@
 <?php
+/**
+ * App Class for Create Instance
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app
+ */
 
 namespace Mint\MRM;
 
@@ -17,7 +26,11 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Internal\Cron\CampaignsBackgroundProcess;
 use Mint\MRM\Internal\Optin\UnsubscribeConfirmation;
 use Mint\MRM\Internal\Admin\WooCommerceOrderDetails;
-
+/**
+ * MRM App class.
+ *
+ * @since 1.0.0
+ */
 class App {
 
 	use Singleton;
@@ -35,27 +48,27 @@ class App {
 		}
 
 		if ( $this->is_request( 'admin' ) ) {
-			// Load assets
+			// Load assets.
 			AdminAssets::get_instance();
 		}
-		// init form-builder
+		// init form-builder.
 		new FormBuilderHelper();
 
-		// init plugin shortcodes
+		// init plugin shortcodes.
 		ShortCode::get_instance()->init();
 
-		// init ajax
+		// init ajax.
 		AjaxAction::get_instance();
 
 		if ( $this->is_request( 'frontend' ) ) {
 
-			// User assign contact form user in Sign up and comment
+			// User assign contact form user in Sign up and comment.
 			UserAssignContact::get_instance();
-			// Load assets
+			// Load assets.
 			FrontendAssets::get_instance();
-			// Opt-in
+			// Opt-in.
 			OptinConfirmation::get_instance();
-			// Unsubscription
+			// Unsubscription.
 			UnsubscribeConfirmation::get_instance();
 
 			WooCommerceCheckoutContact::get_instance()->init();
@@ -66,7 +79,11 @@ class App {
 		WooCommerceOrderDetails::get_instance()->init();
 	}
 
-
+	/**
+	 * Loaded hook after plugin loaded
+	 *
+	 * @since 1.0.0
+	 */
 	public function on_plugins_loaded() {
 		$this->includes();
 	}
@@ -93,7 +110,7 @@ class App {
 	/**
 	 * Check the type of the request
 	 *
-	 * @param $type
+	 * @param string $type get request type .
 	 * @return bool
 	 * @since 1.0.0
 	 */

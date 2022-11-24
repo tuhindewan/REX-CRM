@@ -17,7 +17,7 @@ use Mint\MRM\DataBase\Models\FormModel;
  * @package /app/Internal/Ajax
  * @since 1.0.0
  */
-class MRMForm_MRMSubscribeForm extends GetMRM_AbstractBlock {
+class MRMFormMRMSubscribeForm extends GetMRMAbstractBlock {
 
 	/**
 	 * Default data.

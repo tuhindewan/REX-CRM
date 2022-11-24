@@ -16,7 +16,7 @@ use WP_REST_Request;
 /**
  * MRM Form Builder Helper class.
  *
- * @since 5.0.0
+ * @since 1.0.0
  * @internal
  */
 class FormBuilderHelper {
@@ -28,7 +28,7 @@ class FormBuilderHelper {
 	 * @internal
 	 */
 	public function __construct() {
-		new GetMRM_Block_Manager();
+		new GetMRMBlockManager();
 		new MRMSubscribeForm();
 		add_action( 'admin_enqueue_scripts', array( $this, 'mrm_block_editor_init' ) );
 	}
