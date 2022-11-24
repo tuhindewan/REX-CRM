@@ -59,7 +59,7 @@ trait Singleton {
 	 * @since 1.0.0
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'mrm' ), '2.1' );
+		_doing_it_wrong( __FUNCTION__, esc_attr__( 'Cloning is forbidden.', 'mrm' ), '2.1' );
 	}
 
 	/**
@@ -68,7 +68,7 @@ trait Singleton {
 	 * @since 1.0.0
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'mrm' ), '2.1' );
+		_doing_it_wrong( __FUNCTION__, esc_attr__( 'Unserializing instances of this class is forbidden.', 'mrm' ), '2.1' );
 	}
 
 	/**
