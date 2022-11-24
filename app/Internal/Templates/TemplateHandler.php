@@ -70,8 +70,6 @@ class TemplateHandler {
 					array( 'mrm-templates/' . $page_template_slug )
 				);
 
-				//var_dump($template);
-
 				if ( empty( $template ) ) {
 					$template = MRM_DIR_PATH.'/mrm-templates/'.$page_template_slug;
 				}
