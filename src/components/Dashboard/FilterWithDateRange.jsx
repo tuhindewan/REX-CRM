@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ListenForOutsideClicks from "../../components/ListenForOutsideClicks";
+import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import CalendarIcon from "../Icons/CalendarIcon";
 
-const DashboardFilter = () => {
+const FilterWithDateRange = () => {
 
     const [dateFilter, setDateFilter] = useState("Monthly");
     const [showDateRange, setShowDateRange] = useState(false);
@@ -130,4 +130,4 @@ const DashboardFilter = () => {
     );
 };
 
-export default DashboardFilter;
+export default FilterWithDateRange;

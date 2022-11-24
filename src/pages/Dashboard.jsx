@@ -4,7 +4,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
 import EmailSentProgressBar from "../components/Dashboard/EmailSentProgressBar";
-import DashboardFilter from "../components/Dashboard/DashboardFilter";
+import FilterWithDateRange from "../components/Dashboard/FilterWithDateRange";
+import Filter from "../components/Dashboard/Filter";
 
 import TotalContactIcon from "../components/Icons/TotalContactIcon";
 import TotalCampaignIcon from "../components/Icons/TotalCampaignIcon";
@@ -24,7 +25,7 @@ const Dashboard = () => {
                 <div className="dashboard-header">
                     <h1 class="dashboard-heading">Dashboard</h1>
 
-                    <DashboardFilter />
+                    <FilterWithDateRange />
                 </div>
 
                 <div className="dashboard-card-wrapper">
@@ -77,7 +78,7 @@ const Dashboard = () => {
                         <header className="box-header">
                             <h4 className="header-title">Email Campaigns</h4>
 
-                            
+                            <Filter />
                         </header>
 
                         <div className="email-campaign-stats">
@@ -103,7 +104,7 @@ const Dashboard = () => {
                         <header className="box-header">
                             <h4 className="header-title">Contact</h4>
 
-                            
+                            <Filter />
                         </header>
 
                         {/* <PieChart /> */}
