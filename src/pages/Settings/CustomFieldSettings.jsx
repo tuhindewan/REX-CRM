@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import AddCustomFieldModal from "./CustomField/AddCustomFieldModal";
 import SingleCustomField from "./CustomField/SingleCustomField";
 import SettingsNav from "./SettingsNav";
-import LoadingIndicator from "../../components/LoadingIndicator";
-
 import CustomFieldIcon from "../../components/Icons/CustomFieldIcon";
 import NoCustomFieldIcon from "../../components/Icons/NoCustomFieldIcon";
 

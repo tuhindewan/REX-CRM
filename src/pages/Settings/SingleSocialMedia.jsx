@@ -69,8 +69,6 @@ export default function SingleSocialMedia(props) {
           <CrossIcon />
         </button>
 
-        {console.log(icon)}
-
         <div className="social-media-upload">
           {icon != "" && (
             <img src={icon} alt="logo" id={"social-logo-src" + index} />

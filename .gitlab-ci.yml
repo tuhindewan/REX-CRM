@@ -57,9 +57,3 @@ test:php7.4:
     - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover --colors=never
   rules:
     - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")
-# phpcs:
-#   stage: syntax
-#   script:
-#     - ./vendor/bin/phpcs
-#   rules:
-#     - if: ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" && $CI_PIPELINE_SOURCE == "merge_request_event")

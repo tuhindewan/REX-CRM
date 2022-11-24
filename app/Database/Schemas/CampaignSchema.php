@@ -1,19 +1,25 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Datanase/Schemas
+ */
 
 namespace Mint\MRM\DataBase\Tables;
-
-use ParagonIE\Sodium\Core\Curve25519\H;
 
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-10 11:55:03
- * @modify date 2022-08-10 11:55:03
- * @desc [Create wp_mrm_contact_group_pivot table into database]
+ * [Manage campaign schema]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Datanase/Schemas
+ * @since 1.0.0
  */
-
 class CampaignSchema {
 
 	/**
@@ -24,7 +30,6 @@ class CampaignSchema {
 	 */
 	public static $campaign_table = 'mrm_campaigns';
 
-
 	/**
 	 * Table name for mrm_campaigns_meta
 	 *
@@ -32,7 +37,6 @@ class CampaignSchema {
 	 * @since 1.0.0
 	 */
 	public static $campaign_meta_table = 'mrm_campaigns_meta';
-
 
 	/**
 	 * Table name for mrm_campaign_emails
@@ -42,7 +46,6 @@ class CampaignSchema {
 	 */
 	public static $campaign_emails_table = 'mrm_campaign_emails';
 
-
 	/**
 	 * Table name for mrm_campaign_emails_meta
 	 *
@@ -50,8 +53,6 @@ class CampaignSchema {
 	 * @since 1.0.0
 	 */
 	public static $campaign_emails_meta_table = 'mrm_campaign_emails_meta';
-
-
 
 	/**
 	 * Create tables on plugin activation
@@ -62,36 +63,36 @@ class CampaignSchema {
 	public function get_sql() {
 		global $wpdb;
 
-		$charsetCollate = $wpdb->get_charset_collate();
+		$charset_collate = $wpdb->get_charset_collate();
 
-		// campaigns table
+		// campaigns table.
 		$campaign_table = $wpdb->prefix . self::$campaign_table;
-		$this->create_campaign_table( $campaign_table, $charsetCollate );
+		$this->create_campaign_table( $campaign_table, $charset_collate );
 
-		// campaign meta table
+		// campaign meta table.
 		$campaign_meta_table = $wpdb->prefix . self::$campaign_meta_table;
-		$this->create_campaign_meta_table( $campaign_meta_table, $charsetCollate );
+		$this->create_campaign_meta_table( $campaign_meta_table, $charset_collate );
 
-		// campaign emails table
+		// campaign emails table.
 		$campaign_emails_table = $wpdb->prefix . self::$campaign_emails_table;
-		$this->create_campaign_emails_table( $campaign_emails_table, $charsetCollate );
+		$this->create_campaign_emails_table( $campaign_emails_table, $charset_collate );
 
-		// campaign emails meta table
+		// campaign emails meta table.
 		$campaign_emails_meta_table = $wpdb->prefix . self::$campaign_emails_meta_table;
-		$this->create_campaign_emails_meta_table( $campaign_emails_meta_table, $charsetCollate );
+		$this->create_campaign_emails_meta_table( $campaign_emails_meta_table, $charset_collate );
 	}
 
 
 	/**
 	 * Create Campaign table
 	 *
-	 * @param mixed $table Campaign table name
-	 * @param mixed $charsetCollate
+	 * @param mixed $table Campaign table name.
+	 * @param mixed $charset_collate Collation and Character Set.
 	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
-	public function create_campaign_table( $table, $charsetCollate ) {
+	public function create_campaign_table( $table, $charset_collate ) {
 		$sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `title` VARCHAR(192) NULL,
@@ -103,7 +104,7 @@ class CampaignSchema {
             `updated_at` TIMESTAMP NULL,
             INDEX `cid_index` (`id` DESC),
             INDEX `ctitle_index` (`title` DESC)
-         ) $charsetCollate;";
+         ) $charset_collate;";
 
 		dbDelta( $sql );
 	}
@@ -112,13 +113,13 @@ class CampaignSchema {
 	/**
 	 * Create Campaign meta table
 	 *
-	 * @param mixed $table Campaign meta table name
-	 * @param mixed $charsetCollate
+	 * @param mixed $table Campaign meta table name.
+	 * @param mixed $charset_collate Collation and Character Set.
 	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
-	public function create_campaign_meta_table( $table, $charsetCollate ) {
+	public function create_campaign_meta_table( $table, $charset_collate ) {
 		$sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
@@ -127,7 +128,7 @@ class CampaignSchema {
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             INDEX `campaign_id_index` (`campaign_id` DESC)
-         ) $charsetCollate;";
+         ) $charset_collate;";
 		dbDelta( $sql );
 	}
 
@@ -135,13 +136,13 @@ class CampaignSchema {
 	/**
 	 * Create Campaign emails table
 	 *
-	 * @param mixed $table Campaign emails table name
-	 * @param mixed $charsetCollate
+	 * @param mixed $table Campaign emails table name.
+	 * @param mixed $charset_collate Collation and Character Set.
 	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
-	public function create_campaign_emails_table( $table, $charsetCollate ) {
+	public function create_campaign_emails_table( $table, $charset_collate ) {
 		$sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_id` BIGINT(20) NOT NULL,
@@ -162,7 +163,7 @@ class CampaignSchema {
             `created_at` TIMESTAMP NULL,
             `updated_at` TIMESTAMP NULL,
             INDEX `campaign_id_index` (`campaign_id` DESC)
-         ) $charsetCollate;";
+         ) $charset_collate;";
 
 		dbDelta( $sql );
 	}
@@ -171,20 +172,20 @@ class CampaignSchema {
 	/**
 	 * Create Campaign emails meta table
 	 *
-	 * @param mixed $table
-	 * @param mixed $charsetCollate
+	 * @param mixed $table Campaign emails meta table name.
+	 * @param mixed $charset_collate Collation and Character Set.
 	 *
 	 * @return void
 	 * @since 1.0.0
 	 */
-	public function create_campaign_emails_meta_table( $table, $charsetCollate ) {
+	public function create_campaign_emails_meta_table( $table, $charset_collate ) {
 		$sql = "CREATE TABLE IF NOT EXISTS {$table} (
             `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
             `campaign_emails_id` BIGINT(20) NOT NULL,
             `meta_key` VARCHAR(50) NOT NULL,
             `meta_value` longtext,
             INDEX `campaign_emails_id_index` (`campaign_emails_id` DESC)
-         ) $charsetCollate;";
+         ) $charset_collate;";
 		dbDelta( $sql );
 	}
 }

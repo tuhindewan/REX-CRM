@@ -1,10 +1,12 @@
 <?php
-
 /**
+ * Mail Mint
+ *
  * @author [MRM Team]
  * @email [support@rextheme.com]
- * @create date 2022-10-07 15:39:56
- * @desc [Create wp_mrm_forms table into database]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Datanase/Schemas
  */
 
 namespace Mint\MRM\DataBase\Tables;
@@ -13,7 +15,13 @@ require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
-
+/**
+ * [Manage form table schema]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Datanase/Schemas
+ * @since 1.0.0
+ */
 class FormSchema implements Schema {
 
 	/**

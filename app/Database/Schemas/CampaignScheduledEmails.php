@@ -1,17 +1,40 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Datanase/Schemas
+ */
 
 namespace Mint\MRM\DataBase\Tables;
 
 use Mint\MRM\Interfaces\Schema;
 
+/**
+ * [Manage scheduled campaign emails schema]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Datanase/Schemas
+ * @since 1.0.0
+ */
 class CampaignScheduledEmailsSchema implements Schema {
 	/**
-	 * @desc Table name for mrm_campaign_scheduled_emails
+	 * Table name for mrm_campaign_scheduled_emails
+	 *
 	 * @var string
 	 * @since 1.0.0
 	 */
 	public static $campaign_scheduled_emails_table = 'mrm_campaign_scheduled_emails';
 
+	/**
+	 * Get scheduled campaign email schemas
+	 *
+	 * @return string
+	 * @since 1.0.0
+	 */
 	public function get_sql() {
 		global $wpdb;
 		$campaign_scheduled_emails_table = $wpdb->prefix . self::$campaign_scheduled_emails_table;

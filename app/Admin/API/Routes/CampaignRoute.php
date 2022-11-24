@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
@@ -6,13 +15,12 @@ use Mint\MRM\Admin\API\Controllers\CampaignController;
 use WP_REST_Server;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Manage Campaign related API]
+ * [Manage Campaign related API]
+ *
+ * @desc Manage Campaign related API
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class CampaignRoute {
 
 	/**
@@ -149,7 +157,7 @@ class CampaignRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)' . '/status-update',
+			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)threeDotRef/status-update',
 			array(
 
 				array(
@@ -174,7 +182,7 @@ class CampaignRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)' . '/email' . '/(?P<email_id>[\d]+)',
+			'/' . $this->rest_base . '/(?P<campaign_id>[\d]+)threeDotRef/emailthreeDotRef/(?P<email_id>[\d]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,

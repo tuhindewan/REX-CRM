@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
@@ -9,13 +18,12 @@ use Mint\MRM\Admin\API\Controllers\EmailSettingController;
 use Mint\MRM\Admin\API\Controllers\OptinSettingController;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Manage double opt-in settings API routes]
+ * [Manage double opt-in settings API routes]
+ *
+ * @desc Manage double opt-in settings API routes
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class SettingRoute {
 
 	/**
@@ -35,7 +43,8 @@ class SettingRoute {
 	protected $rest_base = 'settings';
 
 	/**
-	 * @desc WCSettingController class instance variable
+	 * WCSettingController class instance variable
+	 *
 	 * @var object
 	 * @since 1.0.0
 	 */
@@ -66,7 +75,8 @@ class SettingRoute {
 	protected $email_controller;
 
 	/**
-	 * @desc GeneralSettingController class instance variable
+	 * GeneralSettingController class instance variable
+	 *
 	 * @var object
 	 * @since 1.0.0
 	 */
@@ -79,10 +89,10 @@ class SettingRoute {
 	 * @since 1.0.0
 	 */
 	public function register_routes() {
-		// WCSettingController class instance
+		// WCSettingController class instance.
 		$this->wc_controller = WCSettingController::get_instance();
 
-		// API routes for WooCommerce settings
+		// API routes for WooCommerce settings.
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/wc/',
@@ -160,7 +170,7 @@ class SettingRoute {
 			'/' . $this->rest_base . '/optin',
 			array(
 
-				// POST request for store on wp_options table
+				// POST request for store on wp_options table.
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array(
@@ -173,7 +183,7 @@ class SettingRoute {
 					),
 				),
 
-				// GET request for retrieving double opt-in settings
+				// GET request for retrieving double opt-in settings.
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array(
@@ -202,7 +212,7 @@ class SettingRoute {
 			'/' . $this->rest_base . '/business',
 			array(
 
-				// POST request for store on wp_options table
+				// POST request for store on wp_options table.
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array(
@@ -215,7 +225,7 @@ class SettingRoute {
 					),
 				),
 
-				// GET request for retrieving Business settings
+				// GET request for retrieving Business settings.
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array(
@@ -230,13 +240,13 @@ class SettingRoute {
 			)
 		);
 
-		// GeneralSettingController class instance
+		// GeneralSettingController class instance.
 		$this->general_controller = GeneralSettingController::get_instance();
 
-		// API routes for WooCommerce settings
+		// API routes for WooCommerce settings.
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/general' . '(?:/(?P<general_settings_key>[a-z-|_]+))?',
+			'/' . $this->rest_base . '/generalthreeDotRef(?:/(?P<general_settings_key>[a-z-|_]+))?',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,

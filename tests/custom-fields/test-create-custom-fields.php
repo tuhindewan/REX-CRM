@@ -21,10 +21,10 @@ class CustomFieldsControllerTest extends WP_UnitTestCase {
 	private $server;
 
 	/**
-    * mrm_messages table create for testing
-    */
-    public function setUp():void {
-        parent::setUp();
+	 * mrm_messages table create for testing
+	 */
+	public function setUp():void {
+		parent::setUp();
 
 		// Database table create
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -46,27 +46,27 @@ class CustomFieldsControllerTest extends WP_UnitTestCase {
                 `updated_at` TIMESTAMP
              ) $charsetCollate;";
 
-            dbDelta($sql);
-        }
- 
-        // Initiating the REST API.
-        global $wp_rest_server;
-        $this->server = $wp_rest_server = new \WP_REST_Server;
-        do_action( 'rest_api_init' );
-    }
- 
-    /**
-    * Delete the server after the test.
-    */
-    public function tearDown():void {
-        parent::tearDown();
- 
-        global $wp_rest_server;
-        $wp_rest_server = null;
-    }
+			dbDelta( $sql );
+		}
 
-    
-    /**
+		// Initiating the REST API.
+		global $wp_rest_server;
+		$this->server = $wp_rest_server = new \WP_REST_Server();
+		do_action( 'rest_api_init' );
+	}
+
+	/**
+	 * Delete the server after the test.
+	 */
+	public function tearDown():void {
+		parent::tearDown();
+
+		global $wp_rest_server;
+		$wp_rest_server = null;
+	}
+
+
+	/**
 	 * API endpoint reuqest check
 	 */
 	public function test_post_reuqest() {

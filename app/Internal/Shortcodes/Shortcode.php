@@ -1,15 +1,33 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/Shortcodes
+ */
 
 namespace Mint\MRM\Internal\ShortCode;
 
 use Mint\Mrm\Internal\Traits\Singleton;
 
+/**
+ * [Manages plugin's shortcodes]
+ *
+ * @desc Manages plugin's shortcodes
+ * @package /app/Internal/Shortcodes
+ * @since 1.0.0
+ */
 class ShortCode {
 
 	use Singleton;
 
 	/**
-	 * Assign Shortcode name and callback function
+	 * Initializes class functionalities and register shortcodes
+	 *
+	 * @since 1.0.0
 	 */
 	public static function init() {
 		$shortcodes = array(
@@ -23,14 +41,16 @@ class ShortCode {
 
 
 	/**
-	 * Render Shortcode
+	 * Renders Shortcode
 	 *
-	 * @param $atts
+	 * @param array|object $atts Form attributes.
+	 *
 	 * @return string
+	 * @since 1.0.0
 	 */
-
 	public static function render_contact_form( $atts ) {
 		$shortcode = new ContactForm( (array) $atts );
+
 		return $shortcode->get_content();
 	}
 }

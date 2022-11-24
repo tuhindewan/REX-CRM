@@ -16,26 +16,26 @@ class GetsContactsTest extends WP_UnitTestCase {
 	private $server;
 
 	/**
-    * Create a user and a post for our test.
-    */
-    public function setUp():void {
-        // Initiating the REST API.
-        parent::setUp();
- 
-        global $wp_rest_server;
-        $this->server = $wp_rest_server = new WP_REST_Server;
-        do_action( 'rest_api_init' );
-    }
- 
-    /**
-    * Delete the user and post after the test.
-    */
-    public function tearDown():void {
-        parent::tearDown();
- 
-        global $wp_rest_server;
-        $wp_rest_server = null;
-    }
+	 * Create a user and a post for our test.
+	 */
+	public function setUp():void {
+		// Initiating the REST API.
+		parent::setUp();
+
+		global $wp_rest_server;
+		$this->server = $wp_rest_server = new WP_REST_Server();
+		do_action( 'rest_api_init' );
+	}
+
+	/**
+	 * Delete the user and post after the test.
+	 */
+	public function tearDown():void {
+		parent::tearDown();
+
+		global $wp_rest_server;
+		$wp_rest_server = null;
+	}
 
 	/**
 	 * A single example test.

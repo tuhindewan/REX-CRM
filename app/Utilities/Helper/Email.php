@@ -1,68 +1,86 @@
 <?php
+/**
+ * Prepare email.
+ *
+ * @package Mint\MRM\Utilites\Helper
+ * @namespace Mint\MRM\Utilites\Helper
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ */
+
 namespace Mint\MRM\Utilites\Helper;
 
+/**
+ * Email class
+ *
+ * Prepare email.
+ *
+ * @package Mint\MRM\Utilites\Helper
+ * @namespace Mint\MRM\Utilites\Helper
+ *
+ * @version 1.0.0
+ */
 class Email {
 
-    /**
-     * Prepare email header information
-     * 
-     * @param array $existingHeader
-     * @return array
-     * @since 1.0.0
-     */
-    public static function getMailHeader($existingHeader = [])
-    {
-        if (!empty($existingHeader['From'])) {
-            return $existingHeader;
-        }
+	/**
+	 * Prepare email header information
+	 *
+	 * @param array $existing_header previous email header.
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function get_mail_header( $existing_header = array() ) {
+		if ( ! empty( $existing_header['From'] ) ) {
+			return $existing_header;
+		}
 
-        $headers = [
-            'MIME-Version: 1.0',
-			'Content-type: text/html;charset=UTF-8'
-        ];
-        static $globalHeaders;
-        if ($globalHeaders) {
-            return $globalHeaders;
-        }
+		$headers = array(
+			'MIME-Version: 1.0',
+			'Content-type: text/html;charset=UTF-8',
+		);
+		static $global_headers;
+		if ( $global_headers ) {
+			return $global_headers;
+		}
 
-        // Get email settings from the options table
-        $globalEmailSettings = get_option( "_mrm_email_settings" );
-        
-        // Prepare sender information
-        $fromName  = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['from_name'] : "";
-        $fromEmail = isset( $globalEmailSettings['from_email'] ) ? $globalEmailSettings['from_email'] : "";
+		// Get email settings from the options table.
+		$global_email_settings = get_option( '_mrm_email_settings' );
 
-        if ($fromName && $fromEmail) {
-            $headers[] = 'From: ' .$fromName . ' <' . $fromEmail . '>';
-        } else if ($fromEmail) {
-            $headers[] = $fromEmail;
-        }
+		// Prepare sender information.
+		$from_name  = isset( $global_email_settings['from_name'] ) ? $global_email_settings['from_name'] : '';
+		$from_email = isset( $global_email_settings['from_email'] ) ? $global_email_settings['from_email'] : '';
 
-        // Prepare replay to information
-        $replyName  = isset( $globalEmailSettings['reply_name'] ) ? $globalEmailSettings['reply_name'] : "";
-        $replyEmail = isset( $globalEmailSettings['from_name'] ) ? $globalEmailSettings['reply_email'] : "";
+		if ( $from_name && $from_email ) {
+			$headers[] = 'From: ' . $from_name . ' <' . $from_email . '>';
+		} elseif ( $from_email ) {
+			$headers[] = $from_email;
+		}
 
-        if ($replyName && $replyEmail) {
-            $headers[] ='Reply-To: ' . $replyName . ' <' . $replyEmail . '>';
-        } else if ($replyEmail) {
-            $headers[] = $replyEmail;
-        }
+		// Prepare replay to information.
+		$reply_name  = isset( $global_email_settings['reply_name'] ) ? $global_email_settings['reply_name'] : '';
+		$reply_email = isset( $global_email_settings['from_name'] ) ? $global_email_settings['reply_email'] : '';
 
-        $globalHeaders = $headers;
-        return $globalHeaders;
-    }
+		if ( $reply_name && $reply_email ) {
+			$headers[] = 'Reply-To: ' . $reply_name . ' <' . $reply_email . '>';
+		} elseif ( $reply_email ) {
+			$headers[] = $reply_email;
+		}
 
-
-    /**
-     * Prepare email header information
-     * 
-     * @param array $existingHeader
-     * @return array
-     * @since 1.0.0
-     */
-    public static function getMailTemplate($email_body = "", $domainLink, $contact_id, $hash)
-    {
-        return "
+		$global_headers = $headers;
+		return $global_headers;
+	}
+	/**
+	 * Prepare email template information
+	 *
+	 * @param string $email_body email body.
+	 * @param string $domain_link domain link.
+	 * @param int    $contact_id contact id.
+	 * @param string $hash contact hash key.
+	 */
+	public static function get_mail_template( $email_body = '', $domain_link, $contact_id, $hash ) {
+		return "
             <!DOCTYPE html>
             <html lang='en-US'>
                 <head>
@@ -171,7 +189,7 @@ class Email {
                                                                         <table align='left' border='0' cellpadding='0' cellspacing='0' width='100%' class='fcTextContentContainer' style='border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; max-width: 100%; min-width: 100%; color: inherit;'>
                                                                             <tbody class='mcnTextBlockOuter'>
                                                                             <tr>
-                                                                                <td class='fc_email_body' align='left' valign='top' style='mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 20px; padding-right: 20px; padding-bottom: 10px; padding-left: 20px; word-break: break-word; font-size: 16px; line-height: 180%; text-align: left;'>" .$email_body. "</td>
+                                                                                <td class='fc_email_body' align='left' valign='top' style='mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 20px; padding-right: 20px; padding-bottom: 10px; padding-left: 20px; word-break: break-word; font-size: 16px; line-height: 180%; text-align: left;'>" . $email_body . "</td>
                                                                             </tr>
                                                                             </tbody>
                                                                         </table>
@@ -201,11 +219,11 @@ class Email {
                                 </td>
                             </tr>
                         </table>
-                        <a href='". $domainLink ."/?mrm=1&amp;route=unsubscribe&amp;contact_id=".$contact_id."&amp;hash=".$hash."'>Unsubcribe</a>
+                        <a href='" . $domain_link . '/?mrm=1&amp;route=unsubscribe&amp;contact_id=' . $contact_id . '&amp;hash=' . $hash . "'>Unsubcribe</a>
                     </center>
                 </body>
             </html>
         ";
-    }
-    
+	}
+
 }

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import EmailPendingIcon from "../../components/Icons/EmailPendingIcon";
 import Search from "../../components/Icons/Search";
 import TooltipQuestionIcon from "../../components/Icons/TooltipQuestionIcon";
@@ -32,6 +32,19 @@ export default function DoubleOptin() {
   const [listening, setListening] = useState(false);
   const [errors, setErrors] = useState({});
   const [isValidate, setIsValidate] = useState(true);
+  const [searchPage, setSearchPage] = useState("");
+
+  const filteredPage = useMemo(() => {
+    if (searchPage) {
+      return pages.filter(
+        (page) =>
+          page.title.rendered
+            .toLowerCase()
+            .indexOf(searchPage.toLocaleLowerCase()) > -1
+      );
+    }
+    return pages;
+  }, [searchPage, pages]);
 
   useEffect(
     ListenForOutsideClicks(
@@ -115,9 +128,17 @@ export default function DoubleOptin() {
   // Submit optin object and hit post request
   const handleSubmit = async () => {
     setLoader(true);
-    const body_content = tinymce.get("tinymce").getContent();
-    console.log(body_content);
-    const message_content = tinymce.get("confirmation-message").getContent();
+    let body_content = "";
+    let message_content = "";
+
+    if (selectSwitch) {
+      body_content = tinymce.get("tinymce").getContent();
+      message_content = tinymce.get("confirmation-message").getContent();
+    } else {
+      body_content = optinSetting.email_body;
+      message_content = optinSetting.confirmation_message;
+    }
+
     optinSetting.enable = selectSwitch;
     optinSetting.confirmation_type = selectOption;
     optinSetting.email_body = body_content;
@@ -167,13 +188,22 @@ export default function DoubleOptin() {
 
   useEffect(() => {
     getOptinSettings().then((response) => {
+      setSelectSwitch(response.enable);
+      setSelectOption(response.confirmation_type);
+      setOptinSettings(response);
       tinymce.get("tinymce").setContent(response.email_body);
       tinymce
         .get("confirmation-message")
         .setContent(response.confirmation_message);
-      setSelectSwitch(response.enable);
-      setSelectOption(response.confirmation_type);
-      setOptinSettings(response);
+    });
+  }, []);
+
+  useEffect(() => {
+    getOptinSettings().then((response) => {
+      tinymce.get("tinymce").setContent(response.email_body);
+      tinymce
+        .get("confirmation-message")
+        .setContent(response.confirmation_message);
     });
   }, [selectSwitch]);
 
@@ -245,12 +275,13 @@ export default function DoubleOptin() {
                               <input
                                 type="text"
                                 name="email_subject"
+                                maxLength={998}
                                 value={optinSetting.email_subject}
                                 placeholder="Enter Email Subject"
                                 onChange={handleChange}
                               />
                             </div>
-                            <div className="form-group top-align">
+                            <div className="form-group top-align has-wysiwyg-editor">
                               <label htmlFor="">
                                 Email Body
                                 <span class="mintmrm-tooltip">
@@ -337,8 +368,8 @@ export default function DoubleOptin() {
                             <div
                               className={
                                 selectOption === "message"
-                                  ? "form-group top-align confirmation-message-section show"
-                                  : "form-group top-align confirmation-message-section"
+                                  ? "form-group top-align has-wysiwyg-editor confirmation-message-section show"
+                                  : "form-group top-align has-wysiwyg-editor confirmation-message-section"
                               }
                             >
                               <label htmlFor="">
@@ -443,26 +474,31 @@ export default function DoubleOptin() {
                                         <input
                                           type="search"
                                           name="column-search"
-                                          placeholder="Search or create"
+                                          placeholder="Search..."
+                                          value={searchPage}
+                                          onChange={(e) =>
+                                            setSearchPage(e.target.value)
+                                          }
                                         />
                                       </span>
                                     </li>
-                                    {pages.map((item) => {
-                                      return (
-                                        <li
-                                          onClick={() =>
-                                            handleSelectOption(
-                                              item.title.rendered,
-                                              item.id
-                                            )
-                                          }
-                                          key={item.id}
-                                          className={"single-column"}
-                                        >
-                                          {item.title.rendered}
-                                        </li>
-                                      );
-                                    })}
+                                    {filteredPage?.length > 0 &&
+                                      filteredPage.map((item) => {
+                                        return (
+                                          <li
+                                            onClick={() =>
+                                              handleSelectOption(
+                                                item.title.rendered,
+                                                item.id
+                                              )
+                                            }
+                                            key={item.id}
+                                            className={"single-column"}
+                                          >
+                                            {item.title.rendered}
+                                          </li>
+                                        );
+                                      })}
                                   </ul>
                                 </div>
                               </div>

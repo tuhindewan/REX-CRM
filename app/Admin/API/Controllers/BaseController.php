@@ -1,17 +1,24 @@
 <?php
+/**
+ * REST API Base Controller
+ *
+ * Core base controller for managing and interacting with REST API items.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Abstract class for REST API controller]
+ * This is the core class that defines abstract function for child controllers
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 abstract class BaseController extends \WP_REST_Controller {
 
 	/**
@@ -26,9 +33,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Create or update an object
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return JSON
+	 * @return WP_REST_Response
 	 */
 	abstract public function create_or_update( WP_REST_Request $request );
 
@@ -36,9 +43,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Delete a single object
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return JSON
+	 * @return WP_REST_Response
 	 */
 	abstract public function delete_single( WP_REST_Request $request );
 
@@ -46,9 +53,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Delete all or multiple objects
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return JSON
+	 * @return WP_REST_Response
 	 */
 	abstract public function delete_all( WP_REST_Request $request );
 
@@ -56,9 +63,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Get an object
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return JSON
+	 * @return WP_REST_Response
 	 */
 	abstract public function get_single( WP_REST_Request $request );
 
@@ -66,9 +73,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Get all or multipla objects
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return JSON
+	 * @return WP_REST_Response
 	 */
 	abstract public function get_all( WP_REST_Request $request );
 
@@ -76,9 +83,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Prepare success response for REST API
 	 *
-	 * @param $message
-	 * @param $code
-	 * @param $wp_error
+	 * @param string $message Response success message.
+	 * @param int    $code Response success code.
+	 * @param mixed  $data Response data on success.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -97,9 +104,9 @@ abstract class BaseController extends \WP_REST_Controller {
 	/**
 	 * Prepare error response for REST API
 	 *
-	 * @param $message
-	 * @param $code
-	 * @param $wp_error
+	 * @param string $message Response error message.
+	 * @param int    $code Response error code.
+	 * @param mixed  $wp_error Response data on error.
 	 *
 	 * @return array
 	 * @since 1.0.0

@@ -1,18 +1,25 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\ContactController;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-11 11:54:42
- * @modify date 2022-08-11 11:54:42
- * @desc [Handle Contact Module related API callbacks]
+ * [Handle Contact Module related API callbacks]
+ *
+ * @desc Handle Contact Module related API callbacks
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
-
 class ContactRoute {
 
 	/**
@@ -154,7 +161,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/groups',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/groups',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
@@ -480,7 +487,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/send-message',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/send-message',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -504,7 +511,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/send-double-opt-in',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/send-double-opt-in',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -528,7 +535,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/get-emails',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/get-emails',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -552,7 +559,7 @@ class ContactRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)' . '/emails',
+			'/' . $this->rest_base . '/(?P<contact_id>[\d]+)threeDotRef/emails',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
