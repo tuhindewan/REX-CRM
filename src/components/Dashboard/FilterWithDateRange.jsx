@@ -108,6 +108,10 @@ const FilterWithDateRange = () => {
         setDateLabels();
     };
 
+    const onDateFilter = () => {
+        setShowCalendar(false);
+    };
+
     return (
         <div className="filter-box" ref={customFilterRef}>
             <div className="selecbox" ref={filterRef}>
@@ -166,7 +170,7 @@ const FilterWithDateRange = () => {
                             inline
                             calendarStartDay={start_of_week}
                         />
-                        <button className="mintmrm-btn">
+                        <button className="mintmrm-btn" onClick={onDateFilter}>
                             Filter
                             {/* <span className="mintmrm-loader"></span> */}
                         </button>
