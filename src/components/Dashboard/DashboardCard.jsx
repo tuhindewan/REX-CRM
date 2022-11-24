@@ -5,7 +5,13 @@ import DoubleAngleRight from "../Icons/DoubleAngleRightIcon";
 
 export default function DashboardCard(props) {
     return (
-        <div className="single-card">
+        <div
+            className={
+                props.cardTitle == "Total Automation"
+                    ? "single-card coming-soon-overlay"
+                    : "single-card"
+            }
+        >
             <div className="image-title">
                 <span className="card-icon">{props.source}</span>
                 <p>{props.cardTitle}</p>

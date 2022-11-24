@@ -81,9 +81,9 @@ const Dashboard = () => {
                     <DashboardCard
                         source={<TotalAutomationIcon />}
                         cardTitle="Total Automation"
-                        totalAmount="5790"
+                        totalAmount="--"
                         rate="increase"
-                        rateAmount="+0.75"
+                        rateAmount="+0.00"
                         name="Automation"
                         route=""
                     />
