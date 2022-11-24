@@ -126,8 +126,8 @@ const FilterWithDateRange = () => {
     };
 
     return (
-        <div className="filter-box" ref={filterRef}>
-            <div className="selecbox">
+        <div className="filter-box">
+            <div className="selecbox" ref={filterRef}>
                 <button
                     className={
                         filterDropdown
@@ -163,12 +163,8 @@ const FilterWithDateRange = () => {
             </div>
 
             {showDateRange && (
-                <div className="custom-date" >
-                    <div
-                        className="selected-date"
-                        onClick={showRangeCalendar}
-                        
-                    >
+                <div className="custom-date" ref={calenderRef}>
+                    <div className="selected-date" onClick={showRangeCalendar}>
                         <span className="start-date">Nov 20, 2022</span>
                         <span className="end-date">Nov 20, 2022</span>
                         <span className="date-icon">
@@ -178,7 +174,7 @@ const FilterWithDateRange = () => {
 
                     <div
                         className={
-                            showCalendar ||showCustomCalendar
+                            showCalendar || showCustomCalendar
                                 ? "datepicker-dropdown show"
                                 : "datepicker-dropdown"
                         }
