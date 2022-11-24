@@ -5,10 +5,10 @@ import ListenForOutsideClicks from "../ListenForOutsideClicks";
 import CalendarIcon from "../Icons/CalendarIcon";
 
 const Filter = () => {
-
     const [dateFilter, setDateFilter] = useState("Monthly");
     const [filterDropdown, setFilterDropdown] = useState(false);
-
+    const filterRef = useRef(null);
+    const [listening, setListening] = useState(false);
     const [filterItems, setFilterItems] = useState([
         { title: "Weekly", id: "weekly" },
         { title: "Monthly", id: "monthly" },
@@ -18,29 +18,52 @@ const Filter = () => {
     const handleFilter = () => {
         setFilterDropdown(!filterDropdown);
     };
-   
+
     const handleSelect = (title, id) => {
         setDateFilter(title);
         setFilterDropdown(false);
     };
+    useEffect(
+        ListenForOutsideClicks(
+            listening,
+            setListening,
+            filterRef,
+            setFilterDropdown
+        )
+    );
 
-    
     return (
         <div className="filter-box">
             <div className="selecbox">
-                <button className={ filterDropdown ? "drop-down-button show" : "drop-down-button" } onClick={handleFilter} >
+                <button
+                    className={
+                        filterDropdown
+                            ? "drop-down-button show"
+                            : "drop-down-button"
+                    }
+                    ref={filterRef}
+                    onClick={handleFilter}
+                >
                     {dateFilter}
                 </button>
 
-                <ul className={ filterDropdown ? "mintmrm-dropdown show" : "mintmrm-dropdown" } >
+                <ul
+                    className={
+                        filterDropdown
+                            ? "mintmrm-dropdown show"
+                            : "mintmrm-dropdown"
+                    }
+                >
                     {filterItems.map((item, index) => (
-                        <li key={index} onClick={() => handleSelect(item.title, item.id) } >
+                        <li
+                            key={index}
+                            onClick={() => handleSelect(item.title, item.id)}
+                        >
                             {item.title}
                         </li>
                     ))}
                 </ul>
             </div>
-
         </div>
     );
 };
