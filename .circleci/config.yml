@@ -56,7 +56,7 @@ jobs:
 # Orchestrate our job run sequence
 workflows:
   version: 2
-  phpcs_unit_test:
+  phpcs-and-unit-test:
     jobs:
       - phpcs
       - phpunit:
