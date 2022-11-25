@@ -1,8 +1,8 @@
-import { useEditorProps, useFocusIdx } from "easy-email-editor";
+import { useFocusIdx } from "easy-email-editor";
 
 import {
   AttributesPanelWrapper,
-  ColorPickerField
+  ColorPickerField,
   TextField,
 } from "easy-email-extensions";
 import React from "react";

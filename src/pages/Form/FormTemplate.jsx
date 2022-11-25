@@ -70,7 +70,7 @@ const FormTemplate = (props) => {
   useEffect(() => {
     getAllTemplates(1, 10).then((response) => {
       setFormTemplates(response.forms);
-      const updateItems = response.forms.filter((curElem) => {
+      const updateItems = response.forms?.filter((curElem) => {
         return curElem.form_position === "popup";
       });
       setFormTemplatesFilter(updateItems);
