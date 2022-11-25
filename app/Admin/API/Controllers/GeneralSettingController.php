@@ -89,6 +89,14 @@ class GeneralSettingController extends SettingBaseController {
 		}
 
 		$settings = is_array( $settings ) && ! empty( $settings ) ? $settings : array();
+		if ( isset( $settings['unsubscriber_settings'] ) ) {
+			if ( isset( $settings['unsubscriber_settings']['page_id'] ) ) {
+				$page_id        = $settings['unsubscriber_settings']['page_id'];
+				$get_page_title = get_the_title( $page_id );
+				$settings['unsubscriber_settings']['page_title'] = $get_page_title;
+			}
+		}
+
 		return $this->get_success_response_data( $settings );
 	}
 }

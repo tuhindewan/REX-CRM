@@ -16,6 +16,7 @@ use Mint\Mrm\Internal\Traits\Singleton;
 use MRM\Common\MRM_Common;
 use WP_REST_Request;
 use Exception;
+use Mint\MRM\Utilites\Helper\Email;
 
 /**
  * This is the main class that controls the email setting feature. Its responsibilities are:

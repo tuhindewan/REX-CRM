@@ -25,6 +25,8 @@ export default function CustomFieldSettings() {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [id, setId] = useState();
+  const [previousFieldData, setPreviousFieldData] = useState([]);
 
   // loading or not
   const [loading, setLoading] = useState(false);
@@ -32,11 +34,13 @@ export default function CustomFieldSettings() {
   //----show custom field modal-----
   const addCustomField = () => {
     setCustomFieldModal(!customFieldModal);
+    setId();
   };
 
   //----close custom field modal-----
   const closeCustomFieldModal = () => {
     setCustomFieldModal(false);
+    setId();
   };
 
   const toggleRefresh = () => {
@@ -99,6 +103,11 @@ export default function CustomFieldSettings() {
                       setPrepareData={setPrepareData}
                       refresh={refresh}
                       setRefresh={setRefresh}
+                      id={id}
+                      setId={setId}
+                      setCustomFieldModal={setCustomFieldModal}
+                      previousFieldData={previousFieldData}
+                      setPreviousFieldData={setPreviousFieldData}
                     />
                   </div>
 
@@ -155,6 +164,8 @@ export default function CustomFieldSettings() {
                                     confirmationModal={confirmationModal}
                                     setConfirmationModal={setConfirmationModal}
                                     setConfirmDelete={setConfirmDelete}
+                                    setCustomFieldModal={setCustomFieldModal}
+                                    setId={setId}
                                   />
                                 );
                               })}

@@ -4,6 +4,7 @@ import EditIcon from "../../../components/Icons/EditIcon";
 import DeleteIcon from "../../../components/Icons/Delete";
 import ThreeDotIcon from "../../../components/Icons/ThreeDotIcon";
 import CrossIcon from "../../../components/Icons/CrossIcon";
+import AddCustomFieldModal from "./AddCustomFieldModal";
 
 export default function SingleCustomField(props) {
   const {
@@ -13,7 +14,9 @@ export default function SingleCustomField(props) {
     setSelectedIdForDelete,
     confirmationModal,
     setConfirmationModal,
-    setConfirmDelete
+    setConfirmDelete,
+    setCustomFieldModal,
+    setId
   } = props;
 
   const [showModal, setShowModal] = useState(false);
@@ -31,6 +34,10 @@ export default function SingleCustomField(props) {
   //----delete confirmation modal-----
   const cancelConfirmationModal = () => {
     setConfirmationModal(false);
+  };
+
+  const handleUpdate = (id) => {
+    setId(id);
   };
 
   return (
@@ -87,7 +94,7 @@ export default function SingleCustomField(props) {
           <ul
             className={showModal ? "mintmrm-dropdown show" : "mintmrm-dropdown"}
           >
-            <li>
+            <li onClick={() => handleUpdate(customFieldData?.id)}>
               <EditIcon />
               Edit
             </li>

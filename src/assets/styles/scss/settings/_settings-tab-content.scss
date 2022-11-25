@@ -215,7 +215,11 @@
                     }
 
                     .mintmrm-radiobtn {
-                        margin-right: 30px;
+                        margin-right: 20px;
+
+                        &:last-child{
+                            margin-right: 0;
+                        }
 
                         label {
                             font-weight: 500;
@@ -554,36 +558,6 @@
         .input-custom-wrapper {
         width: 100%;
     }
-}
-
-@media only screen and (max-width: 991px) {
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group{
-    //     align-items: flex-start;
-    //     flex-flow: column wrap;
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group > label {
-    //     margin-bottom: 15px;
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper, .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=url], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=number], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=email], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group input[type=text], .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group textarea, .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group select {
-    //     width: 100%;
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .photo-area {
-    //     flex-flow: row wrap;
-    //     width: 100%;
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .photo-upload .upload-area {
-    //     width: calc(100% - 138px);
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .input-custom-wrapper .mintmrm-radiobtn {
-    //     display: inline-block;
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group .drop-down-button {
-    //     position: relative;
-    // }
-    // .mintmrm-settings-page .mintmrm-settings-wrapper .settings-tab-content .form-wrapper .form-group.label-with-switcher{
-    //     flex-flow: row wrap;
-    //     justify-content: space-between;
-    // }
 }
 
 @media only screen and (max-width: 991px) {

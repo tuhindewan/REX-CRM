@@ -3,7 +3,7 @@ import ContactDetails from "../components/ContactDetails";
 import CreateContact from "../components/CreateContact";
 import CustomFieldCreate from "../components/CustomFieldCreate";
 import CustomFields from "../components/CustomFields";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../pages/Dashboard";
 import ImportConfirmation from "../components/ImportConfirmation";
 import SelectFieldsMap from "../components/SelectFieldsMap";
 import WordPressFieldMap from "../components/WordPressFieldMap";
@@ -18,17 +18,17 @@ import ImportContactFile from "../pages/ImportContactFile";
 import ImportContactRaw from "../pages/ImportContactRaw";
 import ImportMailchimp from "../pages/ImportMailchimp";
 import ImportWordpress from "../pages/ImportWordpress";
-import Lists from "../pages/Tag/index";
-import Tags from "../pages/List/index";
-import Segments from "../pages/Segment/index";
+import Lists from "../pages/List/index";
 import CreateSegment from "../pages/Segment/CreateSegment";
+import Segments from "../pages/Segment/index";
 import BusinessSettings from "../pages/Settings/BusinessSettings";
-import EmailSettings from "../pages/Settings/EmailSettings";
-import DoubleOptin from "../pages/Settings/DoubleOptin";
-import GeneralSettings from "../pages/Settings/GeneralSettings";
-import WooCommerceSettings from "../pages/Settings/WooCommerceSettings";
-import SmtpSettings from "../pages/Settings/SmtpSettings";
 import CustomFieldSettings from "../pages/Settings/CustomFieldSettings";
+import DoubleOptin from "../pages/Settings/DoubleOptin";
+import EmailSettings from "../pages/Settings/EmailSettings";
+import GeneralSettings from "../pages/Settings/GeneralSettings";
+import SmtpSettings from "../pages/Settings/SmtpSettings";
+import WooCommerceSettings from "../pages/Settings/WooCommerceSettings";
+import Tags from "../pages/Tag/index";
 
 const routes = [
   {
