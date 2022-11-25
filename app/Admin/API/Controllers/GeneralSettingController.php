@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API General Setting Controller
+ *
+ * Handles requests to the general setting endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -7,19 +17,21 @@ use MRM\Common\MRM_Common;
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing double General settings API callbacks]
+ * This is the main class that controls the general setting feature. Its responsibilities are:
+ *
+ * - Create or update general settings
+ * - Retrieve general settings from options table
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
 class GeneralSettingController extends SettingBaseController {
 
 	use Singleton;
 
 	/**
-	 * @desc Update General global settings into wp_options table
-	 * @param WP_REST_Request $request
+	 * Update General global settings into wp_options table
+	 *
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return array|WP_REST_Response
 	 * @since 1.0.0
 	 */
@@ -46,8 +58,9 @@ class GeneralSettingController extends SettingBaseController {
 	}
 
 	/**
-	 * @desc Get General global settings from wp_option table
-	 * @param WP_REST_Request $request
+	 * Get General global settings from wp_option table
+	 *
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return array|WP_REST_Response
 	 * @since 1.0.0
 	 */
@@ -76,13 +89,12 @@ class GeneralSettingController extends SettingBaseController {
 		}
 
 		$settings = is_array( $settings ) && ! empty( $settings ) ? $settings : array();
-		if(isset($settings['unsubscriber_settings'])){
-			if (isset($settings['unsubscriber_settings']['page_id'])){
-				$page_id = $settings['unsubscriber_settings']['page_id'];
+		if ( isset( $settings['unsubscriber_settings'] ) ) {
+			if ( isset( $settings['unsubscriber_settings']['page_id'] ) ) {
+				$page_id        = $settings['unsubscriber_settings']['page_id'];
 				$get_page_title = get_the_title( $page_id );
 				$settings['unsubscriber_settings']['page_title'] = $get_page_title;
 			}
-
 		}
 
 		return $this->get_success_response_data( $settings );

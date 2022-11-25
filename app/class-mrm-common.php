@@ -1,36 +1,44 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app
+ */
 
 namespace MRM\Common;
 
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-10 15:11:01
- * @modify date 2022-08-10 15:11:01
- * @desc [Manage MRM common functions]
+ * [Manage Common mrm function ]
+ *
+ * @desc Manages Common function in mrm
+ * @package /app/Internal/Ajax
+ * @since 1.0.0
  */
-
 class MRM_Common {
 
 	/**
 	 * Returns alphanumeric hash
 	 *
-	 * @param mixed $len=32
+	 * @param string $email get email .
+	 * @param mixed  $len  get lengh .
 	 *
 	 * @return string
-	 * @since 1.0.0
 	 */
 	public static function get_rand_hash( $email, $len = 32 ) {
-		 return substr( md5( $email ), -$len );
+		return substr( md5( $email ), -$len );
 	}
 
 
 	/**
 	 * Returns request query params or body values
 	 *
-	 * @param WP_REST_Request $request
+	 * @param  WP_REST_Request $request Get Request type .
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -86,7 +94,7 @@ class MRM_Common {
 	/**
 	 * Create a slug from a string
 	 *
-	 * @param mixed $str
+	 * @param mixed $str get string .
 	 *
 	 * @return string
 	 * @since 1.0.0
@@ -99,7 +107,7 @@ class MRM_Common {
 	/**
 	 * Sanitize global variables
 	 *
-	 * @param array $data
+	 * @param array $data get data.
 	 *
 	 * @return array
 	 * @since 1.0.0
@@ -111,7 +119,7 @@ class MRM_Common {
 		return array(
 			'get'     => filter_input_array( INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS ),
 			'post'    => filter_input_array( INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS ),
-			'request' => filter_var_array( $_REQUEST, FILTER_SANITIZE_FULL_SPECIAL_CHARS ),
+			'request' => filter_var_array( $_REQUEST, FILTER_SANITIZE_FULL_SPECIAL_CHARS ), //phpcs:ignore
 		);
 	}
 
@@ -119,7 +127,8 @@ class MRM_Common {
 	/**
 	 * Partially hide or mask email address
 	 *
-	 * @param mixed $email
+	 * @param mixed $email  get email address .
+	 *
 	 * @return string
 	 * @since 1.0.0
 	 */

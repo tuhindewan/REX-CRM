@@ -1,7 +1,6 @@
 import "./style.css";
 
 export default function InputSelect(props) {
-  console.log(props);
   return (
     <div className="form-group contact-input-field">
       <div key={`mrm-${props.name}`} className="mrm-form-group select">
@@ -18,7 +17,10 @@ export default function InputSelect(props) {
           >
             {props.selectOption.map((option, index) => {
               return (
-                <option key={index} value={option} >
+                <option
+                  key={index}
+                  value={option}
+                >
                   {option}
                 </option>
               );

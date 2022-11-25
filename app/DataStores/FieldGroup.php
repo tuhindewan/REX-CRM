@@ -1,15 +1,23 @@
 <?php
-
-namespace Mint\MRM\DataStores;
-
 /**
+ * Mail Mint
+ *
  * @author [MRM Team]
  * @email [support@rextheme.com]
  * @create date 2022-08-09 11:03:17
  * @modify date 2022-08-09 11:03:17
- * @desc [Manage representation of Field Group object]
+ * @package /app/DataStores
  */
 
+namespace Mint\MRM\DataStores;
+
+/**
+ * [Manage field group data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
+ */
 class FieldGroup {
 
 	/**
@@ -20,9 +28,15 @@ class FieldGroup {
 	 */
 	private $title;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param array $args Custom field data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $args ) {
-		$this->title = isset( $args['title'] ) ? sanitize_text_field( $args['title'] ) : null;
+		$this->title = isset( $args[ 'title' ] ) ? sanitize_text_field( $args[ 'title' ] ) : null;
 	}
 
 

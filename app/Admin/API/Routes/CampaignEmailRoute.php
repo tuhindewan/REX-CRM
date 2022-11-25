@@ -1,4 +1,13 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
@@ -6,11 +15,12 @@ use Mint\MRM\Admin\API\Controllers\CampaignEmailController;
 use WP_REST_Server;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @desc [Manage Campaign email builder related API]
+ * [Manage Campaign email builder related API]
+ *
+ * @desc Manage Campaign email builder related API
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class CampaignEmailRoute {
 
 	/**
@@ -137,11 +147,7 @@ class CampaignEmailRoute {
 			)
 		);
 
-		/**
-		 * file send api
-		 *
-		 * @since 1.0.0
-		 */
+		// File send api.
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/mediaUpload',

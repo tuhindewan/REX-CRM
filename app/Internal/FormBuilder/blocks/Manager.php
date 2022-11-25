@@ -1,4 +1,14 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/FomrBuilder/blocks/
+ */
+
 namespace Mint\MRM\Internal\FormBuilder;
 
 /**
@@ -7,7 +17,7 @@ namespace Mint\MRM\Internal\FormBuilder;
  * @since 5.0.0
  * @internal
  */
-final class GetMRM_Block_Manager {
+final class GetMRMBlockManager {
 
 	/**
 	 * Instance
@@ -17,9 +27,9 @@ final class GetMRM_Block_Manager {
 	 * @access private
 	 * @static
 	 *
-	 * @var GetMRM_Block_Manager The single instance of the class.
+	 * @var GetMRMBlockManager The single instance of the class.
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 
 	/**
@@ -27,19 +37,22 @@ final class GetMRM_Block_Manager {
 	 *
 	 * Ensures only one instance of the class is loaded or can be loaded.
 	 *
-	 * @return GetMRM_Block_Manager An instance of the class.
+	 * @return GetMRMBlockManager An instance of the class.
 	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @static
 	 */
 	public static function get_instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
+	/**
+	 * Call Class construct for run wp action hook
+	 */
 	public function __construct() {
 		$this->init();
 	}
@@ -61,7 +74,7 @@ final class GetMRM_Block_Manager {
 		$block_types = $this->get_block_types();
 
 		foreach ( $block_types as $block_type ) {
-			$block_type_class    = 'MRMForm_' . $block_type;
+			$block_type_class    = 'MRMForm' . $block_type;
 			$block_type_instance = new $block_type_class();
 		}
 	}
@@ -80,7 +93,7 @@ final class GetMRM_Block_Manager {
 
 
 	/**
-	 * register assets for gutenberg
+	 * Register assets for gutenberg
 	 *
 	 * @since 2.0.3
 	 */
@@ -131,10 +144,10 @@ final class GetMRM_Block_Manager {
 			$json_path = $upload_css_dir . "wpfunnels/css/wpfnl-json-{$post_id}.json";
 
 			if ( file_exists( $css_path ) ) {
-				$blockCss = file_get_contents( $css_path );
-				echo '<style type="text/css">' . $blockCss . '</style>';
+				$block_css = file_get_contents( $css_path ); //phpcs:ignore
+				echo '<style type="text/css">' . $block_css . '</style>'; //phpcs:ignore
 			} else {
-				echo '<style type="text/css">' . get_post_meta( get_the_ID(), '_wpfunnels_gb_css', true ) . '</style>';
+				echo '<style type="text/css">' . get_post_meta( get_the_ID(), '_wpfunnels_gb_css', true ) . '</style>'; //phpcs:ignore
 			}
 		}
 	}

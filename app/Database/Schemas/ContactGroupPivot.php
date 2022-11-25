@@ -1,4 +1,14 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Datanase/Schemas
+ */
+
 namespace Mint\MRM\DataBase\Tables;
 
 require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
@@ -6,13 +16,12 @@ require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 use Mint\MRM\Interfaces\Schema;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-10 11:55:03
- * @modify date 2022-08-10 11:55:03
- * @desc [Create wp_mrm_contact_group_pivot table into database]
+ * [Manage contact group pivot table schema]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Datanase/Schemas
+ * @since 1.0.0
  */
-
 class ContactGroupPivotSchema implements Schema {
 
 	/**
@@ -22,7 +31,6 @@ class ContactGroupPivotSchema implements Schema {
 	 * @since 1.0.0
 	 */
 	public static $table_name = 'mrm_contact_group_pivot';
-
 
 	/**
 	 * Get the schema of Contact group pivot table

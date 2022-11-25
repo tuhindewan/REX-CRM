@@ -1,9 +1,25 @@
 <?php
+/**
+ * Helper file to register schemas
+ *
+ * @package Mint\MRM\DataBase
+ * @namespace Mint\MRM\DataBase
+ */
 
 namespace Mint\MRM\DataBase;
 
 use Mint\Mrm\Internal\Traits\Singleton;
 
+/**
+ * Model class
+ *
+ * This class is using to be the parent of direct interaction models with the database where we are registering all the models
+ *
+ * @package Mint\MRM\DataBase
+ * @namespace Mint\MRM\DataBase
+ *
+ * @version 1.0.0
+ */
 class Model {
 
 	use Singleton;
@@ -18,7 +34,7 @@ class Model {
 	public static function get_tables() {
 		self::autoload_table_classes();
 		return apply_filters(
-			'mrm/database_tables',
+			'mrm_database_tables',
 			array(
 				'contact_group'                 => 'ContactGroupSchema',
 				'contact'                       => 'ContactSchema',

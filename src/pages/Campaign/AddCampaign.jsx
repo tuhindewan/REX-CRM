@@ -26,8 +26,8 @@ const defaultCampaignData = {
   delay_count: 0,
   delay_value: "",
   preview: "",
-  senderName: MRM_Vars.email_settings.from_name,
-  senderEmail: MRM_Vars.email_settings.from_email,
+  senderName: "",
+  senderEmail: "",
   toError: null,
   senderEmailError: null,
 };

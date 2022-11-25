@@ -1,23 +1,37 @@
 <?php
+/**
+ * Shared global constants for use in other classes
+ *
+ * @package Mint\MRM
+ * @namespace Mint\MRM
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ */
 
 namespace Mint\MRM;
 
 use Mint\Mrm\Internal\Traits\Singleton;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Shared global constants for use in other classes]
+ * Constants class
+ *
+ * Shared global constants for use in other classes.
+ *
+ * @package Mint\MRM\DataBase\Models
+ * @namespace Mint\MRM\DataBase\Models
+ *
+ * @version 1.0.0
  */
-
 class Constants {
 
 	use Singleton;
 
 	/**
 	 * Contact attrs available for mapping
+	 *
+	 * @var array $contacts_attrs
 	 */
 	public static $contacts_attrs = array(
 		array(
@@ -71,7 +85,9 @@ class Constants {
 	);
 
 	/**
-	 * Contact attrs available for mapping
+	 * Contact fields for mapping
+	 *
+	 * @var array $primary_contact_fields
 	 */
 	public static $primary_contact_fields = array(
 		'first_name',
@@ -86,7 +102,9 @@ class Constants {
 	);
 
 	/**
-	 * fields slugs array for custom fields validation
+	 * Fields slugs array for custom fields validation
+	 *
+	 * @var array $primary_fields
 	 */
 	public static $primary_fields = array(
 		'first-name',
@@ -107,8 +125,10 @@ class Constants {
 		'designation',
 	);
 
-	/*
-	* maichimp api key for testing
-	*/
+	/**
+	 * Maichimp api key for testing
+	 *
+	 * @var string $mailchimp_key
+	 */
 	public static $mailchimp_key = '11b321614d43814ca7d8406041bb3839-us8';
 }

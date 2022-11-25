@@ -33,4 +33,20 @@ export default function LoadingIndicator(props) {
       </div>
     );
   }
+  if ("table-full-ten" == type) {
+    return (
+      <div class="shimmer-wrapper">
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+        <div class="shimmer-line shimmer-line-br shimmer-line-full shimmer-animate"></div>
+      </div>
+    );
+  }
 }

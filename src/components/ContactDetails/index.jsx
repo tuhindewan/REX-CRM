@@ -383,6 +383,7 @@ export default function ContactDetails() {
     contactData.meta_fields.timezone = selectedTimezone;
     contactData.meta_fields.country = countryButton;
     contactData.meta_fields.state = countryStateButton;
+
     if (isValidate) {
       const res = await fetch(
         `${window.MRM_Vars.api_base_url}mrm/v1/contacts/${contactData.id}`,
@@ -454,10 +455,12 @@ export default function ContactDetails() {
   const [selectedCheckboxItems, setSelectedCheckboxItems] = useState([]);
   const [checkboxName, setCheckboxName] = useState("");
 
-  const modifyContactData = (name, value, id, checked) => {
-    let modifiedContact = contactData;
+  const [modifiedContact, setModifiedContact] = useState([]);
 
-    if (modifiedContact.meta_fields[name] !== undefined) {
+  const modifyContactData = (name, value, id, checked) => {
+    setModifiedContact(contactData);
+
+    if (modifiedContact.meta_fields[name]) {
       if (checked) {
         modifiedContact.meta_fields[name].push(value);
       } else {
@@ -468,39 +471,23 @@ export default function ContactDetails() {
       let dataArray = [value];
       modifiedContact.meta_fields[name] = dataArray;
     }
-
-    //setContactData([modifiedContact]);
-
-    console.log(modifiedContact);
   };
 
   const handleChekcboxFields = (e) => {
     const { name, value, id, checked } = e.target;
 
-    modifyContactData(name, value, id, checked);
-
-    setCheckboxName(name);
-
-    const index = selectedCheckboxItems?.findIndex(
-      (item) => item.id == name + "-" + id
-    );
-
-    if (index >= 0) {
-      setSelectedCheckboxItems(
-        selectedCheckboxItems.filter((item) => item.id != name + "-" + id)
-      );
+    if (contactData.meta_fields[name]) {
+      if (checked) {
+        contactData.meta_fields[name].push(value);
+      } else {
+        let idx = contactData.meta_fields[name].indexOf(value);
+        contactData.meta_fields[name].splice(idx, 1);
+      }
     } else {
-      // add id to the array
-      setSelectedCheckboxItems([
-        ...selectedCheckboxItems,
-        { id: name + "-" + id, name: name, value: value },
-      ]);
+      let dataArray = [value];
+      contactData.meta_fields[name] = dataArray;
     }
   };
-
-  useEffect(() => {
-    console.log(contactData);
-  }, [contactData]);
 
   const onSelect = (e, name) => {
     const updatedOptions = [...e.target.options]
@@ -667,7 +654,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        [name]: genderButton,
+        ...prevState.meta_fields,
+        [name]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
   };
@@ -681,7 +672,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["country"]: countryButton,
+        ...prevState.meta_fields,
+        ["gender"]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
 
@@ -700,7 +695,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["state"]: countryStateButton,
+        ...prevState.meta_fields,
+        ["gender"]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
   };
@@ -712,7 +711,11 @@ export default function ContactDetails() {
     setContactData((prevState) => ({
       ...prevState,
       meta_fields: {
-        ["timezone"]: countryStateButton,
+        ...prevState.meta_fields,
+        ["gender"]: genderButton ? genderButton : contactData.meta_fields.gender,
+        ["country"]: countryButton  ? countryButton : contactData.meta_fields.country,
+        ["state"]: countryStateButton ? countryStateButton : contactData.meta_fields.state,
+        ["timezone"]: selectedTimezone ? selectedTimezone : contactData.meta_fields.timezone,
       },
     }));
   };
@@ -1015,7 +1018,7 @@ export default function ContactDetails() {
                                   </span>
                                   <span className="title-value">
                                     {contactData?.meta_fields?.[field.title]
-                                      ? contactData?.meta_fields?.[field.title]
+                                      ? contactData?.meta_fields?.[field.title]+" "
                                       : "-"}
                                   </span>
                                 </li>
@@ -1393,8 +1396,6 @@ export default function ContactDetails() {
                                     />
                                   )}
 
-                                  {console.log(field)}
-
                                   {field.type == "selectField" && (
                                     <InputSelect
                                       name={field.title}
@@ -1426,13 +1427,15 @@ export default function ContactDetails() {
                                       }
                                     />
                                   )}
-
                                   {field.type == "checkboxField" && (
                                     <InputCheckbox
                                       name={field.title}
                                       label={field.meta.label}
                                       placeholder={field.meta.placeholder}
                                       selectOption={field.meta.options}
+                                      selectedValue={
+                                        contactData?.meta_fields?.[field.title]
+                                      }
                                       handleChange={handleChekcboxFields}
                                       value={
                                         contactData?.meta_fields?.[field.id]

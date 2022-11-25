@@ -1,17 +1,25 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\GeneralController;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Handle General Module related API callbacks]
+ * [Handle General Module related API callbacks]
+ *
+ * @desc Handle General Module related API callbacks
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class GeneralRoute {
 
 	/**

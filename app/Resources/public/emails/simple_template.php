@@ -14,7 +14,6 @@
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
 	<link rel='profile' href='https://gmpg.org/xfn/11'>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-		
 
 
 
@@ -113,7 +112,16 @@
 														<tbody class='mcnTextBlockOuter'>
 														<tr>
 															<td class='fc_email_body' align='left' valign='top' style='mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 20px; padding-right: 20px; padding-bottom: 10px; padding-left: 20px; word-break: break-word; font-size: 16px; line-height: 180%; text-align: left;'>
-															<?php echo $email_body; ?>
+															<?php
+																/**
+																 * Printing email body.
+																 *
+																 * @package Mint\MRM\Resources\public\emails
+																 * @author [MRM Team]
+																 */
+
+																echo esc_html( $email_body );
+															?>
 															</td>
 														</tr>
 														</tbody>

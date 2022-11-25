@@ -897,7 +897,7 @@ export default function ContactListTable() {
                           </tr>
                         </thead>
                         <tbody>
-                          {!contactData.length && (
+                          {!contactData?.length && (
                             <tr>
                               <td
                                 className="no-contact"
@@ -911,7 +911,7 @@ export default function ContactListTable() {
                             </tr>
                           )}
 
-                          {contactData.map((contact, idx) => {
+                          {contactData?.map((contact, idx) => {
                             return (
                               <SingleContact
                                 key={idx}
