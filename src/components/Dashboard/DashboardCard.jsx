@@ -4,6 +4,12 @@ import DecreaseRateIcon from "../Icons/DecreaseRateIcon";
 import DoubleAngleRight from "../Icons/DoubleAngleRightIcon";
 
 export default function DashboardCard(props) {
+    // console.log(props);
+    const openFormBuilder = () => {
+        // console.log(props.route);
+        // window.location.replace(props.route);
+        // window.location.reload();
+    };
     return (
         <div
             className={
@@ -33,10 +39,17 @@ export default function DashboardCard(props) {
             </div>
             <hr />
             <div className="add-links">
-                <Link to={props.route} className="single-link">
-                    {"Add " + props.name}
-                    <DoubleAngleRight />
-                </Link>
+                {props.cardTitle == "Form" ? (
+                    <button onClick={openFormBuilder} className="single-link">
+                        {"Add " + props.name}
+                        <DoubleAngleRight />
+                    </button>
+                ) : (
+                    <Link to={props.route} className="single-link">
+                        {"Add " + props.name}
+                        <DoubleAngleRight />
+                    </Link>
+                )}
             </div>
         </div>
     );

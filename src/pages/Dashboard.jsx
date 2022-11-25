@@ -15,39 +15,51 @@ import DashboardOverview from "../components/Icons/DashboardOverview";
 import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomationPlaceholder";
 
 const Dashboard = () => {
+    const [formBuilderUrl, setFormBuilderUrl] = useState(
+        `${window.MRM_Vars.admin_url}admin.php?page=mrm-admin#/form-builder/`
+    );
     const canvasRef = useRef(null);
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
         const results = [
-            { mood: "Subscribed", total: 1000, shade: "#573BFF", title:"Title-1" },
-            { mood: "Pending", total: 200, shade: "#02C4FB", title:"Title-2" },
-            { mood: "Unsubscribed", total: 800, shade: "#EC5956", title:"Title-3" },
+            {
+                mood: "Subscribed",
+                total: 1000,
+                shade: "#573BFF",
+                title: "Title-1",
+            },
+            { mood: "Pending", total: 200, shade: "#02C4FB", title: "Title-2" },
+            {
+                mood: "Unsubscribed",
+                total: 800,
+                shade: "#EC5956",
+                title: "Title-3",
+            },
         ];
 
         let sum = 0;
         let totalNumberOfContact = results.reduce(
-            (sum, { total }) => sum + total, 0
+            (sum, { total }) => sum + total,
+            0
         );
         let currentAngle = 0;
 
-        
-
         for (let moodValue of results) {
             //calculating the angle the slice (portion) will take in the chart
-            let portionAngle = (moodValue.total / totalNumberOfContact) * 2 * Math.PI;
+            let portionAngle =
+                (moodValue.total / totalNumberOfContact) * 2 * Math.PI;
 
             //drawing an arc and a line to the center to differentiate the slice from the rest
             ctx.beginPath();
             ctx.arc(100, 100, 100, currentAngle, currentAngle + portionAngle);
             currentAngle += portionAngle;
-            ctx.title = 'test';
+            ctx.title = "test";
             ctx.lineTo(100, 100);
 
             //filling the slices with the corresponding mood's color
             ctx.fillStyle = moodValue.shade;
             ctx.fill();
-            
         }
     }, []);
 
@@ -98,7 +110,7 @@ const Dashboard = () => {
                         rate="decrease"
                         rateAmount="-0.47"
                         name="Form"
-                        route="/form-builder/"
+                        route={formBuilderUrl}
                     />
                 </div>
 
@@ -157,7 +169,6 @@ const Dashboard = () => {
                             <span className="unsubscribed">Unsubscribed</span>
                             <span className="pending">Pending</span>
                         </div>
-
                     </div>
 
                     <div className="single-stat-box box-col-8 automation coming-soon-overlay">
