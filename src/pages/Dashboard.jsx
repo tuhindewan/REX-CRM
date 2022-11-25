@@ -6,6 +6,7 @@ import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar
 import EmailSentProgressBar from "../components/Dashboard/EmailSentProgressBar";
 import FilterWithDateRange from "../components/Dashboard/FilterWithDateRange";
 import Filter from "../components/Dashboard/Filter";
+import PieChart from "../components/Dashboard/PieChart";
 
 import TotalContactIcon from "../components/Icons/TotalContactIcon";
 import TotalCampaignIcon from "../components/Icons/TotalCampaignIcon";
@@ -16,40 +17,40 @@ import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomat
 
 const Dashboard = () => {
     const canvasRef = useRef(null);
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        const results = [
-            { mood: "Subscribed", total: 1000, shade: "#573BFF", title:"Title-1" },
-            { mood: "Pending", total: 200, shade: "#02C4FB", title:"Title-2" },
-            { mood: "Unsubscribed", total: 800, shade: "#EC5956", title:"Title-3" },
-        ];
+    // useEffect(() => {
+    //     const canvas = canvasRef.current;
+    //     const ctx = canvas.getContext("2d");
+    //     const results = [
+    //         { mood: "Subscribed", total: 1000, shade: "#573BFF", title:"Title-1" },
+    //         { mood: "Pending", total: 200, shade: "#02C4FB", title:"Title-2" },
+    //         { mood: "Unsubscribed", total: 800, shade: "#EC5956", title:"Title-3" },
+    //     ];
 
-        let sum = 0;
-        let totalNumberOfContact = results.reduce(
-            (sum, { total }) => sum + total, 0
-        );
-        let currentAngle = 0;
+    //     let sum = 0;
+    //     let totalNumberOfContact = results.reduce(
+    //         (sum, { total }) => sum + total, 0
+    //     );
+    //     let currentAngle = 0;
 
         
 
-        for (let moodValue of results) {
-            //calculating the angle the slice (portion) will take in the chart
-            let portionAngle = (moodValue.total / totalNumberOfContact) * 2 * Math.PI;
+    //     for (let moodValue of results) {
+    //         //calculating the angle the slice (portion) will take in the chart
+    //         let portionAngle = (moodValue.total / totalNumberOfContact) * 2 * Math.PI;
 
-            //drawing an arc and a line to the center to differentiate the slice from the rest
-            ctx.beginPath();
-            ctx.arc(100, 100, 100, currentAngle, currentAngle + portionAngle);
-            currentAngle += portionAngle;
-            ctx.title = 'test';
-            ctx.lineTo(100, 100);
+    //         //drawing an arc and a line to the center to differentiate the slice from the rest
+    //         ctx.beginPath();
+    //         ctx.arc(100, 100, 100, currentAngle, currentAngle + portionAngle);
+    //         currentAngle += portionAngle;
+    //         ctx.title = 'test';
+    //         ctx.lineTo(100, 100);
 
-            //filling the slices with the corresponding mood's color
-            ctx.fillStyle = moodValue.shade;
-            ctx.fill();
+    //         //filling the slices with the corresponding mood's color
+    //         ctx.fillStyle = moodValue.shade;
+    //         ctx.fill();
             
-        }
-    }, []);
+    //     }
+    // }, []);
 
     const [draftPercentage, setDraftPercentage] = useState(10);
     const [sentPercentage, setSentPercentage] = useState(24);
@@ -144,12 +145,13 @@ const Dashboard = () => {
 
                         <div id="pie-container">
                             <span className="mintmrm-loader"></span>
-                            <canvas
+                            {/* <canvas
                                 width="210"
                                 height="210"
                                 ref={canvasRef}
                                 className="pie-chart-canvas show"
-                            ></canvas>
+                            ></canvas> */}
+                            <PieChart />
                         </div>
 
                         <div className="stat-indicator">

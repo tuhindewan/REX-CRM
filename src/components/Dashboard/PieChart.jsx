@@ -1,209 +1,132 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { useState, useRef, useEffect } from "react";
 
-var PieChart = React.createClass({
-	getInitialState: function () {
-		return {
-			data: [5, 12, 8, 3, 10]
-		}
-	},
+const PieChart = () => {
+	
+    useEffect(() => {
 
-	componentDidMount: function () {
-		setInterval(function () {
-			var dataSize = getRandomInt(2, 6), data = [];
+		var canvas = document.getElementById("canvas");
+		var pieChartTooltip = document.getElementById("pie-chart-tooltip");
+		var ctx = canvas.getContext("2d");
+		var cw = canvas.width;
+		var ch = canvas.height;
+		ctx.lineWidth = 0;
+		ctx.font = '20px verdana';
 
-			for (; dataSize--; ) {
-				data.push(getRandomInt(1, 20));
+		var PI2 = Math.PI * 2;
+		var myColor = ["#573BFF", "#02C4FB", "#EC5956"];
+		var myData = [60, 20, 30];
+		var sliceLabel = ["Subscribed", "Pending", "Unsubscribed"];
+		var cx = 105;
+		var cy = 105;
+		var radius = 100;
+		var mouse = {x :0,y:0,oldx : 0,oldy:0};
+
+		//ctx.globalAlpha = 0.50;
+		pieChart(myData, myColor, sliceLabel);
+		ctx.globalAlpha = 1.00;
+		
+
+		function pieChart(data, colors, label) {
+			// calc data total
+			var total = 0;
+			for (var i = 0; i < data.length; i++) {
+				total += data[i];
+			}
+			// calc sweep angles for each piece of pie
+			var sweeps = []
+			for (var i = 0; i < data.length; i++) {
+				sweeps.push(data[i] / total * PI2);
+				data[i] = {
+					value : data[i],
+					angle : data[i] / total * PI2,
+					// text : label[i]+ ' ' +((data[i] / total) * 100).toFixed(0) + "%",
+					text : label[i]+ ' ' + data[i],
+				}
+			}
+			console.log(data);
+			// draw outer pie
+			var accumAngle = 0;
+			for (var i = 0; i < sweeps.length; i++) {
+				drawWedge(radius, accumAngle, accumAngle + sweeps[i], colors[i], data[i].value);
+				accumAngle += sweeps[i];
 			}
 
-			this.setState({ data: data });
-
-		}.bind(this), 2000);
-	},
-
-	render: function () {
-		var colors = ['#43A19E', '#7B43A1', '#F2317A', '#FF9824', '#58CF6C'];
-
-		return (
-		<div>
-			<Pie
-				data={ this.state.data }
-				radius={ 150 }
-				hole={ 50 }
-				colors={ colors }
-				labels={ true }
-				percent={ true }
-				strokeWidth={ 3 }
-				stroke={ '#fff' }
-			/>
-
-			<Pie
-				data={ this.state.data }
-				radius={ 80 }
-				hole={ 5 }
-				colors={ colors }
-				strokeWidth={ 3 }
-                labels={ true }
-			/>
-
-			<Pie
-				data={ this.state.data }
-				radius={ 80 }
-				hole={ 65 }
-				colors={ colors }
-				strokeWidth={ 1 }
-			/>
-
-			<Pie
-				data={ this.state.data }
-				radius={ 150 }
-				hole={ 0 }
-				colors={ colors }
-				strokeWidth={ 1 }
-				stroke={ 'rgba(0, 0, 0, .5)' }
-			/>
-		</div>
-		);
-	}
-});
-
-function getAnglePoint(startAngle, endAngle, radius, x, y) {
-	var x1, y1, x2, y2;
-
-	x1 = x + radius * Math.cos(Math.PI * startAngle / 180);
-	y1 = y + radius * Math.sin(Math.PI * startAngle / 180);
-	x2 = x + radius * Math.cos(Math.PI * endAngle / 180);
-	y2 = y + radius * Math.sin(Math.PI * endAngle / 180);
-
-	return { x1, y1, x2, y2 };
-}
-
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min)) + min;
-}
-
-var Pie = React.createClass({
-
-	render: function () {
-		var colors = this.props.colors,
-			colorsLength = colors.length,
-			labels = this.props.labels,
-			hole = this.props.hole,
-			radius = this.props.radius,
-			diameter = radius * 2,
-			self = this,
-			sum, startAngle, d = null;
-
-		sum = this.props.data.reduce(function (carry, current) { return carry + current }, 0);
-		startAngle = 0;
-
-
-		return (
-			<svg width={ diameter } height={ diameter } viewBox={ '0 0 ' + diameter + ' ' + diameter } xmlns="http://www.w3.org/2000/svg" version="1.1">
-				{ this.props.data.map(function (slice, sliceIndex) {
-					var angle, nextAngle, percent;
-
-					nextAngle = startAngle;
-					angle = (slice / sum) * 360;
-					percent = (slice / sum) * 100;
-					startAngle += angle;
-
-					return <Slice
-						key={ sliceIndex }
-						value={ slice }
-						percent={ self.props.percent }
-						percentValue={ percent.toFixed(1) }
-						startAngle={ nextAngle }
-						angle={ angle }
-						radius={ radius }
-						hole={ radius - hole }
-						trueHole={ hole }
-						showLabel= { labels }
-						fill={ colors[sliceIndex % colorsLength] }
-						stroke={ self.props.stroke }
-						strokeWidth={ self.props.strokeWidth }
-					/>
-				}) }
-
-			</svg>
-		);
-	}
-});
-
-var Slice = React.createClass({
-	getInitialState: function () {
-		return {
-			path: '',
-			x: 0,
-			y: 0
-		};
-	},
-	componentWillReceiveProps: function () {
-		this.setState({ path: '' });
-		this.animate();
-	},
-	componentDidMount: function () {
-		this.animate();
-	},
-	animate: function () {
-		this.draw(0);
-	},
-	draw: function (s) {
-		if (!this.isMounted()) {
-			return;
 		}
 
-		var p = this.props, path = [], a, b, c, self = this, step;
-
-		step = p.angle / (37.5 / 2);
-
-		if (s + step > p.angle) {
-			s = p.angle;
+		function drawWedge(radius, startAngle, endAngle, fill, label) {
+			// draw the wedge
+			ctx.beginPath();
+			ctx.moveTo(cx, cy);
+			ctx.arc(cx, cy, radius, startAngle, endAngle, false);
+			ctx.closePath();
+			ctx.fillStyle = fill;
+			ctx.strokeStyle = 'transparent';
+			ctx.fill();
+			ctx.stroke();
 		}
 
-		// Get angle points
-		a = getAnglePoint(p.startAngle, p.startAngle + s, p.radius, p.radius, p.radius);
-		b = getAnglePoint(p.startAngle, p.startAngle + s, p.radius - p.hole, p.radius, p.radius);
+		canvas.addEventListener("mousemove",function(event){
+			mouse.x = event.clientX; 
+			mouse.y = event.clientY;
+		})
+		
+		function update(){
+			// only on change in mouse position
+			if(mouse.x !== mouse.oldx || mouse.y !== mouse.oldy){
+				var x = mouse.oldx = mouse.x;
+				var y = mouse.oldy = mouse.y;
+				x -= cx; // vector from pie center
+				y -= cy;
+				var newText = "My pie chart. Mouse over slices for more info.";
+				var dist = Math.sqrt(x * x + y * y); // get distance from center
 
-		path.push('M' + a.x1 + ',' + a.y1);
-		path.push('A'+ p.radius +','+ p.radius +' 0 '+ (s > 180 ? 1 : 0) +',1 '+ a.x2 + ',' + a.y2);
-		path.push('L' + b.x2 + ',' + b.y2);
-		path.push('A'+ (p.radius- p.hole) +','+ (p.radius- p.hole) +' 0 '+ (s > 180 ? 1 : 0) +',0 '+ b.x1 + ',' + b.y1);
+				console.log('x axis '+ x);
+				console.log('y axis '+ y);
+				
+				if(dist > radius){
+					// console.log('dist '+ dist);
+					// console.log('radius '+ radius);
+					var ang = Math.atan2(y,x); // get angle note y is first
+					ang += Math.PI * 2; // rotate 360 as atan2 starts at -Pi
+					ang %= Math.PI * 2; // normalize to range 0 to 2Pi
+					var i = 0;
+					var tAng = 0
 
-		// Close
-		path.push('Z');
+					while(i < (myData.length - 1)){
+						//console.log('ang '+ ang);
+						//console.log('tAan '+ tAng + myData[i].angle);
 
-		this.setState({ path: path.join(' ') });
+						if(ang < tAng + myData[i].angle){
+							break;
+						}
 
-		if (s < p.angle) {
-			setTimeout(function () { self.draw(s + step) } , 16);
-		} else if (p.showLabel) {
-			c = getAnglePoint(p.startAngle, p.startAngle + (p.angle / 2), (p.radius / 2 + p.trueHole / 2), p.radius, p.radius);
+						tAng +=  myData[i].angle;
+						i += 1;
 
-			this.setState({
-				x: c.x2,
-				y: c.y2
-			});
+						//console.log('tAngdvfdvfde '+ tAng);
+						//console.log('iiii '+ i);
+					}
+					newText = myData[i].text;
+
+					console.log('new-test: '+newText);
+				}
+				//canvas.title = newText;
+				canvas.setAttribute('chart-data', newText);
+			}
+
+			requestAnimationFrame(update);
 		}
-	},
-    
-	render: function () {
-		return (
-			<g overflow="hidden">
-				<path
-					d={ this.state.path }
-					fill={ this.props.fill }
-					stroke={ this.props.stroke }
-					strokeWidth={ this.props.strokeWidth ? this.props.strokeWidth : 3 }
-					 />
-				{ this.props.showLabel && this.props.percentValue > 5 ?
-					<text x={ this.state.x } y={ this.state.y } fill="#fff" textAnchor="middle">
-						{ this.props.percent ? this.props.percentValue + '%' : this.props.value }
-					</text>
-				: null }
-			</g>
-		);
-	}
-})
+		update();
+
+
+	});
+
+    return (
+        <div className="pie-chart">
+			<span id="pie-chart-tooltip"></span>
+            <canvas id="canvas" width={210} height={210} ></canvas>
+        </div>
+    );
+};
 
 export default PieChart;
