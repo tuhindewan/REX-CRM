@@ -49,9 +49,9 @@ export async function deleteSingleCustomField(id) {
 }
 
 // Custom fields update put request
-export async function updateCustomFields(customField) {
+export async function updateCustomFields(customField, id) {
   return await fetch(
-    `${window.MRM_Vars.api_base_url}mrm/v1/settings/custom-fields/${customField.id}`,
+    `${window.MRM_Vars.api_base_url}mrm/v1/settings/custom-fields/${id}`,
     {
       method: "PUT",
       headers: {

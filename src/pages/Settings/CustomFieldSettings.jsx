@@ -10,6 +10,7 @@ import {
   deleteSingleCustomField,
   getCustomFields,
   submitCustomFields,
+  updateCustomFields,
 } from "../../services/CustomField";
 import { AdminNavMenuClassChange } from "../../utils/admin-settings";
 import LoadingIndicator from "../../components/LoadingIndicator";
@@ -27,15 +28,29 @@ export default function CustomFieldSettings() {
   const [showLoader, setShowLoader] = useState(true);
   const [id, setId] = useState();
   const [previousFieldData, setPreviousFieldData] = useState([]);
+  const [customFieldData, setCustomFieldData] = useState([]);
+
+  const [addClicked, setAddClicked] = useState(false);
 
   // loading or not
   const [loading, setLoading] = useState(false);
 
   //----show custom field modal-----
   const addCustomField = () => {
+    console.log("ADD");
     setCustomFieldModal(!customFieldModal);
+    setAddClicked(!addClicked);
     setId();
   };
+
+  useEffect(()=>{
+    const reset = () => {
+      setCustomFieldData([]);
+      setPrepareData([]);
+      setPreviousFieldData([]);
+    }
+    reset();
+  },[addClicked])
 
   //----close custom field modal-----
   const closeCustomFieldModal = () => {
@@ -60,10 +75,16 @@ export default function CustomFieldSettings() {
   //----add new custom field-----
   const addNewCustomField = async () => {
     submitCustomFields(prepareData).then((response) => {
-      setPrepareData({});
       toggleRefresh();
       setCustomFieldModal(false);
     });
+  };
+
+  //----update custom field----
+  const handleCustomFieldUpdate = async (prepareData, id) => {
+    const resJson = await updateCustomFields(prepareData, id);
+    toggleRefresh();
+    setCustomFieldModal(false);
   };
 
   //----delete custom field-----
@@ -98,6 +119,7 @@ export default function CustomFieldSettings() {
                   >
                     <AddCustomFieldModal
                       addNewCustomField={addNewCustomField}
+                      handleCustomFieldUpdate={handleCustomFieldUpdate}
                       closeCustomFieldModal={closeCustomFieldModal}
                       prepareData={prepareData}
                       setPrepareData={setPrepareData}
@@ -108,6 +130,8 @@ export default function CustomFieldSettings() {
                       setCustomFieldModal={setCustomFieldModal}
                       previousFieldData={previousFieldData}
                       setPreviousFieldData={setPreviousFieldData}
+                      customFieldData={customFieldData}
+                      setCustomFieldData={setCustomFieldData}
                     />
                   </div>
 

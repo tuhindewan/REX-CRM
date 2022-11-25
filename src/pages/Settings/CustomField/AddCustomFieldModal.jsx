@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 
 import CrossIcon from "../../../components/Icons/CrossIcon";
 import TooltipQuestionIcon from "../../../components/Icons/TooltipQuestionIcon";
-import { getSingleCustomField } from "../../../services/CustomField";
+import { getSingleCustomField, updateCustomFields } from "../../../services/CustomField";
 import LoadingIndicator from "../../../components/LoadingIndicator/index";
 
 export default function AddCustomFieldModal(props) {
@@ -10,6 +10,7 @@ export default function AddCustomFieldModal(props) {
     id,
     setId,
     addNewCustomField,
+    handleCustomFieldUpdate,
     closeCustomFieldModal,
     prepareData,
     setPrepareData,
@@ -17,16 +18,16 @@ export default function AddCustomFieldModal(props) {
     setRefresh,
     setCustomFieldModal,
     previousFieldData,
-    setPreviousFieldData
+    setPreviousFieldData,
+    customFieldData,
+    setCustomFieldData
   } = props;
-  
+
   const [customFieldType, setCustomFieldType] = useState();
   const [customFieldLabel, setCustomFieldLabel] = useState();
   const [customFieldSlug, setCustomFieldSlug] = useState();
   const [newDropdownOption, setNewDropdownOption] = useState([]);
   const [optionArray, setOptionsArray] = useState([]);
-
-  const [customFieldData, setCustomFieldData] = useState([]);
 
   const [addOption, setAddOption] = useState();
   const [isOptionChanged, setIsOptionChanged] = useState(true);
@@ -45,6 +46,10 @@ export default function AddCustomFieldModal(props) {
     const slug = values.toLowerCase().replace(/[\W_]+/g, "-");
     return slug;
   };
+
+  const toggleRefresh = () => {
+    setRefresh(!refresh);
+  }
 
   //----get field type from selectbox-----
   const selectFieldType = (event) => {
@@ -159,18 +164,23 @@ export default function AddCustomFieldModal(props) {
         setCustomFieldType(resJson.type);
         setLoader(false);
         setIsUpdate(true);
+        toggleRefresh();
+        
       };
       getFieldData();
     }
   }, [id]);
 
   const handleUpdate = () => {
-    console.log("update");
-  }
+    setId();
+    handleCustomFieldUpdate(prepareData, id);
+  };
 
   return (
     <>
       {console.log(prepareData)}
+      {console.log(customFieldData)}
+      {previousFieldData && console.log(prepareData)}
       <div className="custom-field-modal-inner">
         <div className="modal-content-wrapper">
           <button
@@ -429,20 +439,23 @@ export default function AddCustomFieldModal(props) {
             >
               Cancel
             </button>
-            {isUpdate ? <button
-              type="button"
-              className="mintmrm-btn"
-              onClick={handleUpdate}
-            >
-              Update
-            </button> : 
-            <button
-              type="button"
-              className="mintmrm-btn"
-              onClick={addFinalOption}
-            >
-              Add
-            </button>}
+            {isUpdate ? (
+              <button
+                type="button"
+                className="mintmrm-btn"
+                onClick={handleUpdate}
+              >
+                Update
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="mintmrm-btn"
+                onClick={addFinalOption}
+              >
+                Add
+              </button>
+            )}
           </div>
         </div>
       </div>
