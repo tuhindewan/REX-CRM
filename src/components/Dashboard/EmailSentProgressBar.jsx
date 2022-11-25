@@ -10,6 +10,11 @@ export default function EmailSentProgressBar({strokeWidth, sqSize, percentage })
     return (
         <>
             <div className="email-sent-progressbar">
+                <div className="tooltip">
+                    <span className="title">Sent</span>
+                    <span className="count">489</span>
+                </div>
+
                 <svg width={sqSize} height={sqSize} viewBox={viewBox} >
                     <circle
                         className="circle-background sent-circle-background"

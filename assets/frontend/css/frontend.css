@@ -471,11 +471,17 @@
 
 .mintmrm-add-contact-consent-content {
   display: flex;
+  align-items: flex-start;
   margin-bottom: 5rem;
-  align-items: center;
 }
-.mintmrm-add-contact-consent-content label {
-  margin-bottom: 0;
+.mintmrm-add-contact-consent-content > label {
+  width: calc(100% - 34px);
+  margin: 0 !important;
+  padding-left: 8px !important;
+}
+.mintmrm-add-contact-consent-content #mintmrm_add_contact_consent_checkbox {
+  position: relative;
+  top: 5px;
 }
 
 /*# sourceMappingURL=frontend.css.map */
