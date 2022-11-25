@@ -8,7 +8,7 @@
 get_header();
 ?>
 
-<main class="mintmrm-main">
+<main class="mintmrm-main mintmrm-page-template-main">
 	<section class="mintmrm-container">
 		<?php the_content(); ?>
 	</section>

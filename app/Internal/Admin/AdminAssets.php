@@ -112,6 +112,7 @@ class AdminAssets {
 				'lists'              => ContactGroupModel::get_all_to_custom_select( 'lists' ),
 				'tags'               => ContactGroupModel::get_all_to_custom_select( 'tags' ),
 				'is_wc_active'       => $wc_active,
+				'start_of_week'      => get_option( 'start_of_week', 1 ),
 			)
 		);
 	}

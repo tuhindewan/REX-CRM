@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { useGlobalStore } from "../hooks/useGlobalStore";
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import EmailDraftProgressBar from "../components/Dashboard/EmailDraftProgressBar";
 import EmailSentProgressBar from "../components/Dashboard/EmailSentProgressBar";
-// import PieChart from "../components/Dashboard/PieChart";
+import FilterWithDateRange from "../components/Dashboard/FilterWithDateRange";
+import Filter from "../components/Dashboard/Filter";
 
 import TotalContactIcon from "../components/Icons/TotalContactIcon";
 import TotalCampaignIcon from "../components/Icons/TotalCampaignIcon";
@@ -14,44 +13,46 @@ import TotalAutomationIcon from "../components/Icons/TotalAutomationIcon";
 import TotalFormIcon from "../components/Icons/TotalFormIcon";
 import DashboardOverview from "../components/Icons/DashboardOverview";
 import DashboardAutomationPlaceholder from "../components/Icons/DashboardAutomationPlaceholder";
-import ListenForOutsideClicks from "../components/ListenForOutsideClicks";
 
 const Dashboard = () => {
-    useGlobalStore.setState({
-        hideGlobalNav: true,
-    });
+    const canvasRef = useRef(null);
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        const results = [
+            { mood: "Subscribed", total: 1000, shade: "#573BFF", title:"Title-1" },
+            { mood: "Pending", total: 200, shade: "#02C4FB", title:"Title-2" },
+            { mood: "Unsubscribed", total: 800, shade: "#EC5956", title:"Title-3" },
+        ];
+
+        let sum = 0;
+        let totalNumberOfContact = results.reduce(
+            (sum, { total }) => sum + total, 0
+        );
+        let currentAngle = 0;
+
+        
+
+        for (let moodValue of results) {
+            //calculating the angle the slice (portion) will take in the chart
+            let portionAngle = (moodValue.total / totalNumberOfContact) * 2 * Math.PI;
+
+            //drawing an arc and a line to the center to differentiate the slice from the rest
+            ctx.beginPath();
+            ctx.arc(100, 100, 100, currentAngle, currentAngle + portionAngle);
+            currentAngle += portionAngle;
+            ctx.title = 'test';
+            ctx.lineTo(100, 100);
+
+            //filling the slices with the corresponding mood's color
+            ctx.fillStyle = moodValue.shade;
+            ctx.fill();
+            
+        }
+    }, []);
 
     const [draftPercentage, setDraftPercentage] = useState(10);
     const [sentPercentage, setSentPercentage] = useState(24);
-    const [dateFilter, setDateFilter] = useState("Monthly");
-    const [filterDropdown, setFilterDropdown] = useState(false);
-    const [isCustomRange, setIsCustomRange] = useState(false);
-    const [listening, setListening] = useState(false);
-    const [filterItems, setFilterItems] = useState([
-        { tile: "Weekly", id: "weekly" },
-        { tile: "Monthly", id: "monthly" },
-        { tile: "Yearly", id: "yearly" },
-        { tile: "Custom Range", id: "custom-range" },
-    ]);
-    const filterRef = useRef(null);
-    const [startDate, setStartDate] = useState(new Date());
-
-    const handleFilter = () => {
-        setFilterDropdown(!filterDropdown);
-    };
-
-    const handleSelect = (title, id) => {
-        setDateFilter(title);
-        id == "custom-range" ? setIsCustomRange(true) : setIsCustomRange(false);
-    };
-    useEffect(
-        ListenForOutsideClicks(
-            listening,
-            setListening,
-            filterRef,
-            setFilterDropdown
-        )
-    );
 
     return (
         <div className="dashboard-page">
@@ -59,53 +60,7 @@ const Dashboard = () => {
                 <div className="dashboard-header">
                     <h1 class="dashboard-heading">Dashboard</h1>
 
-                    <div className="filter-box">
-                        <div
-                            className={
-                                isCustomRange
-                                    ? "custom-date show"
-                                    : "custom-date"
-                            }
-                        >
-                            <div className="date-from">
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-                            </div>
-
-                            <div className="date-to">
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
-                            </div>
-                        </div>
-
-                        <div ref={filterRef}>
-                            <button
-                                className={
-                                    filterDropdown
-                                        ? "drop-down-button show"
-                                        : "drop-down-button"
-                                }
-                                onClick={handleFilter}
-                            >
-                                {dateFilter}
-                            </button>
-                            <ul
-                                className={
-                                    filterDropdown
-                                        ? "mintmrm-dropdown show"
-                                        : "mintmrm-dropdown"
-                                }
-                            >
-                                {filterItems.map((item, index) => (
-                                    <li
-                                        onClick={() =>
-                                            handleSelect(item.tile, item.id)
-                                        }
-                                    >
-                                        {item.tile}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+                    <FilterWithDateRange />
                 </div>
 
                 <div className="dashboard-card-wrapper">
@@ -130,9 +85,9 @@ const Dashboard = () => {
                     <DashboardCard
                         source={<TotalAutomationIcon />}
                         cardTitle="Total Automation"
-                        totalAmount="5790"
+                        totalAmount="00"
                         rate="increase"
-                        rateAmount="+0.75"
+                        rateAmount="+0.00"
                         name="Automation"
                         route=""
                     />
@@ -158,14 +113,7 @@ const Dashboard = () => {
                         <header className="box-header">
                             <h4 className="header-title">Email Campaigns</h4>
 
-                            <div className="filter-box">
-                                <select name="" id="">
-                                    <option value="yearly">Yearly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="custom">Custom</option>
-                                </select>
-                            </div>
+                            <Filter />
                         </header>
 
                         <div className="email-campaign-stats">
@@ -191,19 +139,27 @@ const Dashboard = () => {
                         <header className="box-header">
                             <h4 className="header-title">Contact</h4>
 
-                            <div className="filter-box">
-                                <select name="" id="">
-                                    <option value="">Yearly</option>
-                                    <option value="">Monthly</option>
-                                    <option value="">Weekly</option>
-                                    <option value="">Custom</option>
-                                </select>
-                            </div>
+                            <Filter />
                         </header>
 
-                        {/* <PieChart /> */}
+                        <div id="pie-container">
+                            <span className="mintmrm-loader"></span>
+                            <canvas
+                                width="210"
+                                height="210"
+                                ref={canvasRef}
+                                className="pie-chart-canvas show"
+                            ></canvas>
+                        </div>
+
+                        <div className="stat-indicator">
+                            <span className="subscribed">Subscribed</span>
+                            <span className="unsubscribed">Unsubscribed</span>
+                            <span className="pending">Pending</span>
+                        </div>
+
                     </div>
-                    
+
                     <div className="single-stat-box box-col-8 automation coming-soon-overlay">
                         <DashboardAutomationPlaceholder />
                     </div>
@@ -211,7 +167,6 @@ const Dashboard = () => {
             </div>
         </div>
     );
-    
 };
 
 export default Dashboard;

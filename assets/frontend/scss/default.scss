@@ -303,7 +303,7 @@
 }
 
 //-------plugin page template's style------
-.mintmrm-main {
+.mintmrm-page-template-main {
     padding: 50px 0;
 
     .mintmrm-container {
@@ -315,5 +315,21 @@
         flex-flow: column;
         align-items: center;
         justify-content: center;
+    }
+
+    .mrm-form-group {
+        margin-bottom: 15px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .mrm-checkbox-group {
+        margin-bottom: 6px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 }
