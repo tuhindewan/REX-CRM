@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Message Controller
+ *
+ * Handles requests to the messages endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -8,18 +18,17 @@ use Mint\MRM\DataStores\MessageData;
 use Mint\Mrm\Internal\Traits\Singleton;
 use Mint\MRM\Utilites\Helper\Email;
 use MRM\Common\MRM_Common;
-use MRM\Data\MRM_Message;
 use WP_REST_Request;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-17 10:28:03
- * @modify date 2022-08-17 10:28:03
- * @desc [Manage message related API request and responses]
+ * This is the main class that controls the messages feature. Its responsibilities are:
+ *
+ * - Create or update a message
+ * - Delete single or multiple messages
+ * - Retrieve single or multiple messages
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
-
 class MessageController extends BaseController {
 
 
@@ -38,12 +47,12 @@ class MessageController extends BaseController {
 	 * Send an email to contact
 	 * Stores email information to database
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return bool|WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params     = MRM_Common::get_api_params_values( $request );
 		$this->args = array(
 			'email_address' => isset( $params['email_address'] ) ? sanitize_text_field( $params['email_address'] ) : null,
@@ -53,22 +62,22 @@ class MessageController extends BaseController {
 			'sender_id'     => isset( $params['sender_id'] ) ? sanitize_text_field( $params['sender_id'] ) : null,
 		);
 
-		// Email address valiation
+		// Email address valiation.
 		if ( empty( $this->args['email_address'] ) ) {
 			return $this->get_error_response( __( 'Email address is mandatory', 'mrm' ), 200 );
 		}
 
-		// Email subject validation
+		// Email subject validation.
 		if ( empty( $this->args['email_subject'] ) ) {
 			return $this->get_error_response( __( 'Email subject is mandatory', 'mrm' ), 200 );
 		}
 
-		// Email body validation
+		// Email body validation.
 		if ( empty( $this->args['email_body'] ) ) {
 			return $this->get_error_response( __( 'Email body is mandatory', 'mrm' ), 200 );
 		}
 
-		// Prepare message data
+		// Prepare message data.
 		$message = new MessageData( $this->args );
 
 		MessageModel::insert( $message );
@@ -94,23 +103,23 @@ class MessageController extends BaseController {
 	/**
 	 * Get all emails for a contact
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_RESR_Response
 	 *
 	 * @since 1.0.0
 	 */
 	public function get_all_emails( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		$page    = isset( $params['page'] ) ? $params['page'] : 1;
-		$perPage = isset( $params['per-page'] ) ? $params['per-page'] : 25;
-		$offset  = ( $page - 1 ) * $perPage;
+		$page     = isset( $params['page'] ) ? $params['page'] : 1;
+		$per_page = isset( $params['per-page'] ) ? $params['per-page'] : 25;
+		$offset   = ( $page - 1 ) * $per_page;
 
-		// Note Search keyword
+		// Note Search keyword.
 		$search = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 
-		$emails = MessageModel::get_emails_to_contact( $offset, $perPage, $search, $params['contact_id'] );
+		$emails = MessageModel::get_emails_to_contact( $offset, $per_page, $search, $params['contact_id'] );
 
 		if ( isset( $emails ) ) {
 			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $emails );
@@ -123,7 +132,7 @@ class MessageController extends BaseController {
 	/**
 	 * Send a message to contact
 	 *
-	 * @param mixed $message
+	 * @param mixed $message Single message object.
 	 * @return bool
 	 * @since 1.0.0
 	 */
@@ -134,7 +143,7 @@ class MessageController extends BaseController {
 
 		$body = $message->get_email_body();
 
-		$headers = Email::getMailHeader();
+		$headers = Email::get_mail_header();
 
 		try {
 			return wp_mail( $to, $subject, $body, $headers );
@@ -147,23 +156,23 @@ class MessageController extends BaseController {
 	/**
 	 * Get all emails from the database to a contact or entire users
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function get_all( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		$page    = isset( $params['page'] ) ? $params['page'] : 1;
-		$perPage = isset( $params['per-page'] ) ? $params['per-page'] : 25;
-		$offset  = ( $page - 1 ) * $perPage;
+		$page     = isset( $params['page'] ) ? $params['page'] : 1;
+		$per_page = isset( $params['per-page'] ) ? $params['per-page'] : 25;
+		$offset   = ( $page - 1 ) * $per_page;
 
-		// Contact Search keyword
+		// Contact Search keyword.
 		$search     = isset( $params['search'] ) ? sanitize_text_field( $params['search'] ) : '';
 		$contact_id = isset( $params['contact_id'] ) ? sanitize_text_field( $params['contact_id'] ) : null;
 
-		$emails = MessageModel::get_emails_to_contact( $offset, $perPage, $search, $contact_id );
+		$emails = MessageModel::get_emails_to_contact( $offset, $per_page, $search, $contact_id );
 		if ( isset( $emails ) ) {
 			return $this->get_success_response( __( 'Query Successfull', 'mrm' ), 200, $emails );
 		}
@@ -174,9 +183,9 @@ class MessageController extends BaseController {
 	/**
 	 * TODO: use this function to get single email
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return [type]
+	 * @return void
 	 */
 	public function get_single( WP_REST_Request $request ) {
 	}
@@ -185,9 +194,9 @@ class MessageController extends BaseController {
 	/**
 	 * TODO: use this function to delete multiple emails
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return [type]
+	 * @return void
 	 */
 	public function delete_all( WP_REST_Request $request ) {
 	}
@@ -196,9 +205,9 @@ class MessageController extends BaseController {
 	/**
 	 * TODO: use this function to delete single email
 	 *
-	 * @param WP_REST_Request $request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 *
-	 * @return [type]
+	 * @return void
 	 */
 	public function delete_single( WP_REST_Request $request ) {
 	}
@@ -207,17 +216,17 @@ class MessageController extends BaseController {
 	/**
 	 * Send double optin email
 	 *
-	 * @param mixed $contact_id
+	 * @param mixed $contact_id Contact Id to get contact information.
 	 *
 	 * @return bool
 	 * @since 1.0.0
 	 */
 	public function send_double_opt_in( $contact_id ) {
-		 $contact = ContactModel::get( $contact_id );
+		$contact = ContactModel::get( $contact_id );
 
-		// Contact status check and validation
+		// Contact status check and validation.
 		$status = isset( $contact['status'] ) ? $contact['status'] : '';
-		if ( $status == 'subscribed' ) {
+		if ( 'subscribed' === $status ) {
 			return $this->get_error_response( __( 'Contact Already Subscribed', 'mrm' ), 400 );
 		}
 
@@ -241,18 +250,20 @@ class MessageController extends BaseController {
 			$subscribe_url = site_url( '?mrm=1&route=confirmation&hash=' . $hash );
 
 			$subject = isset( $settings['email_subject'] ) ? $settings['email_subject'] : '';
-			// Prepare email body
+
+			// Prepare email body.
 			$email_body = isset( $settings['email_body'] ) ? $settings['email_body'] : '';
 			$email_body = str_replace( 'http://', '', $email_body );
 			$email_body = str_replace( '{{subscribe_link}}', $subscribe_url, $email_body );
 
-			$server     = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : '';
-			$protocol   = strpos( strtolower( $server ), 'https' ) === false ? 'http' : 'https';
-			$domainLink = $protocol . '://' . $_SERVER['HTTP_HOST'];
+			$senitize_server = MRM_Common::get_sanitized_get_post( $_SERVER );
+			$server          = isset( $senitize_server['SERVER_PROTOCOL'] ) ? $senitize_server['SERVER_PROTOCOL'] : '';
+			$protocol        = strpos( strtolower( $server ), 'https' ) === false ? 'http' : 'https';
+			$domain_link     = $protocol . '://' . $senitize_server['HTTP_HOST'];
 
-			$body = Email::getMailTemplate( $email_body, $domainLink, $contact_id, $hash );
+			$body = Email::get_mail_template( $email_body, $domain_link, $contact_id, $hash );
 
-			$headers = Email::getMailHeader();
+			$headers = Email::get_mail_header();
 
 			try {
 				return wp_mail( $to, $subject, $body, $headers );

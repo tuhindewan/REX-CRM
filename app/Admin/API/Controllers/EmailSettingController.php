@@ -1,4 +1,14 @@
 <?php
+/**
+ * REST API Email Setting Controller
+ *
+ * Handles requests to the Email setting endpoint.
+ *
+ * @author   MRM Team
+ * @category API
+ * @package  MRM
+ * @since    1.0.0
+ */
 
 namespace Mint\MRM\Admin\API\Controllers;
 
@@ -9,13 +19,13 @@ use Exception;
 use Mint\MRM\Utilites\Helper\Email;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Responsible for managing double opt-in settings API callbacks]
+ * This is the main class that controls the email setting feature. Its responsibilities are:
+ *
+ * - Create or update email settings
+ * - Retrieve email settings from options table
+ *
+ * @package Mint\MRM\Admin\API\Controllers
  */
-
 class EmailSettingController extends SettingBaseController {
 
 	use Singleton;
@@ -31,15 +41,15 @@ class EmailSettingController extends SettingBaseController {
 	/**
 	 * Get and send response to create or update a new settings
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
 	public function create_or_update( WP_REST_Request $request ) {
-		// Get values from API
+		// Get values from API.
 		$params = MRM_Common::get_api_params_values( $request );
 
-		// From email address validation
+		// From email address validation.
 		if ( isset( $params['from_email'] ) ) {
 			$from_email = sanitize_text_field( $params['from_email'] );
 
@@ -53,7 +63,7 @@ class EmailSettingController extends SettingBaseController {
 			}
 		}
 
-		// Reply to email address validation
+		// Reply to email address validation.
 		if ( isset( $params['reply_email'] ) ) {
 			$reply_email = sanitize_text_field( $params['reply_email'] );
 
@@ -67,7 +77,7 @@ class EmailSettingController extends SettingBaseController {
 			}
 		}
 
-		// create email settings
+		// create email settings.
 		$from_name   = isset( $params['from_name'] ) ? $params['from_name'] : '';
 		$reply_name  = isset( $params['reply_name'] ) ? $params['reply_name'] : '';
 		$from_email  = isset( $params['from_email'] ) ? $params['from_email'] : '';
@@ -92,7 +102,7 @@ class EmailSettingController extends SettingBaseController {
 			'reply_email' => $reply_email,
 		);
 
-		// enque to wp option table
+		// enque to wp option table.
 		if ( update_option( '_mrm_email_settings', $email_settings, 'yes' ) ) {
 			$success_data = array(
 				'success' => true,
@@ -114,7 +124,7 @@ class EmailSettingController extends SettingBaseController {
 	/**
 	 * Function used to handle a single get request
 	 *
-	 * @param WP_REST_Request
+	 * @param WP_REST_Request $request Request object used to generate the response.
 	 * @return WP_REST_Response
 	 * @since 1.0.0
 	 */
@@ -135,5 +145,4 @@ class EmailSettingController extends SettingBaseController {
 
 		return $email_settings_data;
 	}
-
 }

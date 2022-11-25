@@ -1,17 +1,25 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/API/Routes
+ */
 
 namespace Mint\MRM\Admin\API\Routes;
 
 use Mint\MRM\Admin\API\Controllers\NoteController;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-09 11:03:17
- * @modify date 2022-08-09 11:03:17
- * @desc [Handle Note Module related API callbacks]
+ * [Handle Note Module related API callbacks]
+ *
+ * @desc Handle Note Module related API callbacks
+ * @package /app/API/Routes
+ * @since 1.0.0
  */
-
 class NoteRoute {
 
 	/**
@@ -59,7 +67,7 @@ class NoteRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/contact' . '/(?P<contact_id>[\d]+)' . '/' . $this->rest_base . '/',
+			'/contact/(?P<contact_id>[\d]+)/' . $this->rest_base . '/',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -96,7 +104,7 @@ class NoteRoute {
 		*/
 		register_rest_route(
 			$this->namespace,
-			'/contact' . '/(?P<contact_id>[\d]+)' . '/' . $this->rest_base . '/(?P<note_id>[\d]+)',
+			'/contact/(?P<contact_id>[\d]+)/' . $this->rest_base . '/(?P<note_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,

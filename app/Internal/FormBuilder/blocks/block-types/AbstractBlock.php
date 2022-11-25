@@ -1,10 +1,22 @@
 <?php
-
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/FomrBuilder/blocks/
+ */
 
 /**
- * AbstractBlock class.
+ * [AbstractBlock class].
+ *
+ * @desc Manages Guternburg Block in mrm
+ * @package /app/Internal/Ajax
+ * @since 1.0.0
  */
-abstract class GetMRM_AbstractBlock {
+abstract class GetMRMAbstractBlock {
 
 
 	/**
@@ -76,12 +88,11 @@ abstract class GetMRM_AbstractBlock {
 		register_block_type(
 			$this->get_block_type(),
 			array(
-				// 'render_callback' => $this->get_block_type_render_callback(),
-								'editor_script' => $this->get_block_type_editor_script( 'handle' ),
-				'editor_style'                  => $this->get_block_type_editor_style(),
-				'style'                         => $this->get_block_type_style(),
-				'attributes'                    => $this->get_block_type_attributes(),
-				'supports'                      => $this->get_block_type_supports(),
+				'editor_script' => $this->get_block_type_editor_script( 'handle' ),
+				'editor_style'  => $this->get_block_type_editor_style(),
+				'style'         => $this->get_block_type_style(),
+				'attributes'    => $this->get_block_type_attributes(),
+				'supports'      => $this->get_block_type_supports(),
 			)
 		);
 	}
@@ -129,7 +140,14 @@ abstract class GetMRM_AbstractBlock {
 		return $key ? $script[ $key ] : $script;
 	}
 
-
+	/**
+	 * Get block asset Build path
+	 *
+	 * @param string $filename get register filename .
+	 * @param string $type get register file type .
+	 *
+	 * @return string
+	 */
 	protected function get_block_asset_build_path( $filename, $type = 'js' ) {
 		global $wp_version;
 		$suffix = version_compare( $wp_version, '5.3', '>=' )
@@ -160,7 +178,7 @@ abstract class GetMRM_AbstractBlock {
 		if ( null !== $this->get_block_type_editor_script() ) {
             $post_id   = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0; //phpcs:ignore
 			$post_type = get_post_type( $post_id );
-			if ( 'mrmform' == $post_type ) {
+			if ( 'mrmform' === $post_type ) {
 				$handle = $this->get_block_type_editor_script( 'handle' );
 				$this->register_script(
 					$handle,
@@ -170,7 +188,7 @@ abstract class GetMRM_AbstractBlock {
 			}
 
 				$handle = $this->get_block_type_editor_script( 'handle' );
-			if ( $handle == 'getwpf-mrm-subscribe-form' ) {
+			if ( 'getwpf-mrm-subscribe-form' === $handle ) {
 				$this->register_script(
 					$handle,
 					$this->get_block_type_editor_script( 'path' ),
@@ -188,16 +206,24 @@ abstract class GetMRM_AbstractBlock {
 		}
 	}
 
-
+	/**
+	 * Register Script data
+	 *
+	 * @param string $handle manage handle .
+	 * @param string $relative_src get handle src .
+	 * @param array  $dependencies script dependency .
+	 * @param array  $has_i18n manage language .
+	 *
+	 * @return void
+	 */
 	public function register_script( $handle, $relative_src, $dependencies = array(), $has_i18n = true ) {
 		$src     = '';
 		$version = '1.0.5';
 
 		if ( $relative_src ) {
 			$src = $this->get_asset_url( $relative_src );
-			// $version    = $this->get_file_version( $relative_src );
 		}
-		wp_register_script( $handle, $src, apply_filters( 'getwpfunnels/gutenberg_blocks_register_script_dependencies', $dependencies, $handle ), $version, true );
+		wp_register_script( $handle, $src, apply_filters( 'mrm_gutenberg_blocks_register_script_dependencies', $dependencies, $handle ), $version, true );
 
 		if ( is_admin() ) {
 			wp_localize_script(
@@ -213,7 +239,13 @@ abstract class GetMRM_AbstractBlock {
 		}
 	}
 
-
+	/**
+	 * Get asset url
+	 *
+	 * @param string $relative_url get Url .
+	 *
+	 * @return string
+	 */
 	public function get_asset_url( $relative_url ) {
 		return MRM_DIR_URL . '/app/Internal/FormBuilder/blocks/' . $relative_url;
 	}
@@ -388,12 +420,6 @@ abstract class GetMRM_AbstractBlock {
 	 *                           not in the post content on editor load.
 	 */
 	protected function enqueue_data( array $attributes = array() ) {
-		// $registered_script_data = $this->integration_registry->get_all_registered_script_data();
-		// foreach ( $registered_script_data as $asset_data_key => $asset_data_value ) {
-		// if ( ! $this->asset_data_registry->exists( $asset_data_key ) ) {
-		// $this->asset_data_registry->add( $asset_data_key, $asset_data_value );
-		// }
-		// }
 	}
 
 	/**
@@ -409,12 +435,12 @@ abstract class GetMRM_AbstractBlock {
 
 
 	/**
-	 * generate assets
+	 * Generate assets
 	 *
-	 * @param $attributes
+	 * @param string $attributes get attributes.
 	 * @return array|void
 	 *
-	 * @since 2.0.3
+	 * @since 1.0.0
 	 */
 	protected function generate_assets( $attributes ) {
 		global $post;
@@ -424,7 +450,14 @@ abstract class GetMRM_AbstractBlock {
 		return $this->get_generated_dynamic_styles( $attributes, $post );
 	}
 
-
+	/**
+	 * Get Dynamic css
+	 *
+	 * @param string $attributes css attribute.
+	 * @param object $post get post .
+	 *
+	 * @return array
+	 */
 	protected function get_generated_dynamic_styles( $attributes, $post ) {
 		return array();
 	}
@@ -433,16 +466,16 @@ abstract class GetMRM_AbstractBlock {
 	/**
 	 * It will generate css from multidimensional array recursively
 	 *
-	 * @param array $rules
+	 * @param array $rules get rule se .
 	 *   An array of CSS rules in the form of:
 	 *   array('selector'=>array('property' => 'value')). Also supports selector
 	 *   nesting, e.g.,
 	 *   array('selector' => array('selector'=>array('property' => 'value'))).
 	 *
-	 * @param int   $indent
+	 * @param int   $indent get indent .
 	 * @return string
 	 *
-	 * @since 2.0.3
+	 * @since 1.0.0
 	 * @source https://matthewgrasmick.com/posts/convert-nested-php-array-css-string
 	 */
 	protected function generate_css( $rules, $indent = 0 ) {

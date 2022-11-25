@@ -1,13 +1,27 @@
 <?php
 /**
- * BLOCK: MRM Subscribe Form
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Internal/FomrBuilder/blocks/
  */
+
 namespace Mint\MRM\Internal\FormBuilder;
 
 use Mint\MRM\DataBase\Models\FormModel;
-
-class MRM_Subscribe_form {
-
+/**
+ * MRM subscribe form in gutenberg class.
+ *
+ * @since 5.0.0
+ * @internal
+ */
+class MRMSubscribeForm { //phpcs:ignore
+	/**
+	 * Add action hook for enqueue Block Editor
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'mrm_subscribe_form_block' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'mrm_subscribe_form_block_editor_assets' ) );
@@ -49,22 +63,21 @@ class MRM_Subscribe_form {
 	 * Block editor assets
 	 */
 	public function mrm_subscribe_form_block_editor_assets() {
-		wp_enqueue_script(
-			'getwpf-mrm-subscribe-form',
-			MRM_DIR_URL . '/app/Internal/FormBuilder/blocks/assets/dist/getwpf-mrm-subscribe-form.js',
-			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api-fetch' ),
+		wp_enqueue_script('getwpf-mrm-subscribe-form',MRM_DIR_URL . '/app/Internal/FormBuilder/blocks/assets/dist/getwpf-mrm-subscribe-form.js', //phpcs:ignore
+			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api-fetch' ), //phpcs:ignore
 		);
-		wp_enqueue_style(
+		wp_enqueue_style( //phpcs:ignore
 			'getwpf-mrm-subscribe-form',
 			MRM_DIR_URL . '/app/Internal/FormBuilder/blocks/assets/js/blocks/mrm-subscribe-form/editor.scss',
-			array( 'wp-edit-blocks' ),
+			array( 'wp-edit-blocks' ),//phpcs:ignore
 		);
 	}
-
 	/**
-	 * Block php renderer for Form
+	 * Get Mrm Form data attributes
 	 *
-	 * @since 1.0.0
+	 * @param array $attributes get all attribite for gutenberg .
+	 *
+	 * @return string|null
 	 */
 	public function mrm_subscribe_block_render( $attributes ) {
 		$html           = '';
@@ -74,7 +87,7 @@ class MRM_Subscribe_form {
 		$form_setting   = json_decode( $form_setting );
 		$form_placement = ! empty( $form_setting->settings->form_layout->form_position ) ? $form_setting->settings->form_layout->form_position : '';
 		$form_animation = '';
-		if ( $form_placement != 'default' ) {
+		if ( 'default' !== $form_placement ) {
 			$form_animation = ! empty( $form_setting->settings->form_layout->form_animation ) ? $form_setting->settings->form_layout->form_animation : '';
 		}
 		$form_close_button_color     = ! empty( $form_setting->settings->form_layout->close_button_color ) ? $form_setting->settings->form_layout->close_button_color : '#fff';
@@ -85,10 +98,10 @@ class MRM_Subscribe_form {
 
 		if ( empty( $form_data ) ) {
 			return __( 'Form ID is not valid', 'mrm' );
-		} elseif ( 'draft' == $form_status ) {
+		} elseif ( 'draft' === $form_status ) {
 			return __( 'This form is not active. Please check', 'mrm' );
 		}
-		$cookies = isset( $_COOKIE['mrm_form_dismissed'] ) ? $_COOKIE['mrm_form_dismissed'] : '';
+		$cookies = isset( $_COOKIE['mrm_form_dismissed'] ) ? wp_unslash( $_COOKIE['mrm_form_dismissed'] ) : ''; //phpcs:ignore
 		$cookies = json_decode( stripslashes( $cookies ) );
 
 		$show = true;
@@ -105,7 +118,7 @@ class MRM_Subscribe_form {
 		$block_html = '';
 		$class      = '';
 		foreach ( $blocks as $block ) {
-			if ( $block['blockName'] == 'core/columns' ) {
+			if ( 'core/columns' === $block['blockName'] ) {
 				if ( isset( $block['attrs']['style']['color']['background'] ) ) {
 					$class = 'custom-background';
 				}
@@ -113,7 +126,7 @@ class MRM_Subscribe_form {
 					$class = 'custom-background';
 				}
 			}
-			if ( $block['blockName'] == 'core/group' ) {
+			if ( 'core/group' === $block['blockName'] ) {
 				if ( isset( $block['attrs']['style']['color']['background'] ) ) {
 					$class = 'custom-background';
 				}
@@ -121,7 +134,7 @@ class MRM_Subscribe_form {
 					$class = 'custom-background';
 				}
 			}
-			if ( $block['blockName'] == 'core/cover' ) {
+			if ( 'core/cover' === $block['blockName'] ) {
 				if ( isset( $block['attrs']['customOverlayColor'] ) ) {
 					$class = 'custom-background';
 				}
@@ -134,7 +147,7 @@ class MRM_Subscribe_form {
 
 			$block_html .= render_block( $block );
 		}
-		if ( 0 == $form_id ) {
+		if ( 0 === $form_id ) {
 			$html = '<div class="mintmrm">
                         <p>No form added</p>
                     </div>';
@@ -143,7 +156,7 @@ class MRM_Subscribe_form {
 				$html .= '<div class="mintmrm">
             <div id="mrm-' . $form_placement . '" class="mrm-form-wrapper mrm-' . $form_animation . ' mrm-' . $form_placement . '">
                 <div class="mrm-form-wrapper-inner ' . $class . '">';
-				if ( 'default' != $form_placement ) {
+				if ( 'default' !== $form_placement ) {
 					$html .= '<span style="background:' . $form_close_background_color . '" class="mrm-form-close" >
                         <svg width="10" height="11" fill="none" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><path stroke="' . $form_close_button_color . '" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 1l-11 11m0-11l11 11"/></svg>
                     </span>';

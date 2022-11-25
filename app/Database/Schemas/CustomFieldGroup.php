@@ -1,13 +1,13 @@
 <?php
-
 /**
+ * Mail Mint
+ *
  * @author [MRM Team]
  * @email [support@rextheme.com]
- * @create date 2022-08-09 15:39:56
- * @modify date 2022-08-09 15:39:56
- * @desc [Create wp_mrm_custom_field_groups table into database]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/Datanase/Schemas
  */
-
 
 namespace Mint\MRM\DataBase\Tables;
 
@@ -15,6 +15,13 @@ require_once MRM_DIR_PATH . 'app/Interfaces/Schema.php';
 
 use Mint\MRM\Interfaces\Schema;
 
+/**
+ * [Manage custom field group table schema]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/Datanase/Schemas
+ * @since 1.0.0
+ */
 class CustomFieldGroupSchema implements Schema {
 
 
@@ -30,7 +37,7 @@ class CustomFieldGroupSchema implements Schema {
 	/**
 	 * Create the table.
 	 *
-	 * @return void
+	 * @return string
 	 * @since 1.0.0
 	 */
 	public function get_sql() {

@@ -1,15 +1,23 @@
 <?php
+/**
+ * Mail Mint
+ *
+ * @author [MRM Team]
+ * @email [support@rextheme.com]
+ * @create date 2022-08-09 11:03:17
+ * @modify date 2022-08-09 11:03:17
+ * @package /app/DataStores
+ */
 
 namespace Mint\MRM\DataStores;
 
 /**
- * @author [MRM Team]
- * @email [support@rextheme.com]
- * @create date 2022-08-17 11:56:54
- * @modify date 2022-08-17 11:56:54
- * @desc [Responsible for managing and maintaining a message object]
+ * [Manage message data]
+ *
+ * @desc Manage plugin's assets
+ * @package /app/DataStores
+ * @since 1.0.0
  */
-
 class MessageData {
 
 	/**
@@ -63,20 +71,24 @@ class MessageData {
 	 */
 	private $sender_id;
 
-
+	/**
+	 * Initialize class functionalities
+	 *
+	 * @param array $args Custom field data.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct( $args ) {
-		$this->email_address = isset( $args['email_address'] ) ? $args['email_address'] : '';
-		$this->email_subject = isset( $args['email_subject'] ) ? $args['email_subject'] : '';
-		$this->email_body    = isset( $args['email_body'] ) ? $args['email_body'] : '';
-		$this->contact_id    = isset( $args['contact_id'] ) ? $args['contact_id'] : '';
-		$this->sender_id     = isset( $args['sender_id'] ) ? $args['sender_id'] : '';
+		$this->email_address = isset( $args[ 'email_address' ] ) ? $args[ 'email_address' ] : '';
+		$this->email_subject = isset( $args[ 'email_subject' ] ) ? $args[ 'email_subject' ] : '';
+		$this->email_body    = isset( $args[ 'email_body' ] ) ? $args[ 'email_body' ] : '';
+		$this->contact_id    = isset( $args[ 'contact_id' ] ) ? $args[ 'contact_id' ] : '';
+		$this->sender_id     = isset( $args[ 'sender_id' ] ) ? $args[ 'sender_id' ] : '';
 	}
-
 
 	/**
 	 * Return message receiver email address
 	 *
-	 * @param void
 	 * @return string
 	 * @since 1.0.0
 	 */
@@ -84,11 +96,9 @@ class MessageData {
 		return $this->email_address;
 	}
 
-
 	/**
 	 * Return email subject
 	 *
-	 * @param void
 	 * @return string
 	 * @since 1.0.0
 	 */
@@ -96,11 +106,9 @@ class MessageData {
 		return $this->email_subject;
 	}
 
-
 	/**
 	 * Return email body
 	 *
-	 * @param void
 	 * @return string
 	 * @since 1.0.0
 	 */
@@ -108,11 +116,9 @@ class MessageData {
 		return $this->email_body;
 	}
 
-
 	/**
 	 * Return message type
 	 *
-	 * @param void
 	 * @return string
 	 * @since 1.0.0
 	 */
@@ -120,11 +126,9 @@ class MessageData {
 		return $this->type;
 	}
 
-
 	/**
 	 * Return receiver ID
 	 *
-	 * @param void
 	 * @return int
 	 * @since 1.0.0
 	 */
@@ -132,11 +136,9 @@ class MessageData {
 		return $this->contact_id;
 	}
 
-
 	/**
 	 * Return sender ID
 	 *
-	 * @param void
 	 * @return int
 	 * @since 1.0.0
 	 */

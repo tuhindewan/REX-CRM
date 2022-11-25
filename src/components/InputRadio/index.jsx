@@ -14,13 +14,13 @@ export default function InputRadio(props) {
             <input
                 key={index}
                 type="radio"
-                id={option}
+                id={props.name+'-'+option+'-'+index}
                 name={props.name}
                 onChange={props.handleChange}
                 value={option}
                 checked={option === props.selectedValue}
               />
-              <label htmlFor={option} >
+              <label htmlFor={props.name+'-'+option+'-'+index} >
                 {option}
                 {props.required && <span className="required-mark">*</span>}
               </label>

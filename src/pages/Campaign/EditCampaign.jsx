@@ -32,8 +32,8 @@ const defaultEmailData = {
   delay_count: 0,
   delay_value: "",
   email_preview_text: "",
-  sender_name: MRM_Vars.email_settings.from_name,
-  sender_email: MRM_Vars.email_settings.from_email,
+  sender_name: "",
+  sender_email: "",
   toError: null,
   senderEmailError: null,
 };
